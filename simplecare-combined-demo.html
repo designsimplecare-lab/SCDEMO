@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SimpleCare — Combined Demo (Patient / Physician)</title>
+<style>
+  :root{
+    --ink:#1c1f26; --ink-soft:#5b6070; --ink-faint:#9296a3;
+    --line:#d7d9e0; --line-strong:#b7bac6;
+    --paper:#fbfbfa; --panel:#ffffff; --wash:#eef0f4;
+    --accent:#2c438a; --accent-wash:#e3e8f5; --accent-ink:#1d2d5e;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--paper);}
+  .shell{display:flex;flex-direction:column;height:100vh;}
+  .switcher-bar{
+    flex-shrink:0;display:flex;align-items:center;gap:14px;
+    padding:10px 18px;background:var(--panel);border-bottom:1px solid var(--line-strong);
+  }
+  .switcher-brand{font-size:14px;font-weight:600;color:var(--ink);margin-right:6px;}
+  .switcher-group{display:flex;gap:0;border:1px solid var(--line-strong);border-radius:20px;overflow:hidden;}
+  .switcher-btn{
+    padding:7px 18px;font-size:13px;font-weight:600;border:none;background:var(--panel);
+    color:var(--ink-soft);cursor:pointer;font-family:inherit;
+  }
+  .switcher-btn.active{background:var(--accent);color:#fff;}
+  .switcher-note{font-size:11.5px;color:var(--ink-faint);margin-left:auto;}
+  .frame-wrap{flex:1;position:relative;}
+  .frame-wrap iframe{
+    position:absolute;inset:0;width:100%;height:100%;border:none;display:none;background:var(--paper);
+  }
+  .frame-wrap iframe.active{display:block;}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <div class="switcher-bar">
+    <span class="switcher-brand">Simple Care — demo</span>
+    <div class="switcher-group">
+      <button class="switcher-btn active" data-view="patient" onclick="setView('patient')">Patient portal</button>
+      <button class="switcher-btn" data-view="physician" onclick="setView('physician')">Physician portal</button>
+    </div>
+    <span class="switcher-note">Two separate prototypes, loaded side by side — switching keeps each one's state.</span>
+  </div>
+  <div class="frame-wrap">
+    <iframe id="frame-patient" class="active" src="simplecare-patient-portal-v2.html" title="Patient portal"></iframe>
+    <iframe id="frame-physician" src="simplecare-physician-portal-lofi.html" title="Physician portal"></iframe>
+  </div>
+</div>
+
+<script>
+function setView(name){
+  document.querySelectorAll('.switcher-btn').forEach(function(b){
+    b.classList.toggle('active', b.dataset.view === name);
+  });
+  document.getElementById('frame-patient').classList.toggle('active', name==='patient');
+  document.getElementById('frame-physician').classList.toggle('active', name==='physician');
+}
+
+/* Relay demo events between the two iframes so booking in Patient shows up live in Physician */
+window.addEventListener('message', function(e){
+  var data = e.data;
+  if(!data || data.source !== 'simplecare-patient-demo') return;
+  var physFrame = document.getElementById('frame-physician');
+  if(physFrame && physFrame.contentWindow){
+    physFrame.contentWindow.postMessage(data, '*');
+  }
+  // jump the switcher to Physician so the boss actually sees it update live
+  setView('physician');
+});
+</script>
+
+</body>
+</html>

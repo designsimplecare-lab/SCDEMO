@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SimpleCare — Landing/Booking Redesign (episodic vs family medicine)</title>
+<style>
+  :root{
+    --navy:#1e2f6b; --navy-deep:#152253; --ink:#1c1f26; --ink-soft:#5b6070; --ink-faint:#8b8f9c;
+    --line:#dfe2ea; --paper:#f4f6fb; --panel:#ffffff; --good:#1f8a5a; --wash:#eef1f8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);}
+  .topbar{
+    display:flex;align-items:center;gap:28px;padding:14px 34px;background:var(--navy);color:#fff;
+  }
+  .topbar .brand{font-weight:700;font-size:16px;margin-right:auto;}
+  .topbar a{color:#dfe4f5;text-decoration:none;font-size:14px;}
+  .topbar .cta{background:#fff;color:var(--navy);padding:8px 16px;border-radius:20px;font-weight:600;font-size:13px;}
+
+  .ia-note{
+    background:#fffbe6;border:1px dashed #d8c26a;color:#7a5f10;font-size:12px;padding:8px 14px;
+    max-width:1100px;margin:16px auto 0;border-radius:8px;
+  }
+
+  .screen{display:none;max-width:1100px;margin:0 auto;padding:30px 24px 60px;}
+  .screen.active{display:block;}
+
+  /* ===== HOME: buffet stays default, one additional Family Practice card ===== */
+  .fork-hero{text-align:center;margin-bottom:24px;}
+  .fork-hero h1{font-size:30px;color:var(--navy);margin:0 0 8px;}
+  .fork-hero p{color:var(--ink-soft);font-size:15px;margin:0;}
+  .next-avail{
+    display:flex;align-items:center;justify-content:center;gap:8px;margin:14px auto 0;width:fit-content;
+    background:#e6f5ec;color:var(--good);font-size:13px;font-weight:700;padding:8px 16px;border-radius:20px;
+  }
+  .next-avail .dot{width:8px;height:8px;border-radius:50%;background:var(--good);animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+  .fp-banner{
+    display:flex;align-items:center;gap:20px;background:var(--navy);color:#fff;border-radius:16px;
+    padding:22px 26px;cursor:pointer;margin-bottom:34px;transition:background .15s;
+  }
+  .fp-banner:hover{background:var(--navy-deep);}
+  .fp-banner .ico{font-size:28px;}
+  .fp-banner h3{margin:0 0 4px;font-size:18px;}
+  .fp-banner p{margin:0;font-size:13px;color:#cfd7ee;}
+  .fp-banner .go{margin-left:auto;font-size:13px;font-weight:700;white-space:nowrap;}
+  .demo-toggle{
+    display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-soft);
+    background:var(--wash);border:1px dashed var(--line);border-radius:20px;padding:6px 12px;margin-bottom:16px;
+  }
+
+  /* ===== STEP 1: concern grid (episodic) ===== */
+  .step-label{font-size:12px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.04em;margin:0 0 6px;}
+  .back-link{background:none;border:none;color:var(--navy);font-size:13px;cursor:pointer;padding:0;margin-bottom:14px;}
+  .concern-head{text-align:center;margin-bottom:24px;}
+  .concern-head h2{margin:0 0 4px;color:var(--navy);}
+  .concern-head p{margin:0;color:var(--ink-soft);font-size:13.5px;}
+  .concern-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .concern-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;cursor:pointer;
+  }
+  .concern-card:hover{border-color:var(--navy);}
+  .concern-card h4{margin:0 0 8px;font-size:14.5px;color:var(--navy);display:flex;align-items:center;gap:8px;}
+  .concern-card ul{list-style:none;margin:0;padding:0;font-size:12.5px;color:var(--ink-soft);}
+  .concern-card li{padding:3px 0;}
+
+  /* ===== STEP 2: doctor list (episodic — pool of doctors) ===== */
+  .doctor-list-head{margin-bottom:18px;}
+  .doctor-list-head h2{margin:0 0 4px;color:var(--navy);}
+  .doctor-list-head p{margin:0;color:var(--ink-soft);font-size:13.5px;}
+  .doctor-row{
+    display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;padding:16px 18px;margin-bottom:12px;
+  }
+  .doctor-avatar{width:52px;height:52px;border-radius:50%;background:var(--wash);border:2px solid var(--good);
+    display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy);flex-shrink:0;}
+  .doctor-meta{flex:1;}
+  .doctor-meta b{display:block;font-size:14.5px;color:var(--ink);}
+  .doctor-meta span{font-size:12.5px;color:var(--ink-faint);}
+  .win-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .win-chip{
+    background:var(--wash);border:1px solid var(--line);border-radius:20px;padding:7px 14px;font-size:12.5px;
+    font-weight:600;color:var(--navy);cursor:pointer;
+  }
+  .win-chip:hover{background:#e2e8f8;}
+
+  /* ===== STEP 1b: family medicine simplified path ===== */
+  .fam-box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px;text-align:center;max-width:520px;margin:0 auto;}
+  .fam-box .badge{display:inline-block;background:#e6f5ec;color:var(--good);font-size:11px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.04em;padding:4px 12px;border-radius:20px;margin-bottom:12px;}
+  .fam-box h2{margin:0 0 8px;color:var(--navy);}
+  .fam-box p{color:var(--ink-soft);font-size:13.5px;line-height:1.5;margin:0 0 20px;}
+  .fam-doctor{
+    display:flex;align-items:center;gap:14px;background:var(--wash);border-radius:12px;padding:14px 16px;margin-bottom:20px;text-align:left;
+  }
+  .btn{
+    display:inline-block;background:var(--navy);color:#fff;border:none;border-radius:24px;padding:12px 26px;
+    font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;
+  }
+  .btn:hover{background:var(--navy-deep);}
+  .btn.ghost{background:none;color:var(--navy);border:1.5px solid var(--navy);}
+
+  textarea.intake{
+    width:100%;font-family:inherit;font-size:13.5px;border:1px solid var(--line);border-radius:10px;
+    padding:12px;min-height:80px;resize:vertical;margin-bottom:18px;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand">Simple Care</span>
+  <a href="#">Home</a><a href="#">About Us</a><a href="#">Doctors</a><a href="#">FAQ</a>
+  <span style="margin-left:auto;"></span>
+  <a href="#">Log In</a>
+  <span class="cta">Become a Patient</span>
+</div>
+
+<div class="ia-note">Corrected per his spec: the buffet is the default, unchanged experience — no gate before browsing. Family Practice is one additional entry point sitting on top of it, not a symmetric either/or choice. Attachment (do you have an assigned SimpleCare doctor?) is only ever set explicitly through that one Family Practice pathway — never inferred. Demo toggle below simulates that stored attachment status so you can see both walk-in outcomes.</div>
+
+<label class="demo-toggle" style="max-width:1100px;margin:16px auto 0;display:block;width:fit-content;">
+  <input type="checkbox" id="demo-attached" onchange="document.getElementById('demo-attached-label').textContent = this.checked ? 'attached to Dr. Pannozzo' : 'unattached'">
+  Demo only — simulate patient is <b id="demo-attached-label">unattached</b>
+</label>
+
+<!-- ============ HOME: buffet (unchanged, default) + one Family Practice entry point ============ -->
+<div class="screen active" id="screen-fork">
+  <div class="fork-hero">
+    <h1>British Columbia's Virtual Family Practice</h1>
+    <p>Whether you're stopping by or seeking ongoing care, we're ready when you need you.</p>
+    <div class="next-avail"><span class="dot"></span> Next available: Today, 5:00 – 7:00 PM</div>
+  </div>
+
+  <div class="fp-banner" onclick="showScreen('signin')">
+    <span class="ico">🔁</span>
+    <span><h3>Virtual Family Practice</h3><p>Book with your SimpleCare doctor, or register for one — same physician, every visit going forward.</p></span>
+    <span class="go">Get started &rarr;</span>
+  </div>
+
+  <!-- buffet grid — unchanged, always the default browsing experience -->
+  <div class="concern-head" id="home-grid">
+    <h2>Click a concern to book</h2>
+    <p>Most visits are seen the same day.</p>
+    <p style="margin-top:6px;font-weight:600;color:var(--good);">No family doctor or ongoing commitment required — browse and book freely, sign in only at the end.</p>
+  </div>
+  <div class="concern-grid">
+    <div class="concern-card" onclick="showScreen('signin')"><h4>👨‍👩‍👧 Family Practice</h4><ul><li>New patient appointment</li><li>General health appointment</li><li>Follow up appointment</li></ul></div>
+    <div class="concern-card" onclick="showScreen('doctors')"><h4>🦠 Infections</h4><ul><li>Chest cold</li><li>Sinus infection</li><li>Pink eye</li><li>Flu</li></ul></div>
+    <div class="concern-card" onclick="showScreen('doctors')"><h4>💊 Everyday Health</h4><ul><li>Prescription renewal</li><li>Bladder infection</li><li>Birth control refill</li><li>Sick note</li></ul></div>
+    <div class="concern-card" onclick="showScreen('doctors')"><h4>👂 Ear, Nose &amp; Throat</h4><ul><li>Allergy relief</li><li>Nasal congestion</li><li>Swimmer's ear</li></ul></div>
+    <div class="concern-card" onclick="showScreen('doctors')"><h4>🧴 Skin Concerns</h4><ul><li>Acne</li><li>Eczema</li><li>Shingles</li></ul></div>
+    <div class="concern-card" onclick="showScreen('doctors')"><h4>🦴 Bone, Joint &amp; Muscle</h4><ul><li>Gout</li><li>Muscle strain</li></ul></div>
+    <div class="concern-card" onclick="showScreen('doctors')"><h4>😴 Sleeping Health</h4><ul><li>Insomnia</li><li>Snoring &amp; sleep apnea</li></ul></div>
+    <div class="concern-card" onclick="showScreen('doctors')"><h4>❤️ Sexual Health</h4><ul><li>STI testing &amp; treatment</li><li>PrEP / PEP</li></ul></div>
+    <div class="concern-card" onclick="showScreen('doctors')"><h4>📄 Medical Forms</h4><ul><li>EI note</li><li>Return to work</li></ul></div>
+  </div>
+</div>
+
+<!-- ============ STEP 2: DOCTOR LIST (episodic pool, not one fixed doctor) ============ -->
+<div class="screen" id="screen-doctors">
+  <button class="back-link" onclick="showScreen('fork')">&larr; Back</button>
+  <div class="doctor-list-head">
+    <h2>Choose a call window</h2>
+    <p>Prescription Renewal · Everyday Health — matched with any doctor currently accepting virtual episodic visits.</p>
+  </div>
+  <div class="doctor-row">
+    <div class="doctor-avatar">DP</div>
+    <div class="doctor-meta"><b>Dr. Daniel Pannozzo</b><span>CCFP · Virtual visits · British Columbia</span></div>
+    <div class="win-row">
+      <span class="win-chip" onclick="showScreen('walkinconfirm')">5:00 – 7:00 PM today</span>
+    </div>
+  </div>
+  <div class="doctor-row">
+    <div class="doctor-avatar">AR</div>
+    <div class="doctor-meta"><b>Dr. Asha Reyes</b><span>CCFP · Virtual visits · British Columbia</span></div>
+    <div class="win-row">
+      <span class="win-chip" onclick="showScreen('walkinconfirm')">6:00 – 8:00 PM today</span>
+      <span class="win-chip" onclick="showScreen('walkinconfirm')">Tomorrow, 9–11 AM</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WALK-IN: confirm → sign-in → attachment interrupt (new) ============ -->
+<div class="screen" id="screen-walkinconfirm">
+  <div class="fam-box">
+    <span class="badge">Great choice!</span>
+    <h2>You're booked with Dr. Asha Reyes</h2>
+    <p>Today, 6:00 – 8:00 PM. Sign in to confirm — unchanged up to this point.</p>
+    <button class="btn" onclick="showScreen('walkinsignin')">Sign in to confirm</button>
+  </div>
+</div>
+<div class="screen" id="screen-walkinsignin">
+  <div class="fam-box">
+    <h2>Sign In / Register</h2>
+    <p>Same auth modal as today. New behind-the-scenes step: once signed in, we check attachment_status.</p>
+    <button class="btn" onclick="goPostSignIn()">Continue (demo sign-in)</button>
+  </div>
+</div>
+<!-- attached patients only: interrupt -->
+<div class="screen" id="screen-interrupt">
+  <div class="fam-box">
+    <span class="badge">You have a family doctor</span>
+    <h2>See Dr. Daniel Pannozzo instead?</h2>
+    <p>You're attached to Dr. Pannozzo. You can review his availability, or keep your original booking with Dr. Reyes — either is fine.</p>
+    <div class="fam-doctor"><div class="doctor-avatar">DP</div><div class="doctor-meta"><b>Dr. Daniel Pannozzo</b><span>Today, 5:00–7:00 PM available</span></div></div>
+    <button class="btn" onclick="showScreen('consent')">See Dr. Pannozzo instead</button>
+    <div style="margin-top:10px;"><button class="btn ghost" onclick="showScreen('consent')">No thanks, continue with Dr. Reyes</button></div>
+  </div>
+</div>
+
+<!-- ============ FAMILY PRACTICE: sign in / register (new) ============ -->
+<div class="screen" id="screen-signin">
+  <button class="back-link" onclick="showScreen('fork')">&larr; Back</button>
+  <div class="fam-box">
+    <span class="badge">Virtual Family Practice</span>
+    <h2>Sign In / Register</h2>
+    <p>No intermediate screen — straight to auth. Logging in on this path means you're already attached; registering is the attachment action.</p>
+    <button class="btn" onclick="showScreen('attachedscheduler')">Log in (existing patient)</button>
+    <div style="margin-top:10px;"><button class="btn ghost" onclick="showScreen('doctorselect')">First time here? Register</button></div>
+  </div>
+</div>
+<div class="screen" id="screen-attachedscheduler">
+  <div class="fam-box">
+    <span class="badge">Already attached</span>
+    <h2>Book with Dr. Daniel Pannozzo</h2>
+    <p>No doctor list — you're already paired. Same scheduler UI as everywhere else, just pre-set.</p>
+    <div class="win-row" style="justify-content:center;">
+      <span class="win-chip" onclick="showScreen('consent')">5:00 – 7:00 PM today</span>
+      <span class="win-chip" onclick="showScreen('consent')">Tomorrow, 9–11 AM</span>
+    </div>
+  </div>
+</div>
+<div class="screen" id="screen-doctorselect">
+  <div class="fam-box" style="max-width:640px;">
+    <span class="badge">Registration = attachment</span>
+    <h2>Choose your family doctor</h2>
+    <p>Reuses the photo/bio component from the Doctors / About Us page — not the walk-in doctor list.</p>
+    <div class="doctor-row" onclick="showScreen('consent')" style="cursor:pointer;text-align:left;">
+      <div class="doctor-avatar">DP</div>
+      <div class="doctor-meta"><b>Dr. Daniel Pannozzo</b><span>CCFP · Accepting new family practice patients</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ STEP 3: shared intake (both paths land here) ============ -->
+<div class="screen" id="screen-intake">
+  <button class="back-link" onclick="history.back ? showScreen('fork') : showScreen('fork')">&larr; Back</button>
+  <div class="fam-box">
+    <h2>What's going on?</h2>
+    <p>This goes to the physician before your call so they can prepare. (Same clinical intake either way — he specifically said he wants patients to keep filling this out no matter which path they came from.)</p>
+    <textarea class="intake" placeholder="Describe your main concern in your own words"></textarea>
+    <button class="btn" onclick="showScreen('confirmation')">Confirm visit</button>
+  </div>
+</div>
+
+<!-- ============ STEP 4: consent (shared, unchanged copy) ============ -->
+<div class="screen" id="screen-consent">
+  <div class="fam-box" style="max-width:600px;text-align:left;">
+    <span class="badge" style="display:block;width:fit-content;margin:0 auto 12px;">Before we continue</span>
+    <h2 style="text-align:center;">Consent to virtual care</h2>
+    <div style="background:var(--wash);border-radius:10px;padding:14px 16px;font-size:12.5px;color:var(--ink-soft);max-height:140px;overflow-y:auto;margin-bottom:18px;line-height:1.5;">
+      Standard virtual-care consent — privacy, limitations of a virtual assessment, emergency-care disclaimer, MSP billing consent. Unchanged from the current live flow; shown identically regardless of which path brought you here.
+    </div>
+    <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;margin-bottom:20px;">
+      <input type="checkbox" id="consent-check">
+      <span>I have read and agree to the terms above.</span>
+    </label>
+    <button class="btn" onclick="showScreen('registration')" style="width:100%;">Continue</button>
+  </div>
+</div>
+
+<!-- ============ STEP 5: registration (shared form, Trusted Person parked) ============ -->
+<div class="screen" id="screen-registration">
+  <div class="fam-box" style="max-width:640px;text-align:left;">
+    <span class="step-label" style="text-align:center;display:block;">Registration</span>
+    <h2 style="text-align:center;">Your details</h2>
+
+    <div style="margin-bottom:16px;">
+      <b style="display:block;font-size:13px;margin-bottom:6px;color:var(--navy);">Legal name</b>
+      <input type="text" placeholder="Full legal name" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-bottom:12px;font-size:13px;">
+      <b style="display:block;font-size:13px;margin-bottom:6px;color:var(--navy);">Preferred name (optional)</b>
+      <input type="text" placeholder="What should we call you?" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-bottom:4px;font-size:13px;">
+      <p style="font-size:11.5px;color:var(--ink-faint);margin:0;">Shown to your doctor front and center; legal name stays on file for billing/ID only — not a cosmetic field, per his note on getting this right.</p>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <b style="display:block;font-size:13px;margin-bottom:6px;color:var(--navy);">Contact &amp; address</b>
+      <input type="text" placeholder="Phone number" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;font-size:13px;">
+      <input type="text" placeholder="Address (for prescriptions / referrals)" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font-size:13px;">
+    </div>
+
+    <div style="border:1px dashed var(--line);border-radius:10px;padding:12px 14px;margin-bottom:20px;background:#fafbfd;">
+      <b style="display:block;font-size:12.5px;margin-bottom:4px;color:var(--ink-faint);">Trusted Person</b>
+      <p style="font-size:12px;color:var(--ink-faint);margin:0;">Parked for now — out of scope until we revisit it.</p>
+    </div>
+
+    <button class="btn" onclick="showScreen('intake')" style="width:100%;">Continue</button>
+  </div>
+</div>
+
+<!-- ============ STEP 6: confirmation (shared end state) ============ -->
+<div class="screen" id="screen-confirmation">
+  <div class="fam-box">
+    <span class="badge">You're all set</span>
+    <h2>Visit confirmed</h2>
+    <p>We'll call you during your selected window from a branded SimpleCare number — no live queue or waiting screen to watch.</p>
+    <p style="font-size:12px;color:var(--ink-faint);">If your visit needs a document (sick note, referral, prescription), it's released once payment posts — usually within minutes of your call ending.</p>
+    <button class="btn ghost" onclick="showScreen('fork')">Return to home</button>
+  </div>
+</div>
+
+<script>
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  var t = document.getElementById('screen-' + name);
+  if(t) t.classList.add('active');
+  window.scrollTo(0,0);
+}
+function toast(){ alert('Visit confirmed (demo only)'); }
+function goPostSignIn(){
+  var attached = document.getElementById('demo-attached').checked;
+  showScreen(attached ? 'interrupt' : 'consent');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+# SimpleCare — Stakeholder Interview Analysis
+Ani (designer) interviewing Dr. Daniel Pannozzo (physician, stakeholder), walking through the current physician portal live and having him react screen by screen. Organized by theme, not by transcript order. Note on attribution: the interview transcript isn't speaker-labeled, and one earlier pass of this doc mistakenly attributed the skeleton-first/design-system methodology to the doctor — that was actually Ani explaining her own process to him mid-interview, not a stakeholder requirement. Corrected below: the doctor's actual contributions are his workflow facts, product complaints, and business context; the design-process framing is ours.
+
+## Navigation philosophy — his reaction, our framework
+
+The prioritize-by-frequency principle (daily items prominent, weekly/monthly demoted, yearly-or-never items like profile pushed furthest) is Ani's own framework, explained to him during the walkthrough — not something he proposed independently. What he did contribute directly: confirming Claims, Fee Settings, and Register Patient are in fact infrequent for him (validating the Practice flyout grouping), and a strong, unprompted complaint about the current real, shipped product — "it feels like a developer tool... not any human will come there and understand what's going on." He wants the interface to answer "what's my job today, what's critical" without having to piece it together himself — that complaint is the actual stakeholder input driving the stratified-alerts Today view, independent of whose framework produced the fix.
+
+He was also explicit that the current build's clinical functionality itself is not up for debate: "This is the best that I could do... if anyone has a better fucking idea, I want to hear it, because I can't, this is the absolute best I've seen for all these guys." The ask is reorganization and prioritization by usage frequency, not rebuilding clinical logic. He confirmed this directly: "the problem we have here is just an organization and how we are selling this to the customer."
+
+## The bigger business/product split: call groups vs. episodic vs. comprehensive
+
+This is new context that affects both portals' architecture, not just the physician nav.
+
+**Call groups.** When a doctor goes on holiday or is off after-hours, coverage today happens by verbally arranging it with 3–5 other doctors who form a "call group" — an informal mutual-coverage pool, not fully built or automated yet. He describes wanting an internal product eventually where physicians submit locum coverage requests and the system tracks who's covering whom, but explicitly said this whole workflow "is not designed here in this current state experience — it's just an idea for now" and asked to set it aside rather than scope it immediately. Worth a placeholder note, not a build item yet.
+
+**Episodic vs. comprehensive as two patient populations, not just two visit types.** This came through much more concretely than earlier: patients who click into episodic care (his examples: Google-ads-driven traffic for STIs, cold sores, UTIs) explicitly don't want a family doctor and don't want to commit — "they want you to fix the problem, they move on." That population sees a list of whichever doctors opted into virtual episodic. Separately, comprehensive/family-medicine doctors form their own pool, and a patient who wants ongoing care gets paired with one doctor from that pool. A doctor can participate in both pools simultaneously, and can even choose to help cover other comprehensive doctors' patients if they want — but he was clear this expanded multi-group model is "a work in progress," not something to build now. This matches and refines the episodic-vs-family-medicine fork we already built into the patient portal; the model is confirmed correct, the multi-group/opt-in-per-doctor configuration is future work.
+
+Business framing behind this: episodic is the volume/growth wedge (easy conditions, heavy advertising, steals market share from competitors like TELUS/Babylon by being the "easy button"), while comprehensive care is harder to grow but is the retention/loyalty layer. He wants to run both simultaneously and, longer-term, license the underlying infrastructure (MOA coordination, the platform itself) to other clinics as white-label "clinic infrastructure" — not just his own patient volume. He also wants SimpleCare positioned to the Ministry of Health as a software company that happens to deliver telemedicine, not a telemedicine company — this shapes how compliance/audit-trail features should probably be framed in the UI later (not urgent now, but worth remembering).
+
+## Dashboard — confirmed final requirements
+
+Directly asked and directly answered. He wants, in order: a preview of today's patients/schedule so he knows his volume and how busy he'll be; an "inbox" concept — every test result, lab, imaging report, and consult note that comes in must be reviewed and individually signed off, not just lab work but everything; and an outstanding-tasks view (his working name is "carry forward," though he's open to a better name — he specifically dislikes Oscar's "tickle" terminology as inappropriate). He explicitly said no interest in analytics on the dashboard. He does want to see whether his MOA is currently online — this already exists in the build and he confirmed he likes it.
+
+This maps directly onto the Today screen's three sections (alerts, live queue, and a review/inbox concept) — except the "clear the inbox / review every test" piece is the one dashboard requirement that is still a real gap in the current build (Encounter Log today is a fax/delivery log, not a review-and-sign-off inbox).
+
+## Carry Forward — the precise mental model (this clarifies a real ambiguity in our build)
+
+This needed several rounds of back-and-forth to pin down, so worth stating precisely:
+
+Carry Forward is not a single inbox — it's two separate lists that happen to share a name. When a doctor sends a task to their MOA (e.g. "call this hospital back about a rejected referral"), that task lives in a shared MOA-facing history: if the MOA can't finish it same-day, *she* carries it forward, and the doctor can look it up later to check status. Separately, a doctor can have their own tasks they personally couldn't finish in the moment — those are self-carried and, in his words, "shouldn't mix with that. Yours should stay on your dashboard... that's time-sensitive, it should stay on your desk so your eye will see and take care of it." His policy is same-day completion by default ("medicine is best done in the moment... if something is not done in a day, you'd better have a good reason"), so Carry Forward exists specifically as the exception-tracking mechanism, not a routine queue.
+
+Concretely this means: our physician-to-MOA Carry Forward link (mentioned as still-open from before) needs two distinct surfaces, not one — a personal outstanding-tasks list that stays on the Today dashboard, and a separate MOA-task-history view (their exact working name: "Task to my MOA" or similar) that shows what's been delegated and its status. Don't merge these into one generic Carry Forward list.
+
+He also walked through a real example (a patient who wanted an EDS referral, the specialist went on sabbatical, the referral bounced back, and it has to keep cycling back into Carry Forward) to make the point that this loose-ends tracking is a genuine patient-safety mechanism, not admin housekeeping — he referenced a public lawsuit against a competitor as the cautionary tale for what happens when this kind of follow-up drops.
+
+## MOA chat — confirmed low priority for now, but with a clear reason why
+
+He doesn't currently use the in-app chat with his MOA at all — he uses Google Meet instead, and explained why: most MOA coordination is not simple ("70% of the time you have to cope with them" on complicated cases), so a well-trained MOA needs the flexibility a live call gives, not a chat thread. He was clear this isn't a permanent preference so much as a reflection of current MOA skill/training variance — better-trained MOAs could operate more over structured chat/tasking, weaker ones need live hand-holding. He does like knowing when his MOA is online (already built).
+
+He explicitly flagged two things as "nice to have, second phase" and asked us to bookmark rather than build now: native Google Meet embedded directly in the physician portal (so MOA calls never require leaving the app), and AI-assisted call documentation — an AI that listens to the doctor/patient call and auto-drafts the note/sick-note afterward, which he was visibly enthusiastic about ("this is the thing we have to do to compete... I don't want you to spend your time now on that sick note, call ends, that's it"). Both are explicitly deferred, not current scope.
+
+## Patient chart / encounter screen — detailed walkthrough feedback
+
+This is the most actionable section — he walked through a live call end-to-end and reacted to nearly every element.
+
+Naming: legal name vs. preferred name needs to be handled carefully and is not cosmetic — he was emphatic that misgendering a patient (legal name Rachel, preferred name Miles) causes real harm, and the preferred name should be the one presented prominently, with legal name available but secondary. He'd also like some kind of returning-patient indicator/tag on the chart so it's visually obvious at a glance.
+
+Task categorization is confusing as currently built: the specific task types (lab order, imaging, referral, prescription) read as equal-weight, separate actions sitting at the same visual level as "Send to MOA," when they're actually a sub-step of it — a lab task should feel nested under "send to MOA," not like its own independent button. Same issue with "Add a note" — it currently reads as a peer action rather than what it actually is (an annotation attached to whatever's being sent).
+
+Document preview is over-clicked: right now you select an item, then have to click a separate "Preview" button to see the document. He wants a single click on the item itself to open it — the extra preview step doesn't serve a purpose he can identify. Relatedly, the preview modal could use a share button and a download-as-PDF option, since right now there's no way to do either from that view.
+
+Button state logic has a real bug worth fixing: "Transfer to [MOA name]" is shown as available before the doctor has actually called the patient — he pointed out this makes no sense, since you can't transfer a call you're not currently on. That control should be disabled until there's an active call in progress.
+
+Naming/labeling: "Carry Forward" vs. "Send to MOA" as button labels was confusing to him in the moment even though he'd already explained the model above — he suggested something like "remind me later" might read more clearly for the self-carry case, though he didn't commit to final wording and said we should think about it rather than settle it now.
+
+Calling mechanics: there are two call paths — a VoIP-style in-app call and a regular phone call — and he specifically likes "branded calling" (the patient's caller ID shows it's SimpleCare/the clinic, not a random number), which is already built and he referenced positively via an in-call anecdote.
+
+Document generation flow: sick notes and similar letters use pre-populated macro templates (not AI-generated, despite his initial assumption) — start/end dates, clinic details, etc. auto-fill based on category selection, but the doctor edits dates manually. This is functioning as intended; no changes requested here. He also walked through the payment mechanism — "release upon payment" gates document delivery until the patient pays, and he was pleasantly surprised at how fast the fee posted ($50 in his example) — this is existing functionality, not a request.
+
+## What's explicitly out of scope right now
+
+Locum/call-group coverage automation, EMR interoperability for covering another doctor's patients (he'd want to see their labs/imaging/prescriptions but not touch their EMR notes — TELUS, Accuro, and Oscar cover ~99% of what other doctors use, so any future integration should target those three), native Google Meet embedding, AI call transcription/auto-documentation, and the expanded multi-call-group opt-in model are all confirmed future phases. He was consistent about not wanting these mixed into current scope: "let's keep this nice to have... there are many more severe issues you have to solve."
+
+## Suggested next steps for us
+
+Fix the two concrete, low-ambiguity items from the chart walkthrough first: disable "Transfer to MOA" until a call is active, and collapse the preview-then-open flow into a single click on the document/task row. Then split Carry Forward into the two lists described above (personal outstanding tasks staying on Today; MOA-task history as its own view) rather than continuing to treat it as one list. The "clear the inbox" review-and-sign-off concept is the biggest structural gap still fully unbuilt and probably deserves its own scoping pass before touching it, since it implies a real state machine (received → reviewed → signed off) similar to the "Needs Review" flow from the earlier MOA spec.

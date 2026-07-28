@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SimpleCare — Both Booking Flows, Low-Fi</title>
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f4f4;padding:32px;color:#222;}
+  h1{font-size:19px;margin:0 0 4px;}
+  .sub{color:#666;font-size:13px;margin:0 0 28px;}
+
+  .cols{display:flex;gap:28px;align-items:flex-start;}
+  .col{flex:1;min-width:0;}
+  .col-head{
+    border:2px solid #222;background:#fff;padding:10px 14px;text-align:center;
+    font-weight:bold;font-size:14px;margin-bottom:6px;
+  }
+  .col-head .tag{display:block;font-weight:normal;font-size:11px;color:#666;margin-top:2px;}
+
+  .step{
+    border:1.5px dashed #999;background:#fff;padding:12px 14px;margin-bottom:4px;font-size:12.5px;
+    position:relative;
+  }
+  .step .n{
+    display:inline-block;width:20px;height:20px;border:1.5px solid #222;border-radius:50%;
+    text-align:center;line-height:17px;font-size:11px;font-weight:bold;margin-right:8px;flex-shrink:0;
+  }
+  .step-row{display:flex;align-items:flex-start;}
+  .step-body b{display:block;font-size:13px;margin-bottom:2px;}
+  .step-body span.d{color:#666;}
+
+  .arrow{text-align:center;color:#999;font-size:14px;margin:2px 0;}
+
+  .branch{
+    border:1.5px dashed #999;background:#fbfbfb;padding:0;margin-bottom:4px;
+  }
+  .branch-label{font-size:11px;color:#888;padding:6px 14px 0;font-style:italic;}
+  .branch-opts{display:flex;gap:0;border-top:1px dashed #ccc;margin-top:6px;}
+  .branch-opt{flex:1;padding:10px 14px;font-size:12px;}
+  .branch-opt + .branch-opt{border-left:1px dashed #ccc;}
+  .branch-opt b{display:block;font-size:12.5px;margin-bottom:2px;}
+  .branch-opt span{color:#666;}
+
+  .optional{opacity:.75;}
+  .optional .n{border-style:dashed;}
+  .optional-tag{font-size:10px;color:#999;border:1px solid #ccc;padding:1px 6px;border-radius:8px;margin-left:6px;}
+
+  .converge{
+    margin-top:18px;border:2.5px solid #222;background:#222;color:#fff;padding:14px;text-align:center;
+    font-size:13px;font-weight:bold;
+  }
+  .converge span{display:block;font-weight:normal;font-size:11.5px;color:#ccc;margin-top:3px;}
+
+  .legend{margin-top:26px;font-size:11.5px;color:#666;border-top:1px solid #ccc;padding-top:12px;}
+  .legend b{color:#222;}
+</style>
+</head>
+<body>
+
+<h1>Booking flow comparison — low fidelity</h1>
+<p class="sub">Same intake endpoint, different middle. Dashed = optional / conditional step.</p>
+
+<div class="cols">
+
+  <!-- ONE-TIME VISIT -->
+  <div class="col">
+    <div class="col-head">ONE-TIME VISIT<span class="tag">walk-in / episodic — any available doctor</span></div>
+
+    <div class="step">
+      <div class="step-row"><span class="n">1</span>
+        <div class="step-body"><b>Landing page — concern grid</b><span class="d">Click a concern to book (buffet stays default)</span></div>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+
+    <div class="step">
+      <div class="step-row"><span class="n">2</span>
+        <div class="step-body"><b>Doctor &amp; slot picker</b><span class="d">Pool of doctors doing virtual episodic today</span></div>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+
+    <div class="step">
+      <div class="step-row"><span class="n">3</span>
+        <div class="step-body"><b>Confirm booking</b><span class="d">Selected doctor + time</span></div>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+
+    <div class="step">
+      <div class="step-row"><span class="n">4</span>
+        <div class="step-body"><b>Sign in / create account</b><span class="d">Existing patients sign in, new patients register</span></div>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+
+    <div class="step optional">
+      <div class="step-row"><span class="n">4a</span>
+        <div class="step-body"><b>Attachment interrupt <span class="optional-tag">only if already attached</span></b><span class="d">"See Dr. [your doctor] instead?" — primary alt, secondary continue as booked</span></div>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+
+    <div class="step">
+      <div class="step-row"><span class="n">5</span>
+        <div class="step-body"><b>Consent screen</b><span class="d">Standard consent</span></div>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+
+    <div class="step">
+      <div class="step-row"><span class="n">6</span>
+        <div class="step-body"><b>Registration (multi-step)</b><span class="d">Legal/preferred name, contact, Trusted Person (parked)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAMILY PRACTICE -->
+  <div class="col">
+    <div class="col-head">VIRTUAL FAMILY PRACTICE<span class="tag">comprehensive — one doctor, every visit</span></div>
+
+    <div class="step">
+      <div class="step-row"><span class="n">1</span>
+        <div class="step-body"><b>Landing page — Family Practice pill</b><span class="d">"Same doctor, every visit → Get started"</span></div>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+
+    <div class="step">
+      <div class="step-row"><span class="n">2</span>
+        <div class="step-body"><b>Sign in / register</b><span class="d">Existing patients sign in, new patients register</span></div>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+
+    <div class="branch">
+      <div class="branch-label">branches on attachment status</div>
+      <div class="branch-opts">
+        <div class="branch-opt"><b>Returning, attached</b><span>Straight to your doctor's scheduler — no doctor list, pre-set doctor, pick a slot</span></div>
+        <div class="branch-opt"><b>New patient</b><span>Doctor-select / pairing screen — choose one doctor from the comprehensive pool</span></div>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+
+    <div class="step">
+      <div class="step-row"><span class="n">3</span>
+        <div class="step-body"><b>Confirm booking</b><span class="d">Your doctor + time</span></div>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+
+    <div class="step">
+      <div class="step-row"><span class="n">4</span>
+        <div class="step-body"><b>Consent screen</b><span class="d">Standard consent</span></div>
+      </div>
+    </div>
+    <div class="arrow">↓</div>
+
+    <div class="step">
+      <div class="step-row"><span class="n">5</span>
+        <div class="step-body"><b>Registration (multi-step)</b><span class="d">Legal/preferred name, contact, Trusted Person (parked)</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="converge">
+  BOTH PATHS CONVERGE → Intake form
+  <span>Same endpoint regardless of path — reason for visit, history, etc.</span>
+</div>
+
+<div class="legend">
+  <b>What's actually different:</b> only the doctor-selection step (any available doctor vs. one assigned doctor) and the entry point on the landing page. Sign-in, consent, registration, and intake are shared logic — one form, not two.
+</div>
+
+</body>
+</html>

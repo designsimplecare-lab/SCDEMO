@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SimpleCare, redesign prototype</title>
+<style>
+  :root{
+    --ink:#1c1f26;
+    --ink-soft:#5b6070;
+    --ink-faint:#9296a3;
+    --line:#d7d9e0;
+    --line-strong:#b7bac6;
+    --paper:#fbfbfa;
+    --panel:#ffffff;
+    --wash:#eef0f4;
+    --accent:#2c438a;
+    --accent-wash:#e3e8f5;
+    --accent-ink:#1d2d5e;
+    --good:#2f6b4f;
+    --good-wash:#e4f0e9;
+    --warn:#8a5a1f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .app{display:flex;min-height:100vh;}
+
+  /* sidebar */
+  .sidebar{
+    width:200px;
+    flex-shrink:0;
+    background:var(--panel);
+    border-right:1px dashed var(--line-strong);
+    padding:20px 14px;
+    display:flex;
+    flex-direction:column;
+  }
+  .brand{font-size:15px;font-weight:600;letter-spacing:.01em;margin:0 0 4px 6px;}
+  .brand-tag{font-size:10px;color:var(--ink-faint);margin:0 0 10px 6px;text-transform:uppercase;letter-spacing:.08em;}
+  .mode-switch{display:flex;gap:6px;margin:0 0 20px 6px;}
+  .mode-btn{
+    width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+    font-size:15px;border-radius:6px;cursor:pointer;
+    border:1px dashed var(--line-strong);background:var(--panel);color:var(--ink-soft);
+  }
+  .mode-btn.active{background:var(--accent-wash);border-color:var(--accent);border-style:solid;color:var(--accent-ink);}
+  body.mode-v1 .v2-only{display:none !important;}
+  body.mode-v2 .v1-only{display:none !important;}
+  .navlist{list-style:none;margin:0;padding:0;flex:1;}
+  .navlist li{margin-bottom:2px;}
+  .navlist button{
+    width:100%;text-align:left;
+    background:none;border:1px solid transparent;
+    padding:9px 10px;border-radius:6px;
+    font-size:13.5px;color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .navlist button.active{
+    background:var(--accent-wash);color:var(--accent-ink);
+    border:1px dashed var(--accent);
+    font-weight:600;
+  }
+  .navlist button:hover:not(.active){background:var(--wash);}
+  .who{
+    border-top:1px dashed var(--line);
+    padding-top:12px;font-size:12px;color:var(--ink-faint);
+  }
+  .who b{color:var(--ink);display:block;font-size:13px;}
+
+  /* main */
+  .main{flex:1;padding:28px 34px;max-width:760px;}
+  .topbar{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-bottom:6px;position:relative;}
+  .bell-wrap{position:relative;}
+  .profile-wrap{position:relative;}
+  .profile-trigger{background:none;border:none;padding:0;cursor:pointer;border-radius:50%;line-height:0;}
+  .profile-trigger:hover .avatar{outline:2px solid var(--line-strong);}
+  .profile-dropdown{
+    display:none;position:absolute;top:44px;right:0;width:220px;background:var(--panel);
+    border:1px solid var(--line-strong);border-radius:10px;padding:8px;z-index:10;
+    box-shadow:0 4px 14px rgba(0,0,0,.08);
+  }
+  .profile-dropdown.show{display:block;}
+  .pd-head{display:flex;align-items:center;gap:9px;padding:6px 8px 10px;}
+  .pd-head b{font-size:13.5px;}
+  .pd-item{
+    display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:none;
+    padding:8px 8px;border-radius:6px;font-size:13px;color:var(--ink);cursor:pointer;
+  }
+  .pd-item:hover{background:var(--wash);}
+  .pd-divider{border-top:1px dashed var(--line);margin:6px 2px;}
+  .bell-btn{
+    position:relative;width:36px;height:36px;border-radius:50%;
+    border:1px dashed var(--line-strong);background:var(--panel);cursor:pointer;font-size:15px;
+  }
+  .bell-btn .badge{
+    position:absolute;top:-3px;right:-3px;background:var(--accent);color:#fff;
+    font-size:10px;font-weight:700;border-radius:20px;padding:1px 5px;line-height:1.4;
+  }
+  .notif-dropdown{
+    display:none;position:absolute;top:44px;right:0;width:300px;background:var(--panel);
+    border:1px solid var(--line-strong);border-radius:10px;padding:12px;z-index:10;
+    box-shadow:0 4px 14px rgba(0,0,0,.08);
+  }
+  .notif-dropdown.show{display:block;}
+  .notif-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin:0 0 8px;}
+  .notif-item{display:flex;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:12.5px;}
+  .notif-item:last-of-type{border-bottom:none;}
+  .notif-item b{font-weight:600;font-size:13px;}
+  .notif-sub{color:var(--ink-faint);font-size:11.5px;margin-top:2px;}
+  .notif-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:5px;}
+  .notif-dot.read{background:var(--line-strong);}
+  .lofi-tag{
+    display:inline-block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);border:1px dashed var(--line-strong);border-radius:20px;
+    padding:3px 9px;margin-bottom:14px;
+  }
+  h1{font-size:20px;margin:0 0 4px;}
+  .sub{color:var(--ink-soft);font-size:13.5px;margin:0 0 24px;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  /* card */
+  .who-tag{
+    display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;
+    color:var(--accent-ink);background:var(--accent-wash);border-radius:4px;padding:1px 6px;margin-right:6px;
+    vertical-align:middle;
+  }
+  .who-tag.leo{color:#8a5a1f;background:#fff0d9;}
+  .who-tag.karen{color:#6a4d9c;background:#efe6fb;}
+
+  .activity-snap-item{
+    display:flex;align-items:center;gap:9px;font-size:13px;padding:7px 0;border-bottom:1px dashed var(--line);
+  }
+  .activity-snap-item:last-child{border-bottom:none;}
+
+  .critical-banner{
+    display:flex;gap:12px;align-items:flex-start;background:#fdecec;border:1px solid #e8a5a5;
+    border-radius:10px;padding:14px 16px;margin-bottom:16px;
+  }
+  .critical-ico{font-size:20px;line-height:1;flex-shrink:0;margin-top:1px;}
+  .critical-body{flex:1;}
+  .critical-title{font-size:14.5px;font-weight:700;color:#8a2020;margin:0 0 4px;}
+  .critical-text{font-size:13px;color:#7a2b2b;margin:0 0 10px;}
+  .critical-actions{display:flex;gap:8px;}
+  .critical-actions .btn.primary{background:#b23434;border-color:#b23434;}
+  .critical-actions .btn.ghost{border-color:#e8a5a5;color:#8a2020;}
+  .critical-dismiss{
+    background:none;border:none;font-size:18px;color:#b56a6a;cursor:pointer;line-height:1;
+    padding:0;flex-shrink:0;
+  }
+
+  .profile-switch{display:flex;gap:18px;margin-bottom:18px;}
+  .profile-circle{
+    background:none;border:none;cursor:pointer;display:flex;flex-direction:column;
+    align-items:center;gap:6px;opacity:.6;
+  }
+  .profile-circle:hover{opacity:.85;}
+  .profile-circle.active{opacity:1;}
+  .circle-avatar{
+    width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:20px;font-weight:700;background:var(--wash);color:var(--ink-soft);
+    border:2.5px solid transparent;transition:border-color .12s;
+  }
+  .circle-avatar.all{font-size:22px;}
+  .profile-circle.active .circle-avatar{border-color:var(--accent);}
+  .circle-label{font-size:11.5px;color:var(--ink-soft);font-weight:600;}
+  .profile-circle.active .circle-label{color:var(--ink);}
+
+  .today-card{
+    display:flex;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    margin-bottom:16px;overflow:hidden;box-shadow:0 1px 3px rgba(28,31,38,.06);
+  }
+  .today-accent{width:4px;flex-shrink:0;background:var(--accent);}
+  .today-main{flex:1;padding:14px 18px;}
+  .today-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:2px;}
+  .today-eyebrow{font-size:11.5px;color:var(--ink-soft);margin:0;text-transform:uppercase;letter-spacing:.04em;}
+  .today-hero{font-size:26px;font-weight:700;color:var(--accent-ink);margin:2px 0 2px;line-height:1.1;}
+  .today-hero-sep{color:var(--ink-faint);font-weight:400;}
+  .today-sub{font-size:12.5px;color:var(--ink-soft);margin:0 0 10px;}
+  .today-bar{height:4px;background:var(--wash);border-radius:4px;overflow:hidden;margin-bottom:12px;}
+  .today-bar-fill{width:22%;height:100%;background:var(--accent);}
+  .today-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+  .today-toggle-inline{display:flex;align-items:center;gap:8px;font-size:12.5px;cursor:pointer;}
+  .today-links{font-size:12.5px;}
+  .today-link{color:var(--accent-ink);text-decoration:none;font-weight:600;}
+  .today-link.disabled{color:var(--ink-faint);font-weight:400;}
+  .today-link-sep{color:var(--line-strong);margin:0 6px;}
+
+  .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  .dash-mini-row{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    padding:9px 0;border-bottom:1px dashed var(--line);font-size:13px;cursor:pointer;
+  }
+  .dash-mini-row:last-of-type{border-bottom:none;}
+  .dash-mini-row:hover{background:var(--wash);margin:0 -8px;padding:9px 8px;border-radius:6px;}
+  .dash-mini-row-wrap{border-bottom:1px dashed var(--line);padding-bottom:8px;margin-bottom:8px;}
+  .dash-mini-row-wrap:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .dash-mini-actions{display:flex;gap:6px;padding-left:2px;}
+  .btn.sm{padding:5px 9px;font-size:11.5px;}
+  .btn.disabled{opacity:.55;cursor:not-allowed;}
+  .cutoff-note{font-size:11px;color:var(--accent-ink);margin:8px 0 0;}
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-bottom:14px;
+    box-shadow:0 1px 2px rgba(28,31,38,.04);
+  }
+  .dashed{border-style:dashed;}
+
+  /* appointments */
+  .appt-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .appt-doc{font-weight:600;font-size:14.5px;margin:0 0 2px;}
+  .appt-date{color:var(--ink-soft);font-size:12.5px;margin:0;}
+  .pill{
+    font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;
+    white-space:nowrap;height:fit-content;
+  }
+  .pill.wait{background:var(--accent-wash);color:var(--accent-ink);}
+  .eta-line{
+    margin-top:10px;background:var(--accent-wash);border-radius:8px;
+    padding:10px 12px;font-size:13px;color:var(--accent-ink);
+  }
+  .eta-line b{font-size:14.5px;}
+  .appt-actions{display:flex;gap:8px;margin-top:12px;}
+  .btn{
+    font-size:12.5px;padding:8px 12px;border-radius:6px;cursor:pointer;
+    border:1px solid var(--line-strong);background:var(--panel);color:var(--ink);
+  }
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .btn.ghost{background:none;border:1px dashed var(--line-strong);color:var(--ink-soft);}
+  .btn:hover{opacity:.85;}
+
+  /* queue screen */
+  .queue-hero{
+    background:var(--accent-wash);border:1px dashed var(--accent);border-radius:10px;
+    padding:20px;margin-bottom:14px;
+  }
+  .queue-hero .label{font-size:12px;color:var(--accent-ink);margin:0 0 4px;}
+  .queue-hero .big{font-size:26px;font-weight:700;color:var(--accent-ink);margin:0 0 8px;}
+  .queue-hero .note{font-size:12.5px;color:var(--accent-ink);margin:0;}
+  .stat-row{display:flex;gap:12px;margin-bottom:14px;}
+  .stat{flex:1;background:var(--wash);border-radius:8px;padding:12px;}
+  .stat .k{font-size:11px;color:var(--ink-faint);margin:0 0 3px;text-transform:uppercase;letter-spacing:.04em;}
+  .stat .v{font-size:18px;font-weight:700;margin:0;}
+  .bar-track{height:6px;background:var(--wash);border-radius:6px;overflow:hidden;margin-bottom:16px;}
+  .bar-fill{height:100%;background:var(--accent);width:22%;}
+  .detail-row{display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px dashed var(--line);}
+  .detail-row:last-child{border-bottom:none;}
+  .detail-row span:first-child{color:var(--ink-soft);}
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;margin-top:14px;}
+  .toggle{width:38px;height:22px;border-radius:20px;background:var(--line-strong);position:relative;cursor:pointer;flex-shrink:0;}
+  .toggle.on{background:var(--accent);}
+  .toggle::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s;}
+  .toggle.on::after{left:18px;}
+
+  .toolbar{display:flex;gap:10px;margin-bottom:14px;}
+  .search-input{
+    flex:1;padding:9px 12px;border:1px solid var(--line-strong);border-radius:6px;
+    font-size:13px;background:var(--panel);
+  }
+  .tenure-strip{
+    display:flex;gap:0;background:var(--wash);border-radius:8px;margin-bottom:14px;overflow:hidden;
+  }
+  .tenure-strip > div{flex:1;padding:10px 14px;border-right:1px dashed var(--line-strong);}
+  .tenure-strip > div:last-child{border-right:none;}
+  .tenure-strip .k{font-size:10.5px;color:var(--ink-faint);margin:0 0 2px;text-transform:uppercase;letter-spacing:.04em;}
+  .tenure-strip .v{font-size:14.5px;font-weight:700;margin:0;}
+  .chip-row{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+  .chip{
+    font-size:12px;padding:6px 12px;border-radius:20px;cursor:pointer;
+    border:1px dashed var(--line-strong);background:var(--panel);color:var(--ink-soft);
+  }
+  .chip.active{background:var(--accent);border-color:var(--accent);color:#fff;border-style:solid;}
+  .year-accordion{border:1px dashed var(--line-strong);border-radius:10px;margin-top:8px;overflow:hidden;}
+  .year-toggle{
+    width:100%;display:flex;justify-content:space-between;align-items:center;
+    background:var(--wash);border:none;padding:12px 16px;font-size:13px;font-weight:600;
+    color:var(--ink-soft);cursor:pointer;
+  }
+  .year-body{display:none;padding:16px 16px 4px;}
+  .year-body.show{display:block;}
+  .hist-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .hist-table th{
+    text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;
+    color:var(--ink-faint);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line-strong);
+  }
+  .hist-table td{padding:9px 8px;border-bottom:1px dashed var(--line);vertical-align:middle;}
+  .hist-table tr:last-child td{border-bottom:none;}
+  .hist-table td:last-child{text-align:right;}
+  .hist-table tr.clickable-row{cursor:pointer;}
+  .hist-table tr.clickable-row:hover td{background:var(--wash);}
+
+  .pager{text-align:center;font-size:12px;color:var(--ink-faint);margin-top:14px;}
+
+  /* family */
+  .empty{
+    text-align:center;padding:40px 20px;border:1px dashed var(--line-strong);border-radius:10px;
+  }
+  .empty .ico{
+    width:44px;height:44px;border-radius:50%;background:var(--wash);margin:0 auto 12px;
+    display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--ink-faint);
+  }
+  .empty h3{margin:0 0 6px;font-size:15px;}
+  .empty p{margin:0 0 16px;font-size:13px;color:var(--ink-soft);max-width:340px;margin-left:auto;margin-right:auto;}
+  .fam-form{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);}
+  .fam-form.show{display:block;}
+  .fam-form label{display:block;font-size:12px;color:var(--ink-soft);margin-bottom:4px;}
+  .fam-form input{
+    width:100%;padding:8px 10px;border:1px solid var(--line-strong);border-radius:6px;
+    font-size:13px;margin-bottom:10px;background:var(--paper);
+  }
+  .fam-list-item{
+    display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line);
+  }
+  .fam-list-item:last-child{border-bottom:none;}
+  .fam-left{display:flex;align-items:flex-start;gap:10px;}
+  .fam-row-actions{display:flex;gap:6px;flex-shrink:0;}
+  .rel-badge{
+    display:inline-block;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:20px;
+    background:var(--wash);color:var(--ink-soft);margin-left:2px;
+  }
+  .rel-badge.you{background:var(--accent-wash);color:var(--accent-ink);}
+  .rel-badge.minor{background:#fff0d9;color:#8a5a1f;}
+  .rel-chip-row{display:flex;gap:6px;margin-bottom:10px;}
+  .rel-chip{padding:6px 10px;}
+
+  .modal-overlay{
+    display:none;position:fixed;inset:0;background:rgba(28,31,38,.35);z-index:30;
+    align-items:center;justify-content:center;
+  }
+  .modal-overlay.show{display:flex;}
+  .modal-card{
+    background:var(--panel);border-radius:12px;padding:18px;width:320px;
+    box-shadow:0 12px 32px rgba(0,0,0,.18);
+  }
+  .modal-title{font-size:15px;font-weight:600;margin:0 0 12px;}
+  .modal-option{
+    display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:8px;
+    cursor:pointer;font-size:13.5px;
+  }
+  .modal-option:hover{background:var(--wash);}
+  .modal-option.add-new{border-top:1px dashed var(--line);margin-top:4px;padding-top:12px;}
+  .doc-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line);gap:12px;}
+  .doc-item:last-child{border-bottom:none;}
+  .doc-left{display:flex;align-items:center;gap:10px;font-size:13.5px;}
+  .doc-ico{font-size:16px;}
+  .doc-sub{font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
+  .doc-actions{display:flex;gap:6px;flex-shrink:0;}
+
+  .fam-list-item.clickable{cursor:pointer;}
+  .fam-list-item.clickable:hover{background:var(--wash);margin:0 -8px;padding:10px 8px;border-radius:6px;}
+  .avatar{
+    width:30px;height:30px;border-radius:50%;background:var(--accent-wash);color:var(--accent-ink);
+    display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-right:10px;
+  }
+
+  /* profile */
+  .field-group{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:6px;}
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:11.5px;color:var(--ink-soft);margin-bottom:4px;}
+  .field .val{
+    padding:9px 11px;border-radius:6px;font-size:13.5px;border:1px solid var(--line);
+    background:var(--panel);
+  }
+  .field.locked .val{
+    background:var(--wash);color:var(--ink-soft);border-style:dashed;
+  }
+  .field.locked label::after{content:" (locked)";color:var(--ink-faint);font-weight:400;}
+  .field.editable label::after{content:" (editable)";color:var(--good);font-weight:400;}
+  .profile-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:14px;}
+  .ptab-row{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:16px;}
+  .ptab{
+    font-size:13px;padding:9px 14px;background:none;border:none;cursor:pointer;
+    color:var(--ink-soft);border-bottom:2px solid transparent;margin-bottom:-1px;
+  }
+  .ptab.active{color:var(--accent-ink);font-weight:600;border-bottom-color:var(--accent);}
+  .ptab-view{display:none;}
+  .ptab-view.active{display:block;}
+  .verified-badge{
+    display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;
+    color:var(--good);background:var(--good-wash);border-radius:20px;padding:2px 8px;margin-left:6px;
+  }
+
+  .timeline{border-left:2px dashed var(--line-strong);padding-left:18px;margin-left:6px;}
+  .tl-day{position:relative;margin-bottom:20px;}
+  .tl-day::before{
+    content:"";position:absolute;left:-23px;top:4px;width:9px;height:9px;border-radius:50%;
+    background:var(--accent);border:2px solid var(--paper);
+  }
+  .tl-date{font-size:12px;font-weight:700;color:var(--ink-soft);margin:0 0 6px;text-transform:uppercase;letter-spacing:.03em;}
+  .tl-event{display:flex;align-items:center;gap:8px;font-size:13.5px;padding:5px 0;}
+  .tl-ico{font-size:14px;width:20px;text-align:center;flex-shrink:0;}
+  .tl-appt{
+    display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;
+    padding:8px 10px;background:var(--panel);border:1px solid var(--line-strong);
+    border-radius:8px;cursor:pointer;margin-bottom:2px;
+  }
+  .tl-appt:hover{background:var(--wash);}
+  .tl-caused-by{
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-faint);
+    margin:8px 0 2px 4px;
+  }
+
+  .clin-section{padding:10px 0;border-bottom:1px dashed var(--line);}
+  .clin-section:last-of-type{border-bottom:none;}
+  .clin-section-title{
+    display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;margin:0 0 6px;
+  }
+  .clin-list{margin:0;padding-left:22px;font-size:13px;color:var(--ink-soft);}
+  .clin-list li{margin-bottom:3px;}
+  .clin-disclaimer{
+    font-size:11.5px;color:var(--ink-faint);background:var(--wash);border-radius:8px;
+    padding:9px 11px;margin:12px 0 0;
+  }
+
+  .section-title{font-size:13px;font-weight:600;margin:20px 0 10px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
+  .section-title:first-child{margin-top:0;}
+
+  .toast{
+    position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;
+    opacity:0;pointer-events:none;transition:all .2s;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .nav-divider{border-top:1px dashed var(--line);margin:8px 6px;}
+  .navlist .feedback-nav-btn{
+    display:flex;align-items:center;gap:8px;width:100%;
+    padding:9px 10px;font-size:13.5px;color:var(--ink-soft);
+  }
+  .navlist .feedback-nav-btn:hover{color:var(--accent-ink);}
+  .feedback-panel{
+    display:none;position:fixed;bottom:64px;left:14px;width:280px;z-index:20;
+    background:var(--panel);border:1px solid var(--line-strong);border-radius:12px;
+    padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.14);
+  }
+  .feedback-panel.show{display:block;}
+  .feedback-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .feedback-head b{font-size:14px;}
+  .fp-close{background:none;border:none;font-size:18px;color:var(--ink-faint);cursor:pointer;line-height:1;}
+  .fp-type-row{display:flex;gap:6px;margin-bottom:10px;}
+  .feedback-panel textarea{
+    width:100%;min-height:80px;border:1px solid var(--line-strong);border-radius:6px;
+    padding:9px 10px;font-size:12.5px;font-family:inherit;margin-bottom:10px;resize:vertical;
+    background:var(--paper);
+  }
+  .fp-note{font-size:11px;color:var(--ink-faint);margin:8px 0 0;}
+
+  /* ===== v2 additions ===== */
+  /* stepper (booking / intake) */
+  .stepper{display:flex;gap:6px;margin:0 0 18px;}
+  .step-dot{flex:1;height:4px;border-radius:4px;background:var(--wash);transition:background .25s;}
+  .step-dot.done{background:var(--accent);}
+  .step-dot.current{background:var(--accent);opacity:.55;}
+  .step-label{font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;margin:0 0 4px;}
+  .step-panel{display:none;animation:fadeSlide .22s ease;}
+  .step-panel.active{display:block;}
+  @keyframes fadeSlide{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  .step-h{font-size:16px;font-weight:700;margin:0 0 3px;}
+  .step-sub{font-size:12.5px;color:var(--ink-soft);margin:0 0 14px;}
+  .opt-card{
+    display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;cursor:pointer;
+    border:1px solid var(--line-strong);border-radius:8px;padding:12px 14px;margin-bottom:8px;background:var(--panel);
+    transition:border-color .15s,background .15s;
+  }
+  .opt-card:hover{background:var(--wash);}
+  .opt-card.selected{border-color:var(--accent);background:var(--accent-wash);}
+  .opt-card .oc-ico{font-size:18px;line-height:1;flex-shrink:0;margin-top:1px;}
+  .opt-card b{font-size:13.5px;display:block;margin-bottom:1px;}
+  .opt-card .oc-sub{font-size:12px;color:var(--ink-soft);}
+  .check-row{
+    display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px dashed var(--line);
+    font-size:13px;cursor:pointer;
+  }
+  .check-row:last-of-type{border-bottom:none;}
+  .check-box{
+    width:18px;height:18px;border-radius:4px;border:1.5px solid var(--line-strong);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;transition:all .12s;
+  }
+  .check-row.on .check-box{background:var(--accent);border-color:var(--accent);}
+  .check-row.redflag.on .check-box{background:#b23434;border-color:#b23434;}
+  .step-nav{display:flex;justify-content:space-between;gap:8px;margin-top:18px;}
+  .intake-field{width:100%;padding:9px 11px;border:1px solid var(--line-strong);border-radius:6px;font-size:13px;font-family:inherit;background:var(--paper);margin-bottom:12px;resize:vertical;}
+  .review-row{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:9px 0;border-bottom:1px dashed var(--line);}
+  .review-row:last-of-type{border-bottom:none;}
+  .review-row .rk{color:var(--ink-soft);}
+  .review-row .rv{font-weight:600;text-align:right;}
+  .triage-alert{
+    display:flex;gap:10px;background:#fdecec;border:1px solid #e8a5a5;border-radius:8px;
+    padding:12px 14px;margin:12px 0;font-size:12.5px;color:#7a2b2b;
+  }
+  .confirm-hero{text-align:center;padding:14px 0 6px;}
+  .confirm-check{
+    width:52px;height:52px;border-radius:50%;background:var(--good-wash);color:var(--good);
+    display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px;
+    animation:pop .3s ease;
+  }
+  @keyframes pop{0%{transform:scale(.5);opacity:0;}100%{transform:scale(1);opacity:1;}}
+
+  /* upload */
+  .upload-zone{
+    border:1.5px dashed var(--line-strong);border-radius:10px;padding:18px;text-align:center;
+    cursor:pointer;transition:border-color .15s,background .15s;background:var(--paper);
+  }
+  .upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:var(--accent-wash);}
+  .upload-zone .uz-ico{font-size:22px;}
+  .upload-zone .uz-t{font-size:13px;font-weight:600;margin:6px 0 2px;}
+  .upload-zone .uz-s{font-size:11.5px;color:var(--ink-faint);}
+  .upload-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13px;animation:fadeSlide .2s ease;}
+  .upload-row:last-of-type{border-bottom:none;}
+  .upload-bar{height:4px;background:var(--wash);border-radius:4px;overflow:hidden;flex:1;}
+  .upload-bar-fill{height:100%;width:0;background:var(--accent);transition:width .4s ease;}
+
+  /* queue states */
+  .q-hero{border-radius:12px;padding:20px;margin-bottom:14px;transition:background .3s,border-color .3s;}
+  .q-hero.waiting{background:var(--accent-wash);border:1px dashed var(--accent);}
+  .q-hero.next{background:var(--good-wash);border:1px solid var(--good);}
+  .q-hero.progress{background:var(--good-wash);border:1px solid var(--good);}
+  .q-hero.delayed{background:#fff4e2;border:1px solid #e0b978;}
+  .q-hero.missed{background:#fdecec;border:1px solid #e8a5a5;}
+  .q-hero.dropped{background:#fff4e2;border:1px solid #e0b978;}
+  .q-hero.done{background:var(--good-wash);border:1px solid var(--good);}
+  .q-hero.noshow{background:var(--wash);border:1px dashed var(--line-strong);}
+  .q-eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin:0 0 6px;color:var(--accent-ink);}
+  .q-pos{font-size:26px;font-weight:800;line-height:1;margin:0 0 6px;color:var(--accent-ink);transition:transform .3s;}
+  .q-pos.bump{transform:scale(1.18);}
+  .q-msg{font-size:13px;margin:0;color:var(--accent-ink);}
+  .q-countdown{font-size:20px;font-weight:800;color:#8a2020;margin:6px 0;}
+  .q-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .q-spinner{display:inline-block;width:12px;height:12px;border:2px solid var(--accent);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:6px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* prototype state switcher (dev only) */
+  .proto-bar{
+    position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:50;
+    background:var(--ink);color:#fff;border-radius:20px;padding:5px 8px;display:flex;gap:4px;
+    flex-wrap:wrap;max-width:92vw;box-shadow:0 4px 14px rgba(0,0,0,.2);
+  }
+  .proto-bar .pb-label{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.06em;padding:4px 6px;align-self:center;}
+  .proto-bar button{
+    background:rgba(255,255,255,.12);border:none;color:#fff;font-size:11px;
+    padding:4px 9px;border-radius:14px;cursor:pointer;
+  }
+  .proto-bar button.active{background:#fff;color:var(--ink);font-weight:600;}
+
+  /* conditions / chronic care */
+  .cond-card{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px;background:var(--panel);}
+  .cond-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px;}
+  .cond-name{font-size:14.5px;font-weight:700;margin:0 0 2px;}
+  .cond-sub{font-size:12px;color:var(--ink-soft);margin:0;}
+  .cond-meta{display:flex;gap:0;margin:10px 0;background:var(--wash);border-radius:8px;overflow:hidden;}
+  .cond-meta > div{flex:1;padding:8px 12px;border-right:1px dashed var(--line-strong);}
+  .cond-meta > div:last-child{border-right:none;}
+  .cond-meta .k{font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.04em;margin:0 0 2px;}
+  .cond-meta .v{font-size:13px;font-weight:700;margin:0;}
+  .pill.ctrl{background:var(--good-wash);color:var(--good);}
+  .pill.review{background:#fff4e2;color:var(--warn);}
+  .cond-actions{display:flex;gap:6px;flex-wrap:wrap;}
+  .reading-row{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--line);}
+  .reading-row:last-child{border-bottom:none;}
+</style>
+</head>
+<body class="mode-v1">
+
+<div class="app">
+  <div class="sidebar">
+    <p class="brand">Simple Care</p>
+    <p class="brand-tag" id="mode-label">V1, family account</p>
+    <div class="mode-switch">
+      <button class="mode-btn active" data-mode="v1" onclick="setMode('v1')" title="V1, family account">&#128101;</button>
+      <button class="mode-btn" data-mode="v2" onclick="setMode('v2')" title="V2, single account">&#128100;</button>
+    </div>
+    <ul class="navlist">
+      <li><button class="nav-btn active" data-screen="dashboard">Dashboard</button></li>
+      <li><button class="nav-btn" data-screen="queue">Today's visit</button></li>
+      <li><button class="nav-btn" data-screen="appointments">Visit history</button></li>
+      <li><button class="nav-btn" data-screen="conditions">My conditions</button></li>
+      <li><button class="nav-btn" data-screen="activity">Clinical activity</button></li>
+      <li><button class="nav-btn" data-screen="documents">Health records</button></li>
+      <li><button class="nav-btn" data-screen="family">Family members</button></li>
+      <li class="nav-divider"></li>
+      <li><button class="nav-btn feedback-nav-btn" onclick="toggleFeedback()" title="Give feedback"><span>&#128172;</span> Give feedback</button></li>
+    </ul>
+  </div>
+
+  <div class="main">
+
+    <div class="topbar">
+      <div></div>
+      <div class="bell-wrap">
+        <button class="bell-btn" onclick="toggleNotifs()">
+          <span>&#128276;</span>
+          <span class="badge">3</span>
+        </button>
+        <div class="notif-dropdown" id="notif-dropdown">
+          <p class="notif-title">Notifications</p>
+          <div class="notif-item unread">
+            <span class="notif-dot"></span>
+            <div><b>The doctor is 2 patients away</b><div class="notif-sub">Saturday's visit &middot; 3 min ago</div></div>
+          </div>
+          <div class="notif-item unread">
+            <span class="notif-dot"></span>
+            <div><b>Prescription ready for pickup</b><div class="notif-sub">Pharmasave Dundas West &middot; 1 hour ago</div></div>
+          </div>
+          <div class="notif-item unread">
+            <span class="notif-dot"></span>
+            <div><b>Bloodwork results are in</b><div class="notif-sub">Ordered by Dr. Pannozzo &middot; yesterday</div></div>
+          </div>
+          <div class="notif-item">
+            <span class="notif-dot read"></span>
+            <div><b>Appointment reminder</b><div class="notif-sub">Tomorrow, 9:00 AM to 1:00 PM window &middot; 2 days ago</div></div>
+          </div>
+          <button class="btn ghost" style="width:100%;margin-top:8px;" onclick="toast('Would open full notification history')">View all</button>
+        </div>
+      </div>
+      <div class="profile-wrap">
+        <button class="profile-trigger" onclick="toggleProfileMenu()">
+          <span class="avatar" style="margin-right:0;">A</span>
+        </button>
+        <div class="profile-dropdown" id="profile-dropdown">
+          <div class="pd-head">
+            <span class="avatar" style="margin-right:0;">A</span>
+            <div><b>Ani</b><div class="notif-sub">Patient</div></div>
+          </div>
+          <button class="pd-item" onclick="toggleProfileMenu();showScreen('profile')"><span>&#128100;</span> View profile</button>
+          <button class="pd-item" onclick="toggleProfileMenu();showScreen('family')"><span>&#128101;</span> Family members</button>
+          <button class="pd-item" onclick="toggleProfileMenu();toggleFeedback()"><span>&#128172;</span> Give feedback</button>
+          <div class="pd-divider"></div>
+          <button class="pd-item" onclick="toggleProfileMenu();toast('Would sign you out')"><span>&#8618;</span> Sign out</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen active" id="screen-dashboard">
+      <div class="profile-switch v1-only">
+        <button class="profile-circle active" data-person="all" onclick="filterProfile('all')">
+          <span class="circle-avatar all">&#128101;</span>
+          <span class="circle-label">Everyone</span>
+        </button>
+        <button class="profile-circle" data-person="ani" onclick="filterProfile('ani')">
+          <span class="circle-avatar" style="background:var(--accent-wash);color:var(--accent-ink);">A</span>
+          <span class="circle-label">Ani</span>
+        </button>
+        <button class="profile-circle" data-person="karen" onclick="filterProfile('karen')">
+          <span class="circle-avatar" style="background:#efe6fb;color:#6a4d9c;">K</span>
+          <span class="circle-label">Karen</span>
+        </button>
+        <button class="profile-circle" data-person="leo" onclick="filterProfile('leo')">
+          <span class="circle-avatar" style="background:#fff0d9;color:#8a5a1f;">L</span>
+          <span class="circle-label">Leo</span>
+        </button>
+      </div>
+
+      <h1>Good afternoon, Ani</h1>
+      <p class="sub">Everything that needs your attention today, in one place.</p>
+
+      <div class="critical-banner" id="critical-banner">
+        <span class="critical-ico">&#9888;</span>
+        <div class="critical-body">
+          <p class="critical-title">Your bloodwork needs follow up</p>
+          <p class="critical-text">Dr. Pannozzo flagged a result from your August 14 bloodwork. His office will call within 24 hours, but you can reach them sooner if needed.</p>
+          <div class="critical-actions">
+            <button class="btn primary" style="padding:7px 12px;font-size:12.5px;" onclick="openCase('aug14')">View the result</button>
+            <button class="btn ghost" style="padding:7px 12px;font-size:12.5px;background:transparent;" onclick="toast('Would call the office directly')">Call the office</button>
+          </div>
+        </div>
+        <button class="critical-dismiss" onclick="document.getElementById('critical-banner').style.display='none'" title="Dismiss">&times;</button>
+      </div>
+
+      <div class="today-card">
+        <div class="today-accent"></div>
+        <div class="today-main">
+          <div class="today-top">
+            <p class="today-eyebrow">Today<span class="v1-only">, for Ani</span> &middot; Dr. Daniel Pannozzo</p>
+            <span class="pill wait">Waiting</span>
+          </div>
+          <p class="today-hero">11:40 <span class="today-hero-sep">&ndash;</span> 12:10 PM</p>
+          <p class="today-sub">Estimated call time &middot; #6 in line, 5 ahead &middot; Pacific time</p>
+
+          <div class="today-bar"><div class="today-bar-fill"></div></div>
+
+          <div class="today-foot">
+            <label class="today-toggle-inline">
+              <div class="toggle on" id="sms-toggle" onclick="this.classList.toggle('on')"></div>
+              <span>Text me when it's my turn</span>
+            </label>
+            <div class="today-links">
+              <a href="#" class="today-link" onclick="showScreen('queue');return false;">Track live</a>
+              <span class="today-link-sep">&middot;</span>
+              <a href="#" class="today-link" onclick="openCase('today');return false;">Case details</a>
+              <span class="today-link-sep">&middot;</span>
+              <a href="#" class="today-link disabled" onclick="toast('Too close to your visit to change online, call 778 949 APPT instead');return false;">Reschedule</a>
+            </div>
+          </div>
+          <p class="cutoff-note">Inside 24 hours of your visit, cancel or reschedule by phone only, <b>778 949 APPT</b>.</p>
+        </div>
+      </div>
+
+
+      <div class="dash-grid v1-only">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <p class="section-title" style="margin:0;">Upcoming, whole family</p>
+            <button class="btn primary" style="padding:6px 12px;font-size:12px;" onclick="handleBookClick()">Book new</button>
+          </div>
+          <div class="dash-mini-row-wrap" data-person="ani">
+            <div class="dash-mini-row" style="border-bottom:none;padding-bottom:2px;" onclick="showScreen('appointments')">
+              <div><span class="who-tag">Ani</span><b>Dr. Sarah Okonkwo</b><div class="doc-sub">Wednesday, July 29, 9:00 AM to 1:00 PM</div></div>
+              <span class="pill" style="background:var(--wash);color:var(--ink-soft);">Booked</span>
+            </div>
+            <div class="dash-mini-actions">
+              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Reschedule sent, more than 24 hours out so it\'s handled online')">Reschedule</button>
+              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Cancelled, no fee since it\'s more than 24 hours out')">Cancel</button>
+            </div>
+          </div>
+          <div class="dash-mini-row-wrap" data-person="leo">
+            <div class="dash-mini-row" style="border-bottom:none;padding-bottom:2px;" onclick="toast('Would open Leo\'s appointment details')">
+              <div><span class="who-tag leo">Leo</span><b>Dr. Priya Nadar, checkup</b><div class="doc-sub">Sunday, August 2, 9:00 AM to 1:00 PM</div></div>
+              <span class="pill" style="background:var(--wash);color:var(--ink-soft);">Booked</span>
+            </div>
+            <div class="dash-mini-actions">
+              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Reschedule sent, more than 24 hours out so it\'s handled online')">Reschedule</button>
+              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Cancelled, no fee since it\'s more than 24 hours out')">Cancel</button>
+            </div>
+          </div>
+          <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="showScreen('appointments')">See all appointments</button>
+        </div>
+
+        <div class="card">
+          <p class="section-title" style="margin-top:0;">Just came in, whole family</p>
+          <div class="dash-mini-row" data-person="ani" onclick="openCase('aug14')">
+            <div><span class="who-tag">Ani</span><b>Bloodwork results</b><div class="doc-sub">Ordered by Dr. Pannozzo, yesterday</div></div>
+            <span class="pill" style="background:var(--accent-wash);color:var(--accent-ink);">New</span>
+          </div>
+          <div class="dash-mini-row" data-person="leo" onclick="toast('Would open the prescription details')">
+            <div><span class="who-tag leo">Leo</span><b>Prescription ready</b><div class="doc-sub">Pharmasave Dundas West, 1 hour ago</div></div>
+            <span class="pill" style="background:var(--accent-wash);color:var(--accent-ink);">New</span>
+          </div>
+          <div class="dash-mini-row" data-person="karen" onclick="toast('Would open Karen\'s visit summary')">
+            <div><span class="who-tag karen">Karen</span><b>Visit summary ready</b><div class="doc-sub">Dr. Priya Nadar, 2 days ago</div></div>
+            <span class="pill" style="background:var(--accent-wash);color:var(--accent-ink);">New</span>
+          </div>
+          <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="showScreen('documents')">See all health records</button>
+        </div>
+      </div>
+
+      <div class="dash-grid v2-only">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <p class="section-title" style="margin:0;">Upcoming</p>
+            <button class="btn primary" style="padding:6px 12px;font-size:12px;" onclick="handleBookClick()">Book new</button>
+          </div>
+          <div class="dash-mini-row-wrap">
+            <div class="dash-mini-row" style="border-bottom:none;padding-bottom:2px;" onclick="showScreen('appointments')">
+              <div><b>Dr. Sarah Okonkwo</b><div class="doc-sub">Wednesday, July 29, 9:00 AM to 1:00 PM</div></div>
+              <span class="pill" style="background:var(--wash);color:var(--ink-soft);">Booked</span>
+            </div>
+            <div class="dash-mini-actions">
+              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Reschedule sent, more than 24 hours out so it\'s handled online')">Reschedule</button>
+              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Cancelled, no fee since it\'s more than 24 hours out')">Cancel</button>
+            </div>
+          </div>
+          <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="showScreen('appointments')">See all appointments</button>
+        </div>
+
+        <div class="card">
+          <p class="section-title" style="margin-top:0;">Just came in</p>
+          <div class="dash-mini-row" onclick="openCase('aug14')">
+            <div><b>Bloodwork results</b><div class="doc-sub">Ordered by Dr. Pannozzo, yesterday</div></div>
+            <span class="pill" style="background:var(--accent-wash);color:var(--accent-ink);">New</span>
+          </div>
+          <div class="dash-mini-row" onclick="toast('Would open the prescription details')">
+            <div><b>Prescription ready</b><div class="doc-sub">Pharmasave Dundas West, 1 hour ago</div></div>
+            <span class="pill" style="background:var(--accent-wash);color:var(--accent-ink);">New</span>
+          </div>
+          <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="showScreen('documents')">See all health records</button>
+        </div>
+      </div>
+
+      <div class="card v2-only">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:22px;">&#128101;</span>
+          <div style="flex:1;">
+            <p style="font-weight:600;font-size:13.5px;margin:0 0 2px;">Booking for someone else too?</p>
+            <p style="font-size:12.5px;color:var(--ink-soft);margin:0;">Add a partner, parent, or child and manage their visits from this same account.</p>
+          </div>
+          <button class="btn ghost" style="flex-shrink:0;" onclick="showScreen('family')">Add family</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <p class="section-title" style="margin:0;">Latest clinical activity</p>
+          <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;" onclick="showScreen('activity')">View full timeline</button>
+        </div>
+        <div class="activity-snap">
+          <div class="activity-snap-item"><span class="tl-ico">&#129514;</span><div><b>Laboratory results reviewed</b><div class="doc-sub">July 30, 2026</div></div></div>
+          <div class="activity-snap-item"><span class="tl-ico">&#128232;</span><div><b>Cardiology consultation report received</b><div class="doc-sub">July 28, 2026</div></div></div>
+          <div class="activity-snap-item"><span class="tl-ico">&#129514;</span><div><b>Laboratory results received</b><div class="doc-sub">July 27, 2026</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-appointments">
+      <h1>Visit history</h1>
+      <p class="sub">Everything you've been in for. Today's visit and anything upcoming live on your dashboard.</p>
+
+      <div class="toolbar">
+        <input class="search-input" placeholder="Search by physician or date">
+        <button class="btn primary" onclick="handleBookClick()">Book new</button>
+      </div>
+
+      <div class="profile-switch v1-only">
+        <button class="profile-circle who-chip active" data-who="all">
+          <span class="circle-avatar all">&#128101;</span>
+          <span class="circle-label">Everyone</span>
+        </button>
+        <button class="profile-circle who-chip" data-who="ani">
+          <span class="circle-avatar" style="background:var(--accent-wash);color:var(--accent-ink);">A</span>
+          <span class="circle-label">Ani</span>
+        </button>
+        <button class="profile-circle who-chip" data-who="karen">
+          <span class="circle-avatar" style="background:#efe6fb;color:#6a4d9c;">K</span>
+          <span class="circle-label">Karen</span>
+        </button>
+        <button class="profile-circle who-chip" data-who="leo">
+          <span class="circle-avatar" style="background:#fff0d9;color:#8a5a1f;">L</span>
+          <span class="circle-label">Leo</span>
+        </button>
+      </div>
+      <div class="chip-row">
+        <button class="chip active">All</button>
+        <button class="chip">Completed</button>
+        <button class="chip">Cancelled</button>
+        <button class="chip">No show</button>
+      </div>
+      <p style="font-size:12px;color:var(--ink-faint);margin:0 0 16px;">Today's appointment lives on your dashboard. This is history only.</p>
+
+      <p class="section-title" style="margin-top:0;">2026</p>
+      <table class="hist-table">
+        <thead><tr><th class="v1-only">Who</th><th>Date</th><th>Physician</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr class="clickable-row" onclick="openCase('jun25')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>Jun 25, 2026</td><td>Dr. Daniel Pannozzo</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="openCase('jun25')">View</button></td></tr>
+          <tr class="clickable-row" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>May 12, 2026</td><td>Dr. Sarah Okonkwo</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
+          <tr class="clickable-row v1-only" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag leo">Leo</span></td><td>Apr 3, 2026</td><td>Dr. Priya Nadar</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
+          <tr class="clickable-row" onclick="toast('Would explain the fee')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>Mar 20, 2026</td><td>Dr. Daniel Pannozzo</td><td><span class="pill" style="background:var(--wash);color:var(--ink-faint);">No show</span></td><td><button class="btn ghost" onclick="toast('Would explain the fee')">Details</button></td></tr>
+          <tr class="clickable-row v1-only" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag karen">Karen</span></td><td>Feb 11, 2026</td><td>Dr. Priya Nadar</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
+        </tbody>
+      </table>
+
+      <div class="year-accordion" id="year-history" style="margin-top:16px;">
+        <button class="year-toggle" onclick="toggleYearHistory()">
+          <span>Earlier visits, 2021 to 2025 &middot; 24 visits</span>
+          <span id="year-toggle-arrow">&#9660;</span>
+        </button>
+        <div class="year-body" id="year-body">
+          <table class="hist-table">
+            <thead>
+              <tr><th class="v1-only">Who</th><th>Date</th><th>Physician</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+              <tr class="clickable-row" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>Nov 3, 2025</td><td>Dr. Sarah Okonkwo</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
+              <tr class="clickable-row" onclick="openCase('aug14')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>Aug 14, 2025</td><td>Dr. Daniel Pannozzo</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="openCase('aug14')">View</button></td></tr>
+              <tr class="clickable-row v1-only" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag leo">Leo</span></td><td>Jun 2, 2025</td><td>Dr. Priya Nadar</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
+              <tr class="clickable-row" onclick="toast('Would show who cancelled and when')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>Feb 4, 2025</td><td>Dr. Priya Nadar</td><td><span class="pill" style="background:var(--wash);color:var(--ink-faint);">Cancelled</span></td><td><button class="btn ghost" onclick="toast('Would show who cancelled and when')">Details</button></td></tr>
+              <tr class="clickable-row v1-only" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag karen">Karen</span></td><td>Dec 9, 2024</td><td>Dr. Sarah Okonkwo</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
+              <tr class="clickable-row" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>Sep 18, 2024</td><td>Dr. Daniel Pannozzo</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
+              <tr class="clickable-row" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>Apr 7, 2024</td><td>Dr. Priya Nadar</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
+              <tr class="clickable-row" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>Jan 15, 2024</td><td>Dr. Daniel Pannozzo</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
+              <tr class="clickable-row" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>Oct 2, 2023</td><td>Dr. Daniel Pannozzo</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
+              <tr class="clickable-row" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>May 30, 2023</td><td>Dr. Priya Nadar</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
+              <tr class="clickable-row" onclick="toast('Would explain the no show fee')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>Feb 9, 2023</td><td>Dr. Daniel Pannozzo</td><td><span class="pill" style="background:var(--wash);color:var(--ink-faint);">No show</span></td><td><button class="btn ghost" onclick="toast('Would explain the no show fee')">Details</button></td></tr>
+              <tr class="clickable-row" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>Jun 17, 2022</td><td>Dr. Daniel Pannozzo</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
+              <tr class="clickable-row" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>Mar 4, 2022</td><td>Dr. Priya Nadar</td><td><span class="pill" style="background:var(--good-wash);color:var(--good);">Completed</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
+              <tr class="clickable-row" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>Mar 11, 2021</td><td>Dr. Daniel Pannozzo</td><td><span class="pill" style="background:var(--wash);color:var(--ink-faint);">First visit</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
+            </tbody>
+          </table>
+          <button class="btn ghost" style="width:100%;margin-top:10px;" onclick="toast('Would load the remaining 12 rows')">Show 12 more rows</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-documents">
+      <h1>Health records</h1>
+      <p class="sub">Everything tied to a visit, grouped by what it's for, with the newest first.</p>
+
+      <div class="toolbar">
+        <input class="search-input" placeholder="Search documents by physician or date">
+        <button class="btn primary" onclick="document.getElementById('doc-file-input').click()">Upload</button>
+      </div>
+
+      <p class="section-title" style="margin-top:0;">Your uploads</p>
+      <div class="card">
+        <div class="upload-zone" id="doc-upload-zone" onclick="document.getElementById('doc-file-input').click()">
+          <div class="uz-ico">&#128206;</div>
+          <div class="uz-t">Add a document</div>
+          <div class="uz-s">Lab result, insurance form, ID, or a photo &middot; PDF, JPG, PNG</div>
+        </div>
+        <input type="file" id="doc-file-input" style="display:none" multiple onchange="handleDocUpload(this.files)">
+        <div id="doc-upload-list" style="margin-top:6px;"></div>
+      </div>
+
+      <p class="section-title">Visit summaries &middot; 27 total</p>
+      <div class="card">
+        <div class="doc-item">
+          <div class="doc-left"><span class="doc-ico">&#128196;</span><div><b>Visit summary, June 25 2026</b><div class="doc-sub">Dr. Daniel Pannozzo</div></div></div>
+          <div class="doc-actions"><button class="btn ghost" onclick="openCase('jun25')">View</button><button class="btn ghost" onclick="toast('Would download the PDF')">Download</button></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-left"><span class="doc-ico">&#128196;</span><div><b>Visit summary, May 12 2026</b><div class="doc-sub">Dr. Sarah Okonkwo</div></div></div>
+          <div class="doc-actions"><button class="btn ghost" onclick="toast('Would open a preview')">View</button><button class="btn ghost" onclick="toast('Would download the PDF')">Download</button></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-left"><span class="doc-ico">&#128196;</span><div><b>Visit summary, November 3 2025</b><div class="doc-sub">Dr. Sarah Okonkwo</div></div></div>
+          <div class="doc-actions"><button class="btn ghost" onclick="toast('Would open a preview')">View</button><button class="btn ghost" onclick="toast('Would download the PDF')">Download</button></div>
+        </div>
+        <button class="btn ghost" style="width:100%;" onclick="toast('Would load the remaining 24 visit summaries, filterable by year')">Show all 27 visit summaries</button>
+      </div>
+
+      <p class="section-title">Prescriptions &middot; 9 total</p>
+      <div class="card">
+        <div class="doc-item">
+          <div class="doc-left"><span class="doc-ico">&#128138;</span><div><b>Amoxicillin 500mg</b><div class="doc-sub">Sent to Pharmasave Dundas West, June 25 2026</div></div></div>
+          <div class="doc-actions"><span class="pill" style="background:var(--good-wash);color:var(--good);">Active</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-left"><span class="doc-ico">&#128138;</span><div><b>Atorvastatin 20mg</b><div class="doc-sub">Sent to Pharmasave Dundas West, November 3 2025</div></div></div>
+          <div class="doc-actions"><span class="pill" style="background:var(--wash);color:var(--ink-faint);">Expired</span></div>
+        </div>
+        <button class="btn ghost" style="width:100%;" onclick="toast('Would load the remaining 7 prescriptions')">Show all 9 prescriptions</button>
+      </div>
+
+      <p class="section-title">Lab and imaging results &middot; 4 total</p>
+      <div class="card">
+        <div class="doc-item">
+          <div class="doc-left"><span class="doc-ico">&#128203;</span><div><b>Bloodwork panel, August 14 2025</b><div class="doc-sub">Ordered by Dr. Daniel Pannozzo</div></div></div>
+          <div class="doc-actions"><button class="btn ghost" onclick="openCase('aug14')">View</button></div>
+        </div>
+        <button class="btn ghost" style="width:100%;" onclick="toast('Would load the remaining 3 results')">Show all 4 results</button>
+      </div>
+
+      <p class="section-title">Referrals</p>
+      <div class="empty">
+        <div class="ico">&#128203;</div>
+        <h3>No referrals yet</h3>
+        <p>If a physician refers you to a specialist, the referral letter and the specialist's contact details will show up here.</p>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-activity">
+      <h1>Clinical activity</h1>
+      <p class="sub">Everything happening across your care, in order, not grouped by which visit caused it.</p>
+
+      <div class="chip-row">
+        <button class="chip cat-chip active" data-cat="all">All</button>
+        <button class="chip cat-chip" data-cat="appointment">Appointments</button>
+        <button class="chip cat-chip" data-cat="medication">Medications</button>
+        <button class="chip cat-chip" data-cat="laboratory">Laboratory</button>
+        <button class="chip cat-chip" data-cat="imaging">Imaging</button>
+        <button class="chip cat-chip" data-cat="referral">Referrals</button>
+        <button class="chip cat-chip" data-cat="document">Documents</button>
+      </div>
+
+      <div class="timeline">
+        <div class="tl-day">
+          <p class="tl-date">July 30, 2026</p>
+          <div class="tl-event" data-cat="laboratory"><span class="tl-ico">&#129514;</span><span>Laboratory results reviewed</span></div>
+        </div>
+        <div class="tl-day">
+          <p class="tl-date">July 28, 2026</p>
+          <div class="tl-event" data-cat="referral"><span class="tl-ico">&#128232;</span><span>Cardiology consultation report received</span></div>
+        </div>
+        <div class="tl-day">
+          <p class="tl-date">July 27, 2026</p>
+          <div class="tl-event" data-cat="laboratory"><span class="tl-ico">&#129514;</span><span>Laboratory results received</span></div>
+        </div>
+        <div class="tl-day">
+          <p class="tl-date">July 18, 2026</p>
+          <div class="tl-appt" data-cat="appointment" onclick="showScreen('appointments')">
+            <span class="pill wait" style="font-size:10.5px;">Appointment</span>
+            <span>Dr. Daniel Pannozzo, waiting</span>
+          </div>
+        </div>
+        <div class="tl-day">
+          <p class="tl-date">June 25, 2026</p>
+          <div class="tl-appt" data-cat="appointment" onclick="openCase('jun25')">
+            <span class="pill" style="background:var(--good-wash);color:var(--good);font-size:10.5px;">Appointment</span>
+            <span>Dr. Daniel Pannozzo, completed</span>
+          </div>
+          <p class="tl-caused-by">Clinical actions from this visit</p>
+          <div class="tl-event" data-cat="medication"><span class="tl-ico">&#128138;</span><span>Prescription sent, Amoxicillin 500mg</span></div>
+          <div class="tl-event" data-cat="laboratory"><span class="tl-ico">&#129514;</span><span>Laboratory ordered, CBC, Ferritin, HbA1c</span></div>
+          <div class="tl-event" data-cat="imaging"><span class="tl-ico">&#127909;</span><span>Imaging ordered, Chest X-ray</span></div>
+          <div class="tl-event" data-cat="referral"><span class="tl-ico">&#128232;</span><span>Referral sent, Cardiology</span></div>
+          <div class="tl-event" data-cat="document"><span class="tl-ico">&#128196;</span><span>Sick note released</span></div>
+          <button class="btn ghost" style="margin-top:4px;" onclick="openCase('jun25')">View this appointment</button>
+        </div>
+      </div>
+
+      <p class="clin-disclaimer">This timeline shows clinical events as they happen, ordered, medications, labs, imaging, referrals, and documents. It does not include clinical notes or physician documentation, those stay in your provider's medical record.</p>
+    </div>
+
+    <div class="screen" id="screen-case">
+      <button class="btn ghost" onclick="showScreen('appointments')">&larr; Back to appointments</button>
+      <div id="case-content" style="margin-top:14px;"></div>
+    </div>
+
+    <div class="screen" id="screen-family">
+      <h1>Family members</h1>
+      <p class="sub v1-only">Each person keeps their own record and history. You can book or manage a visit for any of them from here.</p>
+      <p class="sub v2-only">Right now it's just your own account. Add someone and you'll be able to book or manage their visits from here too.</p>
+
+      <div class="card">
+        <div class="fam-list-item clickable" onclick="openPatientLog('ani')">
+          <div class="fam-left"><span class="avatar">A</span><div><b style="font-size:13.5px;">Ani</b> <span class="rel-badge you">You</span><div class="doc-sub">Born 1957 &middot; patient since 2025 &middot; 27 visits</div></div></div>
+          <div class="fam-row-actions">
+            <button class="btn primary" onclick="event.stopPropagation(); handleBookClick('Ani')">Book</button>
+            <button class="btn ghost" onclick="event.stopPropagation(); openPatientLog('ani')">Case log</button>
+          </div>
+        </div>
+        <div class="fam-list-item clickable v1-only" onclick="openPatientLog('karen')">
+          <div class="fam-left"><span class="avatar">K</span><div><b style="font-size:13.5px;">Karen Walker</b> <span class="rel-badge">Mother</span><div class="doc-sub">Born 1957 &middot; added June 2023 &middot; 8 visits</div></div></div>
+          <div class="fam-row-actions">
+            <button class="btn primary" onclick="event.stopPropagation(); openBookModal('Karen Walker')">Book</button>
+            <button class="btn ghost" onclick="event.stopPropagation(); openPatientLog('karen')">Case log</button>
+          </div>
+        </div>
+        <div class="fam-list-item clickable v1-only" onclick="toast('Would open Leo\'s case log, managed fully by you since he\'s a minor')">
+          <div class="fam-left"><span class="avatar">L</span><div><b style="font-size:13.5px;">Leo Walker</b> <span class="rel-badge">Son</span> <span class="rel-badge minor">Minor</span><div class="doc-sub">Born 2015, age 10 &middot; added June 2023 &middot; 4 visits</div></div></div>
+          <div class="fam-row-actions">
+            <button class="btn primary" onclick="event.stopPropagation(); openBookModal('Leo Walker')">Book</button>
+            <button class="btn ghost" onclick="event.stopPropagation(); toast('Would open Leo\'s case log')">Case log</button>
+          </div>
+        </div>
+        <div id="fam-added"></div>
+      </div>
+
+      <p class="clin-disclaimer v1-only" style="margin-bottom:16px;">You manage Leo's record fully since he's under 19, BC's age of majority. Karen has authorized you to manage hers. Both switches happen automatically as needed, Leo's account becomes his own at 19, and Karen's access can be revoked by her at any time.</p>
+
+      <div class="empty" id="fam-empty">
+        <div class="ico">+</div>
+        <h3>Add someone you manage</h3>
+        <p>Book and manage visits for a parent, spouse, or child from this account. Each person keeps their own record.</p>
+        <button class="btn primary" onclick="toggleFamForm()">Add family member</button>
+      </div>
+
+      <div class="fam-form card" id="fam-form">
+        <label>Full name</label>
+        <input id="fam-name" placeholder="e.g. Karen Walker">
+        <label>Relationship</label>
+        <div class="rel-chip-row">
+          <button class="chip rel-chip active" data-rel="Spouse">Spouse</button>
+          <button class="chip rel-chip" data-rel="Child">Child</button>
+          <button class="chip rel-chip" data-rel="Parent">Parent</button>
+          <button class="chip rel-chip" data-rel="Other">Other</button>
+        </div>
+        <label>Date of birth</label>
+        <input id="fam-dob" type="date">
+        <p id="fam-minor-note" class="clin-disclaimer" style="display:none;">Since this person is under 19, you'll manage their full record until they turn 19, no separate authorization needed.</p>
+        <p id="fam-adult-note" class="clin-disclaimer">Since this person is 19 or older, they'll get an email to authorize you to manage their care. Until they accept, you can still book on their behalf.</p>
+        <button class="btn primary" onclick="addFamilyMember()">Save</button>
+        <button class="btn ghost" onclick="toggleFamForm()">Cancel</button>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-profile">
+      <div class="profile-head">
+        <div>
+          <h1 style="margin-bottom:2px;">Profile</h1>
+          <p class="sub" style="margin:0;">Locked clinical fields look different from fields you can edit.</p>
+        </div>
+        <button class="btn primary" onclick="toast('Editable fields would open inline here')">&#9998; Edit profile</button>
+      </div>
+
+      <div class="ptab-row">
+        <button class="ptab active" data-ptab="personal" onclick="setPTab('personal')">Personal details</button>
+        <button class="ptab" data-ptab="medical" onclick="setPTab('medical')">Medical info</button>
+        <button class="ptab" data-ptab="pharmacy" onclick="setPTab('pharmacy')">Pharmacy</button>
+        <button class="ptab" data-ptab="addresses" onclick="setPTab('addresses')">Addresses</button>
+      </div>
+
+      <div class="ptab-view active" id="ptab-personal">
+        <div class="dash-grid">
+          <div class="card">
+            <p class="section-title" style="margin-top:0;">Identity information</p>
+            <div class="field locked"><label>Legal name</label><div class="val">Julia Catherine Walker</div></div>
+            <div class="field editable"><label>Preferred name</label><div class="val">ani</div></div>
+            <div class="field-group">
+              <div class="field locked"><label>Date of birth</label><div class="val">July 24, 1957</div></div>
+              <div class="field locked"><label>Gender</label><div class="val">Female</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <p class="section-title" style="margin-top:0;">Contact information</p>
+            <div class="field editable">
+              <label>Email</label>
+              <div class="val">aniharutyunyan15@gmail.com <span class="verified-badge">&#10003; Verified</span></div>
+            </div>
+            <div class="field editable">
+              <label>Phone number</label>
+              <div class="val">+1 201 724 6871 <span class="verified-badge">&#10003; Verified</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ptab-view" id="ptab-medical">
+        <div class="card">
+          <p class="section-title" style="margin-top:0;">Health information</p>
+          <div class="field locked"><label>MSP verification</label><div class="val">Verified, July 18, 2026, 3:29 PM</div></div>
+          <div class="field-group">
+            <div class="field locked"><label>Personal health number</label><div class="val">9188475735</div></div>
+            <div class="field locked"><label>Payment type</label><div class="val">MSP, BC Medical Services Plan</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ptab-view" id="ptab-pharmacy">
+        <div class="card">
+          <p class="section-title" style="margin-top:0;">Pharmacy information</p>
+          <div class="field editable"><label>Pharmacy name</label><div class="val">Pharmasave Dundas West Pharmacy</div></div>
+          <div class="field editable"><label>Address</label><div class="val">5415 Dundas St W Unit #2, Etobicoke, ON M9B 1B5</div></div>
+          <div class="field-group">
+            <div class="field editable"><label>City</label><div class="val">Toronto</div></div>
+            <div class="field editable"><label>Phone</label><div class="val">(416) 368-9143</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ptab-view" id="ptab-addresses">
+        <div class="card">
+          <p class="section-title" style="margin-top:0;">Home address</p>
+          <div class="field editable"><label>Street address</label><div class="val">5353 Dundas Street West</div></div>
+          <div class="field-group">
+            <div class="field editable"><label>City</label><div class="val">Toronto</div></div>
+            <div class="field editable"><label>Postal code</label><div class="val">M9B 6H8</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <p class="section-title" style="margin-top:0;">Authorized persons</p>
+          <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px;">No one else is authorized to manage this account yet.</p>
+          <button class="btn ghost" onclick="toast('Would start the authorized person flow')">Add an authorized person</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CARE MODE FORK: episodic vs family medicine ===== -->
+    <div class="screen" id="screen-carechoice">
+      <button class="btn ghost" onclick="showScreen('dashboard')">&larr; Cancel</button>
+      <h1 style="margin-top:12px;">How do you want to use SimpleCare?</h1>
+      <p class="sub">This decides whether you're matched with whoever's available, or paired with the same doctor going forward.</p>
+      <button class="opt-card selected" onclick="chooseCareMode('episodic')">
+        <span class="oc-ico">&#9889;</span>
+        <span><b>Just stopping by</b><span class="oc-sub">One-off care for something specific right now. Matched with whichever doctor is available. No ongoing relationship.</span></span>
+      </button>
+      <button class="opt-card" onclick="chooseCareMode('family')">
+        <span class="oc-ico">&#128257;</span>
+        <span><b>Family medicine &mdash; ongoing care</b><span class="oc-sub">Paired with the same doctor for every visit, going forward. Best if you want continuity of care.</span></span>
+      </button>
+    </div>
+
+    <!-- ===== BOOKING + INTAKE ===== -->
+    <div class="screen" id="screen-booking">
+      <button class="btn ghost" onclick="showScreen('dashboard')">&larr; Cancel booking</button>
+      <h1 style="margin-top:12px;">Book a visit</h1>
+      <p class="sub" id="booking-who-line">For Ani</p>
+
+      <div class="stepper">
+        <div class="step-dot" data-step="1"></div>
+        <div class="step-dot" data-step="2"></div>
+        <div class="step-dot" data-step="3"></div>
+        <div class="step-dot" data-step="4"></div>
+      </div>
+
+      <!-- step 1: visit type -->
+      <div class="step-panel" id="bstep-1">
+        <p class="step-label">Step 1 of 4</p>
+        <p class="step-h">What kind of visit?</p>
+        <p class="step-sub">Same-day care joins today's queue. A scheduled visit picks a future window.</p>
+        <button class="opt-card selected" data-type="sameday" onclick="bookingSelectType(this,'sameday')">
+          <span class="oc-ico">&#9889;</span>
+          <span><b>Same-day care</b><span class="oc-sub">Join today's queue now &middot; typical wait 60&ndash;90 min</span></span>
+        </button>
+        <button class="opt-card" data-type="scheduled" onclick="bookingSelectType(this,'scheduled')">
+          <span class="oc-ico">&#128197;</span>
+          <span><b>Scheduled visit</b><span class="oc-sub">Pick a future day and a 4-hour call window</span></span>
+        </button>
+        <button class="opt-card" data-type="followup" onclick="bookingSelectType(this,'followup')">
+          <span class="oc-ico">&#128257;</span>
+          <span><b>Follow-up with my doctor</b><span class="oc-sub">Continue care with Dr. Pannozzo for an existing issue</span></span>
+        </button>
+        <div class="step-nav">
+          <span></span>
+          <button class="btn primary" onclick="bookingGoTo(2)">Continue</button>
+        </div>
+      </div>
+
+      <!-- step 2: reason + symptoms -->
+      <div class="step-panel" id="bstep-2">
+        <p class="step-label">Step 2 of 4</p>
+        <p class="step-h">What's going on?</p>
+        <p class="step-sub">This goes to the physician before your call so they can prepare.</p>
+        <textarea class="intake-field" id="intake-reason" rows="3" placeholder="Describe your main concern in your own words"></textarea>
+        <p class="step-label" style="margin-top:6px;">Any of these right now?</p>
+        <div class="check-row redflag" onclick="toggleCheck(this)"><span class="check-box">&#10003;</span> Chest pain or pressure</div>
+        <div class="check-row redflag" onclick="toggleCheck(this)"><span class="check-box">&#10003;</span> Trouble breathing</div>
+        <div class="check-row redflag" onclick="toggleCheck(this)"><span class="check-box">&#10003;</span> Severe bleeding or fainting</div>
+        <div class="check-row" onclick="toggleCheck(this)"><span class="check-box">&#10003;</span> Fever over 3 days</div>
+        <div class="check-row" onclick="toggleCheck(this)"><span class="check-box">&#10003;</span> Rash or skin change</div>
+        <div class="triage-alert" id="triage-alert" style="display:none;">
+          <span>&#9888;</span>
+          <div>What you described may need emergency care. SimpleCare is not for emergencies &mdash; please call <b>911</b> or go to your nearest ER. You can still continue if this isn't urgent.</div>
+        </div>
+        <div class="step-nav">
+          <button class="btn ghost" onclick="bookingGoTo(1)">Back</button>
+          <button class="btn primary" onclick="bookingGoTo(3)">Continue</button>
+        </div>
+      </div>
+
+      <!-- step 3: attachments -->
+      <div class="step-panel" id="bstep-3">
+        <p class="step-label">Step 3 of 4</p>
+        <p class="step-h">Anything to attach?</p>
+        <p class="step-sub">Optional. Add a photo of a rash, a past result, or a form. You can skip this.</p>
+        <div class="upload-zone" id="intake-upload-zone" onclick="document.getElementById('intake-file-input').click()">
+          <div class="uz-ico">&#128247;</div>
+          <div class="uz-t">Add a photo or file</div>
+          <div class="uz-s">PDF, JPG, PNG</div>
+        </div>
+        <input type="file" id="intake-file-input" style="display:none" multiple onchange="attachUpload(this.files)">
+        <div id="intake-upload-list" style="margin-top:8px;"></div>
+        <div class="step-nav">
+          <button class="btn ghost" onclick="bookingGoTo(2)">Back</button>
+          <button class="btn primary" onclick="bookingGoTo(4)">Continue</button>
+        </div>
+      </div>
+
+      <!-- step 4: review -->
+      <div class="step-panel" id="bstep-4">
+        <p class="step-label">Step 4 of 4</p>
+        <p class="step-h">Review and confirm</p>
+        <p class="step-sub">Check the details before you join the queue.</p>
+        <div class="card" id="booking-review"></div>
+        <p class="cutoff-note">By confirming, you agree that a no-show or a cancel inside 24 hours may carry a fee.</p>
+        <div class="step-nav">
+          <button class="btn ghost" onclick="bookingGoTo(3)">Back</button>
+          <button class="btn primary" id="booking-confirm-btn" onclick="bookingConfirm()">Confirm and join queue</button>
+        </div>
+      </div>
+
+      <!-- confirmation -->
+      <div class="step-panel" id="bstep-done">
+        <div class="confirm-hero">
+          <div class="confirm-check">&#10003;</div>
+          <p class="step-h" id="confirm-title">You're in the queue</p>
+          <p class="step-sub" id="confirm-sub">We'll text you as your turn gets close.</p>
+        </div>
+        <div class="step-nav" style="justify-content:center;">
+          <button class="btn primary" onclick="showScreen('queue')">Track my place live</button>
+          <button class="btn ghost" onclick="showScreen('dashboard')">Back to dashboard</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LIVE QUEUE (with edge-case states) ===== -->
+    <div class="screen" id="screen-queue">
+      <div class="proto-bar">
+        <span class="pb-label">Prototype state</span>
+        <button data-qs="waiting" onclick="setQueueState('waiting')">Waiting</button>
+        <button data-qs="next" onclick="setQueueState('next')">You're next</button>
+        <button data-qs="progress" onclick="setQueueState('progress')">In visit</button>
+        <button data-qs="delayed" onclick="setQueueState('delayed')">Dr delayed</button>
+        <button data-qs="missed" onclick="setQueueState('missed')">Missed call</button>
+        <button data-qs="dropped" onclick="setQueueState('dropped')">Call dropped</button>
+        <button data-qs="done" onclick="setQueueState('done')">Done</button>
+        <button data-qs="noshow" onclick="setQueueState('noshow')">No-show</button>
+      </div>
+      <button class="btn ghost" onclick="showScreen('dashboard')">&larr; Dashboard</button>
+      <h1 style="margin-top:12px;">Today's visit</h1>
+      <p class="sub">Dr. Daniel Pannozzo &middot; 10:00 AM &ndash; 2:00 PM window &middot; Pacific time</p>
+
+      <div id="q-render"></div>
+
+      <div class="card">
+        <p class="section-title" style="margin-top:0;">While you wait</p>
+        <div class="detail-row"><span>Reason for visit</span><span>Sore throat, 4 days</span></div>
+        <div class="detail-row"><span>Intake</span><span>Completed</span></div>
+        <div class="detail-row"><span>Attachments</span><span>1 photo</span></div>
+        <div class="toggle-row">
+          <span style="font-size:13px;">Text me when it's my turn</span>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CHRONIC CARE ===== -->
+    <div class="screen" id="screen-conditions">
+      <h1>My conditions</h1>
+      <p class="sub">Ongoing conditions your care team is managing, with medications and reviews in one place.</p>
+
+      <div class="cond-card">
+        <div class="cond-top">
+          <div><p class="cond-name">Type 2 diabetes</p><p class="cond-sub">Since 2021 &middot; managed by Dr. Pannozzo</p></div>
+          <span class="pill ctrl">Controlled</span>
+        </div>
+        <div class="cond-meta">
+          <div><p class="k">Last HbA1c</p><p class="v">6.4%</p></div>
+          <div><p class="k">Medication</p><p class="v">Metformin</p></div>
+          <div><p class="k">Next review</p><p class="v">Oct 2026</p></div>
+        </div>
+        <div class="cond-actions">
+          <button class="btn primary sm" onclick="requestRefill('Metformin 500mg')">Request refill</button>
+          <button class="btn ghost sm" onclick="logReading('glucose')">Log a reading</button>
+          <button class="btn ghost sm" onclick="startBooking('Ani','followup')">Book follow-up</button>
+        </div>
+      </div>
+
+      <div class="cond-card">
+        <div class="cond-top">
+          <div><p class="cond-name">Hypertension</p><p class="cond-sub">Since 2022 &middot; managed by Dr. Pannozzo</p></div>
+          <span class="pill review">Review due</span>
+        </div>
+        <div class="cond-meta">
+          <div><p class="k">Last BP</p><p class="v">148 / 92</p></div>
+          <div><p class="k">Medication</p><p class="v">Amlodipine</p></div>
+          <div><p class="k">Next review</p><p class="v">Overdue</p></div>
+        </div>
+        <div class="triage-alert" style="background:#fff4e2;border-color:#e0b978;color:var(--warn);">
+          <span>&#9888;</span>
+          <div>Your last reading was high and a review is overdue. Booking a follow-up is recommended.</div>
+        </div>
+        <div class="cond-actions">
+          <button class="btn primary sm" onclick="startBooking('Ani','followup')">Book follow-up</button>
+          <button class="btn ghost sm" onclick="requestRefill('Amlodipine 5mg')">Request refill</button>
+          <button class="btn ghost sm" onclick="logReading('bp')">Log a reading</button>
+        </div>
+      </div>
+
+      <p class="section-title">Recent readings you've logged</p>
+      <div class="card" id="reading-log">
+        <div class="reading-row"><span>Blood glucose &middot; 5.8 mmol/L</span><span>Jul 21, 8:10 AM</span></div>
+        <div class="reading-row"><span>Blood pressure &middot; 146 / 90</span><span>Jul 19, 7:45 AM</span></div>
+        <div class="reading-row"><span>Blood glucose &middot; 6.1 mmol/L</span><span>Jul 18, 8:00 AM</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="book-modal-overlay" onclick="if(event.target===this) closeBookModal()">
+  <div class="modal-card">
+    <p class="modal-title">Who is this visit for?</p>
+    <div class="modal-option" onclick="selectBookFor('Ani')"><span class="avatar">A</span><div><b>Ani</b><div class="doc-sub">You</div></div></div>
+    <div class="modal-option" onclick="selectBookFor('Karen Walker')"><span class="avatar">K</span><div><b>Karen Walker</b><div class="doc-sub">Mother</div></div></div>
+    <div class="modal-option" onclick="selectBookFor('Leo Walker')"><span class="avatar">L</span><div><b>Leo Walker</b><div class="doc-sub">Son, minor</div></div></div>
+    <div class="modal-option add-new" onclick="closeBookModal(); showScreen('family'); toggleFamForm();"><span class="avatar" style="background:var(--wash);color:var(--ink-soft);">+</span><div><b>Someone new</b><div class="doc-sub">Add a family member first</div></div></div>
+    <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="closeBookModal()">Cancel</button>
+  </div>
+</div>
+
+<div class="feedback-panel" id="feedback-panel">
+  <div class="feedback-head">
+    <b>What's not working?</b>
+    <button class="fp-close" onclick="toggleFeedback()">&times;</button>
+  </div>
+  <div class="fp-type-row">
+    <button class="chip fp-type active">Bug</button>
+    <button class="chip fp-type">Idea</button>
+    <button class="chip fp-type">Question</button>
+  </div>
+  <textarea placeholder="Tell us what happened, we read every one of these"></textarea>
+  <button class="btn primary" style="width:100%;" onclick="submitFeedback()">Send feedback</button>
+  <p class="fp-note">This goes straight to the SimpleCare team, not to your doctor's office.</p>
+</div>
+
+<script>
+function showScreen(name){
+  var target = document.getElementById('screen-' + name);
+  if(!target) return;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  target.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.screen === name));
+  if(name === 'queue') renderQueue();
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('.nav-btn').forEach(b => {
+  b.addEventListener('click', () => showScreen(b.dataset.screen));
+});
+
+var CASES = {
+  today: {
+    doc: 'Dr. Daniel Pannozzo', date: 'Saturday, July 18, 2026', status: 'Waiting', statusBg: 'var(--accent-wash)', statusColor: 'var(--accent-ink)',
+    note: 'This visit is still in progress. Clinical actions from this encounter will appear here once the visit is complete.',
+    sections: []
+  },
+  jun25: {
+    doc: 'Dr. Daniel Pannozzo', date: 'Thursday, June 25, 2026', status: 'Completed', statusBg: 'var(--good-wash)', statusColor: 'var(--good)',
+    sections: [
+      {icon:'&#128203;', title:'Clinical intake', items:['Patient responses completed prior to the visit']},
+      {icon:'&#128138;', title:'Medications', items:['Prescription sent, Amoxicillin 500mg']},
+      {icon:'&#129514;', title:'Laboratory', items:['Laboratory ordered, CBC', 'Laboratory ordered, Ferritin', 'Laboratory ordered, HbA1c']},
+      {icon:'&#127909;', title:'Diagnostic imaging', items:['Imaging ordered, Chest X-ray']},
+      {icon:'&#128232;', title:'Referrals', items:['Referral sent, Cardiology']},
+      {icon:'&#128196;', title:'Documents', items:['Sick note, released']}
+    ]
+  },
+  aug14: {
+    doc: 'Dr. Daniel Pannozzo', date: 'Thursday, August 14, 2025', status: 'Completed', statusBg: 'var(--good-wash)', statusColor: 'var(--good)',
+    sections: [
+      {icon:'&#129514;', title:'Laboratory', items:['Laboratory ordered, CBC', 'Laboratory ordered, Lipid panel']}
+    ]
+  }
+};
+
+function openCase(id){
+  var c = CASES[id];
+  var body;
+  if(c.sections.length){
+    body = c.sections.map(function(s){
+      var items = s.items.map(function(i){ return '<li>' + i + '</li>'; }).join('');
+      return '<div class="clin-section"><p class="clin-section-title"><span>' + s.icon + '</span>' + s.title + '</p><ul class="clin-list">' + items + '</ul></div>';
+    }).join('');
+    body += '<p class="clin-disclaimer">This shows the clinical actions from this visit. Clinical notes, assessments, and physician documentation stay in your provider\'s medical record and are not shown here.</p>';
+  } else {
+    body = '<p style="font-size:13px;color:var(--ink-soft);margin:0;">' + c.note + '</p>';
+  }
+  document.getElementById('case-content').innerHTML =
+    '<div class="appt-top" style="margin-bottom:14px;"><div><p class="appt-doc">' + c.doc + '</p><p class="appt-date">' + c.date + '</p></div>' +
+    '<span class="pill" style="background:' + c.statusBg + ';color:' + c.statusColor + ';">' + c.status + '</span></div>' +
+    '<div class="card">' + body + '</div>';
+  showScreen('appointments');
+  document.getElementById('screen-appointments').classList.remove('active');
+  document.getElementById('screen-case').classList.add('active');
+}
+
+function openPatientLog(id){
+  if(id === 'ani'){
+    showScreen('activity');
+  } else {
+    toast('Karen\'s clinical activity would open the same way, once she has her own login-linked record');
+  }
+}
+
+function setPTab(name){
+  document.querySelectorAll('.ptab-view').forEach(function(v){ v.classList.remove('active'); });
+  document.getElementById('ptab-' + name).classList.add('active');
+  document.querySelectorAll('.ptab').forEach(function(b){ b.classList.toggle('active', b.dataset.ptab === name); });
+}
+
+function toggleFeedback(){
+  document.getElementById('feedback-panel').classList.toggle('show');
+}
+document.querySelectorAll('.fp-type').forEach(function(c){
+  c.addEventListener('click', function(){
+    document.querySelectorAll('.fp-type').forEach(function(x){ x.classList.remove('active'); });
+    c.classList.add('active');
+  });
+});
+function submitFeedback(){
+  var t = document.querySelector('.feedback-panel textarea');
+  if(!t.value.trim()){ toast('Add a note before sending'); return; }
+  t.value = '';
+  toggleFeedback();
+  toast('Feedback sent, thank you');
+}
+
+function toggleNotifs(){
+  document.getElementById('notif-dropdown').classList.toggle('show');
+}
+function toggleProfileMenu(){
+  document.getElementById('profile-dropdown').classList.toggle('show');
+}
+document.addEventListener('click', function(e){
+  var wrap = document.querySelector('.bell-wrap');
+  if(wrap && !wrap.contains(e.target)){
+    document.getElementById('notif-dropdown').classList.remove('show');
+  }
+  var pwrap = document.querySelector('.profile-wrap');
+  if(pwrap && !pwrap.contains(e.target)){
+    document.getElementById('profile-dropdown').classList.remove('show');
+  }
+});
+
+function toggleYearHistory(){
+  var body = document.getElementById('year-body');
+  var arrow = document.getElementById('year-toggle-arrow');
+  body.classList.toggle('show');
+  arrow.innerHTML = body.classList.contains('show') ? '&#9650;' : '&#9660;';
+}
+document.querySelectorAll('.chip-row .chip:not(.who-chip):not(.cat-chip)').forEach(function(c){
+  c.addEventListener('click', function(){
+    var row = c.closest('.chip-row');
+    row.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('active'); });
+    c.classList.add('active');
+    toast('Would filter the list to "' + c.textContent + '"');
+  });
+});
+document.querySelectorAll('.who-chip').forEach(function(c){
+  c.addEventListener('click', function(){
+    document.querySelectorAll('.who-chip').forEach(function(x){ x.classList.remove('active'); });
+    c.classList.add('active');
+    var who = c.dataset.who;
+    document.querySelectorAll('.hist-table tbody tr').forEach(function(tr){
+      var tag = tr.querySelector('.who-tag');
+      var name = tag ? tag.textContent.trim().toLowerCase() : '';
+      tr.style.display = (who === 'all' || name === who) ? '' : 'none';
+    });
+  });
+});
+
+document.querySelectorAll('.cat-chip').forEach(function(c){
+  c.addEventListener('click', function(){
+    document.querySelectorAll('.cat-chip').forEach(function(x){ x.classList.remove('active'); });
+    c.classList.add('active');
+    var cat = c.dataset.cat;
+    document.querySelectorAll('.tl-day').forEach(function(day){
+      var items = day.querySelectorAll('.tl-event, .tl-appt');
+      var anyVisible = false;
+      items.forEach(function(item){
+        var match = (cat === 'all' || item.dataset.cat === cat);
+        item.style.display = match ? '' : 'none';
+        if(match) anyVisible = true;
+      });
+      var causedBy = day.querySelector('.tl-caused-by');
+      var btn = day.querySelector('button');
+      if(causedBy){
+        var anyEventVisible = Array.prototype.some.call(day.querySelectorAll('.tl-event'), function(e){ return e.style.display !== 'none'; });
+        causedBy.style.display = anyEventVisible ? '' : 'none';
+      }
+      if(btn){ btn.style.display = anyVisible ? '' : 'none'; }
+      day.style.display = anyVisible ? '' : 'none';
+    });
+  });
+});
+
+function toggleFamForm(){
+  document.getElementById('fam-form').classList.toggle('show');
+}
+
+document.querySelectorAll('.rel-chip').forEach(function(c){
+  c.addEventListener('click', function(){
+    document.querySelectorAll('.rel-chip').forEach(function(x){ x.classList.remove('active'); });
+    c.classList.add('active');
+  });
+});
+
+document.getElementById('fam-dob') && document.getElementById('fam-dob').addEventListener('change', function(){
+  var dob = new Date(this.value);
+  var age = (new Date() - dob) / (1000 * 60 * 60 * 24 * 365.25);
+  var isMinor = this.value && age < 19;
+  document.getElementById('fam-minor-note').style.display = isMinor ? 'block' : 'none';
+  document.getElementById('fam-adult-note').style.display = isMinor ? 'none' : 'block';
+});
+
+function addFamilyMember(){
+  var name = document.getElementById('fam-name').value.trim();
+  var relChip = document.querySelector('.rel-chip.active');
+  var rel = relChip ? relChip.dataset.rel : 'Family member';
+  if(!name){ toast('Enter a name first'); return; }
+  var el = document.createElement('div');
+  el.className = 'fam-list-item';
+  var initial = name.charAt(0).toUpperCase();
+  el.innerHTML = '<div class="fam-left"><span class="avatar">' + initial + '</span><div><b style="font-size:13.5px;">' + name + '</b> <span class="rel-badge">' + rel + '</span><div class="doc-sub">Added just now</div></div></div><button class="btn ghost" onclick="toast(\'Case log would open here\')">Case log</button>';
+  document.getElementById('fam-added').appendChild(el);
+  document.getElementById('fam-name').value = '';
+  document.getElementById('fam-dob').value = '';
+  document.getElementById('fam-form').classList.remove('show');
+  toast(name + ' added to your family group');
+}
+
+function filterProfile(person){
+  document.querySelectorAll('.profile-circle').forEach(function(b){ b.classList.toggle('active', b.dataset.person === person); });
+  document.querySelectorAll('.dash-mini-row-wrap[data-person], .dash-mini-row[data-person]').forEach(function(el){
+    el.style.display = (person === 'all' || el.dataset.person === person) ? '' : 'none';
+  });
+}
+
+function setMode(mode){
+  document.body.classList.remove('mode-v1', 'mode-v2');
+  document.body.classList.add('mode-' + mode);
+  document.querySelectorAll('.mode-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.mode === mode); });
+  document.getElementById('mode-label').textContent = mode === 'v1' ? 'V1, family account' : 'V2, single account';
+  toast(mode === 'v1' ? 'Switched to family account view' : 'Switched to single account view');
+}
+
+function handleBookClick(name){
+  if(document.body.classList.contains('mode-v2')){ openCareChoice('Ani'); return; }
+  if(name){ openCareChoice(name); } else { openBookModal(); }
+}
+function openBookModal(){ document.getElementById('book-modal-overlay').classList.add('show'); }
+function closeBookModal(){ document.getElementById('book-modal-overlay').classList.remove('show'); }
+function selectBookFor(name){ closeBookModal(); openCareChoice(name); }
+
+var careChoiceFor = 'Ani';
+function openCareChoice(name){
+  careChoiceFor = name || 'Ani';
+  showScreen('carechoice');
+}
+function chooseCareMode(mode){
+  if(mode === 'family'){
+    startBooking(careChoiceFor, 'followup');
+    bookingGoTo(2);
+    toast("You're paired with Dr. Daniel Pannozzo — continuing your ongoing care");
+  } else {
+    startBooking(careChoiceFor, 'sameday');
+  }
+}
+
+/* ===== booking + intake ===== */
+var TYPE_LABELS = { sameday:'Same-day care', scheduled:'Scheduled visit', followup:'Follow-up with Dr. Pannozzo' };
+var bookingState = { who:'Ani', type:'sameday', attachments:0 };
+
+function startBooking(who, presetType){
+  bookingState = { who: who || 'Ani', type: presetType || 'sameday', attachments: 0 };
+  document.getElementById('booking-who-line').textContent = 'For ' + bookingState.who;
+  document.getElementById('intake-reason').value = '';
+  document.getElementById('intake-upload-list').innerHTML = '';
+  document.querySelectorAll('#screen-booking .check-row.on').forEach(function(r){ r.classList.remove('on'); });
+  document.getElementById('triage-alert').style.display = 'none';
+  // reset type selection to preset
+  document.querySelectorAll('#bstep-1 .opt-card').forEach(function(c){
+    c.classList.toggle('selected', c.dataset.type === bookingState.type);
+  });
+  showScreen('booking');
+  bookingGoTo(1);
+}
+
+function bookingGoTo(n){
+  document.querySelectorAll('#screen-booking .step-panel').forEach(function(p){ p.classList.remove('active'); });
+  var id = (n === 'done') ? 'bstep-done' : 'bstep-' + n;
+  document.getElementById(id).classList.add('active');
+  // progress dots
+  document.querySelectorAll('#screen-booking .step-dot').forEach(function(d){
+    var s = parseInt(d.dataset.step, 10);
+    d.classList.toggle('done', typeof n === 'number' && s < n);
+    d.classList.toggle('current', typeof n === 'number' && s === n);
+  });
+  if(n === 4) bookingReviewFill();
+  window.scrollTo(0, 0);
+}
+
+function bookingSelectType(el, val){
+  bookingState.type = val;
+  document.querySelectorAll('#bstep-1 .opt-card').forEach(function(c){ c.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+function toggleCheck(el){
+  el.classList.toggle('on');
+  var anyRed = document.querySelector('#screen-booking .check-row.redflag.on');
+  document.getElementById('triage-alert').style.display = anyRed ? 'flex' : 'none';
+}
+
+function bookingReviewFill(){
+  var reason = document.getElementById('intake-reason').value.trim() || 'Not specified';
+  var symptoms = [];
+  document.querySelectorAll('#screen-booking .check-row.on').forEach(function(r){ symptoms.push(r.textContent.trim()); });
+  var typeLabel = TYPE_LABELS[bookingState.type];
+  var when = bookingState.type === 'sameday' ? "Today, joins the queue now" :
+             (bookingState.type === 'followup' ? "Today, Dr. Pannozzo's queue" : "Wed Jul 29, 9:00 AM – 1:00 PM");
+  var rows = [
+    ['For', bookingState.who],
+    ['Visit type', typeLabel],
+    ['When', when],
+    ['Reason', reason],
+    ['Flagged symptoms', symptoms.length ? symptoms.join(', ') : 'None'],
+    ['Attachments', bookingState.attachments + (bookingState.attachments === 1 ? ' file' : ' files')]
+  ];
+  document.getElementById('booking-review').innerHTML = rows.map(function(r){
+    return '<div class="review-row"><span class="rk">' + r[0] + '</span><span class="rv">' + r[1] + '</span></div>';
+  }).join('');
+}
+
+function bookingConfirm(){
+  var scheduled = (bookingState.type === 'scheduled');
+  document.getElementById('confirm-title').textContent = scheduled ? "Visit booked" : "You're in the queue";
+  document.getElementById('confirm-sub').textContent = scheduled
+    ? "We've booked your window. It's now on your dashboard."
+    : "We'll text you as your turn gets close. You're #6 in line right now.";
+  // scheduled visits don't have a live queue button
+  document.querySelector('#bstep-done .step-nav').innerHTML = scheduled
+    ? '<button class="btn primary" onclick="showScreen(\'appointments\')">See my appointments</button><button class="btn ghost" onclick="showScreen(\'dashboard\')">Back to dashboard</button>'
+    : '<button class="btn primary" onclick="showScreen(\'queue\')">Track my place live</button><button class="btn ghost" onclick="showScreen(\'dashboard\')">Back to dashboard</button>';
+  if(!scheduled){
+    setQueueState('waiting');
+    notifyPhysicianDemo();
+  }
+  bookingGoTo('done');
+}
+
+/* ===== cross-portal demo link: tell the physician dashboard a patient joined the queue ===== */
+function notifyPhysicianDemo(){
+  var reason = (document.getElementById('intake-reason').value || '').trim() || 'Not specified';
+  var symptoms = [];
+  document.querySelectorAll('#screen-booking .check-row.on').forEach(function(r){ symptoms.push(r.textContent.trim()); });
+  var redflag = !!document.querySelector('#screen-booking .check-row.redflag.on');
+  var msg = {
+    source:'simplecare-patient-demo',
+    type:'patient-joined-queue',
+    payload:{ name: bookingState.who, reason: reason, redflag: redflag, symptoms: symptoms }
+  };
+  try{
+    if(window.parent && window.parent !== window){ window.parent.postMessage(msg, '*'); }
+  }catch(e){ /* not embedded, ignore */ }
+}
+
+/* ===== document upload ===== */
+function fmtSize(bytes){
+  if(bytes < 1024) return bytes + ' B';
+  if(bytes < 1048576) return Math.round(bytes/1024) + ' KB';
+  return (bytes/1048576).toFixed(1) + ' MB';
+}
+function renderUpload(file, listId){
+  var row = document.createElement('div');
+  row.className = 'upload-row';
+  row.innerHTML = '<span>&#128196;</span><div style="flex:1;min-width:0;"><div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' +
+    file.name + '</div><div class="upload-bar"><div class="upload-bar-fill"></div></div></div>' +
+    '<span class="doc-sub" style="flex-shrink:0;">' + fmtSize(file.size) + '</span>' +
+    '<button class="btn ghost sm" onclick="this.closest(\'.upload-row\').remove()">Remove</button>';
+  document.getElementById(listId).appendChild(row);
+  var fill = row.querySelector('.upload-bar-fill');
+  setTimeout(function(){ fill.style.width = '100%'; }, 40);
+}
+function handleDocUpload(files){
+  for(var i=0;i<files.length;i++){ renderUpload(files[i], 'doc-upload-list'); }
+  toast(files.length + (files.length === 1 ? ' file uploaded' : ' files uploaded'));
+}
+function attachUpload(files){
+  for(var i=0;i<files.length;i++){ renderUpload(files[i], 'intake-upload-list'); }
+  bookingState.attachments += files.length;
+}
+
+/* ===== live queue with edge-case states ===== */
+var QUEUE = {
+  waiting: { cls:'waiting', eyebrow:'You are in the queue', pos:'#6 in line', posBig:true,
+    msg:'5 patients ahead &middot; estimated call 11:40 AM – 12:10 PM. We\'ll text you when it\'s close.',
+    actions:'<button class="btn ghost" onclick="setQueueState(\'next\')">Simulate: move up</button>' },
+  next: { cls:'next', eyebrow:'You\'re next', pos:'#1', posBig:true,
+    msg:'The doctor will call you within a few minutes. Please stay near your phone with a signal.',
+    actions:'<button class="btn primary" onclick="toast(\'Answering the call…\')">I\'m ready</button>' },
+  progress: { cls:'progress', eyebrow:'In your visit', pos:'<span class="q-spinner"></span>Connected', posBig:false,
+    msg:'You\'re with Dr. Pannozzo now. Clinical actions will appear in your record afterward.',
+    actions:'<button class="btn ghost" onclick="setQueueState(\'done\')">End visit</button>' },
+  delayed: { cls:'delayed', eyebrow:'Running behind', pos:'#4 in line', posBig:true,
+    msg:'The doctor is running about 25 minutes behind. Your spot is held &mdash; no need to do anything.',
+    actions:'<button class="btn ghost" onclick="toast(\'We\\\'ll text you a fresh estimate\')">Notify me of changes</button>' },
+  missed: { cls:'missed', eyebrow:'We couldn\'t reach you', pos:'Call missed', posBig:false,
+    msg:'The doctor tried to call and couldn\'t connect. You have a short grace window to rejoin before losing your spot.',
+    countdown:true,
+    actions:'<button class="btn primary" onclick="setQueueState(\'next\')">Rejoin now</button><button class="btn ghost" onclick="setQueueState(\'noshow\')">I can\'t take the call</button>' },
+  dropped: { cls:'dropped', eyebrow:'Call dropped', pos:'Reconnecting', posBig:false,
+    msg:'Your call disconnected. We\'re holding your place at the front while we try to reconnect.',
+    actions:'<button class="btn primary" onclick="setQueueState(\'progress\')">Reconnect now</button>' },
+  done: { cls:'done', eyebrow:'Visit complete', pos:'&#10003; Done', posBig:false,
+    msg:'Your visit summary and any prescriptions or orders are on the way to your records.',
+    actions:'<button class="btn primary" onclick="openCase(\'jun25\')">View visit summary</button>' },
+  noshow: { cls:'noshow', eyebrow:'Marked as no-show', pos:'Missed', posBig:false,
+    msg:'This visit was closed because we couldn\'t connect. A no-show fee may apply. You can book again anytime.',
+    actions:'<button class="btn primary" onclick="handleBookClick()">Book a new visit</button>' }
+};
+var queueState = 'waiting';
+
+function setQueueState(s){
+  queueState = s;
+  renderQueue(true);
+}
+function renderQueue(animate){
+  var q = QUEUE[queueState] || QUEUE.waiting;
+  document.querySelectorAll('.proto-bar button').forEach(function(b){
+    b.classList.toggle('active', b.dataset.qs === queueState);
+  });
+  var posClass = q.posBig ? 'q-pos' : 'q-pos" style="font-size:16px;';
+  var countdown = q.countdown ? '<p class="q-countdown" id="q-countdown">4:59</p>' : '';
+  document.getElementById('q-render').innerHTML =
+    '<div class="q-hero ' + q.cls + '">' +
+      '<p class="q-eyebrow">' + q.eyebrow + '</p>' +
+      '<p class="' + posClass + '" id="q-pos">' + q.pos + '</p>' +
+      countdown +
+      '<p class="q-msg">' + q.msg + '</p>' +
+      '<div class="q-actions">' + q.actions + '</div>' +
+    '</div>';
+  if(animate && q.posBig){
+    var el = document.getElementById('q-pos');
+    el.classList.add('bump');
+    setTimeout(function(){ el.classList.remove('bump'); }, 320);
+  }
+  if(q.countdown) startGrace();
+}
+var graceTimer;
+function startGrace(){
+  clearInterval(graceTimer);
+  var t = 299;
+  graceTimer = setInterval(function(){
+    var el = document.getElementById('q-countdown');
+    if(!el || queueState !== 'missed'){ clearInterval(graceTimer); return; }
+    t--;
+    if(t < 0){ clearInterval(graceTimer); setQueueState('noshow'); return; }
+    el.textContent = Math.floor(t/60) + ':' + ('0' + (t%60)).slice(-2);
+  }, 1000);
+}
+
+/* ===== chronic care ===== */
+function requestRefill(med){
+  toast('Refill request sent for ' + med + '. Your pharmacy will be notified once approved.');
+}
+function logReading(kind){
+  var label, val;
+  if(kind === 'bp'){
+    val = prompt('Log blood pressure (e.g. 130/85):');
+    label = 'Blood pressure';
+  } else {
+    val = prompt('Log blood glucose (mmol/L):');
+    label = 'Blood glucose';
+  }
+  if(!val){ return; }
+  var row = document.createElement('div');
+  row.className = 'reading-row';
+  row.style.animation = 'fadeSlide .2s ease';
+  var now = new Date();
+  var time = now.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ', ' +
+             now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  row.innerHTML = '<span>' + label + ' &middot; ' + val + '</span><span>' + time + '</span>';
+  var log = document.getElementById('reading-log');
+  log.insertBefore(row, log.firstChild);
+  toast('Reading logged');
+}
+
+function toast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2200);
+}
+</script>
+
+</body>
+</html>

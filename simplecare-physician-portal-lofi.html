@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SimpleCare Physician Portal — Low-Fi IA Mockup</title>
+<style>
+  :root{
+    --ink:#1c1f26; --ink-soft:#5b6070; --ink-faint:#9296a3;
+    --line:#d7d9e0; --line-strong:#b7bac6;
+    --paper:#fbfbfa; --panel:#ffffff; --wash:#eef0f4;
+    --accent:#2c438a; --accent-wash:#e3e8f5; --accent-ink:#1d2d5e;
+    --good:#2f6b4f; --good-wash:#e4f0e9;
+    --warn:#8a5a1f; --warn-wash:#fff4e2; --warn-line:#e0b978;
+    --crit:#b23434; --crit-wash:#fdecec; --crit-line:#e8a5a5; --crit-ink:#8a2020;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    background:var(--paper);color:var(--ink);font-size:13px;
+  }
+  .app{display:flex;min-height:100vh;}
+
+  /* sidebar */
+  .sidebar{width:220px;flex-shrink:0;background:var(--panel);border-right:1px dashed var(--line-strong);padding:20px 14px;transition:width .16s ease;}
+  .brand{font-size:15px;font-weight:600;letter-spacing:.01em;margin:0 0 2px 2px;}
+  .brand-sub{
+    display:inline-block;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);
+    border:1px dashed var(--line-strong);border-radius:20px;padding:2px 9px;margin:0 0 16px 2px;
+  }
+  .nav-group{margin-bottom:18px;}
+  .nav-group-label{
+    font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);
+    margin:0 0 6px 6px;
+  }
+  .nav-btn{
+    display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:1px solid transparent;
+    padding:9px 10px;border-radius:6px;font-size:13.5px;color:var(--ink-soft);cursor:pointer;
+    font-family:inherit;margin-bottom:2px;transition:background .12s;
+  }
+  .nav-icon{width:16px;flex-shrink:0;text-align:center;font-size:13.5px;color:var(--ink-faint);}
+  .nav-btn.active .nav-icon{color:var(--accent-ink);}
+  .nav-btn-quick .nav-icon{color:var(--accent-ink);}
+  .nav-btn.active{
+    background:var(--accent-wash);color:var(--accent-ink);
+    border:1px dashed var(--accent);font-weight:600;
+  }
+  .nav-btn:hover:not(.active){background:var(--wash);}
+  .nav-btn-secondary{font-size:12px;color:var(--ink-faint);}
+  .nav-btn-quick{
+    border:1px dashed var(--accent);color:var(--accent-ink);font-weight:600;
+  }
+  .nav-btn-quick:hover{background:var(--accent-wash);}
+
+  /* collapsible rail */
+  .sidebar-collapse-wrap{border-top:1px solid var(--line);margin:6px 0 10px;padding-top:10px;}
+  .nav-flyout-wrap{position:relative;margin-bottom:18px;}
+  .nav-btn-parent{
+    display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:1px solid transparent;
+    padding:9px 10px;border-radius:6px;font-size:13.5px;color:var(--ink-soft);cursor:pointer;
+    font-family:inherit;transition:background .12s;
+  }
+  .nav-btn-parent:hover{background:var(--wash);}
+  .nav-btn-parent .nav-caret{margin-left:auto;color:var(--ink-faint);font-size:12px;}
+  .nav-btn-parent.active-child{
+    background:var(--accent-wash);color:var(--accent-ink);border:1px dashed var(--accent);font-weight:600;
+  }
+  .nav-flyout{
+    display:none;position:absolute;left:100%;top:0;margin-left:8px;min-width:190px;
+    background:var(--panel);border:1px solid var(--line-strong);border-radius:10px;padding:6px;
+    box-shadow:0 8px 24px rgba(0,0,0,.14);z-index:40;
+  }
+  .nav-flyout-wrap:hover .nav-flyout, .nav-flyout-wrap:focus-within .nav-flyout{display:block;}
+  .nav-flyout-item{
+    display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:none;
+    padding:8px 9px;border-radius:6px;font-size:13px;color:var(--ink-soft);cursor:pointer;font-family:inherit;
+  }
+  .nav-flyout-item:hover{background:var(--wash);}
+  .nav-flyout-item.active{background:var(--accent-wash);color:var(--accent-ink);font-weight:600;}
+  .sidebar.collapsed .nav-flyout{left:100%;margin-left:10px;top:0;}
+  .sidebar-collapse-btn{
+    display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;
+    padding:7px 8px;border-radius:6px;font-size:12px;color:var(--ink-faint);cursor:pointer;font-family:inherit;
+  }
+  .sidebar-collapse-btn:hover{background:var(--wash);color:var(--ink-soft);}
+  .sidebar.collapsed{width:64px;padding:20px 10px;}
+  .sidebar.collapsed .brand,
+  .sidebar.collapsed .brand-sub,
+  .sidebar.collapsed .nav-group-label,
+  .sidebar.collapsed .nav-label,
+  .sidebar.collapsed .ia-note,
+  .sidebar.collapsed .notes-toggle-wrap,
+  .sidebar.collapsed .collapse-label{display:none;}
+  .sidebar.collapsed .rail-mark{
+    display:flex;width:32px;height:32px;border-radius:8px;background:var(--accent-wash);color:var(--accent-ink);
+    align-items:center;justify-content:center;font-size:13px;font-weight:700;margin:0 auto 16px;
+  }
+  .rail-mark{display:none;}
+  .sidebar.collapsed .nav-btn{justify-content:center;padding:9px 0;position:relative;}
+  .sidebar.collapsed .nav-btn .nav-label{
+    display:none;position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:10px;
+    background:var(--ink);color:#fff;padding:6px 11px;border-radius:6px;font-size:12px;
+    white-space:nowrap;box-shadow:0 6px 16px rgba(0,0,0,.18);z-index:50;pointer-events:none;
+  }
+  .sidebar.collapsed .nav-btn:hover .nav-label{display:block;}
+  .sidebar.collapsed .sidebar-collapse-btn{justify-content:center;}
+
+  .tm-overlay{
+    display:none;position:fixed;inset:0;background:rgba(28,31,38,.35);z-index:45;
+    align-items:center;justify-content:center;
+  }
+  .tm-overlay.show{display:flex;}
+  .tm-card{
+    background:var(--panel);border-radius:12px;padding:20px;width:360px;
+    box-shadow:0 12px 32px rgba(0,0,0,.18);
+  }
+  .tm-title{font-size:15px;font-weight:600;margin:0 0 3px;}
+  .tm-sub{font-size:12px;color:var(--ink-soft);margin:0 0 14px;}
+  .tm-field{margin-bottom:12px;}
+  .tm-field label{display:block;font-size:11.5px;color:var(--ink-soft);margin-bottom:4px;}
+  .tm-field select, .tm-field textarea, .tm-field input[type="text"]{
+    width:100%;font-family:inherit;font-size:13px;border:1px solid var(--line-strong);
+    border-radius:6px;padding:8px 10px;background:var(--paper);
+  }
+  .ao-overlay{
+    display:none;position:fixed;inset:0;background:rgba(28,31,38,.35);z-index:45;
+    align-items:center;justify-content:center;
+  }
+  .ao-overlay.show{display:flex;}
+  .tm-field textarea{min-height:70px;resize:vertical;}
+  .tm-chip-row{display:flex;gap:6px;flex-wrap:wrap;}
+  .tm-chip{
+    font-size:11.5px;padding:5px 11px;border-radius:20px;cursor:pointer;
+    border:1px dashed var(--line-strong);background:var(--panel);color:var(--ink-soft);
+  }
+  .tm-chip.active{background:var(--accent);border-color:var(--accent);color:#fff;border-style:solid;}
+  .tm-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px;}
+  .nav-flag{
+    font-size:9.5px;font-weight:600;color:var(--warn);background:var(--warn-wash);
+    border-radius:20px;padding:1px 6px;margin-left:4px;
+  }
+  .notes-toggle-wrap{
+    border-top:1px dashed var(--line);margin-top:4px;padding-top:12px;
+  }
+  .notes-toggle{
+    display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink-faint);
+    background:none;border:none;cursor:pointer;font-family:inherit;padding:2px;width:100%;text-align:left;
+  }
+  .notes-toggle .dot{width:7px;height:7px;border-radius:50%;background:var(--line-strong);flex-shrink:0;}
+  body.show-notes .notes-toggle .dot{background:var(--accent);}
+  .notes-toggle:hover{color:var(--ink-soft);}
+
+  /* main */
+  .main{flex:1;padding:0 0 34px;max-width:940px;}
+  .main-inner{padding:22px 34px 0;}
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    padding:14px 34px;border-bottom:1px dashed var(--line);margin-bottom:6px;background:var(--panel);
+  }
+  .topbar-right{display:flex;align-items:center;gap:10px;}
+  .tb-taskmoa{
+    display:flex;align-items:center;gap:7px;background:var(--accent);color:#fff;border:none;
+    border-radius:7px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
+    transition:background .12s;
+  }
+  .tb-taskmoa:hover{background:var(--accent-ink);}
+  .tb-left{display:flex;align-items:center;gap:8px;}
+  .tb-switch{
+    display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--line-strong);
+    border-radius:20px;padding:6px 13px;font-size:12.5px;color:var(--ink-soft);cursor:pointer;
+    font-family:inherit;transition:background .12s;
+  }
+  .tb-switch:hover{background:var(--wash);}
+  .tb-addon{
+    display:flex;align-items:center;gap:7px;background:none;color:var(--accent-ink);
+    border:1px dashed var(--accent);border-radius:7px;padding:7px 13px;font-size:13px;font-weight:600;
+    cursor:pointer;font-family:inherit;transition:background .12s;
+  }
+  .tb-addon:hover{background:var(--accent-wash);}
+  .addon-tag{
+    display:inline-block;font-size:10.5px;font-weight:600;color:var(--accent-ink);background:var(--accent-wash);
+    border-radius:10px;padding:1px 8px;margin-left:6px;letter-spacing:.02em;
+  }
+  .topbar .avatar{
+    width:32px;height:32px;border-radius:50%;background:var(--accent-wash);color:var(--accent-ink);
+    display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
+  }
+  .topbar .tb-name{font-size:12.5px;color:var(--ink-soft);}
+  .topbar .tb-name b{color:var(--ink);}
+  .topbar .bell{
+    width:32px;height:32px;border-radius:50%;border:1px dashed var(--line-strong);background:var(--panel);
+    display:flex;align-items:center;justify-content:center;font-size:14px;cursor:default;
+  }
+  .profile-wrap{position:relative;}
+  .profile-trigger{background:none;border:none;padding:0;cursor:pointer;border-radius:50%;line-height:0;}
+  .profile-trigger:hover .avatar{outline:2px solid var(--line-strong);}
+  .profile-dropdown{
+    display:none;position:absolute;top:42px;right:0;width:220px;background:var(--panel);
+    border:1px solid var(--line-strong);border-radius:10px;padding:8px;z-index:10;
+    box-shadow:0 4px 14px rgba(0,0,0,.08);
+  }
+  .profile-dropdown.show{display:block;}
+  .pd-head{display:flex;align-items:center;gap:9px;padding:6px 8px 10px;}
+  .pd-head b{font-size:13.5px;}
+  .pd-item{
+    display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:none;border:none;
+    padding:8px 8px;border-radius:6px;font-size:13px;color:var(--ink);cursor:pointer;font-family:inherit;
+  }
+  .pd-item:hover{background:var(--wash);}
+  .pd-divider{border-top:1px dashed var(--line);margin:6px 2px;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+  h1{font-size:20px;margin:0 0 4px;}
+  .sub{color:var(--ink-soft);font-size:13.5px;margin:0 0 16px;}
+  .ia-note{
+    display:none;
+    font-size:11.5px;color:var(--accent-ink);background:var(--accent-wash);border-radius:8px;
+    padding:9px 11px;margin-bottom:14px;
+  }
+  .ia-note b{font-weight:700;}
+  body.show-notes .ia-note{display:block;}
+
+  .box{
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:16px 18px;margin-bottom:14px;box-shadow:0 1px 2px rgba(28,31,38,.04);
+  }
+  .box-title{
+    font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;
+    color:var(--ink-soft);margin:0 0 10px;
+  }
+
+  /* alerts band */
+  .alert-row{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;margin-bottom:8px;border-radius:10px;}
+  .alert-row.critical{background:var(--crit-wash);border:1px solid var(--crit-line);color:var(--crit-ink);}
+  .alert-row.routine{background:var(--warn-wash);border:1px solid var(--warn-line);color:var(--warn);font-size:12.5px;}
+  .alert-tier{font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;flex-shrink:0;width:56px;padding-top:1px;}
+  .alert-body{flex:1;}
+  .alert-actions{display:flex;gap:8px;flex-shrink:0;}
+  .btn{
+    font-size:12.5px;padding:8px 12px;border-radius:6px;cursor:pointer;
+    border:1px solid var(--line-strong);background:var(--panel);color:var(--ink);font-family:inherit;
+  }
+  .btn.dark{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .btn.crit{border-color:var(--crit-line);color:var(--crit-ink);background:transparent;}
+  .btn.crit.dark{background:var(--crit);border-color:var(--crit);color:#fff;}
+  .btn:hover{opacity:.85;}
+  .btn.xs{padding:5px 9px;font-size:11.5px;}
+  .routine-list{display:none;margin-top:4px;}
+  .routine-list.show{display:block;}
+  .routine-toggle{cursor:pointer;font-size:12px;color:var(--warn);font-weight:600;}
+
+  /* call window strip */
+  .win-strip{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+  .win-chip{
+    font-size:12px;padding:6px 12px;border-radius:20px;cursor:pointer;
+    border:1px dashed var(--line-strong);background:var(--panel);color:var(--ink-soft);
+  }
+  .win-chip.active{background:var(--accent);border-color:var(--accent);color:#fff;border-style:solid;}
+
+  /* queue table */
+  .q-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .q-table th{
+    text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;
+    color:var(--ink-faint);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line-strong);
+  }
+  .q-table td{padding:9px 8px;border-bottom:1px dashed var(--line);vertical-align:top;}
+  .q-table tr.redflag td{background:#fdf3f3;}
+  .status-pill{
+    font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap;
+  }
+  .status-pill.waiting{background:var(--accent-wash);color:var(--accent-ink);}
+  .status-pill.next{background:var(--good-wash);color:var(--good);}
+  .status-pill.progress{background:var(--good-wash);color:var(--good);}
+  .status-pill.delayed{background:var(--warn-wash);color:var(--warn);}
+  .status-pill.missed,.status-pill.dropped{background:var(--crit-wash);color:var(--crit-ink);}
+  .status-pill.done{background:var(--wash);color:var(--ink-soft);}
+  .status-pill.noshow{background:var(--wash);color:var(--ink-faint);}
+  .status-pill.in-progress{background:var(--accent-wash);color:var(--accent-ink);}
+  .status-pill.completed{background:var(--good-wash);color:var(--good);}
+  .status-pill.carried-forward{background:var(--warn-wash);color:var(--warn);}
+  .status-pill.received{background:var(--warn-wash);color:var(--warn);}
+  .status-pill.reviewed{background:var(--accent-wash);color:var(--accent-ink);}
+  .status-pill.signed-off{background:var(--good-wash);color:var(--good);}
+  .status-pill.urgent{background:var(--crit-wash);color:var(--crit-ink);}
+
+  /* inbox / clear-the-inbox review */
+  .inbox-row{display:flex;gap:12px;align-items:flex-start;padding:11px 13px;margin-bottom:7px;border-radius:9px;background:var(--paper);border:1px solid var(--line);cursor:pointer;}
+  .inbox-row:hover{border-color:var(--line-strong);}
+  .inbox-row.urgent{background:var(--crit-wash);border-color:var(--crit-line);}
+  .inbox-type{font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;color:var(--ink-faint);flex-shrink:0;width:64px;padding-top:2px;}
+  .inbox-row.urgent .inbox-type{color:var(--crit-ink);}
+  .inbox-body{flex:1;font-size:12.5px;}
+  .inbox-body b{color:var(--ink);}
+  .inbox-meta{font-size:11px;color:var(--ink-faint);margin-top:1px;}
+  .inbox-actions{display:flex;gap:7px;align-items:center;flex-shrink:0;}
+  .inbox-count{
+    display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;
+    background:var(--crit);color:#fff;border-radius:20px;font-size:10.5px;font-weight:700;margin-left:6px;
+  }
+  .inbox-section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin:14px 0 6px;}
+  .inbox-section-label:first-child{margin-top:0;}
+  .redflag-badge{
+    display:inline-block;font-size:10px;font-weight:700;color:var(--crit-ink);background:var(--crit-wash);
+    border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:middle;
+  }
+  .q-actions{display:flex;gap:6px;flex-wrap:wrap;}
+
+  /* scheduled section */
+  .sched-note{font-size:12px;color:var(--ink-faint);margin:0 0 8px;}
+  .sched-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px;}
+  .sched-row:last-child{border-bottom:none;}
+
+  /* copilot slide-over */
+  .copilot-overlay{
+    display:none;position:fixed;inset:0;background:rgba(28,31,38,.35);z-index:40;
+  }
+  .copilot-overlay.show{display:block;}
+  .copilot-panel{
+    position:fixed;top:0;right:0;bottom:0;width:340px;background:var(--panel);
+    border-left:1px solid var(--line-strong);padding:18px;overflow-y:auto;
+    box-shadow:-8px 0 24px rgba(0,0,0,.08);
+  }
+  .copilot-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  .copilot-head b{font-size:14.5px;}
+  .copilot-close{
+    background:none;border:1px dashed var(--line-strong);border-radius:6px;cursor:pointer;
+    font-family:inherit;padding:3px 9px;color:var(--ink-soft);
+  }
+  .copilot-disclaimer{
+    font-size:11.5px;color:var(--warn);background:var(--warn-wash);border-radius:8px;
+    padding:9px 11px;margin-top:12px;
+  }
+  .copilot-section{margin-bottom:12px;}
+  .copilot-section .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-faint);margin:0 0 3px;}
+  .copilot-section .v{font-size:13px;margin:0;}
+
+  /* calendar merge */
+  .mode-toggle{display:flex;gap:0;margin-bottom:14px;border:1px solid var(--line-strong);border-radius:8px;width:fit-content;overflow:hidden;}
+  .mode-toggle button{
+    padding:8px 16px;font-size:12.5px;border:none;background:var(--panel);cursor:pointer;
+    font-family:inherit;color:var(--ink-soft);
+  }
+  .mode-toggle button.active{background:var(--accent);color:#fff;}
+  .cal-grid{display:grid;grid-template-columns:60px repeat(7,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:11px;}
+  .cal-grid .hd{padding:6px;text-align:center;font-weight:600;border-bottom:1px solid var(--line-strong);background:var(--wash);color:var(--ink-soft);}
+  .cal-grid .hr{padding:3px 6px;color:var(--ink-faint);border-top:1px dashed var(--line);}
+  .cal-grid .slot{border-top:1px dashed var(--line);border-left:1px dashed var(--line);min-height:20px;}
+  .cal-grid .slot.on{background:var(--accent-wash);}
+  .edit-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;font-size:13px;}
+  .edit-row input{
+    font-family:inherit;font-size:12.5px;border:1px solid var(--line-strong);border-radius:6px;
+    padding:6px 8px;width:90px;background:var(--paper);
+  }
+  .cat-row{
+    display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border:1px dashed var(--line-strong);
+    border-radius:8px;margin-bottom:6px;font-size:12.5px;
+  }
+  .cat-toggle{
+    font-family:inherit;font-size:11.5px;font-weight:600;border-radius:20px;padding:5px 12px;cursor:pointer;
+    border:1px solid transparent;
+  }
+  .cat-toggle.on{background:var(--good-wash);color:var(--good);border-color:var(--good);}
+  .cat-toggle.off{background:var(--wash);color:var(--ink-faint);border-color:var(--line-strong);}
+  .cat-guardrail{font-size:11.5px;color:var(--ink-faint);margin:0 0 10px;}
+  .cat-guardrail.breach{color:var(--crit-ink);font-weight:600;}
+
+  /* stub screens */
+  .stub-list{list-style:none;margin:0;padding:0;}
+  .stub-list li{padding:9px 0;border-bottom:1px dashed var(--line);font-size:13px;display:flex;justify-content:space-between;}
+  .stub-empty{
+    border:1px dashed var(--line-strong);border-radius:10px;padding:32px;text-align:center;
+    color:var(--ink-faint);font-size:13px;
+  }
+
+  /* floating MOA chat */
+  .chat-fab{
+    position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;
+    background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:20px;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.2);z-index:55;
+  }
+  .chat-fab:hover{background:var(--accent-ink);}
+  .chat-badge{
+    position:absolute;top:-3px;right:-3px;background:var(--crit);color:#fff;font-size:10.5px;font-weight:700;
+    border-radius:10px;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;
+    padding:0 4px;border:2px solid var(--paper);
+  }
+  .chat-panel{
+    display:none;position:fixed;bottom:88px;right:24px;width:320px;height:440px;background:var(--panel);
+    border:1px solid var(--line-strong);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.2);
+    z-index:55;flex-direction:column;overflow:hidden;
+  }
+  .chat-panel.show{display:flex;}
+  .chat-head{
+    display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);
+    font-size:13.5px;font-weight:600;flex-shrink:0;
+  }
+  .chat-head .chat-back{background:none;border:none;cursor:pointer;font-size:15px;color:var(--ink-soft);padding:0 2px 0 0;}
+  .chat-head .chat-close{margin-left:auto;background:none;border:none;cursor:pointer;font-size:16px;color:var(--ink-faint);}
+  .chat-thread-list{overflow-y:auto;flex:1;}
+  .chat-thread-row{
+    display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:none;
+    border-bottom:1px dashed var(--line);padding:11px 14px;cursor:pointer;font-family:inherit;
+  }
+  .chat-thread-row:hover{background:var(--wash);}
+  .chat-thread-avatar{
+    width:32px;height:32px;border-radius:50%;background:var(--accent-wash);color:var(--accent-ink);
+    display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;
+  }
+  .chat-thread-meta{flex:1;min-width:0;}
+  .chat-thread-name{font-size:13px;font-weight:600;color:var(--ink);}
+  .chat-thread-role{font-size:11px;color:var(--ink-faint);}
+  .moa-dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  .moa-dot.on{background:var(--good);}
+  .moa-dot.off{background:var(--ink-faint);}
+  .thread-dot{position:absolute;bottom:0;right:0;border:2px solid var(--panel);}
+  .chat-thread-preview{font-size:11.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;}
+  .chat-thread-unread{
+    background:var(--crit);color:#fff;font-size:10.5px;font-weight:700;border-radius:10px;
+    min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;padding:0 4px;flex-shrink:0;
+  }
+  .chat-messages{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px;}
+  .chat-bubble{max-width:80%;padding:8px 11px;border-radius:12px;font-size:12.5px;line-height:1.35;}
+  .chat-bubble.them{align-self:flex-start;background:var(--wash);color:var(--ink);border-bottom-left-radius:3px;}
+  .chat-bubble.me{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:3px;}
+  .chat-bubble-time{display:block;font-size:9.5px;opacity:.7;margin-top:3px;}
+  .chat-input-row{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);flex-shrink:0;}
+  .chat-input-row input{
+    flex:1;font-family:inherit;font-size:12.5px;border:1px solid var(--line-strong);border-radius:20px;
+    padding:8px 12px;background:var(--paper);
+  }
+  .chat-input-row button{
+    background:var(--accent);color:#fff;border:none;border-radius:50%;width:34px;height:34px;
+    cursor:pointer;font-size:14px;flex-shrink:0;
+  }
+  .chat-input-row button:hover{background:var(--accent-ink);}
+
+  .toast{
+    position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;
+    opacity:0;pointer-events:none;transition:all .2s;z-index:60;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="sidebar" id="sidebar">
+    <p class="brand">Simple Care</p>
+    <p class="brand-sub">Physician &middot; new IA</p>
+    <div class="rail-mark">SC</div>
+
+    <button class="nav-btn active" data-screen="today" onclick="showScreen('today')" style="font-weight:600;margin-bottom:16px;"><span class="nav-icon">&#8962;</span><span class="nav-label">Today</span></button>
+
+    <div class="nav-group">
+      <p class="nav-group-label">Patients</p>
+      <button class="nav-btn" data-screen="inbox" onclick="showScreen('inbox')"><span class="nav-icon">&#9993;</span><span class="nav-label">Inbox<span class="nav-flag" id="inbox-nav-flag" style="display:none;"></span></span></button>
+      <button class="nav-btn" data-screen="encounterlog" onclick="showScreen('encounterlog')"><span class="nav-icon">&#9636;</span><span class="nav-label">Encounter Log</span></button>
+      <button class="nav-btn" data-screen="carryforward" onclick="showScreen('carryforward')"><span class="nav-icon">&#8635;</span><span class="nav-label">Carry Forward</span></button>
+      <button class="nav-btn nav-btn-secondary" data-screen="copilot" onclick="showScreen('copilot')"><span class="nav-icon">&#10022;</span><span class="nav-label">Copilot</span></button>
+    </div>
+
+    <div class="nav-group">
+      <p class="nav-group-label">Schedule</p>
+      <button class="nav-btn" data-screen="calendar" onclick="showScreen('calendar')"><span class="nav-icon">&#9638;</span><span class="nav-label">Calendar</span></button>
+    </div>
+
+    <div class="nav-flyout-wrap" id="practice-flyout-wrap">
+      <button class="nav-btn-parent" id="practice-parent-btn"><span class="nav-icon">&#9776;</span><span class="nav-label">Practice</span><span class="nav-caret">&#8250;</span></button>
+      <div class="nav-flyout">
+        <button class="nav-flyout-item" data-screen="claims" onclick="showScreen('claims')"><span class="nav-icon">$</span> Claims</button>
+        <button class="nav-flyout-item" data-screen="feesettings" onclick="showScreen('feesettings')"><span class="nav-icon">&#9881;</span> Fee Settings</button>
+        <button class="nav-flyout-item" data-screen="registerpatient" onclick="showScreen('registerpatient')"><span class="nav-icon">+</span> Register Patient</button>
+      </div>
+    </div>
+
+    <div class="ia-note" style="margin:0 6px 12px;">IA change, confirmed with the team: physicians place calls themselves, so Call Logs is no longer a separate destination — it's folded into Today as "Recent calls," right next to the queue it serves. Carry Forward moved from Practice into Patients since it's active clinical follow-up tracking, not billing/admin. Copilot is confirmed lightly-used today, so it's visually secondary here — its main surface is now the contextual Brief panel on each queue row.</div>
+
+    <div class="sidebar-collapse-wrap">
+      <button class="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" id="collapse-btn"><span class="nav-icon" id="collapse-icon">&#8676;</span><span class="collapse-label">Collapse</span></button>
+    </div>
+
+    <div class="notes-toggle-wrap">
+      <button class="notes-toggle" onclick="toggleNotes()"><span class="dot"></span> Show design notes</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-left">
+        <button class="tb-taskmoa" onclick="openTaskMoa()"><span>&#9998;</span> Task MOA</button>
+        <button class="tb-addon" onclick="openAddOn()"><span>+</span> Add On</button>
+      </div>
+      <div class="topbar-right">
+      <button class="tb-switch" onclick="switchToPatientView()"><span>&#8646;</span> Patient view</button>
+      <span class="tb-name"><b>Dr. Daniel Pannozzo</b> &middot; Physician</span>
+      <span class="bell">&#128276;</span>
+      <div class="profile-wrap">
+        <button class="profile-trigger" onclick="toggleProfileMenu()">
+          <span class="avatar">DP</span>
+        </button>
+        <div class="profile-dropdown" id="profile-dropdown">
+          <div class="pd-head">
+            <span class="avatar">DP</span>
+            <div><b>Dr. Daniel Pannozzo</b><div class="tb-name">Physician</div></div>
+          </div>
+          <button class="pd-item" onclick="toggleProfileMenu();showScreen('profile')"><span>&#128100;</span> View profile</button>
+          <div class="pd-divider"></div>
+          <button class="pd-item" onclick="toggleProfileMenu();toast('Would sign you out')"><span>&#8618;</span> Sign out</button>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="main-inner">
+
+    <!-- ===================== TODAY (canonical) ===================== -->
+    <div class="screen active" id="screen-today">
+      <h1>Today — Thu Jul 23, 2026</h1>
+      <p class="sub">The one place "today" lives. Replaces Dashboard + the old Patient Queue table.</p>
+      <div class="ia-note">IA change: merges Dashboard, Daysheet's queue, and Calendar's day-view into a single canonical screen. Reordered by how time-sensitive each thing is: alerts and the live queue first (act now), then your own outstanding tasks, then lower-priority previews and logs pushed to the bottom. MOA online status moved off this screen entirely — it's ambient "peace of mind" info, not something that should compete with clinical content for space, so it now lives as a small dot on the chat button instead.</div>
+
+      <div class="box">
+        <p class="box-title">Alerts — stratified by severity</p>
+        <div class="alert-row critical">
+          <span class="alert-tier">Critical</span>
+          <div class="alert-body"><b>Gloria Mcdonald</b> flagged "chest pressure" in pre-visit intake. Review before calling.</div>
+          <div class="alert-actions">
+            <button class="btn crit dark xs" onclick="ackAlert(this)">Acknowledge</button>
+            <button class="btn xs" onclick="openBrief('Gloria Mcdonald')">Open brief</button>
+          </div>
+        </div>
+        <p class="routine-toggle" onclick="toggleRoutine()">▸ 2 routine items (not blocking)</p>
+        <div class="routine-list" id="routine-list">
+          <div class="alert-row routine"><span class="alert-tier">Routine</span><div class="alert-body">7 claims missing Dx — resolve when convenient.</div><div class="alert-actions"><button class="btn xs" onclick="showScreen('claims')">View</button></div></div>
+          <div class="alert-row routine"><span class="alert-tier">Routine</span><div class="alert-body">Schedule for next week is unlocked and editable.</div><div class="alert-actions"><button class="btn xs" onclick="showScreen('calendar')">View</button></div></div>
+        </div>
+      </div>
+
+      <div class="box">
+        <p class="box-title">Call windows — click to filter the live queue below</p>
+        <div class="win-strip">
+          <button class="win-chip active" data-win="all" onclick="filterWindow('all',this)">All</button>
+          <button class="win-chip" data-win="8-10" onclick="filterWindow('8-10',this)">8:00–10:00</button>
+          <button class="win-chip" data-win="10-2" onclick="filterWindow('10-2',this)">10:00–2:00</button>
+          <button class="win-chip" data-win="2-5" onclick="filterWindow('2-5',this)">2:00–5:00</button>
+          <button class="win-chip" data-win="5-7" onclick="filterWindow('5-7',this)">5:00–7:00</button>
+        </div>
+
+        <p class="box-title" style="margin-top:4px;">Live queue — real states, not a static list</p>
+        <table class="q-table" id="queue-table">
+          <thead><tr><th>Pos</th><th>Patient</th><th>Concern</th><th>Status</th><th>Wait</th><th>Action</th></tr></thead>
+          <tbody id="queue-body"></tbody>
+        </table>
+      </div>
+
+      <div class="box">
+        <p class="box-title">Inbox — needs review<span class="inbox-count" id="today-inbox-count" style="display:none;"></span></p>
+        <p class="sched-note">Every lab, imaging report, and consult note gets reviewed and individually signed off — not just lab work. Click an item to open and mark it reviewed.</p>
+        <div id="today-inbox-preview"></div>
+        <button class="btn xs" style="margin-top:8px;" onclick="showScreen('inbox')">View full inbox &rarr;</button>
+      </div>
+
+      <div class="box">
+        <p class="box-title">My outstanding tasks</p>
+        <p class="sched-note">Things you personally couldn't finish in the moment — stays here, not sent to your MOA. Separate from the Carry Forward history of what you've delegated (see Patients &rarr; Carry Forward).</p>
+        <div id="my-tasks-list"></div>
+      </div>
+
+      <div class="box">
+        <p class="box-title">Scheduled later today — not in the live queue yet</p>
+        <p class="sched-note">Kept visually separate so "booked for later" is never confused with "waiting right now."</p>
+        <div class="sched-row"><span>Karen Anderson — 7/24/2026 at 08:00</span><span>Scheduled</span></div>
+        <div class="sched-row"><span>Eric Janusson — 7/24/2026 at 10:00</span><span>Scheduled</span></div>
+        <div class="sched-row"><span>Stephanie Calibaba — 7/24/2026 at 14:00</span><span>Scheduled</span></div>
+      </div>
+
+      <div class="box">
+        <p class="box-title">Activity log</p>
+        <p class="sched-note">Lowest-priority section on this screen — reference only, nothing here needs action right now.</p>
+        <p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin:10px 0 4px;">Recent calls</p>
+        <div class="sched-row"><span>Ada — (236) 882-1425</span><span>No answer</span></div>
+        <div class="sched-row"><span>Judy — (844) 645-7811</span><span>Completed, 1:06</span></div>
+        <div class="sched-row"><span>Ben — (250) 889-5624</span><span>No answer</span></div>
+        <p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin:14px 0 4px;">Add-on encounters today</p>
+        <div id="addon-list"></div>
+      </div>
+    </div>
+
+    <!-- ===================== INBOX (clear-the-inbox review) ===================== -->
+    <div class="screen" id="screen-inbox">
+      <h1>Inbox</h1>
+      <p class="sub">Every result that comes in — reviewed and signed off individually.</p>
+      <div class="ia-note">Biggest dashboard gap from his walkthrough: "every test result, lab, imaging report, and consult note that comes in must be reviewed and individually signed off — not just lab work." Modeled as a real state machine: received &rarr; reviewed &rarr; signed off. Clicking an item opens it and marks it reviewed in one step (per his feedback that preview-then-open elsewhere was one click too many); signing off is a separate, deliberate action.</div>
+
+      <div class="box">
+        <p class="inbox-section-label">Needs review</p>
+        <div id="inbox-received"></div>
+
+        <p class="inbox-section-label">Reviewed — awaiting sign-off</p>
+        <div id="inbox-reviewed"></div>
+
+        <p class="inbox-section-label" style="cursor:pointer;" onclick="toggleSignedOff()">▸ Signed off (<span id="signedoff-count">0</span>) — click to expand</p>
+        <div id="inbox-signedoff" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ===================== ENCOUNTER LOG ===================== -->
+    <div class="screen" id="screen-encounterlog">
+      <h1>Encounter Log</h1>
+      <p class="sub">Renamed from "Encounter History."</p>
+      <div class="ia-note">IA change: this is a document-delivery audit trail (faxes / patient deliveries), not full clinical encounter records (SOAP notes, visit summaries). Renamed so the label matches the content — flagged as a real content gap if full encounter records don't exist elsewhere yet.</div>
+      <div class="box">
+        <p class="box-title">Today</p>
+        <div class="sched-row"><span>RX · Korynn · Faxed to Shoppers Drug Mart</span><span>07:18 PM</span></div>
+        <div class="sched-row"><span>LAB · Korynn · No recipient on file</span><span>06:54 PM</span></div>
+        <div class="sched-row"><span>LAB · Manjit · No recipient on file</span><span>06:25 PM</span></div>
+        <div class="sched-row"><span>RX · Greg · Faxed to Rexall</span><span>06:16 PM</span></div>
+      </div>
+    </div>
+
+    <!-- ===================== COPILOT (advanced/standalone) ===================== -->
+    <div class="screen" id="screen-copilot">
+      <h1>Copilot — advanced console</h1>
+      <p class="sub">Power-user command interface.</p>
+      <div class="ia-note">IA change: Copilot's everyday outputs (Patient Brief, Summarize Day) now surface as contextual panels from the Today queue — click "Brief" on any patient row. This screen stays only for physicians who want the raw command interface; it's no longer where most people encounter the feature.</div>
+      <div class="box">
+        <p class="box-title">Command</p>
+        <div style="display:flex;gap:8px;">
+          <input style="flex:1;font-family:inherit;padding:6px 8px;border:1px solid var(--line-strong);" placeholder="/today, /summarize, /brief [patient]">
+          <button class="btn dark" onclick="toast('Would run the command')">Run</button>
+        </div>
+      </div>
+      <div class="box">
+        <p class="box-title">Try it from Today instead</p>
+        <button class="btn" onclick="showScreen('today')">Go to Today →</button>
+      </div>
+    </div>
+
+    <!-- ===================== CALENDAR (merged with Set Schedule) ===================== -->
+    <div class="screen" id="screen-calendar">
+      <h1>Calendar</h1>
+      <p class="sub">Merged Calendar + Set Schedule into one view/edit toggle on the same date picker.</p>
+      <div class="ia-note">IA change: previously two separate destinations with two different day-pickers for the same underlying data. Now one screen, one picker, two modes.</div>
+      <div class="mode-toggle">
+        <button class="active" onclick="setCalMode('view',this)">View week</button>
+        <button onclick="setCalMode('edit',this)">Edit windows</button>
+      </div>
+
+      <div id="cal-view">
+        <div class="cal-grid">
+          <div class="hd"></div>
+          <div class="hd">MON</div><div class="hd">TUE</div><div class="hd">WED</div><div class="hd">THU</div><div class="hd">FRI</div><div class="hd">SAT</div><div class="hd">SUN</div>
+          <div class="hr">8am</div><div class="slot"></div><div class="slot on">8–10</div><div class="slot on">8–10</div><div class="slot on">8–10</div><div class="slot on">8–10</div><div class="slot"></div><div class="slot"></div>
+          <div class="hr">10am</div><div class="slot"></div><div class="slot on">10–2</div><div class="slot on">10–2</div><div class="slot on">10–2</div><div class="slot on">10–2</div><div class="slot"></div><div class="slot"></div>
+          <div class="hr">2pm</div><div class="slot"></div><div class="slot on">2–5</div><div class="slot on">2–5</div><div class="slot on">2–5</div><div class="slot on">2–5</div><div class="slot"></div><div class="slot"></div>
+        </div>
+      </div>
+
+      <div id="cal-edit" style="display:none;">
+        <div class="box">
+          <p class="box-title">Call windows — Thursday Jul 23</p>
+          <div class="edit-row">From <input value="8:00 AM"> to <input value="10:00 AM"> <button class="btn xs" onclick="toast('Would remove this window')">Remove</button></div>
+          <div class="edit-row">From <input value="10:00 AM"> to <input value="2:00 PM"> <button class="btn xs" onclick="toast('Would remove this window')">Remove</button></div>
+          <button class="btn" onclick="toast('Would add a window')">+ Add window</button>
+        </div>
+        <div class="box">
+          <p class="box-title">Categories accepted this window</p>
+          <p class="cat-guardrail" id="cat-guardrail">Business rule: no blatent cherry-picking — at least 50% of problem categories must stay active.</p>
+          <div id="cat-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== PRACTICE ADMIN stubs ===================== -->
+    <div class="screen" id="screen-claims">
+      <h1>Claims</h1>
+      <p class="sub">Practice admin group. Structure unchanged in this pass — flagged for MO-portal discussion.</p>
+      <div class="box">
+        <ul class="stub-list">
+          <li><span>Gloria Mcdonald — Standard Visit — $48.76</span><span>Missing Dx</span></li>
+          <li><span>Andrey Abushakhmanov — Standard Visit — $38.61</span><span>Missing Dx</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="screen" id="screen-feesettings">
+      <h1>Fee Settings</h1>
+      <p class="sub">Practice admin group.</p>
+      <div class="box"><div class="sched-row"><span>Private Visit Fee</span><span>$100 CAD</span></div></div>
+    </div>
+    <div class="screen" id="screen-carryforward">
+      <h1>Carry Forward</h1>
+      <p class="sub">Patients group — history of tasks you've sent to your MOA.</p>
+      <div class="ia-note">IA change, confirmed with the team: this is the MOA-task history specifically — what you've delegated and its status (in progress / completed / carried forward if your MOA couldn't finish it same-day). Your own outstanding tasks stay separate, on the Today dashboard, since those are time-sensitive to you, not to your MOA.</div>
+      <div class="box">
+        <p class="box-title">Sent to MOA</p>
+        <div id="moa-tasks-list"></div>
+      </div>
+    </div>
+    <div class="screen" id="screen-registerpatient">
+      <h1>Register Patient</h1>
+      <p class="sub">Practice admin group.</p>
+      <div class="ia-note">Flagged: likely belongs in the MO portal rather than the physician portal — confirm whether physicians register patients themselves.</div>
+      <div class="box"><div class="sched-row"><span>Preferred name</span><span>[input]</span></div><div class="sched-row"><span>PHN</span><span>[input]</span></div></div>
+    </div>
+
+    <!-- ===================== ACCOUNT stubs ===================== -->
+    <div class="screen" id="screen-calllogs">
+      <h1>Call Logs</h1>
+      <p class="sub">Account group.</p>
+      <div class="ia-note">Flagged: confirm whether physicians place these calls themselves or this is MOA-driven (in which case it moves to the MO portal).</div>
+      <div class="box">
+        <div class="sched-row"><span>Ada — (236) 882-1425</span><span>No answer</span></div>
+        <div class="sched-row"><span>Judy — (844) 645-7811</span><span>Completed, 1:06</span></div>
+      </div>
+    </div>
+    <div class="screen" id="screen-profile">
+      <h1>Profile</h1>
+      <p class="sub">Account group.</p>
+      <div class="box"><div class="sched-row"><span>Daniel Pannozzo · CCFP</span><span>daniel.pannozzo@simplecare.ca</span></div></div>
+    </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Task MOA modal -->
+<div class="tm-overlay" id="tm-overlay" onclick="if(event.target===this) closeTaskMoa()">
+  <div class="tm-card">
+    <p class="tm-title">Task MOA</p>
+    <p class="tm-sub">Send a quick task to your MOA — no need to leave what you're doing.</p>
+    <div class="tm-field">
+      <label for="tm-patient">Patient</label>
+      <select id="tm-patient">
+        <option value="">Not patient-specific</option>
+        <option>Gloria Mcdonald</option>
+        <option>Ada Cole</option>
+        <option>Judy Reyes</option>
+        <option>Ben Okafor</option>
+      </select>
+    </div>
+    <div class="tm-field">
+      <label>Task type</label>
+      <div class="tm-chip-row" id="tm-chips">
+        <span class="tm-chip active" onclick="tmSelectChip(this)">General</span>
+        <span class="tm-chip" onclick="tmSelectChip(this)">Lab</span>
+        <span class="tm-chip" onclick="tmSelectChip(this)">Imaging</span>
+        <span class="tm-chip" onclick="tmSelectChip(this)">Referral</span>
+        <span class="tm-chip" onclick="tmSelectChip(this)">Rx</span>
+        <span class="tm-chip" onclick="tmSelectChip(this)">Follow-up</span>
+      </div>
+    </div>
+    <div class="tm-field">
+      <label for="tm-note">Note for MOA</label>
+      <textarea id="tm-note" placeholder="e.g. Please book a 2-week follow-up and fax referral to Dr. Singh"></textarea>
+    </div>
+    <div class="tm-actions">
+      <button class="btn" onclick="closeTaskMoa()">Cancel</button>
+      <button class="btn dark" onclick="sendTaskMoa()">Send to MOA</button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating MOA chat -->
+<button class="chat-fab" id="chat-fab" onclick="toggleChatPanel()" title="MOA chat">
+  &#128172;
+  <span class="moa-dot on" id="chat-presence-dot" style="position:absolute;bottom:2px;left:2px;border:2px solid var(--panel);"></span>
+  <span class="chat-badge" id="chat-badge" style="display:none;">0</span>
+</button>
+<div class="chat-panel" id="chat-panel">
+  <div class="chat-head" id="chat-head">
+    <span id="chat-head-title">MOA chat</span>
+    <button class="chat-close" onclick="toggleChatPanel()">&times;</button>
+  </div>
+  <div class="chat-thread-list" id="chat-thread-list"></div>
+  <div class="chat-messages" id="chat-messages" style="display:none;"></div>
+  <div class="chat-input-row" id="chat-input-row" style="display:none;">
+    <input type="text" id="chat-input" placeholder="Message..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+    <button onclick="sendChatMessage()">&#10148;</button>
+  </div>
+</div>
+
+<!-- Add On modal -->
+<div class="ao-overlay" id="ao-overlay" onclick="if(event.target===this) closeAddOn()">
+  <div class="tm-card">
+    <p class="tm-title">Add On</p>
+    <p class="tm-sub">For patients outside the normal booking flow — you called them, now just record it. Not added to the scheduler or the live queue.</p>
+    <div class="tm-field">
+      <label for="ao-name">Patient name</label>
+      <input type="text" id="ao-name" placeholder="e.g. Frank Delgado">
+    </div>
+    <div class="tm-field">
+      <label for="ao-reason">Reason</label>
+      <input type="text" id="ao-reason" placeholder="e.g. Rx renewal, called back after voicemail">
+    </div>
+    <div class="tm-actions">
+      <button class="btn" onclick="closeAddOn()">Cancel</button>
+      <button class="btn dark" onclick="submitAddOn()">Record appointment</button>
+    </div>
+  </div>
+</div>
+
+<!-- Copilot contextual slide-over -->
+<div class="copilot-overlay" id="copilot-overlay" onclick="if(event.target===this) closeBrief()">
+  <div class="copilot-panel">
+    <div class="copilot-head">
+      <b>Patient brief — <span id="brief-name">—</span></b>
+      <button class="copilot-close" onclick="closeBrief()">×</button>
+    </div>
+    <div class="copilot-section"><p class="k">Reason for visit</p><p class="v" id="brief-reason">—</p></div>
+    <div class="copilot-section"><p class="k">Flagged in intake</p><p class="v" id="brief-flag">—</p></div>
+    <div class="copilot-section"><p class="k">Last visit</p><p class="v">Jun 25, 2026 — Dr. Pannozzo</p></div>
+    <div class="copilot-section"><p class="k">Active medications</p><p class="v">Metformin 500mg, Amlodipine 5mg</p></div>
+    <div class="copilot-disclaimer">Verify source chart before making clinical decisions. This brief is AI-generated and may be incomplete.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var PRACTICE_SCREENS = ['claims','feesettings','registerpatient'];
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  var t=document.getElementById('screen-'+name);
+  if(t) t.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.screen===name));
+  document.querySelectorAll('.nav-flyout-item').forEach(b=>b.classList.toggle('active', b.dataset.screen===name));
+  var parentBtn = document.getElementById('practice-parent-btn');
+  if(parentBtn){ parentBtn.classList.toggle('active-child', PRACTICE_SCREENS.indexOf(name) !== -1); }
+  window.scrollTo(0,0);
+}
+
+/* ===== live queue with real state model, mirroring patient app ===== */
+var QUEUE_DATA = [
+  {pos:1, name:'Gloria Mcdonald, 74F', concern:'Follow up — chest pressure noted', win:'8-10', status:'next', wait:'0 min', redflag:true},
+  {pos:2, name:'Andrey Abushakhmanov, 24M', concern:'Follow up appointment', win:'8-10', status:'waiting', wait:'6 min', redflag:false},
+  {pos:3, name:'Carol-Anne Feldman, 44F', concern:'Yeast infection', win:'10-2', status:'waiting', wait:'12 min', redflag:false},
+  {pos:4, name:'Behdis Maleki, 35F', concern:'Follow up appointment', win:'10-2', status:'delayed', wait:'22 min', redflag:false},
+  {pos:5, name:'K Arli Eyre, 41', concern:'Standard visit', win:'2-5', status:'missed', wait:'—', redflag:false},
+  {pos:6, name:'Greg', concern:'Rx renewal', win:'2-5', status:'dropped', wait:'—', redflag:false},
+  {pos:7, name:'Manjit', concern:'Lab follow-up', win:'5-7', status:'done', wait:'—', redflag:false},
+  {pos:8, name:'Korynn', concern:'Standard visit', win:'5-7', status:'noshow', wait:'—', redflag:false}
+];
+var STATUS_LABEL = {
+  waiting:'Waiting', next:'Next up', progress:'In visit', delayed:'Running behind',
+  missed:'Missed call', dropped:'Call dropped', done:'Completed', noshow:'No-show'
+};
+var currentWindow = 'all';
+
+function renderQueue(){
+  var body = document.getElementById('queue-body');
+  var rows = QUEUE_DATA.filter(function(r){ return currentWindow==='all' || r.win===currentWindow; });
+  body.innerHTML = rows.map(function(r){
+    var flag = r.redflag ? '<span class="redflag-badge">flag</span>' : '';
+    var actions = '';
+    if(r.status==='waiting' || r.status==='next'){
+      actions += '<button class="btn xs" onclick="advance(\''+r.name+'\',\'progress\')">Call now</button>';
+    } else if(r.status==='delayed'){
+      actions += '<button class="btn xs" onclick="advance(\''+r.name+'\',\'progress\')">Call now</button>';
+    } else if(r.status==='missed'){
+      actions += '<button class="btn xs" onclick="advance(\''+r.name+'\',\'progress\')">Retry call</button>';
+    } else if(r.status==='dropped'){
+      actions += '<button class="btn xs" onclick="advance(\''+r.name+'\',\'progress\')">Reconnect</button>';
+    } else {
+      actions += '<button class="btn xs" onclick="toast(\'Would open the chart\')">Access chart</button>';
+    }
+    actions += ' <button class="btn xs" onclick="openBrief(\''+r.name+'\')">Brief</button>';
+    return '<tr class="'+(r.redflag?'redflag':'')+'">'+
+      '<td>'+r.pos+'</td>'+
+      '<td>'+r.name+flag+'</td>'+
+      '<td>'+r.concern+'</td>'+
+      '<td><span class="status-pill '+r.status+'">'+STATUS_LABEL[r.status]+'</span></td>'+
+      '<td>'+r.wait+'</td>'+
+      '<td class="q-actions">'+actions+'</td>'+
+    '</tr>';
+  }).join('');
+}
+function filterWindow(win, el){
+  currentWindow = win;
+  document.querySelectorAll('.win-chip').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  renderQueue();
+}
+function advance(name, newStatus){
+  var row = QUEUE_DATA.find(function(r){ return r.name===name; });
+  if(row){ row.status = newStatus; row.wait='—'; renderQueue(); toast(name+' → '+STATUS_LABEL[newStatus]); }
+}
+renderQueue();
+
+/* ===== cross-portal demo link: patient portal tells us when someone joins the queue ===== */
+function addPatientToQueue(payload){
+  var pos = QUEUE_DATA.length + 1;
+  var win = (currentWindow !== 'all') ? currentWindow : '8-10';
+  QUEUE_DATA.push({
+    pos: pos,
+    name: payload.name || 'New patient',
+    concern: payload.reason || 'Not specified',
+    win: win,
+    status: 'waiting',
+    wait: '0 min',
+    redflag: !!payload.redflag
+  });
+  renderQueue();
+  var label = payload.redflag ? (payload.name + ' joined the queue — flagged symptoms, review before calling') : (payload.name + ' joined the queue');
+  toast(label);
+}
+window.addEventListener('message', function(e){
+  var data = e.data;
+  if(data && data.source === 'simplecare-patient-demo' && data.type === 'patient-joined-queue'){
+    addPatientToQueue(data.payload || {});
+  }
+});
+
+/* ===== alerts ===== */
+function toggleRoutine(){
+  document.getElementById('routine-list').classList.toggle('show');
+}
+function ackAlert(el){
+  el.closest('.alert-row').style.opacity = '.4';
+  el.textContent = 'Acknowledged';
+  el.disabled = true;
+}
+
+/* ===== copilot contextual brief ===== */
+var BRIEFS = {
+  'Gloria Mcdonald': {reason:'Follow up on blood pressure control', flag:'Chest pressure — reported this morning'},
+};
+function openBrief(name){
+  var key = name.split(',')[0].trim();
+  var b = BRIEFS[key] || {reason:'General follow-up', flag:'None reported'};
+  document.getElementById('brief-name').textContent = name;
+  document.getElementById('brief-reason').textContent = b.reason;
+  document.getElementById('brief-flag').textContent = b.flag;
+  document.getElementById('copilot-overlay').classList.add('show');
+}
+function closeBrief(){
+  document.getElementById('copilot-overlay').classList.remove('show');
+}
+
+/* ===== calendar mode toggle ===== */
+function setCalMode(mode, el){
+  document.querySelectorAll('.mode-toggle button').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('cal-view').style.display = mode==='view' ? '' : 'none';
+  document.getElementById('cal-edit').style.display = mode==='edit' ? '' : 'none';
+}
+
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(window._t); window._t=setTimeout(function(){ t.classList.remove('show'); },2000);
+}
+
+function toggleNotes(){
+  var on = document.body.classList.toggle('show-notes');
+  var btn = document.querySelector('.notes-toggle');
+  btn.lastChild.textContent = on ? ' Hide design notes' : ' Show design notes';
+}
+
+function openTaskMoa(prefillPatient){
+  document.getElementById('tm-overlay').classList.add('show');
+  document.getElementById('tm-note').value = '';
+  document.querySelectorAll('#tm-chips .tm-chip').forEach(function(c,i){ c.classList.toggle('active', i===0); });
+  if(prefillPatient){ document.getElementById('tm-patient').value = prefillPatient; }
+  else{ document.getElementById('tm-patient').value = ''; }
+}
+function closeTaskMoa(){
+  document.getElementById('tm-overlay').classList.remove('show');
+}
+function tmSelectChip(el){
+  document.querySelectorAll('#tm-chips .tm-chip').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+}
+/* ===== MOA task history — separate from the physician's own outstanding tasks ===== */
+var MOA_TASKS = [
+  { patient:'Louise ("Chickadee")', type:'Referral', note:'EDS referral bounced back — specialist declined, needs a new match.', status:'carried-forward', sentAt:'Yesterday' },
+  { patient:'Gloria Mcdonald', type:'Follow-up', note:'Wants to move follow-up to next week — confirm new date.', status:'in-progress', sentAt:'10:02 AM' },
+  { patient:'Brian K.', type:'Lab', note:'Requisition rejected by Royal Inland — breast density missing, needs a callback.', status:'completed', sentAt:'Mon' }
+];
+var MOA_TASK_LABEL = { 'in-progress':'In progress', 'completed':'Completed', 'carried-forward':'Carried forward by MOA' };
+
+/* ===== physician's own outstanding tasks — stays on Today, separate from MOA history ===== */
+var MY_TASKS = [
+  { text:'Review MRI report — Frank D.', done:false },
+  { text:'Sign off imaging — Carol-Anne Feldman', done:false }
+];
+function renderMyTasks(){
+  var el = document.getElementById('my-tasks-list');
+  if(!el) return;
+  if(!MY_TASKS.filter(function(t){return !t.done;}).length){
+    el.innerHTML = '<p class="sched-note" style="margin:2px 0 0;">Nothing outstanding — nice.</p>';
+    return;
+  }
+  el.innerHTML = MY_TASKS.map(function(t,i){
+    if(t.done) return '';
+    return '<div class="sched-row"><span>'+t.text+'</span><span><button class="btn xs" onclick="completeMyTask('+i+')">Mark done</button></span></div>';
+  }).join('');
+}
+function completeMyTask(i){
+  MY_TASKS[i].done = true;
+  renderMyTasks();
+  toast('Marked done');
+}
+
+function renderMoaTasks(){
+  var el = document.getElementById('moa-tasks-list');
+  if(!el) return;
+  if(!MOA_TASKS.length){
+    el.innerHTML = '<div class="stub-empty">No tasks sent to your MOA yet</div>';
+    return;
+  }
+  el.innerHTML = MOA_TASKS.map(function(t){
+    return '<div class="sched-row"><span><b>'+t.type+'</b> · '+t.patient+' — '+t.note+'</span>'+
+      '<span class="status-pill '+t.status+'">'+MOA_TASK_LABEL[t.status]+'</span></div>';
+  }).join('');
+}
+
+function sendTaskMoa(){
+  var patient = document.getElementById('tm-patient').value;
+  var note = document.getElementById('tm-note').value.trim();
+  var chip = document.querySelector('#tm-chips .tm-chip.active');
+  var type = chip ? chip.textContent : 'General';
+  MOA_TASKS.unshift({ patient: patient || 'Not patient-specific', type:type, note: note || 'No note added', status:'in-progress', sentAt:'Just now' });
+  renderMoaTasks();
+  var label = patient ? (type+' task sent to MOA — '+patient) : (type+' task sent to MOA');
+  closeTaskMoa();
+  toast(label);
+}
+
+/* ===== Inbox — clear-the-inbox review/sign-off state machine (received -> reviewed -> signed-off) ===== */
+var INBOX_ITEMS = [
+  { patient:'Gloria Mcdonald', type:'Lab', desc:'Troponin — flagged abnormal, stat', received:'Today, 7:50 AM', status:'received', urgent:true },
+  { patient:'Frank D.', type:'Lab', desc:'CBC + electrolytes — routine follow-up', received:'Today, 9:14 AM', status:'received' },
+  { patient:'Carol-Anne Feldman', type:'Imaging', desc:'MRI report — lumbar spine', received:'Today, 8:02 AM', status:'received' },
+  { patient:'Louise ("Chickadee")', type:'Consult note', desc:'EDS specialist consult — referral follow-up', received:'Yesterday, 4:40 PM', status:'reviewed' },
+  { patient:'Brian K.', type:'Imaging', desc:'Chest X-ray — clear', received:'Mon', status:'signed-off' }
+];
+
+function inboxRowHtml(item, i){
+  var pillClass = item.urgent ? 'urgent' : item.status;
+  var pillLabel = item.urgent ? 'Urgent' : (item.status === 'received' ? 'Needs review' : (item.status === 'reviewed' ? 'Reviewed' : 'Signed off'));
+  var actions = '';
+  if(item.status === 'received'){
+    actions = '<button class="btn xs" onclick="event.stopPropagation();openInboxItem('+i+')">Open</button>';
+  } else if(item.status === 'reviewed'){
+    actions = '<button class="btn xs dark" onclick="event.stopPropagation();signOffInbox('+i+')">Sign off</button>';
+  }
+  return '<div class="inbox-row'+(item.urgent?' urgent':'')+'" onclick="openInboxItem('+i+')">'+
+    '<span class="inbox-type">'+item.type+'</span>'+
+    '<div class="inbox-body"><b>'+item.patient+'</b> — '+item.desc+'<div class="inbox-meta">Received '+item.received+'</div></div>'+
+    '<div class="inbox-actions"><span class="status-pill '+pillClass+'">'+pillLabel+'</span>'+actions+'</div>'+
+  '</div>';
+}
+
+function renderInboxList(){
+  var received = document.getElementById('inbox-received');
+  var reviewed = document.getElementById('inbox-reviewed');
+  var signedoff = document.getElementById('inbox-signedoff');
+  if(!received) return;
+
+  var receivedItems = [], reviewedItems = [], signedItems = [];
+  INBOX_ITEMS.forEach(function(item, i){
+    if(item.status === 'received') receivedItems.push(inboxRowHtml(item, i));
+    else if(item.status === 'reviewed') reviewedItems.push(inboxRowHtml(item, i));
+    else signedItems.push(inboxRowHtml(item, i));
+  });
+
+  received.innerHTML = receivedItems.length ? receivedItems.join('') : '<p class="sched-note">Nothing waiting — inbox is clear.</p>';
+  reviewed.innerHTML = reviewedItems.length ? reviewedItems.join('') : '<p class="sched-note">Nothing awaiting sign-off.</p>';
+  signedoff.innerHTML = signedItems.length ? signedItems.join('') : '<p class="sched-note">None yet.</p>';
+  document.getElementById('signedoff-count').textContent = signedItems.length;
+
+  renderInboxToday();
+}
+
+function renderInboxToday(){
+  var preview = document.getElementById('today-inbox-preview');
+  var countBadge = document.getElementById('today-inbox-count');
+  var navFlag = document.getElementById('inbox-nav-flag');
+  if(!preview) return;
+  var needsReview = INBOX_ITEMS.filter(function(it){ return it.status === 'received'; });
+  if(!needsReview.length){
+    preview.innerHTML = '<p class="sched-note" style="margin:2px 0 0;">Inbox is clear — nothing waiting on review.</p>';
+    countBadge.style.display = 'none';
+    navFlag.style.display = 'none';
+  } else {
+    var sorted = needsReview.slice().sort(function(a,b){ return (b.urgent?1:0) - (a.urgent?1:0); });
+    preview.innerHTML = sorted.slice(0,3).map(function(item){
+      var i = INBOX_ITEMS.indexOf(item);
+      return inboxRowHtml(item, i);
+    }).join('');
+    countBadge.textContent = needsReview.length;
+    countBadge.style.display = 'inline-flex';
+    navFlag.textContent = needsReview.length;
+    navFlag.style.display = 'inline-block';
+  }
+}
+
+function openInboxItem(i){
+  var item = INBOX_ITEMS[i];
+  if(item.status === 'received'){
+    item.status = 'reviewed';
+    renderInboxList();
+    toast('Opened '+item.type.toLowerCase()+' for '+item.patient+' — marked reviewed');
+  } else {
+    toast('Viewing '+item.type.toLowerCase()+' for '+item.patient+' (demo)');
+  }
+}
+function signOffInbox(i){
+  var item = INBOX_ITEMS[i];
+  item.status = 'signed-off';
+  renderInboxList();
+  toast('Signed off — '+item.patient);
+}
+function toggleSignedOff(){
+  var el = document.getElementById('inbox-signedoff');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function toggleSidebarCollapse(){
+  var sb = document.getElementById('sidebar');
+  var collapsed = sb.classList.toggle('collapsed');
+  document.getElementById('collapse-icon').innerHTML = collapsed ? '&#8677;' : '&#8676;';
+  document.getElementById('collapse-btn').title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+}
+
+var CATEGORIES = [
+  {name:'Family Practice', active:true},
+  {name:'Infections', active:true},
+  {name:'Mental Health', active:true},
+  {name:'Chronic Care Management', active:true},
+  {name:'Dermatology', active:false},
+  {name:"Women's Health", active:false}
+];
+function renderCategories(){
+  var list = document.getElementById('cat-list');
+  var activeCount = CATEGORIES.filter(function(c){ return c.active; }).length;
+  var total = CATEGORIES.length;
+  var pct = Math.round((activeCount/total)*100);
+  list.innerHTML = CATEGORIES.map(function(c,i){
+    return '<div class="cat-row"><span>'+c.name+'</span>'+
+      '<button class="cat-toggle '+(c.active?'on':'off')+'" onclick="toggleCategory('+i+')">'+(c.active?'Accepting':'Paused')+'</button></div>';
+  }).join('');
+  var note = document.getElementById('cat-guardrail');
+  note.textContent = 'Business rule: no blatent cherry-picking — at least 50% of problem categories must stay active. Currently '+activeCount+'/'+total+' active ('+pct+'%).';
+  note.classList.toggle('breach', pct < 50);
+}
+function toggleCategory(i){
+  var c = CATEGORIES[i];
+  if(c.active){
+    var activeCount = CATEGORIES.filter(function(x){ return x.active; }).length;
+    var total = CATEGORIES.length;
+    if((activeCount-1)/total < 0.5){
+      toast("Can't pause "+c.name+" — at least 50% of categories must stay active");
+      return;
+    }
+  }
+  c.active = !c.active;
+  renderCategories();
+}
+renderCategories();
+
+function switchToPatientView(){
+  try{
+    if(window.parent && window.parent !== window && typeof window.parent.setView === 'function'){
+      window.parent.setView('patient');
+      return;
+    }
+  }catch(e){ /* cross-origin or no parent, fall through */ }
+  window.location.href = 'simplecare-combined-demo.html';
+}
+
+/* ===== floating MOA chat — separate from Task MOA ===== */
+var MOA_THREADS = [
+  { id:'priya', name:'Priya M.', role:'MOA — mornings', unread:2, online:true, messages:[
+    { from:'them', text:'Referral fax to Dr. Singh confirmed sent.', time:'9:12 AM' },
+    { from:'me', text:'Great, thanks', time:'9:14 AM' },
+    { from:'them', text:'Gloria Mcdonald asked to move her follow-up to next week — ok to rebook?', time:'10:02 AM' }
+  ]},
+  { id:'jordan', name:'Jordan T.', role:'MOA — afternoons', unread:0, online:false, messages:[
+    { from:'them', text:'Covering for Priya after 2pm today.', time:'8:00 AM' }
+  ]},
+  { id:'admin', name:'Office Admin', role:'Overwatch / liaison', unread:1, online:true, messages:[
+    { from:'them', text:'Reminder: fee schedule update goes live Monday.', time:'Yesterday' }
+  ]}
+];
+function renderMoaOnlineStrip(){
+  var dot = document.getElementById('chat-presence-dot');
+  if(!dot) return;
+  var anyOnline = MOA_THREADS.some(function(t){ return t.online; });
+  dot.classList.toggle('on', anyOnline);
+  dot.classList.toggle('off', !anyOnline);
+  var names = MOA_THREADS.filter(function(t){ return t.online; }).map(function(t){ return t.name; }).join(', ');
+  document.getElementById('chat-fab').title = anyOnline ? (names + ' online') : 'No MOA currently online';
+}
+var activeChatThread = null;
+
+function chatUnreadTotal(){
+  return MOA_THREADS.reduce(function(sum,t){ return sum + t.unread; }, 0);
+}
+function updateChatBadge(){
+  var total = chatUnreadTotal();
+  var badge = document.getElementById('chat-badge');
+  badge.textContent = total;
+  badge.style.display = total > 0 ? 'flex' : 'none';
+}
+function toggleChatPanel(){
+  var panel = document.getElementById('chat-panel');
+  var opening = !panel.classList.contains('show');
+  panel.classList.toggle('show');
+  if(opening){ renderThreadList(); }
+}
+function renderThreadList(){
+  activeChatThread = null;
+  document.getElementById('chat-head-title').textContent = 'MOA chat';
+  document.getElementById('chat-thread-list').style.display = 'block';
+  document.getElementById('chat-messages').style.display = 'none';
+  document.getElementById('chat-input-row').style.display = 'none';
+  var backBtn = document.querySelector('.chat-back');
+  if(backBtn) backBtn.remove();
+  var list = document.getElementById('chat-thread-list');
+  list.innerHTML = MOA_THREADS.map(function(t){
+    var initials = t.name.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+    var last = t.messages[t.messages.length-1];
+    var presence = t.online ? '<span class="moa-dot on thread-dot"></span>' : '<span class="moa-dot off thread-dot"></span>';
+    return '<button class="chat-thread-row" onclick="openThread(\''+t.id+'\')">'+
+      '<span style="position:relative;">'+'<span class="chat-thread-avatar">'+initials+'</span>'+presence+'</span>'+
+      '<span class="chat-thread-meta"><span class="chat-thread-name">'+t.name+'</span><br>'+
+      '<span class="chat-thread-role">'+t.role+'</span><br>'+
+      '<span class="chat-thread-preview">'+(last?last.text:'')+'</span></span>'+
+      (t.unread>0?'<span class="chat-thread-unread">'+t.unread+'</span>':'')+
+    '</button>';
+  }).join('');
+}
+function openThread(id){
+  var t = MOA_THREADS.find(function(x){ return x.id===id; });
+  if(!t) return;
+  activeChatThread = id;
+  t.unread = 0;
+  updateChatBadge();
+  document.getElementById('chat-thread-list').style.display = 'none';
+  document.getElementById('chat-messages').style.display = 'flex';
+  document.getElementById('chat-input-row').style.display = 'flex';
+  var head = document.getElementById('chat-head');
+  document.getElementById('chat-head-title').textContent = t.name;
+  if(!document.querySelector('.chat-back')){
+    var back = document.createElement('button');
+    back.className = 'chat-back';
+    back.innerHTML = '&#8592;';
+    back.onclick = renderThreadList;
+    head.insertBefore(back, head.firstChild);
+  }
+  renderMessages();
+}
+function renderMessages(){
+  var t = MOA_THREADS.find(function(x){ return x.id===activeChatThread; });
+  if(!t) return;
+  var box = document.getElementById('chat-messages');
+  box.innerHTML = t.messages.map(function(m){
+    return '<div class="chat-bubble '+m.from+'">'+m.text+'<span class="chat-bubble-time">'+m.time+'</span></div>';
+  }).join('');
+  box.scrollTop = box.scrollHeight;
+}
+function sendChatMessage(){
+  var input = document.getElementById('chat-input');
+  var text = input.value.trim();
+  if(!text || !activeChatThread) return;
+  var t = MOA_THREADS.find(function(x){ return x.id===activeChatThread; });
+  var now = new Date();
+  t.messages.push({ from:'me', text:text, time: now.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}) });
+  input.value = '';
+  renderMessages();
+}
+updateChatBadge();
+renderMoaOnlineStrip();
+renderMyTasks();
+renderMoaTasks();
+renderInboxList();
+
+var ADDON_DATA = [];
+function renderAddOns(){
+  var list = document.getElementById('addon-list');
+  if(!ADDON_DATA.length){
+    list.innerHTML = '<p class="sched-note" style="margin:2px 0 0;">None recorded yet today.</p>';
+    return;
+  }
+  list.innerHTML = ADDON_DATA.map(function(a){
+    return '<div class="sched-row"><span>'+a.name+'<span class="addon-tag">Add-on</span> — '+a.reason+'</span><span>'+a.time+'</span></div>';
+  }).join('');
+}
+function openAddOn(){
+  document.getElementById('ao-overlay').classList.add('show');
+  document.getElementById('ao-name').value = '';
+  document.getElementById('ao-reason').value = '';
+}
+function closeAddOn(){
+  document.getElementById('ao-overlay').classList.remove('show');
+}
+function submitAddOn(){
+  var name = document.getElementById('ao-name').value.trim();
+  var reason = document.getElementById('ao-reason').value.trim();
+  if(!name){ toast('Enter a patient name first'); return; }
+  var now = new Date();
+  var time = now.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+  ADDON_DATA.unshift({ name: name, reason: reason || 'Not specified', time: time });
+  renderAddOns();
+  closeAddOn();
+  toast(name + ' recorded as an add-on encounter');
+}
+renderAddOns();
+
+function toggleProfileMenu(){
+  document.getElementById('profile-dropdown').classList.toggle('show');
+}
+document.addEventListener('click', function(e){
+  var wrap = document.querySelector('.profile-wrap');
+  if(wrap && !wrap.contains(e.target)){
+    document.getElementById('profile-dropdown').classList.remove('show');
+  }
+});
+</script>
+</body>
+</html>
