@@ -115,6 +115,65 @@
     width:100%;font-family:inherit;font-size:13.5px;border:1px solid var(--line);border-radius:10px;
     padding:12px;min-height:80px;resize:vertical;margin-bottom:18px;
   }
+
+  /* ===== Retail AI: floating conversational assistant ===== */
+  .ai-launcher{
+    position:fixed;right:24px;bottom:24px;z-index:60;display:flex;align-items:center;gap:10px;
+    background:var(--navy);color:#fff;border:none;border-radius:30px;padding:12px 18px 12px 14px;
+    box-shadow:0 8px 26px rgba(30,47,107,.34);cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;
+    transition:transform .15s, box-shadow .15s;
+  }
+  .ai-launcher:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(30,47,107,.42);}
+  .ai-launcher .spark{
+    width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#4f6ff0,#8bb0ff);
+    display:flex;align-items:center;justify-content:center;font-size:16px;
+  }
+  .ai-launcher .pulse{
+    position:absolute;left:14px;top:12px;width:30px;height:30px;border-radius:50%;
+    background:#8bb0ff;opacity:.5;animation:aipulse 2s infinite;z-index:-1;
+  }
+  @keyframes aipulse{0%{transform:scale(1);opacity:.5;}70%{transform:scale(1.9);opacity:0;}100%{opacity:0;}}
+
+  .ai-panel{
+    position:fixed;right:24px;bottom:24px;z-index:61;width:380px;max-width:calc(100vw - 32px);
+    height:560px;max-height:calc(100vh - 48px);background:var(--panel);border-radius:18px;overflow:hidden;
+    box-shadow:0 20px 60px rgba(20,34,83,.32);display:none;flex-direction:column;
+  }
+  .ai-panel.open{display:flex;animation:aislide .22s ease;}
+  @keyframes aislide{from{transform:translateY(16px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .ai-head{background:var(--navy);color:#fff;padding:16px 18px;display:flex;align-items:center;gap:12px;}
+  .ai-head .spark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4f6ff0,#8bb0ff);
+    display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .ai-head b{display:block;font-size:15px;}
+  .ai-head span{font-size:11.5px;color:#cfd7ee;}
+  .ai-head .close{margin-left:auto;background:none;border:none;color:#cfd7ee;font-size:22px;cursor:pointer;line-height:1;}
+  .ai-body{flex:1;overflow-y:auto;padding:18px;background:var(--paper);display:flex;flex-direction:column;gap:12px;}
+  .ai-msg{max-width:82%;padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.5;}
+  .ai-msg.bot{background:var(--panel);border:1px solid var(--line);color:var(--ink);align-self:flex-start;border-bottom-left-radius:4px;}
+  .ai-msg.user{background:var(--navy);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+  .ai-action{
+    align-self:flex-start;background:var(--panel);border:1.5px solid var(--navy);color:var(--navy);
+    border-radius:12px;padding:11px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
+    display:flex;align-items:center;gap:10px;max-width:82%;text-align:left;transition:background .12s;
+  }
+  .ai-action:hover{background:var(--wash);}
+  .ai-action .mini{width:34px;height:34px;border-radius:8px;background:var(--wash);display:flex;
+    align-items:center;justify-content:center;font-size:16px;flex-shrink:0;border:1px solid var(--line);}
+  .ai-action small{display:block;font-weight:500;color:var(--ink-soft);font-size:11.5px;margin-top:2px;}
+  .ai-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px;}
+  .ai-chip{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:7px 13px;
+    font-size:12.5px;color:var(--navy);font-weight:600;cursor:pointer;font-family:inherit;}
+  .ai-chip:hover{background:var(--wash);border-color:var(--navy);}
+  .ai-foot{display:flex;align-items:center;gap:8px;padding:12px 14px;border-top:1px solid var(--line);background:var(--panel);}
+  .ai-foot input{flex:1;border:1px solid var(--line);border-radius:22px;padding:10px 14px;font-size:13.5px;font-family:inherit;outline:none;}
+  .ai-foot input:focus{border-color:var(--navy);}
+  .ai-foot .mic,.ai-foot .send{width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;font-size:16px;flex-shrink:0;}
+  .ai-foot .mic{background:var(--wash);color:var(--navy);}
+  .ai-foot .send{background:var(--navy);color:#fff;}
+  .ai-typing{align-self:flex-start;display:flex;gap:4px;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;}
+  .ai-typing i{width:6px;height:6px;border-radius:50%;background:var(--ink-faint);animation:aidot 1.2s infinite;}
+  .ai-typing i:nth-child(2){animation-delay:.2s;}.ai-typing i:nth-child(3){animation-delay:.4s;}
+  @keyframes aidot{0%,60%,100%{opacity:.3;}30%{opacity:1;}}
 </style>
 </head>
 <body>
@@ -317,6 +376,35 @@
   </div>
 </div>
 
+<!-- ============ RETAIL AI: floating conversational assistant (persistent front door) ============ -->
+<button class="ai-launcher" id="ai-launcher" onclick="openAI()">
+  <span class="pulse"></span>
+  <span class="spark">✨</span>
+  <span>Ask SimpleCare</span>
+</button>
+
+<div class="ai-panel" id="ai-panel">
+  <div class="ai-head">
+    <span class="spark">✨</span>
+    <span><b>SimpleCare Assistant</b><span>Book · refills · records · questions</span></span>
+    <button class="close" onclick="closeAI()">×</button>
+  </div>
+  <div class="ai-body" id="ai-body">
+    <div class="ai-msg bot">Hi 👋 I'm your SimpleCare assistant. Tell me what you need — book a visit, refill a prescription, find your records, or ask a question.</div>
+    <div class="ai-chips" id="ai-chips">
+      <button class="ai-chip" onclick="aiSend('I need to see a doctor today')">See a doctor today</button>
+      <button class="ai-chip" onclick="aiSend('Refill my prescription')">Refill a prescription</button>
+      <button class="ai-chip" onclick="aiSend('I want a family doctor')">Get a family doctor</button>
+      <button class="ai-chip" onclick="aiSend('Is a virtual visit covered by MSP?')">Is it covered by MSP?</button>
+    </div>
+  </div>
+  <div class="ai-foot">
+    <input id="ai-input" placeholder="Type what you need…" onkeydown="if(event.key==='Enter')aiSend()">
+    <button class="mic" title="Voice (demo)">🎤</button>
+    <button class="send" onclick="aiSend()">➤</button>
+  </div>
+</div>
+
 <script>
 function showScreen(name){
   document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
@@ -328,6 +416,77 @@ function toast(){ alert('Visit confirmed (demo only)'); }
 function goPostSignIn(){
   var attached = document.getElementById('demo-attached').checked;
   showScreen(attached ? 'interrupt' : 'consent');
+}
+
+/* ===== Retail AI assistant (demo intent engine) ===== */
+function openAI(){
+  document.getElementById('ai-panel').classList.add('open');
+  document.getElementById('ai-launcher').style.display='none';
+  var inp=document.getElementById('ai-input'); if(inp) inp.focus();
+}
+function closeAI(){
+  document.getElementById('ai-panel').classList.remove('open');
+  document.getElementById('ai-launcher').style.display='flex';
+}
+function aiScroll(){ var b=document.getElementById('ai-body'); b.scrollTop=b.scrollHeight; }
+function aiAppend(html,cls){
+  var d=document.createElement('div'); d.className='ai-msg '+cls; d.innerHTML=html;
+  document.getElementById('ai-body').appendChild(d); aiScroll(); return d;
+}
+function aiActionBtn(icon,title,sub,onclick){
+  var b=document.createElement('button'); b.className='ai-action';
+  b.innerHTML='<span class="mini">'+icon+'</span><span>'+title+(sub?'<small>'+sub+'</small>':'')+'</span>';
+  b.onclick=onclick; document.getElementById('ai-body').appendChild(b); aiScroll();
+}
+function aiRoute(screen){ closeAI(); showScreen(screen); }
+
+function aiReply(text){
+  // remove starter chips after first turn
+  var chips=document.getElementById('ai-chips'); if(chips) chips.remove();
+  // typing indicator
+  var typing=document.createElement('div'); typing.className='ai-typing';
+  typing.innerHTML='<i></i><i></i><i></i>';
+  document.getElementById('ai-body').appendChild(typing); aiScroll();
+
+  setTimeout(function(){
+    typing.remove();
+    var t=text.toLowerCase();
+    if(/(cover|msp|cost|price|pay|insur|bill)/.test(t)){
+      aiAppend("Most virtual visits are covered by <b>BC MSP</b> at no cost when you have a valid card — same as an in-person walk-in. Uninsured or out-of-province visits are a flat fee, shown before you confirm.",'bot');
+      aiAppend("Want me to start a booking?",'bot');
+      aiActionBtn('🩺','Book a virtual visit','Same-day windows available',function(){aiRoute('doctors');});
+    }
+    else if(/(refill|prescription|rx|medication|birth control|renew)/.test(t)){
+      aiAppend("I can handle that. I found your active prescriptions on file — a refill request goes to a physician for a quick review before it's sent to your pharmacy.",'bot');
+      aiActionBtn('💊','Start a prescription refill','Prescription Renewal · Everyday Health',function(){aiRoute('doctors');});
+    }
+    else if(/(family doctor|family practice|ongoing|attach|register|same doctor|my doctor)/.test(t)){
+      aiAppend("For ongoing care with the <b>same doctor every visit</b>, you can join our Virtual Family Practice. Choosing a doctor is all it takes — that's your registration.",'bot');
+      aiActionBtn('👨‍👩‍👧','Get a family doctor','Choose & attach in one step',function(){aiRoute('doctorselect');});
+    }
+    else if(/(record|result|history|lab|report|document|note)/.test(t)){
+      aiAppend("Your visit history, lab results, and documents live in your patient portal. Log in and I'll take you straight there.",'bot');
+      aiActionBtn('📋','Open my health records','Requires sign-in',function(){aiRoute('doctorselect');});
+    }
+    else if(/(doctor|today|visit|book|appointment|sick|throat|cold|fever|pain|cough|rash|infection|urgent|see someone)/.test(t)){
+      aiAppend("Sounds like something we can see you for today. Based on that, I'd start with a same-day virtual visit — a doctor currently accepting walk-ins can call you this evening.",'bot');
+      aiActionBtn('🩺','Book same-day · Dr. Reyes','Today, 6:00 – 8:00 PM',function(){aiRoute('doctors');});
+      aiAppend("Not quite right? Tell me a bit more about what's going on.",'bot');
+    }
+    else {
+      aiAppend("I can help you <b>book a visit</b>, <b>refill a prescription</b>, <b>find your records</b>, or answer questions about SimpleCare. Which would you like?",'bot');
+      aiActionBtn('🩺','Book a visit',null,function(){aiRoute('doctors');});
+      aiActionBtn('👨‍👩‍👧','Get a family doctor',null,function(){aiRoute('doctorselect');});
+    }
+  }, 650);
+}
+function aiSend(preset){
+  var inp=document.getElementById('ai-input');
+  var text = preset || (inp?inp.value:''); text=(text||'').trim();
+  if(!text) return;
+  aiAppend(text.replace(/</g,'&lt;'),'user');
+  if(inp) inp.value='';
+  aiReply(text);
 }
 </script>
 
