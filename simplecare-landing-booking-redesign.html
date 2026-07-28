@@ -100,6 +100,17 @@
   .btn:hover{background:var(--navy-deep);}
   .btn.ghost{background:none;color:var(--navy);border:1.5px solid var(--navy);}
 
+  .signin-divider{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    margin-top:22px;padding-top:18px;border-top:1px solid var(--line);
+    font-size:13px;color:var(--ink-soft);
+  }
+  .link-btn{
+    background:none;border:none;color:var(--navy);font-weight:700;font-size:13px;
+    cursor:pointer;font-family:inherit;padding:0;
+  }
+  .link-btn:hover{text-decoration:underline;}
+
   textarea.intake{
     width:100%;font-family:inherit;font-size:13.5px;border:1px solid var(--line);border-radius:10px;
     padding:12px;min-height:80px;resize:vertical;margin-bottom:18px;
@@ -131,7 +142,7 @@
     <div class="next-avail"><span class="dot"></span> Next available: Today, 5:00 – 7:00 PM</div>
   </div>
 
-  <div class="fp-banner" onclick="showScreen('signin')">
+  <div class="fp-banner" onclick="showScreen('doctorselect')">
     <span class="ico">🔁</span>
     <span><h3>Virtual Family Practice</h3><p>Book with your SimpleCare doctor, or register for one — same physician, every visit going forward.</p></span>
     <span class="go">Get started &rarr;</span>
@@ -144,7 +155,7 @@
     <p style="margin-top:6px;font-weight:600;color:var(--good);">No family doctor or ongoing commitment required — browse and book freely, sign in only at the end.</p>
   </div>
   <div class="concern-grid">
-    <div class="concern-card" onclick="showScreen('signin')"><h4>👨‍👩‍👧 Family Practice</h4><ul><li>New patient appointment</li><li>General health appointment</li><li>Follow up appointment</li></ul></div>
+    <div class="concern-card" onclick="showScreen('doctorselect')"><h4>👨‍👩‍👧 Family Practice</h4><ul><li>New patient appointment</li><li>General health appointment</li><li>Follow up appointment</li></ul></div>
     <div class="concern-card" onclick="showScreen('doctors')"><h4>🦠 Infections</h4><ul><li>Chest cold</li><li>Sinus infection</li><li>Pink eye</li><li>Flu</li></ul></div>
     <div class="concern-card" onclick="showScreen('doctors')"><h4>💊 Everyday Health</h4><ul><li>Prescription renewal</li><li>Bladder infection</li><li>Birth control refill</li><li>Sick note</li></ul></div>
     <div class="concern-card" onclick="showScreen('doctors')"><h4>👂 Ear, Nose &amp; Throat</h4><ul><li>Allergy relief</li><li>Nasal congestion</li><li>Swimmer's ear</li></ul></div>
@@ -208,17 +219,6 @@
   </div>
 </div>
 
-<!-- ============ FAMILY PRACTICE: sign in / register (new) ============ -->
-<div class="screen" id="screen-signin">
-  <button class="back-link" onclick="showScreen('fork')">&larr; Back</button>
-  <div class="fam-box">
-    <span class="badge">Virtual Family Practice</span>
-    <h2>Sign In / Register</h2>
-    <p>No intermediate screen — straight to auth. Logging in on this path means you're already attached; registering is the attachment action.</p>
-    <button class="btn" onclick="showScreen('attachedscheduler')">Log in (existing patient)</button>
-    <div style="margin-top:10px;"><button class="btn ghost" onclick="showScreen('doctorselect')">First time here? Register</button></div>
-  </div>
-</div>
 <div class="screen" id="screen-attachedscheduler">
   <div class="fam-box">
     <span class="badge">Already attached</span>
@@ -230,14 +230,22 @@
     </div>
   </div>
 </div>
+<!-- ============ FAMILY PRACTICE: combined doctor-select + auth (register default, log-in secondary) ============ -->
 <div class="screen" id="screen-doctorselect">
+  <button class="back-link" onclick="showScreen('fork')">&larr; Back</button>
   <div class="fam-box" style="max-width:640px;">
-    <span class="badge">Registration = attachment</span>
+    <span class="badge">Virtual Family Practice</span>
     <h2>Choose your family doctor</h2>
-    <p>Reuses the photo/bio component from the Doctors / About Us page — not the walk-in doctor list.</p>
+    <p>This physician becomes your ongoing SimpleCare doctor — same doctor every visit from here on. Picking one <b>registers you and attaches you</b> to them; no separate sign-up step.</p>
     <div class="doctor-row" onclick="showScreen('consent')" style="cursor:pointer;text-align:left;">
       <div class="doctor-avatar">DP</div>
       <div class="doctor-meta"><b>Dr. Daniel Pannozzo</b><span>CCFP · Accepting new family practice patients</span></div>
+      <span class="go" style="color:var(--navy);font-weight:700;font-size:13px;">Select &rarr;</span>
+    </div>
+
+    <div class="signin-divider">
+      <span>Already a SimpleCare patient?</span>
+      <button class="link-btn" onclick="showScreen('attachedscheduler')">Log in &rarr;</button>
     </div>
   </div>
 </div>
