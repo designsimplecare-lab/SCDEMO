@@ -565,6 +565,57 @@
   .cond-actions{display:flex;gap:6px;flex-wrap:wrap;}
   .reading-row{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--line);}
   .reading-row:last-child{border-bottom:none;}
+
+  /* ===== Retail AI: floating conversational assistant (patient portal) ===== */
+  .ai-launcher{
+    position:fixed;right:24px;bottom:24px;z-index:120;display:flex;align-items:center;gap:10px;
+    background:var(--accent);color:#fff;border:none;border-radius:30px;padding:12px 18px 12px 14px;
+    box-shadow:0 8px 26px rgba(44,67,138,.34);cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;
+    transition:transform .15s, box-shadow .15s;
+  }
+  .ai-launcher:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(44,67,138,.42);}
+  .ai-launcher .spark{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#4f6ff0,#8bb0ff);
+    display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .ai-launcher .pulse{position:absolute;left:14px;top:12px;width:30px;height:30px;border-radius:50%;
+    background:#8bb0ff;opacity:.5;animation:aipulse 2s infinite;z-index:-1;}
+  @keyframes aipulse{0%{transform:scale(1);opacity:.5;}70%{transform:scale(1.9);opacity:0;}100%{opacity:0;}}
+
+  .ai-panel{position:fixed;right:24px;bottom:24px;z-index:121;width:380px;max-width:calc(100vw - 32px);
+    height:560px;max-height:calc(100vh - 48px);background:var(--panel);border-radius:18px;overflow:hidden;
+    box-shadow:0 20px 60px rgba(29,45,94,.32);display:none;flex-direction:column;}
+  .ai-panel.open{display:flex;animation:aislide .22s ease;}
+  @keyframes aislide{from{transform:translateY(16px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .ai-head{background:var(--accent);color:#fff;padding:16px 18px;display:flex;align-items:center;gap:12px;}
+  .ai-head .spark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4f6ff0,#8bb0ff);
+    display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .ai-head b{display:block;font-size:15px;}
+  .ai-head .sub{font-size:11.5px;color:#cdd6ee;}
+  .ai-head .close{margin-left:auto;background:none;border:none;color:#cdd6ee;font-size:22px;cursor:pointer;line-height:1;}
+  .ai-body{flex:1;overflow-y:auto;padding:18px;background:var(--paper);display:flex;flex-direction:column;gap:12px;}
+  .ai-msg{max-width:82%;padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.5;}
+  .ai-msg.bot{background:var(--panel);border:1px solid var(--line);color:var(--ink);align-self:flex-start;border-bottom-left-radius:4px;}
+  .ai-msg.user{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+  .ai-action{align-self:flex-start;background:var(--panel);border:1.5px solid var(--accent);color:var(--accent-ink);
+    border-radius:12px;padding:11px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
+    display:flex;align-items:center;gap:10px;max-width:82%;text-align:left;transition:background .12s;}
+  .ai-action:hover{background:var(--accent-wash);}
+  .ai-action .mini{width:34px;height:34px;border-radius:8px;background:var(--wash);display:flex;
+    align-items:center;justify-content:center;font-size:16px;flex-shrink:0;border:1px solid var(--line);}
+  .ai-action small{display:block;font-weight:500;color:var(--ink-soft);font-size:11.5px;margin-top:2px;}
+  .ai-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px;}
+  .ai-chip{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:7px 13px;
+    font-size:12.5px;color:var(--accent-ink);font-weight:600;cursor:pointer;font-family:inherit;}
+  .ai-chip:hover{background:var(--accent-wash);border-color:var(--accent);}
+  .ai-foot{display:flex;align-items:center;gap:8px;padding:12px 14px;border-top:1px solid var(--line);background:var(--panel);}
+  .ai-foot input{flex:1;border:1px solid var(--line);border-radius:22px;padding:10px 14px;font-size:13.5px;font-family:inherit;outline:none;}
+  .ai-foot input:focus{border-color:var(--accent);}
+  .ai-foot .mic,.ai-foot .send{width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;font-size:16px;flex-shrink:0;}
+  .ai-foot .mic{background:var(--wash);color:var(--accent-ink);}
+  .ai-foot .send{background:var(--accent);color:#fff;}
+  .ai-typing{align-self:flex-start;display:flex;gap:4px;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;}
+  .ai-typing i{width:6px;height:6px;border-radius:50%;background:var(--ink-faint);animation:aidot 1.2s infinite;}
+  .ai-typing i:nth-child(2){animation-delay:.2s;}.ai-typing i:nth-child(3){animation-delay:.4s;}
+  @keyframes aidot{0%,60%,100%{opacity:.3;}30%{opacity:1;}}
 </style>
 </head>
 <body class="mode-v1">
@@ -1356,6 +1407,35 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- ============ RETAIL AI: floating conversational assistant (patient portal) ============ -->
+<button class="ai-launcher" id="ai-launcher" onclick="openAI()">
+  <span class="pulse"></span>
+  <span class="spark">&#10024;</span>
+  <span>Ask SimpleCare</span>
+</button>
+
+<div class="ai-panel" id="ai-panel">
+  <div class="ai-head">
+    <span class="spark">&#10024;</span>
+    <span><b>SimpleCare Assistant</b><span class="sub">Book &middot; refills &middot; records &middot; questions</span></span>
+    <button class="close" onclick="closeAI()">&times;</button>
+  </div>
+  <div class="ai-body" id="ai-body">
+    <div class="ai-msg bot">Hi Ani &#128075; I'm your SimpleCare assistant. I can book a visit, refill a medication, pull up your results, or answer a question. What do you need?</div>
+    <div class="ai-chips" id="ai-chips">
+      <button class="ai-chip" onclick="aiSend('I need to book a visit')">Book a visit</button>
+      <button class="ai-chip" onclick="aiSend('Refill my medication')">Refill a medication</button>
+      <button class="ai-chip" onclick="aiSend('Show my latest results')">See my results</button>
+      <button class="ai-chip" onclick="aiSend('Track my visit today')">Track today's visit</button>
+    </div>
+  </div>
+  <div class="ai-foot">
+    <input id="ai-input" placeholder="Type what you need&hellip;" onkeydown="if(event.key==='Enter')aiSend()">
+    <button class="mic" title="Voice (demo)">&#127908;</button>
+    <button class="send" onclick="aiSend()">&#10148;</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="book-modal-overlay" onclick="if(event.target===this) closeBookModal()">
   <div class="modal-card">
     <p class="modal-title">Who is this visit for?</p>
@@ -1840,6 +1920,97 @@ function toast(msg){
   t.classList.add('show');
   clearTimeout(window._toastTimer);
   window._toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2200);
+}
+
+/* ===== Retail AI assistant (demo intent engine, patient-portal-aware) ===== */
+function openAI(){
+  document.getElementById('ai-panel').classList.add('open');
+  document.getElementById('ai-launcher').style.display='none';
+  var inp=document.getElementById('ai-input'); if(inp) inp.focus();
+}
+function closeAI(){
+  document.getElementById('ai-panel').classList.remove('open');
+  document.getElementById('ai-launcher').style.display='flex';
+}
+function aiScroll(){ var b=document.getElementById('ai-body'); b.scrollTop=b.scrollHeight; }
+function aiAppend(html,cls){
+  var d=document.createElement('div'); d.className='ai-msg '+cls; d.innerHTML=html;
+  document.getElementById('ai-body').appendChild(d); aiScroll(); return d;
+}
+function aiActionBtn(icon,title,sub,onclick){
+  var b=document.createElement('button'); b.className='ai-action';
+  b.innerHTML='<span class="mini">'+icon+'</span><span>'+title+(sub?'<small>'+sub+'</small>':'')+'</span>';
+  b.onclick=onclick; document.getElementById('ai-body').appendChild(b); aiScroll();
+}
+function aiDo(fn){ closeAI(); fn(); }
+
+function aiReply(text){
+  var chips=document.getElementById('ai-chips'); if(chips) chips.remove();
+  var typing=document.createElement('div'); typing.className='ai-typing';
+  typing.innerHTML='<i></i><i></i><i></i>';
+  document.getElementById('ai-body').appendChild(typing); aiScroll();
+
+  setTimeout(function(){
+    typing.remove();
+    var t=text.toLowerCase();
+    if(/(cover|msp|cost|price|pay|insur|bill|fee)/.test(t)){
+      aiAppend("Your virtual visits are covered by <b>BC MSP</b> at no cost with your valid card. The only charges you'd see are for uninsured services (like some forms), and those are always shown before you confirm.",'bot');
+      aiActionBtn('&#128197;','Book a covered visit',null,function(){aiDo(function(){handleBookClick();});});
+    }
+    else if(/(metformin)/.test(t)){
+      aiAppend("I can send a refill request for <b>Metformin 500mg</b> to a physician for review — once approved it goes straight to your pharmacy.",'bot');
+      aiActionBtn('&#128138;','Refill Metformin 500mg','Sends to physician for approval',function(){aiDo(function(){requestRefill('Metformin 500mg');});});
+    }
+    else if(/(amlodipine)/.test(t)){
+      aiAppend("I can send a refill request for <b>Amlodipine 5mg</b> for review — once approved it's sent to your pharmacy.",'bot');
+      aiActionBtn('&#128138;','Refill Amlodipine 5mg','Sends to physician for approval',function(){aiDo(function(){requestRefill('Amlodipine 5mg');});});
+    }
+    else if(/(refill|prescription|medication|meds|renew)/.test(t)){
+      aiAppend("You have two active medications on file. Which would you like to refill?",'bot');
+      aiActionBtn('&#128138;','Refill Metformin 500mg',null,function(){aiDo(function(){requestRefill('Metformin 500mg');});});
+      aiActionBtn('&#128138;','Refill Amlodipine 5mg',null,function(){aiDo(function(){requestRefill('Amlodipine 5mg');});});
+      aiAppend("Or manage them all under My conditions.",'bot');
+      aiActionBtn('&#129658;','Open My conditions',null,function(){aiDo(function(){showScreen('conditions');});});
+    }
+    else if(/(result|lab|bloodwork|report|x-ray|imaging|latest)/.test(t)){
+      aiAppend("Your most recent result is <b>bloodwork ordered by Dr. Pannozzo</b>. I can open that visit's clinical summary, or take you to all your health records.",'bot');
+      aiActionBtn('&#129514;','Open latest result','Jun 25 visit · Dr. Pannozzo',function(){aiDo(function(){openCase('jun25');});});
+      aiActionBtn('&#128193;','All health records',null,function(){aiDo(function(){showScreen('documents');});});
+    }
+    else if(/(record|document|upload|file)/.test(t)){
+      aiAppend("Your lab results, documents, and uploads all live in Health records.",'bot');
+      aiActionBtn('&#128193;','Open Health records',null,function(){aiDo(function(){showScreen('documents');});});
+    }
+    else if(/(today|live|queue|track|waiting|call|in line)/.test(t)){
+      aiAppend("Your visit with <b>Dr. Pannozzo</b> is in progress today. I can take you to the live tracker so you can watch your place in line.",'bot');
+      aiActionBtn('&#128337;','Track today&#39;s visit','Live queue',function(){aiDo(function(){showScreen('queue');});});
+    }
+    else if(/(history|past visit|previous|appointment)/.test(t)){
+      aiAppend("Here's your full visit history across the family account.",'bot');
+      aiActionBtn('&#128203;','Open Visit history',null,function(){aiDo(function(){showScreen('appointments');});});
+    }
+    else if(/(condition|diagnos|chronic|manage)/.test(t)){
+      aiAppend("Your ongoing conditions, medications, and readings are all under My conditions.",'bot');
+      aiActionBtn('&#129658;','Open My conditions',null,function(){aiDo(function(){showScreen('conditions');});});
+    }
+    else if(/(book|see|doctor|visit|sick|appointment|throat|cold|fever|pain|cough|rash)/.test(t)){
+      aiAppend("I can get you booked. You can continue ongoing care with <b>Dr. Pannozzo</b>, or start a same-day visit with the next available doctor.",'bot');
+      aiActionBtn('&#128197;','Book a visit','Choose care type next',function(){aiDo(function(){handleBookClick();});});
+    }
+    else {
+      aiAppend("I can help you <b>book a visit</b>, <b>refill a medication</b>, <b>find your results</b>, or answer questions about your care. Which would you like?",'bot');
+      aiActionBtn('&#128197;','Book a visit',null,function(){aiDo(function(){handleBookClick();});});
+      aiActionBtn('&#128138;','Refill a medication',null,function(){aiSend('Refill my medication');});
+    }
+  }, 650);
+}
+function aiSend(preset){
+  var inp=document.getElementById('ai-input');
+  var text = preset || (inp?inp.value:''); text=(text||'').trim();
+  if(!text) return;
+  aiAppend(text.replace(/</g,'&lt;'),'user');
+  if(inp) inp.value='';
+  aiReply(text);
 }
 </script>
 
