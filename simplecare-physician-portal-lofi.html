@@ -514,6 +514,66 @@
   .ai-typing i{width:6px;height:6px;border-radius:50%;background:var(--ink-faint);animation:aidot 1.2s infinite;}
   .ai-typing i:nth-child(2){animation-delay:.2s;}.ai-typing i:nth-child(3){animation-delay:.4s;}
   @keyframes aidot{0%,60%,100%{opacity:.3;}30%{opacity:1;}}
+
+  /* ============================================================
+     BOLD & MODERN PASS — layered overrides for the dashboard
+     ============================================================ */
+  h1{font-size:30px;font-weight:800;letter-spacing:-.022em;color:var(--ink);}
+  .sub{font-size:14px;margin-bottom:18px;}
+
+  .box{border-radius:16px;padding:20px 22px;border-color:var(--line);box-shadow:0 2px 12px rgba(28,31,38,.05);margin-bottom:16px;}
+  .box-title{font-size:11.5px;font-weight:700;letter-spacing:.07em;color:var(--ink-faint);margin-bottom:12px;}
+
+  /* stat tiles — punchier numbers, tinted washes */
+  .glance{gap:14px;margin-bottom:16px;}
+  .stat{border-radius:16px;padding:18px 18px 16px;border-color:var(--line);box-shadow:0 2px 12px rgba(28,31,38,.05);}
+  .stat .n{font-size:38px;font-weight:800;letter-spacing:-.03em;color:var(--ink);margin-bottom:2px;}
+  .stat .l{font-size:10.5px;letter-spacing:.07em;font-weight:700;}
+  .stat.good{background:linear-gradient(180deg,var(--good-wash),transparent 85%);}
+  .stat.good .n{color:var(--good);}
+  .stat.warn{background:linear-gradient(180deg,var(--warn-wash),transparent 85%);}
+  .stat.warn .n{color:var(--warn);}
+  .stat.crit{background:linear-gradient(180deg,var(--crit-wash),transparent 85%);}
+  .stat.crit .n{color:var(--crit);}
+  .stat.tap:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(44,67,138,.15);}
+
+  /* next-up hero tile — filled gradient */
+  .stat.feature{
+    background:linear-gradient(135deg,#243a7d 0%,#3f63d8 55%,#5b7bff 100%);
+    border:none;color:#fff;box-shadow:0 10px 28px rgba(44,67,138,.34);
+  }
+  .stat.feature .n{color:#fff;font-weight:800;}
+  .stat.feature .l{color:#fff;opacity:.72;}
+  .stat.feature .s{color:#fff;opacity:.92;}
+  .stat.feature .corner{color:#fff;opacity:.95;font-size:16px;}
+  .stat.feature:hover{box-shadow:0 16px 36px rgba(44,67,138,.44);transform:translateY(-2px);}
+
+  /* day-progress bar */
+  .day-bar{border-radius:16px;padding:16px 20px;box-shadow:0 2px 12px rgba(28,31,38,.05);}
+  .day-bar .track{height:10px;background:var(--wash);border-radius:8px;}
+  .day-bar .fill{background:linear-gradient(90deg,#2c438a,#5b7bff);border-radius:8px;}
+  .day-bar .lab b{font-size:13px;font-weight:800;letter-spacing:.01em;}
+
+  /* buttons — gradient primary, softer radius */
+  .btn{border-radius:8px;font-weight:600;}
+  .btn.dark{background:linear-gradient(135deg,#2c438a,#4f6ff0);border:none;box-shadow:0 4px 14px rgba(44,67,138,.28);}
+  .btn.crit.dark{background:linear-gradient(135deg,#b23434,#d64949);border:none;box-shadow:0 4px 14px rgba(178,52,52,.28);}
+
+  /* call-window chips */
+  .win-chip{border-radius:22px;font-weight:600;}
+  .win-chip.active{background:linear-gradient(135deg,#2c438a,#4f6ff0);border:none;box-shadow:0 3px 12px rgba(44,67,138,.3);}
+
+  /* status pills + table */
+  .status-pill{font-weight:700;padding:4px 11px;}
+  .q-table th{font-size:10.5px;letter-spacing:.06em;}
+
+  /* alerts — stronger accent */
+  .alert-row{border-radius:14px;padding:14px 16px;}
+  .alert-row.critical{border-left:5px solid var(--crit);}
+
+  /* Copilot assistant — gradient identity */
+  .ai-launcher{background:linear-gradient(135deg,#2c438a,#5b7bff);box-shadow:0 10px 28px rgba(44,67,138,.42);}
+  .ai-head{background:linear-gradient(135deg,#243a7d,#4f6ff0);}
 </style>
 </head>
 <body>
@@ -1006,7 +1066,7 @@ function renderGlance(){
   }).join('');
   if(nextRow){
     var flag = nextRow.redflag ? '<span class="corner">&#9873;</span>' : '';
-    html += '<div class="stat tap" onclick="openBrief(\''+nextRow.name+'\')">'+flag+
+    html += '<div class="stat feature tap" onclick="openBrief(\''+nextRow.name+'\')">'+flag+
       '<p class="n" style="font-size:17px;margin-top:3px;">'+firstLast(nextRow.name)+'</p>'+
       '<p class="l">Next up</p><p class="s">'+nextRow.concern+'</p></div>';
   }
