@@ -574,6 +574,66 @@
   /* Copilot assistant — gradient identity */
   .ai-launcher{background:linear-gradient(135deg,#2c438a,#5b7bff);box-shadow:0 10px 28px rgba(44,67,138,.42);}
   .ai-head{background:linear-gradient(135deg,#243a7d,#4f6ff0);}
+
+  /* ---- iteration 2: modern nav, queue avatars, tile icons ---- */
+  .nav-btn.active{
+    background:var(--accent-wash);border:1px solid transparent;border-radius:9px;
+    font-weight:700;color:var(--accent-ink);box-shadow:inset 3px 0 0 var(--accent);
+  }
+  .nav-btn-parent.active-child{
+    background:var(--accent-wash);border:1px solid transparent;border-radius:9px;
+    font-weight:700;color:var(--accent-ink);box-shadow:inset 3px 0 0 var(--accent);
+  }
+
+  .stat .corner{font-size:15px;opacity:.55;}
+
+  /* live-queue: avatars, hover, bolder names */
+  .q-patient{display:flex;align-items:center;gap:11px;}
+  .q-avatar{
+    width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:11.5px;font-weight:800;letter-spacing:.02em;flex-shrink:0;
+  }
+  .q-pname{font-weight:600;color:var(--ink);}
+  .q-table td{padding:11px 8px;}
+  .q-table tbody tr{transition:background .12s;}
+  .q-table tbody tr:hover td{background:var(--accent-wash);}
+  .status-pill{display:inline-flex;align-items:center;gap:6px;}
+  .status-pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
+  .q-table tr.redflag td{background:#fdf1f1;}
+  .q-table tbody tr.redflag:hover td{background:#fbe4e4;}
+
+  /* ============================================================
+     ITERATION 3 — soft, floaty, inspiration-aligned
+     (light-gray canvas · floating rounded cards · big numbers ·
+      status-ring avatars · purple AI identity)
+     ============================================================ */
+  body{background:#eef0f4;}
+  .box{border:1px solid #e9ebf1;border-radius:22px;box-shadow:0 6px 22px rgba(28,31,38,.06);padding:22px 24px;}
+  .stat{border:1px solid #e9ebf1;border-radius:22px;box-shadow:0 6px 22px rgba(28,31,38,.06);}
+  .stat .n{font-size:44px;line-height:1;}
+  .stat .l{margin-top:2px;}
+  .day-bar{border:1px solid #e9ebf1;border-radius:22px;box-shadow:0 6px 22px rgba(28,31,38,.06);}
+  .glance{gap:16px;}
+
+  /* softer pill controls */
+  .btn{border-radius:11px;}
+  .btn.xs{border-radius:9px;}
+  .win-chip{padding:7px 15px;}
+
+  /* status-ring avatars in the queue */
+  .q-avatar{background:var(--accent-wash);color:var(--accent-ink);}
+
+  /* Copilot → distinct violet-indigo AI identity (from the AI-recommendation refs) */
+  .ai-launcher{background:linear-gradient(135deg,#6366f1,#a855f7);box-shadow:0 12px 30px rgba(124,58,237,.4);}
+  .ai-head{background:linear-gradient(135deg,#5b5bef,#9333ea);}
+  .ai-launcher .spark,.ai-head .spark{background:linear-gradient(135deg,#c084fc,#f0abfc);}
+  .ai-msg.user{background:#6d28d9;}
+  .ai-action{border-color:#7c3aed;color:#5b21b6;}
+  .ai-action:hover{background:#f4ecff;}
+  .ai-chip{color:#5b21b6;}
+  .ai-chip:hover{background:#f4ecff;border-color:#7c3aed;}
+  .ai-foot input:focus{border-color:#7c3aed;}
+  .ai-foot .send{background:#6d28d9;}
 </style>
 </head>
 <body>
@@ -1034,9 +1094,11 @@ function renderQueue(){
       actions += '<button class="btn xs" onclick="toast(\'Would open the chart\')">Access chart</button>';
     }
     actions += ' <button class="btn xs" onclick="openBrief(\''+r.name+'\')">Brief</button>';
+    var ring = RING_COLOR[r.status] || 'var(--line-strong)';
+    var avatar = '<span class="q-avatar" style="box-shadow:0 0 0 2px var(--panel), 0 0 0 4px '+ring+';">'+qInitials(r.name)+'</span>';
     return '<tr class="'+(r.redflag?'redflag':'')+'">'+
       '<td>'+r.pos+'</td>'+
-      '<td>'+r.name+flag+'</td>'+
+      '<td><div class="q-patient">'+avatar+'<span class="q-pname">'+r.name+flag+'</span></div></td>'+
       '<td>'+r.concern+'</td>'+
       '<td><span class="status-pill '+r.status+'">'+STATUS_LABEL[r.status]+'</span></td>'+
       '<td>'+r.wait+'</td>'+
@@ -1046,6 +1108,8 @@ function renderQueue(){
   renderGlance();
 }
 function firstLast(n){ return n.split(',')[0].trim(); }
+function qInitials(n){ var p=firstLast(n).split(' ').filter(Boolean); return (((p[0]||'')[0]||'')+((p[1]||'')[0]||'')).toUpperCase(); }
+var RING_COLOR = {next:'var(--good)', waiting:'var(--accent)', delayed:'var(--warn)', missed:'var(--crit)', dropped:'var(--crit)', done:'var(--line-strong)', noshow:'var(--line-strong)'};
 function renderGlance(){
   var g = document.getElementById('glance'); if(!g) return;
   var total = QUEUE_DATA.length;
