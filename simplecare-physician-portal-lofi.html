@@ -634,6 +634,61 @@
   .ai-chip:hover{background:#f4ecff;border-color:#7c3aed;}
   .ai-foot input:focus{border-color:#7c3aed;}
   .ai-foot .send{background:#6d28d9;}
+
+  /* ============================================================
+     ITERATION 4 — findings-table look for the live queue
+     ============================================================ */
+  .q-table{border-collapse:separate;border-spacing:0;}
+  .q-table th{padding:4px 10px 12px;color:var(--ink-faint);font-size:10px;letter-spacing:.07em;}
+  .q-table td{padding:14px 10px;border-bottom:1px solid #eef0f4;vertical-align:middle;}
+  .q-table tbody tr:last-child td{border-bottom:none;}
+  .q-table tbody tr:hover td{background:#f7f8fb;}
+  .q-table tr.redflag td{background:#fdf3f3;}
+  .q-table tbody tr.redflag:hover td{background:#fbe9e9;}
+
+  /* split countdown / wait chip */
+  .due-chip{
+    display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+    min-width:54px;padding:7px 9px;border-radius:13px;line-height:1.05;
+  }
+  .due-chip b{font-size:17px;font-weight:800;letter-spacing:-.01em;}
+  .due-chip small{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;opacity:.85;margin-top:1px;}
+  .due-good{background:var(--good-wash);color:var(--good);}
+  .due-neutral{background:var(--accent-wash);color:var(--accent-ink);}
+  .due-warn{background:var(--warn-wash);color:var(--warn);}
+  .due-crit{background:var(--crit-wash);color:var(--crit-ink);}
+  .due-muted{background:var(--wash);color:var(--ink-faint);}
+
+  /* patient cell: name + concern subtitle */
+  .q-pmeta{display:flex;flex-direction:column;gap:1px;}
+  .q-pname{font-weight:700;color:var(--ink);font-size:13.5px;}
+  .q-psub{font-size:11.5px;color:var(--ink-faint);}
+
+  /* acuity / risk pill */
+  .rk-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap;}
+  .rk-high{background:var(--crit-wash);color:var(--crit-ink);}
+  .rk-low{background:var(--good-wash);color:var(--good);}
+
+  /* call-window cell */
+  .win-cell{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-soft);font-weight:600;white-space:nowrap;}
+
+  /* status pill: icon instead of dot inside the queue */
+  .q-table .status-pill::before{display:none;}
+  .q-table .status-pill{gap:5px;}
+
+  /* action pills */
+  .q-actions{white-space:nowrap;}
+  .q-actions .btn{border-radius:20px;}
+  .q-actions .btn.dark{box-shadow:none;}
+
+  /* ref-style toolbar: segmented filter + sort */
+  .q-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+  .win-strip{background:var(--wash);border-radius:22px;padding:4px;gap:2px;display:inline-flex;width:auto;flex-wrap:nowrap;margin:0;}
+  .win-strip .win-chip{border:none;background:none;color:var(--ink-soft);border-radius:18px;box-shadow:none;font-weight:600;}
+  .win-strip .win-chip.active{background:var(--panel);color:var(--accent-ink);box-shadow:0 1px 5px rgba(28,31,38,.12);}
+  .q-sort{display:inline-flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);
+    border-radius:22px;padding:9px 15px;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:inherit;}
+  .q-sort:hover{border-color:var(--line-strong);}
 </style>
 </head>
 <body>
@@ -738,18 +793,19 @@
       </div>
 
       <div class="box">
-        <p class="box-title">Call windows — click to filter the live queue below</p>
-        <div class="win-strip">
-          <button class="win-chip active" data-win="all" onclick="filterWindow('all',this)">All</button>
-          <button class="win-chip" data-win="8-10" onclick="filterWindow('8-10',this)">8:00–10:00</button>
-          <button class="win-chip" data-win="10-2" onclick="filterWindow('10-2',this)">10:00–2:00</button>
-          <button class="win-chip" data-win="2-5" onclick="filterWindow('2-5',this)">2:00–5:00</button>
-          <button class="win-chip" data-win="5-7" onclick="filterWindow('5-7',this)">5:00–7:00</button>
+        <div class="q-toolbar">
+          <div class="win-strip">
+            <button class="win-chip active" data-win="all" onclick="filterWindow('all',this)">All</button>
+            <button class="win-chip" data-win="8-10" onclick="filterWindow('8-10',this)">8:00–10:00</button>
+            <button class="win-chip" data-win="10-2" onclick="filterWindow('10-2',this)">10:00–2:00</button>
+            <button class="win-chip" data-win="2-5" onclick="filterWindow('2-5',this)">2:00–5:00</button>
+            <button class="win-chip" data-win="5-7" onclick="filterWindow('5-7',this)">5:00–7:00</button>
+          </div>
+          <button class="q-sort" onclick="toast('Sort: acuity, then wait (demo)')">&#8645; Sort &middot; Acuity, then wait</button>
         </div>
 
-        <p class="box-title" style="margin-top:4px;">Live queue — real states, not a static list</p>
         <table class="q-table" id="queue-table">
-          <thead><tr><th>Pos</th><th>Patient</th><th>Concern</th><th>Status</th><th>Wait</th><th>Action</th></tr></thead>
+          <thead><tr><th>Wait</th><th>Patient</th><th>Acuity</th><th>Window</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="queue-body"></tbody>
         </table>
       </div>
@@ -1079,29 +1135,48 @@ var currentWindow = 'all';
 function renderQueue(){
   var body = document.getElementById('queue-body');
   var rows = QUEUE_DATA.filter(function(r){ return currentWindow==='all' || r.win===currentWindow; });
+  var WIN_LABEL = {'8-10':'8:00–10:00','10-2':'10:00–2:00','2-5':'2:00–5:00','5-7':'5:00–7:00'};
+  var STAT_ICON = {next:'&#9654;', waiting:'&#9203;', progress:'&#128222;', delayed:'&#9203;', missed:'&#9888;', dropped:'&#9888;', done:'&#10003;', noshow:'&#10005;'};
   body.innerHTML = rows.map(function(r){
-    var flag = r.redflag ? '<span class="redflag-badge">flag</span>' : '';
     var actions = '';
-    if(r.status==='waiting' || r.status==='next'){
-      actions += '<button class="btn xs" onclick="advance(\''+r.name+'\',\'progress\')">Call now</button>';
-    } else if(r.status==='delayed'){
-      actions += '<button class="btn xs" onclick="advance(\''+r.name+'\',\'progress\')">Call now</button>';
+    if(r.status==='waiting' || r.status==='next' || r.status==='delayed'){
+      actions += '<button class="btn xs dark" onclick="advance(\''+r.name+'\',\'progress\')">Call now</button>';
     } else if(r.status==='missed'){
-      actions += '<button class="btn xs" onclick="advance(\''+r.name+'\',\'progress\')">Retry call</button>';
+      actions += '<button class="btn xs" onclick="advance(\''+r.name+'\',\'progress\')">Retry</button>';
     } else if(r.status==='dropped'){
       actions += '<button class="btn xs" onclick="advance(\''+r.name+'\',\'progress\')">Reconnect</button>';
     } else {
-      actions += '<button class="btn xs" onclick="toast(\'Would open the chart\')">Access chart</button>';
+      actions += '<button class="btn xs" onclick="toast(\'Would open the chart\')">Chart</button>';
     }
     actions += ' <button class="btn xs" onclick="openBrief(\''+r.name+'\')">Brief</button>';
+
     var ring = RING_COLOR[r.status] || 'var(--line-strong)';
     var avatar = '<span class="q-avatar" style="box-shadow:0 0 0 2px var(--panel), 0 0 0 4px '+ring+';">'+qInitials(r.name)+'</span>';
+
+    // wait / countdown chip
+    var mins = parseInt((r.wait||'').replace(/[^0-9]/g,''),10);
+    var hasWait = /min/.test(r.wait||'');
+    var dueCls='due-neutral', dueNum = hasWait ? (isNaN(mins)?0:mins) : '—', dueUnit = hasWait ? 'min' : '';
+    if(r.status==='next'){ dueCls='due-good'; }
+    else if(r.status==='delayed'){ dueCls='due-crit'; }
+    else if(r.status==='missed' || r.status==='dropped'){ dueCls='due-crit'; dueNum='—'; dueUnit=''; }
+    else if(r.status==='done' || r.status==='noshow'){ dueCls='due-muted'; dueNum='—'; dueUnit=''; }
+    else if(hasWait && mins>=15){ dueCls='due-warn'; }
+    var dueChip = '<span class="due-chip '+dueCls+'"><b>'+dueNum+'</b>'+(dueUnit?'<small>'+dueUnit+'</small>':'')+'</span>';
+
+    var acuity = r.redflag
+      ? '<span class="rk-pill rk-high">&#9888; Urgent</span>'
+      : '<span class="rk-pill rk-low">&#128737; Routine</span>';
+
+    var winCell = '<span class="win-cell">&#128337; '+(WIN_LABEL[r.win]||r.win)+'</span>';
+    var statusPill = '<span class="status-pill '+r.status+'">'+(STAT_ICON[r.status]||'')+' '+STATUS_LABEL[r.status]+'</span>';
+
     return '<tr class="'+(r.redflag?'redflag':'')+'">'+
-      '<td>'+r.pos+'</td>'+
-      '<td><div class="q-patient">'+avatar+'<span class="q-pname">'+r.name+flag+'</span></div></td>'+
-      '<td>'+r.concern+'</td>'+
-      '<td><span class="status-pill '+r.status+'">'+STATUS_LABEL[r.status]+'</span></td>'+
-      '<td>'+r.wait+'</td>'+
+      '<td>'+dueChip+'</td>'+
+      '<td><div class="q-patient">'+avatar+'<span class="q-pmeta"><span class="q-pname">'+r.name+'</span><span class="q-psub">'+r.concern+'</span></span></div></td>'+
+      '<td>'+acuity+'</td>'+
+      '<td>'+winCell+'</td>'+
+      '<td>'+statusPill+'</td>'+
       '<td class="q-actions">'+actions+'</td>'+
     '</tr>';
   }).join('');
