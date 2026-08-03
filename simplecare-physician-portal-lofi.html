@@ -440,6 +440,80 @@
     opacity:0;pointer-events:none;transition:all .2s;z-index:60;
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* ===== Day-at-a-glance header ===== */
+  .glance{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px;margin-bottom:14px;}
+  .stat{
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;
+    box-shadow:0 1px 2px rgba(28,31,38,.04);position:relative;
+  }
+  .stat .n{font-size:26px;font-weight:700;color:var(--accent-ink);line-height:1;margin:0 0 5px;letter-spacing:-.01em;}
+  .stat .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);font-weight:700;margin:0;}
+  .stat .s{font-size:12px;color:var(--ink-soft);margin:5px 0 0;line-height:1.35;}
+  .stat.crit .n{color:var(--crit);} .stat.warn .n{color:var(--warn);} .stat.good .n{color:var(--good);}
+  .stat.tap{cursor:pointer;transition:border-color .12s, transform .12s, box-shadow .12s;}
+  .stat.tap:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(44,67,138,.1);}
+  .stat .corner{position:absolute;top:12px;right:14px;font-size:14px;opacity:.5;}
+
+  .day-bar{
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 16px;
+    margin-bottom:16px;box-shadow:0 1px 2px rgba(28,31,38,.04);
+  }
+  .day-bar .lab{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink-soft);}
+  .day-bar .lab b{color:var(--ink);font-size:13px;}
+  .day-bar .track{height:8px;background:var(--wash);border-radius:6px;overflow:hidden;margin-top:9px;}
+  .day-bar .fill{height:100%;background:var(--good);border-radius:6px;width:0;transition:width .5s ease;}
+
+  /* ===== Physician AI assistant (Copilot) ===== */
+  .ai-launcher{
+    position:fixed;right:88px;bottom:24px;z-index:60;display:flex;align-items:center;gap:9px;
+    background:var(--accent);color:#fff;border:none;border-radius:30px;padding:11px 17px 11px 13px;
+    box-shadow:0 8px 24px rgba(44,67,138,.34);cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:600;
+    transition:transform .15s, box-shadow .15s;
+  }
+  .ai-launcher:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(44,67,138,.42);}
+  .ai-launcher .spark{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4f6ff0,#8bb0ff);
+    display:flex;align-items:center;justify-content:center;font-size:15px;}
+  .ai-launcher .pulse{position:absolute;left:13px;top:11px;width:28px;height:28px;border-radius:50%;
+    background:#8bb0ff;opacity:.5;animation:aipulse 2s infinite;z-index:-1;}
+  @keyframes aipulse{0%{transform:scale(1);opacity:.5;}70%{transform:scale(1.9);opacity:0;}100%{opacity:0;}}
+
+  .ai-panel{position:fixed;right:24px;bottom:24px;z-index:121;width:390px;max-width:calc(100vw - 32px);
+    height:568px;max-height:calc(100vh - 48px);background:var(--panel);border-radius:18px;overflow:hidden;
+    box-shadow:0 20px 60px rgba(29,45,94,.34);display:none;flex-direction:column;}
+  .ai-panel.open{display:flex;animation:aislide .22s ease;}
+  @keyframes aislide{from{transform:translateY(16px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .ai-head{background:var(--accent);color:#fff;padding:15px 18px;display:flex;align-items:center;gap:12px;}
+  .ai-head .spark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4f6ff0,#8bb0ff);
+    display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .ai-head b{display:block;font-size:15px;}
+  .ai-head .subh{font-size:11.5px;color:#cdd6ee;}
+  .ai-head .close{margin-left:auto;background:none;border:none;color:#cdd6ee;font-size:22px;cursor:pointer;line-height:1;}
+  .ai-body{flex:1;overflow-y:auto;padding:18px;background:var(--paper);display:flex;flex-direction:column;gap:11px;}
+  .ai-msg{max-width:84%;padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.5;}
+  .ai-msg.bot{background:var(--panel);border:1px solid var(--line);color:var(--ink);align-self:flex-start;border-bottom-left-radius:4px;}
+  .ai-msg.user{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+  .ai-action{align-self:flex-start;background:var(--panel);border:1.5px solid var(--accent);color:var(--accent-ink);
+    border-radius:12px;padding:10px 13px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
+    display:flex;align-items:center;gap:10px;max-width:84%;text-align:left;transition:background .12s;}
+  .ai-action:hover{background:var(--accent-wash);}
+  .ai-action .mini{width:32px;height:32px;border-radius:8px;background:var(--wash);display:flex;
+    align-items:center;justify-content:center;font-size:15px;flex-shrink:0;border:1px solid var(--line);}
+  .ai-action small{display:block;font-weight:500;color:var(--ink-soft);font-size:11.5px;margin-top:2px;}
+  .ai-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px;}
+  .ai-chip{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:7px 12px;
+    font-size:12.5px;color:var(--accent-ink);font-weight:600;cursor:pointer;font-family:inherit;}
+  .ai-chip:hover{background:var(--accent-wash);border-color:var(--accent);}
+  .ai-foot{display:flex;align-items:center;gap:8px;padding:12px 14px;border-top:1px solid var(--line);background:var(--panel);}
+  .ai-foot input{flex:1;border:1px solid var(--line);border-radius:22px;padding:10px 14px;font-size:13.5px;font-family:inherit;outline:none;}
+  .ai-foot input:focus{border-color:var(--accent);}
+  .ai-foot .mic,.ai-foot .send{width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;font-size:15px;flex-shrink:0;}
+  .ai-foot .mic{background:var(--wash);color:var(--accent-ink);}
+  .ai-foot .send{background:var(--accent);color:#fff;}
+  .ai-typing{align-self:flex-start;display:flex;gap:4px;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;}
+  .ai-typing i{width:6px;height:6px;border-radius:50%;background:var(--ink-faint);animation:aidot 1.2s infinite;}
+  .ai-typing i:nth-child(2){animation-delay:.2s;}.ai-typing i:nth-child(3){animation-delay:.4s;}
+  @keyframes aidot{0%,60%,100%{opacity:.3;}30%{opacity:1;}}
 </style>
 </head>
 <body>
@@ -518,6 +592,13 @@
       <h1>Today — Thu Jul 23, 2026</h1>
       <p class="sub">The one place "today" lives. Replaces Dashboard + the old Patient Queue table.</p>
       <div class="ia-note">IA change: merges Dashboard, Daysheet's queue, and Calendar's day-view into a single canonical screen. Reordered by how time-sensitive each thing is: alerts and the live queue first (act now), then your own outstanding tasks, then lower-priority previews and logs pushed to the bottom. MOA online status moved off this screen entirely — it's ambient "peace of mind" info, not something that should compete with clinical content for space, so it now lives as a small dot on the chat button instead.</div>
+
+      <!-- Day-at-a-glance: live stat tiles derived from the queue -->
+      <div class="glance" id="glance"></div>
+      <div class="day-bar">
+        <div class="lab"><span><b id="day-bar-title">Day progress</b></span><span id="day-bar-count">—</span></div>
+        <div class="track"><div class="fill" id="day-bar-fill"></div></div>
+      </div>
 
       <div class="box">
         <p class="box-title">Alerts — stratified by severity</p>
@@ -814,6 +895,35 @@
   </div>
 </div>
 
+<!-- ============ Physician AI assistant (Copilot) ============ -->
+<button class="ai-launcher" id="ai-launcher" onclick="openAI()">
+  <span class="pulse"></span>
+  <span class="spark">&#10022;</span>
+  <span>Copilot</span>
+</button>
+
+<div class="ai-panel" id="ai-panel">
+  <div class="ai-head">
+    <span class="spark">&#10022;</span>
+    <span><b>Copilot</b><span class="subh">Queue &middot; briefs &middot; claims &middot; schedule</span></span>
+    <button class="close" onclick="closeAI()">&times;</button>
+  </div>
+  <div class="ai-body" id="ai-body">
+    <div class="ai-msg bot">Hi Dr. Pannozzo. I can pull up who&#39;s next, summarize a patient&#39;s intake, check your claims or schedule, or draft a visit note. What do you need?</div>
+    <div class="ai-chips" id="ai-chips">
+      <button class="ai-chip" onclick="aiSend('Who is next?')">Who&#39;s next?</button>
+      <button class="ai-chip" onclick="aiSend('Summarize Gloria Mcdonald')">Summarize next patient</button>
+      <button class="ai-chip" onclick="aiSend('How is my day looking?')">How&#39;s my day?</button>
+      <button class="ai-chip" onclick="aiSend('Any unsubmitted claims?')">Unsubmitted claims</button>
+    </div>
+  </div>
+  <div class="ai-foot">
+    <input id="ai-input" placeholder="Ask Copilot&hellip;" onkeydown="if(event.key==='Enter')aiSend()">
+    <button class="mic" title="Voice (demo)">&#127908;</button>
+    <button class="send" onclick="aiSend()">&#10148;</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -873,6 +983,37 @@ function renderQueue(){
       '<td class="q-actions">'+actions+'</td>'+
     '</tr>';
   }).join('');
+  renderGlance();
+}
+function firstLast(n){ return n.split(',')[0].trim(); }
+function renderGlance(){
+  var g = document.getElementById('glance'); if(!g) return;
+  var total = QUEUE_DATA.length;
+  var seen = QUEUE_DATA.filter(function(r){return r.status==='done';}).length;
+  var waitingNow = QUEUE_DATA.filter(function(r){return r.status==='waiting'||r.status==='next';}).length;
+  var behind = QUEUE_DATA.filter(function(r){return r.status==='delayed';}).length;
+  var attention = QUEUE_DATA.filter(function(r){return r.status==='missed'||r.status==='dropped';}).length;
+  var nextRow = QUEUE_DATA.find(function(r){return r.status==='next';}) || QUEUE_DATA.find(function(r){return r.status==='waiting';});
+  var tiles = [
+    {n:seen, l:'Seen today', s:'of '+total+' booked', cls:'good'},
+    {n:waitingNow, l:'Waiting now', s:'in the live queue', cls:'', tap:"filterWindow('all',document.querySelector('.win-chip'))"},
+    {n:behind, l:'Running behind', s:'past their window', cls:behind?'warn':''},
+    {n:attention, l:'Needs attention', s:'missed / dropped calls', cls:attention?'crit':''}
+  ];
+  var html = tiles.map(function(t){
+    return '<div class="stat '+(t.cls||'')+(t.tap?' tap':'')+'"'+(t.tap?' onclick="'+t.tap+'"':'')+'>'+
+      '<p class="n">'+t.n+'</p><p class="l">'+t.l+'</p><p class="s">'+t.s+'</p></div>';
+  }).join('');
+  if(nextRow){
+    var flag = nextRow.redflag ? '<span class="corner">&#9873;</span>' : '';
+    html += '<div class="stat tap" onclick="openBrief(\''+nextRow.name+'\')">'+flag+
+      '<p class="n" style="font-size:17px;margin-top:3px;">'+firstLast(nextRow.name)+'</p>'+
+      '<p class="l">Next up</p><p class="s">'+nextRow.concern+'</p></div>';
+  }
+  g.innerHTML = html;
+  var pct = total ? Math.round(seen/total*100) : 0;
+  document.getElementById('day-bar-fill').style.width = pct+'%';
+  document.getElementById('day-bar-count').textContent = seen+' of '+total+' patients seen · '+pct+'%';
 }
 function filterWindow(win, el){
   currentWindow = win;
@@ -1317,6 +1458,95 @@ document.addEventListener('click', function(e){
     document.getElementById('profile-dropdown').classList.remove('show');
   }
 });
+
+/* ===== Physician Copilot (demo intent engine, queue-aware) ===== */
+function openAI(){
+  document.getElementById('ai-panel').classList.add('open');
+  document.getElementById('ai-launcher').style.display='none';
+  var inp=document.getElementById('ai-input'); if(inp) inp.focus();
+}
+function closeAI(){
+  document.getElementById('ai-panel').classList.remove('open');
+  document.getElementById('ai-launcher').style.display='flex';
+}
+function aiScroll(){ var b=document.getElementById('ai-body'); b.scrollTop=b.scrollHeight; }
+function aiAppend(html,cls){
+  var d=document.createElement('div'); d.className='ai-msg '+cls; d.innerHTML=html;
+  document.getElementById('ai-body').appendChild(d); aiScroll(); return d;
+}
+function aiActionBtn(icon,title,sub,onclick){
+  var b=document.createElement('button'); b.className='ai-action';
+  b.innerHTML='<span class="mini">'+icon+'</span><span>'+title+(sub?'<small>'+sub+'</small>':'')+'</span>';
+  b.onclick=onclick; document.getElementById('ai-body').appendChild(b); aiScroll();
+}
+function aiDo(fn){ closeAI(); fn(); }
+function qNext(){ return QUEUE_DATA.find(function(r){return r.status==='next';}) || QUEUE_DATA.find(function(r){return r.status==='waiting';}); }
+
+function aiReply(text){
+  var chips=document.getElementById('ai-chips'); if(chips) chips.remove();
+  var typing=document.createElement('div'); typing.className='ai-typing';
+  typing.innerHTML='<i></i><i></i><i></i>';
+  document.getElementById('ai-body').appendChild(typing); aiScroll();
+
+  setTimeout(function(){
+    typing.remove();
+    var t=text.toLowerCase();
+    var nameMatch = QUEUE_DATA.find(function(r){ return t.indexOf(firstLast(r.name).toLowerCase())!==-1 || (r.name.split(' ')[0] && t.indexOf(r.name.split(' ')[0].toLowerCase())!==-1 && r.name.split(' ')[0].length>3); });
+
+    if(/(next|who.?s up|call next)/.test(t)){
+      var nx=qNext();
+      if(nx){
+        var fl = nx.redflag ? ' &mdash; <b style="color:var(--crit)">flagged in intake</b>, review before calling' : '';
+        aiAppend('<b>'+firstLast(nx.name)+'</b> is next up ('+nx.concern+')'+fl+'.','bot');
+        aiActionBtn('&#128203;','Open '+firstLast(nx.name)+'&#39;s brief',null,function(){aiDo(function(){openBrief(nx.name);});});
+        aiActionBtn('&#128222;','Call now',nx.concern,function(){aiDo(function(){advance(nx.name,'progress');});});
+      } else { aiAppend('Your live queue is clear — no one is waiting right now.','bot'); }
+    }
+    else if(/(summar|brief|intake|tell me about|pull up|open)/.test(t)){
+      var who = nameMatch || qNext();
+      if(who){
+        var flg = who.redflag ? who.name.split(',')[0]+' flagged symptoms in pre-visit intake — review before the call.' : 'No red flags reported in intake.';
+        aiAppend('<b>'+firstLast(who.name)+'</b> — '+who.concern+'. '+flg+' Last seen Jun 25 by you; on Metformin 500mg and Amlodipine 5mg.','bot');
+        aiActionBtn('&#128203;','Open full brief',null,function(){aiDo(function(){openBrief(who.name);});});
+      } else { aiAppend('Which patient would you like me to summarize?','bot'); }
+    }
+    else if(/(claim|unsubmit|billing|dx|diagnos|missing)/.test(t)){
+      aiAppend('<b>7 claims</b> are missing a diagnosis code and can&#39;t be submitted yet. Everything else for today is clean.','bot');
+      aiActionBtn('&#36;','Resolve claims','7 missing Dx',function(){aiDo(function(){showScreen('claims');});});
+    }
+    else if(/(schedule|calendar|next week|tomorrow|booked)/.test(t)){
+      aiAppend('Next week&#39;s schedule is unlocked and editable, and you have 3 patients booked for tomorrow.','bot');
+      aiActionBtn('&#128197;','Open calendar',null,function(){aiDo(function(){showScreen('calendar');});});
+    }
+    else if(/(draft|note|write|document|soap)/.test(t)){
+      var who2 = nameMatch || qNext();
+      var nm = who2 ? firstLast(who2.name) : 'the visit';
+      aiAppend('I&#39;ve drafted a starter note for <b>'+nm+'</b> from the intake and last visit. Review and edit before signing — Copilot output is never auto-filed.','bot');
+      aiActionBtn('&#128221;','Review draft note',nm,function(){aiDo(function(){toast('Draft note ready for '+nm+' (demo)');});});
+    }
+    else if(/(day|behind|running|how.?s|status|overview|summary|going)/.test(t)){
+      var seen=QUEUE_DATA.filter(function(r){return r.status==='done';}).length;
+      var wait=QUEUE_DATA.filter(function(r){return r.status==='waiting'||r.status==='next';}).length;
+      var behind=QUEUE_DATA.filter(function(r){return r.status==='delayed';}).length;
+      var att=QUEUE_DATA.filter(function(r){return r.status==='missed'||r.status==='dropped';}).length;
+      aiAppend('Here&#39;s your day: <b>'+seen+'</b> seen, <b>'+wait+'</b> waiting, <b>'+behind+'</b> running behind, and <b>'+att+'</b> missed/dropped calls to retry. One critical alert: Gloria Mcdonald (chest pressure).','bot');
+      aiActionBtn('&#9873;','Review Gloria&#39;s brief','Critical — chest pressure',function(){aiDo(function(){openBrief('Gloria Mcdonald');});});
+    }
+    else {
+      aiAppend('I can help with your <b>queue</b> (who&#39;s next), <b>patient briefs</b>, <b>claims</b>, your <b>schedule</b>, or <b>drafting a note</b>. What would you like?','bot');
+      aiActionBtn('&#128101;','Who&#39;s next?',null,function(){aiSend('Who is next?');});
+      aiActionBtn('&#36;','Check claims',null,function(){aiDo(function(){showScreen('claims');});});
+    }
+  }, 650);
+}
+function aiSend(preset){
+  var inp=document.getElementById('ai-input');
+  var text = preset || (inp?inp.value:''); text=(text||'').trim();
+  if(!text) return;
+  aiAppend(text.replace(/</g,'&lt;'),'user');
+  if(inp) inp.value='';
+  aiReply(text);
+}
 </script>
 </body>
 </html>
