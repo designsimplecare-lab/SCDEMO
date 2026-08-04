@@ -1046,6 +1046,31 @@
   .chk.done .box{background:var(--good);border-color:var(--good);}
   .chk.done{color:var(--ink-soft);text-decoration:line-through;}
   @media(max-width:1100px){ .pcv-a{grid-template-columns:1fr;} .rail,.side{position:static;} .pcv-b-cols{grid-template-columns:1fr;} .fields{grid-template-columns:1fr;} }
+
+  /* ===== Care timeline ===== */
+  .ctl-title{font-size:17px;font-weight:800;margin:0 0 14px;}
+  .ctl{position:relative;}
+  .ctl-row{display:grid;grid-template-columns:104px 20px 1fr;align-items:start;gap:0;}
+  .ctl-when{font-size:12.5px;color:var(--ink-soft);font-weight:600;text-align:right;padding:18px 12px 0 0;white-space:nowrap;}
+  .ctl-spine{position:relative;display:flex;justify-content:center;padding-top:22px;}
+  .ctl-spine::before{content:"";position:absolute;top:0;bottom:-10px;width:1.5px;background:var(--line);}
+  .ctl-row:first-child .ctl-spine::before{top:22px;}
+  .ctl-row:last-child .ctl-spine::before{bottom:auto;height:22px;}
+  .ctl-dot{position:relative;width:9px;height:9px;border-radius:50%;background:var(--line-strong);border:2px solid var(--paper);z-index:1;}
+  .ctl-dot.lab{background:var(--accent);} .ctl-dot.note{background:var(--ink-faint);}
+  .ctl-dot.med{background:#2f6bd8;} .ctl-dot.vitals{background:var(--good);} .ctl-dot.warn{background:var(--warn);}
+  .ctl-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(23,24,28,.04),0 3px 10px rgba(23,24,28,.04);
+    padding:14px 16px;margin:0 0 10px 6px;display:flex;align-items:flex-start;gap:14px;}
+  .ctl-card .body{flex:1;min-width:0;}
+  .ctl-card .t{font-size:14.5px;font-weight:700;margin:0;}
+  .ctl-card .d{font-size:12.5px;color:var(--ink-soft);margin:4px 0 0;line-height:1.5;}
+  .ctl-pill{flex-shrink:0;font-size:11.5px;font-weight:700;padding:4px 12px;border-radius:20px;white-space:nowrap;}
+  .ctl-pill.low{background:var(--warn-wash);color:var(--warn);}
+  .ctl-pill.normal{background:var(--good-wash);color:var(--good);}
+  .ctl-pill.note{background:var(--wash);color:var(--ink-soft);}
+  .ctl-pill.ongoing{background:#2f6bd8;color:#fff;}
+  .ctl-pill.urgent{background:var(--crit-wash);color:var(--crit);}
+  @media(max-width:700px){ .ctl-row{grid-template-columns:70px 20px 1fr;} .ctl-when{font-size:11px;} }
 </style>
 </head>
 <body>
@@ -1281,6 +1306,7 @@
             <button data-pcsec="labs"><span class="ic" data-pcic="labs"></span> Imaging / Results</button>
             <button data-pcsec="meds"><span class="ic" data-pcic="meds"></span> Medications</button>
             <button data-pcsec="review"><span class="ic" data-pcic="review"></span> Recommendations</button>
+            <button data-pcsec="timeline"><span class="ic" data-pcic="chart"></span> Care timeline</button>
           </div>
 
           <section class="pc-sec active" id="pcsec-chart">
@@ -1360,6 +1386,11 @@
               <div class="sec-body"><p class="prose" data-f="plan">--</p>
                 <div style="margin-top:14px;display:flex;gap:8px;"><button class="btn dark xs">Sign &amp; complete</button><button class="btn xs">Save draft</button></div></div></div>
           </section>
+
+          <section class="pc-sec" id="pcsec-timeline">
+            <p class="ctl-title">Care timeline</p>
+            <div class="care-tl-mount"></div>
+          </section>
         </div>
       </div>
 
@@ -1414,6 +1445,9 @@
                 <span class="tools"><button class="sec-ico" data-pcic="edit"></button><button class="sec-ico" onclick="this.closest('.sec').classList.toggle('collapsed')">&#8964;</button></span></div>
               <div class="sec-body"><p class="prose" data-f="plan">--</p></div>
             </div>
+
+            <p class="ctl-title" style="margin-top:22px;">Care timeline</p>
+            <div class="care-tl-mount"></div>
           </div>
 
           <aside class="side">
@@ -2406,6 +2440,31 @@ var PC_ICONS = {
 };
 var PC_CURRENT = null;
 function pcInitials(n){ var p=n.split(',')[0].trim().split(' ').filter(Boolean); return (((p[0]||'')[0]||'')+((p[1]||'')[0]||'')).toUpperCase(); }
+var CARE_EVENTS = [];
+function buildCareEvents(r){
+  var base = r.name.split(',')[0].trim();
+  var ev = [];
+  if(r.redflag) ev.push({when:'Today, 7:48 AM', kind:'warn', title:'Intake flag \u2014 ' + r.concern, desc:'Patient flagged concerning symptoms in pre-visit intake.', pill:'Urgent', pcls:'urgent'});
+  ev.push({when:'Today, 8:02 AM', kind:'note', title:'Joined the live queue', desc:'Window ' + (WIN_TEXT[r.win]||r.win) + ' \u00b7 status ' + STATUS_LABEL[r.status] + '.', pill:'Visit', pcls:'note'});
+  ev.push({when:'Jun 25, 2026', kind:'lab', title:'Lab result: Ferritin', desc:'18 \u00b5g/L \u2014 below reference range. Consider iron studies.', pill:'Low', pcls:'low'});
+  ev.push({when:'Jun 25, 2026', kind:'lab', title:'Lab result: CBC + differential', desc:'Within normal limits.', pill:'Normal', pcls:'normal'});
+  ev.push({when:'Jun 25, 2026', kind:'note', title:'Visit note', desc:'Discussed medication adherence and follow-up plan with ' + base.split(' ')[0] + '.', pill:'Note', pcls:'note'});
+  ev.push({when:'Jun 25, 2026', kind:'vitals', title:'Vitals recorded', desc:'BP 122/78 mmHg \u00b7 HR 72 bpm \u00b7 Temp 36.8 \u00b0C', pill:'Normal', pcls:'normal'});
+  ev.push({when:'Ongoing', kind:'med', title:'Medication: Metformin 500 mg', desc:'Twice daily with meals', pill:'Ongoing', pcls:'ongoing'});
+  ev.push({when:'Ongoing', kind:'med', title:'Medication: Amlodipine 5 mg', desc:'Once daily', pill:'Ongoing', pcls:'ongoing'});
+  return ev;
+}
+function renderCareTimeline(){
+  var html = CARE_EVENTS.map(function(e){
+    return '<div class="ctl-row">'+
+      '<div class="ctl-when">'+e.when+'</div>'+
+      '<div class="ctl-spine"><span class="ctl-dot '+e.kind+'"></span></div>'+
+      '<div class="ctl-card"><div class="body"><p class="t">'+e.title+'</p>'+(e.desc?'<p class="d">'+e.desc+'</p>':'')+'</div>'+
+      '<span class="ctl-pill '+e.pcls+'">'+e.pill+'</span></div>'+
+    '</div>';
+  }).join('');
+  document.querySelectorAll('.care-tl-mount').forEach(function(m){ m.innerHTML = '<div class="ctl">'+html+'</div>'; });
+}
 function pcFill(map){
   Object.keys(map).forEach(function(k){
     document.querySelectorAll('[data-f="'+k+'"]').forEach(function(el){ el.innerHTML = map[k]; });
@@ -2449,6 +2508,7 @@ function openChart(name){
   });
   document.querySelectorAll('[data-f="flagpill"]').forEach(function(el){ el.className = 'pc-pill ' + (r.redflag?'warn':'mut'); });
   document.querySelectorAll('[data-f="acuitychip"]').forEach(function(el){ el.className = 'pc-chip ' + (r.redflag?'sex':'mut'); });
+  CARE_EVENTS = buildCareEvents(r); renderCareTimeline();
   pcShowSec('chart'); pcEndCall();
   showScreen('patientchart');
 }
