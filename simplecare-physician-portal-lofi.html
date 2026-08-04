@@ -960,6 +960,92 @@
     box-shadow:0 1px 2px rgba(23,24,28,.04), 0 2px 6px rgba(23,24,28,.035);}
   .day-bar .lab{font-size:10.5px;} .day-bar .lab b{font-size:11px;}
   .day-bar .track{height:4px;margin-top:5px;}
+
+  /* ============================================================
+     PATIENT CHART — two layout versions
+     ============================================================ */
+  .ver-switch{display:inline-flex;background:var(--wash);border-radius:999px;padding:4px;gap:2px;margin-bottom:16px;}
+  .ver-switch button{border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--ink-soft);
+    padding:7px 15px;border-radius:999px;cursor:pointer;}
+  .ver-switch button.active{background:var(--panel);color:var(--ink);box-shadow:0 2px 6px rgba(23,24,28,.12);}
+  .pcv{display:none;} .pcv.active{display:block;}
+  .pcv-a.active{display:grid;}
+
+  /* shared: AI banner + sections */
+  .ai-banner{display:flex;align-items:center;gap:12px;background:linear-gradient(100deg,#F6EFEA 0%,#EFEAF6 55%,#EBEDFB 100%);
+    border:1px solid #E2DCEF;border-radius:14px;padding:12px 14px;margin-bottom:14px;}
+  .ai-banner .sp{width:26px;height:26px;border-radius:50%;background:var(--gradient-agent);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;}
+  .ai-banner b{display:block;font-size:13px;} .ai-banner p{margin:1px 0 0;font-size:12px;color:var(--ink-soft);}
+  .ai-banner .sp-actions{margin-left:auto;display:flex;gap:8px;align-items:center;}
+
+  .sec{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-card);
+    padding:16px 18px;margin-bottom:10px;}
+  .sec.err{border-color:#E8B7AF;background:#FDF7F6;}
+  .sec-hd{display:flex;align-items:center;gap:9px;margin-bottom:0;}
+  .sec-hd .ic{width:15px;height:15px;color:var(--ink-soft);}
+  .sec-hd h4{font-size:14px;font-weight:700;margin:0;}
+  .sec-hd .tools{margin-left:auto;display:flex;gap:6px;}
+  .sec-ico{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:var(--panel);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-soft);font-size:12px;}
+  .sec-ico:hover{background:var(--wash);}
+  .ai-tag{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;
+    border:1px solid #C9CEF7;color:#4353E8;background:#F4F5FE;}
+  .ai-tag.fail{border-color:#E8B7AF;color:#fff;background:var(--crit);}
+  .sec-body{margin-top:12px;}
+  .sec.collapsed .sec-body{display:none;}
+  .fields{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 26px;}
+  .fld .k{font-size:10.5px;color:var(--ink-faint);margin:0 0 2px;font-weight:600;}
+  .fld .v{font-size:14px;margin:0;font-weight:500;}
+  .prose{font-size:14px;line-height:1.6;margin:0;}
+
+  /* Version A — context rail + sections */
+  .pcv-a{grid-template-columns:260px 1fr;gap:16px;align-items:start;}
+  .rail{display:flex;flex-direction:column;gap:12px;position:sticky;top:16px;}
+  .rail-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-card);padding:14px 16px;}
+  .rail-card h5{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);margin:0 0 10px;
+    display:flex;align-items:center;justify-content:space-between;}
+  .tw{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .tw .lbl{font-size:12.5px;font-weight:700;}
+  .tw .clock{display:flex;gap:6px;}
+  .tw .unit{background:var(--good-wash);color:var(--good);border-radius:9px;padding:5px 8px;text-align:center;min-width:42px;}
+  .tw .unit b{display:block;font-size:15px;font-weight:800;line-height:1;} .tw .unit span{font-size:8.5px;font-weight:700;opacity:.8;}
+  .rail-actions{display:flex;gap:8px;margin-top:12px;}
+  .rail-actions .btn{flex:1;justify-content:center;}
+  .tl{position:relative;padding-left:20px;}
+  .tl::before{content:"";position:absolute;left:5px;top:4px;bottom:4px;width:1.5px;background:var(--line);}
+  .tl-item{position:relative;padding:0 0 12px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item::before{content:"";position:absolute;left:-18px;top:4px;width:8px;height:8px;border-radius:50%;background:var(--line-strong);border:2px solid var(--panel);}
+  .tl-item.on::before{background:var(--accent);}
+  .tl-item .t{font-size:12px;font-weight:600;margin:0;}
+  .tl-item .d{font-size:10.5px;color:var(--ink-faint);margin:1px 0 0;}
+  .rail-note{font-size:12px;color:var(--ink-soft);line-height:1.5;margin:0;}
+  .mini-person{display:flex;align-items:center;gap:9px;}
+  .mini-av{width:30px;height:30px;border-radius:50%;background:var(--accent-wash);color:var(--accent-ink);
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;}
+  .mini-person b{font-size:12.5px;display:block;} .mini-person span{font-size:11px;color:var(--ink-faint);}
+
+  /* Version B — summary strip + two column */
+  .sumstrip{display:flex;align-items:center;gap:18px;background:var(--panel);border:1px solid var(--line);
+    border-radius:16px;box-shadow:var(--shadow-card);padding:14px 18px;margin-bottom:14px;flex-wrap:wrap;}
+  .sumstrip .who{display:flex;align-items:center;gap:12px;margin-right:auto;}
+  .sumstrip .sep{width:1px;height:34px;background:var(--line);}
+  .sumstrip .m .k{font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);font-weight:700;margin:0 0 2px;}
+  .sumstrip .m .v{font-size:13px;font-weight:700;margin:0;}
+  .pcv-b-cols{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start;}
+  .side{display:flex;flex-direction:column;gap:12px;position:sticky;top:16px;}
+  .prog{display:flex;align-items:center;gap:10px;}
+  .prog .ring{width:38px;height:38px;border-radius:50%;flex-shrink:0;
+    background:conic-gradient(var(--accent) 0turn 0.4turn, var(--wash) 0.4turn 1turn);
+    display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;color:var(--accent-ink);}
+  .prog .ring i{width:28px;height:28px;border-radius:50%;background:var(--panel);display:flex;align-items:center;justify-content:center;font-style:normal;}
+  .chk{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:6px 0;color:var(--ink);}
+  .chk .box{width:16px;height:16px;border-radius:5px;border:1.5px solid var(--line-strong);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;}
+  .chk.done .box{background:var(--good);border-color:var(--good);}
+  .chk.done{color:var(--ink-soft);text-decoration:line-through;}
+  @media(max-width:1100px){ .pcv-a{grid-template-columns:1fr;} .rail,.side{position:static;} .pcv-b-cols{grid-template-columns:1fr;} .fields{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
@@ -1129,122 +1215,247 @@
     <!-- ===================== PATIENT DETAIL (second layer of the queue) ===================== -->
     <div class="screen" id="screen-patientchart">
       <button class="pc-back" onclick="showScreen('today')"><span class="ic" data-pcic="back"></span> Back to Today</button>
-      <h1 id="pc-h1">Patient</h1>
-      <p class="sub" id="pc-visitline">Open visit · today</p>
+      <h1 data-f="name">Patient</h1>
+      <p class="sub" data-f="visitline">Open visit &middot; today</p>
 
-      <div class="pc-idcard">
+      <div class="ver-switch">
+        <button class="active" data-ver="a" onclick="setChartVer('a')">Version A &middot; Context rail</button>
+        <button data-ver="b" onclick="setChartVer('b')">Version B &middot; Workflow</button>
+      </div>
+
+      <!-- ============ VERSION A ============ -->
+      <div class="pcv pcv-a active" id="pcv-a">
+        <aside class="rail">
+          <div class="rail-card">
+            <div class="tw">
+              <span class="lbl">Call window</span>
+              <span class="clock"><span class="unit"><b data-f="twh">00</b><span>HRS</span></span><span class="unit"><b data-f="twm">00</b><span>MIN</span></span></span>
+            </div>
+            <div class="rail-actions">
+              <button class="btn dark xs" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call</button>
+              <button class="btn xs" onclick="pcStartCall()"><span class="ic" data-pcic="headset"></span> Headset</button>
+            </div>
+            <div style="margin-top:10px;"><span class="pc-callstrip" id="pc-callstrip"><span class="dot"></span> Connected &middot; <span id="pc-timer">00:00</span> <button class="hang" onclick="pcEndCall()">Hang up</button></span></div>
+          </div>
+
+          <div class="rail-card">
+            <div class="mini-person"><span class="mini-av" data-f="initials">--</span><span><b data-f="name">--</b><span data-f="demo">--</span></span></div>
+            <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;">
+              <span class="pc-chip ok"><span class="ic" data-pcic="verified"></span> Verified</span>
+              <span class="pc-chip mut" data-f="acuitychip">Routine</span>
+            </div>
+          </div>
+
+          <div class="rail-card">
+            <h5>Timeline</h5>
+            <div class="tl">
+              <div class="tl-item on"><p class="t">Booked</p><p class="d">Today, 7:12 AM</p></div>
+              <div class="tl-item on"><p class="t">Intake submitted</p><p class="d">Today, 7:48 AM</p></div>
+              <div class="tl-item on"><p class="t">Joined queue</p><p class="d">Today, 8:02 AM</p></div>
+              <div class="tl-item"><p class="t">Visit started</p><p class="d">Pending</p></div>
+              <div class="tl-item"><p class="t">Note signed</p><p class="d">Pending</p></div>
+            </div>
+          </div>
+
+          <div class="rail-card">
+            <h5>Care team</h5>
+            <div class="mini-person"><span class="mini-av">DP</span><span><b>Dr. Daniel Pannozzo</b><span>Physician</span></span></div>
+            <div class="mini-person" style="margin-top:10px;"><span class="mini-av">DL</span><span><b>Dolly</b><span>MOA</span></span></div>
+          </div>
+
+          <div class="rail-card">
+            <h5>Notes</h5>
+            <p class="rail-note" data-f="railnote">--</p>
+          </div>
+        </aside>
+
         <div>
-          <div class="pc-namerow">
-            <div class="pc-avatar" id="pc-avatar">—</div>
-            <div>
-              <h2 class="pc-name"><span id="pc-name">—</span> <span class="ic" data-pcic="edit"></span></h2>
-              <p class="pc-pref" id="pc-pref"></p>
+          <div class="ai-banner">
+            <span class="sp">&#10022;</span>
+            <span><b>AI draft ready for review</b><p>Confirm the AI-generated sections below before signing.</p></span>
+            <span class="sp-actions"><button class="btn dark xs" onclick="toast('All AI sections confirmed')">&#10003; Confirm all</button><button class="sec-ico" onclick="this.closest('.ai-banner').remove()">&times;</button></span>
+          </div>
+
+          <div class="pc-tabs" id="pc-tabs">
+            <button class="active" data-pcsec="chart"><span class="ic" data-pcic="chart"></span> History</button>
+            <button data-pcsec="labs"><span class="ic" data-pcic="labs"></span> Imaging / Results</button>
+            <button data-pcsec="meds"><span class="ic" data-pcic="meds"></span> Medications</button>
+            <button data-pcsec="review"><span class="ic" data-pcic="review"></span> Recommendations</button>
+          </div>
+
+          <section class="pc-sec active" id="pcsec-chart">
+            <div class="sec">
+              <div class="sec-hd"><span class="ic" data-pcic="consult"></span><h4>Patient details</h4>
+                <span class="tools"><button class="sec-ico" data-pcic="edit"></button><button class="sec-ico" onclick="this.closest('.sec').classList.toggle('collapsed')">&#8964;</button></span></div>
+              <div class="sec-body"><div class="fields">
+                <div class="fld"><p class="k">Full name</p><p class="v" data-f="name">--</p></div>
+                <div class="fld"><p class="k">Preferred name</p><p class="v" data-f="pref">--</p></div>
+                <div class="fld"><p class="k">PHN</p><p class="v pc-mono" data-f="phn">--</p></div>
+                <div class="fld"><p class="k">Date of birth</p><p class="v" data-f="dob">--</p></div>
+                <div class="fld"><p class="k">Sex</p><p class="v" data-f="sex">--</p></div>
+                <div class="fld"><p class="k">Pharmacy</p><p class="v" style="font-size:13px;">Lincoln Pharmacy, Coquitlam</p></div>
+              </div></div>
+            </div>
+
+            <div class="sec">
+              <div class="sec-hd"><span class="ic" data-pcic="mailic"></span><h4>Reason for consult</h4> <span class="ai-tag">&#10022; AI generated</span>
+                <span class="tools"><button class="sec-ico" data-pcic="edit"></button><button class="sec-ico" onclick="this.closest('.sec').classList.toggle('collapsed')">&#8964;</button></span></div>
+              <div class="sec-body"><p class="prose" data-f="reason">--</p></div>
+            </div>
+
+            <div class="sec">
+              <div class="sec-hd"><span class="ic" data-pcic="consult"></span><h4>History of present illness</h4> <span class="ai-tag">&#10022; AI generated</span>
+                <span class="tools"><button class="sec-ico" data-pcic="edit"></button><button class="sec-ico" onclick="this.closest('.sec').classList.toggle('collapsed')">&#8964;</button></span></div>
+              <div class="sec-body"><p class="prose" data-f="hpi">--</p></div>
+            </div>
+
+            <div class="sec">
+              <div class="sec-hd"><span class="ic" data-pcic="meds"></span><h4>Medication history</h4> <span class="ai-tag">&#10022; AI generated</span>
+                <span class="tools"><button class="sec-ico" data-pcic="edit"></button><button class="sec-ico" onclick="this.closest('.sec').classList.toggle('collapsed')">&#8964;</button></span></div>
+              <div class="sec-body"><div class="fields">
+                <div class="fld"><p class="k">Active</p><p class="v">Metformin 500 mg BID, Amlodipine 5 mg daily</p></div>
+                <div class="fld"><p class="k">Anticoagulation</p><p class="v">None on file</p></div>
+              </div></div>
+            </div>
+
+            <div class="sec err">
+              <div class="sec-hd"><span class="ic" data-pcic="consult"></span><h4>Social history</h4> <span class="ai-tag fail">&#9888; AI failed</span>
+                <span class="tools"><button class="sec-ico" data-pcic="edit"></button><button class="sec-ico" onclick="this.closest('.sec').classList.toggle('collapsed')">&#8964;</button></span></div>
+              <div class="sec-body"><div class="fields">
+                <div class="fld"><p class="k">Tobacco</p><p class="v">Not recorded</p></div>
+                <div class="fld"><p class="k">Alcohol</p><p class="v">Not recorded</p></div>
+              </div><p style="font-size:12px;color:var(--crit);margin:10px 0 0;">Could not generate from intake &mdash; enter manually.</p></div>
+            </div>
+
+            <div class="sec">
+              <div class="sec-hd"><span class="ic" data-pcic="review"></span><h4>Past medical history</h4>
+                <span class="tools"><button class="sec-ico" data-pcic="edit"></button><button class="sec-ico" onclick="this.closest('.sec').classList.toggle('collapsed')">&#8964;</button></span></div>
+              <div class="sec-body"><div class="fields">
+                <div class="fld"><p class="k">Conditions</p><p class="v">Hypertension, Type 2 diabetes</p></div>
+                <div class="fld"><p class="k">Allergies</p><p class="v">No known drug allergies</p></div>
+              </div></div>
+            </div>
+          </section>
+
+          <section class="pc-sec" id="pcsec-labs">
+            <div class="sec"><div class="sec-hd"><span class="ic" data-pcic="labs"></span><h4>Results</h4></div>
+              <div class="sec-body">
+                <div class="pc-row"><div><div class="m">CBC + differential</div><div class="s">Jun 25, 2026 &middot; LifeLabs</div></div><span class="pc-pill good">Normal</span></div>
+                <div class="pc-row"><div><div class="m">Ferritin</div><div class="s">Jun 25, 2026</div></div><span class="pc-pill warn">Low &middot; 18 &micro;g/L</span></div>
+              </div></div>
+            <div class="sec"><div class="sec-hd"><span class="ic" data-pcic="imaging"></span><h4>Imaging</h4></div>
+              <div class="sec-body"><p class="pc-empty">No imaging on file.</p></div></div>
+          </section>
+
+          <section class="pc-sec" id="pcsec-meds">
+            <div class="sec"><div class="sec-hd"><span class="ic" data-pcic="meds"></span><h4>Medication list</h4></div>
+              <div class="sec-body">
+                <div class="pc-row"><div><div class="m">Metformin 500 mg</div><div class="s">Twice daily with meals</div></div><span class="pc-pill mut">Ongoing</span></div>
+                <div class="pc-row"><div><div class="m">Amlodipine 5 mg</div><div class="s">Once daily</div></div><span class="pc-pill mut">Ongoing</span></div>
+              </div></div>
+          </section>
+
+          <section class="pc-sec" id="pcsec-review">
+            <div class="sec"><div class="sec-hd"><span class="ic" data-pcic="review"></span><h4>Plan &amp; recommendations</h4> <span class="ai-tag">&#10022; AI generated</span></div>
+              <div class="sec-body"><p class="prose" data-f="plan">--</p>
+                <div style="margin-top:14px;display:flex;gap:8px;"><button class="btn dark xs">Sign &amp; complete</button><button class="btn xs">Save draft</button></div></div></div>
+          </section>
+        </div>
+      </div>
+
+      <!-- ============ VERSION B ============ -->
+      <div class="pcv" id="pcv-b">
+        <div class="sumstrip">
+          <span class="who"><span class="pc-avatar" style="width:44px;height:44px;font-size:15px;" data-f="initials">--</span>
+            <span><b style="font-size:17px;" data-f="name">--</b><div style="font-size:12px;color:var(--ink-soft);" data-f="demo">--</div></span></span>
+          <span class="sep"></span>
+          <span class="m"><p class="k">Concern</p><p class="v" data-f="concern">--</p></span>
+          <span class="sep"></span>
+          <span class="m"><p class="k">Window</p><p class="v" data-f="window">--</p></span>
+          <span class="sep"></span>
+          <span class="m"><p class="k">Status</p><p class="v" data-f="statuslbl">--</p></span>
+          <button class="btn dark xs" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call patient</button>
+        </div>
+
+        <div class="pcv-b-cols">
+          <div>
+            <div class="ai-banner">
+              <span class="sp">&#10022;</span>
+              <span><b>AI draft ready</b><p>Review each section, then sign.</p></span>
+              <span class="sp-actions"><button class="btn dark xs" onclick="toast('All AI sections confirmed')">&#10003; Confirm all</button></span>
+            </div>
+
+            <div class="sec">
+              <div class="sec-hd"><span class="ic" data-pcic="edit"></span><h4>Today&rsquo;s note</h4> <span class="ai-tag">&#10022; AI draft</span>
+                <span class="tools"><button class="sec-ico" onclick="toast('Templates')">T</button></span></div>
+              <div class="sec-body"><p class="prose" data-f="note">--</p>
+                <div style="margin-top:14px;display:flex;gap:8px;"><button class="btn dark xs">Save note</button><button class="btn xs">Add diagnosis</button></div></div>
+            </div>
+
+            <div class="sec">
+              <div class="sec-hd"><span class="ic" data-pcic="consult"></span><h4>Subjective</h4> <span class="ai-tag">&#10022; AI generated</span>
+                <span class="tools"><button class="sec-ico" data-pcic="edit"></button><button class="sec-ico" onclick="this.closest('.sec').classList.toggle('collapsed')">&#8964;</button></span></div>
+              <div class="sec-body"><p class="prose" data-f="hpi">--</p></div>
+            </div>
+
+            <div class="sec">
+              <div class="sec-hd"><span class="ic" data-pcic="chart"></span><h4>Objective</h4>
+                <span class="tools"><button class="sec-ico" data-pcic="edit"></button><button class="sec-ico" onclick="this.closest('.sec').classList.toggle('collapsed')">&#8964;</button></span></div>
+              <div class="sec-body"><div class="fields">
+                <div class="fld"><p class="k">Blood pressure</p><p class="v">122 / 78 mmHg</p></div>
+                <div class="fld"><p class="k">Heart rate</p><p class="v">72 bpm</p></div>
+                <div class="fld"><p class="k">Temperature</p><p class="v">36.8 &deg;C</p></div>
+                <div class="fld"><p class="k">Last labs</p><p class="v">Ferritin low &middot; CBC normal</p></div>
+              </div></div>
+            </div>
+
+            <div class="sec">
+              <div class="sec-hd"><span class="ic" data-pcic="review"></span><h4>Assessment &amp; plan</h4> <span class="ai-tag">&#10022; AI generated</span>
+                <span class="tools"><button class="sec-ico" data-pcic="edit"></button><button class="sec-ico" onclick="this.closest('.sec').classList.toggle('collapsed')">&#8964;</button></span></div>
+              <div class="sec-body"><p class="prose" data-f="plan">--</p></div>
             </div>
           </div>
-          <div class="pc-facts">
-            <div><p class="pc-k">Date of birth</p><p class="pc-v" id="pc-dob">—</p></div>
-            <div><p class="pc-k">Sex</p><p class="pc-v"><span class="pc-chip sex" id="pc-sex">—</span></p></div>
-            <div><p class="pc-k">PHN</p><p class="pc-v"><span class="pc-mono" id="pc-phn">—</span> <span class="pc-chip ok"><span class="ic" data-pcic="verified"></span> Verified</span></p></div>
-            <div><p class="pc-k">Concern today</p><p class="pc-v" style="font-weight:500;font-size:13px;" id="pc-concern">—</p></div>
-          </div>
-          <p class="pc-cov"><span class="ic" data-pcic="verified"></span> Coverage verified by MOA via Teleplan phone.</p>
-        </div>
-        <div class="pc-pharm">
-          <p class="pc-k">Preferred pharmacy</p>
-          <div class="pc-pharmrow">
-            <span class="pc-pharmic" data-pcic="pharmacy"></span>
-            <div>
-              <p class="pc-pharmname">Lincoln Pharmacy &amp; Coquitlam Travel Clinic</p>
-              <p class="pc-pharmmeta">(604) 464-1033<br>3030 Lincoln Ave, Suite 137<br>Coquitlam, BC V3B 7Z3</p>
+
+          <aside class="side">
+            <div class="rail-card">
+              <h5>Visit completion</h5>
+              <div class="prog"><span class="ring"><i>40%</i></span><span style="font-size:12px;color:var(--ink-soft);">2 of 5 steps done</span></div>
+              <div style="margin-top:10px;">
+                <div class="chk done"><span class="box">&#10003;</span> Intake reviewed</div>
+                <div class="chk done"><span class="box">&#10003;</span> History confirmed</div>
+                <div class="chk"><span class="box"></span> Exam documented</div>
+                <div class="chk"><span class="box"></span> Plan entered</div>
+                <div class="chk"><span class="box"></span> Note signed</div>
+              </div>
+              <button class="btn dark xs" style="width:100%;justify-content:center;margin-top:12px;">Sign &amp; complete</button>
             </div>
-          </div>
+
+            <div class="rail-card">
+              <h5>Flags</h5>
+              <div class="pc-row" style="padding-top:0;"><div><div class="m" data-f="flagtitle">Intake flag</div><div class="s" data-f="flagtext">--</div></div><span class="pc-pill mut" data-f="flagpill">None</span></div>
+              <div class="pc-row"><div><div class="m">Allergies</div><div class="s">No known drug allergies</div></div><span class="pc-pill good">Clear</span></div>
+            </div>
+
+            <div class="rail-card">
+              <h5>Timeline</h5>
+              <div class="tl">
+                <div class="tl-item on"><p class="t">Intake submitted</p><p class="d">7:48 AM</p></div>
+                <div class="tl-item on"><p class="t">Joined queue</p><p class="d">8:02 AM</p></div>
+                <div class="tl-item"><p class="t">Visit started</p><p class="d">Pending</p></div>
+              </div>
+            </div>
+
+            <div class="rail-card">
+              <h5>Quick actions</h5>
+              <div style="display:flex;flex-direction:column;gap:7px;">
+                <button class="btn xs" style="justify-content:flex-start;"><span class="ic" data-pcic="task"></span> Send task to MOA</button>
+                <button class="btn xs" style="justify-content:flex-start;"><span class="ic" data-pcic="transfer"></span> Transfer to Dolly</button>
+                <button class="btn xs" style="justify-content:flex-start;"><span class="ic" data-pcic="labs"></span> Order labs</button>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
-
-      <div class="pc-actions">
-        <button class="btn dark" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call patient</button>
-        <button class="btn" onclick="pcStartCall()"><span class="ic" data-pcic="headset"></span> Headset call</button>
-        <button class="btn"><span class="ic" data-pcic="transfer"></span> Transfer to Dolly</button>
-        <button class="btn" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pcic="task"></span> Send task</button>
-        <span class="pc-callstrip" id="pc-callstrip"><span class="dot"></span> Connected · <span id="pc-timer">00:00</span> <button class="hang" onclick="pcEndCall()">Hang up</button></span>
-      </div>
-
-      <div class="pc-tabs" id="pc-tabs">
-        <button class="active" data-pcsec="chart"><span class="ic" data-pcic="chart"></span> Chart</button>
-        <button data-pcsec="meds"><span class="ic" data-pcic="meds"></span> Medications</button>
-        <button data-pcsec="labs"><span class="ic" data-pcic="labs"></span> Labs</button>
-        <button data-pcsec="imaging"><span class="ic" data-pcic="imaging"></span> Imaging</button>
-        <button data-pcsec="referrals"><span class="ic" data-pcic="referrals"></span> Referrals</button>
-        <button data-pcsec="consult"><span class="ic" data-pcic="consult"></span> Consult reports</button>
-        <button data-pcsec="review"><span class="ic" data-pcic="review"></span> Review</button>
-      </div>
-
-      <section class="pc-sec active" id="pcsec-chart">
-        <div class="pc-note">
-          <div class="pc-notehd">
-            <p class="pc-notettl"><span class="ic" data-pcic="edit"></span> Today's note <span class="pc-notetime">autosaved</span></p>
-            <button class="btn xs">Templates</button>
-          </div>
-          <div class="pc-notebody" id="pc-note">—</div>
-          <div class="pc-notefoot"><button class="btn dark xs">Save note</button><button class="btn xs">Add diagnosis</button></div>
-        </div>
-        <div class="pc-grid">
-          <div class="pc-card">
-            <h3><span><span class="ic" data-pcic="meds"></span> Active medications</span></h3>
-            <div class="pc-row"><div><div class="m">Metformin 500 mg</div><div class="s">Twice daily with meals</div></div><span class="pc-pill mut">Ongoing</span></div>
-            <div class="pc-row"><div><div class="m">Amlodipine 5 mg</div><div class="s">Once daily</div></div><span class="pc-pill mut">Ongoing</span></div>
-          </div>
-          <div class="pc-card">
-            <h3><span><span class="ic" data-pcic="review"></span> Allergies &amp; alerts</span></h3>
-            <div class="pc-row"><div><div class="m">No known drug allergies</div><div class="s">Confirmed with patient</div></div><span class="pc-pill good">Clear</span></div>
-            <div class="pc-row"><div><div class="m">Intake flag</div><div class="s" id="pc-flagtext">None reported</div></div><span class="pc-pill mut" id="pc-flagpill">None</span></div>
-          </div>
-          <div class="pc-card">
-            <h3><span><span class="ic" data-pcic="labs"></span> Recent results</span></h3>
-            <div class="pc-row"><div><div class="m">CBC + differential</div><div class="s">Jun 25, 2026 · Dr. Pannozzo</div></div><span class="pc-pill good">Normal</span></div>
-            <div class="pc-row"><div><div class="m">Ferritin</div><div class="s">Jun 25, 2026</div></div><span class="pc-pill warn">Low</span></div>
-          </div>
-          <div class="pc-card">
-            <h3><span><span class="ic" data-pcic="chart"></span> Vitals · last visit</span></h3>
-            <div class="pc-row"><div class="m">Blood pressure</div><div>122 / 78 mmHg</div></div>
-            <div class="pc-row"><div class="m">Heart rate</div><div>72 bpm</div></div>
-            <div class="pc-row"><div class="m">Temperature</div><div>36.8 °C</div></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="pc-sec" id="pcsec-meds">
-        <h2 class="pc-sectitle">Medications</h2><p class="pc-secsub">Current list and prescriptions you've sent.</p>
-        <div class="pc-subtabs"><button class="active">Med list</button><button>Prescriptions</button></div>
-        <div class="pc-card">
-          <div class="pc-row"><div><div class="m">Metformin 500 mg</div><div class="s">Twice daily with meals</div></div><span class="pc-pill mut">Ongoing</span></div>
-          <div class="pc-row"><div><div class="m">Amlodipine 5 mg</div><div class="s">Once daily</div></div><span class="pc-pill mut">Ongoing</span></div>
-        </div>
-      </section>
-      <section class="pc-sec" id="pcsec-labs">
-        <h2 class="pc-sectitle">Labs</h2><p class="pc-secsub">Requisitions and results.</p>
-        <div class="pc-subtabs"><button>Requisitions</button><button class="active">Results</button></div>
-        <div class="pc-card">
-          <div class="pc-row"><div><div class="m">CBC + differential</div><div class="s">Jun 25, 2026 · LifeLabs</div></div><span class="pc-pill good">Normal</span></div>
-          <div class="pc-row"><div><div class="m">Ferritin</div><div class="s">Jun 25, 2026</div></div><span class="pc-pill warn">Low · 18 µg/L</span></div>
-        </div>
-      </section>
-      <section class="pc-sec" id="pcsec-imaging">
-        <h2 class="pc-sectitle">Imaging</h2><p class="pc-secsub">Requisitions and reports.</p>
-        <div class="pc-card"><div class="pc-empty">No imaging on file.</div></div>
-      </section>
-      <section class="pc-sec" id="pcsec-referrals">
-        <h2 class="pc-sectitle">Referrals</h2><p class="pc-secsub">Specialists and services.</p>
-        <div class="pc-card"><div class="pc-empty">No active referrals.</div></div>
-      </section>
-      <section class="pc-sec" id="pcsec-consult">
-        <h2 class="pc-sectitle">Consult reports</h2><p class="pc-secsub">Notes back from other providers.</p>
-        <div class="pc-card"><div class="pc-empty">No consult reports yet.</div></div>
-      </section>
-      <section class="pc-sec" id="pcsec-review">
-        <h2 class="pc-sectitle">Review</h2><p class="pc-secsub">Sign off on results and documents.</p>
-        <div class="pc-card"><div class="pc-row"><div><div class="m">Ferritin result</div><div class="s">Low — flagged for review</div></div><button class="btn dark xs">Sign off</button></div></div>
-      </section>
     </div>
 
     <!-- ===================== INBOX (clear-the-inbox review) ===================== -->
@@ -2191,29 +2402,53 @@ var PC_ICONS = {
  referrals: ICONS.practice, consult: ICONS.registerpatient, review: ICONS.inbox,
  call: ICONS.patientview, headset: ICONS.patientview, transfer: ICONS.carryforward,
  task: ICONS.taskmoa, edit: ICONS.taskmoa, verified: ICONS.today, pharmacy: ICONS.inbox,
- back: ICONS.collapse, newpatient: ICONS.registerpatient
+ back: ICONS.collapse, newpatient: ICONS.registerpatient, mailic: ICONS.inbox
 };
 var PC_CURRENT = null;
 function pcInitials(n){ var p=n.split(',')[0].trim().split(' ').filter(Boolean); return (((p[0]||'')[0]||'')+((p[1]||'')[0]||'')).toUpperCase(); }
+function pcFill(map){
+  Object.keys(map).forEach(function(k){
+    document.querySelectorAll('[data-f="'+k+'"]').forEach(function(el){ el.innerHTML = map[k]; });
+  });
+}
+function setChartVer(v){
+  document.querySelectorAll('.pcv').forEach(function(x){ x.classList.remove('active'); });
+  var t=document.getElementById('pcv-'+v); if(t) t.classList.add('active');
+  document.querySelectorAll('.ver-switch button').forEach(function(b){ b.classList.toggle('active', b.dataset.ver===v); });
+}
+var WIN_TEXT = {'8-10':'8:00\u201310:00','10-2':'10:00\u20132:00','2-5':'2:00\u20135:00','5-7':'5:00\u20137:00'};
 function openChart(name){
   var r = QUEUE_DATA.find(function(x){ return x.name===name; }); if(!r) return;
   PC_CURRENT = name;
   var base = name.split(',')[0].trim();
   var demo = (name.match(/(\d+)([MF])/)||[]);
-  document.getElementById('pc-h1').textContent = base;
-  document.getElementById('pc-avatar').textContent = pcInitials(name);
-  document.getElementById('pc-name').textContent = base;
-  document.getElementById('pc-pref').innerHTML = 'Goes by <b>'+base.split(' ')[0]+'</b>';
-  document.getElementById('pc-dob').innerHTML = 'Mar 10, 1952 <span class="pc-chip mut">'+(demo[1]||'\u2014')+' yrs</span>';
-  document.getElementById('pc-sex').textContent = demo[2]==='M' ? 'Male' : (demo[2]==='F' ? 'Female' : 'Not recorded');
-  document.getElementById('pc-phn').textContent = '9650 791 088';
-  document.getElementById('pc-concern').textContent = r.concern;
-  document.getElementById('pc-visitline').textContent = 'Open visit \u00b7 today \u00b7 ' + STATUS_LABEL[r.status];
-  document.getElementById('pc-note').textContent = 'Patient presents for ' + r.concern.toLowerCase() + '. ' +
-    (r.redflag ? 'Flagged in pre-visit intake \u2014 review before proceeding. ' : '') + 'History and assessment in progress\u2026';
-  var fr=document.getElementById('pc-flagtext'), fp=document.getElementById('pc-flagpill');
-  if(r.redflag){ fr.textContent='Flagged symptoms in pre-visit intake'; fp.textContent='Urgent'; fp.className='pc-pill warn'; }
-  else { fr.textContent='None reported'; fp.textContent='None'; fp.className='pc-pill mut'; }
+  var sexTxt = demo[2]==='M' ? 'Male' : (demo[2]==='F' ? 'Female' : 'Not recorded');
+  var ageTxt = demo[1] ? demo[1]+' yrs' : 'Age not recorded';
+  pcFill({
+    name: base,
+    initials: pcInitials(name),
+    pref: base.split(' ')[0],
+    demo: ageTxt + ' \u00b7 ' + sexTxt,
+    dob: 'Mar 10, 1952',
+    sex: sexTxt,
+    phn: '9650 791 088',
+    concern: r.concern,
+    window: WIN_TEXT[r.win] || r.win,
+    statuslbl: STATUS_LABEL[r.status],
+    visitline: 'Open visit \u00b7 today \u00b7 ' + STATUS_LABEL[r.status],
+    twh: '0'+Math.max(0, 2), twm: (r.wait && /min/.test(r.wait)) ? r.wait.replace(/\D/g,'').padStart(2,'0') : '00',
+    acuitychip: r.redflag ? 'Urgent' : 'Routine',
+    reason: base + ' booked a virtual visit for ' + r.concern.toLowerCase() + '.' + (r.redflag ? ' Pre-visit intake flagged concerning symptoms.' : ''),
+    hpi: 'Patient presents for ' + r.concern.toLowerCase() + '. ' + (r.redflag ? 'Flagged in pre-visit intake \u2014 review before proceeding. ' : 'No red flags reported in intake. ') + 'Symptom onset, severity and associated features to be confirmed on the call.',
+    note: 'Patient presents for ' + r.concern.toLowerCase() + '. ' + (r.redflag ? 'Intake flag noted. ' : '') + 'History and assessment in progress\u2026',
+    plan: r.redflag ? 'Assess urgently on call. Consider same-day escalation if symptoms persist or worsen; arrange follow-up and confirm red-flag safety netting.' : 'Continue current management, review medications, and arrange routine follow-up as indicated.',
+    railnote: (r.redflag ? 'Flagged at intake \u2014 review before calling. ' : '') + 'Last seen Jun 25 by Dr. Pannozzo.',
+    flagtitle: 'Intake flag',
+    flagtext: r.redflag ? 'Flagged symptoms in pre-visit intake' : 'None reported',
+    flagpill: r.redflag ? 'Urgent' : 'None'
+  });
+  document.querySelectorAll('[data-f="flagpill"]').forEach(function(el){ el.className = 'pc-pill ' + (r.redflag?'warn':'mut'); });
+  document.querySelectorAll('[data-f="acuitychip"]').forEach(function(el){ el.className = 'pc-chip ' + (r.redflag?'sex':'mut'); });
   pcShowSec('chart'); pcEndCall();
   showScreen('patientchart');
 }
