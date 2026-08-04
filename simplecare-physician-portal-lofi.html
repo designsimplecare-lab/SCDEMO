@@ -693,6 +693,18 @@
   .q-sort{display:inline-flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);
     border-radius:999px;padding:9px 15px;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:inherit;}
   .q-sort:hover{border-color:var(--line-strong);}
+  .q-tools{display:inline-flex;align-items:center;gap:8px;}
+  .q-search{display:inline-flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);
+    border-radius:999px;padding:0 8px 0 14px;height:38px;min-width:250px;transition:border-color .12s;}
+  .q-search:focus-within{border-color:var(--accent);}
+  .q-search .ic{width:14px;height:14px;color:var(--ink-faint);flex-shrink:0;}
+  .q-search input{border:none;outline:none;background:none;font-family:inherit;font-size:12.5px;color:var(--ink);
+    flex:1;min-width:0;padding:0;}
+  .q-search input::placeholder{color:var(--ink-faint);}
+  .q-clear{display:none;border:none;background:var(--wash);color:var(--ink-soft);border-radius:50%;
+    width:20px;height:20px;line-height:1;cursor:pointer;font-family:inherit;font-size:14px;flex-shrink:0;}
+  .q-search.has-value .q-clear{display:block;}
+  .q-noresult{font-size:13px;color:var(--ink-faint);padding:18px 4px;}
 
   /* ============================================================
      ITERATION 5 — Dioptra DS: gradient canvas, floating chrome,
@@ -1200,7 +1212,14 @@
               <button class="win-chip" data-win="2-5" onclick="filterWindow('2-5',this)">2:00–5:00</button>
               <button class="win-chip" data-win="5-7" onclick="filterWindow('5-7',this)">5:00–7:00</button>
             </div>
-            <button class="q-sort" onclick="toast('Sort: acuity, then wait (demo)')">&#8645; Sort &middot; Acuity, then wait</button>
+            <div class="q-tools">
+              <div class="q-search">
+                <span class="ic" data-pcic="search"></span>
+                <input type="text" id="queue-search" placeholder="Search patient or concern" oninput="filterQueueSearch(this.value)">
+                <button class="q-clear" id="queue-search-clear" onclick="clearQueueSearch()" title="Clear">&times;</button>
+              </div>
+              <button class="q-sort" onclick="toast('Sort: acuity, then wait (demo)')">&#8645; Sort &middot; Acuity, then wait</button>
+            </div>
           </div>
 
           <table class="q-table" id="queue-table">
@@ -1785,10 +1804,17 @@ var STATUS_LABEL = {
   missed:'Missed call', dropped:'Call dropped', done:'Completed', noshow:'No-show'
 };
 var currentWindow = 'all';
+var queueSearch = '';
 
 function renderQueue(){
   var body = document.getElementById('queue-body');
-  var rows = QUEUE_DATA.filter(function(r){ return currentWindow==='all' || r.win===currentWindow; });
+  var q = queueSearch.trim().toLowerCase();
+  var rows = QUEUE_DATA.filter(function(r){
+    var winOk = (currentWindow==='all' || r.win===currentWindow);
+    if(!winOk) return false;
+    if(!q) return true;
+    return (r.name+' '+r.concern).toLowerCase().indexOf(q) !== -1;
+  });
   var WIN_LABEL = {'8-10':'8:00–10:00','10-2':'10:00–2:00','2-5':'2:00–5:00','5-7':'5:00–7:00'};
   body.innerHTML = rows.map(function(r){
     var closed = (r.status==='done' || r.status==='noshow');
@@ -1829,8 +1855,23 @@ function renderQueue(){
       '<td class="q-actions">'+actions+'</td>'+
     '</tr>';
   }).join('');
+  if(!rows.length){
+    body.innerHTML = '<tr><td colspan="6"><p class="q-noresult">No patients match \u201c'+queueSearch+'\u201d.</p></td></tr>';
+  }
   renderGlance();
   updateWorkCounts();
+}
+function filterQueueSearch(v){
+  queueSearch = v || '';
+  var wrap = document.querySelector('.q-search');
+  if(wrap) wrap.classList.toggle('has-value', !!queueSearch);
+  renderQueue();
+}
+function clearQueueSearch(){
+  var inp = document.getElementById('queue-search');
+  if(inp) inp.value = '';
+  filterQueueSearch('');
+  if(inp) inp.focus();
 }
 function firstLast(n){ return n.split(',')[0].trim(); }
 function qInitials(n){ var p=firstLast(n).split(' ').filter(Boolean); return (((p[0]||'')[0]||'')+((p[1]||'')[0]||'')).toUpperCase(); }
@@ -2441,7 +2482,7 @@ var PC_ICONS = {
  referrals: ICONS.practice, consult: ICONS.registerpatient, review: ICONS.inbox,
  call: ICONS.patientview, headset: ICONS.patientview, transfer: ICONS.carryforward,
  task: ICONS.taskmoa, edit: ICONS.taskmoa, verified: ICONS.today, pharmacy: ICONS.inbox,
- back: ICONS.collapse, newpatient: ICONS.registerpatient, mailic: ICONS.inbox
+ back: ICONS.collapse, newpatient: ICONS.registerpatient, mailic: ICONS.inbox, search: ICONS.claims
 };
 var PC_CURRENT = null;
 function pcInitials(n){ var p=n.split(',')[0].trim().split(' ').filter(Boolean); return (((p[0]||'')[0]||'')+((p[1]||'')[0]||'')).toUpperCase(); }
