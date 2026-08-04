@@ -1193,6 +1193,26 @@
   .vd-copin input{flex:1;border:1px solid var(--line);border-radius:20px;padding:9px 13px;font-family:inherit;font-size:13px;outline:none;}
   .vd-copin input:focus{border-color:var(--accent);}
   .vd-copin .send{width:34px;height:34px;border-radius:50%;border:none;background:var(--accent);color:#fff;cursor:pointer;flex-shrink:0;}
+  .vd-tabs{display:flex;gap:16px;padding:0 20px;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto;}
+  .vd-tabs button{border:none;background:none;font-family:inherit;font-size:13px;font-weight:700;color:var(--ink-faint);
+    padding:11px 0;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;
+    display:inline-flex;align-items:center;gap:6px;}
+  .vd-tabs button:hover{color:var(--ink);}
+  .vd-tabs button.active{color:var(--ink);border-bottom-color:var(--ink-dark);}
+  .vd-n{font-size:10px;font-weight:800;background:var(--wash);color:var(--ink-soft);border-radius:20px;padding:1px 6px;}
+  .vd-n.crit{background:#E5322D;color:#fff;}
+  .vd-pane{display:none;} .vd-pane.active{display:block;}
+  .vd-secttl{display:flex;align-items:center;margin-bottom:12px;}
+  .vd-secttl h4{font-size:17px;font-weight:800;margin:0 auto 0 0;}
+  .vd-subtabs{display:inline-flex;background:var(--wash);border-radius:999px;padding:4px;gap:2px;margin-bottom:14px;}
+  .vd-subtabs button{border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:600;
+    color:var(--ink-soft);padding:6px 13px;border-radius:999px;cursor:pointer;}
+  .vd-subtabs button.active{background:var(--panel);color:var(--ink);box-shadow:0 2px 6px rgba(23,24,28,.12);}
+  .vd-list{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:6px 16px;}
+  .vd-item{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid var(--wash);}
+  .vd-item:last-child{border-bottom:none;}
+  .vd-item b{display:block;font-size:14px;font-weight:700;}
+  .vd-item i{display:block;font-size:12px;color:var(--ink-faint);font-style:normal;margin-top:2px;}
   @media(max-width:1400px){ .vd{grid-template-columns:220px 1fr 280px;} }
   @media(max-width:1050px){ .vd{grid-template-columns:200px 1fr;} .vd-cop{grid-column:1 / -1;border-left:none;border-top:1px solid var(--line);max-height:420px;} }
 
@@ -1600,7 +1620,10 @@
               <div class="vc-tabsrow">
                 <button class="active" data-vcp="summary" onclick="vcPane('summary')">Summary</button>
                 <button data-vcp="timeline" onclick="vcPane('timeline')">Timeline</button>
-                <button data-vcp="results" onclick="vcPane('results')">Results</button>
+                <button data-vcp="results" onclick="vcPane('results')">Labs</button>
+                <button data-vcp="meds" onclick="vcPane('meds')">Medications</button>
+                <button data-vcp="imaging" onclick="vcPane('imaging')">Imaging</button>
+                <button data-vcp="refs" onclick="vcPane('refs')">Referrals</button>
                 <button data-vcp="docs" onclick="vcPane('docs')">Documents</button>
               </div>
 
@@ -1625,6 +1648,13 @@
                 <div class="vc-line"><span><span class="l">HbA1c</span><div class="vc-sub2">Ordered today</div></span><span class="r">Pending</span></div>
               </div>
 
+              <div class="vc-pane" id="vcp-meds">
+                <div class="vc-line"><span><span class="l">Metformin 500 mg</span><div class="vc-sub2">Twice daily with meals</div></span><span class="r">Ongoing</span></div>
+                <div class="vc-line"><span><span class="l">Amlodipine 5 mg</span><div class="vc-sub2">Once daily</div></span><span class="r">Ongoing</span></div>
+                <div class="vc-line"><span><span class="l">Ibuprofen 400 mg</span><div class="vc-sub2">PRN &middot; completed May 2026</div></span><span class="r">Past</span></div>
+              </div>
+              <div class="vc-pane" id="vcp-imaging"><p class="pc-empty">No imaging on file.</p></div>
+              <div class="vc-pane" id="vcp-refs"><p class="pc-empty">No active referrals.</p></div>
               <div class="vc-pane" id="vcp-docs"><p class="pc-empty">No documents released for this visit yet.</p></div>
             </div>
           </div>
@@ -1714,7 +1744,18 @@
               <button class="btn xs" onclick="toast('Templates (demo)')"><span class="ic" data-pcic="meds"></span> Templates</button>
             </div>
 
+            <div class="vd-tabs" id="vd-tabs">
+              <button class="active" data-vdt="overview" onclick="vdTab('overview')">Overview</button>
+              <button data-vdt="meds" onclick="vdTab('meds')">Medications <span class="vd-n">2</span></button>
+              <button data-vdt="labs" onclick="vdTab('labs')">Labs <span class="vd-n">3</span></button>
+              <button data-vdt="imaging" onclick="vdTab('imaging')">Imaging</button>
+              <button data-vdt="referrals" onclick="vdTab('referrals')">Referrals</button>
+              <button data-vdt="consults" onclick="vdTab('consults')">Consults</button>
+              <button data-vdt="review" onclick="vdTab('review')">Review <span class="vd-n crit">1</span></button>
+            </div>
+
             <div class="vd-body">
+              <div class="vd-pane active" id="vdt-overview">
               <div class="vd-editor">
                 <div class="vd-edhd"><h4>Current session</h4><button class="btn dark xs" onclick="toast('Session note saved')">Save</button></div>
                 <div class="vd-tools">
@@ -1734,6 +1775,50 @@
 
               <p class="ctl-title">Care timeline</p>
               <div class="care-tl-mount"></div>
+              </div>
+
+              <div class="vd-pane" id="vdt-meds">
+                <div class="vd-secttl"><h4>Medications</h4><button class="btn dark xs" onclick="toast('Prescription started (demo)')">+ New prescription</button></div>
+                <div class="vd-subtabs"><button class="active">Active</button><button>Prescriptions sent</button><button>Past</button></div>
+                <div class="vd-list">
+                  <div class="vd-item"><span><b>Metformin 500 mg</b><i>1 tablet twice daily with meals &middot; started Mar 2021</i></span><span class="pc-pill mut">Ongoing</span></div>
+                  <div class="vd-item"><span><b>Amlodipine 5 mg</b><i>1 tablet once daily &middot; started Jan 2019</i></span><span class="pc-pill mut">Ongoing</span></div>
+                  <div class="vd-item"><span><b>Ibuprofen 400 mg</b><i>PRN pain &middot; completed May 2026</i></span><span class="pc-pill mut">Past</span></div>
+                </div>
+              </div>
+
+              <div class="vd-pane" id="vdt-labs">
+                <div class="vd-secttl"><h4>Labs</h4><button class="btn dark xs" onclick="toast('Lab requisition started (demo)')">+ Order labs</button></div>
+                <div class="vd-subtabs"><button class="active">Results</button><button>Requisitions</button></div>
+                <div class="vd-list">
+                  <div class="vd-item"><span><b>Ferritin</b><i>Collected Jun 25, 2026 &middot; LifeLabs</i></span><span class="pc-pill warn">Low &middot; 18 &micro;g/L</span></div>
+                  <div class="vd-item"><span><b>CBC + differential</b><i>Collected Jun 25, 2026 &middot; LifeLabs</i></span><span class="pc-pill good">Normal</span></div>
+                  <div class="vd-item"><span><b>HbA1c</b><i>Ordered today &middot; awaiting collection</i></span><span class="pc-pill mut">Pending</span></div>
+                </div>
+              </div>
+
+              <div class="vd-pane" id="vdt-imaging">
+                <div class="vd-secttl"><h4>Imaging</h4><button class="btn dark xs" onclick="toast('Imaging requisition started (demo)')">+ Order imaging</button></div>
+                <div class="vd-subtabs"><button class="active">Reports</button><button>Requisitions</button></div>
+                <div class="vd-list"><p class="pc-empty">No imaging on file for this patient.</p></div>
+              </div>
+
+              <div class="vd-pane" id="vdt-referrals">
+                <div class="vd-secttl"><h4>Referrals</h4><button class="btn dark xs" onclick="toast('Referral started (demo)')">+ New referral</button></div>
+                <div class="vd-list"><p class="pc-empty">No active referrals.</p></div>
+              </div>
+
+              <div class="vd-pane" id="vdt-consults">
+                <div class="vd-secttl"><h4>Consult reports</h4></div>
+                <div class="vd-list"><p class="pc-empty">No consult reports received.</p></div>
+              </div>
+
+              <div class="vd-pane" id="vdt-review">
+                <div class="vd-secttl"><h4>Needs your sign-off</h4></div>
+                <div class="vd-list">
+                  <div class="vd-item"><span><b>Ferritin result</b><i>Low &mdash; flagged for review</i></span><button class="btn dark xs" onclick="toast('Signed off')">Sign off</button></div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -2880,6 +2965,12 @@ function renderCareTimeline(){
   }).join('');
   document.querySelectorAll('.care-tl-mount').forEach(function(m){ m.innerHTML = '<div class="ctl">'+html+'</div>'; });
 }
+function vdTab(which){
+  document.querySelectorAll('.vd-pane').forEach(function(p){ p.classList.remove('active'); });
+  var t=document.getElementById('vdt-'+which); if(t) t.classList.add('active');
+  document.querySelectorAll('#vd-tabs button').forEach(function(b){ b.classList.toggle('active', b.dataset.vdt===which); });
+  var body=document.querySelector('.vd-body'); if(body) body.scrollTop=0;
+}
 function vdAsk(preset){
   var inp=document.getElementById('vd-copin');
   var txt = preset || (inp?inp.value:''); txt=(txt||'').trim(); if(!txt) return;
@@ -2965,6 +3056,7 @@ function openChart(name){
     el.className = 'vc-sf' + (r.redflag ? ' crit' : '');
     el.textContent = r.redflag ? 'Intake flag: review before calling' : 'No active alerts';
   });
+  vdTab('overview');
   CARE_EVENTS = buildCareEvents(r); renderCareTimeline();
   pcShowSec('chart'); vcPane('summary'); setChartVer('c'); pcEndCall();
   showScreen('patientchart');
