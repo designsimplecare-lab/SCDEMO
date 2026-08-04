@@ -693,6 +693,16 @@
   .q-sort{display:inline-flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);
     border-radius:999px;padding:9px 15px;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:inherit;}
   .q-sort:hover{border-color:var(--line-strong);}
+  .day-nav{display:flex;align-items:center;gap:6px;margin-bottom:12px;}
+  .day-arrow{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--panel);
+    cursor:pointer;font-family:inherit;font-size:15px;color:var(--ink-soft);line-height:1;}
+  .day-arrow:hover{background:var(--wash);color:var(--ink);}
+  .day-label{font-size:14px;font-weight:800;letter-spacing:-.01em;min-width:172px;text-align:center;}
+  .day-today{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 12px;
+    font-size:11.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;font-family:inherit;display:none;}
+  .day-today:hover{background:var(--wash);color:var(--ink);}
+  .day-today.show{display:inline-block;}
+  .day-count{font-size:12px;color:var(--ink-faint);margin-left:6px;}
   .q-tools{display:inline-flex;align-items:center;gap:8px;}
   .q-search{display:inline-flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);
     border-radius:999px;padding:0 8px 0 14px;height:38px;min-width:250px;transition:border-color .12s;}
@@ -1123,6 +1133,69 @@
   .vc-qa .btn .ic{width:15px;height:15px;color:var(--ink-soft);}
   @media(max-width:1100px){ .vc-cols{grid-template-columns:1fr;} }
 
+  /* ============================================================
+     VERSION D - dark patient rail + action bar + Copilot panel
+     ============================================================ */
+  .vd{border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-card);
+    display:grid;grid-template-columns:250px 1fr 300px;min-height:620px;background:var(--panel);}
+  .vd-rail{background:#141821;color:#fff;padding:20px 18px;}
+  .vd-av{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;
+    align-items:center;justify-content:center;font-size:17px;font-weight:800;margin-bottom:14px;}
+  .vd-nm{font-size:20px;font-weight:800;margin:0;letter-spacing:-.01em;}
+  .vd-meta{font-size:12px;color:#98A0B0;margin:5px 0 0;line-height:1.6;}
+  .vd-hr{height:1px;background:rgba(255,255,255,.1);margin:16px 0;}
+  .vd-h5{font-size:13px;font-weight:800;margin:0 0 10px;}
+  .vd-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:7px 0;}
+  .vd-row .l{font-size:13px;font-weight:600;} .vd-row .s{font-size:11.5px;color:#98A0B0;margin-top:1px;}
+  .vd-pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+  .vd-pill.ok{background:#1f4033;color:#7ee0ab;} .vd-pill.mut{background:rgba(255,255,255,.1);color:#B9C0CC;}
+  .vd-pill.warn{background:#4a3a12;color:#f0c96a;}
+  .vd-vit{display:grid;grid-template-columns:1fr 1fr;gap:12px 10px;}
+  .vd-vit .k{font-size:11px;color:#98A0B0;margin:0;} .vd-vit .v{font-size:15px;font-weight:700;margin:2px 0 0;}
+
+  .vd-mid{display:flex;flex-direction:column;min-width:0;background:var(--paper);}
+  .vd-bar{display:flex;align-items:center;gap:8px;padding:14px 20px;background:var(--panel);
+    border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .vd-bar h3{font-size:16px;font-weight:800;margin:0 auto 0 0;}
+  .vd-bar .btn{padding:8px 13px;}
+  .vd-body{padding:18px 20px;overflow-y:auto;flex:1;}
+  .vd-editor{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:20px;}
+  .vd-edhd{display:flex;align-items:center;margin-bottom:10px;}
+  .vd-edhd h4{font-size:15px;font-weight:800;margin:0;}
+  .vd-edhd .btn{margin-left:auto;}
+  .vd-tools{display:flex;align-items:center;gap:2px;border:1px solid var(--line);border-bottom:none;
+    border-radius:10px 10px 0 0;padding:6px 8px;background:var(--wash);flex-wrap:wrap;}
+  .vd-tools button{width:28px;height:28px;border:none;background:none;border-radius:6px;cursor:pointer;
+    font-family:inherit;font-size:13px;color:var(--ink-soft);}
+  .vd-tools button:hover{background:var(--panel);color:var(--ink);}
+  .vd-tools .div{width:1px;height:16px;background:var(--line-strong);margin:0 5px;}
+  .vd-ta{width:100%;border:1px solid var(--line);border-radius:0 0 10px 10px;padding:12px 14px;
+    font-family:inherit;font-size:14px;line-height:1.6;min-height:90px;resize:vertical;outline:none;color:var(--ink);}
+  .vd-ta:focus{border-color:var(--accent);}
+
+  .vd-cop{background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;min-width:0;}
+  .vd-cophd{display:flex;align-items:center;gap:9px;padding:15px 16px;border-bottom:1px solid var(--line);}
+  .vd-cophd .sp{width:24px;height:24px;border-radius:50%;background:var(--gradient-agent);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;}
+  .vd-cophd b{font-size:15px;font-weight:800;}
+  .vd-cophd .x{margin-left:auto;border:none;background:none;cursor:pointer;color:var(--ink-faint);font-size:17px;}
+  .vd-copbody{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--paper);}
+  .vd-msg{max-width:88%;padding:10px 13px;border-radius:13px;font-size:13px;line-height:1.5;}
+  .vd-msg.bot{background:var(--panel);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px;}
+  .vd-msg.me{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+  .vd-sug{padding:12px 14px;border-top:1px solid var(--line);background:var(--panel);}
+  .vd-sug p{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);margin:0 0 8px;}
+  .vd-sug button{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--panel);
+    border-radius:9px;padding:8px 11px;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;
+    font-family:inherit;margin-bottom:6px;}
+  .vd-sug button:hover{background:var(--accent-wash);border-color:var(--accent);color:var(--accent-ink);}
+  .vd-copin{display:flex;align-items:center;gap:8px;padding:11px 13px;border-top:1px solid var(--line);background:var(--panel);}
+  .vd-copin input{flex:1;border:1px solid var(--line);border-radius:20px;padding:9px 13px;font-family:inherit;font-size:13px;outline:none;}
+  .vd-copin input:focus{border-color:var(--accent);}
+  .vd-copin .send{width:34px;height:34px;border-radius:50%;border:none;background:var(--accent);color:#fff;cursor:pointer;flex-shrink:0;}
+  @media(max-width:1400px){ .vd{grid-template-columns:220px 1fr 280px;} }
+  @media(max-width:1050px){ .vd{grid-template-columns:200px 1fr;} .vd-cop{grid-column:1 / -1;border-left:none;border-top:1px solid var(--line);max-height:420px;} }
+
   /* ===== Care timeline ===== */
   .ctl-title{font-size:17px;font-weight:800;margin:0 0 14px;}
   .ctl{position:relative;}
@@ -1264,6 +1337,13 @@
         </div>
 
         <div class="work-pane active" id="work-queue">
+          <div class="day-nav">
+            <button class="day-arrow" onclick="shiftDay(-1)" title="Previous day">&#8249;</button>
+            <span class="day-label" id="day-label">Today &middot; Thu Jul 23</span>
+            <button class="day-arrow" onclick="shiftDay(1)" title="Next day">&#8250;</button>
+            <button class="day-today" id="day-today-btn" onclick="goToday()">Today</button>
+            <span class="day-count" id="day-count"></span>
+          </div>
           <div class="q-toolbar">
             <div class="win-strip">
               <button class="win-chip active" data-win="all" onclick="filterWindow('all',this)">All</button>
@@ -1331,6 +1411,7 @@
         <button data-ver="a" onclick="setChartVer('a')">Version A &middot; Context rail</button>
         <button data-ver="b" onclick="setChartVer('b')">Version B &middot; Workflow</button>
         <button class="active" data-ver="c" onclick="setChartVer('c')">Version C &middot; Focused</button>
+        <button data-ver="d" onclick="setChartVer('d')">Version D &middot; Dark rail + Copilot</button>
       </div>
 
       <!-- ============ VERSION A ============ -->
@@ -1589,6 +1670,89 @@
                 <button class="btn xs" onclick="toast('Prescription started (demo)')"><span class="ic" data-pcic="meds"></span> Write prescription</button>
                 <button class="btn xs" onclick="toast('Referral started (demo)')"><span class="ic" data-pcic="referrals"></span> Create referral</button>
               </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <!-- ============ VERSION D - dark rail + Copilot ============ -->
+      <div class="pcv" id="pcv-d">
+        <div class="vd">
+          <!-- dark patient rail -->
+          <aside class="vd-rail">
+            <div class="vd-av" data-f="initials">--</div>
+            <p class="vd-nm" data-f="name">--</p>
+            <p class="vd-meta">DOB: <span data-f="dob">--</span><br><span data-f="demo">--</span><br>PHN: <span data-f="phn">--</span></p>
+
+            <div class="vd-hr"></div>
+            <p class="vd-h5">Allergies &amp; Alerts</p>
+            <div class="vd-row"><span><span class="l">No known drug allergies</span><div class="s">Confirmed</div></span><span class="vd-pill ok">Clear</span></div>
+            <div class="vd-row"><span><span class="l">Intake flag</span><div class="s" data-f="flagtext">--</div></span><span class="vd-pill mut" data-f="vdflag">None</span></div>
+
+            <div class="vd-hr"></div>
+            <p class="vd-h5">Quick vitals</p>
+            <div class="vd-vit">
+              <div><p class="k">BP</p><p class="v">122/78</p></div>
+              <div><p class="k">HR</p><p class="v">72</p></div>
+              <div><p class="k">Temp</p><p class="v">36.8&deg;C</p></div>
+              <div><p class="k">Weight</p><p class="v">68 kg</p></div>
+            </div>
+
+            <div class="vd-hr"></div>
+            <p class="vd-h5">Last visit</p>
+            <p class="vd-meta" style="margin:0;">Jun 25, 2026<br>Dr. Daniel Pannozzo</p>
+          </aside>
+
+          <!-- centre: action bar + session note + care timeline -->
+          <div class="vd-mid">
+            <div class="vd-bar">
+              <h3>Patient chart</h3>
+              <button class="btn xs" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call patient</button>
+              <button class="btn xs" onclick="pcStartCall()"><span class="ic" data-pcic="headset"></span> Headset call</button>
+              <button class="btn xs" onclick="toast('Transferred to Dolly (demo)')"><span class="ic" data-pcic="transfer"></span> Transfer to Dolly</button>
+              <button class="btn xs" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pcic="task"></span> Send task</button>
+              <button class="btn xs" onclick="toast('Templates (demo)')"><span class="ic" data-pcic="meds"></span> Templates</button>
+            </div>
+
+            <div class="vd-body">
+              <div class="vd-editor">
+                <div class="vd-edhd"><h4>Current session</h4><button class="btn dark xs" onclick="toast('Session note saved')">Save</button></div>
+                <div class="vd-tools">
+                  <button title="Bold"><b>B</b></button>
+                  <button title="Italic"><i>I</i></button>
+                  <button title="Underline"><u>U</u></button>
+                  <button title="Strikethrough"><s>S</s></button>
+                  <span class="div"></span>
+                  <button title="Bulleted list">&#8226;&#8801;</button>
+                  <button title="Numbered list">1&#8801;</button>
+                  <span class="div"></span>
+                  <button title="Insert template">&#9744;</button>
+                  <button title="Undo">&#8630;</button>
+                </div>
+                <textarea class="vd-ta" id="vd-note" placeholder="Add session notes..."></textarea>
+              </div>
+
+              <p class="ctl-title">Care timeline</p>
+              <div class="care-tl-mount"></div>
+            </div>
+          </div>
+
+          <!-- Copilot panel -->
+          <aside class="vd-cop">
+            <div class="vd-cophd"><span class="sp">&#10022;</span><b>Copilot</b><button class="x" onclick="toast('Copilot hidden (demo)')">&times;</button></div>
+            <div class="vd-copbody" id="vd-copbody">
+              <div class="vd-msg bot" data-f="note">--</div>
+              <div class="vd-msg bot">No known drug allergies on file.</div>
+            </div>
+            <div class="vd-sug">
+              <p>Suggestions</p>
+              <button onclick="vdAsk('Help me with a differential diagnosis')">Help me with a differential</button>
+              <button onclick="vdAsk('Summarize this patient&rsquo;s history')">Summarize patient history</button>
+              <button onclick="vdAsk('Draft a follow-up plan')">Draft a follow-up plan</button>
+            </div>
+            <div class="vd-copin">
+              <input id="vd-copin" placeholder="Type your message..." onkeydown="if(event.key==='Enter')vdAsk()">
+              <button class="send" onclick="vdAsk()">&#10148;</button>
             </div>
           </aside>
         </div>
@@ -1971,15 +2135,33 @@ var QUEUE_DATA = [
 ];
 var STATUS_LABEL = {
   waiting:'Waiting', next:'Next up', progress:'In visit', delayed:'Running behind',
-  missed:'Missed call', dropped:'Call dropped', done:'Completed', noshow:'No-show'
+  missed:'Missed call', dropped:'Call dropped', done:'Completed', noshow:'No-show', scheduled:'Scheduled'
 };
 var currentWindow = 'all';
 var queueSearch = '';
+var dayOffset = 0;
+var DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var DAY_LABELS = {
+  '-2':'Tue Jul 21', '-1':'Wed Jul 22', '0':'Thu Jul 23', '1':'Fri Jul 24', '2':'Sat Jul 25', '3':'Sun Jul 26'
+};
+var OTHER_DAYS = {
+  '-2':[{name:'Priya Raman, 39F',concern:'Rash review',win:'8-10',status:'done'},
+        {name:'Tom Alvarez, 61M',concern:'Blood pressure check',win:'10-2',status:'done'},
+        {name:'Nadia Hassan, 28F',concern:'Prescription renewal',win:'2-5',status:'noshow'}],
+  '-1':[{name:'Owen Brady, 45M',concern:'Back pain follow up',win:'8-10',status:'done'},
+        {name:'Grace Lin, 52F',concern:'Lab review',win:'10-2',status:'done'}],
+  '1':[{name:'Karen Anderson, 58F',concern:'Annual review',win:'8-10',status:'scheduled'},
+       {name:'Eric Janusson, 34M',concern:'Follow up appointment',win:'10-2',status:'scheduled'},
+       {name:'Stephanie Calibaba, 41F',concern:'Thyroid recheck',win:'2-5',status:'scheduled'}],
+  '2':[{name:'Marcus Webb, 66M',concern:'Diabetes review',win:'10-2',status:'scheduled'}],
+  '3':[]
+};
 
 function renderQueue(){
   var body = document.getElementById('queue-body');
   var q = queueSearch.trim().toLowerCase();
-  var rows = QUEUE_DATA.filter(function(r){
+  var source = (dayOffset === 0) ? QUEUE_DATA : (OTHER_DAYS[String(dayOffset)] || []);
+  var rows = source.filter(function(r){
     var winOk = (currentWindow==='all' || r.win===currentWindow);
     if(!winOk) return false;
     if(!q) return true;
@@ -2026,11 +2208,28 @@ function renderQueue(){
     '</tr>';
   }).join('');
   if(!rows.length){
-    body.innerHTML = '<tr><td colspan="6"><p class="q-noresult">No patients match \u201c'+queueSearch+'\u201d.</p></td></tr>';
+    var msg = queueSearch ? ('No patients match \u201c'+queueSearch+'\u201d.')
+                          : (dayOffset===0 ? 'No patients in the queue right now.' : 'Nothing booked for this day.');
+    body.innerHTML = '<tr><td colspan="6"><p class="q-noresult">'+msg+'</p></td></tr>';
   }
   renderGlance();
   updateWorkCounts();
 }
+function renderDayNav(){
+  var lbl=document.getElementById('day-label'); if(!lbl) return;
+  var name = DAY_LABELS[String(dayOffset)] || ('Day '+dayOffset);
+  lbl.textContent = (dayOffset===0 ? 'Today \u00b7 ' : (dayOffset===-1 ? 'Yesterday \u00b7 ' : (dayOffset===1 ? 'Tomorrow \u00b7 ' : ''))) + name;
+  var btn=document.getElementById('day-today-btn'); if(btn) btn.classList.toggle('show', dayOffset!==0);
+  var src = (dayOffset===0) ? QUEUE_DATA : (OTHER_DAYS[String(dayOffset)] || []);
+  var c=document.getElementById('day-count');
+  if(c) c.textContent = dayOffset===0 ? '' : (src.length ? src.length+' booked' : 'nothing booked');
+}
+function shiftDay(d){
+  var next = dayOffset + d;
+  if(next < -2 || next > 3) return;
+  dayOffset = next; renderDayNav(); renderQueue();
+}
+function goToday(){ dayOffset = 0; renderDayNav(); renderQueue(); }
 function filterQueueSearch(v){
   queueSearch = v || '';
   var wrap = document.querySelector('.q-search');
@@ -2681,6 +2880,20 @@ function renderCareTimeline(){
   }).join('');
   document.querySelectorAll('.care-tl-mount').forEach(function(m){ m.innerHTML = '<div class="ctl">'+html+'</div>'; });
 }
+function vdAsk(preset){
+  var inp=document.getElementById('vd-copin');
+  var txt = preset || (inp?inp.value:''); txt=(txt||'').trim(); if(!txt) return;
+  var body=document.getElementById('vd-copbody');
+  var me=document.createElement('div'); me.className='vd-msg me'; me.textContent=txt; body.appendChild(me);
+  if(inp) inp.value='';
+  body.scrollTop=body.scrollHeight;
+  setTimeout(function(){
+    var bot=document.createElement('div'); bot.className='vd-msg bot';
+    bot.textContent = 'Based on the chart: ' + (PC_CURRENT? PC_CURRENT.split(',')[0] : 'this patient') +
+      ' has no known drug allergies, is on Metformin and Amlodipine, and last had labs on Jun 25 (ferritin low). Verify against the source chart before acting.';
+    body.appendChild(bot); body.scrollTop=body.scrollHeight;
+  }, 600);
+}
 function vcPane(which){
   document.querySelectorAll('.vc-pane').forEach(function(p){ p.classList.remove('active'); });
   var t=document.getElementById('vcp-'+which); if(t) t.classList.add('active');
@@ -2740,6 +2953,12 @@ function openChart(name){
   });
   document.querySelectorAll('[data-f="flagpill"]').forEach(function(el){ el.className = 'pc-pill ' + (r.redflag?'warn':'mut'); });
   document.querySelectorAll('[data-f="acuitychip"]').forEach(function(el){ el.className = 'pc-chip ' + (r.redflag?'sex':'mut'); });
+  var vdn=document.getElementById('vd-note');
+  if(vdn) vdn.value = '';
+  document.querySelectorAll('[data-f="vdflag"]').forEach(function(el){
+    el.className = 'vd-pill ' + (r.redflag ? 'warn' : 'mut');
+    el.textContent = r.redflag ? 'Urgent' : 'None';
+  });
   var vn=document.getElementById('vc-note-input');
   if(vn) vn.value = 'Patient presents for ' + r.concern.toLowerCase() + '. ';
   document.querySelectorAll('[data-f="bannerflag"]').forEach(function(el){
@@ -2780,6 +2999,7 @@ function applyIcons(){
   var so = document.querySelector('.q-sort'); if(so) so.innerHTML = ICONS.sort + ' Sort &middot; Acuity, then wait';
 }
 applyIcons();
+renderDayNav();
 updateWorkCounts();
 </script>
 </body>
