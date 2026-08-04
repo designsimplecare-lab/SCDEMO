@@ -1062,6 +1062,67 @@
   .chk.done{color:var(--ink-soft);text-decoration:line-through;}
   @media(max-width:1100px){ .pcv-a{grid-template-columns:1fr;} .rail,.side{position:static;} .pcv-b-cols{grid-template-columns:1fr;} .fields{grid-template-columns:1fr;} }
 
+  /* ============================================================
+     VERSION C - Focused (persistent banner, boxed groups,
+     progressive disclosure, restrained palette)
+     ============================================================ */
+  .vc-banner{position:sticky;top:0;z-index:30;background:var(--panel);border:1px solid var(--line);
+    border-radius:16px;box-shadow:var(--shadow-card);padding:14px 18px;margin-bottom:14px;
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .vc-id{display:flex;align-items:center;gap:12px;}
+  .vc-av{width:46px;height:46px;border-radius:50%;background:var(--wash);color:var(--ink);
+    display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;
+    border:1px solid var(--line);}
+  .vc-nm{font-size:18px;font-weight:800;margin:0;letter-spacing:-.01em;}
+  .vc-sub{font-size:12px;color:var(--ink-soft);margin:2px 0 0;}
+  .vc-sub .pc-mono{color:var(--ink);font-weight:600;}
+  .vc-safety{display:flex;align-items:center;gap:8px;margin-left:8px;flex-wrap:wrap;}
+  .vc-sf{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;
+    padding:5px 11px;border-radius:8px;border:1px solid var(--line);background:var(--wash);color:var(--ink-soft);}
+  .vc-sf.crit{background:var(--crit-wash);border-color:#E8B7AF;color:var(--crit);}
+  .vc-sf.ok{background:var(--good-wash);border-color:#bfe0cc;color:var(--good);}
+  .vc-sf .more{opacity:.7;font-weight:600;}
+  .vc-acts{margin-left:auto;display:flex;gap:8px;align-items:center;}
+
+  .vc-cols{display:grid;grid-template-columns:1fr 320px;gap:14px;align-items:start;}
+  .vc-block{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-card);
+    padding:16px 18px;margin-bottom:12px;}
+  .vc-h{display:flex;align-items:center;gap:8px;margin:0 0 12px;}
+  .vc-h h4{font-size:13px;font-weight:800;margin:0;letter-spacing:.01em;}
+  .vc-h .ic{width:15px;height:15px;color:var(--ink-faint);}
+  .vc-h .right{margin-left:auto;display:flex;gap:6px;align-items:center;}
+  .vc-count{font-size:11px;font-weight:700;color:var(--ink-faint);background:var(--wash);border-radius:20px;padding:2px 8px;}
+  .vc-more{border:none;background:none;font-family:inherit;font-size:12px;font-weight:700;color:var(--accent-ink);cursor:pointer;padding:0;}
+  .vc-more:hover{text-decoration:underline;}
+  .vc-hidden{display:none !important;}
+  .vc-note{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-family:inherit;
+    font-size:14px;line-height:1.6;color:var(--ink);min-height:120px;resize:vertical;outline:none;background:var(--wash);}
+  .vc-note:focus{border-color:var(--accent);background:var(--panel);}
+  .vc-chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 0;}
+  .vc-chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;
+    font-size:12px;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:inherit;}
+  .vc-chip:hover{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-wash);}
+  .vc-line{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--wash);}
+  .vc-line:last-child{border-bottom:none;} .vc-line:first-of-type{padding-top:0;}
+  .vc-line .l{font-size:13.5px;font-weight:600;color:var(--ink);}
+  .vc-line .r{font-size:13px;color:var(--ink-soft);text-align:right;white-space:nowrap;}
+  .vc-line .r.flag{color:var(--warn);font-weight:700;}
+  .vc-sub2{font-size:11.5px;color:var(--ink-faint);margin-top:1px;}
+  .vc-vitals{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .vc-vit{background:var(--wash);border-radius:10px;padding:9px 11px;}
+  .vc-vit .k{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);font-weight:700;margin:0 0 2px;}
+  .vc-vit .v{font-size:14px;font-weight:700;margin:0;}
+  .vc-tabsrow{display:flex;gap:18px;border-bottom:1px solid var(--line);margin-bottom:14px;}
+  .vc-tabsrow button{border:none;background:none;font-family:inherit;font-size:13px;font-weight:700;color:var(--ink-faint);
+    padding:0 0 9px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .vc-tabsrow button.active{color:var(--ink);border-bottom-color:var(--ink-dark);}
+  .vc-tabsrow button:hover{color:var(--ink);}
+  .vc-pane{display:none;} .vc-pane.active{display:block;}
+  .vc-qa{display:flex;flex-direction:column;gap:7px;}
+  .vc-qa .btn{width:100%;justify-content:flex-start;padding:9px 13px;}
+  .vc-qa .btn .ic{width:15px;height:15px;color:var(--ink-soft);}
+  @media(max-width:1100px){ .vc-cols{grid-template-columns:1fr;} }
+
   /* ===== Care timeline ===== */
   .ctl-title{font-size:17px;font-weight:800;margin:0 0 14px;}
   .ctl{position:relative;}
@@ -1267,12 +1328,13 @@
       <p class="sub" data-f="visitline">Open visit &middot; today</p>
 
       <div class="ver-switch">
-        <button class="active" data-ver="a" onclick="setChartVer('a')">Version A &middot; Context rail</button>
+        <button data-ver="a" onclick="setChartVer('a')">Version A &middot; Context rail</button>
         <button data-ver="b" onclick="setChartVer('b')">Version B &middot; Workflow</button>
+        <button class="active" data-ver="c" onclick="setChartVer('c')">Version C &middot; Focused</button>
       </div>
 
       <!-- ============ VERSION A ============ -->
-      <div class="pcv pcv-a active" id="pcv-a">
+      <div class="pcv pcv-a" id="pcv-a">
         <aside class="rail">
           <div class="rail-card">
             <div class="tw">
@@ -1408,6 +1470,127 @@
             <p class="ctl-title">Care timeline</p>
             <div class="care-tl-mount"></div>
           </section>
+        </div>
+      </div>
+
+      <!-- ============ VERSION C - Focused ============ -->
+      <div class="pcv active" id="pcv-c">
+        <!-- persistent patient banner: identity + safety info always visible -->
+        <div class="vc-banner">
+          <div class="vc-id">
+            <span class="vc-av" data-f="initials">--</span>
+            <span>
+              <p class="vc-nm" data-f="name">--</p>
+              <p class="vc-sub"><span data-f="demo">--</span> &middot; PHN <span class="pc-mono" data-f="phn">--</span></p>
+            </span>
+          </div>
+          <div class="vc-safety">
+            <span class="vc-sf ok"><span class="ic" data-pcic="verified"></span> No known allergies</span>
+            <span class="vc-sf" data-f="bannerflag">No active alerts</span>
+            <span class="vc-sf">HTN, T2DM <span class="more">+1</span></span>
+          </div>
+          <div class="vc-acts">
+            <button class="btn dark xs" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call</button>
+            <button class="btn xs" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pcic="task"></span> Task</button>
+            <span class="pc-callstrip" id="pc-callstrip-c"><span class="dot"></span> <span id="pc-timer-c">00:00</span> <button class="hang" onclick="pcEndCall()">End</button></span>
+          </div>
+        </div>
+
+        <div class="vc-cols">
+          <!-- LEFT: this visit -->
+          <div>
+            <div class="vc-block">
+              <div class="vc-h"><span class="ic" data-pcic="edit"></span><h4>This visit</h4>
+                <span class="right"><span class="vc-count" data-f="concern">--</span></span></div>
+              <textarea class="vc-note" id="vc-note-input" placeholder="Document the visit..."></textarea>
+              <div class="vc-chips">
+                <button class="vc-chip" onclick="vcInsert('Follow-up template')">+ Follow-up template</button>
+                <button class="vc-chip" onclick="vcInsert('Normal exam')">+ Normal exam</button>
+                <button class="vc-chip" onclick="vcInsert('Rx renewal')">+ Rx renewal</button>
+                <button class="vc-chip" onclick="toast('Diagnosis picker')">+ Diagnosis</button>
+              </div>
+              <div style="margin-top:14px;display:flex;gap:8px;">
+                <button class="btn dark xs">Sign &amp; complete</button>
+                <button class="btn xs">Save draft</button>
+              </div>
+            </div>
+
+            <div class="vc-block">
+              <div class="vc-tabsrow">
+                <button class="active" data-vcp="summary" onclick="vcPane('summary')">Summary</button>
+                <button data-vcp="timeline" onclick="vcPane('timeline')">Timeline</button>
+                <button data-vcp="results" onclick="vcPane('results')">Results</button>
+                <button data-vcp="docs" onclick="vcPane('docs')">Documents</button>
+              </div>
+
+              <div class="vc-pane active" id="vcp-summary">
+                <div class="vc-h"><span class="ic" data-pcic="consult"></span><h4>Reason for visit</h4></div>
+                <p class="prose" data-f="reason" style="margin-bottom:16px;">--</p>
+                <div class="vc-h"><span class="ic" data-pcic="chart"></span><h4>Last vitals</h4>
+                  <span class="right"><span class="vc-count">Jun 25</span></span></div>
+                <div class="vc-vitals">
+                  <div class="vc-vit"><p class="k">Blood pressure</p><p class="v">122 / 78</p></div>
+                  <div class="vc-vit"><p class="k">Heart rate</p><p class="v">72 bpm</p></div>
+                  <div class="vc-vit"><p class="k">Temperature</p><p class="v">36.8 &deg;C</p></div>
+                  <div class="vc-vit"><p class="k">Weight</p><p class="v">68 kg</p></div>
+                </div>
+              </div>
+
+              <div class="vc-pane" id="vcp-timeline"><div class="care-tl-mount"></div></div>
+
+              <div class="vc-pane" id="vcp-results">
+                <div class="vc-line"><span><span class="l">Ferritin</span><div class="vc-sub2">Jun 25, 2026 &middot; LifeLabs</div></span><span class="r flag">18 &micro;g/L &middot; Low</span></div>
+                <div class="vc-line"><span><span class="l">CBC + differential</span><div class="vc-sub2">Jun 25, 2026</div></span><span class="r">Normal</span></div>
+                <div class="vc-line"><span><span class="l">HbA1c</span><div class="vc-sub2">Ordered today</div></span><span class="r">Pending</span></div>
+              </div>
+
+              <div class="vc-pane" id="vcp-docs"><p class="pc-empty">No documents released for this visit yet.</p></div>
+            </div>
+          </div>
+
+          <!-- RIGHT: reference data, boxed by type -->
+          <aside class="side">
+            <div class="vc-block" style="margin-bottom:0;">
+              <div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Problems</h4>
+                <span class="right"><span class="vc-count">3</span></span></div>
+              <div class="vc-line"><span class="l">Hypertension</span><span class="r">since 2019</span></div>
+              <div class="vc-line"><span class="l">Type 2 diabetes</span><span class="r">since 2021</span></div>
+              <div class="vc-line vc-hidden" data-grp="probs"><span class="l">Iron deficiency</span><span class="r">since 2026</span></div>
+              <button class="vc-more" style="margin-top:8px;" onclick="vcToggle('probs',this)">Show 1 more</button>
+            </div>
+
+            <div class="vc-block" style="margin-bottom:0;">
+              <div class="vc-h"><span class="ic" data-pcic="meds"></span><h4>Medications</h4>
+                <span class="right"><span class="vc-count">2</span></span></div>
+              <div class="vc-line"><span><span class="l">Metformin 500 mg</span><div class="vc-sub2">Twice daily</div></span><span class="r">Ongoing</span></div>
+              <div class="vc-line"><span><span class="l">Amlodipine 5 mg</span><div class="vc-sub2">Once daily</div></span><span class="r">Ongoing</span></div>
+            </div>
+
+            <div class="vc-block" style="margin-bottom:0;">
+              <div class="vc-h"><span class="ic" data-pcic="labs"></span><h4>Recent results</h4>
+                <span class="right"><button class="vc-more" onclick="vcPane('results')">View all</button></span></div>
+              <div class="vc-line"><span class="l">Ferritin</span><span class="r flag">Low</span></div>
+              <div class="vc-line"><span class="l">CBC</span><span class="r">Normal</span></div>
+            </div>
+
+            <div class="vc-block" style="margin-bottom:0;">
+              <div class="vc-h"><span class="ic" data-pcic="chart"></span><h4>Care history</h4></div>
+              <div class="vc-line"><span><span class="l">Last visit</span><div class="vc-sub2">Dr. Pannozzo</div></span><span class="r">Jun 25, 2026</span></div>
+              <div class="vc-line"><span><span class="l">Visits, 12 mo</span></span><span class="r">3</span></div>
+              <div class="vc-line"><span><span class="l">Pharmacy</span><div class="vc-sub2">Lincoln, Coquitlam</div></span><span class="r">&nbsp;</span></div>
+            </div>
+
+            <div class="vc-block" style="margin-bottom:0;">
+              <div class="vc-h"><span class="ic" data-pcic="task"></span><h4>Quick actions</h4></div>
+              <div class="vc-qa">
+                <button class="btn xs" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pcic="task"></span> Send task to MOA</button>
+                <button class="btn xs" onclick="toast('Transferred to Dolly (demo)')"><span class="ic" data-pcic="transfer"></span> Transfer to Dolly</button>
+                <button class="btn xs" onclick="toast('Lab requisition started (demo)')"><span class="ic" data-pcic="labs"></span> Order labs</button>
+                <button class="btn xs" onclick="toast('Prescription started (demo)')"><span class="ic" data-pcic="meds"></span> Write prescription</button>
+                <button class="btn xs" onclick="toast('Referral started (demo)')"><span class="ic" data-pcic="referrals"></span> Create referral</button>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
 
@@ -2498,6 +2681,22 @@ function renderCareTimeline(){
   }).join('');
   document.querySelectorAll('.care-tl-mount').forEach(function(m){ m.innerHTML = '<div class="ctl">'+html+'</div>'; });
 }
+function vcPane(which){
+  document.querySelectorAll('.vc-pane').forEach(function(p){ p.classList.remove('active'); });
+  var t=document.getElementById('vcp-'+which); if(t) t.classList.add('active');
+  document.querySelectorAll('.vc-tabsrow button').forEach(function(b){ b.classList.toggle('active', b.dataset.vcp===which); });
+}
+function vcToggle(grp, btn){
+  var rows=document.querySelectorAll('[data-grp="'+grp+'"]');
+  var hidden = rows[0] && rows[0].classList.contains('vc-hidden');
+  rows.forEach(function(r){ r.classList.toggle('vc-hidden', !hidden); });
+  btn.textContent = hidden ? 'Show less' : ('Show '+rows.length+' more');
+}
+function vcInsert(t){
+  var n=document.getElementById('vc-note-input'); if(!n) return;
+  n.value = (n.value ? n.value.replace(/\s*$/,'') + '\n' : '') + t + ': ';
+  n.focus();
+}
 function pcFill(map){
   Object.keys(map).forEach(function(k){
     document.querySelectorAll('[data-f="'+k+'"]').forEach(function(el){ el.innerHTML = map[k]; });
@@ -2541,8 +2740,14 @@ function openChart(name){
   });
   document.querySelectorAll('[data-f="flagpill"]').forEach(function(el){ el.className = 'pc-pill ' + (r.redflag?'warn':'mut'); });
   document.querySelectorAll('[data-f="acuitychip"]').forEach(function(el){ el.className = 'pc-chip ' + (r.redflag?'sex':'mut'); });
+  var vn=document.getElementById('vc-note-input');
+  if(vn) vn.value = 'Patient presents for ' + r.concern.toLowerCase() + '. ';
+  document.querySelectorAll('[data-f="bannerflag"]').forEach(function(el){
+    el.className = 'vc-sf' + (r.redflag ? ' crit' : '');
+    el.textContent = r.redflag ? 'Intake flag: review before calling' : 'No active alerts';
+  });
   CARE_EVENTS = buildCareEvents(r); renderCareTimeline();
-  pcShowSec('chart'); pcEndCall();
+  pcShowSec('chart'); vcPane('summary'); setChartVer('c'); pcEndCall();
   showScreen('patientchart');
 }
 function pcShowSec(sec){
