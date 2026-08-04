@@ -1193,6 +1193,39 @@
   .vd-copin input{flex:1;border:1px solid var(--line);border-radius:20px;padding:9px 13px;font-family:inherit;font-size:13px;outline:none;}
   .vd-copin input:focus{border-color:var(--accent);}
   .vd-copin .send{width:34px;height:34px;border-radius:50%;border:none;background:var(--accent);color:#fff;cursor:pointer;flex-shrink:0;}
+  /* call widget in the dark rail */
+  .vd-call{margin-top:16px;}
+  .vd-call-live{display:none;}
+  .vd-call.live .vd-call-idle{display:none;}
+  .vd-call.live .vd-call-live{display:block;}
+  .vd-callbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;
+    background:#2FA36B;color:#fff;border:none;border-radius:13px;padding:15px 16px;
+    font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;
+    box-shadow:0 6px 18px rgba(47,163,107,.32);transition:transform .12s, box-shadow .12s;}
+  .vd-callbtn:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(47,163,107,.4);}
+  .vd-callbtn .ic{width:18px;height:18px;}
+  .vd-callalt{display:flex;gap:7px;margin-top:8px;}
+  .vd-callalt button{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    background:rgba(255,255,255,.08);color:#D6DBE4;border:1px solid rgba(255,255,255,.14);border-radius:10px;
+    padding:9px 8px;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;}
+  .vd-callalt button:hover{background:rgba(255,255,255,.15);color:#fff;}
+  .vd-callalt .ic{width:13px;height:13px;}
+  .vd-callnum{font-size:11.5px;color:#98A0B0;margin:9px 0 0;text-align:center;}
+
+  .vd-callstat{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12.5px;font-weight:700;color:#7ee0ab;}
+  .vd-ring{width:9px;height:9px;border-radius:50%;background:#2FA36B;animation:vdpulse 1.3s infinite;}
+  @keyframes vdpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.85)}}
+  .vd-calltime{font-size:30px;font-weight:800;letter-spacing:-.02em;text-align:center;margin:8px 0 12px;
+    font-variant-numeric:tabular-nums;color:#fff;}
+  .vd-callctrl{display:flex;gap:8px;justify-content:center;margin-bottom:12px;}
+  .vd-callctrl button{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.16);
+    background:rgba(255,255,255,.08);color:#fff;cursor:pointer;font-size:15px;font-family:inherit;}
+  .vd-callctrl button:hover{background:rgba(255,255,255,.18);}
+  .vd-callctrl button.on{background:#fff;color:#141821;}
+  .vd-hangbtn{width:100%;background:#D64545;color:#fff;border:none;border-radius:12px;padding:12px;
+    font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;}
+  .vd-hangbtn:hover{background:#c13c3c;}
+
   .vd-tabs{display:flex;gap:16px;padding:0 20px;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto;}
   .vd-tabs button{border:none;background:none;font-family:inherit;font-size:13px;font-weight:700;color:var(--ink-faint);
     padding:11px 0;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;
@@ -1714,6 +1747,31 @@
             <p class="vd-nm" data-f="name">--</p>
             <p class="vd-meta">DOB: <span data-f="dob">--</span><br><span data-f="demo">--</span><br>PHN: <span data-f="phn">--</span></p>
 
+            <!-- call widget: idle -> ringing -> connected -->
+            <div class="vd-call" id="vd-call">
+              <div class="vd-call-idle">
+                <button class="vd-callbtn" onclick="vdCall('phone')">
+                  <span class="ic" data-pcic="call"></span> Call patient
+                </button>
+                <div class="vd-callalt">
+                  <button onclick="vdCall('headset')"><span class="ic" data-pcic="headset"></span> Headset</button>
+                  <button onclick="toast('Calling back on file number (demo)')"><span class="ic" data-pcic="transfer"></span> Callback</button>
+                </div>
+                <p class="vd-callnum" data-f="callnum">&#8226; (604) 555&#8209;0142</p>
+              </div>
+
+              <div class="vd-call-live">
+                <div class="vd-callstat"><span class="vd-ring"></span><span id="vd-callstate">Ringing&hellip;</span></div>
+                <p class="vd-calltime" id="vd-calltime">00:00</p>
+                <div class="vd-callctrl">
+                  <button id="vd-mute" onclick="vdToggleMute()" title="Mute">&#127908;</button>
+                  <button onclick="toast('Keypad (demo)')" title="Keypad">&#9783;</button>
+                  <button onclick="toast('Call put on hold')" title="Hold">&#10074;&#10074;</button>
+                </div>
+                <button class="vd-hangbtn" onclick="vdEndCall()">End call</button>
+              </div>
+            </div>
+
             <div class="vd-hr"></div>
             <p class="vd-h5">Allergies &amp; Alerts</p>
             <div class="vd-row"><span><span class="l">No known drug allergies</span><div class="s">Confirmed</div></span><span class="vd-pill ok">Clear</span></div>
@@ -1737,8 +1795,6 @@
           <div class="vd-mid">
             <div class="vd-bar">
               <h3>Patient chart</h3>
-              <button class="btn xs" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call patient</button>
-              <button class="btn xs" onclick="pcStartCall()"><span class="ic" data-pcic="headset"></span> Headset call</button>
               <button class="btn xs" onclick="toast('Transferred to Dolly (demo)')"><span class="ic" data-pcic="transfer"></span> Transfer to Dolly</button>
               <button class="btn xs" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pcic="task"></span> Send task</button>
               <button class="btn xs" onclick="toast('Templates (demo)')"><span class="ic" data-pcic="meds"></span> Templates</button>
@@ -2965,6 +3021,34 @@ function renderCareTimeline(){
   }).join('');
   document.querySelectorAll('.care-tl-mount').forEach(function(m){ m.innerHTML = '<div class="ctl">'+html+'</div>'; });
 }
+var vdInt=null, vdSecs=0, vdMuted=false;
+function vdCall(mode){
+  var w=document.getElementById('vd-call'); if(!w) return;
+  w.classList.add('live'); vdSecs=0; vdMuted=false;
+  var mb=document.getElementById('vd-mute'); if(mb) mb.classList.remove('on');
+  var st=document.getElementById('vd-callstate');
+  if(st) st.textContent = 'Ringing\u2026';
+  document.getElementById('vd-calltime').textContent='00:00';
+  clearInterval(vdInt);
+  setTimeout(function(){
+    if(!w.classList.contains('live')) return;
+    if(st) st.textContent = (mode==='headset' ? 'Connected \u00b7 headset' : 'Connected');
+    vdInt=setInterval(function(){ vdSecs++;
+      var el=document.getElementById('vd-calltime'); if(el)
+        el.textContent = String(Math.floor(vdSecs/60)).padStart(2,'0')+':'+String(vdSecs%60).padStart(2,'0');
+    },1000);
+  }, 1600);
+}
+function vdEndCall(){
+  clearInterval(vdInt);
+  var w=document.getElementById('vd-call'); if(w) w.classList.remove('live');
+  toast('Call ended \u00b7 ' + String(Math.floor(vdSecs/60)).padStart(2,'0')+':'+String(vdSecs%60).padStart(2,'0'));
+}
+function vdToggleMute(){
+  vdMuted=!vdMuted;
+  var b=document.getElementById('vd-mute'); if(b) b.classList.toggle('on', vdMuted);
+  toast(vdMuted?'Microphone muted':'Microphone unmuted');
+}
 function vdTab(which){
   document.querySelectorAll('.vd-pane').forEach(function(p){ p.classList.remove('active'); });
   var t=document.getElementById('vdt-'+which); if(t) t.classList.add('active');
@@ -3057,6 +3141,7 @@ function openChart(name){
     el.textContent = r.redflag ? 'Intake flag: review before calling' : 'No active alerts';
   });
   vdTab('overview');
+  clearInterval(vdInt); var vdw=document.getElementById('vd-call'); if(vdw) vdw.classList.remove('live');
   CARE_EVENTS = buildCareEvents(r); renderCareTimeline();
   pcShowSec('chart'); vcPane('summary'); setChartVer('c'); pcEndCall();
   showScreen('patientchart');
