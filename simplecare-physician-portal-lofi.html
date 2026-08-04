@@ -939,11 +939,15 @@
   .wt-count.crit{background:#E5322D;color:#fff;}
   .work-pane{display:none;} .work-pane.active{display:block;}
   /* new-patient action sits at the right end of the tab row */
-  .work-tabs .wt-new{margin-left:auto;margin-right:0;align-self:center;border:1px solid var(--line-strong);
+  .work-tabs .wt-new{margin-right:0;align-self:center;border:1px solid var(--line-strong);
     background:var(--panel);color:var(--ink);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;
     border-bottom:1px solid var(--line-strong);margin-bottom:8px;}
   .work-tabs .wt-new:hover{background:var(--wash);color:var(--ink);}
   .work-tabs .wt-new .ic{width:15px;height:15px;}
+  .work-tabs .wt-new:first-of-type{margin-left:auto;}
+  .work-tabs .wt-new + .wt-new{margin-left:8px;}
+  .work-tabs .tb-taskmoa{background:var(--ink-dark);border-color:var(--ink-dark);color:#fff;box-shadow:none;padding:8px 16px;}
+  .work-tabs .tb-taskmoa:hover{background:#000;color:#fff;}
 
   /* ===== compact day-at-a-glance ===== */
   .glance{gap:8px;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));margin-bottom:8px;}
@@ -1117,9 +1121,7 @@
 
   <div class="main">
     <div class="topbar">
-      <div class="tb-left">
-        <button class="tb-taskmoa" onclick="openTaskMoa()"><span>&#9998;</span> Task MOA</button>
-      </div>
+      <div class="tb-left"></div>
       <div class="topbar-right">
       <button class="tb-switch" onclick="switchToPatientView()"><span>&#8646;</span> Patient view</button>
       <span class="tb-name"><b>Dr. Daniel Pannozzo</b> &middot; Physician</span>
@@ -1183,6 +1185,9 @@
           </button>
           <button class="wt-new" onclick="showScreen('registerpatient')" title="Register a new patient">
             <span class="ic" data-pcic="newpatient"></span> New patient
+          </button>
+          <button class="wt-new tb-taskmoa" onclick="openTaskMoa()" title="Send a task to your MOA">
+            <span class="ic" data-pcic="task"></span> Task MOA
           </button>
         </div>
 
