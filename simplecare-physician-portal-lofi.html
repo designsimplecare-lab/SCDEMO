@@ -938,6 +938,12 @@
   .work-tabs button.active .wt-count{background:var(--ink-dark);color:#fff;}
   .wt-count.crit{background:#E5322D;color:#fff;}
   .work-pane{display:none;} .work-pane.active{display:block;}
+  /* new-patient action sits at the right end of the tab row */
+  .work-tabs .wt-new{margin-left:auto;margin-right:0;align-self:center;border:1px solid var(--line-strong);
+    background:var(--panel);color:var(--ink);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;
+    border-bottom:1px solid var(--line-strong);margin-bottom:8px;}
+  .work-tabs .wt-new:hover{background:var(--wash);color:var(--ink);}
+  .work-tabs .wt-new .ic{width:15px;height:15px;}
 </style>
 </head>
 <body>
@@ -1048,6 +1054,9 @@
           </button>
           <button data-work="inbox" onclick="setWorkTab('inbox')">
             <span class="ic" data-pcic="review"></span> Inbox <span class="wt-count crit" id="wt-inbox-count">0</span>
+          </button>
+          <button class="wt-new" onclick="showScreen('registerpatient')" title="Register a new patient">
+            <span class="ic" data-pcic="newpatient"></span> New patient
           </button>
         </div>
 
@@ -2167,7 +2176,7 @@ var PC_ICONS = {
  referrals: ICONS.practice, consult: ICONS.registerpatient, review: ICONS.inbox,
  call: ICONS.patientview, headset: ICONS.patientview, transfer: ICONS.carryforward,
  task: ICONS.taskmoa, edit: ICONS.taskmoa, verified: ICONS.today, pharmacy: ICONS.inbox,
- back: ICONS.collapse
+ back: ICONS.collapse, newpatient: ICONS.registerpatient
 };
 var PC_CURRENT = null;
 function pcInitials(n){ var p=n.split(',')[0].trim().split(' ').filter(Boolean); return (((p[0]||'')[0]||'')+((p[1]||'')[0]||'')).toUpperCase(); }
