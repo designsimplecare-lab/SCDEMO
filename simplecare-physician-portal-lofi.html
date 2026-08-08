@@ -704,15 +704,13 @@
   .day-today.show{display:inline-block;}
   .day-count{font-size:12px;color:var(--ink-faint);margin-left:6px;}
   /* AI intake summary in the queue row */
-  /* AI summary lives on its own row under each patient */
-  .q-table tr.ai-row td{border-bottom:1px solid #eef0f4;padding-top:0;padding-bottom:13px;}
-  .q-table tr:has(+ .ai-row) td{border-bottom:none;padding-bottom:6px;}
-  .ai-line{display:flex;align-items:flex-start;gap:10px;background:var(--wash);border-radius:10px;padding:9px 12px;}
-  .ai-line p{margin:0;font-size:12.5px;line-height:1.5;color:var(--ink-soft);}
-  .q-table tbody tr.ai-row:hover td{background:transparent;}
+  /* AI summary column */
+  .q-aicell{max-width:300px;}
+  .q-aitext{display:block;font-size:12.5px;line-height:1.45;color:var(--ink-soft);margin-top:4px;}
+  .q-aiempty{color:var(--ink-faint);}
   .q-aitag{display:inline-block;font-style:normal;font-size:9px;font-weight:800;letter-spacing:.05em;
-    background:var(--accent-wash);color:var(--accent-ink);border-radius:5px;padding:3px 7px;
-    flex-shrink:0;text-transform:uppercase;white-space:nowrap;}
+    background:var(--accent-wash);color:var(--accent-ink);border-radius:5px;padding:2px 6px;
+    text-transform:uppercase;white-space:nowrap;}
 
   /* critical results band */
   #alerts-box{border-color:#E8B7AF;}
@@ -1477,7 +1475,7 @@
           </div>
 
           <table class="q-table" id="queue-table">
-            <thead><tr><th>#</th><th>Patient</th><th>Call window</th><th>Status</th><th>Action</th></tr></thead>
+            <thead><tr><th>#</th><th>Patient</th><th>AI summary</th><th>Call window</th><th>Status</th><th>Action</th></tr></thead>
             <tbody id="queue-body"></tbody>
           </table>
         </div>
@@ -2406,19 +2404,16 @@ function renderQueue(){
     return '<tr class="'+(r.redflag?'redflag':'')+'">'+
       '<td>'+dueChip+'</td>'+
       '<td><div class="q-patient" onclick="openChart(\''+r.name+'\')" title="Open chart">'+avatar+'<span class="q-pmeta"><span class="q-pname">'+r.name+flagTag+'</span><span class="q-psub">'+r.concern+'</span></span></div></td>'+
+      '<td class="q-aicell">'+(AI_SUMMARY[r.name] ? '<span class="q-aitag">AI</span><span class="q-aitext">'+AI_SUMMARY[r.name]+'</span>' : '<span class="q-aiempty">&mdash;</span>')+'</td>'+
       '<td>'+winCell+'</td>'+
       '<td>'+statusPill+'</td>'+
       '<td class="q-actions">'+actions+'</td>'+
-    '</tr>'+
-    (AI_SUMMARY[r.name]
-      ? '<tr class="ai-row'+(r.redflag?' redflag':'')+'"><td></td><td colspan="4">'+
-        '<div class="ai-line"><span class="q-aitag">AI summary</span><p>'+AI_SUMMARY[r.name]+'</p></div></td></tr>'
-      : '');
+    '</tr>';
   }).join('');
   if(!rows.length){
     var msg = queueSearch ? ('No patients match \u201c'+queueSearch+'\u201d.')
                           : (dayOffset===0 ? 'No patients in the queue right now.' : 'Nothing booked for this day.');
-    body.innerHTML = '<tr><td colspan="5"><p class="q-noresult">'+msg+'</p></td></tr>';
+    body.innerHTML = '<tr><td colspan="6"><p class="q-noresult">'+msg+'</p></td></tr>';
   }
   renderGlance();
   updateWorkCounts();
