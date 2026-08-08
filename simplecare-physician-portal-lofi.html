@@ -1525,7 +1525,7 @@
         <button data-ver="a" onclick="setChartVer('a')">Version A &middot; Context rail</button>
         <button data-ver="b" onclick="setChartVer('b')">Version B &middot; Workflow</button>
         <button class="active" data-ver="c" onclick="setChartVer('c')">Version C &middot; Focused</button>
-        <button data-ver="d" onclick="setChartVer('d')">Version D &middot; Dark rail + Copilot</button>
+        <button data-ver="d" onclick="setChartVer('d')">Version D &middot; Dark rail + Assistant</button>
       </div>
 
       <!-- ============ VERSION A ============ -->
@@ -1938,7 +1938,7 @@
 
           <!-- Copilot panel -->
           <aside class="vd-cop">
-            <div class="vd-cophd"><span class="sp">&#10022;</span><b>Copilot</b><button class="x" onclick="toast('Copilot hidden (demo)')">&times;</button></div>
+            <div class="vd-cophd"><span class="sp">&#10022;</span><b>SimpleCare Assistant</b><button class="x" onclick="toast('Assistant hidden (demo)')">&times;</button></div>
             <div class="vd-copbody" id="vd-copbody">
               <div class="vd-msg bot" data-f="note">--</div>
               <div class="vd-msg bot">No known drug allergies on file.</div>
@@ -2083,7 +2083,7 @@
 
     <!-- ===================== COPILOT (advanced/standalone) ===================== -->
     <div class="screen" id="screen-copilot">
-      <h1>Copilot — advanced console</h1>
+      <h1>SimpleCare Assistant — advanced console</h1>
       <p class="sub">Power-user command interface.</p>
       <div class="ia-note">IA change: Copilot's everyday outputs (Patient Brief, Summarize Day) now surface as contextual panels from the Today queue — click "Brief" on any patient row. This screen stays only for physicians who want the raw command interface; it's no longer where most people encounter the feature.</div>
       <div class="box">
@@ -2281,13 +2281,13 @@
 <button class="ai-launcher" id="ai-launcher" onclick="openAI()">
   <span class="pulse"></span>
   <span class="spark">&#10022;</span>
-  <span>Copilot</span>
+  <span>SimpleCare Assistant</span>
 </button>
 
 <div class="ai-panel" id="ai-panel">
   <div class="ai-head">
     <span class="spark">&#10022;</span>
-    <span><b>Copilot</b><span class="subh">Queue &middot; briefs &middot; claims &middot; schedule</span></span>
+    <span><b>SimpleCare Assistant</b><span class="subh">Queue &middot; briefs &middot; claims &middot; schedule</span></span>
     <button class="close" onclick="closeAI()">&times;</button>
   </div>
   <div class="ai-body" id="ai-body">
@@ -2300,7 +2300,7 @@
     </div>
   </div>
   <div class="ai-foot">
-    <input id="ai-input" placeholder="Ask Copilot&hellip;" onkeydown="if(event.key==='Enter')aiSend()">
+    <input id="ai-input" placeholder="Ask SimpleCare Assistant&hellip;" onkeydown="if(event.key==='Enter')aiSend()">
     <button class="mic" title="Voice (demo)">&#127908;</button>
     <button class="send" onclick="aiSend()">&#10148;</button>
   </div>
@@ -3011,7 +3011,7 @@ function aiReply(text){
     else if(/(draft|note|write|document|soap)/.test(t)){
       var who2 = nameMatch || qNext();
       var nm = who2 ? firstLast(who2.name) : 'the visit';
-      aiAppend('I&#39;ve drafted a starter note for <b>'+nm+'</b> from the intake and last visit. Review and edit before signing — Copilot output is never auto-filed.','bot');
+      aiAppend('I&#39;ve drafted a starter note for <b>'+nm+'</b> from the intake and last visit. Review and edit before signing — Assistant output is never auto-filed.','bot');
       aiActionBtn('&#128221;','Review draft note',nm,function(){aiDo(function(){toast('Draft note ready for '+nm+' (demo)');});});
     }
     else if(/(day|behind|running|how.?s|status|overview|summary|going)/.test(t)){
