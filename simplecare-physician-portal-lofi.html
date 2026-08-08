@@ -704,10 +704,15 @@
   .day-today.show{display:inline-block;}
   .day-count{font-size:12px;color:var(--ink-faint);margin-left:6px;}
   /* AI intake summary in the queue row */
-  .q-ai{display:block;font-size:11.5px;color:var(--ink-soft);margin-top:4px;line-height:1.45;max-width:390px;}
-  .q-aitag{display:inline-block;font-style:normal;font-size:9px;font-weight:800;letter-spacing:.04em;
-    background:var(--accent-wash);color:var(--accent-ink);border-radius:5px;padding:1px 5px;margin-right:6px;
-    vertical-align:1px;}
+  /* AI summary lives on its own row under each patient */
+  .q-table tr.ai-row td{border-bottom:1px solid #eef0f4;padding-top:0;padding-bottom:13px;}
+  .q-table tr:has(+ .ai-row) td{border-bottom:none;padding-bottom:6px;}
+  .ai-line{display:flex;align-items:flex-start;gap:10px;background:var(--wash);border-radius:10px;padding:9px 12px;}
+  .ai-line p{margin:0;font-size:12.5px;line-height:1.5;color:var(--ink-soft);}
+  .q-table tbody tr.ai-row:hover td{background:transparent;}
+  .q-aitag{display:inline-block;font-style:normal;font-size:9px;font-weight:800;letter-spacing:.05em;
+    background:var(--accent-wash);color:var(--accent-ink);border-radius:5px;padding:3px 7px;
+    flex-shrink:0;text-transform:uppercase;white-space:nowrap;}
 
   /* critical results band */
   #alerts-box{border-color:#E8B7AF;}
@@ -2380,10 +2385,8 @@ function renderQueue(){
   var qSeq = 0;
   body.innerHTML = rows.map(function(r){
     var closed = (r.status==='done' || r.status==='noshow');
-    var actions = closed
-      ? '<button class="btn xs" onclick="toast(\'Would open the chart\')">Chart</button>'
-      : '<button class="btn xs dark" onclick="advance(\''+r.name+'\',\'progress\')">Call</button>';
-    actions += ' <button class="btn xs" onclick="openChart(\''+r.name+'\')">Chart</button>';
+    var actions = closed ? '' : '<button class="btn xs dark" onclick="advance(\''+r.name+'\',\'progress\')">Call</button> ';
+    actions += '<button class="btn xs" onclick="openChart(\''+r.name+'\')">Chart</button>';
 
     var ring = RING_COLOR[r.status] || 'var(--line-strong)';
     var avatar = '<span class="q-avatar" style="box-shadow:0 0 0 2px var(--panel), 0 0 0 4px '+ring+';">'+qInitials(r.name)+'</span>';
@@ -2402,13 +2405,15 @@ function renderQueue(){
 
     return '<tr class="'+(r.redflag?'redflag':'')+'">'+
       '<td>'+dueChip+'</td>'+
-      '<td><div class="q-patient" onclick="openChart(\''+r.name+'\')" title="Open chart">'+avatar+'<span class="q-pmeta"><span class="q-pname">'+r.name+flagTag+'</span><span class="q-psub">'+r.concern+'</span>'+
-        (AI_SUMMARY[r.name] ? '<span class="q-ai"><i class="q-aitag">AI</i>'+AI_SUMMARY[r.name]+'</span>' : '')+
-      '</span></div></td>'+
+      '<td><div class="q-patient" onclick="openChart(\''+r.name+'\')" title="Open chart">'+avatar+'<span class="q-pmeta"><span class="q-pname">'+r.name+flagTag+'</span><span class="q-psub">'+r.concern+'</span></span></div></td>'+
       '<td>'+winCell+'</td>'+
       '<td>'+statusPill+'</td>'+
       '<td class="q-actions">'+actions+'</td>'+
-    '</tr>';
+    '</tr>'+
+    (AI_SUMMARY[r.name]
+      ? '<tr class="ai-row'+(r.redflag?' redflag':'')+'"><td></td><td colspan="4">'+
+        '<div class="ai-line"><span class="q-aitag">AI summary</span><p>'+AI_SUMMARY[r.name]+'</p></div></td></tr>'
+      : '');
   }).join('');
   if(!rows.length){
     var msg = queueSearch ? ('No patients match \u201c'+queueSearch+'\u201d.')
