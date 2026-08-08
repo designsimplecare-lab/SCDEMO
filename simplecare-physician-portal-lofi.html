@@ -722,6 +722,10 @@
   .crit-note{font-size:12px;color:var(--crit);margin-top:3px;}
   .crit-actions{display:flex;gap:8px;flex-shrink:0;}
   .q-tools{display:inline-flex;align-items:center;gap:8px;}
+  .q-pos{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;
+    border-radius:50%;background:var(--accent-wash);color:var(--accent-ink);font-size:13.5px;font-weight:800;
+    font-variant-numeric:tabular-nums;}
+  .q-pos.done{background:var(--wash);color:var(--ink-faint);font-weight:600;}
   .q-search{display:inline-flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);
     border-radius:999px;padding:0 8px 0 14px;height:38px;min-width:250px;transition:border-color .12s;}
   .q-search:focus-within{border-color:var(--accent);}
@@ -1458,7 +1462,7 @@
           </div>
 
           <table class="q-table" id="queue-table">
-            <thead><tr><th>Wait</th><th>Patient</th><th>Acuity</th><th>Window</th><th>Status</th><th>Action</th></tr></thead>
+            <thead><tr><th>#</th><th>Patient</th><th>Acuity</th><th>Window</th><th>Status</th><th>Action</th></tr></thead>
             <tbody id="queue-body"></tbody>
           </table>
         </div>
@@ -2363,6 +2367,7 @@ function renderQueue(){
     return (r.name+' '+r.concern).toLowerCase().indexOf(q) !== -1;
   });
   var WIN_LABEL = {'8-10':'8:00–10:00','10-2':'10:00–2:00','2-5':'2:00–5:00','5-7':'5:00–7:00'};
+  var qSeq = 0;
   body.innerHTML = rows.map(function(r){
     var closed = (r.status==='done' || r.status==='noshow');
     var actions = closed
@@ -2373,15 +2378,11 @@ function renderQueue(){
     var ring = RING_COLOR[r.status] || 'var(--line-strong)';
     var avatar = '<span class="q-avatar" style="box-shadow:0 0 0 2px var(--panel), 0 0 0 4px '+ring+';">'+qInitials(r.name)+'</span>';
 
-    // wait / countdown chip
-    var mins = parseInt((r.wait||'').replace(/[^0-9]/g,''),10);
-    var hasWait = /min/.test(r.wait||'');
-    var dueCls='due-neutral', dueNum = hasWait ? (isNaN(mins)?0:mins) : '—', dueUnit = hasWait ? 'min' : '';
-    if(r.status==='missed' || r.status==='dropped'){ dueCls='due-crit'; dueNum='—'; dueUnit=''; }
-    else if(r.status==='done' || r.status==='noshow'){ dueCls='due-muted'; dueNum='—'; dueUnit=''; }
-    var dueChip = (dueNum==='—')
-      ? '<span class="due-none">—</span>'
-      : '<span class="due-chip '+dueCls+'"><b>'+dueNum+'</b>'+(dueUnit?'<small>'+dueUnit+'</small>':'')+'</span>';
+    // queue position — first come, first served. No wait timers (pace-neutral).
+    var inQueue = (r.status==='waiting' || r.status==='next' || r.status==='delayed' || r.status==='progress');
+    var dueChip = inQueue
+      ? '<span class="q-pos">'+(++qSeq)+'</span>'
+      : '<span class="q-pos done">&mdash;</span>';
 
     var acuity = r.redflag
       ? '<span class="rk-pill rk-high">Urgent</span>'
