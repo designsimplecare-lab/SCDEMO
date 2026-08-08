@@ -703,6 +703,24 @@
   .day-today:hover{background:var(--wash);color:var(--ink);}
   .day-today.show{display:inline-block;}
   .day-count{font-size:12px;color:var(--ink-faint);margin-left:6px;}
+  /* AI intake summary in the queue row */
+  .q-ai{display:block;font-size:11.5px;color:var(--ink-soft);margin-top:4px;line-height:1.45;max-width:390px;}
+  .q-aitag{display:inline-block;font-style:normal;font-size:9px;font-weight:800;letter-spacing:.04em;
+    background:var(--accent-wash);color:var(--accent-ink);border-radius:5px;padding:1px 5px;margin-right:6px;
+    vertical-align:1px;}
+
+  /* critical results band */
+  #crit-box{border-color:#E8B7AF;}
+  .crit-row{display:flex;gap:12px;align-items:flex-start;padding:13px 15px;margin-bottom:8px;border-radius:12px;
+    background:var(--crit-wash);border:1px solid #E8B7AF;}
+  .crit-row:last-child{margin-bottom:0;}
+  .crit-tier{font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:800;color:var(--crit);
+    flex-shrink:0;width:54px;padding-top:2px;}
+  .crit-body{flex:1;font-size:13.5px;color:var(--ink);}
+  .crit-val{font-weight:800;color:var(--crit);font-variant-numeric:tabular-nums;}
+  .crit-ref{font-size:11.5px;color:var(--ink-faint);}
+  .crit-note{font-size:12px;color:var(--crit);margin-top:3px;}
+  .crit-actions{display:flex;gap:8px;flex-shrink:0;}
   .q-tools{display:inline-flex;align-items:center;gap:8px;}
   .q-search{display:inline-flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);
     border-radius:999px;padding:0 8px 0 14px;height:38px;min-width:250px;transition:border-color .12s;}
@@ -1241,6 +1259,31 @@
   .vd-subtabs button{border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:600;
     color:var(--ink-soft);padding:6px 13px;border-radius:999px;cursor:pointer;}
   .vd-subtabs button.active{background:var(--panel);color:var(--ink);box-shadow:0 2px 6px rgba(23,24,28,.12);}
+  .lab-note{font-size:12px;color:var(--ink-soft);margin:0 0 14px;}
+  .lab-note em{font-style:normal;font-weight:700;color:var(--ink);}
+  .lab-panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;}
+  .lab-panel.has-crit{border-color:#E8B7AF;box-shadow:0 0 0 3px rgba(194,74,63,.07);}
+  .lab-hd{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+  .lab-hd b{font-size:14.5px;font-weight:800;}
+  .lab-lab{margin-left:auto;font-size:11.5px;color:var(--ink-faint);}
+  .lab-dates{display:flex;gap:18px;flex-wrap:wrap;padding:8px 0 10px;border-bottom:1px solid var(--wash);margin-bottom:8px;}
+  .lab-dates span{font-size:11.5px;color:var(--ink);}
+  .lab-dates i{display:block;font-style:normal;font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--ink-faint);font-weight:700;margin-bottom:1px;}
+  .an-head{display:grid;grid-template-columns:1.4fr 1fr .8fr;gap:10px;font-size:9.5px;text-transform:uppercase;
+    letter-spacing:.05em;color:var(--ink-faint);font-weight:700;padding-bottom:5px;}
+  .an-row{display:grid;grid-template-columns:1.4fr 1fr .8fr;gap:10px;align-items:center;padding:7px 0;
+    border-top:1px solid var(--wash);font-size:13.5px;}
+  .an-n{font-weight:600;}
+  .an-v{font-weight:700;font-variant-numeric:tabular-nums;}
+  .an-v i{font-style:normal;font-weight:500;color:var(--ink-faint);font-size:11.5px;margin-left:3px;}
+  .an-ref{font-size:12px;color:var(--ink-faint);font-variant-numeric:tabular-nums;}
+  .an-row.abn .an-v{color:var(--warn);}
+  .an-row.crit{background:var(--crit-wash);border-radius:8px;padding-left:8px;padding-right:8px;}
+  .an-row.crit .an-v{color:var(--crit);}
+  .an-flag{display:inline-block;font-size:9.5px;font-weight:800;padding:1px 7px;border-radius:20px;margin-left:7px;
+    background:var(--warn-wash);color:var(--warn);vertical-align:1px;}
+  .an-flag.crit{background:var(--crit);color:#fff;}
   .vd-list{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:6px 16px;}
   .vd-item{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid var(--wash);}
   .vd-item:last-child{border-bottom:none;}
@@ -1350,9 +1393,10 @@
 
       <!-- Day-at-a-glance: live stat tiles derived from the queue -->
       <div class="glance" id="glance"></div>
-      <div class="day-bar">
-        <div class="lab"><span><b id="day-bar-title">Day progress</b></span><span id="day-bar-count">—</span></div>
-        <div class="track"><div class="fill" id="day-bar-fill"></div></div>
+
+      <div class="box" id="crit-box">
+        <p class="box-title">Critical results — review before your first call</p>
+        <div id="crit-list"></div>
       </div>
 
       <div class="box">
@@ -1846,11 +1890,8 @@
               <div class="vd-pane" id="vdt-labs">
                 <div class="vd-secttl"><h4>Labs</h4><button class="btn dark xs" onclick="toast('Lab requisition started (demo)')">+ Order labs</button></div>
                 <div class="vd-subtabs"><button class="active">Results</button><button>Requisitions</button></div>
-                <div class="vd-list">
-                  <div class="vd-item"><span><b>Ferritin</b><i>Collected Jun 25, 2026 &middot; LifeLabs</i></span><span class="pc-pill warn">Low &middot; 18 &micro;g/L</span></div>
-                  <div class="vd-item"><span><b>CBC + differential</b><i>Collected Jun 25, 2026 &middot; LifeLabs</i></span><span class="pc-pill good">Normal</span></div>
-                  <div class="vd-item"><span><b>HbA1c</b><i>Ordered today &middot; awaiting collection</i></span><span class="pc-pill mut">Pending</span></div>
-                </div>
+                <p class="lab-note">Newest first. Critical values are flagged here <em>and</em> raised on the dashboard, so nothing is buried.</p>
+                <div id="lab-panels"></div>
               </div>
 
               <div class="vd-pane" id="vdt-imaging">
@@ -2275,9 +2316,24 @@ var QUEUE_DATA = [
   {pos:8, name:'Korynn', concern:'Standard visit', win:'5-7', status:'noshow', wait:'—', redflag:false}
 ];
 var STATUS_LABEL = {
-  waiting:'Waiting', next:'Next up', progress:'In visit', delayed:'Running behind',
+  waiting:'In queue', next:'In queue', progress:'In visit', delayed:'In queue',
   missed:'Missed call', dropped:'Call dropped', done:'Completed', noshow:'No-show', scheduled:'Scheduled'
 };
+var AI_SUMMARY = {
+  'Gloria Mcdonald, 74F':'Chest pressure on exertion x3 days, eased by rest. Known HTN; no prior cardiac workup.',
+  'Andrey Abushakhmanov, 24M':'Routine follow-up after sinus infection; reports symptoms fully resolved.',
+  'Carol-Anne Feldman, 44F':'Recurrent vaginal itching and discharge x5 days; third episode this year.',
+  'Behdis Maleki, 35F':'Follow-up on iron deficiency; still fatigued despite supplementation.',
+  'K Arli Eyre, 41':'New patient, standard visit. No intake detail submitted before the call.',
+  'Greg':'Requests renewal of blood pressure medication; last dispensed 90 days ago.',
+  'Manjit':'Reviewing lab results ordered at last visit; asymptomatic.',
+  'Korynn':'Standard visit, reason not specified at booking.'
+};
+/* critical results: chronological lists must never bury these */
+var CRITICAL_RESULTS = [
+  {patient:'Behdis Maleki, 35F', test:'Potassium', value:'6.3 mmol/L', ref:'3.5\u20135.1', note:'Critical high \u2014 repeat and assess urgently', received:'Today, 7:22 AM', ack:false},
+  {patient:'Manjit', test:'Haemoglobin', value:'71 g/L', ref:'130\u2013175', note:'Critical low \u2014 symptomatic anaemia', received:'Today, 6:05 AM', ack:false}
+];
 var currentWindow = 'all';
 var queueSearch = '';
 var dayOffset = 0;
@@ -2323,11 +2379,8 @@ function renderQueue(){
     var mins = parseInt((r.wait||'').replace(/[^0-9]/g,''),10);
     var hasWait = /min/.test(r.wait||'');
     var dueCls='due-neutral', dueNum = hasWait ? (isNaN(mins)?0:mins) : '—', dueUnit = hasWait ? 'min' : '';
-    if(r.status==='next'){ dueCls='due-good'; }
-    else if(r.status==='delayed'){ dueCls='due-crit'; }
-    else if(r.status==='missed' || r.status==='dropped'){ dueCls='due-crit'; dueNum='—'; dueUnit=''; }
+    if(r.status==='missed' || r.status==='dropped'){ dueCls='due-crit'; dueNum='—'; dueUnit=''; }
     else if(r.status==='done' || r.status==='noshow'){ dueCls='due-muted'; dueNum='—'; dueUnit=''; }
-    else if(hasWait && mins>=15){ dueCls='due-warn'; }
     var dueChip = (dueNum==='—')
       ? '<span class="due-none">—</span>'
       : '<span class="due-chip '+dueCls+'"><b>'+dueNum+'</b>'+(dueUnit?'<small>'+dueUnit+'</small>':'')+'</span>';
@@ -2341,7 +2394,9 @@ function renderQueue(){
 
     return '<tr class="'+(r.redflag?'redflag':'')+'">'+
       '<td>'+dueChip+'</td>'+
-      '<td><div class="q-patient" onclick="openChart(\''+r.name+'\')" title="Open chart">'+avatar+'<span class="q-pmeta"><span class="q-pname">'+r.name+'</span><span class="q-psub">'+r.concern+'</span></span></div></td>'+
+      '<td><div class="q-patient" onclick="openChart(\''+r.name+'\')" title="Open chart">'+avatar+'<span class="q-pmeta"><span class="q-pname">'+r.name+'</span><span class="q-psub">'+r.concern+'</span>'+
+        (AI_SUMMARY[r.name] ? '<span class="q-ai"><i class="q-aitag">AI</i>'+AI_SUMMARY[r.name]+'</span>' : '')+
+      '</span></div></td>'+
       '<td>'+acuity+'</td>'+
       '<td>'+winCell+'</td>'+
       '<td>'+statusPill+'</td>'+
@@ -2355,6 +2410,30 @@ function renderQueue(){
   }
   renderGlance();
   updateWorkCounts();
+}
+function renderCriticals(){
+  var box=document.getElementById('crit-box'), list=document.getElementById('crit-list');
+  if(!box||!list) return;
+  var open = CRITICAL_RESULTS.filter(function(c){ return !c.ack; });
+  box.style.display = open.length ? 'block' : 'none';
+  list.innerHTML = open.map(function(c,i){
+    var idx = CRITICAL_RESULTS.indexOf(c);
+    return '<div class="crit-row">'+
+      '<span class="crit-tier">Critical</span>'+
+      '<div class="crit-body"><b>'+c.patient.split(',')[0]+'</b> &middot; '+c.test+
+        ' <span class="crit-val">'+c.value+'</span> <span class="crit-ref">(ref '+c.ref+')</span>'+
+        '<div class="crit-note">'+c.note+' &middot; received '+c.received+'</div></div>'+
+      '<div class="crit-actions">'+
+        '<button class="btn crit dark xs" onclick="ackCritical('+idx+')">Acknowledge</button>'+
+        '<button class="btn xs" onclick="openChart(\''+c.patient+'\')">Open chart</button>'+
+      '</div></div>';
+  }).join('');
+}
+function ackCritical(i){
+  if(!CRITICAL_RESULTS[i]) return;
+  CRITICAL_RESULTS[i].ack = true;
+  toast('Acknowledged \u00b7 ' + CRITICAL_RESULTS[i].test + ' for ' + CRITICAL_RESULTS[i].patient.split(',')[0]);
+  renderCriticals(); renderGlance();
 }
 function renderDayNav(){
   var lbl=document.getElementById('day-label'); if(!lbl) return;
@@ -2393,27 +2472,17 @@ function renderGlance(){
   var waitingNow = QUEUE_DATA.filter(function(r){return r.status==='waiting'||r.status==='next';}).length;
   var behind = QUEUE_DATA.filter(function(r){return r.status==='delayed';}).length;
   var attention = QUEUE_DATA.filter(function(r){return r.status==='missed'||r.status==='dropped';}).length;
-  var nextRow = QUEUE_DATA.find(function(r){return r.status==='next';}) || QUEUE_DATA.find(function(r){return r.status==='waiting';});
+  var critCount = (typeof CRITICAL_RESULTS !== 'undefined') ? CRITICAL_RESULTS.filter(function(c){return !c.ack;}).length : 0;
   var tiles = [
-    {n:seen, l:'Seen today', s:'of '+total+' booked', cls:'good'},
-    {n:waitingNow, l:'Waiting now', s:'in the live queue', cls:'', tap:"filterWindow('all',document.querySelector('.win-chip'))"},
-    {n:behind, l:'Running behind', s:'past their window', cls:behind?'warn':''},
-    {n:attention, l:'Needs attention', s:'missed / dropped calls', cls:attention?'crit':''}
+    {n:attention, l:'Needs attention', s:'missed / dropped calls', cls:attention?'crit':''},
+    {n:waitingNow, l:'In queue', s:'patients to see', cls:''},
+    {n:critCount, l:'Critical results', s:'require review', cls:critCount?'crit':''}
   ];
   var html = tiles.map(function(t){
     return '<div class="stat '+(t.cls||'')+(t.tap?' tap':'')+'"'+(t.tap?' onclick="'+t.tap+'"':'')+'>'+
       '<p class="n">'+t.n+'</p><p class="l">'+t.l+'</p><p class="s">'+t.s+'</p></div>';
   }).join('');
-  if(nextRow){
-    var flag = nextRow.redflag ? '<span class="corner">&#9873;</span>' : '';
-    html += '<div class="stat feature tap" onclick="openBrief(\''+nextRow.name+'\')">'+flag+
-      '<p class="n" style="font-size:17px;margin-top:3px;">'+firstLast(nextRow.name)+'</p>'+
-      '<p class="l">Next up</p><p class="s">'+nextRow.concern+'</p></div>';
-  }
   g.innerHTML = html;
-  var pct = total ? Math.round(seen/total*100) : 0;
-  document.getElementById('day-bar-fill').style.width = pct+'%';
-  document.getElementById('day-bar-count').textContent = seen+' of '+total+' patients seen · '+pct+'%';
 }
 function filterWindow(win, el){
   currentWindow = win;
@@ -3049,6 +3118,54 @@ function vdToggleMute(){
   var b=document.getElementById('vd-mute'); if(b) b.classList.toggle('on', vdMuted);
   toast(vdMuted?'Microphone muted':'Microphone unmuted');
 }
+/* Results grouped into standard panels, listed chronologically (newest first).
+   Collection / received / reported dates kept distinct. */
+var LAB_PANELS = [
+  { panel:'Renal function', collected:'Jul 23, 2026 06:10', received:'Jul 23, 2026 07:22', reported:'Jul 23, 2026 07:25',
+    lab:'LifeLabs', analytes:[
+      {n:'Sodium', v:'139', u:'mmol/L', ref:'135\u2013145', f:''},
+      {n:'Potassium', v:'6.3', u:'mmol/L', ref:'3.5\u20135.1', f:'crit'},
+      {n:'Creatinine', v:'104', u:'\u00b5mol/L', ref:'50\u201398', f:'high'},
+      {n:'eGFR', v:'58', u:'mL/min', ref:'>60', f:'low'}
+    ]},
+  { panel:'Complete blood count', collected:'Jun 25, 2026 08:40', received:'Jun 25, 2026 14:02', reported:'Jun 25, 2026 14:10',
+    lab:'LifeLabs', analytes:[
+      {n:'Haemoglobin', v:'134', u:'g/L', ref:'120\u2013160', f:''},
+      {n:'White cell count', v:'6.8', u:'x10\u2079/L', ref:'4.0\u201311.0', f:''},
+      {n:'Platelets', v:'242', u:'x10\u2079/L', ref:'150\u2013400', f:''}
+    ]},
+  { panel:'Iron studies', collected:'Jun 25, 2026 08:40', received:'Jun 25, 2026 14:02', reported:'Jun 25, 2026 15:31',
+    lab:'LifeLabs', analytes:[
+      {n:'Ferritin', v:'18', u:'\u00b5g/L', ref:'30\u2013300', f:'low'},
+      {n:'Transferrin saturation', v:'14', u:'%', ref:'20\u201350', f:'low'}
+    ]},
+  { panel:'Glycemic control', collected:'Mar 12, 2026 09:15', received:'Mar 12, 2026 16:40', reported:'Mar 12, 2026 16:45',
+    lab:'LifeLabs', analytes:[
+      {n:'HbA1c', v:'7.1', u:'%', ref:'<7.0', f:'high'}
+    ]}
+];
+function renderLabPanels(){
+  var m=document.getElementById('lab-panels'); if(!m) return;
+  m.innerHTML = LAB_PANELS.map(function(p){
+    var hasCrit = p.analytes.some(function(a){ return a.f==='crit'; });
+    var rows = p.analytes.map(function(a){
+      var cls = a.f==='crit' ? 'crit' : (a.f ? 'abn' : '');
+      var tag = a.f==='crit' ? '<span class="an-flag crit">Critical</span>'
+              : a.f==='high' ? '<span class="an-flag">High</span>'
+              : a.f==='low' ? '<span class="an-flag">Low</span>' : '';
+      return '<div class="an-row '+cls+'"><span class="an-n">'+a.n+'</span>'+
+             '<span class="an-v">'+a.v+' <i>'+a.u+'</i>'+tag+'</span>'+
+             '<span class="an-ref">'+a.ref+'</span></div>';
+    }).join('');
+    return '<div class="lab-panel'+(hasCrit?' has-crit':'')+'">'+
+      '<div class="lab-hd"><b>'+p.panel+'</b>'+(hasCrit?'<span class="an-flag crit">Critical value</span>':'')+
+        '<span class="lab-lab">'+p.lab+'</span></div>'+
+      '<div class="lab-dates"><span><i>Collected</i>'+p.collected+'</span><span><i>Received</i>'+p.received+'</span><span><i>Reported</i>'+p.reported+'</span></div>'+
+      '<div class="an-head"><span>Analyte</span><span>Result</span><span>Reference</span></div>'+
+      rows+
+    '</div>';
+  }).join('');
+}
 function vdTab(which){
   document.querySelectorAll('.vd-pane').forEach(function(p){ p.classList.remove('active'); });
   var t=document.getElementById('vdt-'+which); if(t) t.classList.add('active');
@@ -3141,6 +3258,7 @@ function openChart(name){
     el.textContent = r.redflag ? 'Intake flag: review before calling' : 'No active alerts';
   });
   vdTab('overview');
+  renderLabPanels();
   clearInterval(vdInt); var vdw=document.getElementById('vd-call'); if(vdw) vdw.classList.remove('live');
   CARE_EVENTS = buildCareEvents(r); renderCareTimeline();
   pcShowSec('chart'); vcPane('summary'); setChartVer('c'); pcEndCall();
@@ -3176,6 +3294,7 @@ function applyIcons(){
   var so = document.querySelector('.q-sort'); if(so) so.innerHTML = ICONS.sort + ' Sort &middot; Acuity, then wait';
 }
 applyIcons();
+renderCriticals();
 renderDayNav();
 updateWorkCounts();
 </script>
