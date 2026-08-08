@@ -710,7 +710,8 @@
     vertical-align:1px;}
 
   /* critical results band */
-  #crit-box{border-color:#E8B7AF;}
+  #alerts-box{border-color:#E8B7AF;}
+  #crit-list{margin-bottom:4px;}
   .crit-row{display:flex;gap:12px;align-items:flex-start;padding:13px 15px;margin-bottom:8px;border-radius:12px;
     background:var(--crit-wash);border:1px solid #E8B7AF;}
   .crit-row:last-child{margin-bottom:0;}
@@ -722,6 +723,20 @@
   .crit-note{font-size:12px;color:var(--crit);margin-top:3px;}
   .crit-actions{display:flex;gap:8px;flex-shrink:0;}
   .q-tools{display:inline-flex;align-items:center;gap:8px;}
+  /* physician-set call window */
+  .win-edit{display:inline-flex;flex-direction:column;align-items:flex-start;gap:1px;background:none;border:1px solid transparent;
+    border-radius:9px;padding:5px 9px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;text-align:left;}
+  .win-edit:hover{border-color:var(--line-strong);background:var(--panel);}
+  .win-edit i{font-style:normal;font-size:10.5px;font-weight:600;color:var(--ink-faint);}
+
+  /* flag sits with the name, not a separate acuity scale */
+  .q-pname .rk-pill{margin-left:8px;vertical-align:1px;}
+
+  /* prominent status + call-to-action */
+  .q-table .status-pill{font-size:12.5px;padding:6px 13px;font-weight:700;}
+  .q-actions .btn{min-width:66px;font-size:12.5px;padding:8px 14px;}
+  .q-actions .btn.dark{box-shadow:0 2px 8px rgba(23,24,28,.22);}
+
   .q-pos{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;
     border-radius:50%;background:var(--accent-wash);color:var(--accent-ink);font-size:13.5px;font-weight:800;
     font-variant-numeric:tabular-nums;}
@@ -1336,7 +1351,6 @@
       <button class="nav-btn" data-screen="inbox" onclick="showScreen('inbox')"><span class="nav-icon">&#9993;</span><span class="nav-label">Inbox<span class="nav-flag" id="inbox-nav-flag" style="display:none;"></span></span></button>
       <button class="nav-btn" data-screen="encounterlog" onclick="showScreen('encounterlog')"><span class="nav-icon">&#9636;</span><span class="nav-label">Encounter Log</span></button>
       <button class="nav-btn" data-screen="carryforward" onclick="showScreen('carryforward')"><span class="nav-icon">&#8635;</span><span class="nav-label">Carry Forward</span></button>
-      <button class="nav-btn nav-btn-secondary" data-screen="copilot" onclick="showScreen('copilot')"><span class="nav-icon">&#10022;</span><span class="nav-label">Copilot</span></button>
     </div>
 
     <div class="nav-group">
@@ -1396,13 +1410,9 @@
       <div class="ia-note">IA change: merges Dashboard, Daysheet's queue, and Calendar's day-view into a single canonical screen. Reordered by how time-sensitive each thing is: alerts and the live queue first (act now), then your own outstanding tasks, then lower-priority previews and logs pushed to the bottom. MOA online status moved off this screen entirely — it's ambient "peace of mind" info, not something that should compete with clinical content for space, so it now lives as a small dot on the chat button instead.</div>
 
 
-      <div class="box" id="crit-box">
-        <p class="box-title">Critical results — review before your first call</p>
+      <div class="box" id="alerts-box">
+        <p class="box-title">Alerts — review before your first call</p>
         <div id="crit-list"></div>
-      </div>
-
-      <div class="box">
-        <p class="box-title">Alerts — stratified by severity</p>
         <div class="alert-row critical">
           <span class="alert-tier">Critical</span>
           <div class="alert-body"><b>Gloria Mcdonald</b> flagged "chest pressure" in pre-visit intake. Review before calling.</div>
@@ -1462,7 +1472,7 @@
           </div>
 
           <table class="q-table" id="queue-table">
-            <thead><tr><th>#</th><th>Patient</th><th>Acuity</th><th>Window</th><th>Status</th><th>Action</th></tr></thead>
+            <thead><tr><th>#</th><th>Patient</th><th>Call window</th><th>Status</th><th>Action</th></tr></thead>
             <tbody id="queue-body"></tbody>
           </table>
         </div>
@@ -2384,19 +2394,17 @@ function renderQueue(){
       ? '<span class="q-pos">'+(++qSeq)+'</span>'
       : '<span class="q-pos done">&mdash;</span>';
 
-    var acuity = r.redflag
-      ? '<span class="rk-pill rk-high">Urgent</span>'
-      : '<span class="rk-routine">Routine</span>';
+    var flagTag = r.redflag ? '<span class="rk-pill rk-high" title="Flagged in pre-visit intake">Flagged</span>' : '';
 
-    var winCell = '<span class="win-cell">'+(WIN_LABEL[r.win]||r.win)+'</span>';
+    var winCell = '<button class="win-edit" onclick="event.stopPropagation();editWindow(\''+r.name+'\')" title="Set call window">'+
+                  (WIN_LABEL[r.win]||r.win)+' <i>'+(r.winLen||30)+' min</i></button>';
     var statusPill = '<span class="status-pill '+r.status+'">'+STATUS_LABEL[r.status]+'</span>';
 
     return '<tr class="'+(r.redflag?'redflag':'')+'">'+
       '<td>'+dueChip+'</td>'+
-      '<td><div class="q-patient" onclick="openChart(\''+r.name+'\')" title="Open chart">'+avatar+'<span class="q-pmeta"><span class="q-pname">'+r.name+'</span><span class="q-psub">'+r.concern+'</span>'+
+      '<td><div class="q-patient" onclick="openChart(\''+r.name+'\')" title="Open chart">'+avatar+'<span class="q-pmeta"><span class="q-pname">'+r.name+flagTag+'</span><span class="q-psub">'+r.concern+'</span>'+
         (AI_SUMMARY[r.name] ? '<span class="q-ai"><i class="q-aitag">AI</i>'+AI_SUMMARY[r.name]+'</span>' : '')+
       '</span></div></td>'+
-      '<td>'+acuity+'</td>'+
       '<td>'+winCell+'</td>'+
       '<td>'+statusPill+'</td>'+
       '<td class="q-actions">'+actions+'</td>'+
@@ -2405,16 +2413,15 @@ function renderQueue(){
   if(!rows.length){
     var msg = queueSearch ? ('No patients match \u201c'+queueSearch+'\u201d.')
                           : (dayOffset===0 ? 'No patients in the queue right now.' : 'Nothing booked for this day.');
-    body.innerHTML = '<tr><td colspan="6"><p class="q-noresult">'+msg+'</p></td></tr>';
+    body.innerHTML = '<tr><td colspan="5"><p class="q-noresult">'+msg+'</p></td></tr>';
   }
   renderGlance();
   updateWorkCounts();
 }
 function renderCriticals(){
-  var box=document.getElementById('crit-box'), list=document.getElementById('crit-list');
-  if(!box||!list) return;
+  var list=document.getElementById('crit-list');
+  if(!list) return;
   var open = CRITICAL_RESULTS.filter(function(c){ return !c.ack; });
-  box.style.display = open.length ? 'block' : 'none';
   list.innerHTML = open.map(function(c,i){
     var idx = CRITICAL_RESULTS.indexOf(c);
     return '<div class="crit-row">'+
@@ -2449,6 +2456,15 @@ function shiftDay(d){
   dayOffset = next; renderDayNav(); renderQueue();
 }
 function goToday(){ dayOffset = 0; renderDayNav(); renderQueue(); }
+var WIN_LENGTHS = [15,20,30,45,60];
+function editWindow(name){
+  var r = QUEUE_DATA.find(function(x){ return x.name===name; }); if(!r) return;
+  var cur = r.winLen || 30;
+  var i = WIN_LENGTHS.indexOf(cur);
+  r.winLen = WIN_LENGTHS[(i+1) % WIN_LENGTHS.length];
+  renderQueue();
+  toast(firstLast(name)+' \u00b7 call window set to '+r.winLen+' min');
+}
 function filterQueueSearch(v){
   queueSearch = v || '';
   var wrap = document.querySelector('.q-search');
