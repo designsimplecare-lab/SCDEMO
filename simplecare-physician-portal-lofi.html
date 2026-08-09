@@ -1338,6 +1338,32 @@
   .ctl-pill.ongoing{background:#2f6bd8;color:#fff;}
   .ctl-pill.urgent{background:var(--crit-wash);color:var(--crit);}
   @media(max-width:700px){ .ctl-row{grid-template-columns:70px 20px 1fr;} .ctl-when{font-size:11px;} }
+
+  /* ===== unified demo switcher ===== */
+  .dsw-fab{position:fixed;left:20px;bottom:20px;z-index:150;display:inline-flex;align-items:center;gap:8px;
+    background:var(--ink-dark);color:#fff;border:none;border-radius:999px;padding:10px 16px;font-family:inherit;
+    font-size:12.5px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(23,24,28,.3);}
+  .dsw-fab:hover{opacity:.92;}
+  .dsw-fab .d{width:7px;height:7px;border-radius:50%;background:#7ee0ab;}
+  .dsw{position:fixed;left:20px;bottom:20px;z-index:151;width:270px;background:var(--panel);border:1px solid var(--line);
+    border-radius:18px;box-shadow:0 20px 50px rgba(23,24,28,.28);display:none;overflow:hidden;}
+  .dsw.open{display:block;}
+  .dsw-hd{display:flex;align-items:center;gap:8px;padding:13px 15px;border-bottom:1px solid var(--line);}
+  .dsw-hd b{font-size:13px;font-weight:800;}
+  .dsw-hd .x{margin-left:auto;border:none;background:none;font-size:17px;color:var(--ink-faint);cursor:pointer;line-height:1;}
+  .dsw-sec{padding:12px 15px;border-bottom:1px solid var(--wash);}
+  .dsw-sec:last-child{border-bottom:none;}
+  .dsw-sec p{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);margin:0 0 8px;}
+  .dsw-grid{display:flex;flex-wrap:wrap;gap:6px;}
+  .dsw-grid a,.dsw-grid button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);
+    color:var(--ink);border-radius:9px;padding:7px 11px;font-family:inherit;font-size:12px;font-weight:600;
+    cursor:pointer;text-decoration:none;}
+  .dsw-grid a:hover,.dsw-grid button:hover{background:var(--wash);border-color:var(--line-strong);}
+  .dsw-grid a.on,.dsw-grid button.on{background:var(--ink-dark);border-color:var(--ink-dark);color:#fff;}
+  .dsw-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;font-weight:600;}
+  .dsw-tog{width:38px;height:22px;border-radius:999px;background:var(--line-strong);border:none;cursor:pointer;position:relative;flex-shrink:0;}
+  .dsw-tog::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;}
+  .dsw-tog.on{background:var(--good);} .dsw-tog.on::after{left:19px;}
 </style>
 </head>
 <body>
@@ -1376,16 +1402,12 @@
       <button class="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" id="collapse-btn"><span class="nav-icon" id="collapse-icon">&#8676;</span><span class="collapse-label">Collapse</span></button>
     </div>
 
-    <div class="notes-toggle-wrap">
-      <button class="notes-toggle" onclick="toggleNotes()"><span class="dot"></span> Show design notes</button>
-    </div>
   </div>
 
   <div class="main">
     <div class="topbar">
       <div class="tb-left"></div>
       <div class="topbar-right">
-      <button class="tb-switch" onclick="switchToPatientView()"><span>&#8646;</span> Patient view</button>
       <span class="tb-name"><b>Dr. Daniel Pannozzo</b> &middot; Physician</span>
       <span class="bell">&#128276;</span>
       <div class="profile-wrap">
@@ -1519,12 +1541,6 @@
       <h1 data-f="name">Patient</h1>
       <p class="sub" data-f="visitline">Open visit &middot; today</p>
 
-      <div class="ver-switch">
-        <button data-ver="a" onclick="setChartVer('a')">Version A &middot; Context rail</button>
-        <button data-ver="b" onclick="setChartVer('b')">Version B &middot; Workflow</button>
-        <button class="active" data-ver="c" onclick="setChartVer('c')">Version C &middot; Focused</button>
-        <button data-ver="d" onclick="setChartVer('d')">Version D &middot; Dark rail + Assistant</button>
-      </div>
 
       <!-- ============ VERSION A ============ -->
       <div class="pcv pcv-a" id="pcv-a">
@@ -2301,6 +2317,35 @@
     <input id="ai-input" placeholder="Ask SimpleCare Assistant&hellip;" onkeydown="if(event.key==='Enter')aiSend()">
     <button class="mic" title="Voice (demo)">&#127908;</button>
     <button class="send" onclick="aiSend()">&#10148;</button>
+  </div>
+</div>
+
+
+<button class="dsw-fab" id="dsw-fab" onclick="dswOpen()"><span class="d"></span> Demo</button>
+<div class="dsw" id="dsw">
+  <div class="dsw-hd"><b>Demo switcher</b><button class="x" onclick="dswClose()">&times;</button></div>
+  <div class="dsw-sec">
+    <p>Portal</p>
+    <div class="dsw-grid">
+      <a href="simplecare-physician-portal-lofi.html" class='on'>Physician</a>
+      <a href="simplecare-moa-portal.html">MOA</a>
+      <a href="simplecare-patient-portal-v2.html">Patient</a>
+    </div>
+  </div>
+  <div class="dsw-sec">
+    <p>Patient chart layout</p>
+    <div class="dsw-grid" id="dsw-vers">
+      <button data-v="a" onclick="setChartVer('a');dswSync()">A &middot; Rail</button>
+      <button data-v="b" onclick="setChartVer('b');dswSync()">B &middot; Workflow</button>
+      <button data-v="c" class="on" onclick="setChartVer('c');dswSync()">C &middot; Focused</button>
+      <button data-v="d" onclick="setChartVer('d');dswSync()">D &middot; Dark rail</button>
+    </div>
+  </div>
+  <div class="dsw-sec">
+    <div class="dsw-row"><span>Show design notes</span><button class="dsw-tog" id="dsw-notes" onclick="dswNotes()"></button></div>
+  </div>
+  <div class="dsw-sec">
+    <div class="dsw-grid"><a href="demo.html" style="width:100%;justify-content:center;">All demos &amp; prototypes</a></div>
   </div>
 </div>
 
@@ -3312,6 +3357,18 @@ applyIcons();
 renderCriticals();
 renderDayNav();
 updateWorkCounts();
+
+function dswOpen(){ document.getElementById('dsw').classList.add('open'); document.getElementById('dsw-fab').style.display='none'; }
+function dswClose(){ document.getElementById('dsw').classList.remove('open'); document.getElementById('dsw-fab').style.display='inline-flex'; }
+
+function dswSync(){
+  var cur=(document.querySelector('.pcv.active')||{id:'pcv-c'}).id.replace('pcv-','');
+  document.querySelectorAll('#dsw-vers button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===cur); });
+}
+function dswNotes(){
+  document.body.classList.toggle('show-notes');
+  document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
+}
 </script>
 </body>
 </html>
