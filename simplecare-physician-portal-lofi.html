@@ -728,6 +728,43 @@
   .inbox-crit{margin:5px 0 2px;font-size:12px;color:var(--crit);background:var(--crit-wash);
     border-radius:7px;padding:5px 9px;display:inline-block;}
   .inbox-crit b{font-variant-numeric:tabular-nums;}
+  /* ===== investigations inbox: extracted findings ===== */
+  .inbox-row.ix{display:flex;gap:14px;align-items:flex-start;padding:15px 16px;border-radius:14px;
+    background:var(--panel);border:1px solid var(--line);margin-bottom:9px;cursor:pointer;transition:border-color .12s;}
+  .inbox-row.ix:hover{border-color:var(--line-strong);}
+  .inbox-row.ix.critical{border-color:#E8B7AF;background:#FDF7F6;}
+  .ix-type{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--accent-ink);
+    background:var(--accent-wash);border-radius:6px;padding:4px 8px;flex-shrink:0;width:62px;text-align:center;}
+  .ix-type.img{background:#E8F1FB;color:#25578F;} .ix-type.con{background:#F3ECFB;color:#6B3FA0;}
+  .ix-body{flex:1;min-width:0;}
+  .ix-top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+  .ix-top b{font-size:14.5px;font-weight:800;}
+  .ix-age{font-size:11.5px;color:var(--ink-faint);font-weight:600;}
+  .ix-panel{font-size:13px;color:var(--ink);font-weight:600;}
+  .ix-panel::before{content:"·";margin-right:8px;color:var(--ink-faint);}
+  .ix-count{font-size:10.5px;font-weight:700;color:var(--ink-soft);background:var(--wash);border-radius:20px;padding:2px 8px;}
+  .ix-context{font-size:10.5px;font-weight:700;color:var(--warn);background:var(--warn-wash);border-radius:20px;padding:2px 8px;}
+
+  .ix-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px;}
+  .ix-chip{display:inline-flex;align-items:baseline;gap:6px;background:var(--warn-wash);border:1px solid #E4CE93;
+    border-radius:9px;padding:5px 10px;font-size:12.5px;color:var(--warn);font-variant-numeric:tabular-nums;}
+  .ix-chip b{font-weight:700;color:inherit;font-size:12.5px;}
+  .ix-chip i{font-style:normal;opacity:.75;font-size:11px;}
+  .ix-chip em{font-style:normal;font-weight:800;}
+  .ix-chip.crit{background:var(--crit-wash);border-color:#E8B7AF;color:var(--crit);}
+  .ix-critmark{font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+    background:var(--crit);color:#fff;border-radius:5px;padding:1px 6px;}
+  .ix-ref{font-size:10.5px;color:var(--ink-faint);}
+  .ix-prior{font-size:10.5px;color:var(--ink-faint);font-style:italic;}
+  .ix-clear{display:inline-block;font-size:12.5px;font-weight:600;color:var(--good);background:var(--good-wash);
+    border-radius:9px;padding:5px 11px;margin-bottom:8px;}
+  .ix-impression{font-size:13px;color:var(--ink);line-height:1.5;background:var(--wash);border-radius:9px;
+    padding:8px 11px;margin-bottom:8px;}
+  .ix-impression.abn{background:var(--warn-wash);color:var(--warn);}
+  .ix-meta{font-size:11px;color:var(--ink-faint);}
+  .ix-right{display:flex;align-items:center;gap:9px;flex-shrink:0;}
+  .ix-ago{font-size:11.5px;color:var(--ink-faint);font-weight:600;min-width:22px;text-align:right;}
+
   .q-tools{display:inline-flex;align-items:center;gap:8px;}
   /* physician-set call window */
   .win-edit{display:inline-flex;flex-direction:column;align-items:flex-start;gap:1px;background:none;border:1px solid transparent;
@@ -2465,14 +2502,15 @@ function renderCriticals(){
   var list=document.getElementById('crit-list');
   if(!list || typeof INBOX_ITEMS === 'undefined') return;
   // single source of truth: unreviewed inbox results carrying a critical value
-  var open = INBOX_ITEMS.filter(function(it){ return it.critical && it.status === 'received'; });
+  var open = INBOX_ITEMS.filter(function(it){ return inboxIsCritical(it) && it.status === 'received'; });
   list.innerHTML = open.map(function(c){
     var idx = INBOX_ITEMS.indexOf(c);
+    var cx = c.tests.filter(function(t){ return t.f && t.f.indexOf('crit')===0; })[0];
     return '<div class="crit-row">'+
       '<span class="crit-tier">Critical</span>'+
-      '<div class="crit-body"><b>'+c.patient+'</b> &middot; '+c.critical.test+
-        ' <span class="crit-val">'+c.critical.value+'</span> <span class="crit-ref">(ref '+c.critical.ref+')</span>'+
-        '<div class="crit-note">'+c.critical.note+' &middot; '+c.desc+' &middot; received '+c.received+'</div></div>'+
+      '<div class="crit-body"><b>'+c.patient+'</b> &middot; '+cx.n+
+        ' <span class="crit-val">'+cx.v+' '+cx.u+'</span> <span class="crit-ref">(ref '+cx.ref+')</span>'+
+        '<div class="crit-note">'+(cx.f.indexOf('high')>-1?'Critical high':'Critical low')+' &middot; '+c.panel+' &middot; received '+c.received+'</div></div>'+
       '<div class="crit-actions">'+
         '<button class="btn crit dark xs" onclick="ackCritical('+idx+')">Acknowledge</button>'+
         '<button class="btn xs" onclick="openInboxItem('+idx+')">Open in inbox</button>'+
@@ -2482,7 +2520,7 @@ function renderCriticals(){
 function ackCritical(i){
   var it = INBOX_ITEMS[i]; if(!it) return;
   it.status = 'reviewed';
-  toast('Acknowledged \u00b7 ' + it.critical.test + ' for ' + it.patient + ' \u2014 moved to awaiting sign-off');
+  toast('Acknowledged \u00b7 ' + it.panel + ' for ' + it.patient + ' \u2014 moved to awaiting sign-off');
   renderCriticals(); renderInboxList(); renderInboxToday();
 }
 function renderDayNav(){
@@ -2531,7 +2569,7 @@ function renderGlance(){
   var waitingNow = QUEUE_DATA.filter(function(r){return r.status==='waiting'||r.status==='next';}).length;
   var behind = QUEUE_DATA.filter(function(r){return r.status==='delayed';}).length;
   var attention = QUEUE_DATA.filter(function(r){return r.status==='missed'||r.status==='dropped';}).length;
-  var critCount = (typeof INBOX_ITEMS !== 'undefined') ? INBOX_ITEMS.filter(function(c){return c.critical && c.status==='received';}).length : 0;
+  var critCount = 0;
   var tiles = [
     {n:attention, l:'Needs attention', s:'missed / dropped calls', cls:attention?'crit':''},
     {n:waitingNow, l:'In queue', s:'patients to see', cls:''},
@@ -2697,31 +2735,133 @@ function sendTaskMoa(){
 
 /* ===== Inbox — clear-the-inbox review/sign-off state machine (received -> reviewed -> signed-off) ===== */
 var INBOX_ITEMS = [
-  { patient:'Behdis Maleki', type:'Lab', desc:'Renal function panel', received:'Today, 7:22 AM', status:'received', urgent:true,
-    critical:{ test:'Potassium', value:'6.3 mmol/L', ref:'3.5\u20135.1', note:'Critical high \u2014 repeat and assess urgently' } },
-  { patient:'Manjit', type:'Lab', desc:'Complete blood count', received:'Today, 6:05 AM', status:'received', urgent:true,
-    critical:{ test:'Haemoglobin', value:'71 g/L', ref:'130\u2013175', note:'Critical low \u2014 symptomatic anaemia' } },
-  { patient:'Gloria Mcdonald', type:'Lab', desc:'Troponin \u2014 flagged abnormal, stat', received:'Today, 7:50 AM', status:'received', urgent:true },
-  { patient:'Frank D.', type:'Lab', desc:'CBC + electrolytes \u2014 routine follow-up', received:'Today, 9:14 AM', status:'received' },
-  { patient:'Carol-Anne Feldman', type:'Imaging', desc:'MRI report \u2014 lumbar spine', received:'Today, 8:02 AM', status:'received' },
-  { patient:'Louise ("Chickadee")', type:'Consult note', desc:'EDS specialist consult \u2014 referral follow-up', received:'Yesterday, 4:40 PM', status:'reviewed' },
-  { patient:'Brian K.', type:'Imaging', desc:'Chest X-ray \u2014 clear', received:'Mon', status:'signed-off' }
+  { patient:'Behdis Maleki', age:'35F', type:'Lab', panel:'Renal function panel', received:'Today, 7:22 AM', ago:'2h',
+    status:'received', lab:'LifeLabs',
+    tests:[ {n:'Potassium',v:'6.3',u:'mmol/L',ref:'3.5–5.1',f:'crit-high',prior:'5.1'},
+            {n:'Creatinine',v:'104',u:'µmol/L',ref:'45–90',f:'high',prior:'96'},
+            {n:'eGFR',v:'54',u:'mL/min',ref:'>60',f:'low',prior:'60'},
+            {n:'Urea',v:'9.1',u:'mmol/L',ref:'2.5–7.1',f:'high'} ] },
+
+  { patient:'Manjit Dhaliwal', age:'58M', type:'Lab', panel:'Complete blood count', received:'Today, 6:05 AM', ago:'3h',
+    status:'received', lab:'LifeLabs',
+    tests:[ {n:'Haemoglobin',v:'71',u:'g/L',ref:'130–175',f:'crit-low',prior:'118'},
+            {n:'MCV',v:'72',u:'fL',ref:'80–100',f:'low'},
+            {n:'Platelets',v:'244',u:'×10⁹/L',ref:'150–400',f:''},
+            {n:'White cells',v:'6.1',u:'×10⁹/L',ref:'4.0–11.0',f:''} ] },
+
+  { patient:'Gloria Mcdonald', age:'74F', type:'Lab', panel:'Cardiac markers', received:'Today, 7:50 AM', ago:'2h',
+    status:'received', lab:'Eagle Ridge',
+    tests:[ {n:'Troponin I',v:'0.42',u:'µg/L',ref:'<0.04',f:'crit-high'},
+            {n:'CK',v:'210',u:'U/L',ref:'30–200',f:'high'} ] },
+
+  { patient:'Grace Lin', age:'52F', type:'Lab', panel:'Coagulation studies', received:'Today, 8:40 AM', ago:'1h',
+    status:'received', lab:'LifeLabs', context:'On warfarin',
+    tests:[ {n:'INR',v:'3.8',u:'',ref:'2.0–3.0',f:'high',prior:'2.6'},
+            {n:'PT',v:'38',u:'sec',ref:'11–15',f:'high'},
+            {n:'APTT',v:'34',u:'sec',ref:'25–35',f:''} ] },
+
+  { patient:'Andrey Abushakhmanov', age:'24M', type:'Lab', panel:'Liver function', received:'Today, 9:14 AM', ago:'1h',
+    status:'received', lab:'LifeLabs',
+    tests:[ {n:'ALT',v:'88',u:'U/L',ref:'10–40',f:'high',prior:'34'},
+            {n:'AST',v:'65',u:'U/L',ref:'10–35',f:'high'},
+            {n:'ALP',v:'96',u:'U/L',ref:'40–130',f:''},
+            {n:'Bilirubin',v:'14',u:'µmol/L',ref:'<21',f:''} ] },
+
+  { patient:'Priya Raman', age:'39F', type:'Lab', panel:'Thyroid function', received:'Today, 9:02 AM', ago:'1h',
+    status:'received', lab:'LifeLabs',
+    tests:[ {n:'TSH',v:'8.9',u:'mIU/L',ref:'0.4–4.0',f:'high',prior:'5.2'},
+            {n:'Free T4',v:'10.1',u:'pmol/L',ref:'10–22',f:'low'} ] },
+
+  { patient:'Nadia Hassan', age:'28F', type:'Lab', panel:'Urinalysis', received:'Today, 8:15 AM', ago:'1h',
+    status:'received', lab:'In-clinic',
+    tests:[ {n:'Leukocytes',v:'+++',u:'',ref:'Negative',f:'high'},
+            {n:'Nitrites',v:'Positive',u:'',ref:'Negative',f:'high'},
+            {n:'Blood',v:'++',u:'',ref:'Negative',f:'high'},
+            {n:'Protein',v:'Trace',u:'',ref:'Negative',f:''} ] },
+
+  { patient:'K Arli Eyre', age:'41M', type:'Lab', panel:'Glycemic control', received:'Yesterday, 3:20 PM', ago:'1d',
+    status:'received', lab:'LifeLabs',
+    tests:[ {n:'HbA1c',v:'7.1',u:'%',ref:'<7.0',f:'high',prior:'6.8'},
+            {n:'Fasting glucose',v:'7.8',u:'mmol/L',ref:'4.0–6.0',f:'high'} ] },
+
+  { patient:'Greg Whitmore', age:'61M', type:'Lab', panel:'Lipid panel', received:'Yesterday, 2:05 PM', ago:'1d',
+    status:'received', lab:'LifeLabs',
+    tests:[ {n:'LDL',v:'4.6',u:'mmol/L',ref:'<2.0',f:'high',prior:'4.1'},
+            {n:'HDL',v:'0.9',u:'mmol/L',ref:'>1.0',f:'low'},
+            {n:'Triglycerides',v:'2.8',u:'mmol/L',ref:'<1.7',f:'high'},
+            {n:'Total cholesterol',v:'6.4',u:'mmol/L',ref:'<5.2',f:'high'} ] },
+
+  { patient:'Frank Delgado', age:'47M', type:'Lab', panel:'Electrolytes', received:'Today, 9:14 AM', ago:'1h',
+    status:'received', lab:'LifeLabs',
+    tests:[ {n:'Sodium',v:'140',u:'mmol/L',ref:'135–145',f:''},
+            {n:'Potassium',v:'4.2',u:'mmol/L',ref:'3.5–5.1',f:''},
+            {n:'Chloride',v:'102',u:'mmol/L',ref:'98–107',f:''},
+            {n:'Bicarbonate',v:'25',u:'mmol/L',ref:'22–29',f:''} ] },
+
+  { patient:'Carol-Anne Feldman', age:'44F', type:'Imaging', panel:'MRI lumbar spine', received:'Today, 8:02 AM', ago:'1h',
+    status:'received', lab:'Eagle Ridge Imaging',
+    impression:'L4–L5 disc protrusion with right nerve root contact. No cord compression.', abnormal:true },
+
+  { patient:'Owen Brady', age:'45M', type:'Imaging', panel:'Chest X-ray', received:'Yesterday, 11:30 AM', ago:'1d',
+    status:'received', lab:'Eagle Ridge Imaging',
+    impression:'No acute cardiopulmonary abnormality.', abnormal:false },
+
+  { patient:'Louise ("Chickadee")', age:'33F', type:'Consult', panel:'EDS specialist consult', received:'Yesterday, 4:40 PM', ago:'1d',
+    status:'reviewed', lab:'Dr. Okafor',
+    impression:'Confirms hypermobile EDS. Recommends physiotherapy referral and annual echo.' },
+
+  { patient:'Brian Koehler', age:'66M', type:'Imaging', panel:'Chest X-ray', received:'Mon', ago:'3d',
+    status:'signed-off', lab:'Eagle Ridge Imaging', impression:'Clear.', abnormal:false }
 ];
 
+function inboxAbnormal(item){ return (item.tests||[]).filter(function(t){ return t.f; }); }
+function inboxIsCritical(item){ return (item.tests||[]).some(function(t){ return t.f && t.f.indexOf('crit')===0; }); }
 function inboxRowHtml(item, i){
-  var critLine = item.critical ? '<div class="inbox-crit"><b>'+item.critical.test+' '+item.critical.value+'</b> (ref '+item.critical.ref+') &middot; '+item.critical.note+'</div>' : '';
-  var pillClass = item.urgent ? 'urgent' : item.status;
-  var pillLabel = item.urgent ? 'Urgent' : (item.status === 'received' ? 'Needs review' : (item.status === 'reviewed' ? 'Reviewed' : 'Signed off'));
+  var abn = inboxAbnormal(item), crit = inboxIsCritical(item);
+  var total = (item.tests||[]).length;
+
+  // extracted findings: abnormal values as chips, worst first
+  var findings = '';
+  if(total){
+    var sorted = abn.slice().sort(function(a,b){ return (b.f.indexOf('crit')===0?1:0)-(a.f.indexOf('crit')===0?1:0); });
+    findings = sorted.length
+      ? '<div class="ix-chips">' + sorted.map(function(t){
+          var isCrit = t.f.indexOf('crit')===0;
+          var dir = t.f.indexOf('high')>-1 ? '&uarr;' : '&darr;';
+          return '<span class="ix-chip'+(isCrit?' crit':'')+'">'+
+            '<b>'+t.n+'</b> '+t.v+(t.u?' <i>'+t.u+'</i>':'')+' <em>'+dir+'</em>'+
+            (isCrit?'<span class="ix-critmark">Critical</span>':'')+
+            '<span class="ix-ref">ref '+t.ref+'</span>'+
+            (t.prior?'<span class="ix-prior">was '+t.prior+'</span>':'')+
+          '</span>';
+        }).join('') + '</div>'
+      : '<div class="ix-clear">All '+total+' values within range</div>';
+  } else if(item.impression){
+    findings = '<div class="ix-impression'+(item.abnormal?' abn':'')+'">'+item.impression+'</div>';
+  }
+
+  var pillClass = crit ? 'urgent' : (item.status==='received' ? 'received' : (item.status==='reviewed' ? 'reviewed' : 'signed-off'));
+  var pillLabel = crit ? 'Critical' : (item.status==='received' ? 'Needs review' : (item.status==='reviewed' ? 'Reviewed' : 'Signed off'));
+
   var actions = '';
   if(item.status === 'received'){
-    actions = '<button class="btn xs" onclick="event.stopPropagation();openInboxItem('+i+')">Open</button>';
+    actions = '<button class="btn xs dark" onclick="event.stopPropagation();openInboxItem('+i+')">Review</button>';
   } else if(item.status === 'reviewed'){
     actions = '<button class="btn xs dark" onclick="event.stopPropagation();signOffInbox('+i+')">Sign off</button>';
   }
-  return '<div class="inbox-row'+(item.urgent?' urgent':'')+'" onclick="openInboxItem('+i+')">'+
-    '<span class="inbox-type">'+item.type+'</span>'+
-    '<div class="inbox-body"><b>'+item.patient+'</b> — '+item.desc+critLine+'<div class="inbox-meta">Received '+item.received+'</div></div>'+
-    '<div class="inbox-actions"><span class="status-pill '+pillClass+'">'+pillLabel+'</span>'+actions+'</div>'+
+
+  return '<div class="inbox-row ix'+(crit?' critical':'')+'" onclick="openInboxItem('+i+')">'+
+    '<span class="ix-type'+(item.type==='Imaging'?' img':(item.type==='Consult'?' con':''))+'">'+item.type+'</span>'+
+    '<div class="ix-body">'+
+      '<div class="ix-top"><b>'+item.patient+'</b><span class="ix-age">'+(item.age||'')+'</span>'+
+        '<span class="ix-panel">'+item.panel+'</span>'+
+        (total ? '<span class="ix-count">'+(abn.length?abn.length+' of '+total+' abnormal':total+' tests')+'</span>' : '')+
+        (item.context?'<span class="ix-context">'+item.context+'</span>':'')+'</div>'+
+      findings+
+      '<div class="ix-meta">'+item.lab+' &middot; received '+item.received+'</div>'+
+    '</div>'+
+    '<div class="ix-right"><span class="ix-ago">'+(item.ago||'')+'</span>'+
+      '<span class="status-pill '+pillClass+'">'+pillLabel+'</span>'+actions+'</div>'+
   '</div>';
 }
 
