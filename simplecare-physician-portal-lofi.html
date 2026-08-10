@@ -1549,30 +1549,12 @@
         </div>
       </div>
 
-      <div class="box">
-        <p class="box-title">My outstanding tasks</p>
-        <p class="sched-note">Things you personally couldn't finish in the moment — stays here, not sent to your MOA. Separate from the Carry Forward history of what you've delegated (see Patients &rarr; Carry Forward).</p>
-        <div id="my-tasks-list"></div>
       </div>
 
-      <div class="box">
-        <p class="box-title">Scheduled later today — not in the live queue yet</p>
-        <p class="sched-note">Kept visually separate so "booked for later" is never confused with "waiting right now."</p>
-        <div class="sched-row"><span>Karen Anderson — 7/24/2026 at 08:00</span><span>Scheduled</span></div>
         <div class="sched-row"><span>Eric Janusson — 7/24/2026 at 10:00</span><span>Scheduled</span></div>
         <div class="sched-row"><span>Stephanie Calibaba — 7/24/2026 at 14:00</span><span>Scheduled</span></div>
       </div>
 
-      <div class="box">
-        <p class="box-title">Activity log</p>
-        <p class="sched-note">Lowest-priority section on this screen — reference only, nothing here needs action right now.</p>
-        <p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin:10px 0 4px;">Recent calls</p>
-        <div class="sched-row"><span>Ada — (236) 882-1425</span><span>No answer</span></div>
-        <div class="sched-row"><span>Judy — (844) 645-7811</span><span>Completed, 1:06</span></div>
-        <div class="sched-row"><span>Ben — (250) 889-5624</span><span>No answer</span></div>
-        <p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin:14px 0 4px;">Add-on encounters today</p>
-        <div id="addon-list"></div>
-      </div>
     </div>
 
     <!-- ===================== PATIENT DETAIL (second layer of the queue) ===================== -->
@@ -2133,6 +2115,19 @@
         <div class="sched-row"><span>LAB · Manjit · No recipient on file</span><span>06:25 PM</span></div>
         <div class="sched-row"><span>RX · Greg · Faxed to Rexall</span><span>06:16 PM</span></div>
       </div>
+
+      <div class="box">
+        <p class="box-title">Recent calls</p>
+        <p class="sched-note">Reference only &mdash; physicians place calls themselves, so this is the audit trail rather than a worklist.</p>
+        <div class="sched-row"><span>Ada &mdash; (236) 882-1425</span><span>No answer</span></div>
+        <div class="sched-row"><span>Judy &mdash; (844) 645-7811</span><span>Completed, 1:06</span></div>
+        <div class="sched-row"><span>Ben &mdash; (250) 889-5624</span><span>No answer</span></div>
+      </div>
+
+      <div class="box">
+        <p class="box-title">Add-on encounters today</p>
+        <div id="addon-list"></div>
+      </div>
     </div>
 
     <!-- ===================== COPILOT (advanced/standalone) ===================== -->
@@ -2207,10 +2202,16 @@
     <div class="screen" id="screen-carryforward">
       <h1>Carry Forward</h1>
       <p class="sub">Patients group — history of tasks you've sent to your MOA.</p>
-      <div class="ia-note">IA change, confirmed with the team: this is the MOA-task history specifically — what you've delegated and its status (in progress / completed / carried forward if your MOA couldn't finish it same-day). Your own outstanding tasks stay separate, on the Today dashboard, since those are time-sensitive to you, not to your MOA.</div>
+      <div class="ia-note">IA change, confirmed with the team: this is the MOA-task history specifically — what you've delegated and its status (in progress / completed / carried forward if your MOA couldn't finish it same-day). Your own undelegated tasks sit underneath in "Mine", so both halves of your task load live on one screen instead of being split across Home.</div>
       <div class="box">
         <p class="box-title">Sent to MOA</p>
         <div id="moa-tasks-list"></div>
+      </div>
+
+      <div class="box">
+        <p class="box-title">Mine &mdash; not delegated</p>
+        <p class="sched-note">Things you couldn't finish in the moment and kept yourself. These never go to your MOA.</p>
+        <div id="my-tasks-list"></div>
       </div>
     </div>
     <div class="screen" id="screen-registerpatient">
