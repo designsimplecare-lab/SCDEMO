@@ -378,18 +378,20 @@
 
   /* floating MOA chat */
   .chat-fab{
-    position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;
-    background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:20px;
-    display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.2);z-index:55;
+    position:relative;width:32px;height:32px;border-radius:50%;
+    background:var(--panel);color:var(--ink-soft);border:1px solid var(--line-strong);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;
   }
-  .chat-fab:hover{background:var(--accent-ink);}
+  .chat-fab:hover{background:var(--wash);color:var(--ink);}
+  .chat-fab .ic{width:16px;height:16px;}
+  .chat-fab .moa-dot{position:absolute;bottom:-1px;right:-1px;border:2px solid var(--paper);}
   .chat-badge{
-    position:absolute;top:-3px;right:-3px;background:var(--crit);color:#fff;font-size:10.5px;font-weight:700;
+    position:absolute;top:-5px;right:-5px;background:var(--crit);color:#fff;font-size:10.5px;font-weight:700;
     border-radius:10px;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;
     padding:0 4px;border:2px solid var(--paper);
   }
   .chat-panel{
-    display:none;position:fixed;bottom:88px;right:24px;width:320px;height:440px;background:var(--panel);
+    display:none;position:fixed;top:64px;right:24px;width:320px;height:440px;background:var(--panel);
     border:1px solid var(--line-strong);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.2);
     z-index:55;flex-direction:column;overflow:hidden;
   }
@@ -1611,6 +1613,11 @@
       <div class="tb-left"></div>
       <div class="topbar-right">
       <span class="tb-name"><b>Dr. Daniel Pannozzo</b> &middot; Physician</span>
+      <button class="chat-fab" id="chat-fab" onclick="toggleChatPanel()" title="MOA chat">
+        <span class="ic" data-pcic="chatic"></span>
+        <span class="moa-dot on" id="chat-presence-dot"></span>
+        <span class="chat-badge" id="chat-badge" style="display:none;">0</span>
+      </button>
       <span class="bell">&#128276;</span>
       <div class="profile-wrap">
         <button class="profile-trigger" onclick="toggleProfileMenu()">
@@ -2530,11 +2537,6 @@
 </div>
 
 <!-- Floating MOA chat -->
-<button class="chat-fab" id="chat-fab" onclick="toggleChatPanel()" title="MOA chat">
-  &#128172;
-  <span class="moa-dot on" id="chat-presence-dot" style="position:absolute;bottom:2px;left:2px;border:2px solid var(--panel);"></span>
-  <span class="chat-badge" id="chat-badge" style="display:none;">0</span>
-</button>
 <div class="chat-panel" id="chat-panel">
   <div class="chat-head" id="chat-head">
     <span id="chat-head-title">MOA chat</span>
@@ -3533,6 +3535,7 @@ var ICONS = {
 "addon": "<svg viewBox=\"0 0 14 14\" fill=\"none\" class=\"ic\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 4V10\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M4 7H10\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M10.5 0.5H3.5C1.84315 0.5 0.5 1.84315 0.5 3.5V10.5C0.5 12.1569 1.84315 13.5 3.5 13.5H10.5C12.1569 13.5 13.5 12.1569 13.5 10.5V3.5C13.5 1.84315 12.1569 0.5 10.5 0.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
 "patientview": "<svg viewBox=\"0 0 14 14\" fill=\"none\" class=\"ic\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M10.5 0.5H3.5C1.84315 0.5 0.5 1.84315 0.5 3.5V10.5C0.5 12.1569 1.84315 13.5 3.5 13.5H10.5C12.1569 13.5 13.5 12.1569 13.5 10.5V3.5C13.5 1.84315 12.1569 0.5 10.5 0.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M6 10.5L4 8.5H10\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M8 3.5L10 5.5H4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
 "sort": "<svg viewBox=\"0 0 14 14\" fill=\"none\" class=\"ic\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M10.5 0.5H3.5C1.84315 0.5 0.5 1.84315 0.5 3.5V10.5C0.5 12.1569 1.84315 13.5 3.5 13.5H10.5C12.1569 13.5 13.5 12.1569 13.5 10.5V3.5C13.5 1.84315 12.1569 0.5 10.5 0.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M10.5 8L8.5 10V4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M3.5 6L5.5 4V10\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+"chat": "<svg viewBox=\"0 0 14 14\" fill=\"none\" class=\"ic\"><path d=\"M12.5 0.5H1.5C1.23478 0.5 0.98043 0.605357 0.792893 0.792893C0.605357 0.98043 0.5 1.23478 0.5 1.5V10C0.5 10.2652 0.605357 10.5196 0.792893 10.7071C0.98043 10.8946 1.23478 11 1.5 11H3.5V13.5L6.62 11H12.5C12.7652 11 13.0196 10.8946 13.2071 10.7071C13.3946 10.5196 13.5 10.2652 13.5 10V1.5C13.5 1.23478 13.3946 0.98043 13.2071 0.792893C13.0196 0.605357 12.7652 0.5 12.5 0.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
 "collapse": "<svg viewBox=\"0 0 14 14\" fill=\"none\" class=\"ic\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M10.15 0.5L4 6.65C3.95217 6.69489 3.91405 6.74911 3.88799 6.80931C3.86193 6.8695 3.84848 6.9344 3.84848 7C3.84848 7.0656 3.86193 7.1305 3.88799 7.19069C3.91405 7.25089 3.95217 7.30511 4 7.35L10.15 13.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
 };
 /* ===== Today: Live queue / Inbox tabs ===== */
@@ -3721,7 +3724,7 @@ var PC_ICONS = {
  referrals: ICONS.practice, consult: ICONS.registerpatient, review: ICONS.inbox,
  call: ICONS.patientview, headset: ICONS.patientview, transfer: ICONS.carryforward,
  task: ICONS.taskmoa, edit: ICONS.taskmoa, verified: ICONS.today, pharmacy: ICONS.inbox,
- back: ICONS.collapse, newpatient: ICONS.registerpatient, mailic: ICONS.inbox, search: ICONS.claims
+ back: ICONS.collapse, newpatient: ICONS.registerpatient, mailic: ICONS.inbox, search: ICONS.claims, chatic: ICONS.chat
 };
 var PC_CURRENT = null;
 function pcInitials(n){ var p=n.split(',')[0].trim().split(' ').filter(Boolean); return (((p[0]||'')[0]||'')+((p[1]||'')[0]||'')).toUpperCase(); }
