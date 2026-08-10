@@ -1384,6 +1384,7 @@
     color:var(--ink-soft);padding:6px 13px;border-radius:999px;cursor:pointer;}
   .vd-subtabs button.active{background:var(--panel);color:var(--ink);box-shadow:0 2px 6px rgba(23,24,28,.12);}
   .lab-note{font-size:12px;color:var(--ink-soft);margin:0 0 14px;}
+  .vd-subhead{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);margin:0 0 8px;}
   .lab-note em{font-style:normal;font-weight:700;color:var(--ink);}
   .lab-panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;}
   .lab-panel.has-crit{border-color:#E8B7AF;box-shadow:0 0 0 3px rgba(194,74,63,.07);}
@@ -1415,6 +1416,105 @@
   .vd-item i{display:block;font-size:12px;color:var(--ink-faint);font-style:normal;margin-top:2px;}
   @media(max-width:1400px){ .vd{grid-template-columns:220px 1fr 280px;} }
   @media(max-width:1050px){ .vd{grid-template-columns:200px 1fr;} .vd-cop{grid-column:1 / -1;border-left:none;border-top:1px solid var(--line);max-height:420px;} }
+
+
+  /* ===== Lab Work orders (spec v7 §6) ===== */
+  .lo{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;}
+  .lo.flagged{border-color:#E8B7AF;}
+  .lo-hd{display:flex;align-items:flex-start;gap:14px;margin-bottom:11px;}
+  .lo-label{font-size:15px;font-weight:800;margin:0;}
+  .lo-standing{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+    background:var(--accent-wash);color:var(--accent-ink);border-radius:5px;padding:2px 7px;vertical-align:2px;}
+  .lo-sub{font-size:11.5px;color:var(--ink-faint);margin:3px 0 0;}
+  .lo-prog{margin-left:auto;text-align:right;flex-shrink:0;}
+  .lo-prog b{display:block;font-size:16px;font-weight:800;}
+  .lo-prog span{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);font-weight:700;}
+  .lo-facts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+  .lo-fact{font-size:11.5px;color:var(--ink);background:var(--wash);border-radius:8px;padding:6px 10px;}
+  .lo-fact i{display:block;font-style:normal;font-size:9px;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--ink-faint);font-weight:700;margin-bottom:1px;}
+  .lo-fact.ok{background:var(--good-wash);color:var(--good);}
+  .lo-fact.warn{background:var(--warn-wash);color:var(--warn);}
+  .lo-fact.bad{background:var(--crit-wash);color:var(--crit);}
+  .lo-cond{font-size:12.5px;font-weight:600;color:var(--crit);background:var(--crit-wash);border-radius:8px;
+    padding:8px 11px;margin:0 0 10px;}
+  .lo-note{font-size:12px;color:var(--ink-soft);margin:0 0 10px;line-height:1.5;}
+  .lo-tests{border-top:1px solid var(--wash);}
+  .lo-test{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--wash);}
+  .lo-test:last-child{border-bottom:none;}
+  .lo-tn{font-size:13.5px;font-weight:600;flex:1;min-width:0;}
+  .lo-why{font-size:11.5px;color:var(--ink-faint);flex-basis:100%;margin-top:-4px;}
+  /* state chips: pre-result states are ordinary, not warnings (§6.3) */
+  .st{font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:20px;white-space:nowrap;}
+  .st-quiet{background:var(--wash);color:var(--ink-soft);}
+  .st-info{background:var(--accent-wash);color:var(--accent-ink);}
+  .st-info-strong{background:var(--accent);color:#fff;}
+  .st-ok{background:var(--good-wash);color:var(--good);}
+  .st-ok-soft{background:var(--good-wash);color:var(--good);opacity:.75;}
+  .st-act{background:var(--warn);color:#fff;}
+  .st-warn{background:var(--warn-wash);color:var(--warn);}
+  .st-bad{background:var(--crit-wash);color:var(--crit);}
+  .lo-unmapped{margin-top:10px;background:var(--warn-wash);border-radius:9px;padding:9px 11px;font-size:11.5px;color:var(--warn);}
+  .lo-unmapped b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+  .lo-unmapped span{display:block;}
+  .lo-legend{font-size:12px;color:var(--ink-soft);margin:0 0 14px;line-height:1.5;}
+
+
+  /* ===== review assignment ===== */
+  .rv-cols{display:grid;grid-template-columns:1fr 380px;gap:14px;align-items:start;}
+  .rv-side{position:sticky;top:16px;}
+  .rv-facts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+  .rv-fact{font-size:12px;background:var(--wash);border-radius:8px;padding:6px 10px;}
+  .rv-fact i{display:block;font-style:normal;font-size:9px;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--ink-faint);font-weight:700;margin-bottom:1px;}
+  .rv-fact.lab-urgent{background:var(--crit-wash);color:var(--crit);font-weight:600;}
+  .rv-ai{background:#F6F4FB;border:1px solid #E2DCEF;border-radius:10px;padding:10px 12px;margin-bottom:14px;}
+  .rv-aitag{display:inline-block;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+    background:var(--gradient-agent);color:#fff;border-radius:5px;padding:2px 7px;margin-bottom:5px;}
+  .rv-ai p{margin:0;font-size:12.5px;line-height:1.5;color:var(--ink);}
+  .rv-ai em{font-style:normal;color:var(--ink-faint);}
+  .rv-row{display:grid;grid-template-columns:1.3fr .8fr .7fr .7fr;gap:10px;align-items:center;
+    padding:10px 8px;border-bottom:1px solid var(--wash);font-size:13.5px;}
+  .rv-row:last-child{border-bottom:none;}
+  .rv-n{font-weight:600;}
+  .rv-v{font-weight:800;font-variant-numeric:tabular-nums;}
+  .rv-v i{font-style:normal;font-weight:500;font-size:11px;color:var(--ink-faint);}
+  .rv-ref,.rv-prior{font-size:11.5px;color:var(--ink-faint);font-variant-numeric:tabular-nums;}
+  .rv-row.abn{background:var(--warn-wash);border-radius:8px;} .rv-row.abn .rv-v{color:var(--warn);}
+  .rv-row.crit{background:var(--crit-wash);border-radius:8px;} .rv-row.crit .rv-v{color:var(--crit);}
+  .rv-narr{font-size:13.5px;line-height:1.6;background:var(--wash);border-radius:9px;padding:11px 13px;margin:0;}
+  .rv-src{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--wash);}
+
+  .rv-choice{display:flex;flex-direction:column;gap:8px;}
+  .rv-opt{text-align:left;border:1.5px solid var(--line);background:var(--panel);border-radius:12px;
+    padding:12px 14px;cursor:pointer;font-family:inherit;}
+  .rv-opt b{display:block;font-size:13.5px;font-weight:700;margin-bottom:2px;}
+  .rv-opt span{font-size:11.5px;color:var(--ink-faint);}
+  .rv-opt:hover{border-color:var(--line-strong);}
+  .rv-opt.on{border-color:var(--ink-dark);background:var(--wash);}
+  .rv-hint{font-size:11.5px;color:var(--ink-faint);margin:-4px 0 10px;line-height:1.5;}
+  .rv-hint em{font-style:normal;font-weight:700;color:var(--ink-soft);}
+  .rv-pick{display:flex;align-items:center;gap:9px;padding:7px 0;font-size:13px;cursor:pointer;}
+  .rv-pick b{font-variant-numeric:tabular-nums;}
+  .rv-field{margin-top:10px;} .rv-field label{display:block;font-size:10px;text-transform:uppercase;
+    letter-spacing:.05em;color:var(--ink-faint);font-weight:700;margin-bottom:4px;}
+  .rv-field input{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-family:inherit;font-size:13px;outline:none;}
+  .rv-field input:focus{border-color:var(--accent);}
+  .rv-act{display:flex;align-items:center;gap:10px;padding:10px 0;font-size:13.5px;cursor:pointer;border-bottom:1px solid var(--wash);}
+  .rv-act:last-of-type{border-bottom:none;}
+  .rv-exp{display:none;padding:0 0 12px 26px;}
+  .rv-exp.open{display:block;}
+  .rv-exp textarea,.rv-exp input{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;
+    font-family:inherit;font-size:12.5px;outline:none;resize:vertical;}
+  .rv-exp textarea:focus,.rv-exp input:focus{border-color:var(--accent);}
+  .rv-wins{display:flex;flex-direction:column;gap:6px;}
+  .rv-win{text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:9px;padding:8px 11px;
+    font-family:inherit;font-size:12px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
+  .rv-win.on{border-color:var(--accent);background:var(--accent-wash);color:var(--accent-ink);}
+  .rv-commit{font-size:12.5px;color:var(--ink);background:var(--wash);border-radius:9px;padding:10px 12px;margin:0 0 12px;line-height:1.5;}
+  .rv-done{display:flex;gap:8px;}
+  .rv-done .btn{flex:1;justify-content:center;}
+  @media(max-width:1100px){ .rv-cols{grid-template-columns:1fr;} .rv-side{position:static;} }
 
   /* ===== Care timeline ===== */
   .ctl-title{font-size:17px;font-weight:800;margin:0 0 14px;}
@@ -1617,6 +1717,87 @@
 
     </div>
 
+
+    <!-- ===================== REVIEW ASSIGNMENT (spec v7 §5.6) ===================== -->
+    <div class="screen" id="screen-review">
+      <button class="pc-back" onclick="showScreen('inbox')"><span class="ic" data-pcic="back"></span> Back to Inbox</button>
+      <h1 id="rv-title">Review</h1>
+      <p class="sub" id="rv-sub">&nbsp;</p>
+
+      <div class="rv-cols">
+        <div>
+          <div class="box">
+            <p class="box-title">Delivery</p>
+            <div class="rv-facts" id="rv-facts"></div>
+            <div class="rv-ai" id="rv-ai"></div>
+            <div class="rv-results" id="rv-results"></div>
+            <div id="rv-unmapped"></div>
+            <div class="rv-src">
+              <button class="btn xs" onclick="toast('Opens the source report (demo)')">Open the lab&rsquo;s report</button>
+              <button class="btn xs" onclick="toast('Version comparison (demo)')">Compare with earlier version</button>
+              <button class="btn xs" onclick="toast('Full history (demo)')">Full history</button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="rv-side">
+          <div class="box" style="margin-bottom:12px;">
+            <p class="box-title">Does this delivery require follow-up?</p>
+            <div class="rv-choice">
+              <button class="rv-opt" id="rv-no" onclick="rvSetFollow(false)">
+                <b>No follow-up required</b><span>Records the review and closes the assignment.</span></button>
+              <button class="rv-opt" id="rv-yes" onclick="rvSetFollow(true)">
+                <b>Follow-up required</b><span>Choose the results that drove it, then what happens next.</span></button>
+            </div>
+          </div>
+
+          <div id="rv-follow" style="display:none;">
+            <div class="box" style="margin-bottom:12px;">
+              <p class="box-title">Which results drove this?</p>
+              <p class="rv-hint">Optional. Only the results you pick will show <em>Reviewed &mdash; action needed</em>; the rest stay <em>Reviewed</em>.</p>
+              <div id="rv-picks"></div>
+              <div class="rv-field"><label>Reason</label>
+                <input type="text" id="rv-reason" placeholder="e.g. K+ 6.3, ramipril held, repeat today"></div>
+            </div>
+
+            <div class="box" style="margin-bottom:12px;">
+              <p class="box-title">What happens next</p>
+              <label class="rv-act"><input type="checkbox" id="a-msg" onchange="rvToggle('msg')"> <span><b>Message patient</b></span></label>
+              <div class="rv-exp" id="exp-msg"><textarea id="rv-msg" rows="3">Your potassium came back high. Hold your ramipril and have a repeat drawn today.</textarea></div>
+
+              <label class="rv-act"><input type="checkbox" id="a-book" onchange="rvToggle('book')"> <span><b>Book appointment</b></span></label>
+              <div class="rv-exp" id="exp-book">
+                <div class="rv-wins">
+                  <button class="rv-win on" onclick="rvWin(this)">Today 4:00 &ndash; 5:30 &middot; 6 queued</button>
+                  <button class="rv-win" onclick="rvWin(this)">Tomorrow 9:00 &ndash; 10:30 &middot; 3</button>
+                  <button class="rv-win" onclick="rvWin(this)">Tomorrow 3:00 &ndash; 4:30 &middot; 1</button>
+                </div>
+              </div>
+
+              <label class="rv-act"><input type="checkbox" id="a-rep" onchange="rvToggle('rep')"> <span><b>Prepare repeat lab work</b></span></label>
+              <div class="rv-exp" id="exp-rep">
+                <p class="rv-hint" style="margin:0 0 8px;">Creates a draft order. Nothing reaches the patient until you confirm and the requisition is provided or transmitted.</p>
+                <input type="text" id="rv-rep" placeholder="Tests to repeat, e.g. Potassium, Creatinine">
+              </div>
+
+              <label class="rv-act"><input type="checkbox" id="a-staff" onchange="rvToggle('staff')"> <span><b>Staff reminder</b></span></label>
+              <div class="rv-exp" id="exp-staff">
+                <input type="text" id="rv-staff" placeholder="What should the MOA do?" value="Call patient to confirm she has held the ramipril">
+              </div>
+            </div>
+          </div>
+
+          <div class="box">
+            <p class="rv-commit" id="rv-commit">Records your review. Nothing is sent.</p>
+            <div class="rv-done">
+              <button class="btn dark" onclick="rvDone(false)">Done</button>
+              <button class="btn" onclick="rvDone(true)">Done and next</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
     <!-- ===================== PATIENT DETAIL (second layer of the queue) ===================== -->
     <div class="screen" id="screen-patientchart">
       <button class="pc-back" onclick="showScreen('today')"><span class="ic" data-pcic="back"></span> Back to Home</button>
@@ -1810,6 +1991,7 @@
               <div class="vc-tabsrow">
                 <button class="active" data-vcp="summary" onclick="vcPane('summary')">Summary</button>
                 <button data-vcp="timeline" onclick="vcPane('timeline')">Timeline</button>
+                <button data-vcp="orders" onclick="vcPane('orders')">Lab Work</button>
                 <button data-vcp="results" onclick="vcPane('results')">Labs</button>
                 <button data-vcp="meds" onclick="vcPane('meds')">Medications</button>
                 <button data-vcp="imaging" onclick="vcPane('imaging')">Imaging</button>
@@ -1832,6 +2014,10 @@
 
               <div class="vc-pane" id="vcp-timeline"><div class="care-tl-mount"></div></div>
 
+              <div class="vc-pane" id="vcp-orders">
+                <p class="lo-legend">What was ordered and where each test stands. A requisition that failed says so; one whose receipt was never confirmed says that; a collection not yet due says that rather than implying a result is on its way.</p>
+                <div class="lab-orders-mount"></div>
+              </div>
               <div class="vc-pane" id="vcp-results">
                 <div class="vc-line"><span><span class="l">Ferritin</span><div class="vc-sub2">Jun 25, 2026 &middot; LifeLabs</div></span><span class="r flag">18 &micro;g/L &middot; Low</span></div>
                 <div class="vc-line"><span><span class="l">CBC + differential</span><div class="vc-sub2">Jun 25, 2026</div></span><span class="r">Normal</span></div>
@@ -2003,7 +2189,12 @@
               <div class="vd-pane" id="vdt-labs">
                 <div class="vd-secttl"><h4>Labs</h4><button class="btn dark xs" onclick="toast('Lab requisition started (demo)')">+ Order labs</button></div>
                 <div class="vd-subtabs"><button class="active">Results</button><button>Requisitions</button></div>
-                <p class="lab-note">Newest first. Critical values are flagged here <em>and</em> raised on the dashboard, so nothing is buried.</p>
+                <div class="vd-subhead">Lab Work &mdash; ordered tests and current state</div>
+                <p class="lo-legend">What was ordered, how the requisition was fulfilled, and where each test stands. A requisition that failed says so; one whose receipt was never confirmed says that; a collection that is not due yet says that rather than implying a result is on its way.</p>
+                <div class="lab-orders-mount"></div>
+
+                <div class="vd-subhead" style="margin-top:22px;">Results received</div>
+                <p class="lab-note">Newest first, grouped by panel.</p>
                 <div id="lab-panels"></div>
               </div>
 
@@ -2577,7 +2768,7 @@ function renderCriticals(){
       '<span class="al-src">'+c.panel+' &middot; '+c.received+'</span>'+
       '<span class="al-acts">'+
         '<button class="al-btn primary" onclick="event.stopPropagation();ackCritical('+idx+')">Acknowledge</button>'+
-        '<button class="al-btn" onclick="event.stopPropagation();openInboxItem('+idx+')">Open</button>'+
+        '<button class="al-btn" onclick="event.stopPropagation();openReview('+idx+')">Open</button>'+
       '</span></div>';
   }).join('');
 }
@@ -2948,12 +3139,12 @@ function inboxRowHtml(item, i){
 
   var actions = '';
   if(item.status === 'received'){
-    actions = '<button class="btn xs dark" onclick="event.stopPropagation();openInboxItem('+i+')">Review</button>';
+    actions = '<button class="btn xs dark" onclick="event.stopPropagation();openReview('+i+')">Review</button>';
   } else if(item.status === 'reviewed'){
     actions = '<button class="btn xs dark" onclick="event.stopPropagation();signOffInbox('+i+')">Sign off</button>';
   }
 
-  return '<div class="inbox-row ix'+(crit?' critical':'')+'" onclick="openInboxItem('+i+')">'+
+  return '<div class="inbox-row ix'+(crit?' critical':'')+'" onclick="openReview('+i+')">'+
     '<span class="ix-type '+IX_TYPE_CLS[item.type]+'">'+item.type+'</span>'+
     '<div class="ix-body">'+
       '<div class="ix-top"><b>'+item.patient+'</b><span class="ix-age">'+(item.age||'')+'</span>'+
@@ -3362,6 +3553,168 @@ function updateWorkCounts(){
   }
 }
 
+
+/* ============================================================
+   Lab Work orders — spec v7 §6.2 ordered-test states.
+   Required strings; internal names must not leak to the UI.
+   ============================================================ */
+var TEST_STATE = {
+  not_sent:      {label:'Not sent to lab',                    tone:'bad'},
+  not_due:       {label:'Not yet due',                        tone:'quiet'},
+  expected:      {label:'Collection expected',                tone:'quiet'},
+  receipt_unconf:{label:'Lab receipt not confirmed',          tone:'warn'},
+  await_req:     {label:'Awaiting new requisition',           tone:'bad'},
+  no_result:     {label:'No result received',                 tone:'warn'},
+  await_review:  {label:'Awaiting review',                    tone:'info'},
+  corrected:     {label:'Corrected result — awaiting review', tone:'info-strong'},
+  prelim_new:    {label:'Updated preliminary — awaiting review', tone:'info-strong'},
+  prelim_rev:    {label:'Preliminary reviewed',               tone:'ok-soft'},
+  reviewed:      {label:'Reviewed',                           tone:'ok'},
+  reviewed_act:  {label:'Reviewed — action needed',           tone:'act'},
+  not_performed: {label:'Not performed',                      tone:'bad'},
+  not_required:  {label:'No longer required',                 tone:'quiet'}
+};
+
+var LAB_ORDERS = [
+  { id:'o1', patient:'Behdis Maleki, 35F', label:'Renal &amp; electrolytes', ordered:'Aug 2, 2026',
+    fulfilment:'Delivered electronically', fulfilmentTone:'ok', validUntil:'Feb 2, 2027',
+    window:'Collection window Aug 2 – Aug 16',
+    tests:[ {n:'Potassium', st:'await_review'}, {n:'Creatinine', st:'await_review'},
+            {n:'eGFR', st:'await_review'}, {n:'Urea', st:'await_review'} ],
+    unmapped:[{n:'Magnesium', why:'not an ordered item on this order'}] },
+
+  { id:'o2', patient:'Behdis Maleki, 35F', label:'Diabetes monitoring', ordered:'Mar 1, 2026',
+    standing:true, progress:{done:2, total:4}, collection:'Collection 3 of 4',
+    fulfilment:'Provided to patient', fulfilmentTone:'warn', validUntil:'Mar 1, 2027',
+    window:'Collection window Aug 20 – Sep 3',
+    note:'Requisition held by the patient. Simple Care cannot confirm laboratory receipt.',
+    tests:[ {n:'HbA1c', st:'expected'}, {n:'Creatinine', st:'expected'},
+            {n:'Albumin/creatinine ratio', st:'not_due'}, {n:'Lipid panel', st:'receipt_unconf'} ] },
+
+  { id:'o3', patient:'Manjit Dhaliwal, 58M', label:'Anaemia workup', ordered:'Aug 4, 2026',
+    fulfilment:'Electronic transmission failed', fulfilmentTone:'bad', validUntil:'—',
+    orderCondition:'Not delivered to the laboratory — no requisition exists',
+    tests:[ {n:'Ferritin', st:'not_sent'}, {n:'B12', st:'not_sent'}, {n:'Folate', st:'not_sent'} ] },
+
+  { id:'o4', patient:'Gloria Mcdonald, 74F', label:'Cardiac markers', ordered:'Aug 6, 2026',
+    fulfilment:'Delivered electronically', fulfilmentTone:'ok', validUntil:'Feb 6, 2027',
+    tests:[ {n:'Troponin I', st:'reviewed_act'}, {n:'CK', st:'reviewed'},
+            {n:'D-dimer', st:'not_performed', why:'Haemolysed specimen — repeat required'} ] },
+
+  { id:'o5', patient:'Priya Raman, 39F', label:'Thyroid function', ordered:'Jul 2, 2026',
+    fulfilment:'Provided to patient', fulfilmentTone:'warn', validUntil:'Lapsed Aug 2, 2026', lapsed:true,
+    orderCondition:'Requisition lapsed — a new requisition is required before collection',
+    tests:[ {n:'TSH', st:'await_req'}, {n:'Free T4', st:'await_req'} ] },
+
+  { id:'o6', patient:'Grace Lin, 52F', label:'Warfarin monitoring', ordered:'Aug 1, 2026',
+    fulfilment:'Delivered electronically', fulfilmentTone:'ok', validUntil:'Feb 1, 2027',
+    tests:[ {n:'INR', st:'corrected'}, {n:'PT', st:'prelim_rev'},
+            {n:'APTT', st:'reviewed'}, {n:'Fibrinogen', st:'not_required', why:'No longer required — clinical picture resolved'} ] }
+];
+
+
+/* ===== Review assignment (spec v7 §5.6) ===== */
+var RV_I = -1, RV_FOLLOW = null;
+function openReview(i){
+  var it = INBOX_ITEMS[i]; if(!it) return;
+  RV_I = i; RV_FOLLOW = null;
+  document.getElementById('rv-title').textContent = it.patient;
+  document.getElementById('rv-sub').textContent = it.panel + ' · ' + (it.age||'');
+
+  document.getElementById('rv-facts').innerHTML =
+    '<span class="rv-fact"><i>Received</i>'+it.received+'</span>'+
+    '<span class="rv-fact"><i>Source</i>'+it.lab+'</span>'+
+    '<span class="rv-fact"><i>Type</i>'+it.type+'</span>'+
+    (inboxIsCritical(it)
+      ? '<span class="rv-fact lab-urgent"><i>Urgency</i>Urgent — as reported by the laboratory</span>' : '');
+
+  document.getElementById('rv-ai').innerHTML =
+    '<span class="rv-aitag">AI summary</span>'+
+    '<p>'+(inboxIsCritical(it)
+      ? 'A critical value is present in this delivery. Verify against the source report before acting.'
+      : 'No critical values detected in this delivery.')+
+    ' <em>Assistive only — the source report remains authoritative.</em></p>';
+
+  var tests = it.tests || [];
+  document.getElementById('rv-results').innerHTML = tests.length
+    ? tests.map(function(t){
+        var cls = !t.f ? '' : (t.f.indexOf('crit')===0 ? 'crit' : 'abn');
+        return '<div class="rv-row '+cls+'"><span class="rv-n">'+t.n+'</span>'+
+          '<span class="rv-v">'+t.v+' <i>'+t.u+'</i></span>'+
+          '<span class="rv-ref">ref '+t.ref+'</span>'+
+          (t.prior?'<span class="rv-prior">was '+t.prior+'</span>':'<span class="rv-prior">no prior result</span>')+'</div>';
+      }).join('')
+    : '<p class="rv-narr">'+(it.impression||it.interp||it.outcome||'See source report.')+'</p>';
+
+  document.getElementById('rv-unmapped').innerHTML = '';
+  document.getElementById('rv-picks').innerHTML = tests.length
+    ? tests.map(function(t,ix){
+        return '<label class="rv-pick"><input type="checkbox" data-t="'+ix+'"'+(t.f&&t.f.indexOf('crit')===0?' checked':'')+'> '+
+          '<span>'+t.n+' <b>'+t.v+'</b></span></label>';
+      }).join('')
+    : '<p class="rv-hint" style="margin:0;">Narrative report — follow-up applies to the delivery.</p>';
+
+  ['msg','book','rep','staff'].forEach(function(k){
+    var cb=document.getElementById('a-'+({msg:'msg',book:'book',rep:'rep',staff:'staff'})[k]);
+    if(cb) cb.checked=false;
+    var ex=document.getElementById('exp-'+k); if(ex) ex.classList.remove('open');
+  });
+  document.getElementById('rv-follow').style.display='none';
+  document.getElementById('rv-no').classList.remove('on');
+  document.getElementById('rv-yes').classList.remove('on');
+  rvCommit();
+  showScreen('review');
+}
+function rvSetFollow(v){
+  RV_FOLLOW = v;
+  document.getElementById('rv-no').classList.toggle('on', v===false);
+  document.getElementById('rv-yes').classList.toggle('on', v===true);
+  document.getElementById('rv-follow').style.display = v ? 'block' : 'none';
+  rvCommit();
+}
+function rvToggle(k){
+  var cb=document.getElementById('a-'+k);
+  document.getElementById('exp-'+k).classList.toggle('open', cb.checked);
+  rvCommit();
+}
+function rvWin(b){ b.parentNode.querySelectorAll('.rv-win').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); rvCommit(); }
+function rvCommit(){
+  var el=document.getElementById('rv-commit'); if(!el) return;
+  if(RV_FOLLOW === null){ el.textContent='Choose whether this delivery requires follow-up.'; return; }
+  if(RV_FOLLOW === false){ el.textContent='Records the review. Nothing is sent to the patient.'; return; }
+  var bits=[];
+  if(document.getElementById('a-msg').checked) bits.push('sends your message');
+  if(document.getElementById('a-book').checked){
+    var w=document.querySelector('#exp-book .rv-win.on');
+    bits.push('books '+(w?w.textContent.split('·')[0].trim():'an appointment'));
+  }
+  if(document.getElementById('a-rep').checked) bits.push('creates a draft repeat order for you to confirm');
+  if(document.getElementById('a-staff').checked) bits.push('opens a task for your MOA');
+  el.textContent = bits.length
+    ? 'Records the review and ' + bits.join(', ') + '.'
+    : 'Records follow-up on this delivery with no action attached.';
+}
+function rvDone(next){
+  if(RV_FOLLOW === null){ toast('Choose whether follow-up is required first'); return; }
+  var it = INBOX_ITEMS[RV_I];
+  it.status = 'reviewed';
+  if(RV_FOLLOW){
+    var picks=[...document.querySelectorAll('#rv-picks input:checked')].map(function(c){ return it.tests[c.dataset.t].n; });
+    it.followUp = picks;
+    toast('Reviewed — follow-up recorded' + (picks.length?' on '+picks.join(', '):''));
+  } else {
+    it.followUp = [];
+    toast('Reviewed — no follow-up required');
+  }
+  renderInboxList(); renderInboxToday(); renderCriticals(); updateWorkCounts();
+  if(next){
+    var nxt = INBOX_ITEMS.findIndex(function(x){ return x.status==='received'; });
+    if(nxt>-1){ openReview(nxt); return; }
+    toast('Inbox clear');
+  }
+  showScreen('inbox');
+}
+
 /* ===== Patient detail screen (second layer of the queue) ===== */
 var PC_ICONS = {
  chart: ICONS.today, meds: ICONS.encounterlog, labs: ICONS.claims, imaging: ICONS.calendar,
@@ -3451,6 +3804,42 @@ var LAB_PANELS = [
       {n:'HbA1c', v:'7.1', u:'%', ref:'<7.0', f:'high'}
     ]}
 ];
+
+function renderLabOrders(){
+  var mounts = document.querySelectorAll('.lab-orders-mount'); if(!mounts.length) return;
+  var html = LAB_ORDERS.map(function(o){
+    var head = '<div class="lo-hd">'+
+      '<div><p class="lo-label">'+o.label+(o.standing?' <span class="lo-standing">Standing order</span>':'')+'</p>'+
+      '<p class="lo-sub">Ordered '+o.ordered+(o.collection?' &middot; '+o.collection:'')+'</p></div>'+
+      (o.standing?'<div class="lo-prog"><b>'+o.progress.done+' of '+o.progress.total+'</b><span>received</span></div>':'')+
+    '</div>';
+
+    // fulfilment + validity are order-level facts, kept separately legible
+    var facts = '<div class="lo-facts">'+
+      '<span class="lo-fact '+o.fulfilmentTone+'"><i>Requisition</i>'+o.fulfilment+'</span>'+
+      '<span class="lo-fact'+(o.lapsed?' bad':'')+'"><i>Valid until</i>'+o.validUntil+'</span>'+
+      (o.window?'<span class="lo-fact"><i>Collection</i>'+o.window+'</span>':'')+
+    '</div>';
+
+    var cond = o.orderCondition ? '<p class="lo-cond">'+o.orderCondition+'</p>' : '';
+    var note = o.note ? '<p class="lo-note">'+o.note+'</p>' : '';
+
+    var tests = '<div class="lo-tests">'+ o.tests.map(function(t){
+      var st = TEST_STATE[t.st];
+      return '<div class="lo-test"><span class="lo-tn">'+t.n+'</span>'+
+        '<span class="st st-'+st.tone+'">'+st.label+'</span>'+
+        (t.why?'<span class="lo-why">'+t.why+'</span>':'')+'</div>';
+    }).join('') +'</div>';
+
+    var unmapped = (o.unmapped||[]).length
+      ? '<div class="lo-unmapped"><b>Unmapped in this delivery</b>'+
+        o.unmapped.map(function(u){ return '<span>'+u.n+' &mdash; '+u.why+'</span>'; }).join('')+'</div>'
+      : '';
+
+    return '<div class="lo'+(o.lapsed||o.fulfilmentTone==='bad'?' flagged':'')+'">'+head+facts+cond+note+tests+unmapped+'</div>';
+  }).join('');
+  mounts.forEach(function(m){ m.innerHTML = html; });
+}
 function renderLabPanels(){
   var m=document.getElementById('lab-panels'); if(!m) return;
   m.innerHTML = LAB_PANELS.map(function(p){
@@ -3565,7 +3954,7 @@ function openChart(name){
     el.textContent = r.redflag ? 'Intake flag: review before calling' : 'No active alerts';
   });
   vdTab('overview');
-  renderLabPanels();
+  renderLabPanels(); renderLabOrders();
   clearInterval(vdInt); var vdw=document.getElementById('vd-call'); if(vdw) vdw.classList.remove('live');
   CARE_EVENTS = buildCareEvents(r); renderCareTimeline();
   pcShowSec('chart'); vcPane('summary'); setChartVer('c'); pcEndCall();
