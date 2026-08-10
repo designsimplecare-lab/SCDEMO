@@ -725,6 +725,9 @@
   .crit-ref{font-size:11.5px;color:var(--ink-faint);}
   .crit-note{font-size:12px;color:var(--crit);margin-top:3px;}
   .crit-actions{display:flex;gap:8px;flex-shrink:0;}
+  .inbox-crit{margin:5px 0 2px;font-size:12px;color:var(--crit);background:var(--crit-wash);
+    border-radius:7px;padding:5px 9px;display:inline-block;}
+  .inbox-crit b{font-variant-numeric:tabular-nums;}
   .q-tools{display:inline-flex;align-items:center;gap:8px;}
   /* physician-set call window */
   .win-edit{display:inline-flex;flex-direction:column;align-items:flex-start;gap:1px;background:none;border:1px solid transparent;
@@ -2389,11 +2392,6 @@ var AI_SUMMARY = {
   'Manjit':'Reviewing lab results ordered at last visit; asymptomatic.',
   'Korynn':'Standard visit, reason not specified at booking.'
 };
-/* critical results: chronological lists must never bury these */
-var CRITICAL_RESULTS = [
-  {patient:'Behdis Maleki, 35F', test:'Potassium', value:'6.3 mmol/L', ref:'3.5\u20135.1', note:'Critical high \u2014 repeat and assess urgently', received:'Today, 7:22 AM', ack:false},
-  {patient:'Manjit', test:'Haemoglobin', value:'71 g/L', ref:'130\u2013175', note:'Critical low \u2014 symptomatic anaemia', received:'Today, 6:05 AM', ack:false}
-];
 var currentWindow = 'all';
 var queueSearch = '';
 var dayOffset = 0;
@@ -2465,26 +2463,27 @@ function renderQueue(){
 }
 function renderCriticals(){
   var list=document.getElementById('crit-list');
-  if(!list) return;
-  var open = CRITICAL_RESULTS.filter(function(c){ return !c.ack; });
-  list.innerHTML = open.map(function(c,i){
-    var idx = CRITICAL_RESULTS.indexOf(c);
+  if(!list || typeof INBOX_ITEMS === 'undefined') return;
+  // single source of truth: unreviewed inbox results carrying a critical value
+  var open = INBOX_ITEMS.filter(function(it){ return it.critical && it.status === 'received'; });
+  list.innerHTML = open.map(function(c){
+    var idx = INBOX_ITEMS.indexOf(c);
     return '<div class="crit-row">'+
       '<span class="crit-tier">Critical</span>'+
-      '<div class="crit-body"><b>'+c.patient.split(',')[0]+'</b> &middot; '+c.test+
-        ' <span class="crit-val">'+c.value+'</span> <span class="crit-ref">(ref '+c.ref+')</span>'+
-        '<div class="crit-note">'+c.note+' &middot; received '+c.received+'</div></div>'+
+      '<div class="crit-body"><b>'+c.patient+'</b> &middot; '+c.critical.test+
+        ' <span class="crit-val">'+c.critical.value+'</span> <span class="crit-ref">(ref '+c.critical.ref+')</span>'+
+        '<div class="crit-note">'+c.critical.note+' &middot; '+c.desc+' &middot; received '+c.received+'</div></div>'+
       '<div class="crit-actions">'+
         '<button class="btn crit dark xs" onclick="ackCritical('+idx+')">Acknowledge</button>'+
-        '<button class="btn xs" onclick="openChart(\''+c.patient+'\')">Open chart</button>'+
+        '<button class="btn xs" onclick="openInboxItem('+idx+')">Open in inbox</button>'+
       '</div></div>';
   }).join('');
 }
 function ackCritical(i){
-  if(!CRITICAL_RESULTS[i]) return;
-  CRITICAL_RESULTS[i].ack = true;
-  toast('Acknowledged \u00b7 ' + CRITICAL_RESULTS[i].test + ' for ' + CRITICAL_RESULTS[i].patient.split(',')[0]);
-  renderCriticals(); renderGlance();
+  var it = INBOX_ITEMS[i]; if(!it) return;
+  it.status = 'reviewed';
+  toast('Acknowledged \u00b7 ' + it.critical.test + ' for ' + it.patient + ' \u2014 moved to awaiting sign-off');
+  renderCriticals(); renderInboxList(); renderInboxToday();
 }
 function renderDayNav(){
   var lbl=document.getElementById('day-label'); if(!lbl) return;
@@ -2532,7 +2531,7 @@ function renderGlance(){
   var waitingNow = QUEUE_DATA.filter(function(r){return r.status==='waiting'||r.status==='next';}).length;
   var behind = QUEUE_DATA.filter(function(r){return r.status==='delayed';}).length;
   var attention = QUEUE_DATA.filter(function(r){return r.status==='missed'||r.status==='dropped';}).length;
-  var critCount = (typeof CRITICAL_RESULTS !== 'undefined') ? CRITICAL_RESULTS.filter(function(c){return !c.ack;}).length : 0;
+  var critCount = (typeof INBOX_ITEMS !== 'undefined') ? INBOX_ITEMS.filter(function(c){return c.critical && c.status==='received';}).length : 0;
   var tiles = [
     {n:attention, l:'Needs attention', s:'missed / dropped calls', cls:attention?'crit':''},
     {n:waitingNow, l:'In queue', s:'patients to see', cls:''},
@@ -2698,14 +2697,19 @@ function sendTaskMoa(){
 
 /* ===== Inbox — clear-the-inbox review/sign-off state machine (received -> reviewed -> signed-off) ===== */
 var INBOX_ITEMS = [
-  { patient:'Gloria Mcdonald', type:'Lab', desc:'Troponin — flagged abnormal, stat', received:'Today, 7:50 AM', status:'received', urgent:true },
-  { patient:'Frank D.', type:'Lab', desc:'CBC + electrolytes — routine follow-up', received:'Today, 9:14 AM', status:'received' },
-  { patient:'Carol-Anne Feldman', type:'Imaging', desc:'MRI report — lumbar spine', received:'Today, 8:02 AM', status:'received' },
-  { patient:'Louise ("Chickadee")', type:'Consult note', desc:'EDS specialist consult — referral follow-up', received:'Yesterday, 4:40 PM', status:'reviewed' },
-  { patient:'Brian K.', type:'Imaging', desc:'Chest X-ray — clear', received:'Mon', status:'signed-off' }
+  { patient:'Behdis Maleki', type:'Lab', desc:'Renal function panel', received:'Today, 7:22 AM', status:'received', urgent:true,
+    critical:{ test:'Potassium', value:'6.3 mmol/L', ref:'3.5\u20135.1', note:'Critical high \u2014 repeat and assess urgently' } },
+  { patient:'Manjit', type:'Lab', desc:'Complete blood count', received:'Today, 6:05 AM', status:'received', urgent:true,
+    critical:{ test:'Haemoglobin', value:'71 g/L', ref:'130\u2013175', note:'Critical low \u2014 symptomatic anaemia' } },
+  { patient:'Gloria Mcdonald', type:'Lab', desc:'Troponin \u2014 flagged abnormal, stat', received:'Today, 7:50 AM', status:'received', urgent:true },
+  { patient:'Frank D.', type:'Lab', desc:'CBC + electrolytes \u2014 routine follow-up', received:'Today, 9:14 AM', status:'received' },
+  { patient:'Carol-Anne Feldman', type:'Imaging', desc:'MRI report \u2014 lumbar spine', received:'Today, 8:02 AM', status:'received' },
+  { patient:'Louise ("Chickadee")', type:'Consult note', desc:'EDS specialist consult \u2014 referral follow-up', received:'Yesterday, 4:40 PM', status:'reviewed' },
+  { patient:'Brian K.', type:'Imaging', desc:'Chest X-ray \u2014 clear', received:'Mon', status:'signed-off' }
 ];
 
 function inboxRowHtml(item, i){
+  var critLine = item.critical ? '<div class="inbox-crit"><b>'+item.critical.test+' '+item.critical.value+'</b> (ref '+item.critical.ref+') &middot; '+item.critical.note+'</div>' : '';
   var pillClass = item.urgent ? 'urgent' : item.status;
   var pillLabel = item.urgent ? 'Urgent' : (item.status === 'received' ? 'Needs review' : (item.status === 'reviewed' ? 'Reviewed' : 'Signed off'));
   var actions = '';
@@ -2716,7 +2720,7 @@ function inboxRowHtml(item, i){
   }
   return '<div class="inbox-row'+(item.urgent?' urgent':'')+'" onclick="openInboxItem('+i+')">'+
     '<span class="inbox-type">'+item.type+'</span>'+
-    '<div class="inbox-body"><b>'+item.patient+'</b> — '+item.desc+'<div class="inbox-meta">Received '+item.received+'</div></div>'+
+    '<div class="inbox-body"><b>'+item.patient+'</b> — '+item.desc+critLine+'<div class="inbox-meta">Received '+item.received+'</div></div>'+
     '<div class="inbox-actions"><span class="status-pill '+pillClass+'">'+pillLabel+'</span>'+actions+'</div>'+
   '</div>';
 }
