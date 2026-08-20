@@ -143,19 +143,20 @@
   }
   .activity-snap-item:last-child{border-bottom:none;}
 
+  /* Calm attention banner. Physician review: grab attention, do not alarm. */
   .critical-banner{
-    display:flex;gap:12px;align-items:flex-start;background:#fdecec;border:1px solid #e8a5a5;
-    border-radius:10px;padding:14px 16px;margin-bottom:16px;
+    display:flex;gap:14px;align-items:flex-start;background:var(--panel);
+    border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:10px;padding:15px 16px;margin-bottom:16px;box-shadow:var(--shadow-card);
   }
-  .critical-ico{font-size:20px;line-height:1;flex-shrink:0;margin-top:1px;}
+  .critical-ico{display:none;}
   .critical-body{flex:1;}
-  .critical-title{font-size:14.5px;font-weight:700;color:#8a2020;margin:0 0 4px;}
-  .critical-text{font-size:13px;color:#7a2b2b;margin:0 0 10px;}
+  .critical-title{font-size:14.5px;font-weight:700;color:var(--ink);margin:0 0 4px;}
+  .critical-text{font-size:13px;color:var(--ink-soft);margin:0 0 10px;line-height:1.5;}
+  .critical-text b{color:var(--ink);font-weight:600;}
   .critical-actions{display:flex;gap:8px;}
-  .critical-actions .btn.primary{background:#b23434;border-color:#b23434;}
-  .critical-actions .btn.ghost{border-color:#e8a5a5;color:#8a2020;}
   .critical-dismiss{
-    background:none;border:none;font-size:18px;color:#b56a6a;cursor:pointer;line-height:1;
+    background:none;border:none;font-size:18px;color:var(--ink-faint);cursor:pointer;line-height:1;
     padding:0;flex-shrink:0;
   }
 
@@ -556,22 +557,6 @@
   }
   .proto-bar button.active{background:#fff;color:var(--ink);font-weight:600;}
 
-  /* conditions / chronic care */
-  .cond-card{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px;background:var(--panel);}
-  .cond-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px;}
-  .cond-name{font-size:14.5px;font-weight:700;margin:0 0 2px;}
-  .cond-sub{font-size:12px;color:var(--ink-soft);margin:0;}
-  .cond-meta{display:flex;gap:0;margin:10px 0;background:var(--wash);border-radius:8px;overflow:hidden;}
-  .cond-meta > div{flex:1;padding:8px 12px;border-right:1px dashed var(--line-strong);}
-  .cond-meta > div:last-child{border-right:none;}
-  .cond-meta .k{font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.04em;margin:0 0 2px;}
-  .cond-meta .v{font-size:13px;font-weight:700;margin:0;}
-  .pill.ctrl{background:var(--good-wash);color:var(--good);}
-  .pill.review{background:#fff4e2;color:var(--warn);}
-  .cond-actions{display:flex;gap:6px;flex-wrap:wrap;}
-  .reading-row{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--line);}
-  .reading-row:last-child{border-bottom:none;}
-
   /* ===== Retail AI: floating conversational assistant (patient portal) ===== */
   .ai-launcher{
     position:fixed;right:24px;bottom:24px;z-index:120;display:flex;align-items:center;gap:10px;
@@ -698,17 +683,46 @@
   .dsw-tog::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;}
   .dsw-tog.on{background:var(--good);} .dsw-tog.on::after{left:19px;}
 
-  .ptlab-count{font-size:13px;color:var(--ink-soft);margin-bottom:10px;}
-  .ptlab-count b{font-size:17px;font-weight:800;color:var(--ink);}
-  .ptlab-row{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--wash);}
-  .ptlab-row:last-child{border-bottom:none;}
-  .ptlab-main{flex:1;min-width:0;}
-  .ptlab-main b{display:block;font-size:14px;font-weight:700;}
-  .ptlab-st{display:block;font-size:12.5px;margin-top:2px;}
-  .ptlab-st.ok{color:var(--good);} .ptlab-st.act{color:var(--accent-ink);font-weight:600;}
-  .ptlab-st.wait{color:var(--ink-faint);}
-  .ptlab-sub{display:block;font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
-  .ptlab-date{font-size:12px;color:var(--ink-faint);flex-shrink:0;}
+  /* Granular lab work. Physician review: be explicit about what was ordered,
+     what is back, what has been reviewed, and what is still outstanding. */
+  .ptlab-summary{
+    display:flex;gap:22px;flex-wrap:wrap;padding:12px 14px;background:var(--wash);
+    border-radius:9px;margin-bottom:14px;
+  }
+  .ptlab-stat b{display:block;font-size:19px;font-weight:800;line-height:1.1;}
+  .ptlab-stat span{font-size:11.5px;color:var(--ink-soft);}
+  .ptlab-stat.reviewed b{color:var(--good);}
+  .ptlab-stat.back b{color:var(--accent-ink);}
+  .ptlab-stat.waiting b{color:var(--ink-faint);}
+  .ptlab-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--ink-faint);margin-bottom:12px;}
+  .ptlab-legend i{font-style:normal;display:inline-flex;align-items:center;gap:5px;}
+  .ptlab-dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
+  .ptlab-dot.reviewed{background:var(--good);}
+  .ptlab-dot.back{background:var(--accent);}
+  .ptlab-dot.waiting{background:#fff;border:1px dashed var(--line-strong);}
+
+  .ptlab-order{padding:14px 0;border-bottom:1px solid var(--wash);}
+  .ptlab-order:last-child{border-bottom:none;padding-bottom:0;}
+  .ptlab-hd{display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
+  .ptlab-hd b{font-size:14px;font-weight:700;}
+  .ptlab-prog{font-size:11.5px;color:var(--ink-faint);flex-shrink:0;}
+  .ptlab-ord{font-size:11.5px;color:var(--ink-faint);margin:1px 0 8px;}
+  .ptlab-tests{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+  .ptlab-test{
+    display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 9px;
+    border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink-soft);
+  }
+  .ptlab-test.reviewed{background:var(--good-wash);border-color:var(--good-wash);color:var(--good);}
+  .ptlab-test.back{background:var(--accent-wash);border-color:var(--accent-wash);color:var(--accent-ink);}
+  .ptlab-test.waiting{background:transparent;border-style:dashed;color:var(--ink-faint);}
+  .ptlab-out{font-size:12.5px;line-height:1.5;color:var(--ink-soft);}
+  .ptlab-out.act{color:var(--ink);}
+  .ptlab-book{
+    display:flex;align-items:center;gap:8px;margin-top:8px;padding:9px 11px;border-radius:8px;
+    background:var(--accent-wash);color:var(--accent-ink);font-size:12.5px;font-weight:600;
+  }
+  .ptlab-note{font-size:11.5px;color:var(--ink-faint);margin-top:14px;line-height:1.5;}
+
 </style>
 </head>
 <body class="mode-v1">
@@ -725,7 +739,6 @@
       <li><button class="nav-btn active" data-screen="dashboard">Dashboard</button></li>
       <li><button class="nav-btn" data-screen="queue">Today's visit</button></li>
       <li><button class="nav-btn" data-screen="appointments">Visit history</button></li>
-      <li><button class="nav-btn" data-screen="conditions">My conditions</button></li>
       <li><button class="nav-btn" data-screen="activity">Clinical activity</button></li>
       <li><button class="nav-btn" data-screen="documents">Health records</button></li>
       <li><button class="nav-btn" data-screen="family">Family members</button></li>
@@ -808,10 +821,10 @@
       <div class="critical-banner" id="critical-banner">
         <span class="critical-ico">&#9888;</span>
         <div class="critical-body">
-          <p class="critical-title">Your bloodwork needs follow up</p>
-          <p class="critical-text">Dr. Pannozzo flagged a result from your August 14 bloodwork. His office will call within 24 hours, but you can reach them sooner if needed.</p>
+          <p class="critical-title">Dr. Pannozzo has reviewed your August 14 bloodwork</p>
+          <p class="critical-text">He'd like to go over one of the results with you. <b>Our office will call you within 24 hours to book a time</b> &mdash; there's nothing you need to do right now.</p>
           <div class="critical-actions">
-            <button class="btn primary" style="padding:7px 12px;font-size:12.5px;" onclick="openCase('aug14')">View the result</button>
+            <button class="btn primary" style="padding:7px 12px;font-size:12.5px;" onclick="openCase('aug14')">View your results</button>
             <button class="btn ghost" style="padding:7px 12px;font-size:12.5px;background:transparent;" onclick="toast('Would call the office directly')">Call the office</button>
           </div>
         </div>
@@ -878,19 +891,14 @@
         </div>
 
         <div class="card">
-          <p class="section-title" style="margin-top:0;">Just came in, whole family</p>
-          <div class="dash-mini-row" data-person="ani" onclick="openCase('aug14')">
-            <div><span class="who-tag">Ani</span><b>Bloodwork results</b><div class="doc-sub">Ordered by Dr. Pannozzo, yesterday</div></div>
-            <span class="pill" style="background:var(--accent-wash);color:var(--accent-ink);">New</span>
+          <p class="section-title" style="margin-top:0;">Add a document</p>
+          <div class="upload-zone" id="dash-upload-zone" onclick="document.getElementById('dash-file-input').click()">
+            <div class="uz-ico">&#128206;</div>
+            <div class="uz-t">Add a document</div>
+            <div class="uz-s">Lab result from elsewhere, insurance form, ID, or a photo &middot; PDF, JPG, PNG</div>
           </div>
-          <div class="dash-mini-row" data-person="leo" onclick="toast('Would open the prescription details')">
-            <div><span class="who-tag leo">Leo</span><b>Prescription ready</b><div class="doc-sub">Pharmasave Dundas West, 1 hour ago</div></div>
-            <span class="pill" style="background:var(--accent-wash);color:var(--accent-ink);">New</span>
-          </div>
-          <div class="dash-mini-row" data-person="karen" onclick="toast('Would open Karen\'s visit summary')">
-            <div><span class="who-tag karen">Karen</span><b>Visit summary ready</b><div class="doc-sub">Dr. Priya Nadar, 2 days ago</div></div>
-            <span class="pill" style="background:var(--accent-wash);color:var(--accent-ink);">New</span>
-          </div>
+          <input type="file" id="dash-file-input" style="display:none" multiple onchange="handleDashUpload(this.files)">
+          <div id="dash-upload-list" style="margin-top:6px;"></div>
           <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="showScreen('documents')">See all health records</button>
         </div>
       </div>
@@ -915,15 +923,14 @@
         </div>
 
         <div class="card">
-          <p class="section-title" style="margin-top:0;">Just came in</p>
-          <div class="dash-mini-row" onclick="openCase('aug14')">
-            <div><b>Bloodwork results</b><div class="doc-sub">Ordered by Dr. Pannozzo, yesterday</div></div>
-            <span class="pill" style="background:var(--accent-wash);color:var(--accent-ink);">New</span>
+          <p class="section-title" style="margin-top:0;">Add a document</p>
+          <div class="upload-zone" id="dash-upload-zone2" onclick="document.getElementById('dash-file-input2').click()">
+            <div class="uz-ico">&#128206;</div>
+            <div class="uz-t">Add a document</div>
+            <div class="uz-s">Lab result from elsewhere, insurance form, ID, or a photo &middot; PDF, JPG, PNG</div>
           </div>
-          <div class="dash-mini-row" onclick="toast('Would open the prescription details')">
-            <div><b>Prescription ready</b><div class="doc-sub">Pharmasave Dundas West, 1 hour ago</div></div>
-            <span class="pill" style="background:var(--accent-wash);color:var(--accent-ink);">New</span>
-          </div>
+          <input type="file" id="dash-file-input2" style="display:none" multiple onchange="handleDashUpload(this.files,'dash-upload-list2')">
+          <div id="dash-upload-list2" style="margin-top:6px;"></div>
           <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="showScreen('documents')">See all health records</button>
         </div>
       </div>
@@ -937,6 +944,15 @@
           </div>
           <button class="btn ghost" style="flex-shrink:0;" onclick="showScreen('family')">Add family</button>
         </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+          <p class="section-title" style="margin:0;">Your lab work</p>
+          <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;" onclick="showScreen('documents')">Open in health records</button>
+        </div>
+        <p class="muted" style="margin:0 0 12px;font-size:12.5px;">Exactly what was ordered, what has come back, and what is still with the lab.</p>
+        <div id="dash-lab-list"></div>
       </div>
 
       <div class="card">
@@ -1036,8 +1052,8 @@
       <p class="sub">Everything tied to a visit, grouped by what it's for, with the newest first.</p>
 
       <div class="card" id="pt-labwork">
-        <h3 style="margin-top:0;">Current lab work</h3>
-        <p class="muted" style="margin-top:-6px;">Everything your provider has ordered that isn't finished yet.</p>
+        <h3 style="margin-top:0;">Your lab work</h3>
+        <p class="muted" style="margin-top:-6px;">Exactly what was ordered, what has come back, and what is still with the lab.</p>
         <div id="pt-lab-list"></div>
       </div>
 
@@ -1057,23 +1073,6 @@
         <div id="doc-upload-list" style="margin-top:6px;"></div>
       </div>
 
-      <p class="section-title">Visit summaries &middot; 27 total</p>
-      <div class="card">
-        <div class="doc-item">
-          <div class="doc-left"><span class="doc-ico">&#128196;</span><div><b>Visit summary, June 25 2026</b><div class="doc-sub">Dr. Daniel Pannozzo</div></div></div>
-          <div class="doc-actions"><button class="btn ghost" onclick="openCase('jun25')">View</button><button class="btn ghost" onclick="toast('Would download the PDF')">Download</button></div>
-        </div>
-        <div class="doc-item">
-          <div class="doc-left"><span class="doc-ico">&#128196;</span><div><b>Visit summary, May 12 2026</b><div class="doc-sub">Dr. Sarah Okonkwo</div></div></div>
-          <div class="doc-actions"><button class="btn ghost" onclick="toast('Would open a preview')">View</button><button class="btn ghost" onclick="toast('Would download the PDF')">Download</button></div>
-        </div>
-        <div class="doc-item">
-          <div class="doc-left"><span class="doc-ico">&#128196;</span><div><b>Visit summary, November 3 2025</b><div class="doc-sub">Dr. Sarah Okonkwo</div></div></div>
-          <div class="doc-actions"><button class="btn ghost" onclick="toast('Would open a preview')">View</button><button class="btn ghost" onclick="toast('Would download the PDF')">Download</button></div>
-        </div>
-        <button class="btn ghost" style="width:100%;" onclick="toast('Would load the remaining 24 visit summaries, filterable by year')">Show all 27 visit summaries</button>
-      </div>
-
       <p class="section-title">Prescriptions &middot; 9 total</p>
       <div class="card">
         <div class="doc-item">
@@ -1087,13 +1086,33 @@
         <button class="btn ghost" style="width:100%;" onclick="toast('Would load the remaining 7 prescriptions')">Show all 9 prescriptions</button>
       </div>
 
-      <p class="section-title">Lab and imaging results &middot; 4 total</p>
+      <p class="section-title">Lab results &middot; 4 total</p>
       <div class="card">
         <div class="doc-item">
-          <div class="doc-left"><span class="doc-ico">&#128203;</span><div><b>Bloodwork panel, August 14 2025</b><div class="doc-sub">Ordered by Dr. Daniel Pannozzo</div></div></div>
+          <div class="doc-left"><span class="doc-ico">&#128203;</span><div><b>Bloodwork panel, August 14 2026</b><div class="doc-sub">Ordered by Dr. Daniel Pannozzo</div></div></div>
           <div class="doc-actions"><button class="btn ghost" onclick="openCase('aug14')">View</button></div>
         </div>
         <button class="btn ghost" style="width:100%;" onclick="toast('Would load the remaining 3 results')">Show all 4 results</button>
+      </div>
+
+      <p class="section-title">Imaging reports &middot; 2 total</p>
+      <div class="card">
+        <div class="doc-item">
+          <div class="doc-left"><span class="doc-ico">&#127909;</span><div><b>Chest X-ray report, July 2 2026</b><div class="doc-sub">Ordered by Dr. Daniel Pannozzo &middot; Radiologist report</div></div></div>
+          <div class="doc-actions"><button class="btn ghost" onclick="toast('Would open the radiologist report')">View</button><button class="btn ghost" onclick="toast('Would download the PDF')">Download</button></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-left"><span class="doc-ico">&#127909;</span><div><b>Abdominal ultrasound report, March 9 2026</b><div class="doc-sub">Ordered by Dr. Sarah Okonkwo &middot; Radiologist report</div></div></div>
+          <div class="doc-actions"><button class="btn ghost" onclick="toast('Would open the radiologist report')">View</button><button class="btn ghost" onclick="toast('Would download the PDF')">Download</button></div>
+        </div>
+      </div>
+
+      <p class="section-title">Consult reports &middot; 1 total</p>
+      <div class="card">
+        <div class="doc-item">
+          <div class="doc-left"><span class="doc-ico">&#128232;</span><div><b>Cardiology consultation, July 28 2026</b><div class="doc-sub">Dr. M. Ferreira &middot; Sent back to Dr. Pannozzo</div></div></div>
+          <div class="doc-actions"><button class="btn ghost" onclick="toast('Would open the consultant letter')">View</button><button class="btn ghost" onclick="toast('Would download the PDF')">Download</button></div>
+        </div>
       </div>
 
       <p class="section-title">Referrals</p>
@@ -1102,6 +1121,8 @@
         <h3>No referrals yet</h3>
         <p>If a physician refers you to a specialist, the referral letter and the specialist's contact details will show up here.</p>
       </div>
+
+      <p class="clin-disclaimer">Prescriptions, lab results, imaging reports, and consult reports are shared with you here. Your physician's own visit notes and clinical documentation stay in the medical record at their office &mdash; ask them directly if you need a copy.</p>
     </div>
 
     <div class="screen" id="screen-activity">
@@ -1134,8 +1155,8 @@
         <div class="tl-day">
           <p class="tl-date">July 18, 2026</p>
           <div class="tl-appt" data-cat="appointment" onclick="showScreen('appointments')">
-            <span class="pill wait" style="font-size:10.5px;">Appointment</span>
-            <span>Dr. Daniel Pannozzo, waiting</span>
+            <span class="pill" style="background:var(--accent-wash);color:var(--accent-ink);font-size:10.5px;">Appointment</span>
+            <span>Dr. Daniel Pannozzo, upcoming</span>
           </div>
         </div>
         <div class="tl-day">
@@ -1447,57 +1468,6 @@
           <span style="font-size:13px;">Text me when it's my turn</span>
           <div class="toggle on" onclick="this.classList.toggle('on')"></div>
         </div>
-      </div>
-    </div>
-
-    <!-- ===== CHRONIC CARE ===== -->
-    <div class="screen" id="screen-conditions">
-      <h1>My conditions</h1>
-      <p class="sub">Ongoing conditions your care team is managing, with medications and reviews in one place.</p>
-
-      <div class="cond-card">
-        <div class="cond-top">
-          <div><p class="cond-name">Type 2 diabetes</p><p class="cond-sub">Since 2021 &middot; managed by Dr. Pannozzo</p></div>
-          <span class="pill ctrl">Controlled</span>
-        </div>
-        <div class="cond-meta">
-          <div><p class="k">Last HbA1c</p><p class="v">6.4%</p></div>
-          <div><p class="k">Medication</p><p class="v">Metformin</p></div>
-          <div><p class="k">Next review</p><p class="v">Oct 2026</p></div>
-        </div>
-        <div class="cond-actions">
-          <button class="btn primary sm" onclick="requestRefill('Metformin 500mg')">Request refill</button>
-          <button class="btn ghost sm" onclick="logReading('glucose')">Log a reading</button>
-          <button class="btn ghost sm" onclick="startBooking('Ani','followup')">Book follow-up</button>
-        </div>
-      </div>
-
-      <div class="cond-card">
-        <div class="cond-top">
-          <div><p class="cond-name">Hypertension</p><p class="cond-sub">Since 2022 &middot; managed by Dr. Pannozzo</p></div>
-          <span class="pill review">Review due</span>
-        </div>
-        <div class="cond-meta">
-          <div><p class="k">Last BP</p><p class="v">148 / 92</p></div>
-          <div><p class="k">Medication</p><p class="v">Amlodipine</p></div>
-          <div><p class="k">Next review</p><p class="v">Overdue</p></div>
-        </div>
-        <div class="triage-alert" style="background:#fff4e2;border-color:#e0b978;color:var(--warn);">
-          <span>&#9888;</span>
-          <div>Your last reading was high and a review is overdue. Booking a follow-up is recommended.</div>
-        </div>
-        <div class="cond-actions">
-          <button class="btn primary sm" onclick="startBooking('Ani','followup')">Book follow-up</button>
-          <button class="btn ghost sm" onclick="requestRefill('Amlodipine 5mg')">Request refill</button>
-          <button class="btn ghost sm" onclick="logReading('bp')">Log a reading</button>
-        </div>
-      </div>
-
-      <p class="section-title">Recent readings you've logged</p>
-      <div class="card" id="reading-log">
-        <div class="reading-row"><span>Blood glucose &middot; 5.8 mmol/L</span><span>Jul 21, 8:10 AM</span></div>
-        <div class="reading-row"><span>Blood pressure &middot; 146 / 90</span><span>Jul 19, 7:45 AM</span></div>
-        <div class="reading-row"><span>Blood glucose &middot; 6.1 mmol/L</span><span>Jul 18, 8:00 AM</span></div>
       </div>
     </div>
 
@@ -2015,27 +1985,6 @@ function startGrace(){
 function requestRefill(med){
   toast('Refill request sent for ' + med + '. Your pharmacy will be notified once approved.');
 }
-function logReading(kind){
-  var label, val;
-  if(kind === 'bp'){
-    val = prompt('Log blood pressure (e.g. 130/85):');
-    label = 'Blood pressure';
-  } else {
-    val = prompt('Log blood glucose (mmol/L):');
-    label = 'Blood glucose';
-  }
-  if(!val){ return; }
-  var row = document.createElement('div');
-  row.className = 'reading-row';
-  row.style.animation = 'fadeSlide .2s ease';
-  var now = new Date();
-  var time = now.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ', ' +
-             now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-  row.innerHTML = '<span>' + label + ' &middot; ' + val + '</span><span>' + time + '</span>';
-  var log = document.getElementById('reading-log');
-  log.insertBefore(row, log.firstChild);
-  toast('Reading logged');
-}
 
 function toast(msg){
   var t = document.getElementById('toast');
@@ -2092,8 +2041,6 @@ function aiReply(text){
       aiAppend("You have two active medications on file. Which would you like to refill?",'bot');
       aiActionBtn('&#128138;','Refill Metformin 500mg',null,function(){aiDo(function(){requestRefill('Metformin 500mg');});});
       aiActionBtn('&#128138;','Refill Amlodipine 5mg',null,function(){aiDo(function(){requestRefill('Amlodipine 5mg');});});
-      aiAppend("Or manage them all under My conditions.",'bot');
-      aiActionBtn('&#129658;','Open My conditions',null,function(){aiDo(function(){showScreen('conditions');});});
     }
     else if(/(result|lab|bloodwork|report|x-ray|imaging|latest)/.test(t)){
       aiAppend("Your most recent result is <b>bloodwork ordered by Dr. Pannozzo</b>. I can open that visit's clinical summary, or take you to all your health records.",'bot');
@@ -2113,8 +2060,8 @@ function aiReply(text){
       aiActionBtn('&#128203;','Open Visit history',null,function(){aiDo(function(){showScreen('appointments');});});
     }
     else if(/(condition|diagnos|chronic|manage)/.test(t)){
-      aiAppend("Your ongoing conditions, medications, and readings are all under My conditions.",'bot');
-      aiActionBtn('&#129658;','Open My conditions',null,function(){aiDo(function(){showScreen('conditions');});});
+      aiAppend("Your medications, lab work, and reports all live in Health records. For anything about how a condition is being managed, that's a conversation for your physician.",'bot');
+      aiActionBtn('&#128193;','Open Health records',null,function(){aiDo(function(){showScreen('documents');});});
     }
     else if(/(book|see|doctor|visit|sick|appointment|throat|cold|fever|pain|cough|rash)/.test(t)){
       aiAppend("I can get you booked. You can continue ongoing care with <b>Dr. Pannozzo</b>, or start a same-day visit with the next available doctor.",'bot');
@@ -2157,28 +2104,148 @@ function dswMode(){
   document.querySelectorAll('#dsw-mode button').forEach(function(b){ b.classList.toggle('on', b.dataset.m===m); });
 }
 
-/* Current lab work — the patient sees what is still outstanding (physician feedback pt 6) */
+/* ===== Lab work, patient side =====
+   Physician review: be granular. Name the tests that were ordered, show which
+   have come back, which the physician has reviewed, and which are still with
+   the lab. Never leave the patient guessing that 'something' arrived, and
+   always say who makes the next move. */
 var PT_LABWORK = [
-  { panel:'Renal Function Panel', date:'Aug 3', status:'Reviewed', note:'Dr. Pannozzo will call you today, 4:00 – 5:30 pm', tone:'act' },
-  { panel:'Complete Blood Count', date:'Aug 4', status:'Reviewed', note:'No action needed', sub:'Still waiting on 2 more from the lab', tone:'ok' },
-  { panel:'Fatigue Workup', date:'Aug 4', status:'Pending', tone:'wait' },
-  { panel:'Coagulation Studies', date:'Aug 1', status:'Pending', sub:'Some results are back, waiting on the rest', tone:'wait' },
-  { panel:'Iron Studies', date:'Jul 2', status:'Reviewed', note:'No action needed', tone:'ok' },
-  { panel:'Thyroid Assessment', date:'Apr 18', status:'Pending', tone:'wait' }
+  {
+    panel:'Renal Function Panel',
+    ordered:'Ordered by Dr. Pannozzo, Aug 3',
+    tests:[
+      {name:'Creatinine', state:'reviewed'},
+      {name:'eGFR', state:'reviewed'},
+      {name:'Urea', state:'reviewed'},
+      {name:'Sodium', state:'reviewed'},
+      {name:'Potassium', state:'reviewed'}
+    ],
+    outcome:'All 5 tests are back and Dr. Pannozzo has reviewed them. He wants to talk one of them through with you.',
+    book:'Our office will call you today between 4:00 and 5:30 pm to book a follow-up. Nothing for you to do.',
+    tone:'act'
+  },
+  {
+    panel:'Complete Blood Count',
+    ordered:'Ordered by Dr. Pannozzo, Aug 4',
+    tests:[
+      {name:'Hemoglobin', state:'reviewed'},
+      {name:'Hematocrit', state:'reviewed'},
+      {name:'White cell count', state:'reviewed'},
+      {name:'Platelets', state:'waiting'},
+      {name:'MCV', state:'waiting'}
+    ],
+    outcome:'3 reviewed by Dr. Pannozzo, no action needed. Still waiting on 2 from the lab.',
+    tone:'ok'
+  },
+  {
+    panel:'Fatigue Workup',
+    ordered:'Ordered by Dr. Pannozzo, Aug 4',
+    tests:[
+      {name:'TSH', state:'back'},
+      {name:'Ferritin', state:'waiting'},
+      {name:'Vitamin B12', state:'waiting'},
+      {name:'Vitamin D', state:'waiting'}
+    ],
+    outcome:'1 result is in and waiting for Dr. Pannozzo to review it. 3 still to come from the lab.',
+    tone:'wait'
+  },
+  {
+    panel:'Coagulation Studies',
+    ordered:'Ordered by Dr. Pannozzo, Aug 1',
+    tests:[
+      {name:'INR', state:'reviewed'},
+      {name:'Prothrombin time', state:'back'},
+      {name:'aPTT', state:'waiting'}
+    ],
+    outcome:'1 reviewed, no action needed. 1 waiting on Dr. Pannozzo. 1 still to come from the lab.',
+    tone:'wait'
+  },
+  {
+    panel:'Iron Studies',
+    ordered:'Ordered by Dr. Pannozzo, Jul 2',
+    tests:[
+      {name:'Serum iron', state:'reviewed'},
+      {name:'Ferritin', state:'reviewed'},
+      {name:'Transferrin saturation', state:'reviewed'}
+    ],
+    outcome:'All 3 reviewed by Dr. Pannozzo, no action needed.',
+    tone:'ok'
+  },
+  {
+    panel:'Thyroid Assessment',
+    ordered:'Ordered by Dr. Okonkwo, Apr 18',
+    tests:[
+      {name:'TSH', state:'waiting'},
+      {name:'Free T4', state:'waiting'}
+    ],
+    outcome:'Nothing back from the lab yet. If you have not had your blood drawn, your requisition is still open.',
+    tone:'wait'
+  }
 ];
-function renderPtLabWork(){
-  var m = document.getElementById('pt-lab-list'); if(!m) return;
-  var waiting = PT_LABWORK.filter(function(x){ return x.status==='Pending' || x.sub; });
-  m.innerHTML =
-    '<div class="ptlab-count"><b>'+waiting.length+'</b> still waiting on the lab</div>' +
-    PT_LABWORK.map(function(x){
-      return '<div class="ptlab-row">'+
-        '<div class="ptlab-main"><b>'+x.panel+'</b>'+
-          '<span class="ptlab-st '+x.tone+'">'+x.status+(x.note?' &mdash; '+x.note:'')+'</span>'+
-          (x.sub?'<span class="ptlab-sub">'+x.sub+'</span>':'')+
-        '</div><span class="ptlab-date">'+x.date+'</span></div>';
-    }).join('');
+
+var PT_LAB_STATE = {
+  reviewed:{ label:'reviewed' },
+  back:{ label:'result in, not yet reviewed' },
+  waiting:{ label:'waiting on the lab' }
+};
+
+function ptLabTotals(){
+  var t = { total:0, reviewed:0, back:0, waiting:0 };
+  PT_LABWORK.forEach(function(o){
+    o.tests.forEach(function(x){ t.total++; t[x.state]++; });
+  });
+  return t;
 }
+
+function ptLabHTML(){
+  var t = ptLabTotals();
+  var out =
+    '<div class="ptlab-summary">' +
+      '<div class="ptlab-stat"><b>'+t.total+'</b><span>tests ordered</span></div>' +
+      '<div class="ptlab-stat reviewed"><b>'+t.reviewed+'</b><span>reviewed by your doctor</span></div>' +
+      '<div class="ptlab-stat back"><b>'+t.back+'</b><span>in, awaiting review</span></div>' +
+      '<div class="ptlab-stat waiting"><b>'+t.waiting+'</b><span>still with the lab</span></div>' +
+    '</div>' +
+    '<div class="ptlab-legend">' +
+      '<i><span class="ptlab-dot reviewed"></span>Reviewed by your doctor</i>' +
+      '<i><span class="ptlab-dot back"></span>Result in, awaiting review</i>' +
+      '<i><span class="ptlab-dot waiting"></span>Still with the lab</i>' +
+    '</div>';
+
+  out += PT_LABWORK.map(function(o){
+    var done = o.tests.filter(function(x){ return x.state !== 'waiting'; }).length;
+    var chips = o.tests.map(function(x){
+      return '<span class="ptlab-test '+x.state+'" title="'+PT_LAB_STATE[x.state].label+'">'+
+        '<span class="ptlab-dot '+x.state+'"></span>'+x.name+'</span>';
+    }).join('');
+    return '<div class="ptlab-order">' +
+      '<div class="ptlab-hd"><b>'+o.panel+'</b><span class="ptlab-prog">'+done+' of '+o.tests.length+' back</span></div>' +
+      '<p class="ptlab-ord">'+o.ordered+'</p>' +
+      '<div class="ptlab-tests">'+chips+'</div>' +
+      '<p class="ptlab-out '+o.tone+'">'+o.outcome+'</p>' +
+      (o.book ? '<div class="ptlab-book"><span>&#128222;</span><span>'+o.book+'</span></div>' : '') +
+    '</div>';
+  }).join('');
+
+  out += '<p class="ptlab-note">A result arriving does not mean something is wrong, and it does not mean you need to book. ' +
+    'If your doctor wants to see you, our office contacts you to arrange it.</p>';
+  return out;
+}
+
+function renderPtLabWork(){
+  var html = ptLabHTML();
+  ['pt-lab-list','dash-lab-list'].forEach(function(id){
+    var m = document.getElementById(id);
+    if(m){ m.innerHTML = html; }
+  });
+}
+
+function handleDashUpload(files, listId){
+  listId = listId || 'dash-upload-list';
+  for(var i=0;i<files.length;i++){ renderUpload(files[i], listId); }
+  toast(files.length + (files.length === 1 ? ' file uploaded' : ' files uploaded') + ', saved to your health records');
+}
+
 renderPtLabWork();
 </script>
 
