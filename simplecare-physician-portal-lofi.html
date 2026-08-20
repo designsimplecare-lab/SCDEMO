@@ -1504,6 +1504,7 @@
   .rv-field input:focus{border-color:var(--accent);}
   .rv-act{display:flex;align-items:center;gap:10px;padding:10px 0;font-size:13.5px;cursor:pointer;border-bottom:1px solid var(--wash);}
   .rv-act:last-of-type{border-bottom:none;}
+  .rv-act i{display:block;font-style:normal;font-size:11px;color:var(--ink-faint);font-weight:500;margin-top:1px;}
   .rv-exp{display:none;padding:0 0 12px 26px;}
   .rv-exp.open{display:block;}
   .rv-exp textarea,.rv-exp input{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;
@@ -1517,6 +1518,48 @@
   .rv-done{display:flex;gap:8px;}
   .rv-done .btn{flex:1;justify-content:center;}
   @media(max-width:1100px){ .rv-cols{grid-template-columns:1fr;} .rv-side{position:static;} }
+
+
+  /* inbox: flagged first, then chronological */
+  .ix-secttl{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);
+    margin:16px 0 9px;display:flex;align-items:center;gap:8px;}
+  .ix-secttl:first-child{margin-top:0;}
+  .ix-secttl span{background:var(--wash);border-radius:20px;padding:2px 8px;font-size:10px;}
+  .ix-secttl.crit{color:var(--crit);} .ix-secttl.crit span{background:var(--crit);color:#fff;}
+  .ix-id{font-size:11px;color:var(--ink-faint);font-weight:500;}
+  .ix-panelrow{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:3px 0 8px;}
+  .ix-panel{font-size:13.5px;font-weight:700;color:var(--ink);}
+  .ix-panel::before{content:none;}
+  .ix-hardflag{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+    background:var(--crit);color:#fff;border-radius:5px;padding:3px 8px;}
+  /* soft flag: outside reference range — subtle, not alarming */
+  .ix-chip{background:var(--wash);border:1px solid var(--line);color:var(--ink-soft);}
+  .ix-chip.ok{opacity:.75;}
+  .ix-chip.soft{background:#FDF8EC;border-color:#EADCB6;color:#8A6A1F;}
+  .ix-chip.hard{background:var(--crit-wash);border-color:#E8B7AF;color:var(--crit);font-weight:700;}
+  .ix-chip b{font-weight:700;}
+  /* outstanding lab work */
+  .out-hd{font-size:13.5px;margin-bottom:10px;} .out-hd b{font-size:17px;font-weight:800;}
+  .out-list{display:flex;flex-wrap:wrap;gap:7px;}
+  .out-item{font-size:12px;background:var(--wash);border-radius:9px;padding:6px 10px;font-weight:600;}
+  .out-item i{font-style:normal;color:var(--ink-faint);font-weight:500;margin-left:5px;}
+  .out-item em{display:block;font-style:normal;font-size:10px;color:var(--ink-faint);font-weight:500;margin-top:1px;}
+
+  /* source document naming */
+  .doc-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--wash);}
+  .doc-row:last-child{border-bottom:none;}
+  .doc-kind{font-size:9.5px;font-weight:800;letter-spacing:.05em;border-radius:5px;padding:3px 7px;
+    width:46px;text-align:center;flex-shrink:0;background:var(--wash);color:var(--ink-soft);}
+  .doc-kind.lab{background:var(--accent-wash);color:var(--accent-ink);}
+  .doc-kind.img{background:#E8F1FB;color:#25578F;}
+  .doc-kind.ref{background:#F3ECFB;color:#6B3FA0;}
+  .doc-kind.rx{background:var(--good-wash);color:var(--good);}
+  .doc-kind.form{background:var(--warn-wash);color:var(--warn);}
+  .doc-name{flex:1;font-size:13px;font-weight:600;min-width:0;}
+  .doc-st{font-size:11px;font-weight:700;border-radius:20px;padding:3px 10px;white-space:nowrap;}
+  .doc-st.ok{background:var(--good-wash);color:var(--good);}
+  .doc-st.warn{background:var(--warn-wash);color:var(--warn);}
+  .doc-t{font-size:11px;color:var(--ink-faint);width:62px;text-align:right;flex-shrink:0;}
 
   /* ===== Care timeline ===== */
   .ctl-title{font-size:17px;font-weight:800;margin:0 0 14px;}
@@ -1583,7 +1626,7 @@
       <p class="nav-group-label">Patients</p>
       <button class="nav-btn" data-screen="inbox" onclick="showScreen('inbox')"><span class="nav-icon">&#9993;</span><span class="nav-label">Inbox<span class="nav-flag" id="inbox-nav-flag" style="display:none;"></span></span></button>
       <button class="nav-btn" data-screen="encounterlog" onclick="showScreen('encounterlog')"><span class="nav-icon">&#9636;</span><span class="nav-label">Encounter Log</span></button>
-      <button class="nav-btn" data-screen="carryforward" onclick="showScreen('carryforward')"><span class="nav-icon">&#8635;</span><span class="nav-label">Carry Forward</span></button>
+      <button class="nav-btn" data-screen="carryforward" onclick="showScreen('carryforward')"><span class="nav-icon">&#8635;</span><span class="nav-label">Deferred Tasks</span></button>
     </div>
 
     <div class="nav-group">
@@ -1655,8 +1698,7 @@
           <span class="al-ref">&nbsp;</span>
           <span class="al-src">Pre-visit intake &middot; review before calling</span>
           <span class="al-acts">
-            <button class="al-btn primary" onclick="ackAlert(this)">Acknowledge</button>
-            <button class="al-btn" onclick="openBrief('Gloria Mcdonald')">Brief</button>
+            <button class="al-btn primary" onclick="openBrief('Gloria Mcdonald')">Review intake</button>
           </span>
         </div>
         <p class="routine-toggle" onclick="toggleRoutine()">▸ 2 routine items (not blocking)</p>
@@ -1702,10 +1744,9 @@
             <div class="q-tools">
               <div class="q-search">
                 <span class="ic" data-pcic="search"></span>
-                <input type="text" id="queue-search" placeholder="Search patient or concern" oninput="filterQueueSearch(this.value)">
+                <input type="text" id="queue-search" placeholder="Search by name, PHN, DOB" oninput="filterQueueSearch(this.value)">
                 <button class="q-clear" id="queue-search-clear" onclick="clearQueueSearch()" title="Clear">&times;</button>
               </div>
-              <button class="q-sort" onclick="toast('Sort: acuity, then wait (demo)')">&#8645; Sort &middot; Acuity, then wait</button>
             </div>
           </div>
 
@@ -1741,8 +1782,6 @@
             <div id="rv-unmapped"></div>
             <div class="rv-src">
               <button class="btn xs" onclick="toast('Opens the source report (demo)')">Open the lab&rsquo;s report</button>
-              <button class="btn xs" onclick="toast('Version comparison (demo)')">Compare with earlier version</button>
-              <button class="btn xs" onclick="toast('Full history (demo)')">Full history</button>
             </div>
           </div>
         </div>
@@ -1769,10 +1808,7 @@
 
             <div class="box" style="margin-bottom:12px;">
               <p class="box-title">What happens next</p>
-              <label class="rv-act"><input type="checkbox" id="a-msg" onchange="rvToggle('msg')"> <span><b>Message patient</b></span></label>
-              <div class="rv-exp" id="exp-msg"><textarea id="rv-msg" rows="3">Your potassium came back high. Hold your ramipril and have a repeat drawn today.</textarea></div>
-
-              <label class="rv-act"><input type="checkbox" id="a-book" onchange="rvToggle('book')"> <span><b>Book appointment</b></span></label>
+              <label class="rv-act"><input type="checkbox" id="a-book" onchange="rvToggle('book')"> <span><b>Book into scheduler &amp; call</b></span></label>
               <div class="rv-exp" id="exp-book">
                 <div class="rv-wins">
                   <button class="rv-win on" onclick="rvWin(this)">Today 4:00 &ndash; 5:30 &middot; 6 queued</button>
@@ -1781,16 +1817,13 @@
                 </div>
               </div>
 
-              <label class="rv-act"><input type="checkbox" id="a-rep" onchange="rvToggle('rep')"> <span><b>Prepare repeat lab work</b></span></label>
-              <div class="rv-exp" id="exp-rep">
-                <p class="rv-hint" style="margin:0 0 8px;">Creates a draft order. Nothing reaches the patient until you confirm and the requisition is provided or transmitted.</p>
-                <input type="text" id="rv-rep" placeholder="Tests to repeat, e.g. Potassium, Creatinine">
+              <label class="rv-act"><input type="checkbox" id="a-moa" onchange="rvToggle('moa')"> <span><b>MOA to contact patient</b><i>Japneet &middot; paired with you</i></span></label>
+              <div class="rv-exp" id="exp-moa">
+                <input type="text" id="rv-moa" placeholder="What should Japneet do?" value="Call patient today to arrange a repeat draw">
               </div>
 
-              <label class="rv-act"><input type="checkbox" id="a-staff" onchange="rvToggle('staff')"> <span><b>Staff reminder</b></span></label>
-              <div class="rv-exp" id="exp-staff">
-                <input type="text" id="rv-staff" placeholder="What should the MOA do?" value="Call patient to confirm she has held the ramipril">
-              </div>
+              <label class="rv-act"><input type="checkbox" id="a-msg" onchange="rvToggle('msg')"> <span><b>Message patient to book</b></span></label>
+              <div class="rv-exp" id="exp-msg"><textarea id="rv-msg" rows="3">Your potassium came back high. Please book a follow-up today so we can review it.</textarea></div>
             </div>
           </div>
 
@@ -2349,6 +2382,11 @@
       <p class="sub">Every result that comes in — reviewed and signed off individually.</p>
       <div class="ia-note">Biggest dashboard gap from his walkthrough: "every test result, lab, imaging report, and consult note that comes in must be reviewed and individually signed off — not just lab work." Modeled as a real state machine: received &rarr; reviewed &rarr; signed off. Clicking an item opens it and marks it reviewed in one step (per his feedback that preview-then-open elsewhere was one click too many); signing off is a separate, deliberate action.</div>
 
+      <div class="box" id="outstanding-box">
+        <p class="box-title">Lab work still outstanding</p>
+        <div id="outstanding"></div>
+      </div>
+
       <div class="box">
         <p class="inbox-section-label">Needs review</p>
         <div id="inbox-received"></div>
@@ -2368,10 +2406,14 @@
       <div class="ia-note">IA change: this is a document-delivery audit trail (faxes / patient deliveries), not full clinical encounter records (SOAP notes, visit summaries). Renamed so the label matches the content — flagged as a real content gap if full encounter records don't exist elsewhere yet.</div>
       <div class="box">
         <p class="box-title">Today</p>
-        <div class="sched-row"><span>RX · Korynn · Faxed to Shoppers Drug Mart</span><span>07:18 PM</span></div>
-        <div class="sched-row"><span>LAB · Korynn · No recipient on file</span><span>06:54 PM</span></div>
-        <div class="sched-row"><span>LAB · Manjit · No recipient on file</span><span>06:25 PM</span></div>
-        <div class="sched-row"><span>RX · Greg · Faxed to Rexall</span><span>06:16 PM</span></div>
+        <p class="sched-note" style="margin-top:0;">Source documents are named by what they are, then date, then transmission status.</p>
+        <div class="doc-row"><span class="doc-kind rx">RX</span><span class="doc-name">Prescription &ndash; Shoppers Drug Mart &ndash; 2026.07.23</span><span class="doc-st ok">Fax Completed</span><span class="doc-t">07:18 PM</span></div>
+        <div class="doc-row"><span class="doc-kind lab">LAB</span><span class="doc-name">Renal function panel &mdash; 2026.07.23</span><span class="doc-st warn">Fax Pending</span><span class="doc-t">06:54 PM</span></div>
+        <div class="doc-row"><span class="doc-kind lab">LAB</span><span class="doc-name">Lab Work &mdash; 2026.07.23</span><span class="doc-st ok">Fax Delivered</span><span class="doc-t">06:25 PM</span></div>
+        <div class="doc-row"><span class="doc-kind img">IMG</span><span class="doc-name">Ultrasound &mdash; Abdomen complete &mdash; 2026.07.23</span><span class="doc-st ok">Fax Delivered</span><span class="doc-t">06:20 PM</span></div>
+        <div class="doc-row"><span class="doc-kind ref">REF</span><span class="doc-name">Referral &mdash; Dermatology &mdash; Vancouver &mdash; 2026.04.10</span><span class="doc-st warn">Fax Pending</span><span class="doc-t">06:18 PM</span></div>
+        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">Return To Work &mdash; 2026.04.09</span><span class="doc-st ok">Fax Completed</span><span class="doc-t">06:16 PM</span></div>
+        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">Disability Tax Credit (Initial) &mdash; 2026.04.09</span><span class="doc-st ok">Fax Completed</span><span class="doc-t">06:04 PM</span></div>
       </div>
 
       <div class="box">
@@ -2458,7 +2500,7 @@
       <div class="box"><div class="sched-row"><span>Private Visit Fee</span><span>$100 CAD</span></div></div>
     </div>
     <div class="screen" id="screen-carryforward">
-      <h1>Carry Forward</h1>
+      <h1>Deferred Tasks</h1>
       <p class="sub">Patients group — history of tasks you've sent to your MOA.</p>
       <div class="ia-note">IA change, confirmed with the team: this is the MOA-task history specifically — what you've delegated and its status (in progress / completed / carried forward if your MOA couldn't finish it same-day). Your own undelegated tasks sit underneath in "Mine", so both halves of your task load live on one screen instead of being split across Home.</div>
       <div class="box">
@@ -2711,7 +2753,7 @@ function renderQueue(){
     var winOk = (currentWindow==='all' || r.win===currentWindow);
     if(!winOk) return false;
     if(!q) return true;
-    return (r.name+' '+r.concern).toLowerCase().indexOf(q) !== -1;
+    return (r.name+' '+r.concern+' '+(r.phn||'')+' '+(r.dob||'')).toLowerCase().indexOf(q) !== -1;
   });
   var WIN_LABEL = {'8-10':'8:00–10:00','10-2':'10:00–2:00','2-5':'2:00–5:00','5-7':'5:00–7:00'};
   var qSeq = 0;
@@ -2769,8 +2811,7 @@ function renderCriticals(){
       '<span class="al-ref">ref '+cx.ref+'</span>'+
       '<span class="al-src">'+c.panel+' &middot; '+c.received+'</span>'+
       '<span class="al-acts">'+
-        '<button class="al-btn primary" onclick="event.stopPropagation();ackCritical('+idx+')">Acknowledge</button>'+
-        '<button class="al-btn" onclick="event.stopPropagation();openReview('+idx+')">Open</button>'+
+        '<button class="al-btn primary" onclick="event.stopPropagation();openReview('+idx+')">Review result</button>'+
       '</span></div>';
   }).join('');
 }
@@ -2992,101 +3033,101 @@ function sendTaskMoa(){
 
 /* ===== Inbox — clear-the-inbox review/sign-off state machine (received -> reviewed -> signed-off) ===== */
 var INBOX_ITEMS = [
-  { patient:'Behdis Maleki', age:'35F', type:'Lab', panel:'Renal function panel', received:'Today, 7:22 AM', ago:'2h',
+  { patient:'Behdis Maleki', age:'35F', phn:'9650 333 502', dob:'20-02-1979', type:'Lab', panel:'Renal function panel', received:'Today, 7:22 AM', ago:'2h',
     status:'received', lab:'LifeLabs',
     tests:[ {n:'Potassium',v:'6.3',u:'mmol/L',ref:'3.5–5.1',f:'crit-high',prior:'5.1'},
             {n:'Creatinine',v:'104',u:'µmol/L',ref:'45–90',f:'high',prior:'96'},
             {n:'eGFR',v:'54',u:'mL/min',ref:'>60',f:'low',prior:'60'},
             {n:'Urea',v:'9.1',u:'mmol/L',ref:'2.5–7.1',f:'high'} ] },
 
-  { patient:'Manjit Dhaliwal', age:'58M', type:'Lab', panel:'Complete blood count', received:'Today, 6:05 AM', ago:'3h',
+  { patient:'Manjit Dhaliwal', age:'58M', phn:'9650 293 478', dob:'20-05-1970', type:'Lab', panel:'Complete blood count', received:'Today, 6:05 AM', ago:'3h',
     status:'received', lab:'LifeLabs',
     tests:[ {n:'Haemoglobin',v:'71',u:'g/L',ref:'130–175',f:'crit-low',prior:'118'},
             {n:'MCV',v:'72',u:'fL',ref:'80–100',f:'low'},
             {n:'Platelets',v:'244',u:'×10⁹/L',ref:'150–400',f:''},
             {n:'White cells',v:'6.1',u:'×10⁹/L',ref:'4.0–11.0',f:''} ] },
 
-  { patient:'Gloria Mcdonald', age:'74F', type:'Lab', panel:'Cardiac markers', received:'Today, 7:50 AM', ago:'2h',
+  { patient:'Gloria Mcdonald', age:'74F', phn:'9650 115 886', dob:'28-10-1951', type:'Lab', panel:'Cardiac markers', received:'Today, 7:50 AM', ago:'2h',
     status:'received', lab:'Eagle Ridge',
     tests:[ {n:'Troponin I',v:'0.42',u:'µg/L',ref:'<0.04',f:'crit-high'},
             {n:'CK',v:'210',u:'U/L',ref:'30–200',f:'high'} ] },
 
-  { patient:'Grace Lin', age:'52F', type:'Lab', panel:'Coagulation studies', received:'Today, 8:40 AM', ago:'1h',
+  { patient:'Grace Lin', age:'52F', phn:'9650 654 746', dob:'17-07-1969', type:'Lab', panel:'Coagulation studies', received:'Today, 8:40 AM', ago:'1h',
     status:'received', lab:'LifeLabs', context:'On warfarin',
     tests:[ {n:'INR',v:'3.8',u:'',ref:'2.0–3.0',f:'high',prior:'2.6'},
             {n:'PT',v:'38',u:'sec',ref:'11–15',f:'high'},
             {n:'APTT',v:'34',u:'sec',ref:'25–35',f:''} ] },
 
-  { patient:'Andrey Abushakhmanov', age:'24M', type:'Lab', panel:'Liver function', received:'Today, 9:14 AM', ago:'1h',
+  { patient:'Andrey Abushakhmanov', age:'24M', phn:'9650 724 614', dob:'20-03-1963', type:'Lab', panel:'Liver function', received:'Today, 9:14 AM', ago:'1h',
     status:'received', lab:'LifeLabs',
     tests:[ {n:'ALT',v:'88',u:'U/L',ref:'10–40',f:'high',prior:'34'},
             {n:'AST',v:'65',u:'U/L',ref:'10–35',f:'high'},
             {n:'ALP',v:'96',u:'U/L',ref:'40–130',f:''},
             {n:'Bilirubin',v:'14',u:'µmol/L',ref:'<21',f:''} ] },
 
-  { patient:'Priya Raman', age:'39F', type:'Lab', panel:'Thyroid function', received:'Today, 9:02 AM', ago:'1h',
+  { patient:'Priya Raman', age:'39F', phn:'9650 129 891', dob:'17-12-1984', type:'Lab', panel:'Thyroid function', received:'Today, 9:02 AM', ago:'1h',
     status:'received', lab:'LifeLabs',
     tests:[ {n:'TSH',v:'8.9',u:'mIU/L',ref:'0.4–4.0',f:'high',prior:'5.2'},
             {n:'Free T4',v:'10.1',u:'pmol/L',ref:'10–22',f:'low'} ] },
 
-  { patient:'Nadia Hassan', age:'28F', type:'Lab', panel:'Urinalysis', received:'Today, 8:15 AM', ago:'1h',
+  { patient:'Nadia Hassan', age:'28F', phn:'9650 779 405', dob:'22-04-1982', type:'Lab', panel:'Urinalysis', received:'Today, 8:15 AM', ago:'1h',
     status:'received', lab:'In-clinic',
     tests:[ {n:'Leukocytes',v:'+++',u:'',ref:'Negative',f:'high'},
             {n:'Nitrites',v:'Positive',u:'',ref:'Negative',f:'high'},
             {n:'Blood',v:'++',u:'',ref:'Negative',f:'high'},
             {n:'Protein',v:'Trace',u:'',ref:'Negative',f:''} ] },
 
-  { patient:'K Arli Eyre', age:'41M', type:'Lab', panel:'Glycemic control', received:'Yesterday, 3:20 PM', ago:'1d',
+  { patient:'K Arli Eyre', age:'41M', phn:'9650 912 170', dob:'23-05-1970', type:'Lab', panel:'Glycemic control', received:'Yesterday, 3:20 PM', ago:'1d',
     status:'received', lab:'LifeLabs',
     tests:[ {n:'HbA1c',v:'7.1',u:'%',ref:'<7.0',f:'high',prior:'6.8'},
             {n:'Fasting glucose',v:'7.8',u:'mmol/L',ref:'4.0–6.0',f:'high'} ] },
 
-  { patient:'Greg Whitmore', age:'61M', type:'Lab', panel:'Lipid panel', received:'Yesterday, 2:05 PM', ago:'1d',
+  { patient:'Greg Whitmore', age:'61M', phn:'9650 882 721', dob:'26-11-1955', type:'Lab', panel:'Lipid panel', received:'Yesterday, 2:05 PM', ago:'1d',
     status:'received', lab:'LifeLabs',
     tests:[ {n:'LDL',v:'4.6',u:'mmol/L',ref:'<2.0',f:'high',prior:'4.1'},
             {n:'HDL',v:'0.9',u:'mmol/L',ref:'>1.0',f:'low'},
             {n:'Triglycerides',v:'2.8',u:'mmol/L',ref:'<1.7',f:'high'},
             {n:'Total cholesterol',v:'6.4',u:'mmol/L',ref:'<5.2',f:'high'} ] },
 
-  { patient:'Frank Delgado', age:'47M', type:'Lab', panel:'Electrolytes', received:'Today, 9:14 AM', ago:'1h',
+  { patient:'Frank Delgado', age:'47M', phn:'9650 257 913', dob:'11-05-1952', type:'Lab', panel:'Electrolytes', received:'Today, 9:14 AM', ago:'1h',
     status:'received', lab:'LifeLabs',
     tests:[ {n:'Sodium',v:'140',u:'mmol/L',ref:'135–145',f:''},
             {n:'Potassium',v:'4.2',u:'mmol/L',ref:'3.5–5.1',f:''},
             {n:'Chloride',v:'102',u:'mmol/L',ref:'98–107',f:''},
             {n:'Bicarbonate',v:'25',u:'mmol/L',ref:'22–29',f:''} ] },
 
-  { patient:'Nadia Hassan', age:'28F', type:'Micro', panel:'Urine culture & sensitivity', received:'Today, 10:05 AM', ago:'40m',
+  { patient:'Nadia Hassan', age:'28F', phn:'9650 779 405', dob:'22-04-1982', type:'Micro', panel:'Urine culture & sensitivity', received:'Today, 10:05 AM', ago:'40m',
     status:'received', lab:'LifeLabs', kind:'culture',
     organism:'Escherichia coli', growth:'>10⁸ CFU/L · pure growth', specimen:'Midstream urine, collected Jul 21',
     sens:[ {ab:'Nitrofurantoin', r:'S'}, {ab:'Trimethoprim–SMX', r:'R'}, {ab:'Ciprofloxacin', r:'R'},
            {ab:'Amoxicillin–clav', r:'S'}, {ab:'Fosfomycin', r:'S'}, {ab:'Cephalexin', r:'I'} ] },
 
-  { patient:'Gloria Mcdonald', age:'74F', type:'Trace', panel:'12-lead ECG', received:'Today, 7:55 AM', ago:'2h',
+  { patient:'Gloria Mcdonald', age:'74F', phn:'9650 115 886', dob:'28-10-1951', type:'Trace', panel:'12-lead ECG', received:'Today, 7:55 AM', ago:'2h',
     status:'received', lab:'In-clinic', kind:'trace',
-    interp:'Sinus rhythm with ST depression in V4–V6. Compare with prior.', abnormalTrace:true,
+    interp:'ABNORMAL ECG: ATRIAL FIBRILLATION · left anterior divisional block · nonspecific repolarization abnormality', abnormalTrace:true,
     measures:[ {n:'Rate',v:'92 bpm'}, {n:'PR',v:'168 ms'}, {n:'QRS',v:'94 ms'}, {n:'QTc',v:'451 ms'} ] },
 
-  { patient:'Priya Raman', age:'39F', type:'Screening', panel:'Cervical screening (Pap)', received:'Yesterday, 1:15 PM', ago:'1d',
+  { patient:'Priya Raman', age:'39F', phn:'9650 129 891', dob:'17-12-1984', type:'Screening', panel:'Cervical screening (Pap)', received:'Yesterday, 1:15 PM', ago:'1d',
     status:'received', lab:'BC Cancer Screening', kind:'screening',
     outcome:'Negative for intraepithelial lesion', outcomeOk:true, recall:'Next due Jul 2029', program:'BC Cervix Screening' },
 
-  { patient:'Owen Brady', age:'45M', type:'Screening', panel:'FIT — colorectal screening', received:'Yesterday, 9:40 AM', ago:'1d',
+  { patient:'Owen Brady', age:'45M', phn:'9650 596 732', dob:'04-09-1962', type:'Screening', panel:'FIT — colorectal screening', received:'Yesterday, 9:40 AM', ago:'1d',
     status:'received', lab:'BC Cancer Screening', kind:'screening',
     outcome:'Positive — refer for colonoscopy', outcomeOk:false, recall:'Referral required within 60 days', program:'BC Colon Screening' },
 
-  { patient:'Carol-Anne Feldman', age:'44F', type:'Imaging', panel:'MRI lumbar spine', received:'Today, 8:02 AM', ago:'1h',
+  { patient:'Carol-Anne Feldman', age:'44F', phn:'9650 849 225', dob:'01-04-1965', type:'Imaging', panel:'MRI lumbar spine', received:'Today, 8:02 AM', ago:'1h',
     status:'received', lab:'Eagle Ridge Imaging',
     impression:'L4–L5 disc protrusion with right nerve root contact. No cord compression.', abnormal:true },
 
-  { patient:'Owen Brady', age:'45M', type:'Imaging', panel:'Chest X-ray', received:'Yesterday, 11:30 AM', ago:'1d',
+  { patient:'Owen Brady', age:'45M', phn:'9650 596 732', dob:'04-09-1962', type:'Imaging', panel:'Chest X-ray', received:'Yesterday, 11:30 AM', ago:'1d',
     status:'received', lab:'Eagle Ridge Imaging',
     impression:'No acute cardiopulmonary abnormality.', abnormal:false },
 
-  { patient:'Louise ("Chickadee")', age:'33F', type:'Consult', panel:'EDS specialist consult', received:'Yesterday, 4:40 PM', ago:'1d',
+  { patient:'Louise ("Chickadee")', age:'33F', phn:'9650 177 746', dob:'07-07-1961', type:'Consult', panel:'EDS specialist consult', received:'Yesterday, 4:40 PM', ago:'1d',
     status:'reviewed', lab:'Dr. Okafor',
     impression:'Confirms hypermobile EDS. Recommends physiotherapy referral and annual echo.' },
 
-  { patient:'Brian Koehler', age:'66M', type:'Imaging', panel:'Chest X-ray', received:'Mon', ago:'3d',
+  { patient:'Brian Koehler', age:'66M', phn:'9650 365 807', dob:'22-05-1958', type:'Imaging', panel:'Chest X-ray', received:'Mon', ago:'3d',
     status:'signed-off', lab:'Eagle Ridge Imaging', impression:'Clear.', abnormal:false }
 ];
 
@@ -3097,89 +3138,98 @@ function inboxRowHtml(item, i){
   var abn = inboxAbnormal(item), crit = inboxIsCritical(item);
   var total = (item.tests||[]).length;
 
-  // extracted findings: abnormal values as chips, worst first
+  // Soft flag = outside reference range. Hard flag = critical, needs immediate assessment.
   var findings = '';
   if(total){
-    var sorted = abn.slice().sort(function(a,b){ return (b.f.indexOf('crit')===0?1:0)-(a.f.indexOf('crit')===0?1:0); });
-    findings = sorted.length
-      ? '<div class="ix-chips">' + sorted.map(function(t){
-          var isCrit = t.f.indexOf('crit')===0;
-          var dir = t.f.indexOf('high')>-1 ? '&uarr;' : '&darr;';
-          return '<span class="ix-chip'+(isCrit?' crit':'')+'">'+
-            '<b>'+t.n+'</b> '+t.v+(t.u?' <i>'+t.u+'</i>':'')+' <em>'+dir+'</em>'+
-            (isCrit?'<span class="ix-critmark">Critical</span>':'')+
-            '<span class="ix-ref">ref '+t.ref+'</span>'+
-            (t.prior?'<span class="ix-prior">was '+t.prior+'</span>':'')+
-          '</span>';
-        }).join('') + '</div>'
-      : '<div class="ix-clear">All '+total+' values within range</div>';
+    findings = '<div class="ix-chips">' + item.tests.map(function(t){
+      if(!t.f) return '<span class="ix-chip ok"><b>'+t.n+'</b> '+t.v+(t.u?' <i>'+t.u+'</i>':'')+'</span>';
+      var hard = t.f.indexOf('crit')===0;
+      var dir = t.f.indexOf('high')>-1 ? '&uarr;' : '&darr;';
+      return '<span class="ix-chip'+(hard?' hard':' soft')+'">'+
+        '<b>'+t.n+'</b> '+t.v+(t.u?' <i>'+t.u+'</i>':'')+' <em>'+dir+'</em>'+
+        '<span class="ix-ref">ref '+t.ref+'</span></span>';
+    }).join('') + '</div>';
   } else if(item.kind==='culture'){
     findings = '<div class="ix-cult">'+
       '<div class="ix-org"><b>'+item.organism+'</b><span>'+item.growth+'</span></div>'+
       '<div class="ix-sens">'+ item.sens.map(function(x){
           var cls = x.r==='S' ? 's' : (x.r==='R' ? 'r' : 'i');
-          var lbl = x.r==='S' ? 'Sensitive' : (x.r==='R' ? 'Resistant' : 'Intermediate');
-          return '<span class="ix-ab '+cls+'" title="'+lbl+'">'+x.ab+' <b>'+x.r+'</b></span>';
-        }).join('') +'</div>'+
-      '<div class="ix-spec">'+item.specimen+'</div></div>';
+          return '<span class="ix-ab '+cls+'">'+x.ab+' <b>'+x.r+'</b></span>';
+        }).join('') +'</div></div>';
   } else if(item.kind==='trace'){
     findings = '<div class="ix-trace">'+
       '<div class="ix-strip"><svg viewBox="0 0 240 34" preserveAspectRatio="none"><polyline points="0,24 18,24 22,20 26,28 30,6 34,30 38,22 42,24 60,24 78,24 82,20 86,28 90,6 94,30 98,22 102,24 120,24 138,24 142,20 146,28 150,6 154,30 158,22 162,24 180,24 198,24 202,20 206,28 210,6 214,30 218,22 222,24 240,24" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></div>'+
-      '<div class="ix-tbody"><p class="ix-interp'+(item.abnormalTrace?' abn':'')+'">'+item.interp+'</p>'+
-      '<div class="ix-meas">'+item.measures.map(function(m){ return '<span><i>'+m.n+'</i>'+m.v+'</span>'; }).join('')+'</div></div></div>';
+      '<div class="ix-tbody"><p class="ix-interp'+(item.abnormalTrace?' abn':'')+'">'+item.interp+'</p></div></div>';
   } else if(item.kind==='screening'){
     findings = '<div class="ix-screen'+(item.outcomeOk?'':' abn')+'">'+
-      '<span class="ix-out">'+item.outcome+'</span>'+
-      '<span class="ix-recall">'+item.recall+'</span>'+
-      '<span class="ix-prog">'+item.program+'</span></div>';
+      '<span class="ix-out">'+item.outcome+'</span><span class="ix-recall">'+item.recall+'</span></div>';
   } else if(item.impression){
     findings = '<div class="ix-impression'+(item.abnormal?' abn':'')+'">'+item.impression+'</div>';
   }
 
-  var pillClass = crit ? 'urgent' : (item.status==='received' ? 'received' : (item.status==='reviewed' ? 'reviewed' : 'signed-off'));
-  var pillLabel = crit ? 'Critical' : (item.status==='received' ? 'Needs review' : (item.status==='reviewed' ? 'Reviewed' : 'Signed off'));
-
-  var actions = '';
-  if(item.status === 'received'){
-    actions = '<button class="btn xs dark" onclick="event.stopPropagation();openReview('+i+')">Review</button>';
-  } else if(item.status === 'reviewed'){
-    actions = '<button class="btn xs dark" onclick="event.stopPropagation();signOffInbox('+i+')">Sign off</button>';
-  }
+  var actions = item.status === 'received'
+    ? '<button class="btn xs dark" onclick="event.stopPropagation();openReview('+i+')">Review result</button>'
+    : (item.status === 'reviewed' ? '<span class="pill mut">Reviewed</span>' : '');
 
   return '<div class="inbox-row ix'+(crit?' critical':'')+'" onclick="openReview('+i+')">'+
     '<span class="ix-type '+IX_TYPE_CLS[item.type]+'">'+item.type+'</span>'+
     '<div class="ix-body">'+
-      '<div class="ix-top"><b>'+item.patient+'</b><span class="ix-age">'+(item.age||'')+'</span>'+
-        '<span class="ix-panel">'+item.panel+'</span>'+
-        (total ? '<span class="ix-count">'+(abn.length?abn.length+' of '+total+' abnormal':total+' tests')+'</span>' : '')+
+      '<div class="ix-top"><b>'+item.patient+'</b>'+
+        '<span class="ix-id">'+(item.age||'')+' &middot; DOB '+(item.dob||'')+' &middot; PHN '+(item.phn||'')+'</span></div>'+
+      '<div class="ix-panelrow"><span class="ix-panel">'+item.panel+'</span>'+
+        (crit?'<span class="ix-hardflag">Critical &mdash; immediate assessment</span>':'')+
         (item.context?'<span class="ix-context">'+item.context+'</span>':'')+'</div>'+
       findings+
       '<div class="ix-meta">'+item.lab+' &middot; received '+item.received+'</div>'+
     '</div>'+
-    '<div class="ix-right"><span class="ix-ago">'+(item.ago||'')+'</span>'+
-      '<span class="status-pill '+pillClass+'">'+pillLabel+'</span>'+actions+'</div>'+
+    '<div class="ix-right"><span class="ix-ago">'+(item.ago||'')+'</span>'+actions+'</div>'+
   '</div>';
 }
 
 function renderInboxList(){
-  var received = document.getElementById('inbox-received');
-  var reviewed = document.getElementById('inbox-reviewed');
-  var signedoff = document.getElementById('inbox-signedoff');
-  if(!received) return;
+  var recv = INBOX_ITEMS.filter(function(x){ return x.status==='received'; });
+  // Flagged (critical) sit above everything. The rest is purely chronological — no severity ordering.
+  var flagged = recv.filter(inboxIsCritical);
+  var rest    = recv.filter(function(x){ return !inboxIsCritical(x); });
+  var reviewed = INBOX_ITEMS.filter(function(x){ return x.status==='reviewed'; });
 
-  var receivedItems = [], reviewedItems = [], signedItems = [];
-  INBOX_ITEMS.forEach(function(item, i){
-    if(item.status === 'received') receivedItems.push(inboxRowHtml(item, i));
-    else if(item.status === 'reviewed') reviewedItems.push(inboxRowHtml(item, i));
-    else signedItems.push(inboxRowHtml(item, i));
+  var f = document.getElementById('inbox-received');
+  if(f){
+    f.innerHTML =
+      (flagged.length
+        ? '<p class="ix-secttl crit">Flagged &mdash; review these first <span>'+flagged.length+'</span></p>'+
+          flagged.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('')
+        : '') +
+      (rest.length
+        ? '<p class="ix-secttl">Everything else &mdash; newest first <span>'+rest.length+'</span></p>'+
+          rest.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('')
+        : '<p class="empty">Nothing waiting.</p>');
+  }
+  var r = document.getElementById('inbox-reviewed');
+  if(r) r.innerHTML = reviewed.length
+    ? reviewed.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('')
+    : '<p class="empty">Nothing awaiting sign-off.</p>';
+  var so = document.getElementById('inbox-signedoff');
+  var done = INBOX_ITEMS.filter(function(x){ return x.status==='signed-off'; });
+  if(so) so.innerHTML = done.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('');
+  var sc = document.getElementById('signedoff-count'); if(sc) sc.textContent = done.length;
+  renderOutstanding();
+}
+/* Outstanding lab work — count first, tests named where we have them (§ feedback 6) */
+function renderOutstanding(){
+  var m = document.getElementById('outstanding'); if(!m || typeof LAB_ORDERS==='undefined') return;
+  var waiting = [];
+  LAB_ORDERS.forEach(function(o){
+    o.tests.forEach(function(t){
+      if(['expected','not_due','receipt_unconf','no_result','await_req','not_sent'].indexOf(t.st)>-1){
+        waiting.push({p:o.patient.split(',')[0], n:t.n, st:TEST_STATE[t.st].label});
+      }
+    });
   });
-
-  received.innerHTML = receivedItems.length ? receivedItems.join('') : '<p class="sched-note">Nothing waiting — inbox is clear.</p>';
-  reviewed.innerHTML = reviewedItems.length ? reviewedItems.join('') : '<p class="sched-note">Nothing awaiting sign-off.</p>';
-  signedoff.innerHTML = signedItems.length ? signedItems.join('') : '<p class="sched-note">None yet.</p>';
-  document.getElementById('signedoff-count').textContent = signedItems.length;
-
-  renderInboxToday();
+  m.innerHTML = '<div class="out-hd"><b>'+waiting.length+'</b> tests outstanding across your patients</div>'+
+    '<div class="out-list">'+ waiting.map(function(w){
+      return '<span class="out-item">'+w.n+' <i>'+w.p+'</i><em>'+w.st+'</em></span>';
+    }).join('') +'</div>';
 }
 
 function renderInboxToday(){
@@ -3657,8 +3707,8 @@ function openReview(i){
       }).join('')
     : '<p class="rv-hint" style="margin:0;">Narrative report — follow-up applies to the delivery.</p>';
 
-  ['msg','book','rep','staff'].forEach(function(k){
-    var cb=document.getElementById('a-'+({msg:'msg',book:'book',rep:'rep',staff:'staff'})[k]);
+  ['book','moa','msg'].forEach(function(k){
+    var cb=document.getElementById('a-'+k);
     if(cb) cb.checked=false;
     var ex=document.getElementById('exp-'+k); if(ex) ex.classList.remove('open');
   });
@@ -3686,13 +3736,12 @@ function rvCommit(){
   if(RV_FOLLOW === null){ el.textContent='Choose whether this delivery requires follow-up.'; return; }
   if(RV_FOLLOW === false){ el.textContent='Records the review. Nothing is sent to the patient.'; return; }
   var bits=[];
-  if(document.getElementById('a-msg').checked) bits.push('sends your message');
   if(document.getElementById('a-book').checked){
     var w=document.querySelector('#exp-book .rv-win.on');
-    bits.push('books '+(w?w.textContent.split('·')[0].trim():'an appointment'));
+    bits.push('books '+(w?w.textContent.split('·')[0].trim():'a slot')+' and queues your call');
   }
-  if(document.getElementById('a-rep').checked) bits.push('creates a draft repeat order for you to confirm');
-  if(document.getElementById('a-staff').checked) bits.push('opens a task for your MOA');
+  if(document.getElementById('a-moa').checked) bits.push('asks Japneet to contact the patient');
+  if(document.getElementById('a-msg').checked) bits.push('messages the patient to book');
   el.textContent = bits.length
     ? 'Records the review and ' + bits.join(', ') + '.'
     : 'Records follow-up on this delivery with no action attached.';
@@ -3990,7 +4039,6 @@ function applyIcons(){
   var ao = document.querySelector('.tb-addon span'); if(ao) ao.innerHTML = ICONS.addon;
   var pv = document.querySelector('.tb-switch span'); if(pv) pv.innerHTML = ICONS.patientview;
   var bl = document.querySelector('.topbar .bell'); if(bl) bl.innerHTML = ICONS.bell;
-  var so = document.querySelector('.q-sort'); if(so) so.innerHTML = ICONS.sort + ' Sort &middot; Acuity, then wait';
 }
 applyIcons();
 renderCriticals();
