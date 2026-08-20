@@ -1561,6 +1561,37 @@
   .doc-st.warn{background:var(--warn-wash);color:var(--warn);}
   .doc-t{font-size:11px;color:var(--ink-faint);width:62px;text-align:right;flex-shrink:0;}
 
+
+  /* ===== source document ===== */
+  .rv-doc{margin-top:16px;padding-top:14px;border-top:1px solid var(--wash);}
+  .rv-doclbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);margin:0 0 8px;}
+  .doc-sheet{background:#fff;border:1px solid var(--line-strong);border-radius:6px;padding:14px 16px;
+    box-shadow:0 2px 10px rgba(23,24,28,.08);font-family:"Times New Roman",Georgia,serif;color:#1a1a1a;overflow:hidden;}
+  .doc-head{display:flex;align-items:baseline;gap:12px;border-bottom:1.5px solid #1a1a1a;padding-bottom:6px;margin-bottom:8px;}
+  .doc-brand{font-size:15px;font-weight:800;letter-spacing:.06em;}
+  .doc-hid{font-size:11px;color:#444;margin-left:auto;font-variant-numeric:tabular-nums;}
+  .doc-tag{font-size:9.5px;font-weight:700;letter-spacing:.08em;border:1px solid #1a1a1a;padding:1px 6px;}
+  .doc-meta{display:flex;flex-wrap:wrap;gap:6px 26px;font-size:11.5px;margin-bottom:8px;}
+  .doc-meta > div{display:flex;flex-direction:column;gap:2px;}
+  .doc-meta span{white-space:nowrap;} .doc-meta b{font-variant-numeric:tabular-nums;}
+  .doc-interp{margin-left:auto;font-family:"Courier New",monospace;font-size:10.5px;line-height:1.45;letter-spacing:.02em;}
+  .doc-interp p{margin:0;} .doc-interp p.abn{font-weight:700;}
+  .doc-ecg{width:100%;height:auto;display:block;background:#FDF3F4;border:1px solid #E7BEC4;margin:4px 0 6px;}
+  .doc-foot{display:flex;justify-content:space-between;gap:10px;font-size:10px;color:#444;
+    border-top:1px solid #ccc;padding-top:5px;margin-top:4px;font-family:"Courier New",monospace;}
+  /* lab report sheet */
+  .doc-pt{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:11.5px;margin-bottom:8px;}
+  .doc-pt b{font-size:12.5px;}
+  .doc-ttl{font-size:12.5px;font-weight:700;letter-spacing:.05em;border-bottom:1px solid #1a1a1a;
+    padding-bottom:3px;margin:8px 0 6px;}
+  .doc-tbl{width:100%;border-collapse:collapse;font-family:"Courier New",monospace;font-size:11.5px;}
+  .doc-tbl th{text-align:left;font-size:9.5px;letter-spacing:.06em;border-bottom:1px solid #1a1a1a;padding:3px 6px;font-weight:700;}
+  .doc-tbl td{padding:4px 6px;border-bottom:1px dotted #ccc;}
+  .doc-tbl td.num{font-weight:700;text-align:right;}
+  .doc-tbl td.fl{font-weight:700;letter-spacing:.06em;}
+  .doc-legend{font-size:10px;color:#444;margin-top:7px;font-family:"Courier New",monospace;}
+  .doc-narr{font-size:12.5px;line-height:1.6;margin:6px 0 0;}
+
   /* ===== Care timeline ===== */
   .ctl-title{font-size:17px;font-weight:800;margin:0 0 14px;}
   .ctl{position:relative;}
@@ -1780,8 +1811,9 @@
             <div class="rv-ai" id="rv-ai"></div>
             <div class="rv-results" id="rv-results"></div>
             <div id="rv-unmapped"></div>
+            <div class="rv-doc" id="rv-doc"></div>
             <div class="rv-src">
-              <button class="btn xs" onclick="toast('Opens the source report (demo)')">Open the lab&rsquo;s report</button>
+              <button class="btn xs" id="rv-srcbtn" onclick="rvToggleSource()">Hide source document</button>
             </div>
           </div>
         </div>
@@ -3666,6 +3698,91 @@ var LAB_ORDERS = [
 ];
 
 
+
+/* ===== Source document — the physician sees what actually arrived ===== */
+function ecgGrid(){
+  var g='';
+  for(var x=0;x<=1000;x+=10) g+='<line x1="'+x+'" y1="0" x2="'+x+'" y2="420" stroke="#F0C9CE" stroke-width="'+(x%50===0?0.9:0.35)+'"/>';
+  for(var y=0;y<=420;y+=10) g+='<line x1="0" y1="'+y+'" x2="1000" y2="'+y+'" stroke="#F0C9CE" stroke-width="'+(y%50===0?0.9:0.35)+'"/>';
+  return g;
+}
+function ecgTrace(yBase, beats, irregular){
+  var pts=[], x=0, i=0;
+  while(x<1000){
+    var step = irregular ? (52 + ((i*37)%26) - 13) : 62;   // AF = irregularly irregular
+    pts.push([x,yBase],[x+6,yBase]);
+    if(!irregular){ pts.push([x+10,yBase-4],[x+14,yBase]); }  // P wave only in sinus
+    pts.push([x+18,yBase+3],[x+22,yBase-26],[x+26,yBase+9],[x+30,yBase],[x+40,yBase-6],[x+48,yBase]);
+    x+=step; i++;
+  }
+  return '<polyline points="'+pts.map(function(p){return p[0]+','+p[1];}).join(' ')+'" fill="none" stroke="#2b2b2b" stroke-width="1.5"/>';
+}
+function ecgDoc(it){
+  var leads=[['I','aVR','V1','V4'],['II','aVL','V2','V5'],['III','aVF','V3','V6']];
+  var rows='';
+  leads.forEach(function(row,ri){
+    var y = 70 + ri*95;
+    rows += '<g transform="translate(0,'+y+')">'+ ecgTrace(40, 12, true) +'</g>';
+    row.forEach(function(l,ci){
+      rows += '<text x="'+(14+ci*250)+'" y="'+(y+66)+'" font-size="15" font-family="serif" fill="#1a1a1a">'+l+'</text>';
+    });
+  });
+  return '<div class="doc-sheet ecg">'+
+    '<div class="doc-head">'+
+      '<div class="doc-brand">SIMPLE CARE</div>'+
+      '<div class="doc-hid">ID:00010186 &nbsp; '+it.received+'</div>'+
+      '<div class="doc-tag">ROUTINE RECORD</div>'+
+    '</div>'+
+    '<div class="doc-meta">'+
+      '<div><span>'+(it.dob||'')+' ('+(it.age||'')+')</span><span>Vent. rate <b>92</b> BPM</span></div>'+
+      '<div><span>PR interval <b>168</b> ms</span><span>QRS <b>94</b> ms</span><span>QT/QTc <b>398/451</b> ms</span></div>'+
+      '<div class="doc-interp">'+
+        '<p>ATRIAL FIBRILLATION</p>'+
+        '<p>LEFT ANTERIOR DIVISIONAL BLOCK</p>'+
+        '<p>NONSPECIFIC REPOLARIZATION ABNORMALITY(IES)</p>'+
+        '<p class="abn">ABNORMAL ECG</p>'+
+        '<p>PREVIOUS ECGS NOT AVAILABLE FOR COMPARISON</p>'+
+      '</div>'+
+    '</div>'+
+    '<svg class="doc-ecg" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet">'+ecgGrid()+rows+'</svg>'+
+    '<div class="doc-foot"><span>25mm/s &nbsp; 10mm/mV &nbsp; 100Hz</span><span>'+it.lab+'</span><span>Page 1 of 1</span></div>'+
+  '</div>';
+}
+function labDoc(it){
+  var rows=(it.tests||[]).map(function(t){
+    var flag = !t.f ? '' : (t.f.indexOf('crit')===0 ? '**' : '*');
+    var hl = t.f ? (t.f.indexOf('high')>-1?'H':'L') : '';
+    return '<tr><td>'+t.n+'</td><td class="num">'+t.v+'</td><td>'+t.u+'</td>'+
+      '<td class="fl">'+hl+flag+'</td><td>'+t.ref+'</td></tr>';
+  }).join('');
+  return '<div class="doc-sheet lab">'+
+    '<div class="doc-head"><div class="doc-brand">'+it.lab.toUpperCase()+'</div>'+
+      '<div class="doc-hid">ACCESSION 4471-'+(it.patient.length*137%9000+1000)+'</div>'+
+      '<div class="doc-tag">FINAL REPORT</div></div>'+
+    '<div class="doc-pt"><b>'+it.patient.toUpperCase()+'</b><span>DOB '+(it.dob||'')+' &nbsp; PHN '+(it.phn||'')+'</span>'+
+      '<span>Ordering: DR. D. PANNOZZO</span></div>'+
+    '<div class="doc-ttl">'+it.panel.toUpperCase()+'</div>'+
+    '<table class="doc-tbl"><thead><tr><th>TEST</th><th>RESULT</th><th>UNITS</th><th>FLAG</th><th>REFERENCE</th></tr></thead>'+
+    '<tbody>'+rows+'</tbody></table>'+
+    '<div class="doc-legend">* outside reference range &nbsp;&nbsp; ** critical value &mdash; telephoned to ordering provider</div>'+
+    '<div class="doc-foot"><span>Collected '+it.received+'</span><span>'+it.lab+'</span><span>Page 1 of 1</span></div>'+
+  '</div>';
+}
+function renderSourceDoc(it){
+  var m=document.getElementById('rv-doc'); if(!m) return;
+  m.innerHTML = '<p class="rv-doclbl">Source document &mdash; as received</p>' +
+    (it.kind==='trace' ? ecgDoc(it) : ((it.tests||[]).length ? labDoc(it)
+      : '<div class="doc-sheet lab"><div class="doc-ttl">'+it.panel.toUpperCase()+'</div><p class="doc-narr">'+
+        (it.impression||it.outcome||'Report text as received.')+'</p></div>'));
+  m.style.display='block';
+}
+function rvToggleSource(){
+  var m=document.getElementById('rv-doc'), b=document.getElementById('rv-srcbtn');
+  var open = m.style.display!=='none';
+  m.style.display = open ? 'none' : 'block';
+  b.textContent = open ? 'Open the source document' : 'Hide source document';
+}
+
 /* ===== Review assignment (spec v7 §5.6) ===== */
 var RV_I = -1, RV_FOLLOW = null;
 function openReview(i){
@@ -3700,6 +3817,8 @@ function openReview(i){
     : '<p class="rv-narr">'+(it.impression||it.interp||it.outcome||'See source report.')+'</p>';
 
   document.getElementById('rv-unmapped').innerHTML = '';
+  renderSourceDoc(it);
+  document.getElementById('rv-srcbtn').textContent = 'Hide source document';
   document.getElementById('rv-picks').innerHTML = tests.length
     ? tests.map(function(t,ix){
         return '<label class="rv-pick"><input type="checkbox" data-t="'+ix+'"'+(t.f&&t.f.indexOf('crit')===0?' checked':'')+'> '+
