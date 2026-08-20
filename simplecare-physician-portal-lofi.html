@@ -1592,6 +1592,27 @@
   .doc-legend{font-size:10px;color:#444;margin-top:7px;font-family:"Courier New",monospace;}
   .doc-narr{font-size:12.5px;line-height:1.6;margin:6px 0 0;}
 
+
+  /* tasks + defer */
+  .task-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--wash);}
+  .task-row:last-child{border-bottom:none;}
+  .task-t{flex:1;font-size:13.5px;font-weight:600;min-width:0;}
+  .task-until{display:block;font-style:normal;font-size:11.5px;color:var(--ink-faint);font-weight:500;margin-top:2px;}
+  .task-acts{display:flex;gap:7px;flex-shrink:0;}
+  .defer-overlay{display:none;position:fixed;inset:0;background:rgba(23,24,28,.42);z-index:200;
+    align-items:center;justify-content:center;}
+  .defer-overlay.show{display:flex;}
+  .defer-card{background:var(--panel);border-radius:18px;padding:22px 24px;width:380px;max-width:calc(100vw - 32px);
+    box-shadow:0 24px 60px rgba(23,24,28,.3);}
+  .defer-ttl{font-size:16px;font-weight:800;margin:0 0 4px;}
+  .defer-what{font-size:13.5px;color:var(--ink-soft);margin:0 0 16px;line-height:1.5;}
+  .defer-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);margin:0 0 8px;}
+  .defer-opts{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;}
+  .defer-opt{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:8px 14px;
+    font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
+  .defer-opt.on{background:var(--ink-dark);border-color:var(--ink-dark);color:#fff;}
+  .defer-acts{display:flex;gap:8px;justify-content:flex-end;}
+
   /* ===== Care timeline ===== */
   .ctl-title{font-size:17px;font-weight:800;margin:0 0 14px;}
   .ctl{position:relative;}
@@ -1657,7 +1678,7 @@
       <p class="nav-group-label">Patients</p>
       <button class="nav-btn" data-screen="inbox" onclick="showScreen('inbox')"><span class="nav-icon">&#9993;</span><span class="nav-label">Inbox<span class="nav-flag" id="inbox-nav-flag" style="display:none;"></span></span></button>
       <button class="nav-btn" data-screen="encounterlog" onclick="showScreen('encounterlog')"><span class="nav-icon">&#9636;</span><span class="nav-label">Encounter Log</span></button>
-      <button class="nav-btn" data-screen="carryforward" onclick="showScreen('carryforward')"><span class="nav-icon">&#8635;</span><span class="nav-label">Deferred Tasks</span></button>
+      <button class="nav-btn" data-screen="carryforward" onclick="showScreen('carryforward')"><span class="nav-icon">&#8635;</span><span class="nav-label">Deferred Tasks<span class="nav-flag" id="defer-nav-flag" style="display:none;"></span></span></button>
     </div>
 
     <div class="nav-group">
@@ -2444,8 +2465,17 @@
         <div class="doc-row"><span class="doc-kind lab">LAB</span><span class="doc-name">Lab Work &mdash; 2026.07.23</span><span class="doc-st ok">Fax Delivered</span><span class="doc-t">06:25 PM</span></div>
         <div class="doc-row"><span class="doc-kind img">IMG</span><span class="doc-name">Ultrasound &mdash; Abdomen complete &mdash; 2026.07.23</span><span class="doc-st ok">Fax Delivered</span><span class="doc-t">06:20 PM</span></div>
         <div class="doc-row"><span class="doc-kind ref">REF</span><span class="doc-name">Referral &mdash; Dermatology &mdash; Vancouver &mdash; 2026.04.10</span><span class="doc-st warn">Fax Pending</span><span class="doc-t">06:18 PM</span></div>
-        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">Return To Work &mdash; 2026.04.09</span><span class="doc-st ok">Fax Completed</span><span class="doc-t">06:16 PM</span></div>
-        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">Disability Tax Credit (Initial) &mdash; 2026.04.09</span><span class="doc-st ok">Fax Completed</span><span class="doc-t">06:04 PM</span></div>
+        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">EI Note &mdash; 2026.04.09</span><span class="doc-st ok">Fax Completed</span><span class="doc-t">06:16 PM</span></div>
+        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">Return To Work &mdash; 2026.04.09</span><span class="doc-st ok">Fax Completed</span><span class="doc-t">06:12 PM</span></div>
+        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">Modified Duties &mdash; 2026.04.09</span><span class="doc-st warn">Fax Pending</span><span class="doc-t">06:08 PM</span></div>
+        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">Extended Absence &mdash; 2026.04.09</span><span class="doc-st ok">Fax Completed</span><span class="doc-t">06:04 PM</span></div>
+        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">School / Camp &mdash; 2026.04.09</span><span class="doc-st ok">Fax Completed</span><span class="doc-t">05:58 PM</span></div>
+        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">Short Term Disability &mdash; 2026.04.09</span><span class="doc-st ok">Fax Completed</span><span class="doc-t">05:52 PM</span></div>
+        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">Long-Term Disability &mdash; 2026.04.09</span><span class="doc-st warn">Fax Pending</span><span class="doc-t">05:47 PM</span></div>
+        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">Disability Tax Credit (Initial) &mdash; 2026.04.09</span><span class="doc-st ok">Fax Completed</span><span class="doc-t">05:40 PM</span></div>
+        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">Disability Tax Credit (Renewal) &mdash; 2026.04.09</span><span class="doc-st ok">Fax Completed</span><span class="doc-t">05:33 PM</span></div>
+        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">Long-Term Care &mdash; 2026.04.09</span><span class="doc-st ok">Fax Completed</span><span class="doc-t">05:26 PM</span></div>
+        <div class="doc-row"><span class="doc-kind form">FORM</span><span class="doc-name">Employer Fitness Assessment (OFA) &mdash; 2026.04.09</span><span class="doc-st warn">Fax Pending</span><span class="doc-t">05:19 PM</span></div>
       </div>
 
       <div class="box">
@@ -2538,6 +2568,12 @@
       <div class="box">
         <p class="box-title">Sent to MOA</p>
         <div id="moa-tasks-list"></div>
+      </div>
+
+      <div class="box">
+        <p class="box-title">Deferred &mdash; coming back later <span class="n" id="deferred-count">0</span></p>
+        <p class="sched-note">Tasks you pushed to a later point. They return to your active list on the date you chose.</p>
+        <div id="deferred-list"></div>
       </div>
 
       <div class="box">
@@ -2714,6 +2750,19 @@
   </div>
   <div class="dsw-sec">
     <div class="dsw-grid"><a href="demo.html" style="width:100%;justify-content:center;">All demos &amp; prototypes</a></div>
+  </div>
+</div>
+
+<div class="defer-overlay" id="defer-overlay" onclick="if(event.target===this) closeDefer()">
+  <div class="defer-card">
+    <p class="defer-ttl">Defer task</p>
+    <p class="defer-what" id="defer-what"></p>
+    <p class="defer-lbl">Bring it back</p>
+    <div class="defer-opts" id="defer-opts"></div>
+    <div class="defer-acts">
+      <button class="btn" onclick="closeDefer()">Cancel</button>
+      <button class="btn dark" onclick="confirmDefer()">Defer task</button>
+    </div>
   </div>
 </div>
 
@@ -3017,20 +3066,70 @@ var MOA_TASK_LABEL = { 'in-progress':'In progress', 'completed':'Completed', 'ca
 
 /* ===== physician's own outstanding tasks — stays on Today, separate from MOA history ===== */
 var MY_TASKS = [
-  { text:'Review MRI report — Frank D.', done:false },
-  { text:'Sign off imaging — Carol-Anne Feldman', done:false }
+  { text:'Review MRI report — Frank D.', done:false, deferred:false, until:'' },
+  { text:'Sign off imaging — Carol-Anne Feldman', done:false, deferred:false, until:'' },
+  { text:'Chase orthopaedics referral — Owen Brady', done:false, deferred:true, until:'Tomorrow' },
+  { text:'Recheck ferritin plan — Behdis Maleki', done:false, deferred:true, until:'Next week' }
 ];
+var DEFER_OPTS = ['Later today','Tomorrow','In 3 days','Next week'];
 function renderMyTasks(){
   var el = document.getElementById('my-tasks-list');
-  if(!el) return;
-  if(!MY_TASKS.filter(function(t){return !t.done;}).length){
-    el.innerHTML = '<p class="sched-note" style="margin:2px 0 0;">Nothing outstanding — nice.</p>';
-    return;
+  if(el){
+    var active = MY_TASKS.filter(function(t){ return !t.done && !t.deferred; });
+    el.innerHTML = active.length
+      ? MY_TASKS.map(function(t,i){
+          if(t.done || t.deferred) return '';
+          return '<div class="task-row"><span class="task-t">'+t.text+'</span>'+
+            '<span class="task-acts">'+
+              '<button class="btn xs" onclick="completeMyTask('+i+')">Mark done</button>'+
+              '<button class="btn xs" onclick="openDefer('+i+')">Defer task</button>'+
+            '</span></div>';
+        }).join('')
+      : '<p class="sched-note" style="margin:2px 0 0;">Nothing outstanding — nice.</p>';
   }
-  el.innerHTML = MY_TASKS.map(function(t,i){
-    if(t.done) return '';
-    return '<div class="sched-row"><span>'+t.text+'</span><span><button class="btn xs" onclick="completeMyTask('+i+')">Mark done</button></span></div>';
+  renderDeferred();
+}
+/* Deferred tasks — side panel (replaces Carry Forward) */
+function renderDeferred(){
+  var d = document.getElementById('deferred-list');
+  if(!d) return;
+  var def = MY_TASKS.filter(function(t){ return t.deferred && !t.done; });
+  d.innerHTML = def.length
+    ? def.map(function(t){
+        var i = MY_TASKS.indexOf(t);
+        return '<div class="task-row"><span class="task-t">'+t.text+
+          '<i class="task-until">Deferred to '+t.until+'</i></span>'+
+          '<span class="task-acts">'+
+            '<button class="btn xs dark" onclick="undeferTask('+i+')">Bring back</button>'+
+            '<button class="btn xs" onclick="completeMyTask('+i+')">Mark done</button>'+
+          '</span></div>';
+      }).join('')
+    : '<p class="sched-note" style="margin:2px 0 0;">Nothing deferred.</p>';
+  var c = document.getElementById('deferred-count'); if(c) c.textContent = def.length;
+  var nf = document.getElementById('defer-nav-flag');
+  if(nf){ nf.textContent = def.length; nf.style.display = def.length ? 'inline-flex' : 'none'; }
+}
+var DEFER_I = -1;
+function openDefer(i){
+  DEFER_I = i;
+  document.getElementById('defer-what').textContent = MY_TASKS[i].text;
+  document.getElementById('defer-opts').innerHTML = DEFER_OPTS.map(function(o,k){
+    return '<button class="defer-opt'+(k===1?' on':'')+'" onclick="pickDefer(this)">'+o+'</button>';
   }).join('');
+  document.getElementById('defer-overlay').classList.add('show');
+}
+function pickDefer(b){ b.parentNode.querySelectorAll('.defer-opt').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); }
+function closeDefer(){ document.getElementById('defer-overlay').classList.remove('show'); }
+function confirmDefer(){
+  var sel = document.querySelector('#defer-opts .defer-opt.on');
+  var t = MY_TASKS[DEFER_I]; if(!t) return;
+  t.deferred = true; t.until = sel ? sel.textContent : 'Tomorrow';
+  closeDefer(); renderMyTasks();
+  toast('Deferred to ' + t.until + ' — it will come back then');
+}
+function undeferTask(i){
+  MY_TASKS[i].deferred = false; MY_TASKS[i].until = '';
+  renderMyTasks(); toast('Back on your active list');
 }
 function completeMyTask(i){
   MY_TASKS[i].done = true;

@@ -697,6 +697,18 @@
   .dsw-tog{width:38px;height:22px;border-radius:999px;background:var(--line-strong);border:none;cursor:pointer;position:relative;flex-shrink:0;}
   .dsw-tog::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;}
   .dsw-tog.on{background:var(--good);} .dsw-tog.on::after{left:19px;}
+
+  .ptlab-count{font-size:13px;color:var(--ink-soft);margin-bottom:10px;}
+  .ptlab-count b{font-size:17px;font-weight:800;color:var(--ink);}
+  .ptlab-row{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--wash);}
+  .ptlab-row:last-child{border-bottom:none;}
+  .ptlab-main{flex:1;min-width:0;}
+  .ptlab-main b{display:block;font-size:14px;font-weight:700;}
+  .ptlab-st{display:block;font-size:12.5px;margin-top:2px;}
+  .ptlab-st.ok{color:var(--good);} .ptlab-st.act{color:var(--accent-ink);font-weight:600;}
+  .ptlab-st.wait{color:var(--ink-faint);}
+  .ptlab-sub{display:block;font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
+  .ptlab-date{font-size:12px;color:var(--ink-faint);flex-shrink:0;}
 </style>
 </head>
 <body class="mode-v1">
@@ -1022,6 +1034,12 @@
     <div class="screen" id="screen-documents">
       <h1>Health records</h1>
       <p class="sub">Everything tied to a visit, grouped by what it's for, with the newest first.</p>
+
+      <div class="card" id="pt-labwork">
+        <h3 style="margin-top:0;">Current lab work</h3>
+        <p class="muted" style="margin-top:-6px;">Everything your provider has ordered that isn't finished yet.</p>
+        <div id="pt-lab-list"></div>
+      </div>
 
       <div class="toolbar">
         <input class="search-input" placeholder="Search documents by physician or date">
@@ -2138,6 +2156,30 @@ function dswMode(){
   var m = document.body.classList.contains('mode-v2') ? 'v2' : 'v1';
   document.querySelectorAll('#dsw-mode button').forEach(function(b){ b.classList.toggle('on', b.dataset.m===m); });
 }
+
+/* Current lab work — the patient sees what is still outstanding (physician feedback pt 6) */
+var PT_LABWORK = [
+  { panel:'Renal Function Panel', date:'Aug 3', status:'Reviewed', note:'Dr. Pannozzo will call you today, 4:00 – 5:30 pm', tone:'act' },
+  { panel:'Complete Blood Count', date:'Aug 4', status:'Reviewed', note:'No action needed', sub:'Still waiting on 2 more from the lab', tone:'ok' },
+  { panel:'Fatigue Workup', date:'Aug 4', status:'Pending', tone:'wait' },
+  { panel:'Coagulation Studies', date:'Aug 1', status:'Pending', sub:'Some results are back, waiting on the rest', tone:'wait' },
+  { panel:'Iron Studies', date:'Jul 2', status:'Reviewed', note:'No action needed', tone:'ok' },
+  { panel:'Thyroid Assessment', date:'Apr 18', status:'Pending', tone:'wait' }
+];
+function renderPtLabWork(){
+  var m = document.getElementById('pt-lab-list'); if(!m) return;
+  var waiting = PT_LABWORK.filter(function(x){ return x.status==='Pending' || x.sub; });
+  m.innerHTML =
+    '<div class="ptlab-count"><b>'+waiting.length+'</b> still waiting on the lab</div>' +
+    PT_LABWORK.map(function(x){
+      return '<div class="ptlab-row">'+
+        '<div class="ptlab-main"><b>'+x.panel+'</b>'+
+          '<span class="ptlab-st '+x.tone+'">'+x.status+(x.note?' &mdash; '+x.note:'')+'</span>'+
+          (x.sub?'<span class="ptlab-sub">'+x.sub+'</span>':'')+
+        '</div><span class="ptlab-date">'+x.date+'</span></div>';
+    }).join('');
+}
+renderPtLabWork();
 </script>
 
 </body>
