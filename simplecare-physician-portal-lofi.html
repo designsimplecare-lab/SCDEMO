@@ -1353,6 +1353,14 @@
   .cp-rec .hint{font-size:11px;color:var(--ink-faint);margin:6px 0 0;}
 
   /* practice-wide tracking */
+  .cpt-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:4px;}
+  .cpt-head h1{margin:0;} .cpt-head .sub{margin-top:4px;}
+  .cpt-head .btn{margin-left:auto;flex-shrink:0;}
+  .cpt-grp{display:flex;align-items:baseline;gap:8px;margin:18px 0 2px;padding-bottom:6px;border-bottom:1px solid var(--line);}
+  .cpt-grp:first-child{margin-top:0;}
+  .cpt-grp b{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;}
+  .cpt-grp .n{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--ink-faint);
+    background:var(--wash);border-radius:20px;padding:2px 8px;}
   .cpt-filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;}
   .cpt-filters button{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 13px;
     font-family:inherit;font-size:12px;font-weight:700;color:var(--ink-soft);cursor:pointer;}
@@ -1774,8 +1782,7 @@
       <p class="nav-group-label">Patients</p>
       <button class="nav-btn" data-screen="inbox" onclick="showScreen('inbox')"><span class="nav-icon">&#9993;</span><span class="nav-label">Inbox<span class="nav-flag" id="inbox-nav-flag" style="display:none;"></span></span></button>
       <button class="nav-btn" data-screen="encounterlog" onclick="showScreen('encounterlog')"><span class="nav-icon">&#9636;</span><span class="nav-label">Encounter Log</span></button>
-      <button class="nav-btn" data-screen="carryforward" onclick="showScreen('carryforward')"><span class="nav-icon">&#8635;</span><span class="nav-label">Deferred Tasks<span class="nav-flag" id="defer-nav-flag" style="display:none;"></span></span></button>
-      <button class="nav-btn" data-screen="careplan" onclick="showScreen('careplan')"><span class="nav-icon">&#9776;</span><span class="nav-label">Care Plan Tracking<span class="nav-flag" id="cp-nav-flag" style="display:none;"></span></span></button>
+      <button class="nav-btn" data-screen="careplan" onclick="showScreen('careplan')"><span class="nav-icon">&#9776;</span><span class="nav-label">Outstanding Tasks<span class="nav-flag" id="cp-nav-flag" style="display:none;"></span></span></button>
     </div>
 
     <div class="nav-group">
@@ -1900,7 +1907,7 @@
           </div>
 
           <table class="q-table" id="queue-table">
-            <thead><tr><th>#</th><th>Patient</th><th>AI summary</th><th>Call window</th><th>Status</th><th>Action</th></tr></thead>
+            <thead><tr><th>#</th><th>Patient</th><th>AI summary</th><th>Status</th><th>Action</th></tr></thead>
             <tbody id="queue-body"></tbody>
           </table>
         </div>
@@ -2579,11 +2586,13 @@
       </div>
 
       <div class="box">
-        <p class="box-title">Recent calls</p>
-        <p class="sched-note">Reference only &mdash; physicians place calls themselves, so this is the audit trail rather than a worklist.</p>
-        <div class="sched-row"><span>Ada &mdash; (236) 882-1425</span><span>No answer</span></div>
-        <div class="sched-row"><span>Judy &mdash; (844) 645-7811</span><span>Completed, 1:06</span></div>
-        <div class="sched-row"><span>Ben &mdash; (250) 889-5624</span><span>No answer</span></div>
+        <button class="vc-more" onclick="toggleCallLog(this)">Show call audit trail</button>
+        <div id="call-audit" class="vc-hidden">
+          <p class="sched-note">Not a worklist. Kept only so there is a record of who was called and what happened.</p>
+          <div class="sched-row"><span>Ada &mdash; (236) 882-1425</span><span>No answer</span></div>
+          <div class="sched-row"><span>Judy &mdash; (844) 645-7811</span><span>Completed, 1:06</span></div>
+          <div class="sched-row"><span>Ben &mdash; (250) 889-5624</span><span>No answer</span></div>
+        </div>
       </div>
 
       <div class="box">
@@ -2661,35 +2670,37 @@
       <p class="sub">Practice admin group.</p>
       <div class="box"><div class="sched-row"><span>Private Visit Fee</span><span>$100 CAD</span></div></div>
     </div>
-    <div class="screen" id="screen-carryforward">
-      <h1>Deferred Tasks</h1>
-      <p class="sub">Patients group — history of tasks you've sent to your MOA.</p>
-      <div class="ia-note">IA change, confirmed with the team: this is the MOA-task history specifically — what you've delegated and its status (in progress / completed / carried forward if your MOA couldn't finish it same-day). Your own undelegated tasks sit underneath in "Mine", so both halves of your task load live on one screen instead of being split across Home.</div>
-      <div class="box">
-        <p class="box-title">Sent to MOA</p>
-        <div id="moa-tasks-list"></div>
-      </div>
-
-      <div class="box">
-        <p class="box-title">Deferred &mdash; coming back later <span class="n" id="deferred-count">0</span></p>
-        <p class="sched-note">Tasks you pushed to a later point. They return to your active list on the date you chose.</p>
-        <div id="deferred-list"></div>
-      </div>
-
-      <div class="box">
-        <p class="box-title">Mine &mdash; not delegated</p>
-        <p class="sched-note">Things you couldn't finish in the moment and kept yourself. These never go to your MOA.</p>
-        <div id="my-tasks-list"></div>
-      </div>
-    </div>
     <div class="screen" id="screen-careplan">
-      <h1>Care Plan Tracking</h1>
-      <p class="sub">Every outstanding plan item across the practice, whoever owns it.</p>
-      <div class="ia-note">One tracking surface for the whole practice. Chart-level plans and specialist recommendations feed the same list, so nothing depends on a physician remembering to reopen a chart. Specialist-owned items stay visible but are not our task &mdash; they are here so we know what is in flight elsewhere and can chase it if it stalls.</div>
+      <div class="cpt-head">
+        <div>
+          <h1>Outstanding Tasks</h1>
+          <p class="sub">Every care plan in the practice, synthesized into the specific things that need doing.</p>
+        </div>
+        <button class="btn dark" onclick="openTaskMoa('')"><span class="ic" data-pcic="task"></span> Task the MOA</button>
+      </div>
+      <div class="ia-note">Deliberately context-free. The chart carries the narrative &mdash; why this person is here, what was done last. This list carries only the work, grouped the way orders are actually placed: blood work, imaging, referrals. Every item can be handed to the MOA, and the physician can task them anything on top of what the plans generated. Each item still links back to the sentence it was derived from, so a synthesis error is visible rather than silent.</div>
 
       <div class="box">
         <div class="cpt-filters" id="cpt-filters"></div>
         <div id="cpt-list"></div>
+      </div>
+
+      <div class="box">
+        <p class="box-title">Deferred &mdash; coming back later <span class="n" id="deferred-count">0</span></p>
+        <p class="sched-note">Pushed to a later point. They return to the active list on the date chosen.</p>
+        <div id="deferred-list"></div>
+      </div>
+
+      <div class="box">
+        <p class="box-title">Kept, not delegated</p>
+        <p class="sched-note">Things you couldn't finish in the moment and kept yourself. These never go to your MOA.</p>
+        <div id="my-tasks-list"></div>
+      </div>
+
+      <div class="box">
+        <p class="box-title">Sent to MOA</p>
+        <p class="sched-note">What you've delegated and where it stands.</p>
+        <div id="moa-tasks-list"></div>
       </div>
     </div>
 
@@ -2963,7 +2974,7 @@ function renderQueue(){
   var qSeq = 0;
   body.innerHTML = rows.map(function(r){
     var closed = (r.status==='done' || r.status==='noshow');
-    var actions = closed ? '' : '<button class="btn xs dark" onclick="advance(\''+r.name+'\',\'progress\')">Call</button> ';
+    var actions = closed ? '' : '<button class="btn xs dark" onclick="callPatient(\''+r.name+'\')">Call</button> ';
     actions += '<button class="btn xs" onclick="openChart(\''+r.name+'\')">Chart</button>';
 
     var ring = RING_COLOR[r.status] || 'var(--line-strong)';
@@ -2977,15 +2988,12 @@ function renderQueue(){
 
     var flagTag = r.redflag ? '<span class="rk-pill rk-high" title="Flagged in pre-visit intake">Flagged</span>' : '';
 
-    var winCell = '<button class="win-edit" onclick="event.stopPropagation();editWindow(\''+r.name+'\')" title="Set call window">'+
-                  (WIN_LABEL[r.win]||r.win)+' <i>'+(r.winLen||30)+' min</i></button>';
     var statusPill = '<span class="status-pill '+r.status+'">'+STATUS_LABEL[r.status]+'</span>';
 
     return '<tr class="'+(r.redflag?'redflag':'')+'">'+
       '<td>'+dueChip+'</td>'+
       '<td><div class="q-patient" onclick="openChart(\''+r.name+'\')" title="Open chart">'+avatar+'<span class="q-pmeta"><span class="q-pname">'+r.name+flagTag+'</span><span class="q-psub">'+r.concern+'</span></span></div></td>'+
       '<td class="q-aicell">'+(AI_SUMMARY[r.name] ? '<span class="q-aitag">AI</span><span class="q-aitext">'+AI_SUMMARY[r.name]+'</span>' : '<span class="q-aiempty">&mdash;</span>')+'</td>'+
-      '<td>'+winCell+'</td>'+
       '<td>'+statusPill+'</td>'+
       '<td class="q-actions">'+actions+'</td>'+
     '</tr>';
@@ -3088,6 +3096,15 @@ function filterWindow(win, el){
   document.querySelectorAll('.win-chip').forEach(function(c){ c.classList.remove('active'); });
   el.classList.add('active');
   renderQueue();
+}
+/* Calling opens the chart at the same time — the physician should never be
+   on the phone hunting for the record. Chart alone still works: review, then
+   Call from the banner. */
+function callPatient(name){
+  advance(name, 'progress');
+  openChart(name);
+  pcStartCall();
+  toast('Calling ' + name.split(',')[0] + ' — chart open');
 }
 function advance(name, newStatus){
   var row = QUEUE_DATA.find(function(r){ return r.name===name; });
@@ -4360,12 +4377,19 @@ function pcShowSec(sec){
   document.querySelectorAll('#pc-tabs button').forEach(function(b){ b.classList.toggle('active', b.dataset.pcsec===sec); });
 }
 var pcInt=null, pcSecs=0;
+/* every chart version has its own call strip — drive them all */
 function pcStartCall(){
-  var s=document.getElementById('pc-callstrip'); s.classList.add('live'); pcSecs=0;
+  document.querySelectorAll('.pc-callstrip').forEach(function(s){ s.classList.add('live'); });
+  pcSecs=0;
   clearInterval(pcInt); pcInt=setInterval(function(){ pcSecs++;
-    document.getElementById('pc-timer').textContent = String(Math.floor(pcSecs/60)).padStart(2,'0')+':'+String(pcSecs%60).padStart(2,'0'); },1000);
+    var t = String(Math.floor(pcSecs/60)).padStart(2,'0')+':'+String(pcSecs%60).padStart(2,'0');
+    ['pc-timer','pc-timer-c'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=t; });
+  },1000);
 }
-function pcEndCall(){ clearInterval(pcInt); var s=document.getElementById('pc-callstrip'); if(s) s.classList.remove('live'); }
+function pcEndCall(){
+  clearInterval(pcInt);
+  document.querySelectorAll('.pc-callstrip').forEach(function(s){ s.classList.remove('live'); });
+}
 
 /* ============================================================
    CARE PLAN
@@ -4376,12 +4400,34 @@ function pcEndCall(){ clearInterval(pcInt); var s=document.getElementById('pc-ca
    test, it stays theirs. Completed items collapse but stay on file.
    ============================================================ */
 var CP_STATUS = ['To Do','Ordered','Awaiting','Ongoing','Completed','Overdue'];
+/* Daniel: "the standard is Imaging. Blood work. Referrals. Etc" — the list is
+   grouped by how the work is actually placed, not by specialty. */
+var CP_TYPES = [
+  {kind:'lab',          label:'Blood work'},
+  {kind:'imaging',      label:'Imaging'},
+  {kind:'referral',     label:'Referrals'},
+  {kind:'rx',           label:'Prescriptions'},
+  {kind:'test',         label:'Investigations'},
+  {kind:'followup',     label:'Follow-up'},
+  {kind:'monitor',      label:'Monitoring'},
+  {kind:'instructions', label:'Patient instructions'}
+];
+function cpTypeLabel(k){
+  var t = CP_TYPES.filter(function(x){ return x.kind===k; })[0];
+  return t ? t.label : 'Other';
+}
 var CP_OPEN = ['To Do','Ordered','Awaiting','Ongoing','Overdue'];
 function cpCls(st){ return st.toLowerCase().replace(/\s+/g,''); }
 
 /* what a physician can do to a GP-owned item, by item kind */
 var CP_DO = {
-  order:        [{l:'Order now', go:1, to:'Ordered', t:'Lab requisition created and transmitted'},
+  lab:          [{l:'Order now', go:1, to:'Ordered', t:'Lab requisition created and transmitted'},
+                 {l:'Mark complete', to:'Completed', t:'Marked complete'}],
+  imaging:      [{l:'Order imaging', go:1, to:'Ordered', t:'Imaging requisition created and transmitted'},
+                 {l:'Mark complete', to:'Completed', t:'Marked complete'}],
+  test:         [{l:'Order now', go:1, to:'Ordered', t:'Investigation ordered'},
+                 {l:'Mark complete', to:'Completed', t:'Marked complete'}],
+  order:        [{l:'Order now', go:1, to:'Ordered', t:'Requisition created and transmitted'},
                  {l:'Mark complete', to:'Completed', t:'Marked complete'}],
   rx:           [{l:'Prescribe', go:1, to:'Ordered', t:'Prescription sent to the pharmacy'},
                  {l:'Mark complete', to:'Completed', t:'Marked complete'}],
@@ -4397,7 +4443,7 @@ var CP_DO = {
 var CARE_PLAN = {
   'Gloria Mcdonald, 74F': [
     {id:'g1', specialty:'Cardiology', service:'Dr. M. Ferreira · St. Paul&rsquo;s Cardiology', owner:'Specialist',
-     action:'Exercise stress test', kind:'order', status:'Ordered', due:'Sep 12, 2026',
+     action:'Exercise stress test', kind:'test', status:'Ordered', due:'Sep 12, 2026',
      detail:'Cardiology booked this themselves. The report comes back to us.',
      src:'Cardiology consult, Jul 28, 2026',
      quote:'&ldquo;I have arranged an exercise stress test for September 12 and will forward the report to you.&rdquo;'},
@@ -4412,7 +4458,7 @@ var CARE_PLAN = {
      src:'Cardiology consult, Jul 28, 2026',
      quote:'&ldquo;I would ask the family physician to start bisoprolol 2.5 mg daily and titrate to heart rate.&rdquo;'},
     {id:'g4', specialty:'Cardiology', service:'Dr. M. Ferreira · St. Paul&rsquo;s Cardiology', owner:'GP',
-     action:'Lipid panel and HbA1c before the September review', kind:'order', status:'Overdue', due:'Aug 20, 2026',
+     action:'Lipid panel and HbA1c before the September review', kind:'lab', status:'Overdue', due:'Aug 20, 2026',
      detail:'Cardiology wants current values in hand at the September visit.',
      src:'Cardiology consult, Jul 28, 2026',
      quote:'&ldquo;Please have a current lipid profile and HbA1c available for the September visit.&rdquo;'},
@@ -4421,7 +4467,7 @@ var CARE_PLAN = {
      detail:'Target under 135/85. Home readings between visits.',
      src:'Care plan, Jun 25, 2026'},
     {id:'g6', specialty:'Family practice', service:'Dr. D. Pannozzo · SimpleCare', owner:'GP',
-     action:'Repeat iron studies', kind:'order', status:'Awaiting', due:'Sep 25, 2026',
+     action:'Repeat iron studies', kind:'lab', status:'Awaiting', due:'Sep 25, 2026',
      detail:'Ferritin 18 &micro;g/L on Jun 25. Repeat after three months of supplementation.',
      src:'Care plan, Jun 25, 2026'},
     {id:'g7', specialty:'Family practice', service:'Dr. D. Pannozzo · SimpleCare', owner:'GP',
@@ -4434,8 +4480,12 @@ var CARE_PLAN = {
      src:'Care plan, Jun 25, 2026'}
   ],
   'Behdis Maleki, 35F': [
+    {id:'b0', specialty:'Family practice', service:'Dr. D. Pannozzo · SimpleCare', owner:'GP',
+     action:'Abdominal ultrasound', kind:'imaging', status:'To Do', due:'Sep 10, 2026',
+     detail:'Looking for a source of ongoing loss before escalating to GI.',
+     src:'Care plan, Aug 4, 2026'},
     {id:'b1', specialty:'Family practice', service:'Dr. D. Pannozzo · SimpleCare', owner:'GP',
-     action:'Repeat ferritin and CBC', kind:'order', status:'To Do', due:'Aug 31, 2026',
+     action:'Repeat ferritin and CBC', kind:'lab', status:'To Do', due:'Aug 31, 2026',
      detail:'Still fatigued despite supplementation. Confirm absorption before escalating.',
      src:'Care plan, Aug 4, 2026'},
     {id:'b2', specialty:'Gastroenterology', service:'Dr. S. Rahim · Fraser GI', owner:'GP',
@@ -4448,12 +4498,12 @@ var CARE_PLAN = {
   ],
   'Manjit': [
     {id:'m1', specialty:'Endocrinology', service:'Dr. L. Osei · Interior Endocrine', owner:'Specialist',
-     action:'Thyroid uptake scan', kind:'order', status:'Ordered', due:'Sep 3, 2026',
+     action:'Thyroid uptake scan', kind:'imaging', status:'Ordered', due:'Sep 3, 2026',
      detail:'Arranged by endocrinology. Report returns to both of us.',
      src:'Endocrinology consult, Aug 11, 2026',
      quote:'&ldquo;I have booked her for an uptake scan on September 3.&rdquo;'},
     {id:'m2', specialty:'Endocrinology', service:'Dr. L. Osei · Interior Endocrine', owner:'GP',
-     action:'TSH and free T4 every 6 weeks until stable', kind:'order', status:'Overdue', due:'Aug 22, 2026',
+     action:'TSH and free T4 every 6 weeks until stable', kind:'lab', status:'Overdue', due:'Aug 22, 2026',
      detail:'Endocrinology asked us to run the interval bloodwork locally.',
      src:'Endocrinology consult, Aug 11, 2026',
      quote:'&ldquo;Please arrange interval TSH and free T4 every six weeks and copy me on the results.&rdquo;'}
@@ -4463,7 +4513,7 @@ var CARE_PLAN = {
      action:'Fluconazole 150 mg, single dose', kind:'rx', status:'To Do', due:'Today',
      detail:'Third episode this year. Send to Lincoln, Coquitlam.', src:'This visit'},
     {id:'c2', specialty:'Family practice', service:'Dr. D. Pannozzo · SimpleCare', owner:'GP',
-     action:'HbA1c to rule out undiagnosed diabetes', kind:'order', status:'To Do', due:'Sep 6, 2026',
+     action:'HbA1c to rule out undiagnosed diabetes', kind:'lab', status:'To Do', due:'Sep 6, 2026',
      detail:'Recurrent candidiasis without an obvious trigger.', src:'This visit'}
   ]
 };
@@ -4475,16 +4525,14 @@ var CP_PENDING = {
   'Gloria Mcdonald, 74F': {
     src:'Internal Medicine consult · Dr. A. Whyte · Aug 26, 2026',
     recs:[
-      {action:'48-hour Holter monitor', specialty:'Internal medicine', service:'Dr. A. Whyte · Royal Columbian Internal Medicine',
-       kind:'order', suggest:'Specialist', due:'Sep 8, 2026',
+      {action:'48-hour Holter monitor', kind:'test', specialty:'Internal medicine', service:'Dr. A. Whyte · Royal Columbian Internal Medicine', suggest:'Specialist', due:'Sep 8, 2026',
        quote:'&ldquo;I have ordered a 48-hour Holter monitor; my office will book it and send you the tracing.&rdquo;',
        why:'They say they ordered it, so it stays with them.'},
       {action:'Start apixaban 5 mg twice daily if the Holter confirms AF', specialty:'Internal medicine', service:'Dr. A. Whyte · Royal Columbian Internal Medicine',
        kind:'rx', suggest:'GP', due:'On Holter result',
        quote:'&ldquo;Please start apixaban 5 mg twice daily if the Holter confirms atrial fibrillation.&rdquo;',
        why:'Addressed to us, so it becomes our task.'},
-      {action:'Renal function before and 4 weeks after anticoagulation', specialty:'Internal medicine', service:'Dr. A. Whyte · Royal Columbian Internal Medicine',
-       kind:'order', suggest:'GP', due:'With the apixaban start',
+      {action:'Renal function before and 4 weeks after anticoagulation', kind:'lab', specialty:'Internal medicine', service:'Dr. A. Whyte · Royal Columbian Internal Medicine', suggest:'GP', due:'With the apixaban start',
        quote:'&ldquo;Renal function should be checked before starting and again at four weeks.&rdquo;',
        why:'No one named, and it supports a task we own.'}
     ]
@@ -4588,6 +4636,12 @@ function renderCarePlan(name){
   updateCpFlag();
 }
 
+function toggleCallLog(btn){
+  var d=document.getElementById('call-audit'); if(!d) return;
+  var hidden = d.classList.contains('vc-hidden');
+  d.classList.toggle('vc-hidden', !hidden);
+  btn.textContent = hidden ? 'Hide call audit trail' : 'Show call audit trail';
+}
 function cpToggleDone(btn){
   var d=document.getElementById('cp-done'); if(!d) return;
   var hidden = d.classList.contains('vc-hidden');
@@ -4661,7 +4715,7 @@ function commitCpTriage(){
 }
 
 /* ---- practice-wide tracking ---- */
-var CPT_FILTERS = ['Everything outstanding','Ours to do','With a specialist','Overdue'];
+var CPT_FILTERS = ['Everything outstanding','Mine to do','With a specialist','Overdue'];
 var CPT_ON = 'Everything outstanding';
 function cptSet(f){ CPT_ON = f; renderCpTracking(); }
 function cpOutstanding(){
@@ -4683,7 +4737,7 @@ function renderCpTracking(){
   var all = cpOutstanding();
   var counts = {
     'Everything outstanding': all.length,
-    'Ours to do': all.filter(function(r){ return r.it.owner==='GP'; }).length,
+    'Mine to do': all.filter(function(r){ return r.it.owner==='GP'; }).length,
     'With a specialist': all.filter(function(r){ return r.it.owner==='Specialist'; }).length,
     'Overdue': all.filter(function(r){ return r.it.status==='Overdue'; }).length
   };
@@ -4692,27 +4746,45 @@ function renderCpTracking(){
   }).join('');
 
   var rows = all.filter(function(r){
-    if(CPT_ON==='Ours to do') return r.it.owner==='GP';
+    if(CPT_ON==='Mine to do') return r.it.owner==='GP';
     if(CPT_ON==='With a specialist') return r.it.owner==='Specialist';
     if(CPT_ON==='Overdue') return r.it.status==='Overdue';
     return true;
   });
   var rank = {'Overdue':0,'To Do':1,'Ordered':2,'Awaiting':3,'Ongoing':4};
-  rows.sort(function(a,b){ return (rank[a.it.status]||9) - (rank[b.it.status]||9); });
 
-  lw.innerHTML = rows.length ? rows.map(function(r){
-    var od = r.it.status==='Overdue';
-    return '<div class="cpt-row">'+
-      '<div class="cpt-pt"><b>'+r.pt.split(',')[0]+'</b><span>'+r.it.specialty+'</span></div>'+
-      '<span class="cp-own '+(r.it.owner==='GP'?'gp':'spec')+'">'+(r.it.owner==='GP'?'GP':'SPEC')+'</span>'+
-      '<div class="cpt-mid"><b>'+r.it.action+'</b><span>'+r.it.service+'</span></div>'+
-      '<span class="cp-st '+cpCls(r.it.status)+'">'+r.it.status+'</span>'+
-      '<span class="cpt-due'+(od?' od':'')+'">'+(r.it.due||'')+'</span>'+
-      '<button class="btn xs" onclick="openChart(&#39;'+r.pt.replace(/'/g,"\\'")+'&#39;)">Open chart</button>'+
-    '</div>';
-  }).join('') : '<p class="pc-empty">Nothing in this view.</p>';
+  /* grouped by order type — blood work, imaging, referrals, etc */
+  var html = '';
+  CP_TYPES.forEach(function(t){
+    var g = rows.filter(function(r){ return (r.it.kind||'other')===t.kind; });
+    if(!g.length) return;
+    g.sort(function(a,b){ return (rank[a.it.status]||9) - (rank[b.it.status]||9); });
+    html += '<div class="cpt-grp"><b>'+t.label+'</b><span class="n">'+g.length+'</span></div>' +
+      g.map(cptRow).join('');
+  });
+  var known = CP_TYPES.map(function(t){ return t.kind; });
+  var other = rows.filter(function(r){ return known.indexOf(r.it.kind)===-1; });
+  if(other.length){
+    html += '<div class="cpt-grp"><b>Other</b><span class="n">'+other.length+'</span></div>' + other.map(cptRow).join('');
+  }
+
+  lw.innerHTML = html || '<p class="pc-empty">Nothing in this view.</p>';
   updateCpFlag();
 }
+
+function cptRow(r){
+  var od = r.it.status==='Overdue';
+  return '<div class="cpt-row">'+
+    '<div class="cpt-pt"><b>'+r.pt.split(',')[0]+'</b><span>'+r.it.specialty+'</span></div>'+
+    '<span class="cp-own '+(r.it.owner==='GP'?'gp':'spec')+'">'+(r.it.owner==='GP'?'GP':'SPEC')+'</span>'+
+    '<div class="cpt-mid"><b>'+r.it.action+'</b><span>'+r.it.service+'</span></div>'+
+    '<span class="cp-st '+cpCls(r.it.status)+'">'+r.it.status+'</span>'+
+    '<span class="cpt-due'+(od?' od':'')+'">'+(r.it.due||'')+'</span>'+
+    '<button class="btn xs" onclick="openTaskMoa(&#39;'+r.pt.replace(/'/g,"\\'")+'&#39;)">Task MOA</button>'+
+    '<button class="btn xs" onclick="openChart(&#39;'+r.pt.replace(/'/g,"\\'")+'&#39;)">Open chart</button>'+
+  '</div>';
+}
+
 
 function applyIcons(){
   document.querySelectorAll('[data-pcic]').forEach(function(el){ var k=el.getAttribute('data-pcic'); if(PC_ICONS[k]) el.innerHTML=PC_ICONS[k]; });
@@ -4732,6 +4804,8 @@ function applyIcons(){
 applyIcons();
 renderCriticals();
 renderCpTracking();
+renderMyTasks();
+renderMoaTasks();
 renderDayNav();
 updateWorkCounts();
 
