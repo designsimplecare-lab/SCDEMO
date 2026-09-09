@@ -157,6 +157,10 @@
   .dsw-tog{width:38px;height:22px;border-radius:999px;background:var(--line-strong);border:none;cursor:pointer;position:relative;flex-shrink:0;}
   .dsw-tog::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;}
   .dsw-tog.on{background:var(--good);} .dsw-tog.on::after{left:19px;}
+  .rule-note{font-size:12px;color:var(--ink-soft);background:var(--wash);border-radius:9px;
+    padding:10px 13px;margin-bottom:14px;line-height:1.55;border-left:2px solid var(--line-strong);}
+  .ask-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .ask-row .btn .ic{width:14px;height:14px;}
 </style>
 </head>
 <body>
@@ -216,12 +220,23 @@
       <div class="screen" id="screen-tasks">
         <h1>Tasks from physicians</h1>
         <p class="sub">Structured delegations. Each task states the action, the patient and the reason.</p>
+        <div class="rule-note">Tasks only ever travel one way. A physician creates one by pressing Task; you can reply on it, mark it done, or ask a question &mdash; you can't open a new one. Anything you need from a doctor goes by chatbox, email or phone instead, and it stays out of their task list.</div>
         <div class="seg" id="task-seg">
           <button class="active" data-f="open">Open</button>
           <button data-f="mine">In progress</button>
           <button data-f="done">Completed</button>
         </div>
         <div class="box"><div id="task-list"></div></div>
+
+        <div class="box">
+          <p class="box-title">Need something from a physician?</p>
+          <p class="sub" style="margin:2px 0 12px;">This never becomes a task on their list &mdash; only they can create those.</p>
+          <div class="ask-row">
+            <button class="btn" onclick="askDoc('chatbox')"><span class="ic" data-ic="chat"></span> Chatbox</button>
+            <button class="btn" onclick="askDoc('email')"><span class="ic" data-ic="inbox"></span> Email</button>
+            <button class="btn" onclick="askDoc('phone')"><span class="ic" data-ic="patientview"></span> Phone</button>
+          </div>
+        </div>
       </div>
 
       <!-- ===== REFERRALS ===== -->
@@ -371,6 +386,7 @@ function taskRow(t, i){
     '<div class="acts">'+
       (t.status==='done' ? '<span class="pill good">Done</span>'
         : '<button class="btn dark xs" onclick="completeTask('+i+')">Mark done</button>'+
+          '<button class="btn xs" onclick="replyTask('+i+')">Reply</button>'+
           '<button class="btn xs" onclick="toast(\'Opened patient record\')">Open</button>')+
     '</div></div>';
 }
@@ -395,6 +411,13 @@ function renderTasks(){
     : '<p class="empty">All caught up.</p>';
   document.getElementById('cf-n').textContent = cf.length;
   document.getElementById('nf-tasks').textContent = open.length;
+}
+function replyTask(i){
+  toast('Reply sent to ' + TASKS[i].from.replace(/^From /,'') + ' — stays on this task');
+}
+function askDoc(how){
+  var m = { chatbox:'Chatbox opened with Dr. Pannozzo', email:'Email drafted to Dr. Pannozzo', phone:'Calling Dr. Pannozzo' };
+  toast(m[how] + ' — not a task');
 }
 function completeTask(i){ TASKS[i].status='done'; toast('Task completed \u00b7 '+TASKS[i].patient); renderTasks(); }
 document.querySelectorAll('#task-seg button').forEach(function(b){

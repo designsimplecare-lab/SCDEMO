@@ -1353,6 +1353,49 @@
   .cp-rec .hint{font-size:11px;color:var(--ink-faint);margin:6px 0 0;}
 
   /* practice-wide tracking */
+  /* ===== Tasks — doctor-assigned work. One direction only: doctor to MOA,
+     or doctor to themselves. The MOA can never open one. ===== */
+  .tk-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;}
+  .tk-card.complete{opacity:.6;}
+  .tk-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:6px;background:var(--warn);}
+  .tk-card.complete .tk-dot{background:var(--good);}
+  .tk-card.carried .tk-dot{background:var(--crit);}
+  .tk-body{flex:1;min-width:0;}
+  .tk-title{font-size:14px;font-weight:800;margin:0;letter-spacing:-.005em;}
+  .tk-pt{font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.04em;
+    font-weight:700;margin:3px 0 0;}
+  .tk-pt .num{color:var(--ink-soft);}
+  .tk-badges{display:flex;gap:6px;align-items:center;margin:7px 0 0;flex-wrap:wrap;}
+  .tk-vf{font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;
+    background:var(--good-wash);color:var(--good);}
+  .tk-kind{font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;
+    background:var(--wash);color:var(--ink-soft);border:1px solid var(--line);}
+  .tk-carried{font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;
+    background:var(--crit-wash);color:var(--crit);}
+  .tk-note{font-size:12px;color:var(--ink-soft);font-style:italic;line-height:1.5;margin:8px 0 0;}
+  .tk-route{font-size:11px;color:var(--ink-faint);margin:8px 0 0;line-height:1.6;}
+  .tk-route b{color:var(--ink-soft);font-weight:700;}
+  .tk-route .sep{opacity:.45;margin:0 6px;}
+  .tk-acts{display:flex;gap:7px;flex-shrink:0;align-items:center;}
+  .tk-grp{display:flex;align-items:baseline;gap:8px;margin:20px 0 10px;}
+  .tk-grp:first-child{margin-top:0;}
+  .tk-grp b{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;}
+  .tk-grp .n{font-size:10.5px;font-weight:700;color:var(--ink-faint);
+    background:var(--wash);border-radius:20px;padding:2px 8px;}
+  .tk-rule{font-size:11.5px;color:var(--ink-faint);line-height:1.55;margin:14px 0 0;}
+
+  .svc-box.off{border-color:#E8C79B;background:var(--warn-wash);}
+  .svc-top{display:flex;align-items:flex-start;gap:16px;}
+  .svc-top .btn{margin-left:auto;flex-shrink:0;}
+  .svc-lbl{display:block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--ink-faint);margin:14px 0 6px;}
+  #svc-msg{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 12px;
+    font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel);outline:none;}
+  #svc-msg:focus{border-color:var(--accent);}
+  .tm-keep{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-soft);margin:2px 0 8px;cursor:pointer;}
+  .tm-route{font-size:11.5px;color:var(--ink-faint);line-height:1.5;margin:0 0 14px;}
+  .tm-route b{color:var(--ink-soft);font-weight:700;}
   .cpt-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:4px;}
   .cpt-head h1{margin:0;} .cpt-head .sub{margin-top:4px;}
   .cpt-head .btn{margin-left:auto;flex-shrink:0;}
@@ -1782,7 +1825,8 @@
       <p class="nav-group-label">Patients</p>
       <button class="nav-btn" data-screen="inbox" onclick="showScreen('inbox')"><span class="nav-icon">&#9993;</span><span class="nav-label">Inbox<span class="nav-flag" id="inbox-nav-flag" style="display:none;"></span></span></button>
       <button class="nav-btn" data-screen="encounterlog" onclick="showScreen('encounterlog')"><span class="nav-icon">&#9636;</span><span class="nav-label">Encounter Log</span></button>
-      <button class="nav-btn" data-screen="careplan" onclick="showScreen('careplan')"><span class="nav-icon">&#9776;</span><span class="nav-label">Outstanding Tasks<span class="nav-flag" id="cp-nav-flag" style="display:none;"></span></span></button>
+      <button class="nav-btn" data-screen="tasks" onclick="showScreen('tasks')"><span class="nav-icon">&#10003;</span><span class="nav-label">Tasks<span class="nav-flag" id="task-nav-flag" style="display:none;"></span></span></button>
+      <button class="nav-btn" data-screen="careplan" onclick="showScreen('careplan')"><span class="nav-icon">&#9776;</span><span class="nav-label">Care Plan Tracker<span class="nav-flag" id="cp-nav-flag" style="display:none;"></span></span></button>
     </div>
 
     <div class="nav-group">
@@ -2624,6 +2668,22 @@
       <h1>Calendar</h1>
       <p class="sub">Merged Calendar + Set Schedule into one view/edit toggle on the same date picker.</p>
       <div class="ia-note">IA change: previously two separate destinations with two different day-pickers for the same underlying data. Now one screen, one picker, two modes.</div>
+      <div class="box svc-box" id="svc-box">
+        <div class="svc-top">
+          <div>
+            <p class="box-title" style="margin:0;">Service status</p>
+            <p class="sched-note" style="margin:2px 0 0;" id="svc-state">On service &mdash; your windows are open and you appear in the scheduler.</p>
+          </div>
+          <button class="btn dark" id="svc-btn" onclick="toggleService()">Go off service</button>
+        </div>
+        <div id="svc-edit" class="vc-hidden">
+          <label class="svc-lbl" for="svc-msg">What your patients see</label>
+          <input id="svc-msg" value="Vacation Time &mdash; back on service September 03" oninput="renderService()">
+          <label class="tm-keep"><input type="checkbox" id="svc-email" checked onchange="renderService()"> Email my patients as well</label>
+          <p class="tm-route">Off service hides you from the scheduler so nobody can book, and shows this line to <b>all patients</b> so they know where you are instead of phoning the clinic.</p>
+        </div>
+      </div>
+
       <div class="mode-toggle">
         <button class="active" onclick="setCalMode('view',this)">View week</button>
         <button onclick="setCalMode('edit',this)">Edit windows</button>
@@ -2670,37 +2730,31 @@
       <p class="sub">Practice admin group.</p>
       <div class="box"><div class="sched-row"><span>Private Visit Fee</span><span>$100 CAD</span></div></div>
     </div>
-    <div class="screen" id="screen-careplan">
+    <div class="screen" id="screen-tasks">
       <div class="cpt-head">
         <div>
-          <h1>Outstanding Tasks</h1>
-          <p class="sub">Every care plan in the practice, synthesized into the specific things that need doing.</p>
+          <h1>Tasks</h1>
+          <p class="sub">Work the doctor has assigned &mdash; to an MOA, or to themselves.</p>
         </div>
-        <button class="btn dark" onclick="openTaskMoa('')"><span class="ic" data-pcic="task"></span> Task the MOA</button>
+        <button class="btn dark" onclick="openTaskMoa('')"><span class="ic" data-pcic="task"></span> New task</button>
       </div>
-      <div class="ia-note">Deliberately context-free. The chart carries the narrative &mdash; why this person is here, what was done last. This list carries only the work, grouped the way orders are actually placed: blood work, imaging, referrals. Every item can be handed to the MOA, and the physician can task them anything on top of what the plans generated. Each item still links back to the sentence it was derived from, so a synthesis error is visible rather than silent.</div>
+      <div class="ia-note">One direction only. A task exists because the doctor pressed Task &mdash; nothing lands here automatically, blank notes don't, and the MOA can't open one. When the MOA needs something they email, phone, or use the chatbox, and they can always reply on a task. Routing follows the on-service MOA, copies the doctor's primary MOA when those differ, and forwards to Admin for overwatch.</div>
+
+      <div class="box">
+        <div class="cpt-filters" id="tk-filters"></div>
+        <div id="tk-list"></div>
+        <p class="tk-rule">Tasks stay present until they're completed. Carrying one forward keeps it on the list and marks how long it has been sitting &mdash; it never disappears to a future date.</p>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-careplan">
+      <h1>Care Plan Tracker</h1>
+      <p class="sub">How the orders coming out of each care plan are actually being carried out.</p>
+      <div class="ia-note">Separate from Tasks by design. Tasks are what the doctor handed to someone. This is the execution view across every care plan in the practice &mdash; what was ordered, what came back, what is still with a specialist. The reason any of it was ordered stays in the care plan on the chart, where the doctor reads it.</div>
 
       <div class="box">
         <div class="cpt-filters" id="cpt-filters"></div>
         <div id="cpt-list"></div>
-      </div>
-
-      <div class="box">
-        <p class="box-title">Deferred &mdash; coming back later <span class="n" id="deferred-count">0</span></p>
-        <p class="sched-note">Pushed to a later point. They return to the active list on the date chosen.</p>
-        <div id="deferred-list"></div>
-      </div>
-
-      <div class="box">
-        <p class="box-title">Kept, not delegated</p>
-        <p class="sched-note">Things you couldn't finish in the moment and kept yourself. These never go to your MOA.</p>
-        <div id="my-tasks-list"></div>
-      </div>
-
-      <div class="box">
-        <p class="box-title">Sent to MOA</p>
-        <p class="sched-note">What you've delegated and where it stands.</p>
-        <div id="moa-tasks-list"></div>
       </div>
     </div>
 
@@ -2734,8 +2788,8 @@
 <!-- Task MOA modal -->
 <div class="tm-overlay" id="tm-overlay" onclick="if(event.target===this) closeTaskMoa()">
   <div class="tm-card">
-    <p class="tm-title">Task MOA</p>
-    <p class="tm-sub">Send a quick task to your MOA — no need to leave what you're doing.</p>
+    <p class="tm-title">New task</p>
+    <p class="tm-sub">Pressing Task is what makes something a task. Nothing arrives here on its own.</p>
     <div class="tm-field">
       <label for="tm-patient">Patient</label>
       <select id="tm-patient">
@@ -2749,18 +2803,20 @@
     <div class="tm-field">
       <label>Task type</label>
       <div class="tm-chip-row" id="tm-chips">
-        <span class="tm-chip active" onclick="tmSelectChip(this)">General</span>
-        <span class="tm-chip" onclick="tmSelectChip(this)">Lab</span>
+        <span class="tm-chip active" onclick="tmSelectChip(this)">Referral</span>
         <span class="tm-chip" onclick="tmSelectChip(this)">Imaging</span>
-        <span class="tm-chip" onclick="tmSelectChip(this)">Referral</span>
-        <span class="tm-chip" onclick="tmSelectChip(this)">Rx</span>
+        <span class="tm-chip" onclick="tmSelectChip(this)">Blood work</span>
+        <span class="tm-chip" onclick="tmSelectChip(this)">Prescription</span>
         <span class="tm-chip" onclick="tmSelectChip(this)">Follow-up</span>
+        <span class="tm-chip" onclick="tmSelectChip(this)">Other</span>
       </div>
     </div>
     <div class="tm-field">
-      <label for="tm-note">Note for MOA</label>
+      <label for="tm-note">Note</label>
       <textarea id="tm-note" placeholder="e.g. Please book a 2-week follow-up and fax referral to Dr. Singh"></textarea>
     </div>
+    <label class="tm-keep"><input type="checkbox" id="tm-keep" onchange="tmRoute()"> Keep this one myself, don't send it to the MOA</label>
+    <p class="tm-route" id="tm-route"></p>
     <div class="tm-actions">
       <button class="btn" onclick="closeTaskMoa()">Cancel</button>
       <button class="btn dark" onclick="sendTaskMoa()">Send to MOA</button>
@@ -2872,19 +2928,6 @@
   </div>
   <div class="dsw-sec">
     <div class="dsw-grid"><a href="demo.html" style="width:100%;justify-content:center;">All demos &amp; prototypes</a></div>
-  </div>
-</div>
-
-<div class="defer-overlay" id="defer-overlay" onclick="if(event.target===this) closeDefer()">
-  <div class="defer-card">
-    <p class="defer-ttl">Defer task</p>
-    <p class="defer-what" id="defer-what"></p>
-    <p class="defer-lbl">Bring it back</p>
-    <div class="defer-opts" id="defer-opts"></div>
-    <div class="defer-acts">
-      <button class="btn" onclick="closeDefer()">Cancel</button>
-      <button class="btn dark" onclick="confirmDefer()">Defer task</button>
-    </div>
   </div>
 </div>
 
@@ -3184,10 +3227,20 @@ function toggleNotes(){
 
 function openTaskMoa(prefillPatient){
   document.getElementById('tm-overlay').classList.add('show');
+  var k=document.getElementById('tm-keep'); if(k) k.checked=false;
+  tmRoute();
   document.getElementById('tm-note').value = '';
   document.querySelectorAll('#tm-chips .tm-chip').forEach(function(c,i){ c.classList.toggle('active', i===0); });
   if(prefillPatient){ document.getElementById('tm-patient').value = prefillPatient; }
   else{ document.getElementById('tm-patient').value = ''; }
+}
+function tmRoute(){
+  var el=document.getElementById('tm-route'); if(!el) return;
+  var k=document.getElementById('tm-keep');
+  if(k && k.checked){ el.innerHTML='Stays on your own list. Nobody else sees it.'; return; }
+  var line = 'Goes to <b>'+MOA_ON_SERVICE+'</b>, on service for this window';
+  if(MOA_ON_SERVICE !== MOA_ROSTER.primary) line += ', copies <b>'+MOA_ROSTER.primary+'</b> as your primary MOA';
+  el.innerHTML = line + ', and forwards to <b>'+MOA_ROSTER.admin+'</b> for overwatch.';
 }
 function closeTaskMoa(){
   document.getElementById('tm-overlay').classList.remove('show');
@@ -3197,109 +3250,194 @@ function tmSelectChip(el){
   el.classList.add('active');
 }
 /* ===== MOA task history — separate from the physician's own outstanding tasks ===== */
-var MOA_TASKS = [
-  { patient:'Louise ("Chickadee")', type:'Referral', note:'EDS referral bounced back — specialist declined, needs a new match.', status:'carried-forward', sentAt:'Yesterday' },
-  { patient:'Gloria Mcdonald', type:'Follow-up', note:'Wants to move follow-up to next week — confirm new date.', status:'in-progress', sentAt:'10:02 AM' },
-  { patient:'Brian K.', type:'Lab', note:'Requisition rejected by Royal Inland — breast density missing, needs a callback.', status:'completed', sentAt:'Mon' }
-];
-var MOA_TASK_LABEL = { 'in-progress':'In progress', 'completed':'Completed', 'carried-forward':'Carried forward by MOA' };
+/* ============================================================
+   TASKS
+   Daniel: "These are tasks that the Doctor has assigned to the MOA's
+   or assigned themselves. Imaging, referrals, blood work. They can
+   also be specific."
 
-/* ===== physician's own outstanding tasks — stays on Today, separate from MOA history ===== */
-var MY_TASKS = [
-  { text:'Review MRI report — Frank D.', done:false, deferred:false, until:'' },
-  { text:'Sign off imaging — Carol-Anne Feldman', done:false, deferred:false, until:'' },
-  { text:'Chase orthopaedics referral — Owen Brady', done:false, deferred:true, until:'Tomorrow' },
-  { text:'Recheck ferritin plan — Behdis Maleki', done:false, deferred:true, until:'Next week' }
+   Chain of command is one-way. "The MOA can't initiate a Task to the
+   Doctor. The MOA can communicate with the Doctor and respond to the
+   Task." Questions come by email, phone or the chatbox instead.
+
+   Routing: every doctor has a primary MOA, every MOA has a buddy.
+   A task goes to whichever MOA is on service for the call window; if
+   that isn't the primary MOA, the primary is copied so they still
+   know what is going on. Admin is forwarded everything for overwatch.
+
+   No scheduled deferral. "We wouldn't defer to next week. The tasks
+   need to be present and completed asap." Carrying forward keeps an
+   item on the list and shows how long it has been sitting.
+   ============================================================ */
+var MOA_ROSTER = { primary:'Dolly Aquino', buddy:'Marisol Reyes', admin:'Practice admin' };
+var MOA_ON_SERVICE = 'Marisol Reyes';  // whoever holds the current call window (the buddy today)
+
+var TASK_KINDS = ['Referral','Imaging','Blood work','Prescription','Follow-up','Other'];
+
+var DOC_TASKS = [
+  { id:'t1', title:'Referral for HSAT', kind:'Referral', owner:'moa',
+    patient:'Lorraine Anne Verville', preferred:'Lori (Lorraine) Verville', chart:'#6448',
+    verified:true, status:'open', carried:0, sent:'Today, 9:12 AM',
+    note:'Persistent fatigue and non-restorative sleep for over four years, with sleep-app recordings suggestive of apnoea. Home Sleep Apnea Test.' },
+  { id:'t2', title:'Rebook EDS referral', kind:'Referral', owner:'moa',
+    patient:'Louise Tam', preferred:'Chickadee', chart:'#4417',
+    verified:true, status:'open', carried:2, sent:'Two days ago',
+    note:'Specialist declined the original referral. Needs a new match, then confirm with her by phone.' },
+  { id:'t3', title:'Chest X-ray requisition', kind:'Imaging', owner:'moa',
+    patient:'Behdis Maleki', preferred:'Behdis', chart:'#5120',
+    verified:true, status:'open', carried:0, sent:'Today, 8:40 AM',
+    note:'Send to Royal Inland. Flag that the last requisition was rejected for a missing field.' },
+  { id:'t4', title:'Repeat ferritin and CBC', kind:'Blood work', owner:'moa',
+    patient:'Behdis Maleki', preferred:'Behdis', chart:'#5120',
+    verified:true, status:'open', carried:1, sent:'Yesterday',
+    note:'Still fatigued on supplementation. Requisition to LifeLabs, patient to attend when convenient.' },
+  { id:'t5', title:'Confirm new follow-up date', kind:'Follow-up', owner:'moa',
+    patient:'Gloria Mcdonald', preferred:'Gloria', chart:'#6448',
+    verified:true, status:'open', carried:0, sent:'Today, 10:02 AM',
+    note:'Wants to move her follow-up to next week. Anything after the stress test on Sep 12.' },
+  { id:'t6', title:'Review MRI report', kind:'Other', owner:'self',
+    patient:'Frank Delacroix', preferred:'Frank', chart:'#3908',
+    verified:true, status:'open', carried:0, sent:'Today, 7:55 AM',
+    note:'Report came back overnight. Read before the afternoon window.' },
+  { id:'t7', title:'Sign off imaging', kind:'Imaging', owner:'self',
+    patient:'Carol-Anne Feldman', preferred:'Carol', chart:'#2251',
+    verified:true, status:'open', carried:1, sent:'Yesterday',
+    note:'Ultrasound reported. Needs my sign-off before it releases to her.' },
+  { id:'t8', title:'Requisition rejected — callback', kind:'Blood work', owner:'moa',
+    patient:'Brian Koval', preferred:'Brian', chart:'#7734',
+    verified:true, status:'complete', carried:0, sent:'Monday',
+    note:'Royal Inland rejected it, breast density missing. Resubmitted and patient called.' }
 ];
-var DEFER_OPTS = ['Later today','Tomorrow','In 3 days','Next week'];
-function renderMyTasks(){
-  var el = document.getElementById('my-tasks-list');
-  if(el){
-    var active = MY_TASKS.filter(function(t){ return !t.done && !t.deferred; });
-    el.innerHTML = active.length
-      ? MY_TASKS.map(function(t,i){
-          if(t.done || t.deferred) return '';
-          return '<div class="task-row"><span class="task-t">'+t.text+'</span>'+
-            '<span class="task-acts">'+
-              '<button class="btn xs" onclick="completeMyTask('+i+')">Mark done</button>'+
-              '<button class="btn xs" onclick="openDefer('+i+')">Defer task</button>'+
-            '</span></div>';
-        }).join('')
-      : '<p class="sched-note" style="margin:2px 0 0;">Nothing outstanding — nice.</p>';
+
+function taskRoute(t){
+  if(t.owner === 'self') return '<b>Kept by me</b>';
+  var parts = ['<b>' + MOA_ON_SERVICE + '</b> on service'];
+  if(MOA_ON_SERVICE !== MOA_ROSTER.primary){
+    parts.push('cc <b>' + MOA_ROSTER.primary + '</b> as primary');
   }
-  renderDeferred();
-}
-/* Deferred tasks — side panel (replaces Carry Forward) */
-function renderDeferred(){
-  var d = document.getElementById('deferred-list');
-  if(!d) return;
-  var def = MY_TASKS.filter(function(t){ return t.deferred && !t.done; });
-  d.innerHTML = def.length
-    ? def.map(function(t){
-        var i = MY_TASKS.indexOf(t);
-        return '<div class="task-row"><span class="task-t">'+t.text+
-          '<i class="task-until">Deferred to '+t.until+'</i></span>'+
-          '<span class="task-acts">'+
-            '<button class="btn xs dark" onclick="undeferTask('+i+')">Bring back</button>'+
-            '<button class="btn xs" onclick="completeMyTask('+i+')">Mark done</button>'+
-          '</span></div>';
-      }).join('')
-    : '<p class="sched-note" style="margin:2px 0 0;">Nothing deferred.</p>';
-  var c = document.getElementById('deferred-count'); if(c) c.textContent = def.length;
-  var nf = document.getElementById('defer-nav-flag');
-  if(nf){ nf.textContent = def.length; nf.style.display = def.length ? 'inline-flex' : 'none'; }
-}
-var DEFER_I = -1;
-function openDefer(i){
-  DEFER_I = i;
-  document.getElementById('defer-what').textContent = MY_TASKS[i].text;
-  document.getElementById('defer-opts').innerHTML = DEFER_OPTS.map(function(o,k){
-    return '<button class="defer-opt'+(k===1?' on':'')+'" onclick="pickDefer(this)">'+o+'</button>';
-  }).join('');
-  document.getElementById('defer-overlay').classList.add('show');
-}
-function pickDefer(b){ b.parentNode.querySelectorAll('.defer-opt').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); }
-function closeDefer(){ document.getElementById('defer-overlay').classList.remove('show'); }
-function confirmDefer(){
-  var sel = document.querySelector('#defer-opts .defer-opt.on');
-  var t = MY_TASKS[DEFER_I]; if(!t) return;
-  t.deferred = true; t.until = sel ? sel.textContent : 'Tomorrow';
-  closeDefer(); renderMyTasks();
-  toast('Deferred to ' + t.until + ' — it will come back then');
-}
-function undeferTask(i){
-  MY_TASKS[i].deferred = false; MY_TASKS[i].until = '';
-  renderMyTasks(); toast('Back on your active list');
-}
-function completeMyTask(i){
-  MY_TASKS[i].done = true;
-  renderMyTasks();
-  toast('Marked done');
+  parts.push('<b>' + MOA_ROSTER.admin + '</b> overwatch');
+  return parts.join('<span class="sep">&middot;</span>');
 }
 
-function renderMoaTasks(){
-  var el = document.getElementById('moa-tasks-list');
-  if(!el) return;
-  if(!MOA_TASKS.length){
-    el.innerHTML = '<div class="stub-empty">No tasks sent to your MOA yet</div>';
-    return;
-  }
-  el.innerHTML = MOA_TASKS.map(function(t){
-    return '<div class="sched-row"><span><b>'+t.type+'</b> · '+t.patient+' — '+t.note+'</span>'+
-      '<span class="status-pill '+t.status+'">'+MOA_TASK_LABEL[t.status]+'</span></div>';
+function taskCard(t){
+  var cls = 'tk-card' + (t.status==='complete' ? ' complete' : (t.carried ? ' carried' : ''));
+  var badges = '<span class="tk-kind">' + t.kind + '</span>' +
+    (t.verified ? '<span class="tk-vf">Verified</span>' : '') +
+    (t.carried ? '<span class="tk-carried">Carried forward &times;' + t.carried + '</span>' : '');
+  var acts = t.status==='complete'
+    ? '<button class="btn xs" onclick="taskReopen(&#39;'+t.id+'&#39;)">Reopen</button>'
+    : '<button class="btn xs" onclick="openTaskMoa(&#39;'+t.patient.replace(/'/g,"\\'")+'&#39;)">Task</button>'+
+      '<button class="btn xs" onclick="taskCarry(&#39;'+t.id+'&#39;)">Carry Forward</button>'+
+      '<button class="btn xs dark" onclick="taskComplete(&#39;'+t.id+'&#39;)">Complete</button>';
+  return '<div class="'+cls+'">'+
+    '<span class="tk-dot"></span>'+
+    '<div class="tk-body">'+
+      '<p class="tk-title">'+t.title+'</p>'+
+      '<p class="tk-pt">'+t.patient+' (preferred: '+t.preferred+') <span class="num">&middot; '+t.chart+'</span></p>'+
+      '<div class="tk-badges">'+badges+'</div>'+
+      '<p class="tk-note">Note: '+t.note+'</p>'+
+      '<p class="tk-route">'+taskRoute(t)+'<span class="sep">&middot;</span>'+t.sent+'</p>'+
+    '</div>'+
+    '<div class="tk-acts">'+acts+'</div>'+
+  '</div>';
+}
+
+var TK_FILTERS = ['Everything','Assigned to MOA','Kept by me','Carried forward','Completed'];
+var TK_ON = 'Everything';
+function tkSet(f){ TK_ON = f; renderTasks(); }
+
+function renderTasks(){
+  var fw = document.getElementById('tk-filters');
+  var lw = document.getElementById('tk-list');
+  if(!fw || !lw) return;
+  var open = DOC_TASKS.filter(function(t){ return t.status!=='complete'; });
+  var counts = {
+    'Everything': open.length,
+    'Assigned to MOA': open.filter(function(t){ return t.owner==='moa'; }).length,
+    'Kept by me': open.filter(function(t){ return t.owner==='self'; }).length,
+    'Carried forward': open.filter(function(t){ return t.carried>0; }).length,
+    'Completed': DOC_TASKS.filter(function(t){ return t.status==='complete'; }).length
+  };
+  fw.innerHTML = TK_FILTERS.map(function(f){
+    return '<button class="'+(f===TK_ON?'on':'')+'" onclick="tkSet(&#39;'+f+'&#39;)">'+f+' &middot; '+counts[f]+'</button>';
   }).join('');
+
+  var rows;
+  if(TK_ON==='Completed') rows = DOC_TASKS.filter(function(t){ return t.status==='complete'; });
+  else rows = open.filter(function(t){
+    if(TK_ON==='Assigned to MOA') return t.owner==='moa';
+    if(TK_ON==='Kept by me') return t.owner==='self';
+    if(TK_ON==='Carried forward') return t.carried>0;
+    return true;
+  });
+
+  /* grouped the way the doctor places them: referrals, imaging, blood work, then the rest */
+  var html = '';
+  TASK_KINDS.forEach(function(k){
+    var g = rows.filter(function(t){ return t.kind===k; });
+    if(!g.length) return;
+    g.sort(function(a,b){ return b.carried - a.carried; });
+    html += '<div class="tk-grp"><b>'+k+'</b><span class="n">'+g.length+'</span></div>' + g.map(taskCard).join('');
+  });
+  lw.innerHTML = html || '<p class="pc-empty">Nothing in this view.</p>';
+  updateTaskFlag();
+}
+
+function updateTaskFlag(){
+  var n = DOC_TASKS.filter(function(t){ return t.status!=='complete' && t.carried>0; }).length;
+  var f = document.getElementById('task-nav-flag');
+  if(f){ f.textContent = n; f.style.display = n ? 'inline-flex' : 'none'; }
+}
+/* ===== Off service =====
+   Daniel: "Off Service is just so that your patients know where you are and
+   don't call the clinic that often." Seen by all patients, and it takes the
+   doctor out of the scheduler so nothing can be booked. ===== */
+var OFF_SERVICE = false;
+function toggleService(){ OFF_SERVICE = !OFF_SERVICE; renderService(); }
+function renderService(){
+  var box=document.getElementById('svc-box'); if(!box) return;
+  var msg=(document.getElementById('svc-msg')||{}).value || '';
+  var mail=document.getElementById('svc-email');
+  box.classList.toggle('off', OFF_SERVICE);
+  document.getElementById('svc-edit').classList.toggle('vc-hidden', !OFF_SERVICE);
+  document.getElementById('svc-btn').textContent = OFF_SERVICE ? 'Back on service' : 'Go off service';
+  document.getElementById('svc-state').innerHTML = OFF_SERVICE
+    ? 'Off service &mdash; hidden from the scheduler. All patients see &ldquo;' + msg + '&rdquo;' +
+      (mail && mail.checked ? ', and it goes out by email.' : '.')
+    : 'On service &mdash; your windows are open and you appear in the scheduler.';
+}
+function taskFind(id){ return DOC_TASKS.filter(function(t){ return t.id===id; })[0]; }
+function taskCarry(id){
+  var t = taskFind(id); if(!t) return;
+  t.carried++; renderTasks();
+  toast('Carried forward — still on the list, now ' + t.carried + (t.carried===1?' day':' days') + ' old');
+}
+function taskComplete(id){
+  var t = taskFind(id); if(!t) return;
+  t.status='complete'; renderTasks(); toast('Completed');
+}
+function taskReopen(id){
+  var t = taskFind(id); if(!t) return;
+  t.status='open'; renderTasks(); toast('Reopened');
 }
 
 function sendTaskMoa(){
   var patient = document.getElementById('tm-patient').value;
   var note = document.getElementById('tm-note').value.trim();
   var chip = document.querySelector('#tm-chips .tm-chip.active');
-  var type = chip ? chip.textContent : 'General';
-  MOA_TASKS.unshift({ patient: patient || 'Not patient-specific', type:type, note: note || 'No note added', status:'in-progress', sentAt:'Just now' });
-  renderMoaTasks();
-  var label = patient ? (type+' task sent to MOA — '+patient) : (type+' task sent to MOA');
+  var type = chip ? chip.textContent : 'Other';
+  var self = document.getElementById('tm-keep') && document.getElementById('tm-keep').checked;
+  DOC_TASKS.unshift({
+    id:'t'+Date.now(), title: note ? note.split('.')[0].slice(0,60) : (type + ' task'),
+    kind: TASK_KINDS.indexOf(type)>-1 ? type : 'Other',
+    owner: self ? 'self' : 'moa',
+    patient: patient || 'Not patient-specific', preferred: (patient||'—').split(' ')[0], chart:'#—',
+    verified:true, status:'open', carried:0, sent:'Just now',
+    note: note || 'No note added'
+  });
+  renderTasks();
   closeTaskMoa();
-  toast(label);
+  toast(self ? 'Kept as your own task' : ('Task sent to ' + MOA_ON_SERVICE));
 }
 
 /* ===== Inbox — clear-the-inbox review/sign-off state machine (received -> reviewed -> signed-off) ===== */
@@ -3704,8 +3842,7 @@ function sendChatMessage(){
 }
 updateChatBadge();
 renderMoaOnlineStrip();
-renderMyTasks();
-renderMoaTasks();
+renderTasks();
 renderInboxList();
 
 var ADDON_DATA = [];
@@ -4804,8 +4941,8 @@ function applyIcons(){
 applyIcons();
 renderCriticals();
 renderCpTracking();
-renderMyTasks();
-renderMoaTasks();
+renderTasks();
+renderService();
 renderDayNav();
 updateWorkCounts();
 
