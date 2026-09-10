@@ -1393,6 +1393,71 @@
   #svc-msg{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 12px;
     font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel);outline:none;}
   #svc-msg:focus{border-color:var(--accent);}
+  /* ============================================================
+     AMBIENT SCRIBE
+     Listens to the call, drafts the note, and PROPOSES orders and
+     tasks. It never files anything. Daniel: "The doctor decide what
+     is a Task. By pressing Task button. always."
+     ============================================================ */
+  .sc-block{border:1px solid var(--line);border-radius:16px;background:var(--panel);
+    box-shadow:var(--shadow-card);padding:16px 18px;margin-bottom:12px;}
+  .sc-hd{display:flex;align-items:center;gap:10px;margin-bottom:2px;}
+  .sc-hd h4{font-size:13px;font-weight:800;margin:0;letter-spacing:.01em;}
+  .sc-hd .right{margin-left:auto;display:flex;gap:7px;align-items:center;}
+  .sc-dot{width:8px;height:8px;border-radius:50%;background:var(--ink-faint);flex-shrink:0;}
+  .sc-block.live .sc-dot{background:var(--crit);animation:scpulse 1.6s ease-in-out infinite;}
+  .sc-block.review .sc-dot{background:var(--accent);}
+  @keyframes scpulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+  .sc-sub{font-size:11.5px;color:var(--ink-faint);margin:0 0 12px;line-height:1.5;}
+
+  .sc-consent{background:var(--wash);border-radius:11px;padding:14px 16px;}
+  .sc-consent p{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin:0 0 10px;max-width:62ch;}
+  .sc-consent ul{margin:0 0 12px;padding-left:18px;font-size:12.5px;color:var(--ink-soft);line-height:1.7;}
+  .sc-consent .acts{display:flex;gap:8px;flex-wrap:wrap;}
+
+  .sc-tx{background:var(--wash);border-radius:10px;padding:10px 12px;max-height:150px;
+    overflow-y:auto;margin-bottom:14px;}
+  .sc-turn{display:flex;gap:9px;font-size:12px;line-height:1.5;padding:3px 0;}
+  .sc-turn .w{font-family:var(--mono,ui-monospace);font-size:10px;font-weight:700;letter-spacing:.05em;
+    flex-shrink:0;width:26px;padding-top:2px;}
+  .sc-turn.dr .w{color:var(--accent-ink);}
+  .sc-turn.pt .w{color:var(--ink-faint);}
+  .sc-turn .x{color:var(--ink-soft);}
+  .sc-turn.hl{background:var(--accent-wash);border-radius:6px;padding:4px 6px;margin:1px -6px;}
+  .sc-turn.hl .x{color:var(--ink);}
+
+  .sc-count{font-size:11px;font-weight:700;color:var(--ink-faint);background:var(--wash);
+    border-radius:20px;padding:2px 8px;}
+
+  .sc-prop{border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin-bottom:8px;
+    background:var(--panel);}
+  .sc-prop.gone{display:none;}
+  .sc-prop-top{display:flex;align-items:baseline;gap:9px;margin-bottom:3px;}
+  .sc-kind{font-size:10px;font-weight:800;letter-spacing:.05em;padding:2px 8px;border-radius:20px;
+    background:var(--wash);color:var(--ink-soft);border:1px solid var(--line);flex-shrink:0;}
+  .sc-prop b{font-size:13.5px;font-weight:700;flex:1;min-width:0;}
+  .sc-conf{font-size:10px;font-weight:800;letter-spacing:.04em;flex-shrink:0;}
+  .sc-conf.hi{color:var(--good);} .sc-conf.mid{color:var(--warn);}
+  .sc-prop .d{font-size:12px;color:var(--ink-soft);margin:0 0 8px;line-height:1.5;}
+  .sc-heard{border:none;background:none;font-family:inherit;font-size:11px;font-weight:700;
+    color:var(--accent-ink);cursor:pointer;padding:0;}
+  .sc-heard:hover{text-decoration:underline;}
+  .sc-quote{display:none;font-size:11.5px;font-style:italic;color:var(--ink-soft);line-height:1.5;
+    border-left:2px solid var(--line-strong);padding:3px 0 3px 10px;margin:8px 0 0;}
+  .sc-quote.on{display:block;}
+  .sc-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px;}
+  .sc-acts button{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:5px 10px;
+    font-family:inherit;font-size:11.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;}
+  .sc-acts button:hover{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-wash);}
+  .sc-acts button.go{background:var(--ink-dark);border-color:var(--ink-dark);color:#fff;}
+  .sc-acts button.go:hover{opacity:.88;background:var(--ink-dark);color:#fff;}
+
+  .sc-rule{font-size:11px;color:var(--ink-faint);line-height:1.55;margin:12px 0 0;}
+  .sc-rule b{color:var(--ink-soft);font-weight:700;}
+  .sc-empty{font-size:12px;color:var(--ink-faint);padding:10px 0;}
+  .sc-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--ink-faint);margin:16px 0 8px;}
+
   .tm-keep{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-soft);margin:2px 0 8px;cursor:pointer;}
   .tm-route{font-size:11.5px;color:var(--ink-faint);line-height:1.5;margin:0 0 14px;}
   .tm-route b{color:var(--ink-soft);font-weight:700;}
@@ -2212,6 +2277,16 @@
         <div class="vc-cols">
           <!-- LEFT: this visit -->
           <div>
+            <div class="sc-block" id="sc-block">
+              <div class="sc-hd">
+                <span class="sc-dot"></span>
+                <h4>Ambient scribe</h4>
+                <span class="right" id="sc-actions"></span>
+              </div>
+              <p class="sc-sub" id="sc-sub">Drafts the note and proposes orders while you talk. It files nothing on its own.</p>
+              <div id="sc-body"></div>
+            </div>
+
             <div class="vc-block">
               <div class="vc-h"><span class="ic" data-pcic="edit"></span><h4>This visit</h4>
                 <span class="right"><span class="vc-count" data-f="concern">--</span></span></div>
@@ -3406,6 +3481,257 @@ function renderService(){
       (mail && mail.checked ? ', and it goes out by email.' : '.')
     : 'On service &mdash; your windows are open and you appear in the scheduler.';
 }
+/* ============================================================
+   AMBIENT SCRIBE
+   The AI listens, drafts the note, and proposes orders and tasks.
+   Three rules it must never break:
+     1. Consent first. Nothing is captured until the patient agrees.
+     2. It proposes. The physician presses the button. Always.
+     3. Every proposal shows the sentence in the call it came from,
+        so a wrong extraction is visible rather than silent.
+   ============================================================ */
+var SC_TURNS = [
+  {t:'00:06', w:'dr', x:'Hi Gloria, it&rsquo;s Dr. Pannozzo. How have you been since we last spoke?'},
+  {t:'00:14', w:'pt', x:'Not too bad. Still get that pressure in my chest when I walk up the hill to the shops.'},
+  {t:'00:26', w:'dr', x:'And does it settle when you stop?'},
+  {t:'00:31', w:'pt', x:'Yes, after a minute or two. It&rsquo;s the same as it was, not worse.'},
+  {t:'00:42', w:'dr', x:'Any pain at rest, or at night? Any shortness of breath lying flat?'},
+  {t:'00:49', w:'pt', x:'No, nothing like that. Only when I&rsquo;m going uphill.'},
+  {t:'01:02', w:'dr', x:'Good. Cardiology saw you in July and booked a stress test for September the twelfth. Have you had a letter about that?'},
+  {t:'01:14', w:'pt', x:'No, I haven&rsquo;t heard anything from them at all.'},
+  {t:'01:22', w:'dr', x:'I&rsquo;ll have the office chase their booking and confirm the date with you.'},
+  {t:'01:35', w:'dr', x:'They also asked me to get a lipid profile and an HbA1c before that visit. Did you get to the lab?'},
+  {t:'01:46', w:'pt', x:'I&rsquo;ve still got the form on the fridge. I never went.'},
+  {t:'01:53', w:'dr', x:'That&rsquo;s alright. I&rsquo;ll send a fresh requisition to LifeLabs so it&rsquo;s waiting for you, and you can go any morning this week.'},
+  {t:'02:09', w:'dr', x:'The other thing cardiology asked was that I start you on a low dose of bisoprolol, two point five milligrams once a day, to slow the heart a little.'},
+  {t:'02:22', w:'pt', x:'Is that alright with the amlodipine I&rsquo;m already on?'},
+  {t:'02:28', w:'dr', x:'Yes, they work differently and they&rsquo;re often used together. I&rsquo;ll send it to Lincoln in Coquitlam.'},
+  {t:'02:41', w:'dr', x:'I want to see how your blood pressure and pulse sit on it, so let&rsquo;s speak again in four weeks.'},
+  {t:'02:52', w:'pt', x:'That&rsquo;s fine.'},
+  {t:'03:01', w:'dr', x:'Last thing, and this is the important one. If that pressure comes on while you&rsquo;re sitting still, or it lasts more than about ten minutes, or you feel sick or sweaty with it, call 911. Don&rsquo;t wait for me.'},
+  {t:'03:18', w:'pt', x:'Understood.'},
+  {t:'03:24', w:'dr', x:'I&rsquo;ll write all that up and the office will be in touch about the stress test. Take care, Gloria.'}
+];
+
+var SC_PROPOSALS = [
+  {id:'s1', after:8, kind:'Referral', conf:'hi',
+   action:'Chase cardiology for the stress test booking',
+   detail:'St. Paul&rsquo;s Cardiology booked Sep 12 at the July consult. Patient has had no letter. Confirm the date with her once known.',
+   quote:'&ldquo;No, I haven&rsquo;t heard anything from them at all.&rdquo; &rarr; &ldquo;I&rsquo;ll have the office chase their booking and confirm the date with you.&rdquo;',
+   at:'01:14', owner:'moa'},
+  {id:'s2', after:11, kind:'Blood work', conf:'hi',
+   action:'Lipid profile and HbA1c',
+   detail:'Requested by cardiology before the September review. Original requisition never attended. Fresh requisition to LifeLabs.',
+   quote:'&ldquo;I&rsquo;ve still got the form on the fridge. I never went.&rdquo; &rarr; &ldquo;I&rsquo;ll send a fresh requisition to LifeLabs.&rdquo;',
+   at:'01:46', owner:'moa'},
+  {id:'s3', after:14, kind:'Prescription', conf:'hi',
+   action:'Bisoprolol 2.5 mg once daily',
+   detail:'Initiated at cardiology&rsquo;s request. Continues amlodipine 5 mg. To Lincoln Pharmacy, Coquitlam.',
+   quote:'&ldquo;Cardiology asked that I start you on a low dose of bisoprolol, two point five milligrams once a day.&rdquo;',
+   at:'02:09', owner:'moa'},
+  {id:'s4', after:15, kind:'Follow-up', conf:'hi',
+   action:'Telephone review in 4 weeks',
+   detail:'Assess heart rate and blood pressure response to bisoprolol. Around Oct 7.',
+   quote:'&ldquo;I want to see how your blood pressure and pulse sit on it, so let&rsquo;s speak again in four weeks.&rdquo;',
+   at:'02:41', owner:'moa'},
+  {id:'s5', after:17, kind:'Patient instructions', conf:'hi',
+   action:'Release chest pain safety netting to her portal',
+   detail:'Call 911 for pain at rest, pain lasting over ten minutes, or associated nausea or sweating.',
+   quote:'&ldquo;If that pressure comes on while you&rsquo;re sitting still, or it lasts more than about ten minutes &hellip; call 911.&rdquo;',
+   at:'03:01', owner:'self'},
+  {id:'s6', after:5, kind:'Diagnosis', conf:'mid',
+   action:'Code as stable angina',
+   detail:'Exertional, relieved by rest, unchanged in character. Suggested only &mdash; no coding is applied without you.',
+   quote:'&ldquo;Still get that pressure when I walk up the hill &hellip; settles after a minute or two &hellip; not worse.&rdquo;',
+   at:'00:31', owner:'self'}
+];
+
+var SC_NOTE = [
+  {after:5, text:'SUBJECTIVE\nExertional chest pressure, unchanged in character since last review. Comes on walking uphill, settles within one to two minutes of rest. No pain at rest, no nocturnal symptoms, no orthopnoea.'},
+  {after:11, text:'\n\nBACKGROUND\nSeen by cardiology Jul 28. Exercise stress test arranged for Sep 12 &mdash; patient has received no confirmation. Lipid profile and HbA1c requested pre-visit; requisition not attended.'},
+  {after:15, text:'\n\nASSESSMENT\nStable exertional angina. No features of instability. Known hypertension, type 2 diabetes.'},
+  {after:18, text:'\n\nPLAN\nStart bisoprolol 2.5 mg daily alongside existing amlodipine. Fresh requisition for lipids and HbA1c. Office to chase the cardiology booking. Telephone review in four weeks for rate and pressure response. Chest pain safety netting given verbally and released to the portal.'}
+];
+
+var scState = 'off';     // off | consent | live | review
+var scIdx = 0;
+var scTimer = null;
+var scSeen = [];         // proposals surfaced
+var scDone = {};         // id -> 'accepted' | 'dismissed'
+
+function scReset(){
+  clearInterval(scTimer); scTimer = null;
+  scState = 'off'; scIdx = 0; scSeen = []; scDone = {};
+  renderScribe();
+}
+function scAskConsent(){ scState = 'consent'; renderScribe(); }
+function scDecline(){
+  scState = 'off'; renderScribe();
+  toast('Scribe stays off. Document the visit yourself as usual.');
+}
+function scStart(){
+  scState = 'live'; scIdx = 0; scSeen = []; scDone = {};
+  var n = document.getElementById('vc-note-input'); if(n) n.value = '';
+  renderScribe();
+  clearInterval(scTimer);
+  scTimer = setInterval(scTick, 1100);
+  toast('Recording. Gloria consented at the start of the call.');
+}
+function scTick(){
+  if(scIdx >= SC_TURNS.length){ scStop(); return; }
+  scIdx++;
+  SC_PROPOSALS.forEach(function(p){
+    if(p.after === scIdx && scSeen.indexOf(p.id) === -1) scSeen.push(p.id);
+  });
+  SC_NOTE.forEach(function(nb){
+    if(nb.after === scIdx){
+      var n = document.getElementById('vc-note-input');
+      if(n) n.value += (n.value ? '' : '') + nb.text.replace(/&rsquo;/g,'’').replace(/&mdash;/g,'—');
+    }
+  });
+  renderScribe();
+}
+function scSkip(){
+  clearInterval(scTimer);
+  while(scIdx < SC_TURNS.length){ scIdx++;
+    SC_PROPOSALS.forEach(function(p){ if(p.after===scIdx && scSeen.indexOf(p.id)===-1) scSeen.push(p.id); });
+    SC_NOTE.forEach(function(nb){ if(nb.after===scIdx){
+      var n=document.getElementById('vc-note-input');
+      if(n) n.value += nb.text.replace(/&rsquo;/g,'’').replace(/&mdash;/g,'—');
+    }});
+  }
+  scStop();
+}
+function scStop(){
+  clearInterval(scTimer); scTimer = null;
+  scState = 'review'; renderScribe();
+  toast('Recording stopped. ' + scPending() + ' proposals waiting on you.');
+}
+function scPending(){
+  return scSeen.filter(function(id){ return !scDone[id]; }).length;
+}
+function scFind(id){ return SC_PROPOSALS.filter(function(p){ return p.id===id; })[0]; }
+
+function scAccept(id){
+  var p = scFind(id); if(!p) return;
+  scDone[id] = 'accepted';
+  if(p.kind === 'Diagnosis'){
+    renderScribe();
+    toast('Coded on the visit note — nothing sent to anyone');
+    return;
+  }
+  DOC_TASKS.unshift({
+    id:'sc'+Date.now(), title:p.action,
+    kind: TASK_KINDS.indexOf(p.kind)>-1 ? p.kind : 'Other',
+    owner: p.owner==='self' ? 'self' : 'moa',
+    patient:'Gloria Mcdonald', preferred:'Gloria', chart:'#6448',
+    verified:true, status:'open', carried:0, sent:'Just now',
+    note: p.detail.replace(/&rsquo;/g,'’').replace(/&mdash;/g,'—') + ' Raised by the scribe from today&rsquo;s call, accepted by Dr. Pannozzo.'
+  });
+  if(typeof renderTasks === 'function') renderTasks();
+  renderScribe();
+  toast(p.owner==='self' ? 'Kept as your own task' : ('Task created — sent to ' + MOA_ON_SERVICE));
+}
+function scDismiss(id){
+  scDone[id] = 'dismissed'; renderScribe();
+  toast('Dismissed. It stays in the transcript but creates nothing.');
+}
+function scHeard(btn){
+  var q = btn.closest('.sc-prop').querySelector('.sc-quote');
+  if(q) q.classList.toggle('on');
+}
+
+function renderScribe(){
+  var block = document.getElementById('sc-block');
+  var acts  = document.getElementById('sc-actions');
+  var sub   = document.getElementById('sc-sub');
+  var body  = document.getElementById('sc-body');
+  if(!block) return;
+
+  block.classList.toggle('live', scState==='live');
+  block.classList.toggle('review', scState==='review');
+
+  if(scState === 'off'){
+    acts.innerHTML = '<button class="btn xs dark" onclick="scAskConsent()">Turn on scribe</button>';
+    sub.textContent = 'Drafts the note and proposes orders while you talk. It files nothing on its own.';
+    body.innerHTML = '';
+    return;
+  }
+
+  if(scState === 'consent'){
+    acts.innerHTML = '';
+    sub.textContent = 'Read this to the patient before anything is captured.';
+    body.innerHTML =
+      '<div class="sc-consent">' +
+        '<p>&ldquo;Gloria, I use a tool that listens to our call and writes my notes up for me. ' +
+        'It helps me stay on the phone with you instead of typing. Are you happy for me to turn it on?&rdquo;</p>' +
+        '<ul>' +
+          '<li>Audio is transcribed, then discarded &mdash; only the text is kept</li>' +
+          '<li>It stays inside the practice record. Nothing is used to train anything</li>' +
+          '<li>She can ask you to turn it off at any point in the call</li>' +
+          '<li>Declining changes nothing about her care</li>' +
+        '</ul>' +
+        '<div class="acts">' +
+          '<button class="btn xs dark" onclick="scStart()">She agreed &mdash; start</button>' +
+          '<button class="btn xs" onclick="scDecline()">She declined</button>' +
+        '</div>' +
+      '</div>';
+    return;
+  }
+
+  /* live or review */
+  acts.innerHTML = scState==='live'
+    ? '<span class="sc-count">'+(scIdx > 0 ? SC_TURNS[Math.min(scIdx, SC_TURNS.length)-1].t : '00:00')+'</span>' +
+      '<button class="btn xs" onclick="scSkip()">Skip to end</button>' +
+      '<button class="btn xs" onclick="scStop()">Stop</button>'
+    : '<button class="btn xs" onclick="scReset()">Discard and start over</button>';
+
+  sub.innerHTML = scState==='live'
+    ? 'Recording with consent. The note below is being drafted as you speak.'
+    : '<b>'+scPending()+'</b> proposals waiting on you. Nothing has been created yet.';
+
+  var turns = SC_TURNS.slice(0, scIdx).map(function(t,i){
+    var isTrigger = SC_PROPOSALS.some(function(p){ return p.after === i+1; });
+    return '<div class="sc-turn '+t.w+(isTrigger?' hl':'')+'">'+
+      '<span class="w">'+(t.w==='dr'?'DR':'PT')+'</span><span class="x">'+t.x+'</span></div>';
+  }).join('');
+
+  var open = scSeen.filter(function(id){ return !scDone[id]; });
+  var props = open.length
+    ? open.map(function(id){
+        var p = scFind(id);
+        return '<div class="sc-prop">'+
+          '<div class="sc-prop-top">'+
+            '<span class="sc-kind">'+p.kind+'</span>'+
+            '<b>'+p.action+'</b>'+
+            '<span class="sc-conf '+p.conf+'">'+(p.conf==='hi'?'CLEAR':'CHECK THIS')+'</span>'+
+          '</div>'+
+          '<p class="d">'+p.detail+'</p>'+
+          '<button class="sc-heard" onclick="scHeard(this)">What it heard &middot; '+p.at+'</button>'+
+          '<p class="sc-quote">'+p.quote+'</p>'+
+          '<div class="sc-acts">'+
+            '<button class="go" onclick="scAccept(&#39;'+p.id+'&#39;)">'+
+              (p.kind==='Diagnosis' ? 'Add to note' : (p.owner==='self' ? 'Keep as my task' : 'Create task'))+'</button>'+
+            '<button onclick="scDismiss(&#39;'+p.id+'&#39;)">Dismiss</button>'+
+          '</div>'+
+        '</div>';
+      }).join('')
+    : '<p class="sc-empty">'+(scState==='live' ? 'Listening&hellip;' : 'All proposals dealt with.')+'</p>';
+
+  var accepted = Object.keys(scDone).filter(function(k){ return scDone[k]==='accepted'; }).length;
+  var dropped  = Object.keys(scDone).filter(function(k){ return scDone[k]==='dismissed'; }).length;
+
+  body.innerHTML =
+    '<div class="sc-tx" id="sc-tx">'+turns+'</div>'+
+    '<p class="sc-lbl">Proposed &mdash; not yet created</p>'+
+    props+
+    ((accepted||dropped) ? '<p class="sc-rule"><b>'+accepted+'</b> accepted &middot; <b>'+dropped+'</b> dismissed this call.</p>' : '')+
+    '<p class="sc-rule">The scribe writes the draft note and suggests what follows from it. It cannot create a task, send a requisition, prescribe, or release anything to the patient &mdash; <b>you press the button, every time</b>.</p>';
+
+  var tx = document.getElementById('sc-tx');
+  if(tx) tx.scrollTop = tx.scrollHeight;
+}
+
 function taskFind(id){ return DOC_TASKS.filter(function(t){ return t.id===id; })[0]; }
 function taskCarry(id){
   var t = taskFind(id); if(!t) return;
@@ -4506,6 +4832,7 @@ function openChart(name){
   CARE_EVENTS = buildCareEvents(r); renderCareTimeline();
   renderCarePlan(name);
   pcShowSec('chart'); vcPane('summary'); setChartVer('c'); pcEndCall();
+  scReset();
   showScreen('patientchart');
 }
 function pcShowSec(sec){
