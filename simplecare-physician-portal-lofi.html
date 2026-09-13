@@ -733,6 +733,7 @@
   .q-table th:nth-child(2),.q-table td:nth-child(2){width:26%;}
   .q-table th:nth-child(3),.q-table td:nth-child(3){width:19%;}
   .q-table th:nth-child(4),.q-table td:nth-child(4){width:26%;}
+  .q-table th:nth-child(7),.q-table td:nth-child(7){width:262px;}
   .q-concern{max-width:none;}
   .q-concern .cc{display:block;font-size:12.5px;color:var(--ink);line-height:1.4;}
   .q-aicell{max-width:none;}
@@ -957,8 +958,11 @@
   /* three actions, one line, right-aligned. flex-wrap earlier in the
      cascade was letting Task MOA drop to a second row and push the
      column past the card edge. */
+  /* the column has to be wide enough to hold all three buttons. width:1%
+     shrank the cell and the buttons spilled left over Visit and Billing
+     status instead of wrapping. */
   .q-actions{display:flex;flex-wrap:nowrap;justify-content:flex-end;align-items:center;
-    gap:5px;white-space:nowrap;width:1%;}
+    gap:5px;white-space:nowrap;}
   .q-actions .btn{min-width:0;flex-shrink:0;text-align:center;padding:6px 11px;font-size:12px;}
   .q-actions .btn.dark{padding:6px 13px;}
 
