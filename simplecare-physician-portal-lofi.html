@@ -3218,19 +3218,19 @@ function showScreen(name){
    the name the patient actually goes by, age and sex, and the plan with
    its verification state. */
 var QUEUE_DATA = [
-  {pos:1, name:'Gloria Mcdonald, 74F', legal:'GLORIA ANNE MCDONALD', pref:'Gloria', age:'74Y', sex:'Female', plan:'MSP', planNote:'default', ver:true,
+  {pos:1, name:'Gloria Mcdonald, 74F', legal:'GLORIA ANNE MCDONALD', pref:'Gloria', age:'74Y', sex:'Female', plan:'MSP', ver:true,
    concern:'Follow up — chest pressure noted', win:'8-10', status:'next', wait:'0 min', redflag:true, bill:'pending'},
-  {pos:2, name:'Andrey Abushakhmanov, 24M', legal:'ANDREY ABUSHAKHMANOV', pref:'Andrey', age:'24Y', sex:'Male', plan:'MSP', planNote:'default', ver:true,
+  {pos:2, name:'Andrey Abushakhmanov, 24M', legal:'ANDREY ABUSHAKHMANOV', pref:'Andrey', age:'24Y', sex:'Male', plan:'MSP', ver:true,
    concern:'Follow up appointment', win:'8-10', status:'waiting', wait:'6 min', redflag:false, bill:'pending'},
-  {pos:3, name:'Carol-Anne Feldman, 44F', legal:'CAROL-ANNE FELDMAN', pref:'Carol', age:'44Y', sex:'Female', plan:'MSP', planNote:'default', ver:true,
+  {pos:3, name:'Carol-Anne Feldman, 44F', legal:'CAROL-ANNE FELDMAN', pref:'Carol', age:'44Y', sex:'Female', plan:'MSP', ver:true,
    concern:'Yeast infection', win:'10-2', status:'waiting', wait:'12 min', redflag:false, bill:'pending'},
-  {pos:4, name:'Behdis Maleki, 35F', legal:'BEHDIS MALEKI', pref:'Behdis', age:'35Y', sex:'Female', plan:'MSP', planNote:'default', ver:true,
+  {pos:4, name:'Behdis Maleki, 35F', legal:'BEHDIS MALEKI', pref:'Behdis', age:'35Y', sex:'Female', plan:'MSP', ver:true,
    concern:'Follow up appointment', win:'10-2', status:'delayed', wait:'22 min', redflag:false, bill:'pending'},
-  {pos:5, name:'K Arli Eyre, 41', legal:'KATHLEEN ARLI EYRE', pref:'Arli', age:'41Y', sex:'Female', plan:'MSP', planNote:'not verified', ver:false,
+  {pos:5, name:'K Arli Eyre, 41', legal:'KATHLEEN ARLI EYRE', pref:'Arli', age:'41Y', sex:'Female', plan:'MSP', ver:false,
    concern:'Standard visit', win:'2-5', status:'missed', wait:'—', redflag:false, bill:'none'},
-  {pos:6, name:'Greg', legal:'GREGORY PAUL NAKASHIMA', pref:'Greg', age:'58Y', sex:'Male', plan:'MSP', planNote:'default', ver:true,
+  {pos:6, name:'Greg', legal:'GREGORY PAUL NAKASHIMA', pref:'Greg', age:'58Y', sex:'Male', plan:'MSP', ver:true,
    concern:'Rx renewal', win:'2-5', status:'dropped', wait:'—', redflag:false, bill:'rejected'},
-  {pos:7, name:'Manjit', legal:'MANJIT KAUR DHILLON', pref:'Manjit', age:'66Y', sex:'Female', plan:'MSP', planNote:'default', ver:true,
+  {pos:7, name:'Manjit', legal:'MANJIT KAUR DHILLON', pref:'Manjit', age:'66Y', sex:'Female', plan:'MSP', ver:true,
    concern:'Lab follow-up', win:'5-7', status:'done', wait:'—', redflag:false, bill:'submitted'},
   {pos:8, name:'Korynn', legal:'KORYNN ELISE BAPTISTE', pref:'Korynn', age:'29Y', sex:'Female', plan:'ICBC', planNote:'claim 8841-22', ver:false,
    concern:'Standard visit', win:'5-7', status:'noshow', wait:'—', redflag:false, bill:'none'}
@@ -3316,8 +3316,8 @@ function renderQueue(){
           '<span class="q-pref">Preferred: '+(r.pref||r.name.split(' ')[0])+'</span>'+
           '<span class="q-demo">'+(r.age||'')+', '+(r.sex||'')+'</span>'+
           '<span class="q-plan">'+(r.plan||'MSP')+
-            (r.ver ? '' : ' <i>'+(r.planNote||'not verified')+'</i><span class="q-ver no">Unverified</span>')+
-            ((r.ver && r.plan && r.plan!=='MSP') ? ' <i>'+(r.planNote||'')+'</i>' : '')+'</span>'+
+            (r.planNote ? ' <i>'+r.planNote+'</i>' : '')+
+            (r.ver ? '' : '<span class="q-ver no">Unverified</span>')+'</span>'+
         '</span></div></td>'+
       '<td class="q-concern"><span class="cc">'+r.concern+'</span>'+
         (r.redflag ? '<span class="q-why">Flagged in intake &mdash; read it before you call</span>' : '')+
