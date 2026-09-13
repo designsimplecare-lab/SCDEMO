@@ -1519,7 +1519,7 @@
   .bill-fix{margin-left:6px;border:1px solid var(--crit);background:var(--panel);color:var(--crit);
     border-radius:7px;padding:2px 8px;font-family:inherit;font-size:10.5px;font-weight:800;cursor:pointer;}
   .bill-fix:hover{background:var(--crit);color:#fff;}
-  .work-tabs .wt-claims .wt-count{margin-left:2px;}
+  .nav-flag.mut{background:var(--wash);color:var(--ink-soft);border:1px solid var(--line-strong);}
 
   /* ============================================================
      CHRONIC CONDITIONS & CARE GAPS
@@ -2049,6 +2049,7 @@
       <p class="nav-group-label">Patients</p>
       <button class="nav-btn" data-screen="inbox" onclick="showScreen('inbox')"><span class="nav-icon">&#9993;</span><span class="nav-label">Inbox<span class="nav-flag" id="inbox-nav-flag" style="display:none;"></span></span></button>
       <button class="nav-btn" data-screen="tasks" onclick="showScreen('tasks')"><span class="nav-icon">&#10003;</span><span class="nav-label">Assigned Tasks<span class="nav-flag" id="task-nav-flag" style="display:none;"></span></span></button>
+      <button class="nav-btn" data-screen="claims" onclick="showScreen('claims')"><span class="nav-icon">$</span><span class="nav-label">Claims<span class="nav-flag mut" id="wt-claims-count" style="display:none;"></span></span></button>
     </div>
 
     <div class="nav-group">
@@ -2060,7 +2061,6 @@
     <div class="nav-flyout-wrap" id="practice-flyout-wrap">
       <button class="nav-btn-parent" id="practice-parent-btn"><span class="nav-icon">&#9776;</span><span class="nav-label">Practice</span><span class="nav-caret">&#8250;</span></button>
       <div class="nav-flyout">
-        <button class="nav-flyout-item" data-screen="claims" onclick="showScreen('claims')"><span class="nav-icon">$</span> Claims</button>
         <button class="nav-flyout-item" data-screen="feesettings" onclick="showScreen('feesettings')"><span class="nav-icon">&#9881;</span> Fee Settings</button>
         <button class="nav-flyout-item" data-screen="registerpatient" onclick="showScreen('registerpatient')"><span class="nav-icon">+</span> Register Patient</button>
       </div>
@@ -2139,9 +2139,6 @@
           </button>
           <button data-work="inbox" onclick="setWorkTab('inbox')">
             <span class="ic" data-pcic="review"></span> Inbox <span class="wt-count crit" id="wt-inbox-count">0</span>
-          </button>
-          <button class="wt-new wt-claims" onclick="showScreen('claims')" title="Unbilled encounters on today's sheet">
-            <span class="ic" data-pcic="labs"></span> Claims <span class="wt-count" id="wt-claims-count">0</span>
           </button>
           <button class="wt-new" onclick="showScreen('registerpatient')" title="Register a new patient">
             <span class="ic" data-pcic="newpatient"></span> New patient
@@ -3191,7 +3188,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-var PRACTICE_SCREENS = ['claims','feesettings','registerpatient'];
+var PRACTICE_SCREENS = ['feesettings','registerpatient'];
 function showScreen(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   var t=document.getElementById('screen-'+name);
@@ -3425,7 +3422,7 @@ function callPatient(name){
 function updateClaimCount(){
   var n = QUEUE_DATA.filter(function(r){ return r.bill==='pending' || r.bill==='rejected'; }).length;
   var el = document.getElementById('wt-claims-count');
-  if(el){ el.textContent = n; }
+  if(el){ el.textContent = n; el.style.display = n ? 'inline-flex' : 'none'; }
 }
 function fixClaim(name){
   var r = QUEUE_DATA.find(function(x){ return x.name===name; }); if(!r) return;
