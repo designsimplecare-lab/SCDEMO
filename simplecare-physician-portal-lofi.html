@@ -719,16 +719,25 @@
     font-size:17px;color:var(--accent-ink);opacity:.6;cursor:pointer;line-height:1;padding:0;}
   .recall .rc-x:hover{opacity:1;}
 
-  .q-legal{display:block;font-size:12.5px;font-weight:800;letter-spacing:.01em;text-transform:uppercase;}
+  .q-legal{display:block;font-size:12.5px;font-weight:800;letter-spacing:.01em;text-transform:uppercase;
+    line-height:1.25;}
   .q-pref{display:block;font-size:11px;color:var(--ink-soft);margin-top:1px;}
   .q-demo{display:block;font-size:11px;color:var(--ink-faint);}
   .q-plan{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;color:var(--ink-soft);margin-top:3px;}
   .q-plan i{font-style:normal;font-weight:500;color:var(--ink-faint);}
   .q-ver{font-size:9px;font-weight:800;letter-spacing:.04em;padding:1px 6px;border-radius:20px;}
   .q-ver.no{background:var(--warn-wash);color:var(--warn);}
-  .q-concern{max-width:190px;}
+  /* seven columns fit only if each one is given a sensible share; left to
+     itself the browser starved these three and every row ran to four lines */
+  .q-table th:nth-child(1),.q-table td:nth-child(1){width:52px;}
+  .q-table th:nth-child(2),.q-table td:nth-child(2){width:26%;}
+  .q-table th:nth-child(3),.q-table td:nth-child(3){width:19%;}
+  .q-table th:nth-child(4),.q-table td:nth-child(4){width:26%;}
+  .q-concern{max-width:none;}
   .q-concern .cc{display:block;font-size:12.5px;color:var(--ink);line-height:1.4;}
-  .q-aicell{max-width:260px;}
+  .q-aicell{max-width:none;}
+  /* the summary is a glance, not a read — three lines, then it stops */
+  .q-aitext{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
   .q-aitext{display:block;font-size:12.5px;line-height:1.45;color:var(--ink-soft);margin-top:4px;}
   .q-aiempty{color:var(--ink-faint);}
   .q-aitag{display:inline-block;font-style:normal;font-size:9px;font-weight:800;letter-spacing:.05em;
@@ -945,8 +954,18 @@
   /* empty wait → plain dash, not a colored pill */
   .due-none{display:inline-flex;align-items:center;justify-content:center;min-width:54px;color:var(--ink-faint);font-weight:700;font-size:15px;}
   /* keep the two actions on one line, right-aligned and even */
-  .q-actions{white-space:nowrap;text-align:right;}
-  .q-actions .btn{min-width:58px;text-align:center;}
+  /* three actions, one line, right-aligned. flex-wrap earlier in the
+     cascade was letting Task MOA drop to a second row and push the
+     column past the card edge. */
+  .q-actions{display:flex;flex-wrap:nowrap;justify-content:flex-end;align-items:center;
+    gap:5px;white-space:nowrap;width:1%;}
+  .q-actions .btn{min-width:0;flex-shrink:0;text-align:center;padding:6px 11px;font-size:12px;}
+  .q-actions .btn.dark{padding:6px 13px;}
+
+  /* the claim state and its fix belong on one line — the pill is the
+     problem, the button is the answer, and only the pill should be red */
+  .q-bill{white-space:nowrap;}
+
 
   /* Actions stay out of the way until the row is the one you're on.
      Opacity rather than display, so the buttons keep their place in the
@@ -1521,9 +1540,11 @@
   .bill-pill.paid{background:var(--good-wash);color:var(--good);}
   .bill-pill.rejected{background:var(--crit-wash);color:var(--crit);}
   .bill-pill.none{background:var(--wash);color:var(--ink-faint);border:1px solid var(--line);}
-  .bill-fix{margin-left:6px;border:1px solid var(--crit);background:var(--panel);color:var(--crit);
+  /* the pill is the problem and stays red; the button is the answer and
+     shouldn't compete with it for the same alarm colour */
+  .bill-fix{margin-left:6px;border:1px solid var(--line-strong);background:var(--panel);color:var(--ink-soft);
     border-radius:7px;padding:2px 8px;font-family:inherit;font-size:10.5px;font-weight:800;cursor:pointer;}
-  .bill-fix:hover{background:var(--crit);color:#fff;}
+  .bill-fix:hover{background:var(--ink-dark);border-color:var(--ink-dark);color:#fff;}
   .nav-flag.mut{background:var(--wash);color:var(--ink-soft);border:1px solid var(--line-strong);}
 
   /* critical marker — small, red, and the only flag state there is */
@@ -3324,7 +3345,7 @@ function renderQueue(){
         '</td>'+
       '<td class="q-aicell">'+(AI_SUMMARY[r.name] ? '<span class="q-aitag">AI</span><span class="q-aitext">'+AI_SUMMARY[r.name]+'</span>' : '<span class="q-aiempty">&mdash;</span>')+'</td>'+
       '<td>'+statusPill+'</td>'+
-      '<td>'+billCell+'</td>'+
+      '<td class="q-bill">'+billCell+'</td>'+
       '<td class="q-actions">'+actions+'</td>'+
     '</tr>';
   }).join('');
