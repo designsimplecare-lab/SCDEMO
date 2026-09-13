@@ -728,9 +728,6 @@
   .q-ver.no{background:var(--warn-wash);color:var(--warn);}
   .q-concern{max-width:190px;}
   .q-concern .cc{display:block;font-size:12.5px;color:var(--ink);line-height:1.4;}
-  .q-intake{margin-top:4px;border:none;background:none;padding:0;font-family:inherit;
-    font-size:11px;font-weight:700;color:var(--accent-ink);cursor:pointer;}
-  .q-intake:hover{text-decoration:underline;}
   .q-aicell{max-width:260px;}
   .q-aitext{display:block;font-size:12.5px;line-height:1.45;color:var(--ink-soft);margin-top:4px;}
   .q-aiempty{color:var(--ink-faint);}
@@ -1632,6 +1629,11 @@
 
   .nav-btn.nav-quiet{opacity:.62;}
   .nav-btn.nav-quiet:hover{opacity:1;}
+  .vc-sf-btn{cursor:pointer;}
+  .vc-sf-btn:hover{filter:brightness(.96);}
+  .tm-for{display:none;font-size:12.5px;color:var(--ink-soft);background:var(--wash);
+    border-radius:8px;padding:9px 12px;margin:0 0 14px;line-height:1.5;}
+  .tm-for b{color:var(--ink);font-weight:700;}
   .tm-keep{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-soft);margin:2px 0 8px;cursor:pointer;}
   .tm-route{font-size:11.5px;color:var(--ink-faint);line-height:1.5;margin:0 0 14px;}
   .tm-route b{color:var(--ink-soft);font-weight:700;}
@@ -2494,7 +2496,8 @@
               </div>
 
               <div class="vc-pane active" id="vcp-summary">
-                <div class="vc-h"><span class="ic" data-pcic="consult"></span><h4>Reason for visit</h4></div>
+                <div class="vc-h"><span class="ic" data-pcic="consult"></span><h4>Reason for visit</h4>
+                  <span class="right"><button class="vc-more" onclick="openBrief(PC_CURRENT)">View intake note</button></span></div>
                 <p class="prose" data-f="reason" style="margin-bottom:16px;">--</p>
                 <div class="vc-h"><span class="ic" data-pcic="chart"></span><h4>Last vitals</h4>
                   <span class="right"><span class="vc-count">Jun 25</span></span></div>
@@ -3028,13 +3031,7 @@
     <p class="tm-sub">Pressing Task is what makes something a task. Nothing arrives here on its own.</p>
     <div class="tm-field">
       <label for="tm-patient">Patient</label>
-      <select id="tm-patient">
-        <option value="">Not patient-specific</option>
-        <option>Gloria Mcdonald</option>
-        <option>Ada Cole</option>
-        <option>Judy Reyes</option>
-        <option>Ben Okafor</option>
-      </select>
+      <select id="tm-patient"><option value="">Not patient-specific</option></select>
     </div>
     <div class="tm-field">
       <label>Task type</label>
@@ -3047,6 +3044,7 @@
         <span class="tm-chip" onclick="tmSelectChip(this)">Patient Notes</span>
       </div>
     </div>
+    <p class="tm-for" id="tm-for"></p>
     <div class="tm-field">
       <label>Priority</label>
       <div class="tm-chip-row" id="tm-prio">
@@ -3290,6 +3288,7 @@ function renderQueue(){
     var closed = (r.status==='done' || r.status==='noshow');
     var actions = closed ? '' : '<button class="btn xs dark" onclick="callPatient(\''+r.name+'\')">Call</button> ';
     actions += '<button class="btn xs" onclick="openChart(\''+r.name+'\')">Access Chart</button>';
+    actions += '<button class="btn xs" onclick="event.stopPropagation();openTaskMoa(\''+r.name+'\')">Task MOA</button>';
 
 
     // queue position — first come, first served. No wait timers (pace-neutral).
@@ -3322,7 +3321,7 @@ function renderQueue(){
         '</span></div></td>'+
       '<td class="q-concern"><span class="cc">'+r.concern+'</span>'+
         (r.redflag ? '<span class="q-why">Flagged in intake &mdash; read it before you call</span>' : '')+
-        '<button class="q-intake" onclick="event.stopPropagation();openBrief(\''+r.name.split(',')[0]+'\')">Intake Note</button></td>'+
+        '</td>'+
       '<td class="q-aicell">'+(AI_SUMMARY[r.name] ? '<span class="q-aitag">AI</span><span class="q-aitext">'+AI_SUMMARY[r.name]+'</span>' : '<span class="q-aiempty">&mdash;</span>')+'</td>'+
       '<td>'+statusPill+'</td>'+
       '<td>'+billCell+'</td>'+
@@ -3526,11 +3525,33 @@ function toggleNotes(){
   btn.lastChild.textContent = on ? ' Hide design notes' : ' Show design notes';
 }
 
+/* Today's patients fill the picker, so tasking from a row lands on that
+   row's patient with nothing to select. */
+function tmFillPatients(){
+  var sel = document.getElementById('tm-patient'); if(!sel) return;
+  var seen = {};
+  var opts = ['<option value="">Not patient-specific</option>'];
+  QUEUE_DATA.forEach(function(r){
+    var label = (r.legal ? r.legal.replace(/\b\w+/g, function(w){ return w[0]+w.slice(1).toLowerCase(); }) : r.name.split(',')[0].trim());
+    if(seen[r.name]) return; seen[r.name]=1;
+    opts.push('<option value="'+r.name+'">'+label+'</option>');
+  });
+  sel.innerHTML = opts.join('');
+}
 function openTaskMoa(prefillPatient){
+  tmFillPatients();
   document.getElementById('tm-overlay').classList.add('show');
   var k=document.getElementById('tm-keep'); if(k) k.checked=false;
   var pr=document.getElementById('tm-prio');
   if(pr){ pr.querySelectorAll('.tm-chip').forEach(function(c,i){ c.classList.toggle('active', i===2); }); }
+  var forEl=document.getElementById('tm-for');
+  if(forEl){
+    var row = QUEUE_DATA.filter(function(x){ return x.name===prefillPatient; })[0];
+    forEl.innerHTML = row
+      ? 'For <b>'+(row.pref||row.name.split(',')[0])+'</b> &mdash; '+row.concern+', '+(WIN_TEXT[row.win]||row.win)+' window.'
+      : '';
+    forEl.style.display = row ? 'block' : 'none';
+  }
   tmRoute();
   document.getElementById('tm-note').value = '';
   document.querySelectorAll('#tm-chips .tm-chip').forEach(function(c,i){ c.classList.toggle('active', i===0); });
@@ -4370,13 +4391,16 @@ function sendTaskMoa(){
   var type = chip ? chip.textContent : 'Other';
   var self = document.getElementById('tm-keep') && document.getElementById('tm-keep').checked;
   var prioEl = document.querySelector('#tm-prio .tm-chip.active');
+  var row = QUEUE_DATA.filter(function(x){ return x.name===patient; })[0];
   DOC_TASKS.unshift({
     id:'t'+Date.now(), title: note ? note.split('.')[0].slice(0,60) : (type + ' task'),
     type: TASK_TYPES.indexOf(type)>-1 ? type : 'Documents',
     prio: prioEl ? prioEl.dataset.p : 'routine', age:0,
     to: self ? 'Dr. D. Pannozzo' : MOA_ON_SERVICE,
     role: self ? 'Physician' : 'MOA',
-    patient: patient || 'Not patient-specific', preferred: (patient||'—').split(' ')[0], chart:'#—',
+    patient: row ? row.legal : (patient || 'Not patient-specific'),
+    preferred: row ? row.pref : '—',
+    chart: row ? (row.chart || '#—') : '#—',
     verified:true, status:'open', carried:0, due:'Sep 19', dueIn:6,
     note: note || 'No note added'
   });
@@ -5468,8 +5492,10 @@ function openChart(name){
   var vn=document.getElementById('vc-note-input');
   if(vn) vn.value = 'Patient presents for ' + r.concern.toLowerCase() + '. ';
   document.querySelectorAll('[data-f="bannerflag"]').forEach(function(el){
-    el.className = 'vc-sf' + (r.redflag ? ' crit' : '');
-    el.textContent = r.redflag ? 'Intake flag: review before calling' : 'No active alerts';
+    el.className = 'vc-sf' + (r.redflag ? ' crit vc-sf-btn' : '');
+    el.textContent = r.redflag ? 'Intake flag — read it before calling' : 'No active alerts';
+    el.onclick = r.redflag ? function(){ openBrief(PC_CURRENT); } : null;
+    el.title = r.redflag ? 'Open the intake note' : '';
   });
   vdTab('overview');
   renderLabPanels(); renderLabOrders();
