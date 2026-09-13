@@ -1524,11 +1524,6 @@
   /* critical marker — small, red, and the only flag state there is */
   .q-crit{color:var(--crit);font-size:13px;margin-left:7px;line-height:1;}
 
-  /* task straight off the row */
-  .q-task{border:1px solid var(--line);background:var(--panel);border-radius:7px;padding:4px 10px;
-    font-family:inherit;font-size:11.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;margin-left:6px;}
-  .q-task:hover{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-wash);}
-
   }
 
   /* ============================================================
@@ -3285,7 +3280,6 @@ function renderQueue(){
     var closed = (r.status==='done' || r.status==='noshow');
     var actions = closed ? '' : '<button class="btn xs dark" onclick="callPatient(\''+r.name+'\')">Call</button> ';
     actions += '<button class="btn xs" onclick="openChart(\''+r.name+'\')">Access Chart</button>';
-    actions += '<button class="q-task" onclick="event.stopPropagation();quickTask(\''+r.name+'\')" title="Task the MOA about this patient">Task</button>';
 
 
     // queue position — first come, first served. No wait timers (pace-neutral).
@@ -3436,21 +3430,6 @@ function updateClaimCount(){
   var n = QUEUE_DATA.filter(function(r){ return r.bill==='pending' || r.bill==='rejected'; }).length;
   var el = document.getElementById('wt-claims-count');
   if(el){ el.textContent = n; el.style.display = n ? 'inline-flex' : 'none'; }
-}
-/* "Clicks = bad. Tasking easy = good." One press puts a task on the MOA's
-   list with the patient and today's concern already on it; the dialog is
-   still there when the detail matters. */
-function quickTask(name){
-  var r = QUEUE_DATA.filter(function(x){ return x.name===name; })[0]; if(!r) return;
-  DOC_TASKS.unshift({
-    id:'qt'+Date.now(), title:r.concern, type:'Patient Notes', prio:'routine', age:0,
-    to:MOA_ON_SERVICE, role:'MOA',
-    patient:(r.legal||r.name).replace(/,.*$/,''), preferred:r.pref||'—', chart:'#—',
-    verified:!!r.ver, status:'open', carried:0, due:'Sep 19', dueIn:6,
-    note:'Raised from the day sheet during '+(WIN_TEXT[r.win]||r.win)+'. Add detail if needed.'
-  });
-  if(typeof renderTasks==='function') renderTasks();
-  toast('Task sent to '+MOA_ON_SERVICE+' — open Assigned Tasks to add detail');
 }
 function fixClaim(name){
   var r = QUEUE_DATA.find(function(x){ return x.name===name; }); if(!r) return;
