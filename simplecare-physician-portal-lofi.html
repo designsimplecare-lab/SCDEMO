@@ -1559,9 +1559,9 @@
   .nav-flag.mut{background:var(--wash);color:var(--ink-soft);border:1px solid var(--line-strong);}
 
   /* critical marker — small, red, and the only flag state there is */
-  .q-crit{color:var(--crit);font-size:13px;margin-left:7px;line-height:1;}
-  /* the marker explains itself on the row that carries it, not in a tooltip */
-  .q-why{display:block;font-size:11px;font-weight:700;color:var(--crit);margin-top:3px;}
+  .work-title{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:800;
+    color:var(--ink);padding:0 0 11px;border-bottom:2px solid var(--ink-dark);margin-bottom:-1px;}
+  .work-title .ic{width:17px;height:17px;}
 
   }
 
@@ -2183,12 +2183,9 @@
       <!-- Live queue + Inbox in one card, switched by tabs -->
       <div class="box">
         <div class="work-tabs">
-          <button class="active" data-work="queue" onclick="setWorkTab('queue')">
+          <span class="work-title">
             <span class="ic" data-pcic="chart"></span> Live queue <span class="wt-count" id="wt-queue-count">0</span>
-          </button>
-          <button data-work="inbox" onclick="setWorkTab('inbox')">
-            <span class="ic" data-pcic="review"></span> Inbox <span class="wt-count crit" id="wt-inbox-count">0</span>
-          </button>
+          </span>
           <button class="wt-new" onclick="showScreen('registerpatient')" title="Register a new patient">
             <span class="ic" data-pcic="newpatient"></span> New patient
           </button>
@@ -2228,11 +2225,6 @@
           </table>
         </div>
 
-        <div class="work-pane" id="work-inbox">
-          <p class="sched-note" style="margin-top:0;">Every lab, imaging report, and consult note gets reviewed and individually signed off. Click an item to open and mark it reviewed.<span class="inbox-count" id="today-inbox-count" style="display:none;"></span></p>
-          <div id="today-inbox-preview"></div>
-          <button class="btn xs" style="margin-top:10px;" onclick="showScreen('inbox')">View full inbox &rarr;</button>
-        </div>
       </div>
 
     </div>
@@ -3350,9 +3342,10 @@ function renderQueue(){
       ? '<span class="q-pos">'+(++qSeq)+'</span>'
       : '<span class="q-pos done">&mdash;</span>';
 
-    /* Daniel: "Critical or nothing." No amber middle tier — a marker that
-       doesn't change what you do isn't worth a colour. */
-    var flagTag = r.redflag ? '<span class="q-crit" title="Critical — review the intake before calling">&#9873;</span>' : '';
+    /* No marker on the row. The alerts band above the table already names
+       the flagged patient and why, and the row sorts to the top — a second
+       red thing on the name was the same signal twice. */
+    var flagTag = '';
 
     var statusPill = '<span class="status-pill '+r.status+'">'+STATUS_LABEL[r.status]+'</span>';
 
@@ -3377,7 +3370,6 @@ function renderQueue(){
           '</span>'+
         '</span></div></td>'+
       '<td class="q-concern"><span class="cc">'+r.concern+'</span>'+
-        (r.redflag ? '<span class="q-why">Flagged in intake &mdash; read it before you call</span>' : '')+
         '</td>'+
       '<td class="q-aicell">'+(AI_SUMMARY[r.name] ? '<span class="q-aitag">AI</span><span class="q-aitext">'+AI_SUMMARY[r.name]+'</span>' : '<span class="q-aiempty">&mdash;</span>')+'</td>'+
       '<td>'+statusPill+'</td>'+
@@ -5035,20 +5027,10 @@ var ICONS = {
 "collapse": "<svg viewBox=\"0 0 14 14\" fill=\"none\" class=\"ic\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M10.15 0.5L4 6.65C3.95217 6.69489 3.91405 6.74911 3.88799 6.80931C3.86193 6.8695 3.84848 6.9344 3.84848 7C3.84848 7.0656 3.86193 7.1305 3.88799 7.19069C3.91405 7.25089 3.95217 7.30511 4 7.35L10.15 13.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
 };
 /* ===== Today: Live queue / Inbox tabs ===== */
-function setWorkTab(which){
-  document.querySelectorAll('.work-pane').forEach(function(p){ p.classList.remove('active'); });
-  var pane=document.getElementById('work-'+which); if(pane) pane.classList.add('active');
-  document.querySelectorAll('.work-tabs button').forEach(function(b){ b.classList.toggle('active', b.dataset.work===which); });
-}
 function updateWorkCounts(){
   var q=document.getElementById('wt-queue-count');
   if(q && typeof QUEUE_DATA !== 'undefined'){
     q.textContent = QUEUE_DATA.filter(function(r){ return r.status!=='done' && r.status!=='noshow'; }).length;
-  }
-  var i=document.getElementById('wt-inbox-count');
-  if(i && typeof INBOX_ITEMS !== 'undefined'){
-    var n=INBOX_ITEMS.filter(function(x){ return x.status==='received'; }).length;
-    i.textContent=n; i.style.display = n ? 'inline-flex' : 'none';
   }
 }
 
