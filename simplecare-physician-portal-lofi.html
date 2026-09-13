@@ -707,7 +707,32 @@
   .day-count{font-size:12px;color:var(--ink-faint);margin-left:6px;}
   /* AI intake summary in the queue row */
   /* AI summary column */
-  .q-aicell{max-width:300px;}
+  /* fast-track recall strip */
+  .recall{display:none;position:relative;background:var(--accent-wash);border-radius:12px;
+    padding:13px 40px 13px 16px;margin-bottom:12px;}
+  .recall.on{display:block;}
+  .recall .rc-k{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;
+    color:var(--accent-ink);display:block;margin-bottom:4px;}
+  .recall p{font-size:13px;line-height:1.55;color:var(--ink);margin:0;}
+  .recall p b{font-weight:700;}
+  .recall .rc-x{position:absolute;top:10px;right:12px;background:none;border:none;
+    font-size:17px;color:var(--accent-ink);opacity:.6;cursor:pointer;line-height:1;padding:0;}
+  .recall .rc-x:hover{opacity:1;}
+
+  .q-legal{display:block;font-size:12.5px;font-weight:800;letter-spacing:.01em;text-transform:uppercase;}
+  .q-pref{display:block;font-size:11px;color:var(--ink-soft);margin-top:1px;}
+  .q-demo{display:block;font-size:11px;color:var(--ink-faint);}
+  .q-plan{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;color:var(--ink-soft);margin-top:3px;}
+  .q-plan i{font-style:normal;font-weight:500;color:var(--ink-faint);}
+  .q-ver{font-size:9px;font-weight:800;letter-spacing:.04em;padding:1px 6px;border-radius:20px;
+    background:var(--good-wash);color:var(--good);}
+  .q-ver.no{background:var(--warn-wash);color:var(--warn);}
+  .q-concern{max-width:190px;}
+  .q-concern .cc{display:block;font-size:12.5px;color:var(--ink);line-height:1.4;}
+  .q-intake{margin-top:4px;border:none;background:none;padding:0;font-family:inherit;
+    font-size:11px;font-weight:700;color:var(--accent-ink);cursor:pointer;}
+  .q-intake:hover{text-decoration:underline;}
+  .q-aicell{max-width:260px;}
   .q-aitext{display:block;font-size:12.5px;line-height:1.45;color:var(--ink-soft);margin-top:4px;}
   .q-aiempty{color:var(--ink-faint);}
   .q-aitag{display:inline-block;font-style:normal;font-size:9px;font-weight:800;letter-spacing:.05em;
@@ -2136,7 +2161,7 @@
           </div>
 
           <table class="q-table" id="queue-table">
-            <thead><tr><th>#</th><th>Patient</th><th>AI summary</th><th>Visit status</th><th>Billing status</th><th>Action</th></tr></thead>
+            <thead><tr><th>#</th><th>Patient</th><th>Clinical concern</th><th>AI summary</th><th>Visit status</th><th>Billing status</th><th>Action</th></tr></thead>
             <tbody id="queue-body"></tbody>
           </table>
         </div>
@@ -2397,6 +2422,8 @@
         <div class="vc-cols">
           <!-- LEFT: this visit -->
           <div>
+            <div class="recall" id="recall"></div>
+
             <div class="sc-block" id="sc-block">
               <div class="sc-hd">
                 <span class="sc-dot"></span>
@@ -2418,7 +2445,7 @@
                 <button class="vc-chip" onclick="toast('Diagnosis picker')">+ Diagnosis</button>
               </div>
               <div style="margin-top:14px;display:flex;gap:8px;">
-                <button class="btn dark xs">Sign &amp; complete</button>
+                <button class="btn dark xs" onclick="finalizeVisit()">Finalize &amp; review billing</button>
                 <button class="btn xs">Save draft</button>
               </div>
             </div>
@@ -3161,15 +3188,26 @@ function showScreen(name){
 }
 
 /* ===== live queue with real state model, mirroring patient app ===== */
+/* Identity on the day sheet follows Daniel's own mock: full legal name,
+   the name the patient actually goes by, age and sex, and the plan with
+   its verification state. */
 var QUEUE_DATA = [
-  {pos:1, name:'Gloria Mcdonald, 74F', concern:'Follow up — chest pressure noted', win:'8-10', status:'next', wait:'0 min', redflag:true, bill:'pending'},
-  {pos:2, name:'Andrey Abushakhmanov, 24M', concern:'Follow up appointment', win:'8-10', status:'waiting', wait:'6 min', redflag:false, bill:'pending'},
-  {pos:3, name:'Carol-Anne Feldman, 44F', concern:'Yeast infection', win:'10-2', status:'waiting', wait:'12 min', redflag:false, bill:'pending'},
-  {pos:4, name:'Behdis Maleki, 35F', concern:'Follow up appointment', win:'10-2', status:'delayed', wait:'22 min', redflag:false, bill:'pending'},
-  {pos:5, name:'K Arli Eyre, 41', concern:'Standard visit', win:'2-5', status:'missed', wait:'—', redflag:false, bill:'none'},
-  {pos:6, name:'Greg', concern:'Rx renewal', win:'2-5', status:'dropped', wait:'—', redflag:false, bill:'rejected'},
-  {pos:7, name:'Manjit', concern:'Lab follow-up', win:'5-7', status:'done', wait:'—', redflag:false, bill:'submitted'},
-  {pos:8, name:'Korynn', concern:'Standard visit', win:'5-7', status:'noshow', wait:'—', redflag:false, bill:'none'}
+  {pos:1, name:'Gloria Mcdonald, 74F', legal:'GLORIA ANNE MCDONALD', pref:'Gloria', age:'74Y', sex:'Female', plan:'MSP', planNote:'default', ver:true,
+   concern:'Follow up — chest pressure noted', win:'8-10', status:'next', wait:'0 min', redflag:true, bill:'pending'},
+  {pos:2, name:'Andrey Abushakhmanov, 24M', legal:'ANDREY ABUSHAKHMANOV', pref:'Andrey', age:'24Y', sex:'Male', plan:'MSP', planNote:'default', ver:true,
+   concern:'Follow up appointment', win:'8-10', status:'waiting', wait:'6 min', redflag:false, bill:'pending'},
+  {pos:3, name:'Carol-Anne Feldman, 44F', legal:'CAROL-ANNE FELDMAN', pref:'Carol', age:'44Y', sex:'Female', plan:'MSP', planNote:'default', ver:true,
+   concern:'Yeast infection', win:'10-2', status:'waiting', wait:'12 min', redflag:false, bill:'pending'},
+  {pos:4, name:'Behdis Maleki, 35F', legal:'BEHDIS MALEKI', pref:'Behdis', age:'35Y', sex:'Female', plan:'MSP', planNote:'default', ver:true,
+   concern:'Follow up appointment', win:'10-2', status:'delayed', wait:'22 min', redflag:false, bill:'pending'},
+  {pos:5, name:'K Arli Eyre, 41', legal:'KATHLEEN ARLI EYRE', pref:'Arli', age:'41Y', sex:'Female', plan:'MSP', planNote:'not verified', ver:false,
+   concern:'Standard visit', win:'2-5', status:'missed', wait:'—', redflag:false, bill:'none'},
+  {pos:6, name:'Greg', legal:'GREGORY PAUL NAKASHIMA', pref:'Greg', age:'58Y', sex:'Male', plan:'MSP', planNote:'default', ver:true,
+   concern:'Rx renewal', win:'2-5', status:'dropped', wait:'—', redflag:false, bill:'rejected'},
+  {pos:7, name:'Manjit', legal:'MANJIT KAUR DHILLON', pref:'Manjit', age:'66Y', sex:'Female', plan:'MSP', planNote:'default', ver:true,
+   concern:'Lab follow-up', win:'5-7', status:'done', wait:'—', redflag:false, bill:'submitted'},
+  {pos:8, name:'Korynn', legal:'KORYNN ELISE BAPTISTE', pref:'Korynn', age:'29Y', sex:'Female', plan:'ICBC', planNote:'claim 8841-22', ver:false,
+   concern:'Standard visit', win:'5-7', status:'noshow', wait:'—', redflag:false, bill:'none'}
 ];
 var BILL_LABEL = { pending:'Pending', submitted:'Submitted', paid:'Paid', rejected:'Rejected', none:'No claim' };
 var STATUS_LABEL = {
@@ -3221,7 +3259,7 @@ function renderQueue(){
   body.innerHTML = rows.map(function(r){
     var closed = (r.status==='done' || r.status==='noshow');
     var actions = closed ? '' : '<button class="btn xs dark" onclick="callPatient(\''+r.name+'\')">Call</button> ';
-    actions += '<button class="btn xs" onclick="openChart(\''+r.name+'\')">Chart</button>';
+    actions += '<button class="btn xs" onclick="openChart(\''+r.name+'\')">Access Chart</button>';
 
     var ring = RING_COLOR[r.status] || 'var(--line-strong)';
     var avatar = '<span class="q-avatar" style="box-shadow:0 0 0 2px var(--panel), 0 0 0 4px '+ring+';">'+qInitials(r.name)+'</span>';
@@ -3243,7 +3281,16 @@ function renderQueue(){
 
     return '<tr class="'+(r.redflag?'redflag':'')+'">'+
       '<td>'+dueChip+'</td>'+
-      '<td><div class="q-patient" onclick="openChart(\''+r.name+'\')" title="Open chart">'+avatar+'<span class="q-pmeta"><span class="q-pname">'+r.name+flagTag+'</span><span class="q-psub">'+r.concern+'</span></span></div></td>'+
+      '<td><div class="q-patient" onclick="openChart(\''+r.name+'\')" title="Open chart">'+avatar+
+        '<span class="q-pmeta">'+
+          '<span class="q-legal">'+(r.legal||r.name)+flagTag+'</span>'+
+          '<span class="q-pref">Preferred: '+(r.pref||r.name.split(' ')[0])+'</span>'+
+          '<span class="q-demo">'+(r.age||'')+', '+(r.sex||'')+'</span>'+
+          '<span class="q-plan">'+(r.plan||'MSP')+' <i>('+(r.planNote||'default')+')</i>'+
+            '<span class="q-ver'+(r.ver?'':' no')+'">'+(r.ver?'Verified':'Unverified')+'</span></span>'+
+        '</span></div></td>'+
+      '<td class="q-concern"><span class="cc">'+r.concern+'</span>'+
+        '<button class="q-intake" onclick="event.stopPropagation();openBrief(\''+r.name.split(',')[0]+'\')">Intake Note</button></td>'+
       '<td class="q-aicell">'+(AI_SUMMARY[r.name] ? '<span class="q-aitag">AI</span><span class="q-aitext">'+AI_SUMMARY[r.name]+'</span>' : '<span class="q-aiempty">&mdash;</span>')+'</td>'+
       '<td>'+statusPill+'</td>'+
       '<td>'+billCell+'</td>'+
@@ -3515,47 +3562,47 @@ var DOC_TASKS = [
   { id:'t1', title:'Referral for HSAT', type:'Referrals', prio:'high', age:0,
     to:'Amrisha Singh', role:'MOA',
     patient:'Lorraine Anne Verville', preferred:'Lori (Lorraine) Verville', chart:'#6448',
-    verified:true, status:'open', carried:0, due:'Sep 19',
+    verified:true, status:'open', carried:0, due:'Sep 19', dueIn:6,
     note:'Persistent fatigue and non-restorative sleep for over four years, with sleep-app recordings suggestive of apnoea. Home Sleep Apnea Test.' },
   { id:'t2', title:'Rebook EDS referral', type:'Referrals', prio:'urgent', age:3,
     to:'Dolly Aquino', role:'MOA',
     patient:'Louise Tam', preferred:'Chickadee', chart:'#4417',
-    verified:true, status:'open', carried:2, due:'Overdue',
+    verified:true, status:'open', carried:2, due:'Overdue', dueIn:-4,
     note:'Specialist declined the original referral. Needs a new match, then confirm with her by phone.' },
   { id:'t3', title:'Chest X-ray requisition', type:'Imaging', prio:'routine', age:0,
     to:'Amrisha Singh', role:'MOA',
     patient:'Behdis Maleki', preferred:'Behdis', chart:'#5120',
-    verified:true, status:'open', carried:0, due:'Sep 24',
+    verified:true, status:'open', carried:0, due:'Sep 24', dueIn:11,
     note:'Send to Royal Inland. Flag that the last requisition was rejected for a missing field.' },
   { id:'t4', title:'Repeat ferritin and CBC', type:'Lab Work', prio:'routine', age:1,
     to:'Dolly Aquino', role:'MOA',
     patient:'Behdis Maleki', preferred:'Behdis', chart:'#5120',
-    verified:true, status:'open', carried:1, due:'Sep 26',
+    verified:true, status:'open', carried:1, due:'Sep 26', dueIn:13,
     note:'Still fatigued on supplementation. Requisition to LifeLabs, patient to attend when convenient.' },
   { id:'t5', title:'Confirm new follow-up date', type:'Patient Notes', prio:'high', age:0,
     to:'Amrisha Singh', role:'MOA',
     patient:'Gloria Mcdonald', preferred:'Gloria', chart:'#6448',
-    verified:true, status:'open', carried:0, due:'Sep 15',
+    verified:true, status:'open', carried:0, due:'Sep 15', dueIn:2,
     note:'Wants to move her follow-up to next week. Anything after the stress test on Sep 12.' },
   { id:'t6', title:'Review MRI report', type:'Imaging', prio:'urgent', age:0,
     to:'Dr. D. Pannozzo', role:'Physician',
     patient:'Frank Delacroix', preferred:'Frank', chart:'#3908',
-    verified:true, status:'open', carried:0, due:'Today',
+    verified:true, status:'open', carried:0, due:'Today', dueIn:0,
     note:'Report came back overnight. Read before the afternoon window.' },
   { id:'t7', title:'Sign off imaging', type:'Imaging', prio:'high', age:1,
     to:'Dr. D. Pannozzo', role:'Physician',
     patient:'Carol-Anne Feldman', preferred:'Carol', chart:'#2251',
-    verified:true, status:'open', carried:1, due:'Sep 15',
+    verified:true, status:'open', carried:1, due:'Sep 15', dueIn:2,
     note:'Ultrasound reported. Needs my sign-off before it releases to her.' },
   { id:'t8', title:'Second opinion — atypical rash', type:'Documents', prio:'routine', age:2,
     to:'Dr. S. Okonkwo', role:'Physician',
     patient:'Andrey Abushakhmanov', preferred:'Andrey', chart:'#8801',
-    verified:true, status:'open', carried:0, due:'Sep 20',
+    verified:true, status:'open', carried:0, due:'Sep 20', dueIn:7,
     note:'Photos on file. Would value a dermatology-leaning eye before I refer.' },
   { id:'t9', title:'Requisition rejected — callback', type:'Lab Work', prio:'routine', age:7,
     to:'Dolly Aquino', role:'MOA',
     patient:'Brian Koval', preferred:'Brian', chart:'#7734',
-    verified:true, status:'complete', carried:0, due:'Sep 8',
+    verified:true, status:'complete', carried:0, due:'Sep 8', dueIn:-5,
     note:'Royal Inland rejected it, breast density missing. Resubmitted and patient called.' }
 ];
 
@@ -3759,6 +3806,24 @@ function condItemHTML(c){
 }
 function closeConditions(){ document.getElementById('cd-panel').classList.remove('show'); }
 
+/* The spec's trigger: the problem-list review surfaces at the end of the
+   visit, on the way through billing — not as something to remember to open. */
+function finalizeVisit(){
+  var sugg = condSuggFor(PC_CURRENT);
+  if(sugg.length){
+    openConditions();
+    toast(sugg.length + ' suggested problem-list update' + (sugg.length>1?'s':'') + ' before you sign');
+    return;
+  }
+  var r = QUEUE_DATA.filter(function(x){ return x.name===PC_CURRENT; })[0];
+  if(r && (r.bill==='pending' || r.bill==='none')){
+    r.bill = 'submitted';
+    if(typeof renderQueue==='function'){ renderQueue(); updateClaimCount(); }
+    toast('Visit signed and claim submitted — nothing left behind');
+  } else {
+    toast('Visit signed');
+  }
+}
 function condApprove(id){
   var name = PC_CURRENT;
   var list = COND_SUGGESTIONS[name] || [];
@@ -3891,7 +3956,12 @@ function renderTasks(){
   PRIO_ORDER.forEach(function(pr){
     var g = rows.filter(function(t){ return t.prio===pr; });
     if(!g.length) return;
-    g.sort(function(a,b){ return b.age - a.age; });
+    /* earliest due first; where two share a date, the one that has been
+       sitting longest goes on top */
+    g.sort(function(a,b){
+      var da = (a.dueIn===undefined ? 99 : a.dueIn), db = (b.dueIn===undefined ? 99 : b.dueIn);
+      return da !== db ? da - db : b.age - a.age;
+    });
     html += '<div class="tk-band"><span class="tk-bdot '+pr+'"></span><b>'+TASK_PRIO[pr].label+'</b>'+
       '<span class="hint">'+TASK_PRIO[pr].hint+'</span><span class="n">'+g.length+'</span></div>';
     var lastDay = null;
@@ -4080,7 +4150,7 @@ function scAccept(id){
     to: p.owner==='self' ? 'Dr. D. Pannozzo' : MOA_ON_SERVICE,
     role: p.owner==='self' ? 'Physician' : 'MOA',
     patient:'Gloria Mcdonald', preferred:'Gloria', chart:'#6448',
-    verified:true, status:'open', carried:0, due:'Sep 19',
+    verified:true, status:'open', carried:0, due:'Sep 19', dueIn:6,
     note: p.detail.replace(/&rsquo;/g,'’').replace(/&mdash;/g,'—') + ' Raised by the scribe from today’s call, accepted by Dr. Pannozzo.'
   });
   if(typeof renderTasks === 'function') renderTasks();
@@ -4216,7 +4286,7 @@ function sendTaskMoa(){
     to: self ? 'Dr. D. Pannozzo' : MOA_ON_SERVICE,
     role: self ? 'Physician' : 'MOA',
     patient: patient || 'Not patient-specific', preferred: (patient||'—').split(' ')[0], chart:'#—',
-    verified:true, status:'open', carried:0, due:'Sep 19',
+    verified:true, status:'open', carried:0, due:'Sep 19', dueIn:6,
     note: note || 'No note added'
   });
   renderTasks();
@@ -4361,7 +4431,8 @@ function inboxRowHtml(item, i){
   }
 
   var actions = item.status === 'received'
-    ? '<button class="btn xs dark" onclick="event.stopPropagation();openReview('+i+')">Review result</button>'
+    ? '<button class="btn xs dark" onclick="event.stopPropagation();openReview('+i+')">Review result</button>'+
+      '<button class="btn xs" onclick="event.stopPropagation();fastTrack(&#39;'+item.patient.replace(/'/g,"")+'&#39;)" title="Open the chart with the plan this belongs to">Open chart</button>'
     : (item.status === 'reviewed' ? '<span class="pill mut">Reviewed</span>' : '');
 
   return '<div class="inbox-row ix'+(crit?' critical':'')+'" onclick="openReview('+i+')">'+
@@ -4945,6 +5016,31 @@ function rvToggleSource(){
 
 /* ===== Review assignment (spec v7 §5.6) ===== */
 var RV_I = -1, RV_FOLLOW = null;
+/* Daniel: "Lab work or imaging or referrals that have shit for me to do — i
+   wouldn't mind a fast track into the chart. Then the chart reminds me ...
+   hey stupid, you were working her up for Dyspepsia." Straight from the
+   inbox row into the chart, with the reason it was ordered on top. */
+function fastTrack(patient){
+  var row = QUEUE_DATA.filter(function(r){ return r.name.indexOf(patient)===0 || (r.legal||'').indexOf(patient.toUpperCase())>-1; })[0];
+  if(!row){ toast('No open chart for ' + patient + ' in today\'s sheet'); return; }
+  openChart(row.name);
+  showRecall(patient);
+}
+/* the reminder that makes the fast track worth taking */
+var RECALL = {
+  'Behdis Maleki':'You were working her up for <b>iron deficiency</b> — ferritin 18 on Jun 25, three months of supplementation, and you wanted a repeat before escalating to GI.',
+  'Gloria Mcdonald':'You were working her up for <b>exertional chest pressure</b> — cardiology saw her Jul 28, stress test Sep 12, and you started bisoprolol today.',
+  'Carol-Anne Feldman':'Third episode of candidiasis this year — you ordered an <b>HbA1c</b> to rule out undiagnosed diabetes.',
+  'Manjit':'Endocrinology is running her thyroid workup — you agreed to do the <b>interval TSH and free T4</b> locally.'
+};
+function showRecall(patient){
+  var el = document.getElementById('recall'); if(!el) return;
+  var key = Object.keys(RECALL).filter(function(k){ return patient.indexOf(k)>-1 || k.indexOf(patient)>-1; })[0];
+  if(!key){ el.classList.remove('on'); return; }
+  el.innerHTML = '<span class="rc-k">Where this came from</span><p>'+RECALL[key]+'</p>'+
+    '<button class="rc-x" onclick="this.parentNode.classList.remove(&#39;on&#39;)" title="Dismiss">&times;</button>';
+  el.classList.add('on');
+}
 function openReview(i){
   var it = INBOX_ITEMS[i]; if(!it) return;
   RV_I = i; RV_FOLLOW = null;
@@ -5290,6 +5386,7 @@ function openChart(name){
   CARE_EVENTS = buildCareEvents(r); renderCareTimeline();
   renderCarePlan(name);
   condDismissedGaps = {}; renderConditions();
+  var rc=document.getElementById('recall'); if(rc) rc.classList.remove('on');
   pcShowSec('chart'); vcPane('summary'); setChartVer('c'); pcEndCall();
   scReset();
   showScreen('patientchart');
@@ -5433,7 +5530,7 @@ var CARE_PLAN = {
   ],
   'Carol-Anne Feldman, 44F': [
     {id:'c1', specialty:'Family practice', service:'Dr. D. Pannozzo · SimpleCare', owner:'GP',
-     action:'Fluconazole 150 mg, single dose', kind:'rx', status:'To Do', due:'Today',
+     action:'Fluconazole 150 mg, single dose', kind:'rx', status:'To Do', due:'Today', dueIn:0,
      detail:'Third episode this year. Send to Lincoln, Coquitlam.', src:'This visit'},
     {id:'c2', specialty:'Family practice', service:'Dr. D. Pannozzo · SimpleCare', owner:'GP',
      action:'HbA1c to rule out undiagnosed diabetes', kind:'lab', status:'To Do', due:'Sep 6, 2026',
@@ -5464,7 +5561,7 @@ var CP_PENDING = {
 
 var CP_DEFAULT = [
   {id:'d1', specialty:'Family practice', service:'Dr. D. Pannozzo · SimpleCare', owner:'GP',
-   action:'Set the plan for this visit', kind:'followup', status:'To Do', due:'Today',
+   action:'Set the plan for this visit', kind:'followup', status:'To Do', due:'Today', dueIn:0,
    detail:'No active plan items on file for this patient yet.', src:'This visit'}
 ];
 
