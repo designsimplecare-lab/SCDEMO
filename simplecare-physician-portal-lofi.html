@@ -1595,6 +1595,22 @@
     padding:4px 9px;font-family:inherit;font-size:11px;font-weight:700;color:var(--ink-soft);cursor:pointer;}
   .cd-gap .ga button:hover{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-wash);}
   .cd-gap .ga button.go{background:var(--ink-dark);border-color:var(--ink-dark);color:#fff;}
+  .cd-log{border-top:1px solid var(--line);}
+  .cd-log-row{display:grid;grid-template-columns:92px 1fr;gap:14px;padding:11px 0;
+    border-bottom:1px solid var(--wash);}
+  .cd-log-row .w{font-size:11px;color:var(--ink-faint);padding-top:2px;}
+  .cd-log-row .b b{font-size:13px;font-weight:700;}
+  .cd-log-row .b p{font-size:11.5px;color:var(--ink-soft);margin:3px 0 0;line-height:1.5;}
+  .cd-log-row .by{font-size:10.5px;color:var(--ink-faint);display:block;margin-top:3px;}
+  .cd-log-row .a{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+    padding:2px 7px;border-radius:20px;margin-right:5px;}
+  .cd-log-row .a.approved{background:var(--good-wash);color:var(--good);}
+  .cd-log-row .a.dismissed{background:var(--wash);color:var(--ink-faint);border:1px solid var(--line);}
+  .cd-log-row .a.merged{background:var(--accent-wash);color:var(--accent-ink);}
+  .cd-log-row .a.resolved{background:var(--wash);color:var(--ink-soft);border:1px solid var(--line);}
+  .cd-log-row .a.ordered{background:var(--accent-wash);color:var(--accent-ink);}
+  .cd-log-row .a:not(.approved):not(.dismissed):not(.merged):not(.resolved):not(.ordered){
+    background:var(--warn-wash);color:var(--warn);}
   .cd-note{font-size:11.5px;color:var(--ink-faint);line-height:1.55;margin:16px 0 0;}
   .cd-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
     color:var(--ink-faint);margin:20px 0 9px;}
@@ -2125,7 +2141,7 @@
             <span class="ic" data-pcic="review"></span> Inbox <span class="wt-count crit" id="wt-inbox-count">0</span>
           </button>
           <button class="wt-new wt-claims" onclick="showScreen('claims')" title="Unbilled encounters on today's sheet">
-            <span class="ic" data-pcic="labs"></span> Claims <span class="wt-count crit" id="wt-claims-count">0</span>
+            <span class="ic" data-pcic="labs"></span> Claims <span class="wt-count" id="wt-claims-count">0</span>
           </button>
           <button class="wt-new" onclick="showScreen('registerpatient')" title="Register a new patient">
             <span class="ic" data-pcic="newpatient"></span> New patient
@@ -3409,7 +3425,7 @@ function callPatient(name){
 function updateClaimCount(){
   var n = QUEUE_DATA.filter(function(r){ return r.bill==='pending' || r.bill==='rejected'; }).length;
   var el = document.getElementById('wt-claims-count');
-  if(el){ el.textContent = n; el.classList.toggle('crit', n>0); }
+  if(el){ el.textContent = n; }
 }
 function fixClaim(name){
   var r = QUEUE_DATA.find(function(x){ return x.name===name; }); if(!r) return;
@@ -3648,6 +3664,21 @@ var CONDITIONS = {
         {id:'g7', label:'Repeat iron studies', sev:'med',
          why:'Three months of supplementation completed. Repeat to confirm response before escalating.'}
       ]},
+    { id:'c0', name:'Preventive care', short:'Prevention', status:'active', since:'ongoing',
+      aka:'Not a diagnosis — the age and risk-based items that apply to her',
+      last:null,
+      gaps:[
+        {id:'p1', label:'Influenza and COVID-19 vaccines due', sev:'med',
+         why:'Both last given Oct 2025. She is 74 with diabetes — annual, and the season opens next month.'},
+        {id:'p2', label:'Shingles vaccine not on record', sev:'low',
+         why:'Recombinant zoster is recommended from 50. Nothing on file.'},
+        {id:'p3', label:'Fracture-risk assessment due', sev:'med',
+         why:'74, no BMD on record and no fracture-risk calculation since 2021.'},
+        {id:'p4', label:'Falls-risk review due', sev:'low',
+         why:'Starting a rate-slowing agent today at 74. Worth asking before the next visit.'},
+        {id:'p5', label:'Colorectal screening — last year of eligibility', sev:'med',
+         why:'FIT last done 2022. BC screens to 74; she turns 75 in March.'}
+      ]},
     { id:'c4', name:'Vitamin D deficiency', status:'resolved', since:'2023',
       aka:'', last:{k:'Last 25-OH vitamin D', v:'82 nmol/L', on:'Nov 2025', target:'over 50', ok:true},
       gaps:[] }
@@ -3670,6 +3701,24 @@ var COND_SUGGESTIONS = {
 };
 
 var condDismissedGaps = {};
+
+/* "Every decision is recorded, including why it was suggested and which
+   doctor approved it." Seeded with the history that produced today's list. */
+var COND_LOG = [
+  {when:'Jun 25, 2026', what:'Hypertension', act:'approved', by:'Dr. D. Pannozzo',
+   why:'Three office readings over 140/90 across four months, plus amlodipine in the medication history.'},
+  {when:'Jun 25, 2026', what:'Duplicate — “high blood pressure” from intake', act:'merged', by:'System',
+   why:'Resolved to the existing Hypertension entry. Patient-entered wording, same condition.'},
+  {when:'Mar 2, 2026', what:'Type 2 diabetes', act:'approved', by:'Dr. D. Pannozzo',
+   why:'HbA1c 7.2% on two occasions and metformin in the medication history.'},
+  {when:'Nov 18, 2025', what:'Vitamin D deficiency', act:'resolved', by:'Dr. D. Pannozzo',
+   why:'25-OH vitamin D 82 nmol/L after supplementation. No longer an active problem.'},
+  {when:'Aug 4, 2026', what:'Sleep apnoea', act:'dismissed', by:'Dr. D. Pannozzo',
+   why:'Suggested from a consult letter mentioning snoring. Not enough to carry as a diagnosis without a study.'}
+];
+function condLog(what, act, why){
+  COND_LOG.unshift({when:'Today', what:what, act:act, by:'Dr. D. Pannozzo', why:why});
+}
 
 function condFor(n){ return CONDITIONS[n] || []; }
 function condSuggFor(n){ return COND_SUGGESTIONS[n] || []; }
@@ -3706,7 +3755,10 @@ function renderConditions(){
   if(chip){
     if(!act.length){ chip.innerHTML = 'No ongoing conditions'; }
     else {
-      var all = act.map(function(c){ return c.short || c.name; });
+      /* the header carries diagnoses; preventive care contributes its care
+         items but is not a condition to list alongside them */
+      var all = act.filter(function(c){ return c.name !== 'Preventive care'; })
+                   .map(function(c){ return c.short || c.name; });
       var shown = all.slice(0,3).join(' &middot; ');
       var hiddenConds = all.length - 3;
       var gapLabel = top ? top.label
@@ -3772,10 +3824,27 @@ function openConditions(){
     body += '<p class="cd-lbl">Past and resolved</p>' + old.map(condItemHTML).join('');
   }
 
+  body += '<p class="cd-lbl">Decision record</p>'+
+    '<div class="cd-log">'+ COND_LOG.slice(0,6).map(function(e){
+      return '<div class="cd-log-row"><span class="w">'+e.when+'</span>'+
+        '<div class="b"><span class="a '+e.act+'">'+e.act+'</span> <b>'+e.what+'</b>'+
+        '<p>'+e.why+'</p><span class="by">'+e.by+'</span></div></div>';
+    }).join('') +'</div>'+
+    (COND_LOG.length>6 ? '<button class="vc-more" style="margin-top:8px;" onclick="toast(&#39;Would show the full decision record for this patient&#39;)">Show all '+COND_LOG.length+' decisions</button>' : '');
+
   body += '<p class="cd-note">Care items come from Canadian guidance &mdash; Diabetes Canada, Hypertension Canada, the Canadian Immunization Guide &mdash; narrowed by this patient’s own results, medications, last review and the targets you set. Nothing is raised without something concrete behind it, and you can dismiss or re-time any of it.</p>';
 
   document.getElementById('cd-body').innerHTML = body;
   document.getElementById('cd-panel').classList.add('show');
+}
+function condGapLabel(id){
+  var out = id;
+  Object.keys(CONDITIONS).forEach(function(n){
+    CONDITIONS[n].forEach(function(c){
+      (c.gaps||[]).forEach(function(g){ if(g.id===id) out = g.label; });
+    });
+  });
+  return out;
 }
 function condItemHTML(c){
   var gaps = condOpenGaps(c);
@@ -3836,6 +3905,7 @@ function condApprove(id){
            why:'Raised on approving '+g.name+'. '+g.evidence.replace(/<\/?b>/g,'')}]
   }]);
   COND_SUGGESTIONS[name] = list.filter(function(x){ return x.id!==id; });
+  condLog(g.name, 'approved', g.evidence.replace(/<\/?b>/g,'') + ' From ' + g.source.toLowerCase() + '.');
   renderConditions(); openConditions();
   toast(g.name+' added to the problem list');
 }
@@ -3847,7 +3917,9 @@ function condApproveAll(){
 }
 function condDismissSugg(id){
   var name = PC_CURRENT;
+  var g = (COND_SUGGESTIONS[name]||[]).filter(function(x){ return x.id===id; })[0];
   COND_SUGGESTIONS[name] = (COND_SUGGESTIONS[name]||[]).filter(function(x){ return x.id!==id; });
+  if(g) condLog(g.name, 'dismissed', 'Suggested from ' + g.source.toLowerCase() + '. Declined by the physician.');
   renderConditions(); openConditions();
   toast('Dismissed. It stays out of the list and the reason is recorded.');
 }
@@ -3859,6 +3931,7 @@ function condDismissAll(){
 }
 function condActGap(id, label){
   condDismissedGaps[id] = true;
+  condLog(label, 'ordered', 'Acted on from the problem list; task created and routed.');
   DOC_TASKS.unshift({
     id:'cg'+Date.now(), title:label,
     type: /eGFR|ACR|A1c|lipid|creatinine|ferritin|kidney|bloods|electrolytes/i.test(label) ? 'Lab Work'
@@ -3876,11 +3949,13 @@ function condActGap(id, label){
 }
 function condSnooze(id){
   condDismissedGaps[id] = true;
+  condLog(condGapLabel(id), 'held back', 'Physician deferred it to the next review.');
   renderConditions(); openConditions();
   toast('Held back. It returns at the next review.');
 }
 function condDismissGap(id){
   condDismissedGaps[id] = true;
+  condLog(condGapLabel(id), 'dismissed', 'Care item judged not applicable to this patient.');
   renderConditions(); openConditions();
   toast('Dismissed for this patient.');
 }
