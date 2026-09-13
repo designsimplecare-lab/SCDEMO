@@ -725,21 +725,27 @@
   .q-demo{display:block;font-size:11px;color:var(--ink-faint);}
   .q-plan{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;color:var(--ink-soft);margin-top:3px;}
   .q-plan i{font-style:normal;font-weight:500;color:var(--ink-faint);}
-  .q-ver{font-size:9px;font-weight:800;letter-spacing:.04em;padding:1px 6px;border-radius:20px;}
-  .q-ver.no{background:var(--warn-wash);color:var(--warn);}
+  .q-ver{font-size:9px;font-weight:800;letter-spacing:.04em;padding:1px 6px;border-radius:20px;margin-left:6px;}
+  .q-ver.warn{background:var(--warn-wash);color:var(--warn);}
+  .q-ver.bad{background:var(--crit-wash);color:var(--crit);}
+  .q-ver.info{background:var(--accent-wash);color:var(--accent-ink);}
   /* seven columns fit only if each one is given a sensible share; left to
      itself the browser starved these three and every row ran to four lines */
-  .q-table th:nth-child(1),.q-table td:nth-child(1){width:52px;}
-  .q-table th:nth-child(2),.q-table td:nth-child(2){width:26%;}
-  .q-table th:nth-child(3),.q-table td:nth-child(3){width:19%;}
-  .q-table th:nth-child(4),.q-table td:nth-child(4){width:26%;}
-  .q-table th:nth-child(7),.q-table td:nth-child(7){width:262px;}
+  /* fixed where the content is fixed, and the AI summary takes whatever is
+     left — it is the only column that can absorb a narrower screen */
+  .q-table th:nth-child(1),.q-table td:nth-child(1){width:50px;}
+  .q-table th:nth-child(2),.q-table td:nth-child(2){width:212px;}
+  .q-table th:nth-child(3),.q-table td:nth-child(3){width:146px;}
+  .q-table th:nth-child(5),.q-table td:nth-child(5){width:104px;}
+  .q-table th:nth-child(6),.q-table td:nth-child(6){width:184px;}
+  .q-table th:nth-child(7),.q-table td:nth-child(7){width:258px;}
   .q-concern{max-width:none;}
   .q-concern .cc{display:block;font-size:12.5px;color:var(--ink);line-height:1.4;}
   .q-aicell{max-width:none;}
   /* the summary is a glance, not a read — three lines, then it stops */
-  .q-aitext{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
-  .q-aitext{display:block;font-size:12.5px;line-height:1.45;color:var(--ink-soft);margin-top:4px;}
+  /* one rule — a later display:block was silently killing the clamp */
+  .q-aitext{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+    font-size:12.5px;line-height:1.45;color:var(--ink-soft);margin-top:4px;}
   .q-aiempty{color:var(--ink-faint);}
   .q-aitag{display:inline-block;font-style:normal;font-size:9px;font-weight:800;letter-spacing:.05em;
     background:var(--accent-wash);color:var(--accent-ink);border-radius:5px;padding:2px 6px;
@@ -1537,13 +1543,14 @@
     color:var(--ink-faint);margin:16px 0 8px;}
 
   /* billing status on the day sheet */
-  .bill-pill{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.03em;
+  .bill-pill{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.02em;
     padding:3px 9px;border-radius:20px;white-space:nowrap;}
-  .bill-pill.pending{background:var(--warn-wash);color:var(--warn);}
-  .bill-pill.submitted{background:var(--accent-wash);color:var(--accent-ink);}
-  .bill-pill.paid{background:var(--good-wash);color:var(--good);}
-  .bill-pill.rejected{background:var(--crit-wash);color:var(--crit);}
-  .bill-pill.none{background:var(--wash);color:var(--ink-faint);border:1px solid var(--line);}
+  .bill-pill .payer{opacity:.62;font-weight:700;}
+  .bill-pill.warn{background:var(--warn-wash);color:var(--warn);}
+  .bill-pill.info{background:var(--accent-wash);color:var(--accent-ink);}
+  .bill-pill.ok{background:var(--good-wash);color:var(--good);}
+  .bill-pill.bad{background:var(--crit-wash);color:var(--crit);}
+  .bill-pill.quiet{background:var(--wash);color:var(--ink-faint);border:1px solid var(--line);}
   /* the pill is the problem and stays red; the button is the answer and
      shouldn't compete with it for the same alarm colour */
   .bill-fix{margin-left:6px;border:1px solid var(--line-strong);background:var(--panel);color:var(--ink-soft);
@@ -3243,24 +3250,45 @@ function showScreen(name){
    the name the patient actually goes by, age and sex, and the plan with
    its verification state. */
 var QUEUE_DATA = [
-  {pos:1, name:'Gloria Mcdonald, 74F', legal:'GLORIA ANNE MCDONALD', pref:'Gloria', age:'74Y', sex:'Female', plan:'MSP', ver:true,
-   concern:'Follow up — chest pressure noted', win:'8-10', status:'next', wait:'0 min', redflag:true, bill:'pending'},
-  {pos:2, name:'Andrey Abushakhmanov, 24M', legal:'ANDREY ABUSHAKHMANOV', pref:'Andrey', age:'24Y', sex:'Male', plan:'MSP', ver:true,
-   concern:'Follow up appointment', win:'8-10', status:'waiting', wait:'6 min', redflag:false, bill:'pending'},
-  {pos:3, name:'Carol-Anne Feldman, 44F', legal:'CAROL-ANNE FELDMAN', pref:'Carol', age:'44Y', sex:'Female', plan:'MSP', ver:true,
-   concern:'Yeast infection', win:'10-2', status:'waiting', wait:'12 min', redflag:false, bill:'pending'},
-  {pos:4, name:'Behdis Maleki, 35F', legal:'BEHDIS MALEKI', pref:'Behdis', age:'35Y', sex:'Female', plan:'MSP', ver:true,
-   concern:'Follow up appointment', win:'10-2', status:'delayed', wait:'22 min', redflag:false, bill:'pending'},
-  {pos:5, name:'K Arli Eyre, 41', legal:'KATHLEEN ARLI EYRE', pref:'Arli', age:'41Y', sex:'Female', plan:'MSP', ver:false,
-   concern:'Standard visit', win:'2-5', status:'missed', wait:'—', redflag:false, bill:'none'},
-  {pos:6, name:'Greg', legal:'GREGORY PAUL NAKASHIMA', pref:'Greg', age:'58Y', sex:'Male', plan:'MSP', ver:true,
-   concern:'Rx renewal', win:'2-5', status:'dropped', wait:'—', redflag:false, bill:'rejected'},
-  {pos:7, name:'Manjit', legal:'MANJIT KAUR DHILLON', pref:'Manjit', age:'66Y', sex:'Female', plan:'MSP', ver:true,
-   concern:'Lab follow-up', win:'5-7', status:'done', wait:'—', redflag:false, bill:'submitted'},
-  {pos:8, name:'Korynn', legal:'KORYNN ELISE BAPTISTE', pref:'Korynn', age:'29Y', sex:'Female', plan:'ICBC', planNote:'claim 8841-22', ver:false,
-   concern:'Standard visit', win:'5-7', status:'noshow', wait:'—', redflag:false, bill:'none'}
+  {pos:1, name:'Gloria Mcdonald, 74F', legal:'GLORIA ANNE MCDONALD', pref:'Gloria', age:'74Y', sex:'Female', plan:'MSP', card:'verified',
+   concern:'Follow up — chest pressure noted', win:'8-10', status:'next', wait:'0 min', redflag:true, bill:'msp-submit'},
+  {pos:2, name:'Andrey Abushakhmanov, 24M', legal:'ANDREY ABUSHAKHMANOV', pref:'Andrey', age:'24Y', sex:'Male', plan:'MSP', card:'verified',
+   concern:'Follow up appointment', win:'8-10', status:'waiting', wait:'6 min', redflag:false, bill:'msp-submitted'},
+  {pos:3, name:'Carol-Anne Feldman, 44F', legal:'CAROL-ANNE FELDMAN', pref:'Carol', age:'44Y', sex:'Female', plan:'MSP', card:'check',
+   concern:'Yeast infection', win:'10-2', status:'waiting', wait:'12 min', redflag:false, bill:'msp-review'},
+  {pos:4, name:'Behdis Maleki, 35F', legal:'BEHDIS MALEKI', pref:'Behdis', age:'35Y', sex:'Female', plan:'MSP', card:'verified',
+   concern:'Follow up appointment', win:'10-2', status:'delayed', wait:'22 min', redflag:false, bill:'msp-paid'},
+  {pos:5, name:'K Arli Eyre, 41', legal:'KATHLEEN ARLI EYRE', pref:'Arli', age:'41Y', sex:'Female', plan:'MSP', card:'invalid',
+   concern:'Standard visit', win:'2-5', status:'missed', wait:'—', redflag:false, bill:'msp-rejected'},
+  {pos:6, name:'Greg', legal:'GREGORY PAUL NAKASHIMA', pref:'Greg', age:'58Y', sex:'Male', plan:'Private', card:'private',
+   concern:'Rx renewal', win:'2-5', status:'dropped', wait:'—', redflag:false, bill:'priv-due'},
+  {pos:7, name:'Manjit', legal:'MANJIT KAUR DHILLON', pref:'Manjit', age:'66Y', sex:'Female', plan:'Private', card:'private',
+   concern:'Lab follow-up', win:'5-7', status:'done', wait:'—', redflag:false, bill:'priv-paid'},
+  {pos:8, name:'Korynn', legal:'KORYNN ELISE BAPTISTE', pref:'Korynn', age:'29Y', sex:'Female', plan:'Private', planNote:'ICBC 8841-22', card:'private',
+   concern:'Standard visit', win:'5-7', status:'noshow', wait:'—', redflag:false, bill:'priv-review'}
 ];
-var BILL_LABEL = { pending:'Pending', submitted:'Submitted', paid:'Paid', rejected:'Rejected', none:'No claim' };
+/* Daniel's two status sets. Health card says who is paying and whether
+   that is settled; billing says where the money is. Billing always names
+   the payer, because MSP and Private are different routes with different
+   next steps. */
+var CARD_STATUS = {
+  verified: {label:'Verified',       tone:'ok'},
+  check:    {label:'Check required', tone:'warn'},
+  invalid:  {label:'Invalid card',   tone:'bad'},
+  private:  {label:'Private pay',    tone:'info'}
+};
+var BILL_STATUS = {
+  'msp-submit':    {label:'<span class="payer">MSP</span> Submit claim',       tone:'warn', act:'Submit'},
+  'msp-submitted': {label:'<span class="payer">MSP</span> Claim submitted',    tone:'info'},
+  'msp-review':    {label:'<span class="payer">MSP</span> Review claim',       tone:'warn', act:'Review'},
+  'msp-rejected':  {label:'<span class="payer">MSP</span> Claim rejected',     tone:'bad',  act:'Correct'},
+  'msp-paid':      {label:'<span class="payer">MSP</span> Claim paid',         tone:'ok'},
+  'priv-due':      {label:'<span class="payer">Private</span> Payment due',    tone:'warn', act:'Invoice'},
+  'priv-review':   {label:'<span class="payer">Private</span> Review payment', tone:'warn', act:'Review'},
+  'priv-paid':     {label:'<span class="payer">Private</span> Payment paid',   tone:'ok'}
+};
+/* what still needs a hand */
+var BILL_OPEN = ['msp-submit','msp-review','msp-rejected','priv-due','priv-review'];
 var STATUS_LABEL = {
   waiting:'In queue', next:'In queue', progress:'In visit', delayed:'In queue',
   missed:'Missed call', dropped:'Call dropped', done:'Completed', noshow:'No-show', scheduled:'Scheduled'
@@ -3329,9 +3357,9 @@ function renderQueue(){
     var statusPill = '<span class="status-pill '+r.status+'">'+STATUS_LABEL[r.status]+'</span>';
 
     /* Claims sit on the day sheet, not behind Practice. "Leave no claim behind." */
-    var bill = r.bill || (closed ? 'submitted' : 'pending');
-    var billCell = '<span class="bill-pill '+bill+'">'+BILL_LABEL[bill]+'</span>' +
-      (bill==='rejected' ? '<button class="bill-fix" onclick="event.stopPropagation();fixClaim(\''+r.name+'\')">Correct</button>' : '');
+    var bs = BILL_STATUS[r.bill] || BILL_STATUS['msp-submit'];
+    var billCell = '<span class="bill-pill '+bs.tone+'">'+bs.label+'</span>' +
+      (bs.act ? '<button class="bill-fix" onclick="event.stopPropagation();fixClaim(\''+r.name+'\')">'+bs.act+'</button>' : '');
 
     return '<tr class="'+(r.redflag?'redflag':'')+'">'+
       '<td>'+dueChip+'</td>'+
@@ -3342,7 +3370,11 @@ function renderQueue(){
           '<span class="q-demo">'+(r.age||'')+', '+(r.sex||'')+'</span>'+
           '<span class="q-plan">'+(r.plan||'MSP')+
             (r.planNote ? ' <i>'+r.planNote+'</i>' : '')+
-            (r.ver ? '' : '<span class="q-ver no">Unverified</span>')+'</span>'+
+            /* verified is the normal case and private pay is already the plan
+               name — only a card that needs looking at earns a badge */
+            ((r.card==='check' || r.card==='invalid')
+              ? '<span class="q-ver '+CARD_STATUS[r.card].tone+'">'+CARD_STATUS[r.card].label+'</span>' : '')+
+          '</span>'+
         '</span></div></td>'+
       '<td class="q-concern"><span class="cc">'+r.concern+'</span>'+
         (r.redflag ? '<span class="q-why">Flagged in intake &mdash; read it before you call</span>' : '')+
@@ -3463,15 +3495,26 @@ function callPatient(name){
 }
 /* Unbilled or rejected on today's sheet. "Leave no claim behind." */
 function updateClaimCount(){
-  var n = QUEUE_DATA.filter(function(r){ return r.bill==='pending' || r.bill==='rejected'; }).length;
+  var n = QUEUE_DATA.filter(function(r){ return BILL_OPEN.indexOf(r.bill) > -1; }).length;
   var el = document.getElementById('wt-claims-count');
   if(el){ el.textContent = n; el.style.display = n ? 'inline-flex' : 'none'; }
 }
+/* each open state has one obvious next move */
+var BILL_NEXT = {
+  'msp-submit':'msp-submitted', 'msp-review':'msp-submitted', 'msp-rejected':'msp-submitted',
+  'priv-due':'priv-review', 'priv-review':'priv-paid'
+};
+var BILL_SAID = {
+  'msp-submit':'claim submitted to MSP', 'msp-review':'claim reviewed and resubmitted',
+  'msp-rejected':'claim corrected and resubmitted',
+  'priv-due':'invoice sent, awaiting payment', 'priv-review':'payment confirmed'
+};
 function fixClaim(name){
   var r = QUEUE_DATA.find(function(x){ return x.name===name; }); if(!r) return;
-  r.bill = 'submitted';
+  var said = BILL_SAID[r.bill] || 'updated';
+  r.bill = BILL_NEXT[r.bill] || r.bill;
   renderQueue(); updateClaimCount();
-  toast(firstLast(name)+' — claim corrected and resubmitted');
+  toast(firstLast(name)+' — '+said);
 }
 function advance(name, newStatus){
   var row = QUEUE_DATA.find(function(r){ return r.name===name; });
