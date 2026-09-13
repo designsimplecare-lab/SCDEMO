@@ -1358,11 +1358,35 @@
   .tk-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
     padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;}
   .tk-card.complete{opacity:.6;}
-  .tk-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:6px;background:var(--warn);}
+  .tk-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:6px;background:var(--ink-faint);}
+  .tk-card.p-urgent  .tk-dot{background:var(--crit);}
+  .tk-card.p-high    .tk-dot{background:var(--warn);}
+  .tk-card.p-routine .tk-dot{background:var(--line-strong);}
   .tk-card.complete .tk-dot{background:var(--good);}
-  .tk-card.carried .tk-dot{background:var(--crit);}
+
+  .tk-top{display:flex;align-items:baseline;gap:9px;}
+  .tk-prio{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+    padding:2px 8px;border-radius:20px;flex-shrink:0;}
+  .tk-prio.urgent{background:var(--crit-wash);color:var(--crit);}
+  .tk-prio.high{background:var(--warn-wash);color:var(--warn);}
+  .tk-prio.routine{background:var(--wash);color:var(--ink-faint);border:1px solid var(--line);}
+
+  /* priority bands — the only thing that sections the queue */
+  .tk-band{display:flex;align-items:baseline;gap:9px;margin:24px 0 4px;
+    padding-bottom:7px;border-bottom:1px solid var(--line);}
+  .tk-band:first-child{margin-top:0;}
+  .tk-bdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;align-self:center;}
+  .tk-bdot.urgent{background:var(--crit);}
+  .tk-bdot.high{background:var(--warn);}
+  .tk-bdot.routine{background:var(--line-strong);}
+  .tk-band b{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;}
+  .tk-band .hint{font-size:11px;color:var(--ink-faint);}
+  .tk-band .n{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--ink-faint);
+    background:var(--wash);border-radius:20px;padding:2px 8px;}
+  .tk-day{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--ink-faint);margin:14px 0 7px;}
   .tk-body{flex:1;min-width:0;}
-  .tk-title{font-size:14px;font-weight:800;margin:0;letter-spacing:-.005em;}
+  .tk-title{font-size:14px;font-weight:800;letter-spacing:-.005em;flex:1;min-width:0;}
   .tk-pt{font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.04em;
     font-weight:700;margin:3px 0 0;}
   .tk-pt .num{color:var(--ink-soft);}
@@ -1376,6 +1400,7 @@
   .tk-note{font-size:12px;color:var(--ink-soft);font-style:italic;line-height:1.5;margin:8px 0 0;}
   .tk-route{font-size:11px;color:var(--ink-faint);margin:8px 0 0;line-height:1.6;}
   .tk-route b{color:var(--ink-soft);font-weight:700;}
+  .tk-route .od{color:var(--crit);font-weight:700;}
   .tk-route .sep{opacity:.45;margin:0 6px;}
   .tk-acts{display:flex;gap:7px;flex-shrink:0;align-items:center;}
   .tk-grp{display:flex;align-items:baseline;gap:8px;margin:20px 0 10px;}
@@ -1458,6 +1483,99 @@
   .sc-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
     color:var(--ink-faint);margin:16px 0 8px;}
 
+  /* billing status on the day sheet */
+  .bill-pill{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.03em;
+    padding:3px 9px;border-radius:20px;white-space:nowrap;}
+  .bill-pill.pending{background:var(--warn-wash);color:var(--warn);}
+  .bill-pill.submitted{background:var(--accent-wash);color:var(--accent-ink);}
+  .bill-pill.paid{background:var(--good-wash);color:var(--good);}
+  .bill-pill.rejected{background:var(--crit-wash);color:var(--crit);}
+  .bill-pill.none{background:var(--wash);color:var(--ink-faint);border:1px solid var(--line);}
+  .bill-fix{margin-left:6px;border:1px solid var(--crit);background:var(--panel);color:var(--crit);
+    border-radius:7px;padding:2px 8px;font-family:inherit;font-size:10.5px;font-weight:800;cursor:pointer;}
+  .bill-fix:hover{background:var(--crit);color:#fff;}
+  .work-tabs .wt-claims .wt-count{margin-left:2px;}
+
+  /* ============================================================
+     CHRONIC CONDITIONS & CARE GAPS
+     The problem list maintains itself from what arrives in the chart,
+     but nothing enters it without the physician approving it.
+     ============================================================ */
+  .cond-chip{cursor:pointer;font-family:inherit;}
+  .cond-chip:hover{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-wash);}
+  .cond-chip .gap{color:var(--warn);font-weight:800;}
+  .cond-chip .more{opacity:.7;font-weight:600;}
+
+  .cd-rail-row{padding:7px 0;border-bottom:1px solid var(--wash);}
+  .cd-rail-row:last-of-type{border-bottom:none;}
+  .cd-rail-row .nm{font-size:13px;font-weight:600;display:flex;align-items:baseline;gap:7px;}
+  .cd-rail-row .nm .st{font-size:9.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+    color:var(--ink-faint);}
+  .cd-rail-row .gp{font-size:11.5px;color:var(--warn);font-weight:600;margin-top:2px;}
+  .cd-rail-row .gp.ok{color:var(--good);font-weight:500;}
+  .cd-sugg-cue{display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px 10px;
+    border-radius:8px;background:var(--accent-wash);color:var(--accent-ink);
+    font-size:11.5px;font-weight:700;cursor:pointer;border:none;font-family:inherit;width:100%;text-align:left;}
+
+  .cd-panel{display:none;position:fixed;inset:0;background:rgba(23,24,28,.42);z-index:210;
+    align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;}
+  .cd-panel.show{display:flex;}
+  .cd-card{background:var(--panel);border-radius:18px;width:760px;max-width:100%;
+    box-shadow:0 24px 60px rgba(23,24,28,.3);padding:24px 26px 26px;}
+  .cd-hd{display:flex;align-items:flex-start;gap:14px;margin-bottom:4px;}
+  .cd-hd h3{font-size:18px;font-weight:800;margin:0;}
+  .cd-hd .x{margin-left:auto;background:none;border:none;font-size:20px;color:var(--ink-faint);
+    cursor:pointer;line-height:1;padding:0;}
+  .cd-sub{font-size:12.5px;color:var(--ink-soft);margin:0 0 18px;line-height:1.55;}
+
+  .cd-sugg{border:1px solid var(--line-strong);border-left:3px solid var(--accent);
+    border-radius:12px;padding:15px 17px;margin-bottom:18px;}
+  .cd-sugg > b{font-size:13.5px;font-weight:800;display:block;margin-bottom:3px;}
+  .cd-sugg > .lead{font-size:12px;color:var(--ink-soft);margin:0 0 13px;line-height:1.5;}
+  .cd-s-item{padding:11px 0;border-top:1px solid var(--wash);}
+  .cd-s-item .nm{font-size:14px;font-weight:700;}
+  .cd-s-item .ev{font-size:12px;color:var(--ink-soft);margin:3px 0 0;line-height:1.5;}
+  .cd-s-item .ev b{color:var(--ink);font-weight:600;}
+  .cd-s-item .will{font-size:11.5px;color:var(--ink-faint);margin:5px 0 0;}
+  .cd-s-acts{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;}
+  .cd-sugg-all{display:flex;gap:7px;margin-top:14px;flex-wrap:wrap;}
+
+  .cd-item{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
+  .cd-item.past{opacity:.62;}
+  .cd-top{display:flex;align-items:baseline;gap:9px;margin-bottom:2px;}
+  .cd-top b{font-size:15px;font-weight:700;}
+  .cd-st{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+    padding:2px 8px;border-radius:20px;flex-shrink:0;}
+  .cd-st.active{background:var(--good-wash);color:var(--good);}
+  .cd-st.investigating{background:var(--accent-wash);color:var(--accent-ink);}
+  .cd-st.past,.cd-st.resolved{background:var(--wash);color:var(--ink-faint);border:1px solid var(--line);}
+  .cd-since{margin-left:auto;font-size:11px;color:var(--ink-faint);flex-shrink:0;}
+  .cd-aka{font-size:11px;color:var(--ink-faint);margin:0 0 10px;}
+  .cd-last{display:flex;gap:16px;flex-wrap:wrap;background:var(--wash);border-radius:9px;
+    padding:9px 12px;margin-bottom:11px;}
+  .cd-last .k{font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);
+    font-weight:700;margin:0 0 2px;}
+  .cd-last .v{font-size:14px;font-weight:700;margin:0;}
+  .cd-last .v.off{color:var(--warn);}
+  .cd-last .v.on{color:var(--good);}
+  .cd-gap{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-top:1px solid var(--wash);}
+  .cd-gdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+  .cd-gdot.high{background:var(--crit);} .cd-gdot.med{background:var(--warn);}
+  .cd-gdot.low{background:var(--line-strong);}
+  .cd-gap .gb{flex:1;min-width:0;}
+  .cd-gap .gl{font-size:13px;font-weight:600;}
+  .cd-gap .gw{font-size:11.5px;color:var(--ink-soft);margin:2px 0 0;line-height:1.45;}
+  .cd-gap .ga{display:flex;gap:5px;flex-shrink:0;}
+  .cd-gap .ga button{border:1px solid var(--line);background:var(--panel);border-radius:7px;
+    padding:4px 9px;font-family:inherit;font-size:11px;font-weight:700;color:var(--ink-soft);cursor:pointer;}
+  .cd-gap .ga button:hover{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-wash);}
+  .cd-gap .ga button.go{background:var(--ink-dark);border-color:var(--ink-dark);color:#fff;}
+  .cd-note{font-size:11.5px;color:var(--ink-faint);line-height:1.55;margin:16px 0 0;}
+  .cd-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--ink-faint);margin:20px 0 9px;}
+
+  .nav-btn.nav-quiet{opacity:.62;}
+  .nav-btn.nav-quiet:hover{opacity:1;}
   .tm-keep{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-soft);margin:2px 0 8px;cursor:pointer;}
   .tm-route{font-size:11.5px;color:var(--ink-faint);line-height:1.5;margin:0 0 14px;}
   .tm-route b{color:var(--ink-soft);font-weight:700;}
@@ -1889,14 +2007,13 @@
     <div class="nav-group">
       <p class="nav-group-label">Patients</p>
       <button class="nav-btn" data-screen="inbox" onclick="showScreen('inbox')"><span class="nav-icon">&#9993;</span><span class="nav-label">Inbox<span class="nav-flag" id="inbox-nav-flag" style="display:none;"></span></span></button>
-      <button class="nav-btn" data-screen="encounterlog" onclick="showScreen('encounterlog')"><span class="nav-icon">&#9636;</span><span class="nav-label">Encounter Log</span></button>
-      <button class="nav-btn" data-screen="tasks" onclick="showScreen('tasks')"><span class="nav-icon">&#10003;</span><span class="nav-label">Tasks<span class="nav-flag" id="task-nav-flag" style="display:none;"></span></span></button>
-      <button class="nav-btn" data-screen="careplan" onclick="showScreen('careplan')"><span class="nav-icon">&#9776;</span><span class="nav-label">Care Plan Tracker<span class="nav-flag" id="cp-nav-flag" style="display:none;"></span></span></button>
+      <button class="nav-btn" data-screen="tasks" onclick="showScreen('tasks')"><span class="nav-icon">&#10003;</span><span class="nav-label">Assigned Tasks<span class="nav-flag" id="task-nav-flag" style="display:none;"></span></span></button>
     </div>
 
     <div class="nav-group">
       <p class="nav-group-label">Schedule</p>
       <button class="nav-btn" data-screen="calendar" onclick="showScreen('calendar')"><span class="nav-icon">&#9638;</span><span class="nav-label">Calendar</span></button>
+      <button class="nav-btn nav-quiet" data-screen="encounterlog" onclick="showScreen('encounterlog')"><span class="nav-icon">&#9636;</span><span class="nav-label">Encounter Log</span></button>
     </div>
 
     <div class="nav-flyout-wrap" id="practice-flyout-wrap">
@@ -1982,6 +2099,9 @@
           <button data-work="inbox" onclick="setWorkTab('inbox')">
             <span class="ic" data-pcic="review"></span> Inbox <span class="wt-count crit" id="wt-inbox-count">0</span>
           </button>
+          <button class="wt-new wt-claims" onclick="showScreen('claims')" title="Unbilled encounters on today's sheet">
+            <span class="ic" data-pcic="labs"></span> Claims <span class="wt-count crit" id="wt-claims-count">0</span>
+          </button>
           <button class="wt-new" onclick="showScreen('registerpatient')" title="Register a new patient">
             <span class="ic" data-pcic="newpatient"></span> New patient
           </button>
@@ -2016,7 +2136,7 @@
           </div>
 
           <table class="q-table" id="queue-table">
-            <thead><tr><th>#</th><th>Patient</th><th>AI summary</th><th>Status</th><th>Action</th></tr></thead>
+            <thead><tr><th>#</th><th>Patient</th><th>AI summary</th><th>Visit status</th><th>Billing status</th><th>Action</th></tr></thead>
             <tbody id="queue-body"></tbody>
           </table>
         </div>
@@ -2263,9 +2383,9 @@
             </span>
           </div>
           <div class="vc-safety">
-            <span class="vc-sf ok"><span class="ic" data-pcic="verified"></span> No known allergies</span>
+            <span class="vc-sf ok"><span class="ic" data-pcic="verified"></span> No Known Drug Allergies</span>
             <span class="vc-sf" data-f="bannerflag">No active alerts</span>
-            <span class="vc-sf">HTN, T2DM <span class="more">+1</span></span>
+            <button class="vc-sf cond-chip" id="cond-chip" onclick="openConditions()">&mdash;</button>
           </div>
           <div class="vc-acts">
             <button class="btn dark xs" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call</button>
@@ -2357,12 +2477,9 @@
           <!-- RIGHT: reference data, boxed by type -->
           <aside class="side">
             <div class="vc-block" style="margin-bottom:0;">
-              <div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Problems</h4>
-                <span class="right"><span class="vc-count">3</span></span></div>
-              <div class="vc-line"><span class="l">Hypertension</span><span class="r">since 2019</span></div>
-              <div class="vc-line"><span class="l">Type 2 diabetes</span><span class="r">since 2021</span></div>
-              <div class="vc-line vc-hidden" data-grp="probs"><span class="l">Iron deficiency</span><span class="r">since 2026</span></div>
-              <button class="vc-more" style="margin-top:8px;" onclick="vcToggle('probs',this)">Show 1 more</button>
+              <div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Ongoing conditions</h4>
+                <span class="right"><button class="vc-more" onclick="openConditions()">Open list</button></span></div>
+              <div id="cond-rail"></div>
             </div>
 
             <div class="vc-block" style="margin-bottom:0;">
@@ -2808,28 +2925,17 @@
     <div class="screen" id="screen-tasks">
       <div class="cpt-head">
         <div>
-          <h1>Tasks</h1>
-          <p class="sub">Work the doctor has assigned &mdash; to an MOA, or to themselves.</p>
+          <h1>Assigned Tasks</h1>
+          <p class="sub">One queue, ordered by what needs attention &mdash; not by what kind of work it is.</p>
         </div>
         <button class="btn dark" onclick="openTaskMoa('')"><span class="ic" data-pcic="task"></span> New task</button>
       </div>
-      <div class="ia-note">One direction only. A task exists because the doctor pressed Task &mdash; nothing lands here automatically, blank notes don't, and the MOA can't open one. When the MOA needs something they email, phone, or use the chatbox, and they can always reply on a task. Routing follows the on-service MOA, copies the doctor's primary MOA when those differ, and forwards to Admin for overwatch.</div>
+      <div class="ia-note">A task can go to anyone &mdash; an MOA, the practice team, or another physician. What it never does is originate below the doctor: it exists because a doctor pressed Task. The queue is banded by priority and then runs oldest first, because the work that needs attention should win over whether it is imaging, a referral or lab work. Type stays a badge.</div>
 
       <div class="box">
         <div class="cpt-filters" id="tk-filters"></div>
         <div id="tk-list"></div>
         <p class="tk-rule">Tasks stay present until they're completed. Carrying one forward keeps it on the list and marks how long it has been sitting &mdash; it never disappears to a future date.</p>
-      </div>
-    </div>
-
-    <div class="screen" id="screen-careplan">
-      <h1>Care Plan Tracker</h1>
-      <p class="sub">How the orders coming out of each care plan are actually being carried out.</p>
-      <div class="ia-note">Separate from Tasks by design. Tasks are what the doctor handed to someone. This is the execution view across every care plan in the practice &mdash; what was ordered, what came back, what is still with a specialist. The reason any of it was ordered stays in the care plan on the chart, where the doctor reads it.</div>
-
-      <div class="box">
-        <div class="cpt-filters" id="cpt-filters"></div>
-        <div id="cpt-list"></div>
       </div>
     </div>
 
@@ -2878,12 +2984,20 @@
     <div class="tm-field">
       <label>Task type</label>
       <div class="tm-chip-row" id="tm-chips">
-        <span class="tm-chip active" onclick="tmSelectChip(this)">Referral</span>
+        <span class="tm-chip active" onclick="tmSelectChip(this)">Lab Work</span>
         <span class="tm-chip" onclick="tmSelectChip(this)">Imaging</span>
-        <span class="tm-chip" onclick="tmSelectChip(this)">Blood work</span>
-        <span class="tm-chip" onclick="tmSelectChip(this)">Prescription</span>
-        <span class="tm-chip" onclick="tmSelectChip(this)">Follow-up</span>
-        <span class="tm-chip" onclick="tmSelectChip(this)">Other</span>
+        <span class="tm-chip" onclick="tmSelectChip(this)">Referrals</span>
+        <span class="tm-chip" onclick="tmSelectChip(this)">Prescriptions</span>
+        <span class="tm-chip" onclick="tmSelectChip(this)">Documents</span>
+        <span class="tm-chip" onclick="tmSelectChip(this)">Patient Notes</span>
+      </div>
+    </div>
+    <div class="tm-field">
+      <label>Priority</label>
+      <div class="tm-chip-row" id="tm-prio">
+        <span class="tm-chip" data-p="urgent" onclick="tmSelectChip(this)">Urgent &middot; today</span>
+        <span class="tm-chip" data-p="high" onclick="tmSelectChip(this)">High &middot; 1 business day</span>
+        <span class="tm-chip active" data-p="routine" onclick="tmSelectChip(this)">Routine</span>
       </div>
     </div>
     <div class="tm-field">
@@ -3006,6 +3120,19 @@
   </div>
 </div>
 
+<div class="cd-panel" id="cd-panel" onclick="if(event.target===this) closeConditions()">
+  <div class="cd-card">
+    <div class="cd-hd">
+      <div>
+        <h3>Ongoing conditions</h3>
+        <p class="cd-sub" id="cd-sub"></p>
+      </div>
+      <button class="x" onclick="closeConditions()" title="Close">&times;</button>
+    </div>
+    <div id="cd-body"></div>
+  </div>
+</div>
+
 <div class="defer-overlay" id="cp-overlay" onclick="if(event.target===this) closeCpTriage()">
   <div class="defer-card" style="width:560px;">
     <p class="defer-ttl">Add recommendations to the care plan</p>
@@ -3035,15 +3162,16 @@ function showScreen(name){
 
 /* ===== live queue with real state model, mirroring patient app ===== */
 var QUEUE_DATA = [
-  {pos:1, name:'Gloria Mcdonald, 74F', concern:'Follow up — chest pressure noted', win:'8-10', status:'next', wait:'0 min', redflag:true},
-  {pos:2, name:'Andrey Abushakhmanov, 24M', concern:'Follow up appointment', win:'8-10', status:'waiting', wait:'6 min', redflag:false},
-  {pos:3, name:'Carol-Anne Feldman, 44F', concern:'Yeast infection', win:'10-2', status:'waiting', wait:'12 min', redflag:false},
-  {pos:4, name:'Behdis Maleki, 35F', concern:'Follow up appointment', win:'10-2', status:'delayed', wait:'22 min', redflag:false},
-  {pos:5, name:'K Arli Eyre, 41', concern:'Standard visit', win:'2-5', status:'missed', wait:'—', redflag:false},
-  {pos:6, name:'Greg', concern:'Rx renewal', win:'2-5', status:'dropped', wait:'—', redflag:false},
-  {pos:7, name:'Manjit', concern:'Lab follow-up', win:'5-7', status:'done', wait:'—', redflag:false},
-  {pos:8, name:'Korynn', concern:'Standard visit', win:'5-7', status:'noshow', wait:'—', redflag:false}
+  {pos:1, name:'Gloria Mcdonald, 74F', concern:'Follow up — chest pressure noted', win:'8-10', status:'next', wait:'0 min', redflag:true, bill:'pending'},
+  {pos:2, name:'Andrey Abushakhmanov, 24M', concern:'Follow up appointment', win:'8-10', status:'waiting', wait:'6 min', redflag:false, bill:'pending'},
+  {pos:3, name:'Carol-Anne Feldman, 44F', concern:'Yeast infection', win:'10-2', status:'waiting', wait:'12 min', redflag:false, bill:'pending'},
+  {pos:4, name:'Behdis Maleki, 35F', concern:'Follow up appointment', win:'10-2', status:'delayed', wait:'22 min', redflag:false, bill:'pending'},
+  {pos:5, name:'K Arli Eyre, 41', concern:'Standard visit', win:'2-5', status:'missed', wait:'—', redflag:false, bill:'none'},
+  {pos:6, name:'Greg', concern:'Rx renewal', win:'2-5', status:'dropped', wait:'—', redflag:false, bill:'rejected'},
+  {pos:7, name:'Manjit', concern:'Lab follow-up', win:'5-7', status:'done', wait:'—', redflag:false, bill:'submitted'},
+  {pos:8, name:'Korynn', concern:'Standard visit', win:'5-7', status:'noshow', wait:'—', redflag:false, bill:'none'}
 ];
+var BILL_LABEL = { pending:'Pending', submitted:'Submitted', paid:'Paid', rejected:'Rejected', none:'No claim' };
 var STATUS_LABEL = {
   waiting:'In queue', next:'In queue', progress:'In visit', delayed:'In queue',
   missed:'Missed call', dropped:'Call dropped', done:'Completed', noshow:'No-show', scheduled:'Scheduled'
@@ -3108,11 +3236,17 @@ function renderQueue(){
 
     var statusPill = '<span class="status-pill '+r.status+'">'+STATUS_LABEL[r.status]+'</span>';
 
+    /* Claims sit on the day sheet, not behind Practice. "Leave no claim behind." */
+    var bill = r.bill || (closed ? 'submitted' : 'pending');
+    var billCell = '<span class="bill-pill '+bill+'">'+BILL_LABEL[bill]+'</span>' +
+      (bill==='rejected' ? '<button class="bill-fix" onclick="event.stopPropagation();fixClaim(\''+r.name+'\')">Correct</button>' : '');
+
     return '<tr class="'+(r.redflag?'redflag':'')+'">'+
       '<td>'+dueChip+'</td>'+
       '<td><div class="q-patient" onclick="openChart(\''+r.name+'\')" title="Open chart">'+avatar+'<span class="q-pmeta"><span class="q-pname">'+r.name+flagTag+'</span><span class="q-psub">'+r.concern+'</span></span></div></td>'+
       '<td class="q-aicell">'+(AI_SUMMARY[r.name] ? '<span class="q-aitag">AI</span><span class="q-aitext">'+AI_SUMMARY[r.name]+'</span>' : '<span class="q-aiempty">&mdash;</span>')+'</td>'+
       '<td>'+statusPill+'</td>'+
+      '<td>'+billCell+'</td>'+
       '<td class="q-actions">'+actions+'</td>'+
     '</tr>';
   }).join('');
@@ -3224,11 +3358,24 @@ function callPatient(name){
   pcStartCall();
   toast('Calling ' + name.split(',')[0] + ' — chart open');
 }
+/* Unbilled or rejected on today's sheet. "Leave no claim behind." */
+function updateClaimCount(){
+  var n = QUEUE_DATA.filter(function(r){ return r.bill==='pending' || r.bill==='rejected'; }).length;
+  var el = document.getElementById('wt-claims-count');
+  if(el){ el.textContent = n; el.classList.toggle('crit', n>0); }
+}
+function fixClaim(name){
+  var r = QUEUE_DATA.find(function(x){ return x.name===name; }); if(!r) return;
+  r.bill = 'submitted';
+  renderQueue(); updateClaimCount();
+  toast(firstLast(name)+' — claim corrected and resubmitted');
+}
 function advance(name, newStatus){
   var row = QUEUE_DATA.find(function(r){ return r.name===name; });
   if(row){ row.status = newStatus; row.wait='—'; renderQueue(); toast(name+' → '+STATUS_LABEL[newStatus]); }
 }
 renderQueue();
+updateClaimCount();
 
 /* ===== cross-portal demo link: patient portal tells us when someone joins the queue ===== */
 function addPatientToQueue(payload){
@@ -3303,6 +3450,8 @@ function toggleNotes(){
 function openTaskMoa(prefillPatient){
   document.getElementById('tm-overlay').classList.add('show');
   var k=document.getElementById('tm-keep'); if(k) k.checked=false;
+  var pr=document.getElementById('tm-prio');
+  if(pr){ pr.querySelectorAll('.tm-chip').forEach(function(c,i){ c.classList.toggle('active', i===2); }); }
   tmRoute();
   document.getElementById('tm-note').value = '';
   document.querySelectorAll('#tm-chips .tm-chip').forEach(function(c,i){ c.classList.toggle('active', i===0); });
@@ -3321,7 +3470,8 @@ function closeTaskMoa(){
   document.getElementById('tm-overlay').classList.remove('show');
 }
 function tmSelectChip(el){
-  document.querySelectorAll('#tm-chips .tm-chip').forEach(function(c){ c.classList.remove('active'); });
+  /* scope to the row that was clicked so type and priority don't fight */
+  el.parentNode.querySelectorAll('.tm-chip').forEach(function(c){ c.classList.remove('active'); });
   el.classList.add('active');
 }
 /* ===== MOA task history — separate from the physician's own outstanding tasks ===== */
@@ -3347,78 +3497,369 @@ function tmSelectChip(el){
 var MOA_ROSTER = { primary:'Dolly Aquino', buddy:'Marisol Reyes', admin:'Practice admin' };
 var MOA_ON_SERVICE = 'Marisol Reyes';  // whoever holds the current call window (the buddy today)
 
-var TASK_KINDS = ['Referral','Imaging','Blood work','Prescription','Follow-up','Other'];
+/* Type is a badge, never a section. Daniel: "pretty much the tools i have
+   on the chart ... its all consistent" */
+var TASK_TYPES = ['Lab Work','Imaging','Referrals','Prescriptions','Documents','Patient Notes'];
+var TASK_KINDS = TASK_TYPES;   /* kept for the scribe and older callers */
+
+/* What actually orders the queue. "The work that needs attention should win
+   over whether it is imaging, referral, or lab work." */
+var TASK_PRIO = {
+  urgent:  {label:'Urgent',  hint:'Needs action today'},
+  high:    {label:'High',    hint:'Within 1 business day'},
+  routine: {label:'Routine', hint:'Normal workflow'}
+};
+var PRIO_ORDER = ['urgent','high','routine'];
 
 var DOC_TASKS = [
-  { id:'t1', title:'Referral for HSAT', kind:'Referral', owner:'moa',
+  { id:'t1', title:'Referral for HSAT', type:'Referrals', prio:'high', age:0,
+    to:'Amrisha Singh', role:'MOA',
     patient:'Lorraine Anne Verville', preferred:'Lori (Lorraine) Verville', chart:'#6448',
-    verified:true, status:'open', carried:0, sent:'Today, 9:12 AM',
+    verified:true, status:'open', carried:0, due:'Sep 19',
     note:'Persistent fatigue and non-restorative sleep for over four years, with sleep-app recordings suggestive of apnoea. Home Sleep Apnea Test.' },
-  { id:'t2', title:'Rebook EDS referral', kind:'Referral', owner:'moa',
+  { id:'t2', title:'Rebook EDS referral', type:'Referrals', prio:'urgent', age:3,
+    to:'Dolly Aquino', role:'MOA',
     patient:'Louise Tam', preferred:'Chickadee', chart:'#4417',
-    verified:true, status:'open', carried:2, sent:'Two days ago',
+    verified:true, status:'open', carried:2, due:'Overdue',
     note:'Specialist declined the original referral. Needs a new match, then confirm with her by phone.' },
-  { id:'t3', title:'Chest X-ray requisition', kind:'Imaging', owner:'moa',
+  { id:'t3', title:'Chest X-ray requisition', type:'Imaging', prio:'routine', age:0,
+    to:'Amrisha Singh', role:'MOA',
     patient:'Behdis Maleki', preferred:'Behdis', chart:'#5120',
-    verified:true, status:'open', carried:0, sent:'Today, 8:40 AM',
+    verified:true, status:'open', carried:0, due:'Sep 24',
     note:'Send to Royal Inland. Flag that the last requisition was rejected for a missing field.' },
-  { id:'t4', title:'Repeat ferritin and CBC', kind:'Blood work', owner:'moa',
+  { id:'t4', title:'Repeat ferritin and CBC', type:'Lab Work', prio:'routine', age:1,
+    to:'Dolly Aquino', role:'MOA',
     patient:'Behdis Maleki', preferred:'Behdis', chart:'#5120',
-    verified:true, status:'open', carried:1, sent:'Yesterday',
+    verified:true, status:'open', carried:1, due:'Sep 26',
     note:'Still fatigued on supplementation. Requisition to LifeLabs, patient to attend when convenient.' },
-  { id:'t5', title:'Confirm new follow-up date', kind:'Follow-up', owner:'moa',
+  { id:'t5', title:'Confirm new follow-up date', type:'Patient Notes', prio:'high', age:0,
+    to:'Amrisha Singh', role:'MOA',
     patient:'Gloria Mcdonald', preferred:'Gloria', chart:'#6448',
-    verified:true, status:'open', carried:0, sent:'Today, 10:02 AM',
+    verified:true, status:'open', carried:0, due:'Sep 15',
     note:'Wants to move her follow-up to next week. Anything after the stress test on Sep 12.' },
-  { id:'t6', title:'Review MRI report', kind:'Other', owner:'self',
+  { id:'t6', title:'Review MRI report', type:'Imaging', prio:'urgent', age:0,
+    to:'Dr. D. Pannozzo', role:'Physician',
     patient:'Frank Delacroix', preferred:'Frank', chart:'#3908',
-    verified:true, status:'open', carried:0, sent:'Today, 7:55 AM',
+    verified:true, status:'open', carried:0, due:'Today',
     note:'Report came back overnight. Read before the afternoon window.' },
-  { id:'t7', title:'Sign off imaging', kind:'Imaging', owner:'self',
+  { id:'t7', title:'Sign off imaging', type:'Imaging', prio:'high', age:1,
+    to:'Dr. D. Pannozzo', role:'Physician',
     patient:'Carol-Anne Feldman', preferred:'Carol', chart:'#2251',
-    verified:true, status:'open', carried:1, sent:'Yesterday',
+    verified:true, status:'open', carried:1, due:'Sep 15',
     note:'Ultrasound reported. Needs my sign-off before it releases to her.' },
-  { id:'t8', title:'Requisition rejected — callback', kind:'Blood work', owner:'moa',
+  { id:'t8', title:'Second opinion — atypical rash', type:'Documents', prio:'routine', age:2,
+    to:'Dr. S. Okonkwo', role:'Physician',
+    patient:'Andrey Abushakhmanov', preferred:'Andrey', chart:'#8801',
+    verified:true, status:'open', carried:0, due:'Sep 20',
+    note:'Photos on file. Would value a dermatology-leaning eye before I refer.' },
+  { id:'t9', title:'Requisition rejected — callback', type:'Lab Work', prio:'routine', age:7,
+    to:'Dolly Aquino', role:'MOA',
     patient:'Brian Koval', preferred:'Brian', chart:'#7734',
-    verified:true, status:'complete', carried:0, sent:'Monday',
+    verified:true, status:'complete', carried:0, due:'Sep 8',
     note:'Royal Inland rejected it, breast density missing. Resubmitted and patient called.' }
 ];
 
-function taskRoute(t){
-  if(t.owner === 'self') return '<b>Kept by me</b>';
-  var parts = ['<b>' + MOA_ON_SERVICE + '</b> on service'];
-  if(MOA_ON_SERVICE !== MOA_ROSTER.primary){
-    parts.push('cc <b>' + MOA_ROSTER.primary + '</b> as primary');
-  }
-  parts.push('<b>' + MOA_ROSTER.admin + '</b> overwatch');
-  return parts.join('<span class="sep">&middot;</span>');
+/* ============================================================
+   CHRONIC CONDITIONS & CARE GAPS
+   The list maintains itself from what arrives in the chart — intake,
+   prior records, consult letters, labs, medication history, the visit
+   note — and normalises the ways the same condition gets written.
+   It suggests; the physician approves. Reminders are only raised when
+   there is something concrete behind them: a real result, a real
+   interval, a real target.
+   ============================================================ */
+var COND_STATUS = {active:'Active', investigating:'Being investigated', past:'Past', resolved:'Resolved'};
+
+var CONDITIONS = {
+  'Gloria Mcdonald, 74F': [
+    { id:'c1', name:'Hypertension', short:'HTN', status:'active', since:'2019',
+      aka:'Recorded elsewhere as HTN, high blood pressure, raised BP',
+      last:{k:'Last blood pressure', v:'148 / 92', on:'Aug 3', target:'under 135/85', ok:false},
+      gaps:[
+        {id:'g1', label:'BP above individual target', sev:'high',
+         why:'148/92 on Aug 3 against a target of under 135/85 set by you in June.'},
+        {id:'g2', label:'Valid home BP series needed', sev:'med',
+         why:'No home readings logged since Jul 21. Hypertension Canada asks for a series before changing treatment.'},
+        {id:'g3', label:'Creatinine and electrolytes due', sev:'med',
+         why:'Bisoprolol started today. Bloods due 1–2 weeks after a change.'}
+      ]},
+    { id:'c2', name:'Type 2 diabetes', short:'T2DM', status:'active', since:'2021',
+      aka:'Recorded elsewhere as T2DM, type 2 diabetes mellitus',
+      last:{k:'Last HbA1c', v:'6.4%', on:'Jun 25', target:'under 7.0%', ok:true},
+      gaps:[
+        {id:'g4', label:'Kidney screening due', sev:'high',
+         why:'No urine albumin-to-creatinine ratio or eGFR in the last 12 months. Diabetes Canada asks for both annually.'},
+        {id:'g5', label:'Eye screening due', sev:'med',
+         why:'Last retinal screening Mar 2025. Due at 12 months for type 2.'},
+        {id:'g6', label:'A1c due Dec 25', sev:'low',
+         why:'At target on Jun 25, so the interval is six months rather than three.'}
+      ]},
+    { id:'c3', name:'Iron deficiency', status:'investigating', since:'2026',
+      aka:'Under workup — not yet a confirmed chronic diagnosis',
+      last:{k:'Last ferritin', v:'18 µg/L', on:'Jun 25', target:'30–400', ok:false},
+      gaps:[
+        {id:'g7', label:'Repeat iron studies', sev:'med',
+         why:'Three months of supplementation completed. Repeat to confirm response before escalating.'}
+      ]},
+    { id:'c4', name:'Vitamin D deficiency', status:'resolved', since:'2023',
+      aka:'', last:{k:'Last 25-OH vitamin D', v:'82 nmol/L', on:'Nov 2025', target:'over 50', ok:true},
+      gaps:[] }
+  ]
+};
+
+/* Arrived in the chart, not yet on the list. Nothing here is applied
+   until the physician approves it. */
+var COND_SUGGESTIONS = {
+  'Gloria Mcdonald, 74F': [
+    { id:'sg1', name:'Chronic kidney disease, stage 3a', short:'CKD 3a',
+      evidence:'eGFR <b>52</b> on Aug 3 and <b>49</b> on Feb 11 — two results more than three months apart, both under 60.',
+      source:'Laboratory results',
+      gaps:'Would add: eGFR due · urine ACR due · nephrotoxin and NSAID review' },
+    { id:'sg2', name:'Dyslipidemia', short:'Dyslipidemia',
+      evidence:'<b>Atorvastatin 20 mg</b> in the medication history since Nov 2025, with no lipid panel on file since 2024.',
+      source:'Medication history',
+      gaps:'Would add: lipid panel due · cardiovascular-risk calculation due' }
+  ]
+};
+
+var condDismissedGaps = {};
+
+function condFor(n){ return CONDITIONS[n] || []; }
+function condSuggFor(n){ return COND_SUGGESTIONS[n] || []; }
+function condActive(n){ return condFor(n).filter(function(c){ return c.status==='active'; }); }
+function condOpenGaps(c){
+  return (c.gaps||[]).filter(function(g){ return !condDismissedGaps[g.id]; });
+}
+/* Only the single most important care item reaches the header. */
+function condTopGap(n){
+  var best = null, rank = {high:0, med:1, low:2};
+  condFor(n).forEach(function(c){
+    if(c.status !== 'active' && c.status !== 'investigating') return;
+    condOpenGaps(c).forEach(function(g){
+      if(!best || rank[g.sev] < rank[best.sev]) best = g;
+    });
+  });
+  return best;
+}
+function condGapCount(n){
+  var t = 0;
+  condFor(n).forEach(function(c){ t += condOpenGaps(c).length; });
+  return t;
 }
 
+function renderConditions(){
+  var name = PC_CURRENT;
+  var chip = document.getElementById('cond-chip');
+  var rail = document.getElementById('cond-rail');
+  var act  = condActive(name);
+  var top  = condTopGap(name);
+  var n    = condGapCount(name);
+  var sugg = condSuggFor(name);
+
+  if(chip){
+    if(!act.length){ chip.innerHTML = 'No ongoing conditions'; }
+    else {
+      var all = act.map(function(c){ return c.short || c.name; });
+      var shown = all.slice(0,3).join(' &middot; ');
+      var hiddenConds = all.length - 3;
+      var gapLabel = top ? top.label
+        .replace(/BP above individual target/,'BP above target')
+        .replace(/Valid home BP series needed/,'BP data needed')
+        .replace(/ due .*/,' due') : '';
+      chip.innerHTML = shown +
+        (hiddenConds > 0 ? ' <span class="more">+'+hiddenConds+'</span>' : '') +
+        (top ? ' &middot; <span class="gap">'+gapLabel+'</span>' : '') +
+        (n > 1 ? ' <span class="more">+'+(n-1)+'</span>' : '');
+    }
+  }
+
+  if(rail){
+    rail.innerHTML = act.concat(condFor(name).filter(function(c){ return c.status==='investigating'; }))
+      .map(function(c){
+        var g = condOpenGaps(c)[0];
+        return '<div class="cd-rail-row">'+
+          '<div class="nm">'+c.name+(c.status==='investigating'?'<span class="st">under workup</span>':'')+'</div>'+
+          (g ? '<div class="gp">'+g.label+'</div>' : '<div class="gp ok">Nothing due</div>')+
+        '</div>';
+      }).join('') +
+      (sugg.length ? '<button class="cd-sugg-cue" onclick="openConditions()">'+
+        sugg.length+' suggested update'+(sugg.length>1?'s':'')+' waiting on you</button>' : '');
+  }
+}
+
+function openConditions(){
+  var name = PC_CURRENT;
+  var list = condFor(name);
+  var sugg = condSuggFor(name);
+  document.getElementById('cd-sub').innerHTML =
+    (PC_CURRENT ? PC_CURRENT.split(',')[0] : 'This patient') +
+    ' &middot; maintained from intake, prior records, consult letters, labs and medication history. Nothing joins this list without you.';
+
+  var body = '';
+  if(sugg.length){
+    body += '<div class="cd-sugg"><b>Problem list review &mdash; '+sugg.length+' suggested update'+(sugg.length>1?'s':'')+'</b>'+
+      '<p class="lead">Found in what has arrived since the last visit. Approving adds the condition and its care items to the chart, and records why it was suggested and who approved it.</p>'+
+      sugg.map(function(g){
+        return '<div class="cd-s-item">'+
+          '<div class="nm">Add '+g.name+'</div>'+
+          '<p class="ev">Evidence: '+g.evidence+'</p>'+
+          '<p class="will">'+g.gaps+' &middot; from '+g.source+'</p>'+
+          '<div class="cd-s-acts">'+
+            '<button class="btn xs dark" onclick="condApprove(&#39;'+g.id+'&#39;)">Approve</button>'+
+            '<button class="btn xs" onclick="toast(&#39;Would open the condition for editing before it is added&#39;)">Edit</button>'+
+            '<button class="btn xs" onclick="condDismissSugg(&#39;'+g.id+'&#39;)">Dismiss</button>'+
+          '</div>'+
+        '</div>';
+      }).join('')+
+      '<div class="cd-sugg-all"><button class="btn xs dark" onclick="condApproveAll()">Approve all '+sugg.length+'</button>'+
+      '<button class="btn xs" onclick="condDismissAll()">Dismiss all</button></div>'+
+    '</div>';
+  }
+
+  body += '<p class="cd-lbl">Active</p>';
+  var shown = list.filter(function(c){ return c.status==='active' || c.status==='investigating'; });
+  body += shown.map(condItemHTML).join('') || '<p class="pc-empty">No active conditions.</p>';
+
+  var old = list.filter(function(c){ return c.status==='past' || c.status==='resolved'; });
+  if(old.length){
+    body += '<p class="cd-lbl">Past and resolved</p>' + old.map(condItemHTML).join('');
+  }
+
+  body += '<p class="cd-note">Care items come from Canadian guidance &mdash; Diabetes Canada, Hypertension Canada, the Canadian Immunization Guide &mdash; narrowed by this patient’s own results, medications, last review and the targets you set. Nothing is raised without something concrete behind it, and you can dismiss or re-time any of it.</p>';
+
+  document.getElementById('cd-body').innerHTML = body;
+  document.getElementById('cd-panel').classList.add('show');
+}
+function condItemHTML(c){
+  var gaps = condOpenGaps(c);
+  var L = c.last;
+  return '<div class="cd-item'+((c.status==='past'||c.status==='resolved')?' past':'')+'">'+
+    '<div class="cd-top"><b>'+c.name+'</b>'+
+      '<span class="cd-st '+c.status+'">'+COND_STATUS[c.status]+'</span>'+
+      '<span class="cd-since">since '+c.since+'</span></div>'+
+    (c.aka ? '<p class="cd-aka">'+c.aka+'</p>' : '') +
+    (L ? '<div class="cd-last">'+
+      '<div><p class="k">'+L.k+'</p><p class="v '+(L.ok?'on':'off')+'">'+L.v+'</p></div>'+
+      '<div><p class="k">Taken</p><p class="v">'+L.on+'</p></div>'+
+      '<div><p class="k">Target</p><p class="v">'+L.target+'</p></div>'+
+      '<div><p class="k">At target</p><p class="v '+(L.ok?'on':'off')+'">'+(L.ok?'Yes':'No')+'</p></div>'+
+    '</div>' : '') +
+    (gaps.length
+      ? gaps.map(function(g){
+          return '<div class="cd-gap"><span class="cd-gdot '+g.sev+'"></span>'+
+            '<div class="gb"><div class="gl">'+g.label+'</div><p class="gw">'+g.why+'</p></div>'+
+            '<div class="ga">'+
+              '<button class="go" onclick="condActGap(&#39;'+g.id+'&#39;,&#39;'+g.label.replace(/'/g,"")+'&#39;)">Order</button>'+
+              '<button onclick="condSnooze(&#39;'+g.id+'&#39;)">Not now</button>'+
+              '<button onclick="condDismissGap(&#39;'+g.id+'&#39;)">Dismiss</button>'+
+            '</div></div>';
+        }).join('')
+      : '<p class="cd-note" style="margin-top:6px;">Nothing due.</p>') +
+  '</div>';
+}
+function closeConditions(){ document.getElementById('cd-panel').classList.remove('show'); }
+
+function condApprove(id){
+  var name = PC_CURRENT;
+  var list = COND_SUGGESTIONS[name] || [];
+  var g = list.filter(function(x){ return x.id===id; })[0]; if(!g) return;
+  CONDITIONS[name] = condFor(name).concat([{
+    id:'c'+Date.now(), name:g.name, short:g.short || g.name, status:'active', since:'2026',
+    aka:'Added from '+g.source.toLowerCase()+', approved by Dr. Pannozzo today',
+    last:null,
+    gaps:[{id:'ng'+Date.now(), label:g.gaps.replace('Would add: ','').split(' · ')[0], sev:'med',
+           why:'Raised on approving '+g.name+'. '+g.evidence.replace(/<\/?b>/g,'')}]
+  }]);
+  COND_SUGGESTIONS[name] = list.filter(function(x){ return x.id!==id; });
+  renderConditions(); openConditions();
+  toast(g.name+' added to the problem list');
+}
+function condApproveAll(){
+  var name = PC_CURRENT;
+  var ids = (COND_SUGGESTIONS[name]||[]).map(function(x){ return x.id; });
+  ids.forEach(condApprove);
+  toast(ids.length+' conditions added');
+}
+function condDismissSugg(id){
+  var name = PC_CURRENT;
+  COND_SUGGESTIONS[name] = (COND_SUGGESTIONS[name]||[]).filter(function(x){ return x.id!==id; });
+  renderConditions(); openConditions();
+  toast('Dismissed. It stays out of the list and the reason is recorded.');
+}
+function condDismissAll(){
+  var name = PC_CURRENT;
+  COND_SUGGESTIONS[name] = [];
+  renderConditions(); openConditions();
+  toast('All suggestions dismissed');
+}
+function condActGap(id, label){
+  condDismissedGaps[id] = true;
+  DOC_TASKS.unshift({
+    id:'cg'+Date.now(), title:label,
+    type: /eGFR|ACR|A1c|lipid|creatinine|ferritin|kidney|bloods|electrolytes/i.test(label) ? 'Lab Work'
+        : (/eye|retinal|imaging/i.test(label) ? 'Imaging' : 'Patient Notes'),
+    prio:'routine', age:0,
+    to: MOA_ON_SERVICE, role:'MOA',
+    patient: PC_CURRENT ? PC_CURRENT.split(',')[0].trim() : 'Patient',
+    preferred: PC_CURRENT ? PC_CURRENT.split(',')[0].trim().split(' ')[0] : '—',
+    chart:'#6448', verified:true, status:'open', carried:0, due:'Sep 27',
+    note:'Raised as a care gap on the problem list and ordered by Dr. Pannozzo.'
+  });
+  if(typeof renderTasks === 'function') renderTasks();
+  renderConditions(); openConditions();
+  toast('Ordered — task sent to ' + MOA_ON_SERVICE);
+}
+function condSnooze(id){
+  condDismissedGaps[id] = true;
+  renderConditions(); openConditions();
+  toast('Held back. It returns at the next review.');
+}
+function condDismissGap(id){
+  condDismissedGaps[id] = true;
+  renderConditions(); openConditions();
+  toast('Dismissed for this patient.');
+}
+
+function taskDateLabel(age){
+  if(age === 0) return 'Today';
+  if(age === 1) return 'Yesterday';
+  var d = new Date(); d.setDate(d.getDate() - age);
+  return d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+}
+function taskIsDoc(t){ return t.role === 'Physician'; }
+
 function taskCard(t){
-  var cls = 'tk-card' + (t.status==='complete' ? ' complete' : (t.carried ? ' carried' : ''));
-  var badges = '<span class="tk-kind">' + t.kind + '</span>' +
+  var cls = 'tk-card p-' + t.prio + (t.status==='complete' ? ' complete' : '');
+  var badges = '<span class="tk-kind">' + t.type + '</span>' +
     (t.verified ? '<span class="tk-vf">Verified</span>' : '') +
     (t.carried ? '<span class="tk-carried">Carried forward &times;' + t.carried + '</span>' : '');
+  var overdue = t.due === 'Overdue';
   var acts = t.status==='complete'
     ? '<button class="btn xs" onclick="taskReopen(&#39;'+t.id+'&#39;)">Reopen</button>'
-    : '<button class="btn xs" onclick="openTaskMoa(&#39;'+t.patient.replace(/'/g,"\\'")+'&#39;)">Task</button>'+
+    : '<button class="btn xs" onclick="openTaskMoa(&#39;'+t.patient.replace(/'/g,"\\'")+'&#39;)">Reassign</button>'+
       '<button class="btn xs" onclick="taskCarry(&#39;'+t.id+'&#39;)">Carry Forward</button>'+
       '<button class="btn xs dark" onclick="taskComplete(&#39;'+t.id+'&#39;)">Complete</button>';
   return '<div class="'+cls+'">'+
     '<span class="tk-dot"></span>'+
     '<div class="tk-body">'+
-      '<p class="tk-title">'+t.title+'</p>'+
+      '<div class="tk-top">'+
+        '<span class="tk-prio '+t.prio+'">'+TASK_PRIO[t.prio].label+'</span>'+
+        '<span class="tk-title">'+t.title+'</span>'+
+      '</div>'+
       '<p class="tk-pt">'+t.patient+' (preferred: '+t.preferred+') <span class="num">&middot; '+t.chart+'</span></p>'+
       '<div class="tk-badges">'+badges+'</div>'+
       '<p class="tk-note">Note: '+t.note+'</p>'+
-      '<p class="tk-route">'+taskRoute(t)+'<span class="sep">&middot;</span>'+t.sent+'</p>'+
+      '<p class="tk-route">Assigned to <b>'+t.to+'</b> &middot; '+t.role+
+        '<span class="sep">&middot;</span><span class="'+(overdue?'od':'')+'">'+
+        (t.status==='complete' ? 'Completed ' + t.due : 'Due ' + t.due)+'</span></p>'+
     '</div>'+
     '<div class="tk-acts">'+acts+'</div>'+
   '</div>';
 }
 
-var TK_FILTERS = ['Everything','Assigned to MOA','Kept by me','Carried forward','Completed'];
-var TK_ON = 'Everything';
+/* Daniel's labels, verbatim */
+var TK_FILTERS = ['All Active Tasks','Assigned to Team','Assigned to Dr. Pannozzo','Completed Tasks'];
+var TK_ON = 'All Active Tasks';
 function tkSet(f){ TK_ON = f; renderTasks(); }
 
 function renderTasks(){
@@ -3427,39 +3868,45 @@ function renderTasks(){
   if(!fw || !lw) return;
   var open = DOC_TASKS.filter(function(t){ return t.status!=='complete'; });
   var counts = {
-    'Everything': open.length,
-    'Assigned to MOA': open.filter(function(t){ return t.owner==='moa'; }).length,
-    'Kept by me': open.filter(function(t){ return t.owner==='self'; }).length,
-    'Carried forward': open.filter(function(t){ return t.carried>0; }).length,
-    'Completed': DOC_TASKS.filter(function(t){ return t.status==='complete'; }).length
+    'All Active Tasks': open.length,
+    'Assigned to Team': open.filter(function(t){ return !taskIsDoc(t); }).length,
+    'Assigned to Dr. Pannozzo': open.filter(function(t){ return t.to.indexOf('Pannozzo')>-1; }).length,
+    'Completed Tasks': DOC_TASKS.filter(function(t){ return t.status==='complete'; }).length
   };
   fw.innerHTML = TK_FILTERS.map(function(f){
     return '<button class="'+(f===TK_ON?'on':'')+'" onclick="tkSet(&#39;'+f+'&#39;)">'+f+' &middot; '+counts[f]+'</button>';
   }).join('');
 
   var rows;
-  if(TK_ON==='Completed') rows = DOC_TASKS.filter(function(t){ return t.status==='complete'; });
+  if(TK_ON==='Completed Tasks') rows = DOC_TASKS.filter(function(t){ return t.status==='complete'; });
   else rows = open.filter(function(t){
-    if(TK_ON==='Assigned to MOA') return t.owner==='moa';
-    if(TK_ON==='Kept by me') return t.owner==='self';
-    if(TK_ON==='Carried forward') return t.carried>0;
+    if(TK_ON==='Assigned to Team') return !taskIsDoc(t);
+    if(TK_ON==='Assigned to Dr. Pannozzo') return t.to.indexOf('Pannozzo')>-1;
     return true;
   });
 
-  /* grouped the way the doctor places them: referrals, imaging, blood work, then the rest */
+  /* One queue, banded by priority. Inside a band, oldest first, with a date
+     heading when the day changes. Type never splits the list. */
   var html = '';
-  TASK_KINDS.forEach(function(k){
-    var g = rows.filter(function(t){ return t.kind===k; });
+  PRIO_ORDER.forEach(function(pr){
+    var g = rows.filter(function(t){ return t.prio===pr; });
     if(!g.length) return;
-    g.sort(function(a,b){ return b.carried - a.carried; });
-    html += '<div class="tk-grp"><b>'+k+'</b><span class="n">'+g.length+'</span></div>' + g.map(taskCard).join('');
+    g.sort(function(a,b){ return b.age - a.age; });
+    html += '<div class="tk-band"><span class="tk-bdot '+pr+'"></span><b>'+TASK_PRIO[pr].label+'</b>'+
+      '<span class="hint">'+TASK_PRIO[pr].hint+'</span><span class="n">'+g.length+'</span></div>';
+    var lastDay = null;
+    g.forEach(function(t){
+      var d = taskDateLabel(t.age);
+      if(d !== lastDay){ html += '<p class="tk-day">'+d+'</p>'; lastDay = d; }
+      html += taskCard(t);
+    });
   });
   lw.innerHTML = html || '<p class="pc-empty">Nothing in this view.</p>';
   updateTaskFlag();
 }
 
 function updateTaskFlag(){
-  var n = DOC_TASKS.filter(function(t){ return t.status!=='complete' && t.carried>0; }).length;
+  var n = DOC_TASKS.filter(function(t){ return t.status!=='complete' && t.prio==='urgent'; }).length;
   var f = document.getElementById('task-nav-flag');
   if(f){ f.textContent = n; f.style.display = n ? 'inline-flex' : 'none'; }
 }
@@ -3513,29 +3960,35 @@ var SC_TURNS = [
   {t:'03:24', w:'dr', x:'I&rsquo;ll write all that up and the office will be in touch about the stress test. Take care, Gloria.'}
 ];
 
+/* scribe proposal kind -> the practice's task types */
+var SC_TYPE = {
+  'Referral':'Referrals', 'Blood work':'Lab Work', 'Imaging':'Imaging',
+  'Prescription':'Prescriptions', 'Follow-up':'Patient Notes',
+  'Patient instructions':'Patient Notes', 'Diagnosis':'Documents'
+};
 var SC_PROPOSALS = [
   {id:'s1', after:8, kind:'Referral', conf:'hi',
-   action:'Chase cardiology for the stress test booking',
+   action:'Chase cardiology for the stress test booking', prio:'high',
    detail:'St. Paul&rsquo;s Cardiology booked Sep 12 at the July consult. Patient has had no letter. Confirm the date with her once known.',
    quote:'&ldquo;No, I haven&rsquo;t heard anything from them at all.&rdquo; &rarr; &ldquo;I&rsquo;ll have the office chase their booking and confirm the date with you.&rdquo;',
    at:'01:14', owner:'moa'},
   {id:'s2', after:11, kind:'Blood work', conf:'hi',
-   action:'Lipid profile and HbA1c',
+   action:'Lipid profile and HbA1c', prio:'routine',
    detail:'Requested by cardiology before the September review. Original requisition never attended. Fresh requisition to LifeLabs.',
    quote:'&ldquo;I&rsquo;ve still got the form on the fridge. I never went.&rdquo; &rarr; &ldquo;I&rsquo;ll send a fresh requisition to LifeLabs.&rdquo;',
    at:'01:46', owner:'moa'},
   {id:'s3', after:14, kind:'Prescription', conf:'hi',
-   action:'Bisoprolol 2.5 mg once daily',
+   action:'Bisoprolol 2.5 mg once daily', prio:'urgent',
    detail:'Initiated at cardiology&rsquo;s request. Continues amlodipine 5 mg. To Lincoln Pharmacy, Coquitlam.',
    quote:'&ldquo;Cardiology asked that I start you on a low dose of bisoprolol, two point five milligrams once a day.&rdquo;',
    at:'02:09', owner:'moa'},
   {id:'s4', after:15, kind:'Follow-up', conf:'hi',
-   action:'Telephone review in 4 weeks',
+   action:'Telephone review in 4 weeks', prio:'routine',
    detail:'Assess heart rate and blood pressure response to bisoprolol. Around Oct 7.',
    quote:'&ldquo;I want to see how your blood pressure and pulse sit on it, so let&rsquo;s speak again in four weeks.&rdquo;',
    at:'02:41', owner:'moa'},
   {id:'s5', after:17, kind:'Patient instructions', conf:'hi',
-   action:'Release chest pain safety netting to her portal',
+   action:'Release chest pain safety netting to her portal', prio:'high',
    detail:'Call 911 for pain at rest, pain lasting over ten minutes, or associated nausea or sweating.',
    quote:'&ldquo;If that pressure comes on while you&rsquo;re sitting still, or it lasts more than about ten minutes &hellip; call 911.&rdquo;',
    at:'03:01', owner:'self'},
@@ -3622,11 +4075,13 @@ function scAccept(id){
   }
   DOC_TASKS.unshift({
     id:'sc'+Date.now(), title:p.action,
-    kind: TASK_KINDS.indexOf(p.kind)>-1 ? p.kind : 'Other',
-    owner: p.owner==='self' ? 'self' : 'moa',
+    type: SC_TYPE[p.kind] || 'Documents',
+    prio: p.prio || 'routine', age:0,
+    to: p.owner==='self' ? 'Dr. D. Pannozzo' : MOA_ON_SERVICE,
+    role: p.owner==='self' ? 'Physician' : 'MOA',
     patient:'Gloria Mcdonald', preferred:'Gloria', chart:'#6448',
-    verified:true, status:'open', carried:0, sent:'Just now',
-    note: p.detail.replace(/&rsquo;/g,'’').replace(/&mdash;/g,'—') + ' Raised by the scribe from today&rsquo;s call, accepted by Dr. Pannozzo.'
+    verified:true, status:'open', carried:0, due:'Sep 19',
+    note: p.detail.replace(/&rsquo;/g,'’').replace(/&mdash;/g,'—') + ' Raised by the scribe from today’s call, accepted by Dr. Pannozzo.'
   });
   if(typeof renderTasks === 'function') renderTasks();
   renderScribe();
@@ -3753,12 +4208,15 @@ function sendTaskMoa(){
   var chip = document.querySelector('#tm-chips .tm-chip.active');
   var type = chip ? chip.textContent : 'Other';
   var self = document.getElementById('tm-keep') && document.getElementById('tm-keep').checked;
+  var prioEl = document.querySelector('#tm-prio .tm-chip.active');
   DOC_TASKS.unshift({
     id:'t'+Date.now(), title: note ? note.split('.')[0].slice(0,60) : (type + ' task'),
-    kind: TASK_KINDS.indexOf(type)>-1 ? type : 'Other',
-    owner: self ? 'self' : 'moa',
+    type: TASK_TYPES.indexOf(type)>-1 ? type : 'Documents',
+    prio: prioEl ? prioEl.dataset.p : 'routine', age:0,
+    to: self ? 'Dr. D. Pannozzo' : MOA_ON_SERVICE,
+    role: self ? 'Physician' : 'MOA',
     patient: patient || 'Not patient-specific', preferred: (patient||'—').split(' ')[0], chart:'#—',
-    verified:true, status:'open', carried:0, sent:'Just now',
+    verified:true, status:'open', carried:0, due:'Sep 19',
     note: note || 'No note added'
   });
   renderTasks();
@@ -4831,6 +5289,7 @@ function openChart(name){
   clearInterval(vdInt); var vdw=document.getElementById('vd-call'); if(vdw) vdw.classList.remove('live');
   CARE_EVENTS = buildCareEvents(r); renderCareTimeline();
   renderCarePlan(name);
+  condDismissedGaps = {}; renderConditions();
   pcShowSec('chart'); vcPane('summary'); setChartVer('c'); pcEndCall();
   scReset();
   showScreen('patientchart');
@@ -5054,7 +5513,7 @@ function renderCarePlan(name){
   var sp   = open.filter(function(x){ return x.owner==='Specialist'; }).length;
   var od   = open.filter(function(x){ return x.status==='Overdue'; }).length;
 
-  var h = '<div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Care plan</h4>'+
+  var h = '<div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Care plan &mdash; what are we doing?</h4>'+
     '<span class="right"><button class="vc-more" onclick="cpAddItem()">+ Add plan item</button></span></div>'+
     '<div class="cp-sum">'+
       '<div><p class="k">Outstanding</p><p class="v">'+open.length+'</p></div>'+
@@ -5119,7 +5578,7 @@ function cpWhy(btn){
 function cpAct(id, to, msg){
   var it = cpFind(id); if(!it) return;
   it.status = to;
-  renderCarePlan(PC_CURRENT); renderCpTracking();
+  renderCarePlan(PC_CURRENT);
   toast(msg);
 }
 function cpChase(id){
@@ -5174,14 +5633,11 @@ function commitCpTriage(){
   delete CP_PENDING[PC_CURRENT];
   CP_TRIAGE = null;
   closeCpTriage();
-  renderCarePlan(PC_CURRENT); renderCpTracking();
+  renderCarePlan(PC_CURRENT);
   toast(n + ' recommendations added to the care plan');
 }
 
 /* ---- practice-wide tracking ---- */
-var CPT_FILTERS = ['Everything outstanding','Mine to do','With a specialist','Overdue'];
-var CPT_ON = 'Everything outstanding';
-function cptSet(f){ CPT_ON = f; renderCpTracking(); }
 function cpOutstanding(){
   var out = [];
   Object.keys(CARE_PLAN).forEach(function(n){
@@ -5193,60 +5649,6 @@ function updateCpFlag(){
   var od = cpOutstanding().filter(function(r){ return r.it.status==='Overdue'; }).length;
   var f = document.getElementById('cp-nav-flag');
   if(f){ f.textContent = od; f.style.display = od ? 'inline-flex' : 'none'; }
-}
-function renderCpTracking(){
-  var fw = document.getElementById('cpt-filters');
-  var lw = document.getElementById('cpt-list');
-  if(!fw || !lw) return;
-  var all = cpOutstanding();
-  var counts = {
-    'Everything outstanding': all.length,
-    'Mine to do': all.filter(function(r){ return r.it.owner==='GP'; }).length,
-    'With a specialist': all.filter(function(r){ return r.it.owner==='Specialist'; }).length,
-    'Overdue': all.filter(function(r){ return r.it.status==='Overdue'; }).length
-  };
-  fw.innerHTML = CPT_FILTERS.map(function(f){
-    return '<button class="'+(f===CPT_ON?'on':'')+'" onclick="cptSet(&#39;'+f+'&#39;)">'+f+' &middot; '+counts[f]+'</button>';
-  }).join('');
-
-  var rows = all.filter(function(r){
-    if(CPT_ON==='Mine to do') return r.it.owner==='GP';
-    if(CPT_ON==='With a specialist') return r.it.owner==='Specialist';
-    if(CPT_ON==='Overdue') return r.it.status==='Overdue';
-    return true;
-  });
-  var rank = {'Overdue':0,'To Do':1,'Ordered':2,'Awaiting':3,'Ongoing':4};
-
-  /* grouped by order type — blood work, imaging, referrals, etc */
-  var html = '';
-  CP_TYPES.forEach(function(t){
-    var g = rows.filter(function(r){ return (r.it.kind||'other')===t.kind; });
-    if(!g.length) return;
-    g.sort(function(a,b){ return (rank[a.it.status]||9) - (rank[b.it.status]||9); });
-    html += '<div class="cpt-grp"><b>'+t.label+'</b><span class="n">'+g.length+'</span></div>' +
-      g.map(cptRow).join('');
-  });
-  var known = CP_TYPES.map(function(t){ return t.kind; });
-  var other = rows.filter(function(r){ return known.indexOf(r.it.kind)===-1; });
-  if(other.length){
-    html += '<div class="cpt-grp"><b>Other</b><span class="n">'+other.length+'</span></div>' + other.map(cptRow).join('');
-  }
-
-  lw.innerHTML = html || '<p class="pc-empty">Nothing in this view.</p>';
-  updateCpFlag();
-}
-
-function cptRow(r){
-  var od = r.it.status==='Overdue';
-  return '<div class="cpt-row">'+
-    '<div class="cpt-pt"><b>'+r.pt.split(',')[0]+'</b><span>'+r.it.specialty+'</span></div>'+
-    '<span class="cp-own '+(r.it.owner==='GP'?'gp':'spec')+'">'+(r.it.owner==='GP'?'GP':'SPEC')+'</span>'+
-    '<div class="cpt-mid"><b>'+r.it.action+'</b><span>'+r.it.service+'</span></div>'+
-    '<span class="cp-st '+cpCls(r.it.status)+'">'+r.it.status+'</span>'+
-    '<span class="cpt-due'+(od?' od':'')+'">'+(r.it.due||'')+'</span>'+
-    '<button class="btn xs" onclick="openTaskMoa(&#39;'+r.pt.replace(/'/g,"\\'")+'&#39;)">Task MOA</button>'+
-    '<button class="btn xs" onclick="openChart(&#39;'+r.pt.replace(/'/g,"\\'")+'&#39;)">Open chart</button>'+
-  '</div>';
 }
 
 
@@ -5267,7 +5669,6 @@ function applyIcons(){
 }
 applyIcons();
 renderCriticals();
-renderCpTracking();
 renderTasks();
 renderService();
 renderDayNav();
