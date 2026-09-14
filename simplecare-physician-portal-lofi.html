@@ -701,9 +701,11 @@
   .q-toolbar .day-nav{margin-bottom:0;flex-shrink:0;}
   .q-toolbar .win-strip{flex-shrink:0;}
   /* search gives way before anything else when the bar runs out of room */
-  .q-toolbar .q-tools{margin-left:auto;min-width:0;flex:0 1 auto;}
-  .q-toolbar .q-search{min-width:0;max-width:100%;}
-  .q-toolbar .q-search input{min-width:0;width:100%;}
+  /* search sits with the other header controls, not in the filter row */
+  .work-tabs .q-tools{margin-left:auto;min-width:0;flex:0 1 auto;}
+  .work-tabs .q-search{min-width:0;max-width:100%;}
+  .work-tabs .q-search input{min-width:0;width:100%;}
+  .work-tabs .wt-new{margin-left:0;}
   .win-strip{background:var(--wash);border-radius:22px;padding:4px;gap:2px;display:inline-flex;width:auto;flex-wrap:nowrap;margin:0;}
   .win-strip .win-chip{border:none;background:none;color:var(--ink-soft);border-radius:18px;box-shadow:none;font-weight:600;}
   .win-strip .win-chip.active{background:var(--panel);color:var(--ink);box-shadow:0 1px 5px rgba(28,31,38,.12);}
@@ -743,9 +745,10 @@
   .q-demo{font-size:12.5px;color:var(--ink-faint);position:relative;padding-left:9px;}
   .q-demo::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
     width:1px;height:11px;background:var(--line-strong);}
-  .q-plan{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--ink-soft);margin-top:3px;}
+  .q-plan{display:flex;align-items:center;justify-content:flex-start;gap:6px;font-size:12px;font-weight:700;color:var(--ink-soft);margin-top:4px;}
   .q-plan i{font-style:normal;font-weight:500;color:var(--ink-faint);}
-  .q-ver{font-size:10.5px;font-weight:800;letter-spacing:.04em;padding:1px 6px;border-radius:20px;margin-left:6px;}
+  .q-ver{font-size:10.5px;font-weight:800;letter-spacing:.04em;padding:2px 8px;border-radius:20px;
+    margin-left:0;display:inline-flex;align-items:center;gap:5px;}
   .q-ver.warn{background:var(--warn-wash);color:var(--warn);}
   .q-ver.bad{background:var(--crit-wash);color:var(--crit);}
   .q-ver.info{background:var(--accent-wash);color:var(--accent-ink);}
@@ -1651,8 +1654,11 @@
   .bill-fix:hover{background:var(--ink-dark);border-color:var(--ink-dark);color:#fff;}
 
   /* critical marker — small, red, and the only flag state there is */
-  .work-title{display:inline-flex;align-items:center;gap:9px;font-size:17.5px;font-weight:700;
-    letter-spacing:-.01em;color:var(--ink);}
+  /* one section title for both blocks, outside the card so it reads as a
+     heading rather than something inside the panel */
+  .sect-title{display:inline-flex;align-items:center;gap:10px;font-size:17.5px;font-weight:700;
+    letter-spacing:-.015em;color:var(--ink);margin:0 0 12px;}
+  .work-tabs{margin-bottom:12px;}
 
   }
 
@@ -2334,8 +2340,8 @@
 
 
 
+      <p class="sect-title">Urgent alerts</p>
       <div class="box" id="alerts-box">
-        <p class="box-title">Notifications</p>
         <div id="crit-list"></div>
         <div class="al-row">
           <span class="al-mark"></span>
@@ -2351,17 +2357,23 @@
       </div>
 
       <!-- Live queue + Inbox in one card, switched by tabs -->
-      <div class="box">
-        <div class="work-tabs">
-          <span class="work-title">Live queue <span class="wt-count" id="wt-queue-count">0</span></span>
+      <div class="work-tabs">
+          <span class="sect-title">Live queue <span class="wt-count" id="wt-queue-count">0</span></span>
+          <div class="q-tools">
+              <div class="q-search">
+                <input type="text" id="queue-search" placeholder="Search by name, PHN, DOB" oninput="filterQueueSearch(this.value)">
+                <button class="q-clear" id="queue-search-clear" onclick="clearQueueSearch()" title="Clear">&times;</button>
+              </div>
+            </div>
           <button class="wt-new" onclick="showScreen('registerpatient')" title="Register a new patient">
             <span class="ic" data-pcic="newpatient"></span> New patient
           </button>
           <button class="wt-new wt-dark" onclick="openTaskMoa()" title="Send a task to your MOA">
             <span class="ic" data-pcic="task"></span> Task MOA
           </button>
-        </div>
+      </div>
 
+      <div class="box">
         <div class="work-pane active" id="work-queue">
           <div class="q-toolbar">
             <div class="day-nav">
@@ -2377,12 +2389,6 @@
               <button class="win-chip" data-win="10-2" onclick="filterWindow('10-2',this)">10:00–2:00</button>
               <button class="win-chip" data-win="2-5" onclick="filterWindow('2-5',this)">2:00–5:00</button>
               <button class="win-chip" data-win="5-7" onclick="filterWindow('5-7',this)">5:00–7:00</button>
-            </div>
-            <div class="q-tools">
-              <div class="q-search">
-                <input type="text" id="queue-search" placeholder="Search by name, PHN, DOB" oninput="filterQueueSearch(this.value)">
-                <button class="q-clear" id="queue-search-clear" onclick="clearQueueSearch()" title="Clear">&times;</button>
-              </div>
             </div>
           </div>
 
