@@ -1681,6 +1681,26 @@
     color:var(--ink-faint);margin:0 0 5px;}
   .bl-v{font-size:13px;line-height:1.55;color:var(--ink);margin:0;}
 
+  .cl-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:16px;}
+  .cl-stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 17px;}
+  .cl-stat .k{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--ink-faint);margin:0 0 6px;}
+  .cl-stat .v{font-size:26px;font-weight:800;line-height:1;margin:0;letter-spacing:-.02em;}
+  .cl-stat .v.warn{color:var(--warn);} .cl-stat .v.ok{color:var(--good);}
+  .cl-stat .s{font-size:12px;color:var(--ink-soft);margin:6px 0 0;}
+  .cl-row{display:flex;align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid var(--wash);}
+  .cl-row:last-child{border-bottom:none;}
+  .cl-who{width:230px;flex-shrink:0;}
+  .cl-who b{display:block;font-size:13px;font-weight:700;}
+  .cl-who span{font-size:11.5px;color:var(--ink-faint);}
+  .cl-fee{flex:1;min-width:0;}
+  .cl-fee b{display:block;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;}
+  .cl-fee span{font-size:11.5px;color:var(--ink-faint);}
+  .cl-amt{width:82px;flex-shrink:0;text-align:right;font-size:14px;font-weight:700;
+    font-variant-numeric:tabular-nums;}
+  .cl-row .bill-pill{flex-shrink:0;}
+  .cl-row .btn{flex-shrink:0;}
+
   .nav-btn.nav-tasks{font-weight:600;}
   .nav-btn.nav-tasks .nav-icon{color:var(--accent-ink);}
 
@@ -2173,7 +2193,6 @@
     <!-- ===================== TODAY (canonical) ===================== -->
     <div class="screen active" id="screen-today">
       <h1>Today — Thu Jul 23, 2026</h1>
-      <p class="sub">The one place "today" lives. Replaces Dashboard + the old Patient Queue table.</p>
       <div class="ia-note">IA change: merges Dashboard, Daysheet's queue, and Calendar's day-view into a single canonical screen. Reordered by how time-sensitive each thing is: alerts and the live queue first (act now), then your own outstanding tasks, then lower-priority previews and logs pushed to the bottom. MOA online status moved off this screen entirely — it's ambient "peace of mind" info, not something that should compete with clinical content for space, so it now lives as a small dot on the chat button instead.</div>
 
 
@@ -2893,7 +2912,7 @@
     <!-- ===================== ENCOUNTER LOG ===================== -->
     <div class="screen" id="screen-encounterlog">
       <h1>Encounter Log</h1>
-      <p class="sub">Renamed from "Encounter History."</p>
+      <p class="sub">Every document this practice has sent, and whether it arrived.</p>
       <div class="ia-note">IA change: this is a document-delivery audit trail (faxes / patient deliveries), not full clinical encounter records (SOAP notes, visit summaries). Renamed so the label matches the content — flagged as a real content gap if full encounter records don't exist elsewhere yet.</div>
       <div class="box">
         <p class="box-title">Today</p>
@@ -2935,7 +2954,7 @@
     <!-- ===================== COPILOT (advanced/standalone) ===================== -->
     <div class="screen" id="screen-copilot">
       <h1>SimpleCare Assistant — advanced console</h1>
-      <p class="sub">Power-user command interface.</p>
+      <p class="sub">Ask for anything on this screen without leaving it.</p>
       <div class="ia-note">IA change: Copilot's everyday outputs (Patient Brief, Summarize Day) now surface as contextual panels from the Today queue — click "Brief" on any patient row. This screen stays only for physicians who want the raw command interface; it's no longer where most people encounter the feature.</div>
       <div class="box">
         <p class="box-title">Command</p>
@@ -2953,7 +2972,7 @@
     <!-- ===================== CALENDAR (merged with Set Schedule) ===================== -->
     <div class="screen" id="screen-calendar">
       <h1>Calendar</h1>
-      <p class="sub">Merged Calendar + Set Schedule into one view/edit toggle on the same date picker.</p>
+      <p class="sub">Your call windows, and when you are on service.</p>
       <div class="ia-note">IA change: previously two separate destinations with two different day-pickers for the same underlying data. Now one screen, one picker, two modes.</div>
       <div class="box svc-box" id="svc-box">
         <div class="svc-top">
@@ -3004,17 +3023,18 @@
     <!-- ===================== PRACTICE ADMIN stubs ===================== -->
     <div class="screen" id="screen-claims">
       <h1>Claims</h1>
-      <p class="sub">Practice admin group. Structure unchanged in this pass — flagged for MO-portal discussion.</p>
+      <p class="sub">Every encounter, billed and accounted for.</p>
+
+      <div class="cl-stats" id="cl-stats"></div>
+
       <div class="box">
-        <ul class="stub-list">
-          <li><span>Gloria Mcdonald — Standard Visit — $48.76</span><span>Missing Dx</span></li>
-          <li><span>Andrey Abushakhmanov — Standard Visit — $38.61</span><span>Missing Dx</span></li>
-        </ul>
+        <div class="cpt-filters" id="cl-filters"></div>
+        <div id="cl-list"></div>
       </div>
     </div>
     <div class="screen" id="screen-feesettings">
       <h1>Fee Settings</h1>
-      <p class="sub">Practice admin group.</p>
+      <p class="sub">What you bill for each kind of visit.</p>
       <div class="box"><div class="sched-row"><span>Private Visit Fee</span><span>$100 CAD</span></div></div>
     </div>
     <div class="screen" id="screen-tasks">
@@ -3069,7 +3089,7 @@
 
     <div class="screen" id="screen-registerpatient">
       <h1>Register Patient</h1>
-      <p class="sub">Practice admin group.</p>
+      <p class="sub">Add a patient to today&rsquo;s sheet.</p>
       <div class="ia-note">Flagged: likely belongs in the MO portal rather than the physician portal — confirm whether physicians register patients themselves.</div>
       <div class="box"><div class="sched-row"><span>Preferred name</span><span>[input]</span></div><div class="sched-row"><span>PHN</span><span>[input]</span></div></div>
     </div>
@@ -3077,7 +3097,7 @@
     <!-- ===================== ACCOUNT stubs ===================== -->
     <div class="screen" id="screen-calllogs">
       <h1>Call Logs</h1>
-      <p class="sub">Account group.</p>
+      <p class="sub">Your details as they appear to patients and to MSP.</p>
       <div class="ia-note">Flagged: confirm whether physicians place these calls themselves or this is MOA-driven (in which case it moves to the MO portal).</div>
       <div class="box">
         <div class="sched-row"><span>Ada — (236) 882-1425</span><span>No answer</span></div>
@@ -3086,7 +3106,7 @@
     </div>
     <div class="screen" id="screen-profile">
       <h1>Profile</h1>
-      <p class="sub">Account group.</p>
+      <p class="sub">Calls placed from this account.</p>
       <div class="box"><div class="sched-row"><span>Daniel Pannozzo · CCFP</span><span>daniel.pannozzo@simplecare.ca</span></div></div>
     </div>
 
@@ -3577,6 +3597,69 @@ function callPatient(name){
   toast('Calling ' + name.split(',')[0] + ' — chart open');
 }
 /* Unbilled or rejected on today's sheet. "Leave no claim behind." */
+/* WIN_TEXT is declared further down the file than this runs, so read it
+   through a guard rather than depending on source order */
+function winLabel(w){ return (typeof WIN_TEXT !== 'undefined' && WIN_TEXT[w]) || w; }
+
+/* Claims reads the same rows as the day sheet and opens the same modal —
+   one billing vocabulary, two places to meet it. */
+var FEE_ITEM = {
+  'Follow up — chest pressure noted':{code:'00100', name:'Office visit', amt:33.55},
+  'Follow up appointment':           {code:'00100', name:'Office visit', amt:33.55},
+  'Yeast infection':                 {code:'00100', name:'Office visit', amt:33.55},
+  'Rx renewal':                      {code:'13437', name:'Telephone management', amt:19.40},
+  'Lab follow-up':                   {code:'13437', name:'Telephone management', amt:19.40},
+  'Standard visit':                  {code:'00100', name:'Office visit', amt:33.55}
+};
+function feeFor(r){ return FEE_ITEM[r.concern] || {code:'00100', name:'Office visit', amt:33.55}; }
+function money(n){ return '$' + n.toFixed(2); }
+
+var CL_FILTERS = ['Needs attention','Submitted','Paid','All'];
+var CL_ON = 'Needs attention';
+function clSet(f){ CL_ON = f; renderClaims(); }
+
+function renderClaims(){
+  var fw = document.getElementById('cl-filters');
+  var lw = document.getElementById('cl-list');
+  var sw = document.getElementById('cl-stats');
+  if(!fw || !lw) return;
+
+  var open = QUEUE_DATA.filter(function(r){ return BILL_OPEN.indexOf(r.bill) > -1; });
+  var sub  = QUEUE_DATA.filter(function(r){ return r.bill === 'msp-submitted'; });
+  var paid = QUEUE_DATA.filter(function(r){ return r.bill === 'msp-paid'; });
+  var sum = function(a){ return a.reduce(function(t,r){ return t + feeFor(r).amt; }, 0); };
+
+  sw.innerHTML =
+    '<div class="cl-stat"><p class="k">Needs attention</p><p class="v'+(open.length?' warn':'')+'">'+open.length+'</p><p class="s">'+money(sum(open))+' unbilled</p></div>'+
+    '<div class="cl-stat"><p class="k">With MSP</p><p class="v">'+sub.length+'</p><p class="s">'+money(sum(sub))+' awaiting adjudication</p></div>'+
+    '<div class="cl-stat"><p class="k">Paid</p><p class="v ok">'+paid.length+'</p><p class="s">'+money(sum(paid))+' this day sheet</p></div>';
+
+  var counts = {'Needs attention':open.length,'Submitted':sub.length,'Paid':paid.length,'All':QUEUE_DATA.length};
+  fw.innerHTML = CL_FILTERS.map(function(f){
+    return '<button class="'+(f===CL_ON?'on':'')+'" onclick="clSet(&#39;'+f+'&#39;)">'+f+' &middot; '+counts[f]+'</button>';
+  }).join('');
+
+  var rows = CL_ON==='Needs attention' ? open
+           : CL_ON==='Submitted' ? sub
+           : CL_ON==='Paid' ? paid
+           : QUEUE_DATA.slice();
+  var rank = {'msp-rejected':0,'msp-review':1,'msp-submit':2,'msp-pending':3,'msp-submitted':4,'msp-paid':5};
+  rows.sort(function(a,b){ return (rank[a.bill]||9)-(rank[b.bill]||9); });
+
+  lw.innerHTML = rows.length ? rows.map(function(r){
+    var f = feeFor(r), bs = BILL_STATUS[r.bill];
+    return '<div class="cl-row">'+
+      '<div class="cl-who"><b>'+r.legal+'</b><span>'+winLabel(r.win)+' &middot; Thu Jul 23</span></div>'+
+      '<div class="cl-fee"><b>'+f.code+'</b><span>'+f.name+'</span></div>'+
+      '<div class="cl-amt">'+money(f.amt)+'</div>'+
+      (bs.open
+        ? '<button class="bill-pill '+bs.tone+' go" onclick="openBilling(&#39;'+r.name.replace(/'/g,"\\'")+'&#39;)">'+bs.label+'</button>'
+        : '<span class="bill-pill '+bs.tone+'">'+bs.label+'</span>')+
+      '<button class="btn xs" onclick="openChart(&#39;'+r.name.replace(/'/g,"\\'")+'&#39;)">Chart</button>'+
+    '</div>';
+  }).join('') : '<p class="pc-empty">Nothing in this view.</p>';
+}
+
 function updateClaimCount(){
   var n = QUEUE_DATA.filter(function(r){ return BILL_OPEN.indexOf(r.bill) > -1; }).length;
   var el = document.getElementById('wt-claims-count');
@@ -3641,7 +3724,7 @@ function billingAct(){
   }
   var said = BILL_SAID[r.bill] || 'updated';
   r.bill = BILL_NEXT[r.bill] || r.bill;
-  closeBilling(); renderQueue(); updateClaimCount();
+  closeBilling(); renderQueue(); updateClaimCount(); renderClaims();
   toast(firstLast(r.name)+' — '+said);
 }
 function advance(name, newStatus){
@@ -3650,6 +3733,7 @@ function advance(name, newStatus){
 }
 renderQueue();
 updateClaimCount();
+renderClaims();
 
 /* ===== cross-portal demo link: patient portal tells us when someone joins the queue ===== */
 function addPatientToQueue(payload){
@@ -4117,7 +4201,7 @@ function finalizeVisit(){
   var r = QUEUE_DATA.filter(function(x){ return x.name===PC_CURRENT; })[0];
   if(r && (r.bill==='pending' || r.bill==='none')){
     r.bill = 'submitted';
-    if(typeof renderQueue==='function'){ renderQueue(); updateClaimCount(); }
+    if(typeof renderQueue==='function'){ renderQueue(); updateClaimCount(); renderClaims(); }
     toast('Visit signed and claim submitted — nothing left behind');
   } else {
     toast('Visit signed');
