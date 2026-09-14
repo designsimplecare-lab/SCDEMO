@@ -1722,7 +1722,14 @@
      SIDEBAR — one definition, last in the cascade, so the three
      earlier layers stop fighting over the selected state.
      ============================================================ */
-  .sidebar .nav-group{display:flex;flex-direction:column;gap:2px;margin:0;}
+  /* the rail is full height with five items in it — sit them in the
+     middle rather than stranding them against the logo. Sticky and
+     viewport-tall, so 'middle' means the middle of the screen rather
+     than the middle of a page that scrolls. */
+  .sidebar{display:flex;flex-direction:column;position:sticky;top:0;
+    height:100vh;align-self:flex-start;overflow-y:auto;}
+  .sidebar .brand{flex-shrink:0;}
+  .sidebar .nav-group{display:flex;flex-direction:column;gap:2px;margin:auto 0;}
   .sidebar .nav-btn{
     display:flex;align-items:center;gap:11px;width:100%;margin:0;
     padding:9px 12px;border-radius:9px;border:none;background:none;
@@ -1748,7 +1755,7 @@
   .sidebar .nav-btn.active .nav-icon{color:var(--accent);}
 
   .sidebar .nav-flag{margin-left:auto;}
-  .sidebar-collapse-wrap{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);}
+  .sidebar-collapse-wrap{flex-shrink:0;margin-top:0;padding-top:12px;border-top:1px solid var(--line);}
   .sidebar .sidebar-collapse-btn{
     display:flex;align-items:center;gap:11px;width:100%;padding:8px 12px;border-radius:9px;
     border:none;background:none;font-family:inherit;font-size:13px;font-weight:500;
