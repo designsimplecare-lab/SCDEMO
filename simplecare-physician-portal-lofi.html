@@ -2382,6 +2382,16 @@
   /* the nav's one divider sat on the page gradient, where a near-white
      line is invisible — tint it with ink instead */
   .nav-sep{background:rgba(23,24,28,.16);}
+
+  /* the doctor's own availability, on the doctor's face. The ring is the
+     bar's own colour so the dot reads as cut into the avatar. */
+  .profile-trigger{position:relative;}
+  .pf-status{
+    position:absolute;left:37px;top:37px;width:11px;height:11px;border-radius:50%;
+    box-shadow:0 0 0 2.5px var(--panel);
+  }
+  .pf-status.on{background:var(--good);}
+  .pf-status.off{background:var(--ink-faint);}
 </style>
 </head>
 <body>
@@ -2413,13 +2423,13 @@
       <button class="dsw-fab" id="dsw-fab" onclick="dswOpen()"><span class="d"></span> Demo</button>
       <button class="chat-fab" id="chat-fab" onclick="toggleChatPanel()" title="MOA chat">
         <span class="ic" data-pcic="chatic"></span>
-        <span class="moa-dot on" id="chat-presence-dot"></span>
         <span class="chat-badge" id="chat-badge" style="display:none;">0</span>
       </button>
       <span class="bell">&#128276;</span>
       <div class="profile-wrap">
         <button class="profile-trigger" onclick="toggleProfileMenu()" aria-label="Your profile">
           <span class="pf-photo" id="pf-photo"><span class="pf-initials">DP</span></span>
+          <span class="pf-status on" id="pf-status" title="Available"></span>
           <span class="pf-chev" data-pdic="chevrondown"></span>
         </button>
         <div class="profile-dropdown" id="profile-dropdown">
@@ -5352,13 +5362,10 @@ var MOA_THREADS = [
   ]}
 ];
 function renderMoaOnlineStrip(){
-  var dot = document.getElementById('chat-presence-dot');
-  if(!dot) return;
   var anyOnline = MOA_THREADS.some(function(t){ return t.online; });
-  dot.classList.toggle('on', anyOnline);
-  dot.classList.toggle('off', !anyOnline);
   var names = MOA_THREADS.filter(function(t){ return t.online; }).map(function(t){ return t.name; }).join(', ');
-  document.getElementById('chat-fab').title = anyOnline ? (names + ' online') : 'No MOA currently online';
+  var fab = document.getElementById('chat-fab');
+  if(fab) fab.title = anyOnline ? (names + ' online') : 'No MOA currently online';
 }
 var activeChatThread = null;
 
