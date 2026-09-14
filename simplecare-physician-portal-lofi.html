@@ -206,7 +206,22 @@
     display:flex;align-items:center;justify-content:center;font-size:15.5px;cursor:default;
   }
   .profile-wrap{position:relative;}
-  .profile-trigger{background:none;border:none;padding:0;cursor:pointer;border-radius:50%;line-height:0;}
+  /* profile: a photo tile and a chevron in one soft container */
+  .profile-trigger{
+    display:inline-flex;align-items:center;gap:8px;background:var(--panel);border:none;
+    padding:5px 10px 5px 5px;cursor:pointer;border-radius:999px;line-height:0;
+    box-shadow:0 1px 2px rgba(23,24,28,.05);transition:box-shadow .12s;
+  }
+  .profile-trigger:hover{box-shadow:0 2px 8px rgba(23,24,28,.12);}
+  .pf-photo{
+    width:32px;height:32px;border-radius:11px;flex-shrink:0;overflow:hidden;
+    background:var(--accent-wash);color:var(--accent-ink);
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:12.5px;font-weight:800;letter-spacing:.02em;line-height:1;
+  }
+  .pf-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .pf-chev{display:inline-flex;align-items:center;justify-content:center;color:var(--ink);}
+  .pf-chev .ic{width:16px;height:16px;}
   .profile-trigger:hover .avatar{outline:2px solid var(--line-strong);}
   .profile-dropdown{
     display:none;position:absolute;top:42px;right:0;width:220px;background:var(--panel);
@@ -2314,8 +2329,9 @@
       </button>
       <span class="bell">&#128276;</span>
       <div class="profile-wrap">
-        <button class="profile-trigger" onclick="toggleProfileMenu()">
-          <span class="avatar">DP</span>
+        <button class="profile-trigger" onclick="toggleProfileMenu()" aria-label="Your profile">
+          <span class="pf-photo" id="pf-photo">DP</span>
+          <span class="pf-chev" data-pdic="chevrondown"></span>
         </button>
         <div class="profile-dropdown" id="profile-dropdown">
           <div class="pd-head">
@@ -5397,6 +5413,7 @@ function aiSend(preset){
 
 /* ===== Streamline line-icons: swap glyphs for SVGs ===== */
 var ICONS = {
+"chevrondown": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.4\" d=\"m4 8.417l6.587 6.587a2.013 2.013 0 0 0 2.826 0L20 8.417\"/></svg>",
 "user": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\" d=\"M19.618 21.25c0-3.602-4.016-6.53-7.618-6.53s-7.618 2.928-7.618 6.53M12 11.456a4.353 4.353 0 1 0 0-8.706a4.353 4.353 0 0 0 0 8.706\"/></svg>",
 "logout": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.6\"><path stroke-linejoin=\"round\" d=\"M13.477 21.245H8.34a4.92 4.92 0 0 1-5.136-4.623V7.378A4.92 4.92 0 0 1 8.34 2.755h5.136\"/><path stroke-miterlimit=\"10\" d=\"M20.795 12H7.442\"/><path stroke-linejoin=\"round\" d=\"m16.083 17.136l4.404-4.404a1.04 1.04 0 0 0 0-1.464l-4.404-4.404\"/></g></svg>",
 "today": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\" d=\"m19.633 7.11l-6.474-4.02a2.23 2.23 0 0 0-2.362 0L4.324 7.133A2.23 2.23 0 0 0 3.31 9.362l1.67 10.027a2.23 2.23 0 0 0 2.228 1.86h9.582a2.23 2.23 0 0 0 2.229-1.86l1.67-10.027a2.23 2.23 0 0 0-1.058-2.251M8.636 16.459h6.685\"/></svg>",
