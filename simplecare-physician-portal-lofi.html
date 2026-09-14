@@ -812,7 +812,7 @@
      left — it is the only column that can absorb a narrower screen */
   /* five columns share the whole table; the concern takes what is left */
   .q-table th:nth-child(1),.q-table td:nth-child(1){width:54px;}
-  .q-table th:nth-child(2),.q-table td:nth-child(2){width:26%;}
+  .q-table th:nth-child(2),.q-table td:nth-child(2){width:230px;}
   .q-table th:nth-child(3),.q-table td:nth-child(3){width:168px;}
   .q-table th:nth-child(4),.q-table td:nth-child(4){width:188px;}
   .q-table th:nth-child(6),.q-table td:nth-child(6){width:124px;}
@@ -2389,6 +2389,12 @@
      control (outlined chip). */
   .q-card{white-space:nowrap;}
   .q-table td.q-card .q-ver{display:inline-flex;align-items:center;}
+
+  /* Auto table layout was treating the column widths as suggestions and
+     handing the slack to Patient, which left ~90px of dead space between
+     a name and its MSP chip. Fixed layout makes the declared widths real;
+     Clinical concern takes whatever is left. */
+  #queue-table{table-layout:fixed;}
 </style>
 </head>
 <body>
