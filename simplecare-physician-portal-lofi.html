@@ -684,7 +684,12 @@
   .q-actions .btn.dark{box-shadow:none;}
 
   /* ref-style toolbar: segmented filter + sort */
-  .q-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+  /* date, window filter and search are one strip — they belong to the
+     same question ("which slice of today am I looking at?") */
+  .q-toolbar{display:flex;align-items:center;gap:14px;margin-bottom:16px;flex-wrap:nowrap;}
+  .q-toolbar .day-nav{margin-bottom:0;flex-shrink:0;}
+  .q-toolbar .win-strip{flex-shrink:0;}
+  .q-toolbar .q-tools{margin-left:auto;flex-shrink:0;}
   .win-strip{background:var(--wash);border-radius:22px;padding:4px;gap:2px;display:inline-flex;width:auto;flex-wrap:nowrap;margin:0;}
   .win-strip .win-chip{border:none;background:none;color:var(--ink-soft);border-radius:18px;box-shadow:none;font-weight:600;}
   .win-strip .win-chip.active{background:var(--panel);color:var(--accent-ink);box-shadow:0 1px 5px rgba(28,31,38,.12);}
@@ -692,6 +697,8 @@
     border-radius:999px;padding:9px 15px;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:inherit;}
   .q-sort:hover{border-color:var(--line-strong);}
   .day-nav{display:flex;align-items:center;gap:6px;margin-bottom:12px;}
+  /* the date is the anchor; give it a little air from the filter beside it */
+  .q-toolbar .day-nav::after{content:"";width:1px;height:22px;background:var(--line);margin-left:8px;}
   .day-arrow{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--panel);
     cursor:pointer;font-family:inherit;font-size:15px;color:var(--ink-soft);line-height:1;}
   .day-arrow:hover{background:var(--wash);color:var(--ink);}
@@ -2201,14 +2208,14 @@
         </div>
 
         <div class="work-pane active" id="work-queue">
-          <div class="day-nav">
-            <button class="day-arrow" onclick="shiftDay(-1)" title="Previous day">&#8249;</button>
-            <span class="day-label" id="day-label">Today &middot; Thu Jul 23</span>
-            <button class="day-arrow" onclick="shiftDay(1)" title="Next day">&#8250;</button>
-            <button class="day-today" id="day-today-btn" onclick="goToday()">Today</button>
-            <span class="day-count" id="day-count"></span>
-          </div>
           <div class="q-toolbar">
+            <div class="day-nav">
+              <button class="day-arrow" onclick="shiftDay(-1)" title="Previous day">&#8249;</button>
+              <span class="day-label" id="day-label">Today &middot; Thu Jul 23</span>
+              <button class="day-arrow" onclick="shiftDay(1)" title="Next day">&#8250;</button>
+              <button class="day-today" id="day-today-btn" onclick="goToday()">Today</button>
+              <span class="day-count" id="day-count"></span>
+            </div>
             <div class="win-strip">
               <button class="win-chip active" data-win="all" onclick="filterWindow('all',this)">All</button>
               <button class="win-chip" data-win="8-10" onclick="filterWindow('8-10',this)">8:00–10:00</button>
