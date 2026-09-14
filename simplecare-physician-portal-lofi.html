@@ -14,7 +14,7 @@
     --warn:#9A7622; --warn-wash:#F7EFDA; --warn-line:#E4CE93;
     --crit:#C24A3F; --crit-wash:#FBEBE8; --crit-line:#E8B7AF; --crit-ink:#C24A3F;
     --badge:#E5322D;   /* notification counts — one red, everywhere */
-    --gradient-agent:linear-gradient(100deg,#E07856 0%,#5A6390 48%,#162660 100%);
+    --gradient-agent:linear-gradient(100deg,#E07856 0%,#8098D4 45%,#4A90D9 100%);
     --shadow-card:0 1px 2px rgba(23,24,28,.04), 0 8px 24px rgba(23,24,28,.05);
     --ink-dark:#17181C;
   }
@@ -813,8 +813,9 @@
   /* five columns share the whole table; the concern takes what is left */
   .q-table th:nth-child(1),.q-table td:nth-child(1){width:54px;}
   .q-table th:nth-child(2),.q-table td:nth-child(2){width:26%;}
-  .q-table th:nth-child(3),.q-table td:nth-child(3){width:188px;}
-  .q-table th:nth-child(5),.q-table td:nth-child(5){width:124px;}
+  .q-table th:nth-child(3),.q-table td:nth-child(3){width:168px;}
+  .q-table th:nth-child(4),.q-table td:nth-child(4){width:188px;}
+  .q-table th:nth-child(6),.q-table td:nth-child(6){width:124px;}
   .q-concern{max-width:none;}
   .q-concern .cc{display:block;font-size:14px;color:var(--ink);line-height:1.4;}
   .q-aicell{max-width:none;}
@@ -2381,7 +2382,13 @@
 
   /* the wordmark is the brand navy, both expanded and collapsed */
   .brand-logo svg path{fill:#162660;}
-  .ai-launcher{box-shadow:0 12px 30px rgba(22,38,96,.34);}
+  .ai-launcher{box-shadow:0 12px 30px rgba(74,144,217,.34);}
+
+  /* MSP status is its own column now — same shape rule as billing: a
+     verified card is reported (plain text), anything needing a look is a
+     control (outlined chip). */
+  .q-card{white-space:nowrap;}
+  .q-table td.q-card .q-ver{display:inline-flex;align-items:center;}
 </style>
 </head>
 <body>
@@ -2492,7 +2499,7 @@
 
           <div class="q-tablewrap" id="q-tablewrap">
             <table class="q-table" id="queue-table">
-              <thead><tr><th>#</th><th>Patient</th><th>Billing status</th><th>Clinical concern</th><th>Visit status</th></tr></thead>
+              <thead><tr><th>#</th><th>Patient</th><th>MSP status</th><th>Billing status</th><th>Clinical concern</th><th>Visit status</th></tr></thead>
               <tbody id="queue-body"></tbody>
             </table>
             <div class="q-hoverbar" id="q-hoverbar"></div>
@@ -3792,6 +3799,14 @@ function renderQueue(){
       (STATUS_ICON[r.status]||'')+'<span>'+STATUS_LABEL[r.status]+'</span></span>';
 
     /* Claims sit on the day sheet, not behind Practice. "Leave no claim behind." */
+    /* Plan and card state are one fact, so they stay one element in every
+       state — never the plan name once and then again inside a badge. */
+    var cardCell = (r.card==='verified'
+      ? '<span class="q-ver ok" title="Health card checked against MSP today">'+CARD_STATUS.verified.tick+' '+(r.plan||'MSP')+'</span>'
+      : '<button class="q-ver '+CARD_STATUS[r.card].tone+' go" onclick="event.stopPropagation();openCard(\''+r.name+'\')">'+
+          (r.plan||'MSP')+' &middot; '+CARD_STATUS[r.card].label+'</button>')
+      + (r.planNote ? ' <i>'+r.planNote+'</i>' : '');
+
     var bs = BILL_STATUS[r.bill] || BILL_STATUS['msp-submit'];
     var billCell = bs.open
       ? '<button class="bill-pill '+bs.tone+' go" onclick="event.stopPropagation();openBilling(\''+r.name+'\')">'+bs.label+'</button>'
@@ -3807,17 +3822,8 @@ function renderQueue(){
             '<span class="q-pref">Preferred: '+(r.pref||r.name.split(' ')[0])+'</span>'+
             '<span class="q-demo">'+(r.age||'')+', '+(r.sex||'')+'</span>'+
           '</span>'+
-          /* Plan and card state are one fact, so they are one element for
-             every state — never the plan name once and then again inside
-             the badge beside it. */
-          '<span class="q-plan">'+
-            (r.card==='verified'
-              ? '<span class="q-ver ok" title="Health card checked against MSP today">'+CARD_STATUS.verified.tick+' '+(r.plan||'MSP')+'</span>'
-              : '<button class="q-ver '+CARD_STATUS[r.card].tone+' go" onclick="event.stopPropagation();openCard(\''+r.name+'\')">'+
-                  (r.plan||'MSP')+' &middot; '+CARD_STATUS[r.card].label+'</button>')+
-            (r.planNote ? ' <i>'+r.planNote+'</i>' : '')+
-          '</span>'+
         '</span></div></td>'+
+      '<td class="q-card">'+cardCell+'</td>'+
       '<td class="q-bill">'+billCell+'</td>'+
       '<td class="q-concern">'+
         '<span class="cc">'+r.concern+'</span>'+
@@ -3833,7 +3839,7 @@ function renderQueue(){
   if(!rows.length){
     var msg = queueSearch ? ('No patients match \u201c'+queueSearch+'\u201d.')
                           : (dayOffset===0 ? 'No patients in the queue right now.' : 'Nothing booked for this day.');
-    body.innerHTML = '<tr><td colspan="5"><p class="q-noresult">'+msg+'</p></td></tr>';
+    body.innerHTML = '<tr><td colspan="6"><p class="q-noresult">'+msg+'</p></td></tr>';
   }
   renderGlance();
   updateWorkCounts();
