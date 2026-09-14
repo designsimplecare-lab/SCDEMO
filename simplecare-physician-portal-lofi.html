@@ -14,7 +14,7 @@
     --warn:#9A7622; --warn-wash:#F7EFDA; --warn-line:#E4CE93;
     --crit:#C24A3F; --crit-wash:#FBEBE8; --crit-line:#E8B7AF; --crit-ink:#C24A3F;
     --badge:#E5322D;   /* notification counts — one red, everywhere */
-    --gradient-agent:linear-gradient(100deg,#E07856 0%,#5A7BD8 45%,#4353E8 100%);
+    --gradient-agent:linear-gradient(100deg,#E07856 0%,#5A6390 48%,#162660 100%);
     --shadow-card:0 1px 2px rgba(23,24,28,.04), 0 8px 24px rgba(23,24,28,.05);
     --ink-dark:#17181C;
   }
@@ -1103,38 +1103,24 @@
   /* Gmail's pattern: the actions are not a column. They float over the
      right of the row on hover, so the content columns keep the full
      width of the table and there is no empty gutter at rest. */
-  .q-table tbody tr{position:relative;}
-  .q-table td.q-actions{
-    position:absolute;right:0;top:0;bottom:0;width:auto;border:none;padding:0 14px 0 110px;
-    display:flex;flex-wrap:nowrap;justify-content:flex-end;align-items:center;
-    gap:6px;white-space:nowrap;pointer-events:none;
-  }
-  .q-table tbody tr:hover td.q-actions,
-  .q-table tbody tr:focus-within td.q-actions{pointer-events:auto;}
-  .q-actions .btn{min-width:0;flex-shrink:0;text-align:center;padding:6px 11px;font-size:13.5px;}
-  .q-actions .btn.dark{padding:6px 13px;}
-
-  /* the claim state and its fix belong on one line — the pill is the
-     problem, the button is the answer, and only the pill should be red */
-  .q-bill{white-space:nowrap;}
-
-
-  /* Actions stay out of the way until the row is the one you're on.
-     Opacity rather than display, so the buttons keep their place in the
-     tab order and reveal themselves on keyboard focus too — and the
-     column keeps its width, so nothing shifts as the cursor moves. */
-  .q-table td.q-actions::before{
-    content:"";position:absolute;inset:0;pointer-events:none;opacity:0;
-    transition:opacity .12s ease;
+  /* The row actions are NOT a table cell. A <tr> is not a reliable
+     containing block for an absolutely positioned child — Safari ignores
+     position:relative on table rows, so the overlay escaped its row and
+     painted a grey slab down the whole page. The bar is anchored to a
+     plain wrapper <div> around the table instead, and JS moves it to the
+     hovered row. That works in every engine. */
+  .q-tablewrap{position:relative;}
+  .q-hoverbar{
+    position:absolute;right:0;display:none;align-items:center;justify-content:flex-end;
+    gap:6px;padding:0 14px 0 110px;white-space:nowrap;pointer-events:none;
     background:linear-gradient(to right, rgba(247,248,251,0) 0%, #f7f8fb 110px, #f7f8fb 100%);
   }
-  .q-table tbody tr:hover td.q-actions::before,
-  .q-table tbody tr:focus-within td.q-actions::before{opacity:1;}
-  .q-table td.q-actions .btn{position:relative;z-index:1;}
-  .q-table tbody .q-actions .btn{opacity:0;transition:opacity .12s ease;}
-  .q-table tbody tr:hover .q-actions .btn,
-  .q-table tbody tr:focus-within .q-actions .btn{opacity:1;}
-  .q-table tbody .q-actions .btn:focus-visible{opacity:1;outline:2px solid var(--accent);outline-offset:2px;}
+  .q-hoverbar.show{display:flex;}
+  /* only the buttons take the click; the fade stays see-through so the
+     billing pill under it is still reachable */
+  .q-hoverbar .btn{pointer-events:auto;min-width:0;flex-shrink:0;text-align:center;padding:6px 11px;font-size:13.5px;}
+  .q-hoverbar .btn.dark{padding:6px 13px;}
+  .q-hoverbar .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 
   /* ============================================================
      ITERATION 7 — circular icon-rail sidebar with hover labels
@@ -2392,6 +2378,10 @@
   }
   .pf-status.on{background:var(--good);}
   .pf-status.off{background:var(--ink-faint);}
+
+  /* the wordmark is the brand navy, both expanded and collapsed */
+  .brand-logo svg path{fill:#162660;}
+  .ai-launcher{box-shadow:0 12px 30px rgba(22,38,96,.34);}
 </style>
 </head>
 <body>
@@ -2500,10 +2490,13 @@
             <div class="qf-row" id="qf-row"></div>
           </div>
 
-          <table class="q-table" id="queue-table">
-            <thead><tr><th>#</th><th>Patient</th><th>Billing status</th><th>Clinical concern</th><th>Visit status</th></tr></thead>
-            <tbody id="queue-body"></tbody>
-          </table>
+          <div class="q-tablewrap" id="q-tablewrap">
+            <table class="q-table" id="queue-table">
+              <thead><tr><th>#</th><th>Patient</th><th>Billing status</th><th>Clinical concern</th><th>Visit status</th></tr></thead>
+              <tbody id="queue-body"></tbody>
+            </table>
+            <div class="q-hoverbar" id="q-hoverbar"></div>
+          </div>
         </div>
 
       </div>
@@ -3704,6 +3697,59 @@ var STATUS_ICON = {
   scheduled: "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\" d=\"M17 4.625H7a4 4 0 0 0-4 4v8.75a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-8.75a4 4 0 0 0-4-4m-14 6h18m-4-8v4m-10-4v4m.375 7.515h1.028m7.194 0h1.028m-5.139 0h1.028m-5.139 3.084h1.028m7.194 0h1.028m-5.139 0h1.028\"/></svg>"
 };
 
+
+/* ===== Row actions on hover, Gmail-style =====
+   The bar lives outside the table and is moved onto whichever row the
+   cursor (or keyboard focus) is on. Anchoring it to the wrapper div
+   rather than the <tr> is the whole point: Safari does not honour
+   position:relative on a table row, and the old cell-based overlay
+   escaped its row and covered the page. */
+var QUEUE_ACTIONS = [];
+var qHoverRow = null;
+
+function qHoverShow(row){
+  var bar = document.getElementById('q-hoverbar');
+  var wrap = document.getElementById('q-tablewrap');
+  if(!bar || !wrap || !row) return;
+  var i = row.getAttribute('data-ri');
+  if(i === null || !QUEUE_ACTIONS[i]) { qHoverHide(); return; }
+  if(qHoverRow !== row){
+    qHoverRow = row;
+    bar.innerHTML = QUEUE_ACTIONS[i];
+  }
+  var wr = wrap.getBoundingClientRect(), rr = row.getBoundingClientRect();
+  bar.style.top = (rr.top - wr.top) + 'px';
+  bar.style.height = rr.height + 'px';
+  bar.classList.add('show');
+}
+
+function qHoverHide(){
+  var bar = document.getElementById('q-hoverbar');
+  qHoverRow = null;
+  if(bar){ bar.classList.remove('show'); bar.innerHTML = ''; }
+}
+
+function qHoverInit(){
+  var wrap = document.getElementById('q-tablewrap');
+  if(!wrap || wrap.dataset.wired) return;
+  wrap.dataset.wired = '1';
+  wrap.addEventListener('mouseover', function(e){
+    var row = e.target.closest && e.target.closest('#queue-body tr');
+    /* no row under the cursor means the cursor is on the bar itself —
+       keep the bar where it is rather than closing it out from under a click */
+    if(row) qHoverShow(row);
+  });
+  wrap.addEventListener('mouseleave', qHoverHide);
+  wrap.addEventListener('focusin', function(e){
+    var row = e.target.closest && e.target.closest('#queue-body tr');
+    if(row) qHoverShow(row);
+  });
+  /* the bar is absolutely placed, so anything that moves the rows
+     underneath it has to move it too */
+  window.addEventListener('resize', function(){ if(qHoverRow) qHoverShow(qHoverRow); });
+  window.addEventListener('scroll', function(){ if(qHoverRow) qHoverShow(qHoverRow); }, true);
+}
+
 function renderQueue(){
   var body = document.getElementById('queue-body');
   var q = queueSearch.trim().toLowerCase();
@@ -3721,6 +3767,9 @@ function renderQueue(){
   /* "Anything red is at the top." */
   rows.sort(function(a,b){ return (b.redflag?1:0) - (a.redflag?1:0); });
   var qSeq = 0;
+  qHoverInit();
+  QUEUE_ACTIONS = [];
+  qHoverHide();
   body.innerHTML = rows.map(function(r){
     var closed = (r.status==='done' || r.status==='noshow');
     var actions = closed ? '' : '<button class="btn xs dark" onclick="callPatient(\''+r.name+'\')">Call</button> ';
@@ -3748,7 +3797,8 @@ function renderQueue(){
       ? '<button class="bill-pill '+bs.tone+' go" onclick="event.stopPropagation();openBilling(\''+r.name+'\')">'+bs.label+'</button>'
       : '<span class="bill-pill '+bs.tone+'">'+bs.label+'</span>';
 
-    return '<tr class="'+(r.redflag?'redflag':'')+'">'+
+    QUEUE_ACTIONS.push(actions);
+    return '<tr class="'+(r.redflag?'redflag':'')+'" data-ri="'+(QUEUE_ACTIONS.length-1)+'">'+
       '<td>'+dueChip+'</td>'+
       '<td><div class="q-patient" onclick="openChart(\''+r.name+'\')" title="Open chart">'+
         '<span class="q-pmeta">'+
@@ -3778,13 +3828,12 @@ function renderQueue(){
           : '')+
       '</td>'+
       '<td>'+statusPill+'</td>'+
-      '<td class="q-actions">'+actions+'</td>'+
     '</tr>';
   }).join('');
   if(!rows.length){
     var msg = queueSearch ? ('No patients match \u201c'+queueSearch+'\u201d.')
                           : (dayOffset===0 ? 'No patients in the queue right now.' : 'Nothing booked for this day.');
-    body.innerHTML = '<tr><td colspan="6"><p class="q-noresult">'+msg+'</p></td></tr>';
+    body.innerHTML = '<tr><td colspan="5"><p class="q-noresult">'+msg+'</p></td></tr>';
   }
   renderGlance();
   updateWorkCounts();
