@@ -13,6 +13,7 @@
     --good:#3E7D52; --good-wash:#E9F2EB;
     --warn:#9A7622; --warn-wash:#F7EFDA; --warn-line:#E4CE93;
     --crit:#C24A3F; --crit-wash:#FBEBE8; --crit-line:#E8B7AF; --crit-ink:#C24A3F;
+    --badge:#E5322D;   /* notification counts — one red, everywhere */
     --gradient-agent:linear-gradient(100deg,#E07856 0%,#B96A9E 45%,#5B5BD6 100%);
     --shadow-card:0 1px 2px rgba(23,24,28,.04), 0 8px 24px rgba(23,24,28,.05);
     --ink-dark:#17181C;
@@ -88,7 +89,6 @@
   }
   .sidebar-collapse-btn:hover{background:var(--wash);color:var(--ink-soft);}
   .sidebar.collapsed{width:64px;padding:20px 10px;}
-  .sidebar.collapsed .brand,
   .sidebar.collapsed .brand-sub,
   .sidebar.collapsed .nav-group-label,
   .sidebar.collapsed .nav-label,
@@ -163,8 +163,14 @@
   }
   .topbar-right{display:flex;align-items:center;gap:10px;}
   /* the page title lives in the bar rather than on its own line below it */
+  .pd-ic{width:18px;height:18px;flex-shrink:0;display:inline-flex;align-items:center;
+    justify-content:center;color:var(--ink-faint);}
+  .pd-ic .ic{width:17px;height:17px;}
+  .pd-item:hover .pd-ic{color:var(--ink);}
+  .tb-left{display:flex;align-items:baseline;gap:12px;min-width:0;}
   .tb-title{font-size:22.5px;font-weight:800;letter-spacing:-.02em;color:var(--ink);
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;}
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tb-date{font-size:14.5px;color:var(--ink-soft);white-space:nowrap;flex-shrink:0;}
   .screen > h1{display:none;}
   .tb-taskmoa{
     display:flex;align-items:center;gap:7px;background:var(--accent);color:#fff;border:none;
@@ -299,7 +305,7 @@
   .inbox-actions{display:flex;gap:7px;align-items:center;flex-shrink:0;}
   .inbox-count{
     display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;
-    background:var(--crit);color:#fff;border-radius:20px;font-size:12px;font-weight:700;margin-left:6px;
+    background:var(--badge);color:#fff;border-radius:20px;font-size:12px;font-weight:700;margin-left:6px;
   }
   .inbox-section-label{font-size:12.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin:14px 0 6px;}
   .inbox-section-label:first-child{margin-top:0;}
@@ -386,7 +392,7 @@
   .chat-fab .ic{width:16px;height:16px;}
   .chat-fab .moa-dot{position:absolute;bottom:-1px;right:-1px;border:2px solid var(--paper);}
   .chat-badge{
-    position:absolute;top:-5px;right:-5px;background:var(--crit);color:#fff;font-size:12px;font-weight:700;
+    position:absolute;top:-5px;right:-5px;background:var(--badge);color:#fff;font-size:12px;font-weight:700;
     border-radius:10px;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;
     padding:0 4px;border:2px solid var(--paper);
   }
@@ -1099,11 +1105,12 @@
   .sidebar.collapsed .nav-btn:hover .nav-label,
   .sidebar.collapsed .nav-btn-parent:hover .nav-label{display:block;}
 
-  /* logo mark → dark rounded chip at top of rail */
-  .sidebar.collapsed .rail-mark{
-    width:46px;height:46px;border-radius:14px;background:var(--ink-dark);color:#fff;
-    font-size:15.5px;font-weight:800;letter-spacing:.02em;margin:0 auto 22px;box-shadow:var(--shadow-card);
-  }
+  /* collapsed shows the real wordmark, scaled to the rail — never a
+     stand-in set of initials */
+  .sidebar.collapsed .rail-mark{display:none !important;}
+  .sidebar.collapsed .brand{display:flex;justify-content:center;margin:0 0 22px;}
+  .sidebar.collapsed .brand-logo{background:none;padding:0;}
+  .sidebar.collapsed .brand-logo svg{width:42px;height:auto;}
   /* inbox badge sits on the circle */
   .sidebar.collapsed .nav-flag{position:absolute;top:-1px;right:-1px;margin:0;}
 
@@ -1138,7 +1145,7 @@
 
   /* red notification badge on Inbox */
   .nav-flag{
-    color:#fff;background:#E5322D;font-weight:700;font-size:11.5px;line-height:1;
+    color:#fff;background:var(--badge);font-weight:700;font-size:11.5px;line-height:1;
     min-width:18px;height:18px;padding:0 5px;border-radius:9px;margin-left:8px;
     display:inline-flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(229,50,45,.4);
   }
@@ -1240,7 +1247,7 @@
   .wt-count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;
     border-radius:10px;background:var(--wash);color:var(--ink-soft);font-size:12.5px;font-weight:800;}
   .work-tabs button.active .wt-count{background:var(--ink-dark);color:#fff;}
-  .wt-count.crit{background:#E5322D;color:#fff;}
+  .wt-count.crit{background:var(--badge);color:#fff;}
   .work-pane{display:none;} .work-pane.active{display:block;}
   /* new-patient action sits at the right end of the tab row */
   .work-tabs .wt-new{margin-left:auto;margin-right:0;align-self:center;border:1px solid var(--line-strong);
@@ -1634,7 +1641,6 @@
   .bill-fix{margin-left:6px;border:1px solid var(--line-strong);background:var(--panel);color:var(--ink-soft);
     border-radius:7px;padding:2px 8px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;}
   .bill-fix:hover{background:var(--ink-dark);border-color:var(--ink-dark);color:#fff;}
-  .nav-flag.mut{background:var(--wash);color:var(--ink-soft);border:1px solid var(--line-strong);}
 
   /* critical marker — small, red, and the only flag state there is */
   .work-title{display:inline-flex;align-items:center;gap:9px;font-size:17.5px;font-weight:700;
@@ -1798,7 +1804,6 @@
   .sidebar .nav-icon .ic{width:18px;height:18px;}
   .sidebar .nav-btn:hover{background:var(--ink-dark);color:#fff;}
   .sidebar .nav-btn:hover .nav-icon{color:#fff;}
-  .sidebar .nav-btn:hover .nav-flag.mut{background:rgba(255,255,255,.16);color:#fff;border-color:transparent;}
   .sidebar .nav-btn:focus-visible{outline:2px solid var(--ink-dark);outline-offset:2px;}
 
   /* selected is black, the same black hovering gives — so the rail has one
@@ -1808,7 +1813,6 @@
     background:var(--ink-dark);color:#fff;font-weight:600;border:none;box-shadow:none;outline:none;
   }
   .sidebar .nav-btn.active .nav-icon{color:#fff;}
-  .sidebar .nav-btn.active .nav-flag.mut{background:rgba(255,255,255,.16);color:#fff;border-color:transparent;}
 
   /* Technical Support is not clinical work — give it its own footing */
   .greet{margin:0 0 18px;}
@@ -2286,7 +2290,7 @@
 
   <div class="main">
     <div class="topbar">
-      <div class="tb-left"><span class="tb-title" id="tb-title">Today</span></div>
+      <div class="tb-left"><span class="tb-title" id="tb-title">Today</span><span class="tb-date" id="tb-date"></span></div>
       <div class="topbar-right">
       <button class="dsw-fab" id="dsw-fab" onclick="dswOpen()"><span class="d"></span> Demo</button>
       <button class="chat-fab" id="chat-fab" onclick="toggleChatPanel()" title="MOA chat">
@@ -2304,11 +2308,11 @@
             <span class="avatar">DP</span>
             <div><b>Dr. Daniel Pannozzo</b><div class="tb-name">Physician</div></div>
           </div>
-          <button class="pd-item" onclick="toggleProfileMenu();showScreen('calendar')"><span>&#9638;</span> Schedule &amp; availability</button>
-          <button class="pd-item" onclick="toggleProfileMenu();showScreen('feesettings')"><span>&#9881;</span> Fee settings</button>
-          <button class="pd-item" onclick="toggleProfileMenu();showScreen('profile')"><span>&#128100;</span> View profile</button>
+          <button class="pd-item" onclick="toggleProfileMenu();showScreen('calendar')"><span class="pd-ic" data-pdic="calendar"></span> Schedule &amp; availability</button>
+          <button class="pd-item" onclick="toggleProfileMenu();showScreen('feesettings')"><span class="pd-ic" data-pdic="feesettings"></span> Fee settings</button>
+          <button class="pd-item" onclick="toggleProfileMenu();showScreen('profile')"><span class="pd-ic" data-pdic="user"></span> View profile</button>
           <div class="pd-divider"></div>
-          <button class="pd-item" onclick="toggleProfileMenu();toast('Would sign you out')"><span>&#8618;</span> Sign out</button>
+          <button class="pd-item" onclick="toggleProfileMenu();toast('Would sign you out')"><span class="pd-ic" data-pdic="logout"></span> Sign out</button>
         </div>
       </div>
       </div>
@@ -2321,10 +2325,6 @@
       <div class="ia-note">IA change: merges Dashboard, Daysheet's queue, and Calendar's day-view into a single canonical screen. Reordered by how time-sensitive each thing is: alerts and the live queue first (act now), then your own outstanding tasks, then lower-priority previews and logs pushed to the bottom. MOA online status moved off this screen entirely — it's ambient "peace of mind" info, not something that should compete with clinical content for space, so it now lives as a small dot on the chat button instead.</div>
 
 
-      <div class="greet">
-        <p class="greet-hi" id="greet-hi">Good morning, Dr. Pannozzo</p>
-        <p class="greet-date" id="greet-date">Thursday, July 23, 2026</p>
-      </div>
 
       <div class="box" id="alerts-box">
         <p class="box-title">Notifications</p>
@@ -3438,17 +3438,21 @@
 
 <script>
 
-function renderGreeting(){
-  var hi = document.getElementById('greet-hi'); if(!hi) return;
-  var h = new Date().getHours();
-  hi.textContent = (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', Dr. Pannozzo';
-}
 
 function syncTopTitle(){
   var el = document.getElementById('tb-title'); if(!el) return;
   var scr = document.querySelector('.screen.active'); if(!scr) return;
-  var h = scr.querySelector('h1');
-  el.textContent = h ? h.textContent.trim() : '';
+  var dt = document.getElementById('tb-date');
+  /* Home greets; every other screen says what it is */
+  if(scr.id === 'screen-today'){
+    var h = new Date().getHours();
+    el.textContent = (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', Dr. Pannozzo';
+    if(dt){ dt.textContent = 'Thursday, July 23, 2026'; dt.style.display = 'inline'; }
+  } else {
+    var t = scr.querySelector('h1');
+    el.textContent = t ? t.textContent.trim() : '';
+    if(dt){ dt.style.display = 'none'; }
+  }
 }
 function showScreen(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -5365,6 +5369,8 @@ function aiSend(preset){
 
 /* ===== Streamline line-icons: swap glyphs for SVGs ===== */
 var ICONS = {
+"user": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\" d=\"M19.618 21.25c0-3.602-4.016-6.53-7.618-6.53s-7.618 2.928-7.618 6.53M12 11.456a4.353 4.353 0 1 0 0-8.706a4.353 4.353 0 0 0 0 8.706\"/></svg>",
+"logout": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.6\"><path stroke-linejoin=\"round\" d=\"M13.477 21.245H8.34a4.92 4.92 0 0 1-5.136-4.623V7.378A4.92 4.92 0 0 1 8.34 2.755h5.136\"/><path stroke-miterlimit=\"10\" d=\"M20.795 12H7.442\"/><path stroke-linejoin=\"round\" d=\"m16.083 17.136l4.404-4.404a1.04 1.04 0 0 0 0-1.464l-4.404-4.404\"/></g></svg>",
 "today": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\" d=\"m19.633 7.11l-6.474-4.02a2.23 2.23 0 0 0-2.362 0L4.324 7.133A2.23 2.23 0 0 0 3.31 9.362l1.67 10.027a2.23 2.23 0 0 0 2.228 1.86h9.582a2.23 2.23 0 0 0 2.229-1.86l1.67-10.027a2.23 2.23 0 0 0-1.058-2.251M8.636 16.459h6.685\"/></svg>",
 "inbox": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M2.75 12H6a2 2 0 0 1 2 2a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2a2 2 0 0 1 2-2h3.25\"/><path d=\"M15.25 2.75h-6.5a6 6 0 0 0-6 6v6.5a6 6 0 0 0 6 6h6.5a6 6 0 0 0 6-6v-6.5a6 6 0 0 0-6-6Z\"/></g></svg>",
 "claims": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\"><path d=\"M12 21.5a9.5 9.5 0 1 0 0-19a9.5 9.5 0 0 0 0 19\"/><path d=\"M9 14.433a2.82 2.82 0 0 0 3 2.57c2.42 0 3-1.39 3-2.57s-1-2.43-3-2.43s-3-.79-3-2.4a2.75 2.75 0 0 1 3-2.6a2.89 2.89 0 0 1 3 2.6M12 18.5v-1.3m0-11.7v1.499\"/></g></svg>",
@@ -6279,6 +6285,7 @@ function updateCpFlag(){
 
 function applyIcons(){
   document.querySelectorAll('[data-pcic]').forEach(function(el){ var k=el.getAttribute('data-pcic'); if(PC_ICONS[k]) el.innerHTML=PC_ICONS[k]; });
+  document.querySelectorAll('[data-pdic]').forEach(function(el){ var k=el.getAttribute('data-pdic'); if(ICONS[k]) el.innerHTML=ICONS[k]; });
   document.querySelectorAll('#pc-tabs button[data-pcsec]').forEach(function(b){ b.onclick=function(){ pcShowSec(b.dataset.pcsec); }; });
   document.querySelectorAll('.pc-subtabs').forEach(function(g){ g.querySelectorAll('button').forEach(function(b){ b.onclick=function(){ g.querySelectorAll('button').forEach(function(x){x.classList.remove('active');}); b.classList.add('active'); }; }); });
   document.querySelectorAll('[data-screen]').forEach(function(b){
@@ -6294,7 +6301,6 @@ function applyIcons(){
 }
 applyIcons();
 syncTopTitle();
-renderGreeting();
 renderCriticals();
 renderTasks();
 renderService();
