@@ -641,10 +641,11 @@
      ITERATION 4 — findings-table look for the live queue
      ============================================================ */
   .q-table{border-collapse:separate;border-spacing:0;}
-  .q-table th{padding:4px 10px 12px;color:var(--ink-faint);font-size:10px;letter-spacing:.07em;}
-  .q-table td{padding:14px 10px;border-bottom:1px solid #eef0f4;vertical-align:middle;}
+  .q-table th{padding:4px 14px 12px;color:var(--ink-faint);font-size:10px;letter-spacing:.07em;}
+  .q-table td{padding:15px 14px;border-bottom:1px solid #eef0f4;vertical-align:middle;}
   .q-table tbody tr:last-child td{border-bottom:none;}
-  .q-table tbody tr:hover td{background:#f7f8fb;}
+  .q-table tbody tr:hover td,
+  .q-table tbody tr:focus-within td{background:#f7f8fb;}
   .q-table tr.redflag td{background:#fdf3f3;}
   .q-table tbody tr.redflag:hover td{background:#fbe9e9;}
 
@@ -736,11 +737,11 @@
      itself the browser starved these three and every row ran to four lines */
   /* fixed where the content is fixed, and the AI summary takes whatever is
      left — it is the only column that can absorb a narrower screen */
-  .q-table th:nth-child(1),.q-table td:nth-child(1){width:50px;}
-  .q-table th:nth-child(2),.q-table td:nth-child(2){width:216px;}
-  .q-table th:nth-child(4),.q-table td:nth-child(4){width:104px;}
+  /* five columns share the whole table; the concern takes what is left */
+  .q-table th:nth-child(1),.q-table td:nth-child(1){width:54px;}
+  .q-table th:nth-child(2),.q-table td:nth-child(2){width:26%;}
+  .q-table th:nth-child(4),.q-table td:nth-child(4){width:124px;}
   .q-table th:nth-child(5),.q-table td:nth-child(5){width:186px;}
-  .q-table th:nth-child(6),.q-table td:nth-child(6){width:258px;}
   .q-concern{max-width:none;}
   .q-concern .cc{display:block;font-size:12.5px;color:var(--ink);line-height:1.4;}
   .q-aicell{max-width:none;}
@@ -972,8 +973,17 @@
   /* the column has to be wide enough to hold all three buttons. width:1%
      shrank the cell and the buttons spilled left over Visit and Billing
      status instead of wrapping. */
-  .q-actions{display:flex;flex-wrap:nowrap;justify-content:flex-end;align-items:center;
-    gap:5px;white-space:nowrap;}
+  /* Gmail's pattern: the actions are not a column. They float over the
+     right of the row on hover, so the content columns keep the full
+     width of the table and there is no empty gutter at rest. */
+  .q-table tbody tr{position:relative;}
+  .q-table td.q-actions{
+    position:absolute;right:0;top:0;bottom:0;width:auto;border:none;padding:0 14px 0 34px;
+    display:flex;flex-wrap:nowrap;justify-content:flex-end;align-items:center;
+    gap:6px;white-space:nowrap;pointer-events:none;
+  }
+  .q-table tbody tr:hover td.q-actions,
+  .q-table tbody tr:focus-within td.q-actions{pointer-events:auto;}
   .q-actions .btn{min-width:0;flex-shrink:0;text-align:center;padding:6px 11px;font-size:12px;}
   .q-actions .btn.dark{padding:6px 13px;}
 
@@ -986,6 +996,14 @@
      Opacity rather than display, so the buttons keep their place in the
      tab order and reveal themselves on keyboard focus too — and the
      column keeps its width, so nothing shifts as the cursor moves. */
+  .q-table td.q-actions::before{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:0;
+    transition:opacity .12s ease;
+    background:linear-gradient(to right, rgba(247,248,251,0) 0%, #f7f8fb 34px, #f7f8fb 100%);
+  }
+  .q-table tbody tr:hover td.q-actions::before,
+  .q-table tbody tr:focus-within td.q-actions::before{opacity:1;}
+  .q-table td.q-actions .btn{position:relative;z-index:1;}
   .q-table tbody .q-actions .btn{opacity:0;transition:opacity .12s ease;}
   .q-table tbody tr:hover .q-actions .btn,
   .q-table tbody tr:focus-within .q-actions .btn{opacity:1;}
@@ -2286,7 +2304,7 @@
           </div>
 
           <table class="q-table" id="queue-table">
-            <thead><tr><th>#</th><th>Patient</th><th>Clinical concern</th><th>Visit status</th><th>Billing status</th><th>Action</th></tr></thead>
+            <thead><tr><th>#</th><th>Patient</th><th>Clinical concern</th><th>Visit status</th><th>Billing status</th></tr></thead>
             <tbody id="queue-body"></tbody>
           </table>
         </div>
