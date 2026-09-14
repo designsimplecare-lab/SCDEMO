@@ -162,6 +162,10 @@
     padding:14px 34px;border-bottom:1px dashed var(--line);margin-bottom:6px;background:var(--panel);
   }
   .topbar-right{display:flex;align-items:center;gap:10px;}
+  /* the page title lives in the bar rather than on its own line below it */
+  .tb-title{font-size:20px;font-weight:800;letter-spacing:-.02em;color:var(--ink);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;}
+  .screen > h1{display:none;}
   .tb-taskmoa{
     display:flex;align-items:center;gap:7px;background:var(--accent);color:#fff;border:none;
     border-radius:7px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
@@ -2170,12 +2174,16 @@
   @media(max-width:700px){ .ctl-row{grid-template-columns:70px 20px 1fr;} .ctl-when{font-size:11px;} }
 
   /* ===== unified demo switcher ===== */
-  .dsw-fab{position:fixed;left:20px;bottom:20px;z-index:150;display:inline-flex;align-items:center;gap:8px;
-    background:var(--ink-dark);color:#fff;border:none;border-radius:999px;padding:10px 16px;font-family:inherit;
-    font-size:12.5px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(23,24,28,.3);}
+  /* was pinned bottom-left, where it landed on Collapse once the rail
+     became viewport-tall. It belongs in the chrome, not over the app. */
+  .dsw-fab{display:inline-flex;align-items:center;gap:7px;flex-shrink:0;
+    background:var(--panel);color:var(--ink-soft);border:1px solid var(--line-strong);border-radius:999px;
+    padding:6px 13px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;box-shadow:none;
+    margin-right:6px;}
+  .dsw-fab:hover{background:var(--wash);color:var(--ink);}
   .dsw-fab:hover{opacity:.92;}
   .dsw-fab .d{width:7px;height:7px;border-radius:50%;background:#7ee0ab;}
-  .dsw{position:fixed;left:20px;bottom:20px;z-index:151;width:270px;background:var(--panel);border:1px solid var(--line);
+  .dsw{position:fixed;right:20px;top:58px;z-index:151;width:270px;background:var(--panel);border:1px solid var(--line);
     border-radius:18px;box-shadow:0 20px 50px rgba(23,24,28,.28);display:none;overflow:hidden;}
   .dsw.open{display:block;}
   .dsw-hd{display:flex;align-items:center;gap:8px;padding:13px 15px;border-bottom:1px solid var(--line);}
@@ -2219,8 +2227,9 @@
 
   <div class="main">
     <div class="topbar">
-      <div class="tb-left"></div>
+      <div class="tb-left"><span class="tb-title" id="tb-title">Today</span></div>
       <div class="topbar-right">
+      <button class="dsw-fab" id="dsw-fab" onclick="dswOpen()"><span class="d"></span> Demo</button>
       <span class="tb-name"><b>Dr. Daniel Pannozzo</b> &middot; Physician</span>
       <button class="chat-fab" id="chat-fab" onclick="toggleChatPanel()" title="MOA chat">
         <span class="ic" data-pcic="chatic"></span>
@@ -3291,7 +3300,6 @@
 </div>
 
 
-<button class="dsw-fab" id="dsw-fab" onclick="dswOpen()"><span class="d"></span> Demo</button>
 <div class="dsw" id="dsw">
   <div class="dsw-hd"><b>Demo switcher</b><button class="x" onclick="dswClose()">&times;</button></div>
   <div class="dsw-sec">
@@ -3368,12 +3376,19 @@
 
 <script>
 
+function syncTopTitle(){
+  var el = document.getElementById('tb-title'); if(!el) return;
+  var scr = document.querySelector('.screen.active'); if(!scr) return;
+  var h = scr.querySelector('h1');
+  el.textContent = h ? h.textContent.trim() : '';
+}
 function showScreen(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   var t=document.getElementById('screen-'+name);
   if(t) t.classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.screen===name));
   document.querySelectorAll('.nav-flyout-item').forEach(b=>b.classList.toggle('active', b.dataset.screen===name));
+  syncTopTitle();
   window.scrollTo(0,0);
 }
 
@@ -5830,8 +5845,10 @@ function openChart(name){
   condDismissedGaps = {}; renderConditions();
   var rc=document.getElementById('recall'); if(rc) rc.classList.remove('on');
   pcShowSec('chart'); vcPane('summary'); setChartVer('c'); pcEndCall();
+  syncTopTitle();
   scReset();
   showScreen('patientchart');
+  syncTopTitle();
 }
 function pcShowSec(sec){
   document.querySelectorAll('.pc-sec').forEach(function(s){ s.classList.remove('active'); });
@@ -6207,6 +6224,7 @@ function applyIcons(){
   var bl = document.querySelector('.topbar .bell'); if(bl) bl.innerHTML = ICONS.bell;
 }
 applyIcons();
+syncTopTitle();
 renderCriticals();
 renderTasks();
 renderService();
