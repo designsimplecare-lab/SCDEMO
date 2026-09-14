@@ -813,8 +813,8 @@
   /* five columns share the whole table; the concern takes what is left */
   .q-table th:nth-child(1),.q-table td:nth-child(1){width:54px;}
   .q-table th:nth-child(2),.q-table td:nth-child(2){width:26%;}
-  .q-table th:nth-child(4),.q-table td:nth-child(4){width:124px;}
-  .q-table th:nth-child(5),.q-table td:nth-child(5){width:186px;}
+  .q-table th:nth-child(3),.q-table td:nth-child(3){width:188px;}
+  .q-table th:nth-child(5),.q-table td:nth-child(5){width:124px;}
   .q-concern{max-width:none;}
   .q-concern .cc{display:block;font-size:14px;color:var(--ink);line-height:1.4;}
   .q-aicell{max-width:none;}
@@ -2442,7 +2442,7 @@
           </div>
 
           <table class="q-table" id="queue-table">
-            <thead><tr><th>#</th><th>Patient</th><th>Clinical concern</th><th>Visit status</th><th>Billing status</th></tr></thead>
+            <thead><tr><th>#</th><th>Patient</th><th>Billing status</th><th>Clinical concern</th><th>Visit status</th></tr></thead>
             <tbody id="queue-body"></tbody>
           </table>
         </div>
@@ -3709,6 +3709,7 @@ function renderQueue(){
             (r.planNote ? ' <i>'+r.planNote+'</i>' : '')+
           '</span>'+
         '</span></div></td>'+
+      '<td class="q-bill">'+billCell+'</td>'+
       '<td class="q-concern">'+
         '<span class="cc">'+r.concern+'</span>'+
         (AI_SUMMARY[r.name]
@@ -3718,7 +3719,6 @@ function renderQueue(){
           : '')+
       '</td>'+
       '<td>'+statusPill+'</td>'+
-      '<td class="q-bill">'+billCell+'</td>'+
       '<td class="q-actions">'+actions+'</td>'+
     '</tr>';
   }).join('');
