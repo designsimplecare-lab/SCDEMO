@@ -2395,6 +2395,32 @@
      a name and its MSP chip. Fixed layout makes the declared widths real;
      Clinical concern takes whatever is left. */
   #queue-table{table-layout:fixed;}
+
+  /* Demo is an icon button, the same 42px circle as chat and the bell */
+  .topbar .dsw-fab{
+    width:42px;height:42px;border-radius:50%;padding:0;margin-right:0;gap:0;
+    border:none;background:none;color:var(--ink);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .topbar .dsw-fab:hover{background:var(--wash);color:var(--ink);opacity:1;}
+  .topbar .dsw-fab .ic{width:24px;height:24px;}
+
+  /* the topbar icons read as black, not grey */
+  .topbar .chat-fab,.topbar .bell,.topbar .dsw-fab{color:var(--ink);}
+
+  /* the secondary button is an outline — the filled panel made it compete
+     with Task MOA, which is the one dark action in the bar */
+  .work-tabs .wt-new{background:none;}
+  .work-tabs .wt-new:hover{background:var(--wash);}
+  .work-tabs .wt-dark,.work-tabs .wt-dark:hover{background:var(--ink-dark);}
+  .work-tabs .wt-dark:hover{background:#000;}
+
+  /* Fixed layout means the columns cannot compress, so below its natural
+     width the table scrolls inside its own card instead of bleeding past
+     the edge. The hover bar lives in this container, so it scrolls with
+     the rows it belongs to. */
+  .q-tablewrap{overflow-x:auto;}
+  #queue-table{min-width:940px;}
 </style>
 </head>
 <body>
@@ -2423,7 +2449,7 @@
     <div class="topbar">
       <div class="tb-left"><span class="tb-title" id="tb-title">Today</span><span class="tb-date" id="tb-date"></span></div>
       <div class="topbar-right">
-      <button class="dsw-fab" id="dsw-fab" onclick="dswOpen()"><span class="d"></span> Demo</button>
+      <button class="dsw-fab" id="dsw-fab" onclick="dswOpen()" title="Demo walkthrough" aria-label="Demo walkthrough"><span class="ic" data-pdic="demo"></span></button>
       <button class="chat-fab" id="chat-fab" onclick="toggleChatPanel()" title="MOA chat">
         <span class="ic" data-pcic="chatic"></span>
         <span class="chat-badge" id="chat-badge" style="display:none;">0</span>
@@ -5643,6 +5669,7 @@ function aiSend(preset){
 
 /* ===== Streamline line-icons: swap glyphs for SVGs ===== */
 var ICONS = {
+"demo": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\"><path d=\"M12 21.5a9.5 9.5 0 1 0 0-19a9.5 9.5 0 0 0 0 19\"/><path d=\"M8.909 7.864v8.27a.909.909 0 0 0 1.463.717l5.725-4.452a.91.91 0 0 0-.055-1.473L10.317 7.11a.909.909 0 0 0-1.408.754\"/></g></svg>",
 "chevrondown": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.4\" d=\"m4 8.417l6.587 6.587a2.013 2.013 0 0 0 2.826 0L20 8.417\"/></svg>",
 "user": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\" d=\"M19.618 21.25c0-3.602-4.016-6.53-7.618-6.53s-7.618 2.928-7.618 6.53M12 11.456a4.353 4.353 0 1 0 0-8.706a4.353 4.353 0 0 0 0 8.706\"/></svg>",
 "logout": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.6\"><path stroke-linejoin=\"round\" d=\"M13.477 21.245H8.34a4.92 4.92 0 0 1-5.136-4.623V7.378A4.92 4.92 0 0 1 8.34 2.755h5.136\"/><path stroke-miterlimit=\"10\" d=\"M20.795 12H7.442\"/><path stroke-linejoin=\"round\" d=\"m16.083 17.136l4.404-4.404a1.04 1.04 0 0 0 0-1.464l-4.404-4.404\"/></g></svg>",
@@ -6585,7 +6612,7 @@ renderDayNav();
 updateWorkCounts();
 
 function dswOpen(){ document.getElementById('dsw').classList.add('open'); document.getElementById('dsw-fab').style.display='none'; }
-function dswClose(){ document.getElementById('dsw').classList.remove('open'); document.getElementById('dsw-fab').style.display='inline-flex'; }
+function dswClose(){ document.getElementById('dsw').classList.remove('open'); document.getElementById('dsw-fab').style.display='flex'; }
 
 function dswSync(){
   var cur=(document.querySelector('.pcv.active')||{id:'pcv-c'}).id.replace('pcv-','');
