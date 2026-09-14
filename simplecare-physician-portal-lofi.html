@@ -236,7 +236,6 @@
   /* alerts band */
   .alert-row{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;margin-bottom:8px;border-radius:10px;}
   .alert-row.critical{background:var(--crit-wash);border:1px solid var(--crit-line);color:var(--crit-ink);}
-  .alert-row.routine{background:var(--warn-wash);border:1px solid var(--warn-line);color:var(--warn);font-size:12.5px;}
   .alert-tier{font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;flex-shrink:0;width:56px;padding-top:1px;}
   .alert-body{flex:1;}
   .alert-actions{display:flex;gap:8px;flex-shrink:0;}
@@ -249,9 +248,6 @@
   .btn.crit.dark{background:var(--crit);border-color:var(--crit);color:#fff;}
   .btn:hover{opacity:.85;}
   .btn.xs{padding:5px 9px;font-size:11.5px;}
-  .routine-list{display:none;margin-top:4px;}
-  .routine-list.show{display:block;}
-  .routine-toggle{cursor:pointer;font-size:12px;color:var(--warn);font-weight:600;}
 
   /* call window strip */
   .win-strip{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
@@ -734,18 +730,22 @@
   /* fixed where the content is fixed, and the AI summary takes whatever is
      left — it is the only column that can absorb a narrower screen */
   .q-table th:nth-child(1),.q-table td:nth-child(1){width:50px;}
-  .q-table th:nth-child(2),.q-table td:nth-child(2){width:212px;}
-  .q-table th:nth-child(3),.q-table td:nth-child(3){width:146px;}
-  .q-table th:nth-child(5),.q-table td:nth-child(5){width:104px;}
-  .q-table th:nth-child(6),.q-table td:nth-child(6){width:184px;}
-  .q-table th:nth-child(7),.q-table td:nth-child(7){width:258px;}
+  .q-table th:nth-child(2),.q-table td:nth-child(2){width:216px;}
+  .q-table th:nth-child(4),.q-table td:nth-child(4){width:104px;}
+  .q-table th:nth-child(5),.q-table td:nth-child(5){width:186px;}
+  .q-table th:nth-child(6),.q-table td:nth-child(6){width:258px;}
   .q-concern{max-width:none;}
   .q-concern .cc{display:block;font-size:12.5px;color:var(--ink);line-height:1.4;}
   .q-aicell{max-width:none;}
   /* the summary is a glance, not a read — three lines, then it stops */
   /* one rule — a later display:block was silently killing the clamp */
+  /* concern and its AI summary are one field: the reason on top, the
+     summary under it, marked so nobody mistakes it for a human note */
+  .q-ai{display:flex;align-items:flex-start;gap:6px;margin-top:4px;}
+  .q-aidot{flex-shrink:0;width:13px;height:13px;color:var(--accent);margin-top:2px;opacity:.85;}
+  .q-aidot svg{width:13px;height:13px;display:block;}
   .q-aitext{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-    font-size:12.5px;line-height:1.45;color:var(--ink-soft);margin-top:4px;}
+    font-size:12px;line-height:1.45;color:var(--ink-faint);}
   .q-aiempty{color:var(--ink-faint);}
   .q-aitag{display:inline-block;font-style:normal;font-size:9px;font-weight:800;letter-spacing:.05em;
     background:var(--accent-wash);color:var(--accent-ink);border-radius:5px;padding:2px 6px;
@@ -759,7 +759,6 @@
   .al-row:last-of-type{border-bottom:none;}
   .al-row:hover{background:#FDF7F6;}
   .al-mark{width:3px;height:26px;border-radius:2px;background:var(--crit);}
-  .al-row.intake .al-mark{background:var(--warn);}
   .al-who{display:flex;align-items:baseline;gap:7px;min-width:0;}
   .al-who b{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .al-who i{font-style:normal;font-size:11px;color:var(--ink-faint);font-weight:600;}
@@ -776,7 +775,6 @@
   .al-btn:hover{background:var(--wash);}
   .al-btn.primary{background:var(--crit);border-color:var(--crit);color:#fff;}
   .al-btn.primary:hover{opacity:.9;}
-  .al-row.intake .al-btn.primary{background:var(--warn);border-color:var(--warn);}
   @media(max-width:1150px){ .al-row{grid-template-columns:3px 1.4fr 1fr .9fr auto;} .al-ref,.al-src{display:none;} }
   .crit-row{display:flex;gap:12px;align-items:flex-start;padding:13px 15px;margin-bottom:8px;border-radius:12px;
     background:var(--crit-wash);border:1px solid #E8B7AF;}
@@ -1659,6 +1657,33 @@
   .cd-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
     color:var(--ink-faint);margin:20px 0 9px;}
 
+  /* Tasks is the one destination that should never be hunted for */
+  /* a status you can act on looks like it; one you can't, doesn't */
+  .bill-pill.go{border:none;font-family:inherit;cursor:pointer;transition:filter .12s;}
+  .bill-pill.go:hover{filter:brightness(.94);}
+  .bill-pill.go:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .q-ver.go{border:none;font-family:inherit;cursor:pointer;}
+  .q-ver.go:hover{filter:brightness(.94);}
+  .q-ver.ok{background:var(--good-wash);color:var(--good);font-weight:700;}
+
+  .bl-eyebrow{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;
+    color:var(--ink-faint);margin:0 0 6px;}
+  .bl-who{font-size:12.5px;color:var(--ink-soft);margin:0 0 16px;}
+  .bl-block{background:var(--wash);border-radius:10px;padding:12px 14px;margin-bottom:10px;}
+  .bl-k{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--ink-faint);margin:0 0 5px;}
+  .bl-v{font-size:13px;line-height:1.55;color:var(--ink);margin:0;}
+
+  .nav-btn.nav-tasks{font-weight:600;}
+  .nav-btn.nav-tasks .nav-icon{color:var(--accent-ink);}
+
+  .sup-row{display:flex;align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid var(--wash);}
+  .sup-row:last-child{border-bottom:none;}
+  .sup-row > div{flex:1;min-width:0;}
+  .sup-row b{display:block;font-size:14px;font-weight:600;}
+  .sup-row span{font-size:12.5px;color:var(--ink-soft);}
+  .sup-row .btn,.sup-row .bill-pill{flex-shrink:0;}
+
   .nav-btn.nav-quiet{opacity:.62;}
   .nav-btn.nav-quiet:hover{opacity:1;}
   .vc-sf-btn{cursor:pointer;}
@@ -2095,27 +2120,11 @@
     <button class="nav-btn active" data-screen="today" onclick="showScreen('today')" style="font-weight:600;margin-bottom:16px;"><span class="nav-icon">&#8962;</span><span class="nav-label">Home</span></button>
 
     <div class="nav-group">
-      <p class="nav-group-label">Patients</p>
       <button class="nav-btn" data-screen="inbox" onclick="showScreen('inbox')"><span class="nav-icon">&#9993;</span><span class="nav-label">Inbox<span class="nav-flag" id="inbox-nav-flag" style="display:none;"></span></span></button>
-      <button class="nav-btn" data-screen="tasks" onclick="showScreen('tasks')"><span class="nav-icon">&#10003;</span><span class="nav-label">Assigned Tasks<span class="nav-flag" id="task-nav-flag" style="display:none;"></span></span></button>
       <button class="nav-btn" data-screen="claims" onclick="showScreen('claims')"><span class="nav-icon">$</span><span class="nav-label">Claims<span class="nav-flag mut" id="wt-claims-count" style="display:none;"></span></span></button>
+      <button class="nav-btn nav-tasks" data-screen="tasks" onclick="showScreen('tasks')"><span class="nav-icon">&#10003;</span><span class="nav-label">Tasks<span class="nav-flag" id="task-nav-flag" style="display:none;"></span></span></button>
+      <button class="nav-btn" data-screen="support" onclick="showScreen('support')"><span class="nav-icon">&#9432;</span><span class="nav-label">Technical Support</span></button>
     </div>
-
-    <div class="nav-group">
-      <p class="nav-group-label">Schedule</p>
-      <button class="nav-btn" data-screen="calendar" onclick="showScreen('calendar')"><span class="nav-icon">&#9638;</span><span class="nav-label">Calendar</span></button>
-      <button class="nav-btn nav-quiet" data-screen="encounterlog" onclick="showScreen('encounterlog')"><span class="nav-icon">&#9636;</span><span class="nav-label">Encounter Log</span></button>
-    </div>
-
-    <div class="nav-flyout-wrap" id="practice-flyout-wrap">
-      <button class="nav-btn-parent" id="practice-parent-btn"><span class="nav-icon">&#9776;</span><span class="nav-label">Practice</span><span class="nav-caret">&#8250;</span></button>
-      <div class="nav-flyout">
-        <button class="nav-flyout-item" data-screen="feesettings" onclick="showScreen('feesettings')"><span class="nav-icon">&#9881;</span> Fee Settings</button>
-        <button class="nav-flyout-item" data-screen="registerpatient" onclick="showScreen('registerpatient')"><span class="nav-icon">+</span> Register Patient</button>
-      </div>
-    </div>
-
-    <div class="ia-note" style="margin:0 6px 12px;">IA change, confirmed with the team: physicians place calls themselves, so Call Logs is no longer a separate destination — it's folded into Today as "Recent calls," right next to the queue it serves. Carry Forward moved from Practice into Patients since it's active clinical follow-up tracking, not billing/admin. Copilot is confirmed lightly-used today, so it's visually secondary here — its main surface is now the contextual Brief panel on each queue row.</div>
 
     <div class="sidebar-collapse-wrap">
       <button class="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" id="collapse-btn"><span class="nav-icon" id="collapse-icon">&#8676;</span><span class="collapse-label">Collapse</span></button>
@@ -2144,6 +2153,8 @@
             <div><b>Dr. Daniel Pannozzo</b><div class="tb-name">Physician</div></div>
           </div>
           <button class="pd-item" onclick="toggleProfileMenu();showScreen('profile')"><span>&#128100;</span> View profile</button>
+          <button class="pd-item" onclick="toggleProfileMenu();showScreen('calendar')"><span>&#9638;</span> Schedule &amp; availability</button>
+          <button class="pd-item" onclick="toggleProfileMenu();showScreen('feesettings')"><span>&#9881;</span> Fee settings</button>
           <div class="pd-divider"></div>
           <button class="pd-item" onclick="toggleProfileMenu();toast('Would sign you out')"><span>&#8618;</span> Sign out</button>
         </div>
@@ -2160,9 +2171,9 @@
 
 
       <div class="box" id="alerts-box">
-        <p class="box-title">Alerts — review before your first call</p>
+        <p class="box-title">Critical — review before your first call</p>
         <div id="crit-list"></div>
-        <div class="al-row intake">
+        <div class="al-row">
           <span class="al-mark"></span>
           <span class="al-who"><b>Gloria Mcdonald</b><i>74F</i></span>
           <span class="al-test">Intake flag</span>
@@ -2172,11 +2183,6 @@
           <span class="al-acts">
             <button class="al-btn primary" onclick="openBrief('Gloria Mcdonald')">Review intake</button>
           </span>
-        </div>
-        <p class="routine-toggle" onclick="toggleRoutine()">▸ 2 routine items (not blocking)</p>
-        <div class="routine-list" id="routine-list">
-          <div class="alert-row routine"><span class="alert-tier">Routine</span><div class="alert-body">7 claims missing Dx — resolve when convenient.</div><div class="alert-actions"><button class="btn xs" onclick="showScreen('claims')">View</button></div></div>
-          <div class="alert-row routine"><span class="alert-tier">Routine</span><div class="alert-body">Schedule for next week is unlocked and editable.</div><div class="alert-actions"><button class="btn xs" onclick="showScreen('calendar')">View</button></div></div>
         </div>
       </div>
 
@@ -2220,7 +2226,7 @@
           </div>
 
           <table class="q-table" id="queue-table">
-            <thead><tr><th>#</th><th>Patient</th><th>Clinical concern</th><th>AI summary</th><th>Visit status</th><th>Billing status</th><th>Action</th></tr></thead>
+            <thead><tr><th>#</th><th>Patient</th><th>Clinical concern</th><th>Visit status</th><th>Billing status</th><th>Action</th></tr></thead>
             <tbody id="queue-body"></tbody>
           </table>
         </div>
@@ -3021,6 +3027,39 @@
       </div>
     </div>
 
+    <div class="screen" id="screen-support">
+      <h1>Technical Support</h1>
+      <p class="sub">Something not working? Reach a person, not a form.</p>
+
+      <div class="box">
+        <p class="box-title">Get help now</p>
+        <div class="sup-row">
+          <div><b>Live chat</b><span>Weekdays 7:00 AM – 9:00 PM Pacific &middot; typical reply under 2 minutes</span></div>
+          <button class="btn dark xs" onclick="toast('Would open live chat with support')">Start chat</button>
+        </div>
+        <div class="sup-row">
+          <div><b>Call the support line</b><span>778 949 7878 &middot; urgent issues affecting a live call take priority</span></div>
+          <button class="btn xs" onclick="toast('Would dial the support line')">Call</button>
+        </div>
+        <div class="sup-row">
+          <div><b>Email</b><span>support@simplecare.ca &middot; answered same business day</span></div>
+          <button class="btn xs" onclick="toast('Would open an email to support')">Email</button>
+        </div>
+      </div>
+
+      <div class="box">
+        <p class="box-title">Report a problem with this visit</p>
+        <p class="sched-note">Attaches the patient, the call and the last few actions automatically, so you don't have to describe what happened.</p>
+        <button class="btn" onclick="toast('Would attach this session and open a report')">Report a problem</button>
+      </div>
+
+      <div class="box">
+        <p class="box-title">Recent tickets</p>
+        <div class="sup-row"><div><b>Requisition failed to fax to Royal Inland</b><span>Opened Sep 9 &middot; #4471</span></div><span class="bill-pill info">In progress</span></div>
+        <div class="sup-row"><div><b>Call audio dropped twice in the 2:00 window</b><span>Opened Sep 2 &middot; #4408</span></div><span class="bill-pill ok">Resolved</span></div>
+      </div>
+    </div>
+
     <div class="screen" id="screen-registerpatient">
       <h1>Register Patient</h1>
       <p class="sub">Practice admin group.</p>
@@ -3222,18 +3261,36 @@
   </div>
 </div>
 
+<div class="defer-overlay" id="bill-overlay" onclick="if(event.target===this) closeBilling()">
+  <div class="defer-card" style="width:460px;">
+    <p class="bl-eyebrow" id="bl-eyebrow">Billing</p>
+    <p class="defer-ttl" id="bl-title">—</p>
+    <p class="bl-who" id="bl-who">—</p>
+    <div class="bl-block">
+      <p class="bl-k">What this means</p>
+      <p class="bl-v" id="bl-why">—</p>
+    </div>
+    <div class="bl-block" id="bl-next-wrap">
+      <p class="bl-k">What happens next</p>
+      <p class="bl-v" id="bl-next">—</p>
+    </div>
+    <div class="defer-acts">
+      <button class="btn" onclick="closeBilling()">Close</button>
+      <button class="btn dark" id="bl-do" onclick="billingAct()">—</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-var PRACTICE_SCREENS = ['feesettings','registerpatient'];
+
 function showScreen(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   var t=document.getElementById('screen-'+name);
   if(t) t.classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.screen===name));
   document.querySelectorAll('.nav-flyout-item').forEach(b=>b.classList.toggle('active', b.dataset.screen===name));
-  var parentBtn = document.getElementById('practice-parent-btn');
-  if(parentBtn){ parentBtn.classList.toggle('active-child', PRACTICE_SCREENS.indexOf(name) !== -1); }
   window.scrollTo(0,0);
 }
 
@@ -3252,35 +3309,49 @@ var QUEUE_DATA = [
    concern:'Follow up appointment', win:'10-2', status:'delayed', wait:'22 min', redflag:false, bill:'msp-paid'},
   {pos:5, name:'K Arli Eyre, 41', legal:'KATHLEEN ARLI EYRE', pref:'Arli', age:'41Y', sex:'Female', plan:'MSP', card:'invalid',
    concern:'Standard visit', win:'2-5', status:'missed', wait:'—', redflag:false, bill:'msp-rejected'},
-  {pos:6, name:'Greg', legal:'GREGORY PAUL NAKASHIMA', pref:'Greg', age:'58Y', sex:'Male', plan:'Private', card:'private',
-   concern:'Rx renewal', win:'2-5', status:'dropped', wait:'—', redflag:false, bill:'priv-due'},
-  {pos:7, name:'Manjit', legal:'MANJIT KAUR DHILLON', pref:'Manjit', age:'66Y', sex:'Female', plan:'Private', card:'private',
-   concern:'Lab follow-up', win:'5-7', status:'done', wait:'—', redflag:false, bill:'priv-paid'},
-  {pos:8, name:'Korynn', legal:'KORYNN ELISE BAPTISTE', pref:'Korynn', age:'29Y', sex:'Female', plan:'Private', planNote:'ICBC 8841-22', card:'private',
-   concern:'Standard visit', win:'5-7', status:'noshow', wait:'—', redflag:false, bill:'priv-review'}
+  {pos:6, name:'Greg', legal:'GREGORY PAUL NAKASHIMA', pref:'Greg', age:'58Y', sex:'Male', plan:'MSP', card:'verified',
+   concern:'Rx renewal', win:'2-5', status:'dropped', wait:'—', redflag:false, bill:'msp-pending'},
+  {pos:7, name:'Manjit', legal:'MANJIT KAUR DHILLON', pref:'Manjit', age:'66Y', sex:'Female', plan:'MSP', card:'verified',
+   concern:'Lab follow-up', win:'5-7', status:'done', wait:'—', redflag:false, bill:'msp-paid'},
+  {pos:8, name:'Korynn', legal:'KORYNN ELISE BAPTISTE', pref:'Korynn', age:'29Y', sex:'Female', plan:'MSP', card:'check',
+   concern:'Standard visit', win:'5-7', status:'noshow', wait:'—', redflag:false, bill:'msp-submit'}
 ];
 /* Daniel's two status sets. Health card says who is paying and whether
    that is settled; billing says where the money is. Billing always names
    the payer, because MSP and Private are different routes with different
    next steps. */
 var CARD_STATUS = {
-  verified: {label:'Verified',       tone:'ok'},
-  check:    {label:'Check required', tone:'warn'},
-  invalid:  {label:'Invalid card',   tone:'bad'},
-  private:  {label:'Private pay',    tone:'info'}
+  verified: {label:'MSP verified', tone:'ok', tick:'&#10003;',
+             why:'Checked against MSP this morning. Coverage is active.'},
+  check:    {label:'Check required', tone:'warn',
+             why:'MSP returned no match for the card number on file. Usually a typo, a recent name change, or a card issued since the last visit.',
+             next:'Confirm the number and date of birth with the patient on the call, then re-check.'},
+  invalid:  {label:'Invalid card', tone:'bad',
+             why:'MSP reports this card as cancelled. Common causes: the patient moved out of province, or coverage lapsed on a premium.',
+             next:'The visit can still go ahead. Flag it to the MOA to establish coverage or arrange private payment before billing.'}
 };
+/* A billing status is information and, where something can be done about
+   it, the way in. Submitted and paid are reports — there is nothing to
+   review, so they don't pretend to be buttons. */
 var BILL_STATUS = {
-  'msp-submit':    {label:'<span class="payer">MSP</span> Submit claim',       tone:'warn', act:'Submit'},
-  'msp-submitted': {label:'<span class="payer">MSP</span> Claim submitted',    tone:'info'},
-  'msp-review':    {label:'<span class="payer">MSP</span> Review claim',       tone:'warn', act:'Review'},
-  'msp-rejected':  {label:'<span class="payer">MSP</span> Claim rejected',     tone:'bad',  act:'Correct'},
-  'msp-paid':      {label:'<span class="payer">MSP</span> Claim paid',         tone:'ok'},
-  'priv-due':      {label:'<span class="payer">Private</span> Payment due',    tone:'warn', act:'Invoice'},
-  'priv-review':   {label:'<span class="payer">Private</span> Review payment', tone:'warn', act:'Review'},
-  'priv-paid':     {label:'<span class="payer">Private</span> Payment paid',   tone:'ok'}
+  'msp-pending':   {label:'Pending',         tone:'quiet', open:true,
+                    why:'The visit is closed but no claim has been built yet.',
+                    next:'Build the claim from the encounter and submit it to MSP.'},
+  'msp-submit':    {label:'Submit claim',    tone:'warn', open:true,
+                    why:'The claim is built and coded, waiting on you to send it.',
+                    next:'Review the fee item and diagnostic code, then submit to MSP.'},
+  'msp-submitted': {label:'Claim submitted', tone:'info', open:false,
+                    why:'Sent to MSP and waiting on their adjudication. Nothing to do.'},
+  'msp-review':    {label:'Review claim',    tone:'warn', open:true,
+                    why:'MSP returned a query on the fee item before adjudicating.',
+                    next:'Check the code against the encounter note and resubmit.'},
+  'msp-rejected':  {label:'Claim rejected',  tone:'bad',  open:true,
+                    why:'MSP refused the claim. Refusals expire, so this is time-limited.',
+                    next:'Correct the reason given and resubmit within the window.'},
+  'msp-paid':      {label:'Claim paid',      tone:'ok',   open:false,
+                    why:'Adjudicated and paid. Nothing to do.'}
 };
-/* what still needs a hand */
-var BILL_OPEN = ['msp-submit','msp-review','msp-rejected','priv-due','priv-review'];
+var BILL_OPEN = ['msp-pending','msp-submit','msp-review','msp-rejected'];
 var STATUS_LABEL = {
   waiting:'In queue', next:'In queue', progress:'In visit', delayed:'In queue',
   missed:'Missed call', dropped:'Call dropped', done:'Completed', noshow:'No-show', scheduled:'Scheduled'
@@ -3314,6 +3385,12 @@ var OTHER_DAYS = {
   '2':[{name:'Marcus Webb, 66M',concern:'Diabetes review',win:'10-2',status:'scheduled'}],
   '3':[]
 };
+
+/* the mark that says a machine wrote this, not a person */
+var AI_MARK = '<svg viewBox="0 0 14 14" fill="none" aria-hidden="true">'+
+  '<path d="M7 1.2 8.05 4.6 11.4 5.65 8.05 6.7 7 10.1 5.95 6.7 2.6 5.65 5.95 4.6Z" fill="currentColor"/>'+
+  '<path d="M11.2 9.1 11.7 10.6 13.2 11.1 11.7 11.6 11.2 13.1 10.7 11.6 9.2 11.1 10.7 10.6Z" fill="currentColor"/>'+
+  '</svg>';
 
 function renderQueue(){
   var body = document.getElementById('queue-body');
@@ -3351,8 +3428,9 @@ function renderQueue(){
 
     /* Claims sit on the day sheet, not behind Practice. "Leave no claim behind." */
     var bs = BILL_STATUS[r.bill] || BILL_STATUS['msp-submit'];
-    var billCell = '<span class="bill-pill '+bs.tone+'">'+bs.label+'</span>' +
-      (bs.act ? '<button class="bill-fix" onclick="event.stopPropagation();fixClaim(\''+r.name+'\')">'+bs.act+'</button>' : '');
+    var billCell = bs.open
+      ? '<button class="bill-pill '+bs.tone+' go" onclick="event.stopPropagation();openBilling(\''+r.name+'\')">'+bs.label+'</button>'
+      : '<span class="bill-pill '+bs.tone+'">'+bs.label+'</span>';
 
     return '<tr class="'+(r.redflag?'redflag':'')+'">'+
       '<td>'+dueChip+'</td>'+
@@ -3363,15 +3441,21 @@ function renderQueue(){
           '<span class="q-demo">'+(r.age||'')+', '+(r.sex||'')+'</span>'+
           '<span class="q-plan">'+(r.plan||'MSP')+
             (r.planNote ? ' <i>'+r.planNote+'</i>' : '')+
-            /* verified is the normal case and private pay is already the plan
-               name — only a card that needs looking at earns a badge */
-            ((r.card==='check' || r.card==='invalid')
-              ? '<span class="q-ver '+CARD_STATUS[r.card].tone+'">'+CARD_STATUS[r.card].label+'</span>' : '')+
+            /* Verified reports and stops there. The two that need looking at
+               are the way in to why, and what to do about it. */
+            (r.card==='verified'
+              ? '<span class="q-ver ok" title="Health card checked against MSP today">'+CARD_STATUS.verified.tick+' MSP verified</span>'
+              : '<button class="q-ver '+CARD_STATUS[r.card].tone+' go" onclick="event.stopPropagation();openCard(\''+r.name+'\')">'+CARD_STATUS[r.card].label+'</button>')+
           '</span>'+
         '</span></div></td>'+
-      '<td class="q-concern"><span class="cc">'+r.concern+'</span>'+
-        '</td>'+
-      '<td class="q-aicell">'+(AI_SUMMARY[r.name] ? '<span class="q-aitag">AI</span><span class="q-aitext">'+AI_SUMMARY[r.name]+'</span>' : '<span class="q-aiempty">&mdash;</span>')+'</td>'+
+      '<td class="q-concern">'+
+        '<span class="cc">'+r.concern+'</span>'+
+        (AI_SUMMARY[r.name]
+          ? '<span class="q-ai" title="Summarised by SimpleCare from the pre-visit intake">'+
+              '<span class="q-aidot">'+AI_MARK+'</span>'+
+              '<span class="q-aitext">'+AI_SUMMARY[r.name]+'</span></span>'
+          : '')+
+      '</td>'+
       '<td>'+statusPill+'</td>'+
       '<td class="q-bill">'+billCell+'</td>'+
       '<td class="q-actions">'+actions+'</td>'+
@@ -3493,20 +3577,65 @@ function updateClaimCount(){
 }
 /* each open state has one obvious next move */
 var BILL_NEXT = {
-  'msp-submit':'msp-submitted', 'msp-review':'msp-submitted', 'msp-rejected':'msp-submitted',
-  'priv-due':'priv-review', 'priv-review':'priv-paid'
+  'msp-pending':'msp-submit', 'msp-submit':'msp-submitted',
+  'msp-review':'msp-submitted', 'msp-rejected':'msp-submitted'
 };
 var BILL_SAID = {
-  'msp-submit':'claim submitted to MSP', 'msp-review':'claim reviewed and resubmitted',
-  'msp-rejected':'claim corrected and resubmitted',
-  'priv-due':'invoice sent, awaiting payment', 'priv-review':'payment confirmed'
+  'msp-pending':'claim built, ready to submit', 'msp-submit':'claim submitted to MSP',
+  'msp-review':'claim reviewed and resubmitted', 'msp-rejected':'claim corrected and resubmitted'
 };
-function fixClaim(name){
-  var r = QUEUE_DATA.find(function(x){ return x.name===name; }); if(!r) return;
+var BILL_DO = {
+  'msp-pending':'Build the claim', 'msp-submit':'Submit to MSP',
+  'msp-review':'Resubmit', 'msp-rejected':'Correct and resubmit'
+};
+/* One modal for both: a billing state you can act on, or a health card
+   that needs looking at. Same shape — what it means, what happens next. */
+var BL_FOR = null, BL_KIND = null;
+function openBilling(name){
+  var r = QUEUE_DATA.filter(function(x){ return x.name===name; })[0]; if(!r) return;
+  var bs = BILL_STATUS[r.bill]; if(!bs || !bs.open) return;
+  BL_FOR = name; BL_KIND = 'bill';
+  document.getElementById('bl-eyebrow').textContent = 'MSP billing';
+  document.getElementById('bl-title').textContent = bs.label;
+  document.getElementById('bl-who').innerHTML = '<b>'+r.legal+'</b> &middot; '+r.concern+' &middot; '+(WIN_TEXT[r.win]||r.win);
+  document.getElementById('bl-why').textContent = bs.why;
+  document.getElementById('bl-next').textContent = bs.next || '';
+  document.getElementById('bl-next-wrap').style.display = bs.next ? 'block' : 'none';
+  document.getElementById('bl-do').textContent = BILL_DO[r.bill] || 'Continue';
+  document.getElementById('bl-do').style.display = 'inline-flex';
+  document.getElementById('bill-overlay').classList.add('show');
+}
+function openCard(name){
+  var r = QUEUE_DATA.filter(function(x){ return x.name===name; })[0]; if(!r) return;
+  var cs = CARD_STATUS[r.card]; if(!cs || r.card==='verified') return;
+  BL_FOR = name; BL_KIND = 'card';
+  document.getElementById('bl-eyebrow').textContent = 'Health card';
+  document.getElementById('bl-title').textContent = cs.label;
+  document.getElementById('bl-who').innerHTML = '<b>'+r.legal+'</b> &middot; MSP &middot; '+(WIN_TEXT[r.win]||r.win);
+  document.getElementById('bl-why').textContent = cs.why;
+  document.getElementById('bl-next').textContent = cs.next || '';
+  document.getElementById('bl-next-wrap').style.display = cs.next ? 'block' : 'none';
+  document.getElementById('bl-do').textContent = r.card==='check' ? 'Re-check with MSP' : 'Task the MOA';
+  document.getElementById('bill-overlay').classList.add('show');
+}
+function closeBilling(){ document.getElementById('bill-overlay').classList.remove('show'); }
+function billingAct(){
+  var r = QUEUE_DATA.filter(function(x){ return x.name===BL_FOR; })[0];
+  if(!r){ closeBilling(); return; }
+  if(BL_KIND === 'card'){
+    if(r.card === 'check'){
+      r.card = 'verified';
+      closeBilling(); renderQueue();
+      toast(firstLast(r.name)+' — card re-checked, coverage active');
+    } else {
+      closeBilling(); openTaskMoa(r.name);
+    }
+    return;
+  }
   var said = BILL_SAID[r.bill] || 'updated';
   r.bill = BILL_NEXT[r.bill] || r.bill;
-  renderQueue(); updateClaimCount();
-  toast(firstLast(name)+' — '+said);
+  closeBilling(); renderQueue(); updateClaimCount();
+  toast(firstLast(r.name)+' — '+said);
 }
 function advance(name, newStatus){
   var row = QUEUE_DATA.find(function(r){ return r.name===name; });
@@ -3540,9 +3669,6 @@ window.addEventListener('message', function(e){
 });
 
 /* ===== alerts ===== */
-function toggleRoutine(){
-  document.getElementById('routine-list').classList.toggle('show');
-}
 function ackAlert(el){
   el.closest('.alert-row').style.opacity = '.4';
   el.textContent = 'Acknowledged';
