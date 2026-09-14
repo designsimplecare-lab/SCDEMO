@@ -716,11 +716,12 @@
   .q-toolbar .day-nav{margin-bottom:0;flex-shrink:0;}
   .q-toolbar .win-strip{flex-shrink:0;}
   /* search gives way before anything else when the bar runs out of room */
-  /* search sits with the other header controls, not in the filter row */
-  .work-tabs .q-tools{margin-left:auto;min-width:0;flex:0 1 auto;}
-  .work-tabs .q-search{min-width:0;max-width:100%;}
-  .work-tabs .q-search input{min-width:0;width:100%;}
+  /* search belongs with the filters it narrows, inside the table's card */
+  .q-toolbar .q-tools{margin-left:auto;min-width:0;flex:0 1 auto;order:3;}
+  .q-toolbar .q-search{min-width:0;max-width:100%;}
+  .q-toolbar .q-search input{min-width:0;width:100%;}
   .work-tabs .wt-new{margin-left:0;}
+  .work-tabs .sect-title{margin-right:auto;}
   .win-strip{background:var(--wash);border-radius:22px;padding:4px;gap:2px;display:inline-flex;width:auto;flex-wrap:nowrap;margin:0;}
   .win-strip .win-chip{border:none;background:none;color:var(--ink-soft);border-radius:18px;box-shadow:none;font-weight:600;}
   .win-strip .win-chip.active{background:var(--panel);color:var(--ink);box-shadow:0 1px 5px rgba(28,31,38,.12);}
@@ -733,7 +734,7 @@
   .day-arrow{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--panel);
     cursor:pointer;font-family:inherit;font-size:16.5px;color:var(--ink-soft);line-height:1;}
   .day-arrow:hover{background:var(--wash);color:var(--ink);}
-  .day-label{font-size:15.5px;font-weight:800;letter-spacing:-.01em;min-width:172px;text-align:center;}
+  .day-label{font-size:14.5px;font-weight:600;color:var(--ink-soft);letter-spacing:0;min-width:172px;text-align:center;}
   .day-today{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 12px;
     font-size:13px;font-weight:700;color:var(--ink-soft);cursor:pointer;font-family:inherit;display:none;}
   .day-today:hover{background:var(--wash);color:var(--ink);}
@@ -1671,8 +1672,8 @@
   /* critical marker — small, red, and the only flag state there is */
   /* one section title for both blocks, outside the card so it reads as a
      heading rather than something inside the panel */
-  .sect-title{display:inline-flex;align-items:center;gap:10px;font-size:17.5px;font-weight:700;
-    letter-spacing:-.015em;color:var(--ink);margin:0 0 12px;}
+  .sect-title{display:inline-flex;align-items:center;gap:11px;font-size:22px;font-weight:800;
+    letter-spacing:-.02em;color:var(--ink);margin:0 0 12px;}
   .work-tabs{margin-bottom:12px;}
 
   }
@@ -2375,12 +2376,6 @@
       <!-- Live queue + Inbox in one card, switched by tabs -->
       <div class="work-tabs">
           <span class="sect-title">Live queue <span class="wt-count" id="wt-queue-count">0</span></span>
-          <div class="q-tools">
-              <div class="q-search">
-                <input type="text" id="queue-search" placeholder="Search by name, PHN, DOB" oninput="filterQueueSearch(this.value)">
-                <button class="q-clear" id="queue-search-clear" onclick="clearQueueSearch()" title="Clear">&times;</button>
-              </div>
-            </div>
           <button class="wt-new" onclick="showScreen('registerpatient')" title="Register a new patient">
             <span class="ic" data-pcic="newpatient"></span> New patient
           </button>
@@ -2398,6 +2393,12 @@
               <button class="day-arrow" onclick="shiftDay(1)" title="Next day">&#8250;</button>
               <button class="day-today" id="day-today-btn" onclick="goToday()">Today</button>
               <span class="day-count" id="day-count"></span>
+            </div>
+            <div class="q-tools">
+              <div class="q-search">
+                <input type="text" id="queue-search" placeholder="Search by name, PHN, DOB" oninput="filterQueueSearch(this.value)">
+                <button class="q-clear" id="queue-search-clear" onclick="clearQueueSearch()" title="Clear">&times;</button>
+              </div>
             </div>
             <div class="win-strip">
               <button class="win-chip active" data-win="all" onclick="filterWindow('all',this)">All</button>
