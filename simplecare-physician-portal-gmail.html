@@ -2759,6 +2759,67 @@
   #attn-tasks .due-late{color:var(--crit);}
   #attn-tasks .due-soon{color:var(--warn);}
   #attn-tasks .due-later{color:var(--ink-soft);font-weight:600;}
+
+  /* ===== dark mode, second pass =====
+     Everything below is a light colour hardcoded in the base sheet rather
+     than taken from a token, so the dark palette never reached it. Found by
+     walking every rule for a background lighter than the page. */
+
+  /* The topbar kept its LIGHT background-colour — the dark rule only replaced
+     the image, so a dark layer was painting over a light one and the result
+     was the flat grey slab. */
+  :root[data-theme="dark"] .topbar{
+    background-color:transparent;
+    background-image:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55));
+    -webkit-backdrop-filter:saturate(150%) blur(22px);
+    backdrop-filter:saturate(150%) blur(22px);
+  }
+
+  /* row hover went to a near-white pink, which is the flash on the alerts */
+  :root[data-theme="dark"] .al-row:hover,
+  :root[data-theme="dark"] .al-row:focus-within{background:rgba(255,255,255,.06);}
+  :root[data-theme="dark"] .inbox-row.ix.critical{background:rgba(255,69,58,.12);}
+  :root[data-theme="dark"] .sec.err{background:rgba(255,69,58,.12);}
+
+  /* surfaces that were pure white */
+  :root[data-theme="dark"] .doc-sheet,
+  :root[data-theme="dark"] .vd-av,
+  :root[data-theme="dark"] .vd-hr,
+  :root[data-theme="dark"] .vd-pill.mut,
+  :root[data-theme="dark"] .vd-callalt button,
+  :root[data-theme="dark"] .vd-callctrl button{background:var(--panel);color:var(--ink);}
+  :root[data-theme="dark"] .vd-callalt button:hover,
+  :root[data-theme="dark"] .vd-callctrl button:hover{background:var(--wash);}
+  :root[data-theme="dark"] .box{border-color:var(--line);}
+
+  /* tinted document/type chips: same hue, dark ground */
+  :root[data-theme="dark"] .ix-type.img,
+  :root[data-theme="dark"] .doc-kind.img{background:rgba(10,132,255,.18);color:#64B5FF;}
+  :root[data-theme="dark"] .ix-type.con,
+  :root[data-theme="dark"] .doc-kind.ref{background:rgba(191,90,242,.18);color:#DA8FFF;}
+  :root[data-theme="dark"] .ix-type.mic{background:rgba(48,209,88,.18);color:#4FDE7A;}
+  :root[data-theme="dark"] .ix-type.tra{background:rgba(255,159,10,.18);color:#FFB340;}
+  :root[data-theme="dark"] .ix-type.scr{background:var(--wash);color:var(--ink-soft);}
+  :root[data-theme="dark"] .ix-chip.soft{background:rgba(255,159,10,.16);color:#FFB340;}
+  :root[data-theme="dark"] .ai-tag,
+  :root[data-theme="dark"] .rv-ai{background:rgba(10,132,255,.14);color:#64B5FF;}
+  :root[data-theme="dark"] .ai-action:hover,
+  :root[data-theme="dark"] .ai-chip:hover{background:rgba(10,132,255,.16);}
+  :root[data-theme="dark"] .doc-ecg{background:rgba(255,69,58,.10);}
+
+  /* the red-flag row was a pale pink wash */
+  :root[data-theme="dark"] .q-table tr.redflag td{background:rgba(255,69,58,.09);}
+  :root[data-theme="dark"] .q-table tbody tr.redflag:hover td{background:rgba(255,69,58,.15);}
+
+  /* cards lift off the ground instead of relying on a border */
+  :root[data-theme="dark"] .box,
+  :root[data-theme="dark"] .work-tabs{
+    border-color:rgba(255,255,255,.08);
+    box-shadow:0 1px 2px rgba(0,0,0,.6), 0 10px 30px rgba(0,0,0,.45);
+  }
+  /* the separator band was reading as a second card edge */
+  :root[data-theme="dark"] .q-sep td{background:rgba(255,255,255,.04);}
+  :root[data-theme="dark"] .q-sep.carry td{background:rgba(255,159,10,.10);}
 </style>
 </head>
 <body>
