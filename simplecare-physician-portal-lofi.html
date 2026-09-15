@@ -2734,14 +2734,14 @@
      top of it. Two changes make them coexist: the buttons drop to icons with
      tooltips, and the concern reserves their width so its text never runs
      underneath them. */
-  .q-hoverbar .btn.ico{width:36px;height:36px;padding:0;justify-content:center;border-radius:50%;}
-  .q-hoverbar .btn.ico .ic{margin:0;}
-  .q-hoverbar{padding-left:70px;}
-  .q-hoverbar{background:linear-gradient(to right, rgba(247,248,251,0) 0%, #f7f8fb 70px, #f7f8fb 100%);}
+  /* Labels stay on the row actions. They overlay the tail of the clinical
+     concern on hover, which is the Gmail behaviour Ani signed off on — the
+     110px fade dissolves the text rather than chopping it. */
+  .q-hoverbar{padding-left:110px;}
+  .q-hoverbar{background:linear-gradient(to right, rgba(247,248,251,0) 0%, #f7f8fb 110px, #f7f8fb 100%);}
   :root[data-theme="dark"] .q-hoverbar{
-    background:linear-gradient(to right, rgba(44,44,46,0) 0%, #2C2C2E 70px, #2C2C2E 100%);
+    background:linear-gradient(to right, rgba(44,44,46,0) 0%, #2C2C2E 110px, #2C2C2E 100%);
   }
-  .q-table td.q-concern{padding-right:104px;}
 
 
   /* Spec 5.4: hover does not exist on a touch device, so on one the actions
@@ -4436,8 +4436,8 @@ function renderQueue(){
        walk-in line — nobody skips it. Doctor-initiated calls go through
        Add-On instead, not through the queue. */
     var actions = (closed || !isNext) ? ''
-      : '<button class="btn xs ico dark" title="Call '+(r.pref||r.name)+'" aria-label="Call '+(r.pref||r.name)+'" onclick="event.stopPropagation();callPatient(\''+r.name+'\')"><span class="ic" data-pdic="phone"></span></button> ';
-    actions += '<button class="btn xs ico" title="Task the MOA about '+(r.pref||r.name)+'" aria-label="Task the MOA about '+(r.pref||r.name)+'" onclick="event.stopPropagation();openTaskMoa(\''+r.name+'\')"><span class="ic" data-pdic="taskmoa"></span></button>';
+      : '<button class="btn xs dark" onclick="event.stopPropagation();callPatient(\''+r.name+'\')"><span class="ic" data-pdic="phone"></span>Call</button> ';
+    actions += '<button class="btn xs" onclick="event.stopPropagation();openTaskMoa(\''+r.name+'\')"><span class="ic" data-pdic="taskmoa"></span>Task MOA</button>';
 
 
     // queue position — first come, first served. No wait timers (pace-neutral).
