@@ -2460,6 +2460,9 @@
      fills them — half the rows were a line shorter than the other half and
      the table height jittered from row to row */
   .q-aitext{min-height:2.9em;}
+
+  /* the clock sits with the date, one notch quieter than it */
+  .tb-clock{margin-left:7px;color:var(--ink-faint);font-variant-numeric:tabular-nums;}
 </style>
 </head>
 <body>
@@ -3650,6 +3653,18 @@ function loadProfilePhoto(){
   img.src = 'assets/dr-pannozzo.jpg';
 }
 
+/* A running clock beside the date. The day sheet is a fixed demo date but
+   the time is real — the doctor reads it against the call windows. */
+function tickClock(){
+  var c = document.getElementById('tb-clock'); if(!c) return;
+  var now = new Date();
+  var h = now.getHours(), m = now.getMinutes();
+  var ampm = h < 12 ? 'AM' : 'PM';
+  h = h % 12; if(h === 0) h = 12;
+  c.textContent = '\u00b7 ' + h + ':' + (m < 10 ? '0' + m : m) + ' ' + ampm;
+}
+setInterval(tickClock, 1000 * 15);
+
 function syncTopTitle(){
   var el = document.getElementById('tb-title'); if(!el) return;
   var scr = document.querySelector('.screen.active'); if(!scr) return;
@@ -3658,7 +3673,7 @@ function syncTopTitle(){
   if(scr.id === 'screen-today'){
     var h = new Date().getHours();
     el.textContent = (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', Dr. Pannozzo';
-    if(dt){ dt.textContent = 'Thursday, July 23, 2026'; dt.style.display = 'inline'; }
+    if(dt){ dt.innerHTML = 'Thursday, July 23, 2026 <span class="tb-clock" id="tb-clock"></span>'; dt.style.display = 'inline'; tickClock(); }
   } else {
     var t = scr.querySelector('h1');
     el.textContent = t ? t.textContent.trim() : '';
