@@ -2724,6 +2724,24 @@
   .co-box p b{color:var(--ink);font-weight:700;}
   .co-acts{display:flex;gap:8px;justify-content:flex-end;}
 
+
+  /* Visit status moves up beside Billing; the clinical concern and its AI
+     summary take the last column, where they have the most room to run. */
+  .q-table th:nth-child(5),.q-table td:nth-child(5){width:124px;}
+  .q-table th:nth-child(6),.q-table td:nth-child(6){width:auto;}
+
+  /* The concern is the last column now, so the floating actions would sit on
+     top of it. Two changes make them coexist: the buttons drop to icons with
+     tooltips, and the concern reserves their width so its text never runs
+     underneath them. */
+  .q-hoverbar .btn.ico{width:36px;height:36px;padding:0;justify-content:center;border-radius:50%;}
+  .q-hoverbar .btn.ico .ic{margin:0;}
+  .q-hoverbar{padding-left:70px;}
+  .q-hoverbar{background:linear-gradient(to right, rgba(247,248,251,0) 0%, #f7f8fb 70px, #f7f8fb 100%);}
+  :root[data-theme="dark"] .q-hoverbar{
+    background:linear-gradient(to right, rgba(44,44,46,0) 0%, #2C2C2E 70px, #2C2C2E 100%);
+  }
+  .q-table td.q-concern{padding-right:104px;}
 </style>
 </head>
 <body>
@@ -2846,7 +2864,7 @@
           <div class="q-notice" id="q-notice" hidden></div>
           <div class="q-tablewrap" id="q-tablewrap">
             <table class="q-table" id="queue-table">
-              <thead><tr><th>#</th><th>Patient</th><th>Health card</th><th>Billing status</th><th>Clinical concern</th><th>Visit status</th></tr></thead>
+              <thead><tr><th>#</th><th>Patient</th><th>Health card</th><th>Billing status</th><th>Visit status</th><th>Clinical concern</th></tr></thead>
               <tbody id="queue-body"></tbody>
             </table>
             <div class="q-hoverbar" id="q-hoverbar"></div>
@@ -4340,8 +4358,8 @@ function renderQueue(){
     var closed = (r.status==='done' || r.status==='noshow');
     var isNext = (r === QUEUE_NEXT);
     var actions = closed ? ''
-      : '<button class="btn xs '+(isNext?'dark':'muted')+'" onclick="event.stopPropagation();callGuard(\''+r.name+'\')"><span class="ic" data-pdic="phone"></span>Call</button> ';
-    actions += '<button class="btn xs" onclick="event.stopPropagation();openTaskMoa(\''+r.name+'\')"><span class="ic" data-pdic="taskmoa"></span>Task MOA</button>';
+      : '<button class="btn xs ico '+(isNext?'dark':'muted')+'" title="Call '+(r.pref||r.name)+'" aria-label="Call '+(r.pref||r.name)+'" onclick="event.stopPropagation();callGuard(\''+r.name+'\')"><span class="ic" data-pdic="phone"></span></button> ';
+    actions += '<button class="btn xs ico" title="Task the MOA about '+(r.pref||r.name)+'" aria-label="Task the MOA about '+(r.pref||r.name)+'" onclick="event.stopPropagation();openTaskMoa(\''+r.name+'\')"><span class="ic" data-pdic="taskmoa"></span></button>';
 
 
     // queue position — first come, first served. No wait timers (pace-neutral).
@@ -4391,6 +4409,7 @@ function renderQueue(){
         '</span></div></td>'+
       '<td class="q-card">'+cardCell+'</td>'+
       '<td class="q-bill">'+billCell+'</td>'+
+      '<td>'+statusPill+'</td>'+
       '<td class="q-concern">'+
         '<span class="cc">'+r.concern+'</span>'+
         (AI_SUMMARY[r.name]
@@ -4399,7 +4418,6 @@ function renderQueue(){
               '<span class="q-aitext">'+AI_SUMMARY[r.name]+'</span></span>'
           : '')+
       '</td>'+
-      '<td>'+statusPill+'</td>'+
     '</tr>';
   }
 
