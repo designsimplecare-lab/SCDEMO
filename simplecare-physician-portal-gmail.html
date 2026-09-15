@@ -2742,6 +2742,13 @@
     background:linear-gradient(to right, rgba(44,44,46,0) 0%, #2C2C2E 70px, #2C2C2E 100%);
   }
   .q-table td.q-concern{padding-right:104px;}
+
+
+  /* Spec 5.4: hover does not exist on a touch device, so on one the actions
+     are always there — a doctor on an iPad would otherwise never reach them. */
+  @media (hover: none){
+    .q-hoverbar{display:flex;position:static;padding:0;background:none;}
+  }
 </style>
 </head>
 <body>
@@ -2813,7 +2820,7 @@
 
 
 
-      <p class="sect-title">Urgent alerts</p>
+      <p class="sect-title">Needs your attention</p>
       <div class="box" id="alerts-box">
         <div id="crit-list"></div>
         <div class="al-row">
@@ -4270,27 +4277,6 @@ function renderQueueChip(today, cw, rows, cwi){
   }
 }
 
-/* Calling out of turn is allowed — it has to be, for anything urgent — but
-   it should be a decision, not a slip. */
-var CALL_ASK = null;
-function callGuard(name){
-  if(!QUEUE_NEXT || QUEUE_NEXT.name === name){ callPatient(name); return; }
-  CALL_ASK = name;
-  var d = document.getElementById('call-order');
-  document.getElementById('co-next').textContent = QUEUE_NEXT.legal || QUEUE_NEXT.name;
-  var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0];
-  document.getElementById('co-who').textContent = (r && (r.legal || r.name)) || name;
-  d.hidden = false;
-}
-function callOrderGo(){
-  var n = CALL_ASK; CALL_ASK = null;
-  document.getElementById('call-order').hidden = true;
-  if(n) callPatient(n);
-}
-function callOrderCancel(){
-  CALL_ASK = null;
-  document.getElementById('call-order').hidden = true;
-}
 
 var WIN_ORDER = ['8-10','10-2','2-5','5-7'];
 var QV = 'current';
@@ -4302,6 +4288,23 @@ function currentWin(){
   return '5-7';
 }
 function qvToggle(){ QV = (QV === 'current') ? 'all' : 'current'; renderQueue(); }
+
+/* Spec 4.3: the window must never change under a doctor who is mid-call or
+   reading a chart. The queue keeps showing the window it was on and applies
+   the switch once both are closed. */
+var QWIN_SHOWN = null;
+function queueBusy(){
+  var onCall = !!document.querySelector('.pc-callstrip.live');
+  var chartOpen = document.querySelector('#screen-chart.active') !== null;
+  return onCall || chartOpen;
+}
+function shownWin(){
+  var real = currentWin();
+  if(QWIN_SHOWN === null){ QWIN_SHOWN = real; return real; }
+  if(QWIN_SHOWN !== real && queueBusy()) return QWIN_SHOWN;  /* held */
+  QWIN_SHOWN = real;
+  return real;
+}
 function qSep(label, count, carry){
   return '<tr class="q-sep'+(carry?' carry':'')+'"><td colspan="6"><span class="q-sepin">'+
     label+'<span class="q-sepn">'+count+'</span></span></td></tr>';
@@ -4329,7 +4332,7 @@ function renderQueue(){
   qHoverHide();
 
   var today = (dayOffset === 0);
-  var cw = currentWin(), cwi = WIN_ORDER.indexOf(cw);
+  var cw = shownWin(), cwi = WIN_ORDER.indexOf(cw);
   var isOpen = function(r){ return r.status !== 'done' && r.status !== 'noshow'; };
   /* whoever the doctor is meant to ring next, in the order the queue shows */
   QUEUE_NEXT = null;
@@ -4357,8 +4360,11 @@ function renderQueue(){
   function rowHTML(r){
     var closed = (r.status==='done' || r.status==='noshow');
     var isNext = (r === QUEUE_NEXT);
-    var actions = closed ? ''
-      : '<button class="btn xs ico '+(isNext?'dark':'muted')+'" title="Call '+(r.pref||r.name)+'" aria-label="Call '+(r.pref||r.name)+'" onclick="event.stopPropagation();callGuard(\''+r.name+'\')"><span class="ic" data-pdic="phone"></span></button> ';
+    /* Spec 5.2: only the active patient can be called. The queue mirrors a
+       walk-in line — nobody skips it. Doctor-initiated calls go through
+       Add-On instead, not through the queue. */
+    var actions = (closed || !isNext) ? ''
+      : '<button class="btn xs ico dark" title="Call '+(r.pref||r.name)+'" aria-label="Call '+(r.pref||r.name)+'" onclick="event.stopPropagation();callPatient(\''+r.name+'\')"><span class="ic" data-pdic="phone"></span></button> ';
     actions += '<button class="btn xs ico" title="Task the MOA about '+(r.pref||r.name)+'" aria-label="Task the MOA about '+(r.pref||r.name)+'" onclick="event.stopPropagation();openTaskMoa(\''+r.name+'\')"><span class="ic" data-pdic="taskmoa"></span></button>';
 
 
@@ -6832,6 +6838,8 @@ function pcStartCall(){
 function pcEndCall(){
   clearInterval(pcInt);
   document.querySelectorAll('.pc-callstrip').forEach(function(s){ s.classList.remove('live'); });
+  /* a window change held back during the call can land now */
+  if(typeof renderQueue === 'function') renderQueue();
 }
 
 /* ============================================================
@@ -7211,16 +7219,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-<div class="co-scrim" id="call-order" hidden>
-  <div class="co-box" role="dialog" aria-modal="true" aria-labelledby="co-title">
-    <h3 id="co-title">Call out of order?</h3>
-    <p><b id="co-next"></b> is next in line. Call <b id="co-who"></b> anyway?</p>
-    <div class="co-acts">
-      <button class="btn" onclick="callOrderCancel()">Cancel</button>
-      <button class="btn dark" onclick="callOrderGo()">Call anyway</button>
-    </div>
-  </div>
-</div>
   <div class="build-stamp">build 2026-09-15 16:03</div>
 </body>
 </html>
