@@ -2749,6 +2749,16 @@
   @media (hover: none){
     .q-hoverbar{display:flex;position:static;padding:0;background:none;}
   }
+
+  /* a task on the attention band is amber unless it is urgent */
+  #attn-tasks .al-row{cursor:pointer;}
+  #attn-tasks .al-row:hover{background:var(--wash);}
+  #attn-tasks .al-row.warnrow .al-mark{background:var(--warn);}
+
+  #attn-tasks .al-val{font-weight:700;}
+  #attn-tasks .due-late{color:var(--crit);}
+  #attn-tasks .due-soon{color:var(--warn);}
+  #attn-tasks .due-later{color:var(--ink-soft);font-weight:600;}
 </style>
 </head>
 <body>
@@ -2834,6 +2844,7 @@
             <button class="al-btn primary" onclick="openBrief('Gloria Mcdonald')">Review intake</button>
           </span>
         </div>
+        <div id="attn-tasks"></div>
       </div>
 
       <!-- Live queue + Inbox in one card, switched by tabs -->
@@ -4449,6 +4460,51 @@ function renderQueue(){
   renderGlance();
   updateWorkCounts();
 }
+
+/* ===== Spec 2: the band draws from both sides =====
+   Needs your attention is a combined summary of the Inbox and the Doctor
+   Action Centre, so an urgent task surfaces on Home without the doctor
+   opening the Action Centre.
+
+   Threshold (spec marks this an ASSUMPTION, confirm with Daniel): priority
+   Urgent, priority High, or overdue.
+
+   Ordering follows spec 3.3 — and its critical rule: Overdue is a STATUS,
+   not a priority. An overdue Routine sorts above a non-overdue Routine and
+   still below every High. It never escalates into a higher band. */
+var ATTN_BAND = {urgent:0, high:1, routine:2};
+function attnTasks(){
+  if(typeof DOC_TASKS === 'undefined') return [];
+  return DOC_TASKS.filter(function(t){
+    if(t.status === 'complete') return false;
+    return t.prio === 'urgent' || t.prio === 'high' || t.dueIn < 0;
+  }).sort(function(a,b){
+    var ba = ATTN_BAND[a.prio], bb = ATTN_BAND[b.prio];
+    if(ba !== bb) return ba - bb;                          /* band first */
+    var oa = (a.dueIn < 0) ? 0 : 1, ob = (b.dueIn < 0) ? 0 : 1;
+    if(oa !== ob) return oa - ob;                          /* overdue first, within band */
+    return (a.dueIn || 0) - (b.dueIn || 0);                /* then by deadline */
+  });
+}
+function renderAttnTasks(){
+  var host = document.getElementById('attn-tasks'); if(!host) return;
+  host.innerHTML = attnTasks().map(function(t){
+    var overdue = t.dueIn < 0;
+    var when = overdue ? (Math.abs(t.dueIn) + 'd overdue')
+             : (t.dueIn === 0 ? 'due today' : 'due in ' + t.dueIn + 'd');
+    /* red means late. Everything else is a date, not an alarm. */
+    var whenTone = overdue ? 'late' : (t.dueIn === 0 ? 'soon' : 'later');
+    return '<div class="al-row '+(t.prio==='urgent'?'':'warnrow')+'" onclick="showScreen(\'tasks\')" title="Open in Tasks">'+
+      '<span class="al-mark"></span>'+
+      '<span class="al-who"><b>'+(t.patient||'—')+'</b><i>'+t.chart+'</i></span>'+
+      '<span class="al-test">'+t.title+'</span>'+
+      '<span class="al-val due-'+whenTone+'">'+when+'</span>'+
+      '<span class="al-ref">&nbsp;</span>'+
+      '<span class="al-src">'+t.type+' &middot; '+(t.to||'unassigned')+'</span>'+
+    '</div>';
+  }).join('');
+}
+
 function renderCriticals(){
   var list=document.getElementById('crit-list');
   if(!list || typeof INBOX_ITEMS === 'undefined') return;
@@ -4474,7 +4530,7 @@ function ackCritical(i){
   var it = INBOX_ITEMS[i]; if(!it) return;
   it.status = 'reviewed';
   toast('Acknowledged \u00b7 ' + it.panel + ' for ' + it.patient + ' \u2014 moved to awaiting sign-off');
-  renderCriticals(); renderInboxList(); renderInboxToday();
+  renderCriticals(); renderAttnTasks(); renderInboxList(); renderInboxToday();
 }
 function renderDayNav(){
   var lbl=document.getElementById('day-label'); if(!lbl) return;
@@ -6558,7 +6614,7 @@ function rvDone(next){
     it.followUp = [];
     toast('Reviewed — no follow-up required');
   }
-  renderInboxList(); renderInboxToday(); renderCriticals(); updateWorkCounts();
+  renderInboxList(); renderInboxToday(); renderCriticals(); renderAttnTasks(); updateWorkCounts();
   if(next){
     var nxt = INBOX_ITEMS.findIndex(function(x){ return x.status==='received'; });
     if(nxt>-1){ openReview(nxt); return; }
@@ -7202,6 +7258,7 @@ syncTopTitle();
 renderFilters();
 loadProfilePhoto();
 renderCriticals();
+renderAttnTasks();
 renderTasks();
 renderService();
 renderDayNav();
