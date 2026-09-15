@@ -2463,6 +2463,27 @@
 
   /* the clock sits with the date, one notch quieter than it */
   .tb-clock{margin-left:7px;color:var(--ink-faint);font-variant-numeric:tabular-nums;}
+
+  /* the rotating day summary — one fact at a time, cross-fading in place */
+  .tb-tick{display:inline-flex;align-items:center;overflow:hidden;vertical-align:bottom;}
+  .tb-tick::before{content:"\00b7";margin:0 7px;color:var(--ink-faint);}
+  .tb-tickline{
+    display:inline-block;color:var(--ink);font-weight:600;white-space:nowrap;
+    opacity:0;transform:translateY(5px);transition:opacity .26s ease, transform .26s ease;
+  }
+  .tb-tickline.in{opacity:1;transform:none;}
+  @media (prefers-reduced-motion: reduce){
+    .tb-tickline{transition:none;transform:none;}
+  }
+
+  /* collapsed rail: the glyph is black at rest and on hover, white only on
+     the one that is selected */
+  .sidebar.collapsed .nav-icon{color:var(--ink);}
+  .sidebar.collapsed .nav-btn:hover .nav-icon,
+  .sidebar.collapsed .sidebar-collapse-btn:hover .nav-icon{color:var(--ink);}
+  .sidebar.collapsed .nav-btn.active .nav-icon,
+  .sidebar.collapsed .nav-btn.active:hover .nav-icon{color:#fff;}
+  .sidebar.collapsed #collapse-icon{transform:rotate(180deg);}
 </style>
 </head>
 <body>
@@ -2490,7 +2511,7 @@
     </div>
 
     <div class="sidebar-collapse-wrap">
-      <button class="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" id="collapse-btn"><span class="nav-icon" id="collapse-icon">&#8676;</span><span class="collapse-label">Collapse</span></button>
+      <button class="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" id="collapse-btn"><span class="nav-icon" id="collapse-icon"></span><span class="collapse-label">Collapse</span></button>
     </div>
 
   </div>
@@ -3655,6 +3676,60 @@ function loadProfilePhoto(){
 
 /* A running clock beside the date. The day sheet is a fixed demo date but
    the time is real — the doctor reads it against the call windows. */
+/* ===== the day in one rotating line =====
+   Every line is counted off the same data the screens render, so the
+   ticker can never claim a number the table below it disagrees with.
+   Counts that are zero are dropped rather than shown as "0 left" — the
+   line is for what is outstanding, not a scoreboard. */
+function tickerLines(){
+  var out = [];
+  var open = 0, cards = 0, claims = 0;
+  QUEUE_DATA.forEach(function(r){
+    /* same definition as the Live queue badge: everyone not finished with.
+       A missed or dropped call still has to be made. */
+    if(r.status!=='done' && r.status!=='noshow') open++;
+    if(r.card !== 'verified') cards++;
+    if(BILL_OPEN.indexOf(r.bill) !== -1) claims++;
+  });
+  var alerts = document.querySelectorAll('#alerts-box .al-row').length;
+  var tasks  = DOC_TASKS.filter(function(t){ return t.status !== 'complete'; }).length;
+  var urgent = DOC_TASKS.filter(function(t){ return t.status !== 'complete' && t.prio === 'urgent'; }).length;
+  var carried = DOC_TASKS.filter(function(t){ return t.status !== 'complete' && t.age > 0; }).length;
+
+  function n(count, one, many){ return count + ' ' + (count === 1 ? one : many); }
+  if(open)    out.push(n(open,   'patient still to call', 'patients still to call'));
+  if(alerts)  out.push(n(alerts, 'alert to review before calling', 'alerts to review before calling'));
+  if(urgent)  out.push(n(urgent, 'task needs action today', 'tasks need action today'));
+  else if(tasks) out.push(n(tasks, 'task open', 'tasks open'));
+  if(claims)  out.push(n(claims,  'claim waiting on you', 'claims waiting on you'));
+  if(cards)   out.push(n(cards,   'health card to check', 'health cards to check'));
+  if(carried) out.push(n(carried, 'task carried from an earlier day', 'tasks carried from earlier days'));
+  return out;
+}
+
+var tickerIdx = 0, tickerTimer = null;
+function tickerStart(){
+  var host = document.getElementById('tb-tickline'); if(!host) return;
+  var lines = tickerLines();
+  if(!lines.length){ var t = document.getElementById('tb-tick'); if(t) t.style.display='none'; return; }
+  tickerIdx = 0;
+  host.textContent = lines[0];
+  host.classList.add('in');
+  if(tickerTimer) clearInterval(tickerTimer);
+  /* one line at a time, and only while the tab is actually being watched */
+  tickerTimer = setInterval(function(){
+    if(document.hidden) return;
+    var h = document.getElementById('tb-tickline'); if(!h){ clearInterval(tickerTimer); return; }
+    var l = tickerLines(); if(!l.length) return;
+    h.classList.remove('in');
+    setTimeout(function(){
+      tickerIdx = (tickerIdx + 1) % l.length;
+      h.textContent = l[tickerIdx];
+      h.classList.add('in');
+    }, 260);
+  }, 4200);
+}
+
 function tickClock(){
   var c = document.getElementById('tb-clock'); if(!c) return;
   var now = new Date();
@@ -3673,7 +3748,11 @@ function syncTopTitle(){
   if(scr.id === 'screen-today'){
     var h = new Date().getHours();
     el.textContent = (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', Dr. Pannozzo';
-    if(dt){ dt.innerHTML = 'Thursday, July 23, 2026 <span class="tb-clock" id="tb-clock"></span>'; dt.style.display = 'inline'; tickClock(); }
+    if(dt){
+      dt.innerHTML = 'Thursday, July 23, 2026 <span class="tb-clock" id="tb-clock"></span>'
+                   + '<span class="tb-tick" id="tb-tick"><span class="tb-tickline" id="tb-tickline"></span></span>';
+      dt.style.display = 'inline'; tickClock(); tickerStart();
+    }
   } else {
     var t = scr.querySelector('h1');
     el.textContent = t ? t.textContent.trim() : '';
@@ -5452,7 +5531,8 @@ function toggleSignedOff(){
 function toggleSidebarCollapse(){
   var sb = document.getElementById('sidebar');
   var collapsed = sb.classList.toggle('collapsed');
-  document.getElementById('collapse-icon').innerHTML = collapsed ? '&#8677;' : '&#8676;';
+  /* the icon is Mage's and stays Mage's — it turns around rather than
+     being swapped for a Unicode arrow */
   document.getElementById('collapse-btn').title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
 }
 
