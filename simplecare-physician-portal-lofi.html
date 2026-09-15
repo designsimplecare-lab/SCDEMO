@@ -2660,6 +2660,70 @@
   .build-stamp{position:fixed;left:8px;bottom:4px;z-index:999;font-size:10px;
     letter-spacing:.03em;color:rgba(23,24,28,.30);pointer-events:none;font-family:inherit;}
   :root[data-theme="dark"] .build-stamp{color:rgba(255,255,255,.28);}
+
+  /* ===== window bands, call order, the auto chip ===== */
+  .auto-chip{
+    display:inline-flex;align-items:center;gap:7px;flex-shrink:0;cursor:pointer;
+    background:var(--accent-wash);border:1px solid transparent;color:var(--accent-ink);
+    border-radius:999px;padding:0 14px;height:36px;font-family:inherit;
+    font-size:14.5px;font-weight:600;white-space:nowrap;
+  }
+  .auto-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;}
+  .auto-chip .sub{font-weight:500;opacity:.75;}
+  .auto-chip.paused{background:var(--warn-wash);color:var(--warn);}
+  .auto-chip.paused .dot{background:var(--warn);}
+
+  .q-notice{
+    display:flex;align-items:center;gap:8px;margin:0 0 14px;
+    background:var(--accent-wash);color:var(--accent-ink);
+    border-radius:10px;padding:10px 14px;font-size:14.5px;
+  }
+  .q-notice b{font-weight:700;}
+
+  .q-sep td{
+    background:var(--wash);padding:8px 14px;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  }
+  .q-sepin{
+    display:inline-flex;align-items:center;gap:9px;
+    font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .q-sepn{
+    background:var(--line);color:var(--ink);border-radius:999px;
+    padding:1px 8px;font-size:10px;letter-spacing:.03em;
+  }
+  .q-sep.carry td{background:var(--warn-wash);border-color:var(--warn-line);}
+  .q-sep.carry .q-sepin{color:var(--warn);}
+  .q-sep.carry .q-sepn{background:rgba(0,0,0,.08);color:var(--warn);}
+
+  /* with Call revealed on hover, the next patient needs a marker at rest —
+     otherwise nothing on screen says whose turn it is */
+  .q-table tbody tr.q-next td:first-child{box-shadow:inset 3px 0 0 var(--accent);}
+  .q-nextchip{
+    display:inline-block;margin-left:8px;vertical-align:1.5px;
+    background:var(--accent);color:#fff;border-radius:4px;
+    font-size:9.5px;font-weight:700;letter-spacing:.08em;padding:2px 6px;
+  }
+  .q-table tbody tr[data-ri]{cursor:pointer;}
+  .q-table tbody tr[data-ri]:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+  .q-hoverbar .btn.muted{color:var(--ink-soft);}
+
+  .co-scrim{
+    position:fixed;inset:0;background:rgba(17,24,39,.42);z-index:400;
+    display:grid;place-items:center;padding:20px;
+  }
+  .co-scrim[hidden]{display:none;}
+  .co-box{
+    background:var(--panel);border-radius:14px;max-width:420px;width:100%;padding:24px;
+    box-shadow:0 18px 44px rgba(17,24,39,.26);
+  }
+  .co-box h3{margin:0 0 8px;font-size:17px;font-weight:700;}
+  .co-box p{margin:0 0 20px;font-size:15px;color:var(--ink-soft);}
+  .co-box p b{color:var(--ink);font-weight:700;}
+  .co-acts{display:flex;gap:8px;justify-content:flex-end;}
+
+  .sect-sub{font-size:14px;font-weight:500;color:var(--ink-faint);margin-left:10px;letter-spacing:0;}
 </style>
 </head>
 <body>
@@ -2731,7 +2795,7 @@
 
 
 
-      <p class="sect-title">Urgent alerts</p>
+      <p class="sect-title">Needs your attention <span class="sect-sub">review before your first call</span></p>
       <div class="box" id="alerts-box">
         <div id="crit-list"></div>
         <div class="al-row">
@@ -2775,9 +2839,11 @@
                 <button class="q-clear" id="queue-search-clear" onclick="clearQueueSearch()" title="Clear">&times;</button>
               </div>
             </div>
+            <button class="auto-chip" id="auto-chip" onclick="qvToggle()"></button>
             <div class="qf-row" id="qf-row"></div>
           </div>
 
+          <div class="q-notice" id="q-notice" hidden></div>
           <div class="q-tablewrap" id="q-tablewrap">
             <table class="q-table" id="queue-table">
               <thead><tr><th>#</th><th>Patient</th><th>Health card</th><th>Billing status</th><th>Clinical concern</th><th>Visit status</th></tr></thead>
@@ -4145,6 +4211,78 @@ function toggleTheme(){
   document.documentElement.setAttribute('data-theme', t || 'light');
 })();
 
+/* ===== the queue follows the day =====
+   Daniel's review: the day sheet should be the one place "today" lives, and
+   it should know which call window is running rather than making the doctor
+   pick one. Patients left over from an earlier window are held in their own
+   Carryover band instead of vanishing when the window turns over. */
+
+var QUEUE_NEXT = null;
+
+/* The chip says what the queue is doing and is the way to override it. The
+   notice below it explains a window turning over, which is the moment a
+   doctor would otherwise wonder where two patients went. */
+function renderQueueChip(today, cw, rows, cwi){
+  var chip = document.getElementById('auto-chip');
+  var notice = document.getElementById('q-notice');
+  if(!chip || !notice) return;
+  if(!today){ chip.hidden = true; notice.hidden = true; return; }
+  chip.hidden = false;
+  var live = (QV === 'current');
+  chip.className = 'auto-chip' + (live ? '' : ' paused');
+  chip.innerHTML = live
+    ? '<span class="dot"></span>Auto-advancing<span class="sub">&middot; '+winLabel(cw)+'</span>'
+    : '<span class="dot"></span>Paused &mdash; viewing all<span class="sub">&middot; back to auto</span>';
+  var held = rows.filter(function(r){
+    return WIN_ORDER.indexOf(r.win) < cwi && r.status !== 'done' && r.status !== 'noshow';
+  }).length;
+  if(live && held){
+    notice.hidden = false;
+    notice.innerHTML = 'The <b>'+winLabel(cw)+'</b> window has started. <b>'+held+
+      (held===1 ? ' patient</b> remains' : ' patients</b> remain')+
+      ' from earlier and '+(held===1?'is':'are')+' held in Carryover above.';
+  } else {
+    notice.hidden = true;
+  }
+}
+
+/* Calling out of turn is allowed — it has to be, for anything urgent — but
+   it should be a decision, not a slip. */
+var CALL_ASK = null;
+function callGuard(name){
+  if(!QUEUE_NEXT || QUEUE_NEXT.name === name){ callPatient(name); return; }
+  CALL_ASK = name;
+  var d = document.getElementById('call-order');
+  document.getElementById('co-next').textContent = QUEUE_NEXT.legal || QUEUE_NEXT.name;
+  var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0];
+  document.getElementById('co-who').textContent = (r && (r.legal || r.name)) || name;
+  d.hidden = false;
+}
+function callOrderGo(){
+  var n = CALL_ASK; CALL_ASK = null;
+  document.getElementById('call-order').hidden = true;
+  if(n) callPatient(n);
+}
+function callOrderCancel(){
+  CALL_ASK = null;
+  document.getElementById('call-order').hidden = true;
+}
+
+var WIN_ORDER = ['8-10','10-2','2-5','5-7'];
+var QV = 'current';
+function currentWin(){
+  var h = new Date().getHours();
+  if(h < 10) return '8-10';
+  if(h < 14) return '10-2';
+  if(h < 17) return '2-5';
+  return '5-7';
+}
+function qvToggle(){ QV = (QV === 'current') ? 'all' : 'current'; renderQueue(); }
+function qSep(label, count, carry){
+  return '<tr class="q-sep'+(carry?' carry':'')+'"><td colspan="6"><span class="q-sepin">'+
+    label+'<span class="q-sepn">'+count+'</span></span></td></tr>';
+}
+
 function renderQueue(){
   var body = document.getElementById('queue-body');
   var q = queueSearch.trim().toLowerCase();
@@ -4165,10 +4303,38 @@ function renderQueue(){
   qHoverInit();
   QUEUE_ACTIONS = [];
   qHoverHide();
-  body.innerHTML = rows.map(function(r){
+
+  var today = (dayOffset === 0);
+  var cw = currentWin(), cwi = WIN_ORDER.indexOf(cw);
+  var isOpen = function(r){ return r.status !== 'done' && r.status !== 'noshow'; };
+  /* whoever the doctor is meant to ring next, in the order the queue shows */
+  QUEUE_NEXT = null;
+
+  function block(list){ return list.map(rowHTML).join(''); }
+
+  var html = '';
+  if(today && QV === 'current'){
+    var carry = rows.filter(function(r){ return WIN_ORDER.indexOf(r.win) < cwi && isOpen(r); });
+    var now   = rows.filter(function(r){ return r.win === cw; });
+    var rest  = rows.filter(function(r){ return carry.indexOf(r) < 0 && now.indexOf(r) < 0; });
+    QUEUE_NEXT = carry.filter(isOpen)[0] || now.filter(isOpen)[0] || null;
+    if(carry.length) html += qSep('Carryover from earlier windows', carry.length, true) + block(carry);
+    html += qSep('Current window &middot; ' + winLabel(cw), now.length, false) + block(now);
+    if(rest.length) html += qSep('Later today', rest.length, false) + block(rest);
+  } else {
+    QUEUE_NEXT = rows.filter(isOpen)[0] || null;
+    WIN_ORDER.forEach(function(w){
+      var g = rows.filter(function(r){ return r.win === w; });
+      if(!g.length) return;
+      html += qSep(winLabel(w), g.length, false) + block(g);
+    });
+  }
+
+  function rowHTML(r){
     var closed = (r.status==='done' || r.status==='noshow');
-    var actions = closed ? '' : '<button class="btn xs dark" onclick="callPatient(\''+r.name+'\')"><span class="ic" data-pdic="phone"></span>Call</button> ';
-    actions += '<button class="btn xs" onclick="openChart(\''+r.name+'\')"><span class="ic" data-pdic="chartnote"></span>Access Chart</button>';
+    var isNext = (r === QUEUE_NEXT);
+    var actions = closed ? ''
+      : '<button class="btn xs '+(isNext?'dark':'muted')+'" onclick="event.stopPropagation();callGuard(\''+r.name+'\')"><span class="ic" data-pdic="phone"></span>Call</button> ';
     actions += '<button class="btn xs" onclick="event.stopPropagation();openTaskMoa(\''+r.name+'\')"><span class="ic" data-pdic="taskmoa"></span>Task MOA</button>';
 
 
@@ -4205,11 +4371,13 @@ function renderQueue(){
       : '<span class="bill-pill '+bs.tone+'">'+bs.label+'</span>';
 
     QUEUE_ACTIONS.push(actions);
-    return '<tr class="'+(r.redflag?'redflag':'')+'" data-ri="'+(QUEUE_ACTIONS.length-1)+'">'+
+    return '<tr class="'+(r.redflag?'redflag':'')+(isNext?' q-next':'')+'" tabindex="0"'+
+      ' data-name="'+r.name+'" data-ri="'+(QUEUE_ACTIONS.length-1)+'">'+
       '<td>'+dueChip+'</td>'+
-      '<td><div class="q-patient" onclick="openChart(\''+r.name+'\')" title="Open chart">'+
+      '<td><div class="q-patient" title="Open chart">'+
         '<span class="q-pmeta">'+
-          '<span class="q-legal">'+(r.legal||r.name)+flagTag+'</span>'+
+          '<span class="q-legal">'+(r.legal||r.name)+flagTag+
+            (isNext ? '<span class="q-nextchip">NEXT</span>' : '')+'</span>'+
           '<span class="q-idline">'+
             '<span class="q-pref">Preferred: '+(r.pref||r.name.split(' ')[0])+'</span>'+
             '<span class="q-demo">'+(r.age||'')+', '+(r.sex||'')+'</span>'+
@@ -4227,12 +4395,23 @@ function renderQueue(){
       '</td>'+
       '<td>'+statusPill+'</td>'+
     '</tr>';
-  }).join('');
+  }
+
+  body.innerHTML = html;
   if(!rows.length){
     var msg = queueSearch ? ('No patients match \u201c'+queueSearch+'\u201d.')
                           : (dayOffset===0 ? 'No patients in the queue right now.' : 'Nothing booked for this day.');
     body.innerHTML = '<tr><td colspan="6"><p class="q-noresult">'+msg+'</p></td></tr>';
   }
+  /* the whole row is the way into the chart, so it has to behave like one */
+  body.querySelectorAll('tr[data-ri]').forEach(function(tr){
+    var open = function(){ openChart(tr.getAttribute('data-name')); };
+    tr.addEventListener('click', open);
+    tr.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); open(); }
+    });
+  });
+  renderQueueChip(today, cw, rows, cwi);
   document.querySelectorAll('#queue-body [data-pdic]').forEach(function(el){
     var k = el.getAttribute('data-pdic');
     if(typeof ICONS !== 'undefined' && ICONS[k]) el.innerHTML = ICONS[k];
@@ -4348,9 +4527,9 @@ function qfBillOptions(){
   });
   return out;
 }
+/* The call window is no longer something you filter by. The queue follows
+   the clock on its own and says so; the chip is how you step out of that. */
 var QF_DEFS = [
-  {key:'win',   label:'Call window',    opts:function(){ return [{v:'all',l:'All'},
-     {v:'8-10',l:'8:00 – 10:00'},{v:'10-2',l:'10:00 – 2:00'},{v:'2-5',l:'2:00 – 5:00'},{v:'5-7',l:'5:00 – 7:00'}]; }},
   {key:'visit', label:'Visit status',   opts:qfVisitOptions},
   {key:'bill',  label:'Billing status', opts:qfBillOptions}
 ];
@@ -4410,7 +4589,13 @@ function callPatient(name){
 /* Unbilled or rejected on today's sheet. "Leave no claim behind." */
 /* WIN_TEXT is declared further down the file than this runs, so read it
    through a guard rather than depending on source order */
-function winLabel(w){ return (typeof WIN_TEXT !== 'undefined' && WIN_TEXT[w]) || w; }
+/* WIN_TEXT is assigned further down the file than the first render, so the
+   labels fall back to their raw keys ('2-5') on first paint. The map lives
+   here too, where it cannot be outrun. */
+var WIN_FALLBACK = {'8-10':'8:00\u201310:00','10-2':'10:00\u20132:00','2-5':'2:00\u20135:00','5-7':'5:00\u20137:00'};
+function winLabel(w){
+  return (typeof WIN_TEXT !== 'undefined' && WIN_TEXT[w]) || WIN_FALLBACK[w] || w;
+}
 
 /* Claims reads the same rows as the day sheet and opens the same modal —
    one billing vocabulary, two places to meet it. */
@@ -7002,6 +7187,16 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
+<div class="co-scrim" id="call-order" hidden>
+  <div class="co-box" role="dialog" aria-modal="true" aria-labelledby="co-title">
+    <h3 id="co-title">Call out of order?</h3>
+    <p><b id="co-next"></b> is next in line. Call <b id="co-who"></b> anyway?</p>
+    <div class="co-acts">
+      <button class="btn" onclick="callOrderCancel()">Cancel</button>
+      <button class="btn dark" onclick="callOrderGo()">Call anyway</button>
+    </div>
+  </div>
+</div>
   <div class="build-stamp">build 2026-09-15 16:03</div>
 </body>
 </html>

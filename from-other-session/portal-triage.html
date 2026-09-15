@@ -1,0 +1,623 @@
+<title>Physician Portal Triage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+
+<style>
+  :root {
+    --ink:        #101926;
+    --ink-2:      #41506a;
+    --ink-3:      #6b7a94;
+    --paper:      #ffffff;
+    --surface:    #f5f7fb;
+    --surface-2:  #eaeff7;
+    --rule:       #dde4ef;
+    --rule-2:     #c3cede;
+    --accent:     #1d4ed8;
+    --ok:         #0f7b52;
+    --ok-bg:      #e6f4ed;
+    --warn:       #b45309;
+    --warn-bg:    #fcf2e2;
+    --info:       #1d4ed8;
+    --info-bg:    #e8eefc;
+    --shadow:     0 1px 2px rgba(16, 25, 38, .05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink:       #e7edf6;
+      --ink-2:     #a2b0c7;
+      --ink-3:     #78879f;
+      --paper:     #0c131e;
+      --surface:   #121b28;
+      --surface-2: #192434;
+      --rule:      #233044;
+      --rule-2:    #35455e;
+      --accent:    #86a9ff;
+      --ok:        #4cbf8b;
+      --ok-bg:     #0f2a20;
+      --warn:      #e0a256;
+      --warn-bg:   #2a1e0e;
+      --info:      #86a9ff;
+      --info-bg:   #141f38;
+      --shadow:    0 1px 2px rgba(0, 0, 0, .3);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ink:       #e7edf6;
+    --ink-2:     #a2b0c7;
+    --ink-3:     #78879f;
+    --paper:     #0c131e;
+    --surface:   #121b28;
+    --surface-2: #192434;
+    --rule:      #233044;
+    --rule-2:    #35455e;
+    --accent:    #86a9ff;
+    --ok:        #4cbf8b;
+    --ok-bg:     #0f2a20;
+    --warn:      #e0a256;
+    --warn-bg:   #2a1e0e;
+    --info:      #86a9ff;
+    --info-bg:   #141f38;
+    --shadow:    0 1px 2px rgba(0, 0, 0, .3);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--surface);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+  }
+
+  /* ---- Masthead ---------------------------------------------------- */
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  h1 {
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: -.02em;
+    line-height: 1.15;
+    text-wrap: balance;
+    margin: 10px 0 12px;
+  }
+
+  .standfirst {
+    font-size: 16px;
+    color: var(--ink-2);
+    max-width: 62ch;
+    margin: 0;
+  }
+
+  .counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .count {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 7px 13px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--paper);
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+
+  .count b {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 14px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+
+  .count i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    align-self: center;
+  }
+  .count.is-ok   i { background: var(--ok); }
+  .count.is-warn i { background: var(--warn); }
+  .count.is-info i { background: var(--info); }
+
+  /* ---- Group headings ---------------------------------------------- */
+
+  .group { margin-top: 56px; }
+
+  .group-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  h2 {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    margin: 0;
+  }
+
+  .group-note {
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+
+  /* ---- Items ------------------------------------------------------- */
+
+  .item {
+    padding: 22px 0 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .item:last-child { border-bottom: 0; }
+
+  /* Items awaiting a call get the portal's own severity-stripe treatment */
+  .item.is-blocked {
+    border-left: 3px solid var(--warn);
+    padding-left: 18px;
+    background: linear-gradient(90deg, var(--warn-bg), transparent 70%);
+  }
+
+  .item-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -.005em;
+  }
+
+  .chip {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .chip.is-ok   { background: var(--ok-bg);   color: var(--ok); }
+  .chip.is-warn { background: var(--warn-bg); color: var(--warn); }
+  .chip.is-info { background: var(--info-bg); color: var(--info); }
+
+  dl { margin: 0; }
+
+  dt {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-top: 12px;
+  }
+
+  dt:first-child { margin-top: 0; }
+
+  dd {
+    margin: 3px 0 0;
+    max-width: 68ch;
+    color: var(--ink-2);
+  }
+
+  dd strong { color: var(--ink); font-weight: 500; }
+
+  dd.ask { color: var(--ink); }
+
+  ul.tight {
+    margin: 6px 0 0;
+    padding-left: 18px;
+  }
+  ul.tight li { margin-bottom: 3px; }
+
+  /* ---- Split table ------------------------------------------------- */
+
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+
+  .split > div {
+    background: var(--paper);
+    padding: 14px 16px;
+  }
+
+  .split h4 {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 6px;
+  }
+
+  .split p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 620px) {
+    .split { grid-template-columns: 1fr; }
+    h1 { font-size: 27px; }
+    .wrap { padding: 32px 18px 64px; }
+  }
+
+  /* ---- Callout ----------------------------------------------------- */
+
+  .callout {
+    margin-top: 12px;
+    padding: 13px 16px;
+    background: var(--surface-2);
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--ink-2);
+    max-width: 68ch;
+  }
+
+  .callout b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Footer ------------------------------------------------------ */
+
+  .foot {
+    margin-top: 64px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    font-size: 13px;
+    color: var(--ink-3);
+    max-width: 68ch;
+  }
+
+  a { color: var(--accent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">SimpleCare · Physician portal</div>
+    <h1>Physician Portal Triage</h1>
+    <p class="standfirst">
+      Daniel's review, sorted into what we're building, what needs his call before
+      we can build it, and what he handed to us open-ended. MOA side comes after
+      the doctor portal is settled.
+    </p>
+
+    <div class="counts">
+      <span class="count is-ok"><i></i><b>8</b> building now</span>
+      <span class="count is-warn"><i></i><b>3</b> need Daniel's decision</span>
+      <span class="count is-info"><i></i><b>2</b> delegated, need a design pass</span>
+    </div>
+  </header>
+
+  <!-- ============================================================== -->
+  <section class="group">
+    <div class="group-head">
+      <h2>Building now</h2>
+      <span class="group-note">Agreed — no further input needed</span>
+    </div>
+
+    <div class="item">
+      <div class="item-head">
+        <h3>Rename Alerts to "Needs your attention"</h3>
+        <span class="chip is-ok">Building</span>
+      </div>
+      <dl>
+        <dt>Doing</dt>
+        <dd>Title change only, same component. Keeps the existing split between
+        blocking items and the collapsed <strong>"2 routine items (not blocking)"</strong> row.</dd>
+      </dl>
+    </div>
+
+    <div class="item">
+      <div class="item-head">
+        <h3>Home page order</h3>
+        <span class="chip is-ok">Building</span>
+      </div>
+      <dl>
+        <dt>Doing</dt>
+        <dd>Needs your attention sits above the Live Queue, combining urgent items
+        from both the Inbox and the Doctor Action Centre so nothing urgent is
+        reachable only by opening a second place.</dd>
+      </dl>
+    </div>
+
+    <div class="item">
+      <div class="item-head">
+        <h3>Inbox and Doctor Action Centre become separate systems</h3>
+        <span class="chip is-ok">Building</span>
+      </div>
+      <dl>
+        <dt>Doing</dt>
+        <dd>The structural change the rest of this depends on.</dd>
+      </dl>
+
+      <div class="split">
+        <div>
+          <h4>Inbox</h4>
+          <p>Incoming external clinical information — LifeLabs results, imaging,
+          consultation reports, discharge summaries.</p>
+        </div>
+        <div>
+          <h4>Doctor Action Centre</h4>
+          <p>Internal work — patient follow-up, prescriptions, forms, referrals,
+          staff escalations, delegated tasks.</p>
+        </div>
+      </div>
+
+      <dl>
+        <dt>Rules</dt>
+        <dd>
+          <ul class="tight">
+            <li>Reviewing an Inbox item can generate a <strong>linked</strong> Action Centre
+            task. The document itself stays in the Inbox and the chart — it never moves.</li>
+            <li>Three views: My Actions, Team Actions, Completed.</li>
+            <li>Every task carries priority, time tolerance, deadline, assignee, status.</li>
+            <li>Priorities are Urgent, High, Routine. <strong>Overdue is a status, not a
+            priority</strong> — overdue items sort first within their existing band.</li>
+          </ul>
+        </dd>
+      </dl>
+
+      <div class="callout">
+        <b>Design note.</b> Five metadata fields per row won't scan. Proposing:
+        patient and action on the primary line, priority as a severity stripe,
+        deadline as relative time ("in 2h", "3d overdue"), assignee as an avatar,
+        and time tolerance only in the detail view.
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-head">
+        <h3>Call windows and Carryover</h3>
+        <span class="chip is-ok">Building</span>
+      </div>
+      <dl>
+        <dt>Doing</dt>
+        <dd>
+          <ul class="tight">
+            <li>Default to the current call window, not All. Auto-advances through the day.</li>
+            <li>Unfinished patients from the previous window pin to a <strong>Carryover</strong>
+            section at the top, never hidden.</li>
+            <li>On change, a brief notice: the new window started, and how many carried over.</li>
+            <li>Never interrupts an active call or an open chart.</li>
+            <li>Selecting a window manually pauses auto-advance.</li>
+            <li>In All view, time separators mark each window — 8:00–10:00, 10:00–2:00,
+            2:00–5:00, 5:00–7:00.</li>
+          </ul>
+        </dd>
+        <dt>Changed from the brief</dt>
+        <dd>Auto is a <strong>persistent visible state</strong> — "Auto-advancing · 2:00–5:00"
+        with one tap back — rather than one option buried in the dropdown. Otherwise
+        doctors won't notice they've left it, which is the classic mode-confusion bug.</dd>
+        <dt>Open detail</dt>
+        <dd>A patient who carries over twice stays in Carryover with an age indicator
+        rather than stacking a second section. Flagging it; not blocking.</dd>
+      </dl>
+    </div>
+
+    <div class="item">
+      <div class="item-head">
+        <h3>Inbox sorted oldest first</h3>
+        <span class="chip is-ok">Building</span>
+      </div>
+      <dl>
+        <dt>Doing</dt>
+        <dd>Chronological review, as asked.</dd>
+        <dt>Dependency</dt>
+        <dd>This is only safe <strong>because</strong> urgent results surface in Needs your
+        attention. A critical troponin arriving at 4:00 sits at the bottom of an
+        oldest-first list. The two ship together or not at all.</dd>
+      </dl>
+    </div>
+
+    <div class="item">
+      <div class="item-head">
+        <h3>Outstanding results after clearing</h3>
+        <span class="chip is-ok">Building</span>
+      </div>
+      <dl>
+        <dt>Doing</dt>
+        <dd>When results are cleared, what's still pending from the same order stays
+        visible.</dd>
+        <dt>Daniel's case</dt>
+        <dd>An STI panel returns gonorrhea and chlamydia quickly while HIV and Hep C
+        lag. The doctor clears the fast results and still sees the slow ones listed
+        as outstanding.</dd>
+      </dl>
+    </div>
+
+    <div class="item">
+      <div class="item-head">
+        <h3>Billing status beside visit status</h3>
+        <span class="chip is-ok">Building</span>
+      </div>
+      <dl>
+        <dt>Doing</dt>
+        <dd>Straight move. Creates a single status cluster at the right edge of the
+        queue row.</dd>
+      </dl>
+    </div>
+
+    <div class="item">
+      <div class="item-head">
+        <h3>Add-On for doctor-initiated booking</h3>
+        <span class="chip is-ok">Building</span>
+      </div>
+      <dl>
+        <dt>Doing</dt>
+        <dd>When the doctor books a patient, they go under Add-On — callable
+        immediately, and held outside the patient-initiated queue.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ============================================================== -->
+  <section class="group">
+    <div class="group-head">
+      <h2>Needs Daniel's decision</h2>
+      <span class="group-note">Held — building these now risks building them twice</span>
+    </div>
+
+    <div class="item is-blocked">
+      <div class="item-head">
+        <h3>Call button restricted to the active patient</h3>
+        <span class="chip is-warn">Decision</span>
+      </div>
+      <dl>
+        <dt>Asked</dt>
+        <dd class="ask">Show the call button only on the next person in line. It mirrors
+        a walk-in — nobody buds the line — and sequential calling is what makes the
+        queue function.</dd>
+        <dt>Concern</dt>
+        <dd>This hides a control to enforce a policy. Patient 1 doesn't answer;
+        patient 3 is a stroke callback. Reality will demand exceptions, and Add-On
+        isn't one — it's a booking action, not a "call now" action.</dd>
+        <dt>Proposing</dt>
+        <dd>Keep the button on every row but visually secondary off the active
+        patient, with a confirm: <strong>"Gloria Anne McDonald is next in line. Call
+        Andrey anyway?"</strong> The norm holds, judgment is still possible, and the
+        doctor learns the rule instead of finding a missing button.</dd>
+        <dt>Need from Daniel</dt>
+        <dd>Is sequential calling an absolute rule, or a strong default?</dd>
+      </dl>
+    </div>
+
+    <div class="item is-blocked">
+      <div class="item-head">
+        <h3>A Task button on every patient</h3>
+        <span class="chip is-warn">Decision</span>
+      </div>
+      <dl>
+        <dt>Asked</dt>
+        <dd class="ask">A Task button per patient — in queue rows, in the chart, inside
+        the Referrals, Imaging, Labs and Prescriptions modals, and on the day sheet.
+        He notes it will look cluttered and left the solution to us.</dd>
+        <dt>Reading</dt>
+        <dd>The real requirement is that <strong>tasking carries patient context
+        automatically</strong> — not that there are a dozen buttons.</dd>
+        <dt>Proposing</dt>
+        <dd>One persistent Task MOA button that pre-fills whichever patient is open
+        or selected, plus a row-level action on hover and keyboard focus.</dd>
+        <dt>Need from Daniel</dt>
+        <dd>Confirm pre-filled context is the need. If he genuinely wants a visible
+        button on every row, that's buildable — it just costs row density.</dd>
+      </dl>
+    </div>
+
+    <div class="item is-blocked">
+      <div class="item-head">
+        <h3>Care Plan summary in the Inbox</h3>
+        <span class="chip is-warn">Decision</span>
+      </div>
+      <dl>
+        <dt>Asked</dt>
+        <dd class="ask">Pull a highly synthesized Care Plan from the chart into the
+        inbox, so the doctor sees why each patient is being worked up alongside
+        what's outstanding.</dd>
+        <dt>Concern</dt>
+        <dd>"Highly synthesized" is doing a lot of work in a clinical context. A
+        summary that is stale or wrong is a safety problem, not a UX one.</dd>
+        <dt>Need from Daniel</dt>
+        <dd>Should this carry doctor-authored text verbatim from the chart, or be
+        generated? If generated, what's the review path before a doctor acts on it?</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ============================================================== -->
+  <section class="group">
+    <div class="group-head">
+      <h2>Delegated to us</h2>
+      <span class="group-note">He asked, left the approach open — needs a design pass</span>
+    </div>
+
+    <div class="item">
+      <div class="item-head">
+        <h3>Source document verification</h3>
+        <span class="chip is-info">Design pass</span>
+      </div>
+      <dl>
+        <dt>Context</dt>
+        <dd>Doctors want to check results against the original LifeLabs, imaging or
+        hospital document. Labelling is already standardized and clinically
+        validated — imaging labels match Radiology's internal scheme, via Dr. Rawski —
+        and incoming faxes will be auto-labelled and attached to the chart.</dd>
+        <dt>Open</dt>
+        <dd>How verification surfaces in the UI is explicitly ours to propose.
+        Reference material is in the Notion doc he linked.</dd>
+      </dl>
+    </div>
+
+    <div class="item">
+      <div class="item-head">
+        <h3>Claims</h3>
+        <span class="chip is-info">Design pass</span>
+      </div>
+      <dl>
+        <dt>Asked</dt>
+        <dd class="ask">"Review our current physician portal and you can optimize it."</dd>
+        <dt>Open</dt>
+        <dd>No specifics given. Needs scoping against the current flow before it's a
+        design task — worth a short session with him on where claims actually go
+        wrong today.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <p class="foot">
+    The through-line in Daniel's review: separate incoming information from the work
+    it creates, while keeping anything urgent from either visible on the home page.
+    Most of the brief is prescriptive and lands as-is. The three held items are the
+    ones where his stated solution and his underlying need may not be the same thing.
+  </p>
+
+</div>

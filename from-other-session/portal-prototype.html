@@ -1,0 +1,723 @@
+<title>Live Queue Prototype</title>
+
+<style>
+  :root {
+    color-scheme: light;
+
+    --page:      #f2f4f7;
+    --card:      #ffffff;
+    --ink:       #111827;
+    --ink-2:     #4b5563;
+    --ink-3:     #6b7280;
+    --ink-4:     #9ca3af;
+    --rule:      #e8ebef;
+    --rule-2:    #dde1e7;
+
+    --blue:      #2563eb;
+    --blue-bg:   #eff4ff;
+    --green:     #047857;
+    --green-bg:  #e7f6ef;
+    --amber:     #b45309;
+    --amber-bg:  #fdf4e6;
+    --red:       #dc2626;
+    --red-bg:    #fdeceb;
+
+    --mark:      #6d28d9;
+    --mark-bg:   #f4f0fe;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .shell { max-width: 1160px; margin: 0 auto; padding: 24px 20px 80px; }
+
+  /* ================= prototype chrome ================= */
+
+  .chrome {
+    background: #1b2430;
+    color: #e6eaf0;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 22px;
+  }
+
+  .chrome-top {
+    display: flex; align-items: baseline; gap: 12px;
+    flex-wrap: wrap; margin-bottom: 16px;
+  }
+  .chrome-top h1 { font-size: 16px; font-weight: 600; margin: 0; letter-spacing: -.01em; }
+  .chrome-top span { font-size: 13px; color: #96a3b4; }
+
+  .controls { display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-end; }
+
+  .ctrl label {
+    display: block; font-size: 10px; font-weight: 600; letter-spacing: .09em;
+    text-transform: uppercase; color: #8d9bad; margin-bottom: 6px;
+  }
+
+  .seg { display: inline-flex; background: #2a3646; border-radius: 7px; padding: 3px; gap: 3px; }
+  .seg button {
+    font: inherit; font-size: 12.5px; font-weight: 500;
+    background: transparent; border: 0; color: #b9c4d2;
+    padding: 6px 12px; border-radius: 5px; cursor: pointer; white-space: nowrap;
+  }
+  .seg button:hover { color: #fff; }
+  .seg button[aria-pressed="true"] { background: #4b6bdd; color: #fff; }
+  .seg button:focus-visible { outline: 2px solid #8fa8ff; outline-offset: 1px; }
+
+  /* ================= change annotation ================= */
+
+  .marked { position: relative; outline: 1.5px dashed var(--mark); outline-offset: 3px; border-radius: 6px; }
+  body.no-marks .marked { outline: none; }
+
+  .tag {
+    position: absolute; z-index: 5; top: -10px; left: 10px;
+    background: var(--mark); color: #fff;
+    font-size: 10px; font-weight: 600; letter-spacing: .04em;
+    padding: 2px 7px; border-radius: 4px; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .tag b {
+    background: rgba(255,255,255,.26); border-radius: 3px;
+    width: 13px; height: 13px; display: grid; place-items: center;
+    font-size: 9px; font-weight: 700;
+  }
+  body.no-marks .tag { display: none; }
+
+  /* ================= product surface ================= */
+
+  .today { margin-bottom: 18px; }
+  .today h2 { font-size: 22px; font-weight: 600; margin: 0 0 2px; letter-spacing: -.02em; }
+  .today p  { margin: 0; font-size: 13px; color: var(--ink-3); }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .panel-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 13px 16px; border-bottom: 1px solid var(--rule);
+    flex-wrap: wrap;
+  }
+
+  .panel-title {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--ink-3);
+  }
+
+  /* --- needs your attention --- */
+
+  .alert-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 11px 16px 11px 13px; border-bottom: 1px solid var(--rule);
+    border-left: 3px solid transparent;
+  }
+  .alert-row:last-of-type { border-bottom: 0; }
+  .alert-row.crit { border-left-color: var(--red); }
+  .alert-row.warn { border-left-color: #e0a800; }
+
+  .alert-name { font-weight: 600; font-size: 14px; }
+  .alert-age  { color: var(--ink-4); font-size: 12.5px; margin-left: 6px; }
+  .alert-test { margin-left: auto; color: var(--ink-2); font-size: 13.5px; }
+
+  .routine {
+    padding: 10px 16px; font-size: 12.5px; font-weight: 600;
+    color: var(--amber); border-top: 1px solid var(--rule);
+  }
+
+  /* --- toolbar --- */
+
+  .bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border-bottom: 1px solid var(--rule); flex-wrap: wrap;
+  }
+
+  .search {
+    flex: 1 1 210px; min-width: 180px; background: var(--page);
+    border: 1px solid var(--rule-2); border-radius: 7px;
+    padding: 6px 11px; color: var(--ink-4); font-size: 13px;
+  }
+
+  .pill-btn {
+    background: var(--card); border: 1px solid var(--rule-2); border-radius: 7px;
+    padding: 6px 11px; font: inherit; font-size: 13px; color: var(--ink-2);
+    cursor: pointer; white-space: nowrap;
+  }
+  .pill-btn:hover { background: var(--page); }
+
+  .auto-chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--blue-bg); border: 1px solid #c9dbff; color: #1d4ed8;
+    border-radius: 7px; padding: 6px 11px; font-size: 12.5px; font-weight: 600;
+    white-space: nowrap;
+  }
+  .auto-chip .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #2563eb; flex: none;
+  }
+  .auto-chip .sub { font-weight: 500; color: #3b6fe0; }
+
+  .day { margin-left: auto; font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+
+  /* --- window notice --- */
+
+  .notice {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--blue-bg); border-bottom: 1px solid #dbe6ff;
+    padding: 10px 16px; font-size: 13px; color: #1e40af;
+  }
+  .notice svg { flex: none; }
+  .notice b { font-weight: 600; }
+
+  /* --- table --- */
+
+  .scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 1060px; }
+
+  thead th {
+    text-align: left; font-size: 10px; font-weight: 700; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--ink-4);
+    padding: 9px 12px; border-bottom: 1px solid var(--rule); white-space: nowrap;
+  }
+
+  tbody td { padding: 11px 12px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: 0; }
+
+  /* The whole row opens the chart, so it has to read as clickable. */
+  tbody tr[data-row] { cursor: pointer; }
+  tbody tr[data-row]:hover { background: #f7f9fc; }
+  tbody tr[data-row]:focus-visible {
+    outline: 2px solid var(--blue); outline-offset: -2px;
+  }
+
+  /* With Call hidden until hover, the active patient needs a marker that is
+   * visible at rest - otherwise nothing on screen says who is next. */
+  tbody tr.active-row td:first-child { box-shadow: inset 3px 0 0 var(--blue); }
+  tbody tr.active-row { background: #f7f9fc; }
+
+  .next-chip {
+    display: inline-block; margin-left: 7px; vertical-align: 1px;
+    background: var(--blue); color: #fff;
+    font-size: 9.5px; font-weight: 700; letter-spacing: .07em;
+    padding: 2px 6px; border-radius: 3px;
+  }
+
+  .num { color: var(--ink-4); font-size: 13px; width: 30px; font-variant-numeric: tabular-nums; }
+
+  .pname { font-weight: 600; font-size: 13.5px; white-space: nowrap; }
+  .pmeta { font-size: 11.5px; color: var(--ink-4); white-space: nowrap; margin-top: 1px; }
+
+  .concern-t { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .concern-b { font-size: 12.5px; color: var(--ink-3); display: flex; gap: 6px; }
+  .concern-b svg { flex: none; margin-top: 3px; }
+
+  .stat { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 500; white-space: nowrap; }
+  .stat svg { flex: none; }
+  .s-green { color: var(--green); }
+  .s-amber { color: var(--amber); }
+  .s-red   { color: var(--red); }
+  .s-blue  { color: var(--blue); }
+  .s-grey  { color: var(--ink-3); }
+
+  .tagpill {
+    display: inline-flex; align-items: center; gap: 4px;
+    border-radius: 999px; padding: 3px 9px; font-size: 12px; font-weight: 600;
+    border: 1px solid; white-space: nowrap;
+  }
+  .t-amber { color: var(--amber); border-color: #f0dcbb; background: var(--amber-bg); }
+  .t-red   { color: var(--red);   border-color: #f6cfcd; background: var(--red-bg); }
+  .t-plain { color: var(--ink-2); border-color: transparent; background: transparent; padding-left: 0; font-weight: 500; }
+
+  /* --- row actions --- */
+
+  .acts { display: flex; gap: 6px; justify-content: flex-end; align-items: center; }
+
+  /* Secondary row actions stay in the DOM so the column keeps its width and
+   * rows never shift on hover. pointer-events guards against clicking a
+   * button you cannot see; keyboard focus still reveals them via :focus-within. */
+  .on-hover {
+    display: flex; gap: 6px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .12s ease;
+  }
+  tr:hover .on-hover,
+  tr:focus-within .on-hover { opacity: 1; pointer-events: auto; }
+
+  /* Touch devices have no hover state at all - a doctor on an iPad would
+   * never reach these, so show them permanently there. */
+  @media (hover: none) {
+    .on-hover { opacity: 1; pointer-events: auto; }
+  }
+
+
+  @media (prefers-reduced-motion: reduce) { .on-hover { transition: none; } }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    font: inherit; font-size: 12.5px; font-weight: 500;
+    border-radius: 7px; padding: 5px 10px; cursor: pointer; white-space: nowrap;
+    border: 1px solid var(--rule-2); background: var(--card); color: var(--ink-2);
+  }
+  .btn:hover { background: var(--page); }
+  .btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+
+  .btn-call { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .btn-call:hover { background: #000; }
+
+  .btn-call-muted {
+    background: var(--card); border-color: var(--rule-2); color: var(--ink-4);
+  }
+  .btn-call-muted:hover { background: var(--page); color: var(--ink-2); }
+
+  /* --- section separators --- */
+
+  .sep td {
+    background: #fafbfd; padding: 7px 12px;
+    border-bottom: 1px solid var(--rule); border-top: 1px solid var(--rule);
+  }
+  .sep-in {
+    display: flex; align-items: center; gap: 9px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--ink-3);
+  }
+  .sep-count {
+    background: var(--rule); color: var(--ink-2); border-radius: 999px;
+    padding: 1px 7px; font-size: 10px; letter-spacing: .03em;
+  }
+  .sep.carry .sep-in { color: var(--amber); }
+  .sep.carry td { background: var(--amber-bg); }
+  .sep.carry .sep-count { background: #f3e2c6; color: var(--amber); }
+
+  /* --- confirm dialog --- */
+
+  .scrim {
+    position: fixed; inset: 0; background: rgba(17,24,39,.42);
+    display: grid; place-items: center; padding: 20px; z-index: 50;
+  }
+  .scrim[hidden] { display: none; }
+
+  .dialog {
+    background: var(--card); border-radius: 12px; max-width: 400px; width: 100%;
+    padding: 22px; box-shadow: 0 16px 40px rgba(17,24,39,.22);
+  }
+  .dialog h3 { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
+  .dialog p  { margin: 0 0 18px; font-size: 13.5px; color: var(--ink-2); }
+  .dialog p b { color: var(--ink); font-weight: 600; }
+  .dialog-acts { display: flex; gap: 8px; justify-content: flex-end; }
+  .btn-primary { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+  /* --- legend --- */
+
+  .legend {
+    background: var(--card); border: 1px solid var(--rule);
+    border-radius: 12px; padding: 16px 18px; margin-top: 22px;
+  }
+  .legend h3 {
+    font-size: 10px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+    color: var(--ink-3); margin: 0 0 12px;
+  }
+  .legend ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px; }
+  .legend li { display: flex; gap: 10px; font-size: 13px; color: var(--ink-2); align-items: baseline; }
+  .legend .n {
+    background: var(--mark-bg); color: var(--mark); font-weight: 700; font-size: 10px;
+    width: 18px; height: 18px; border-radius: 4px; display: grid; place-items: center;
+    flex: none; transform: translateY(2px);
+  }
+  .legend b { color: var(--ink); font-weight: 600; }
+
+  .held {
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--rule);
+    font-size: 13px; color: var(--ink-2);
+  }
+  .held b { color: var(--ink); }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="shell">
+
+  <!-- ============ prototype controls ============ -->
+  <div class="chrome">
+    <div class="chrome-top">
+      <h1>Live Queue &mdash; agreed changes applied</h1>
+      <span>Doctor portal &middot; Thu Jul 23, 2026</span>
+    </div>
+    <div class="controls">
+      <div class="ctrl">
+        <label>Annotations</label>
+        <div class="seg" id="segMarks">
+          <button data-v="on"  aria-pressed="true">Show changes</button>
+          <button data-v="off" aria-pressed="false">Clean view</button>
+        </div>
+      </div>
+      <div class="ctrl">
+        <label>Call window</label>
+        <div class="seg" id="segWindow">
+          <button data-v="current" aria-pressed="true">Current &mdash; Auto</button>
+          <button data-v="all"     aria-pressed="false">All</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ product ============ -->
+
+  <div class="today">
+    <h2>Today &mdash; Thu Jul 23, 2026</h2>
+    <p>The one place "today" lives. Replaces Dashboard + the old Patient Queue table.</p>
+  </div>
+
+  <!-- needs your attention -->
+  <section class="panel marked" id="panelAttention">
+    <span class="tag"><b>1</b> Renamed from "Alerts" &middot; moved above Live Queue</span>
+    <div class="panel-head">
+      <span class="panel-title">Needs your attention &mdash; review before your first call</span>
+    </div>
+    <div class="alert-row crit">
+      <span class="alert-name">Behdis Maleki</span><span class="alert-age">35F</span>
+      <span class="alert-test">Potassium</span>
+    </div>
+    <div class="alert-row crit">
+      <span class="alert-name">Manjit Kaur Dhillon</span><span class="alert-age">66F</span>
+      <span class="alert-test">Haemoglobin</span>
+    </div>
+    <div class="alert-row crit">
+      <span class="alert-name">Gloria Anne McDonald</span><span class="alert-age">74F</span>
+      <span class="alert-test">Troponin I</span>
+    </div>
+    <div class="alert-row warn">
+      <span class="alert-name">Gloria Anne McDonald</span><span class="alert-age">74F</span>
+      <span class="alert-test">Intake flag</span>
+    </div>
+    <div class="routine">&#9656; 2 routine items (not blocking)</div>
+  </section>
+
+  <!-- live queue -->
+  <section class="panel">
+    <div class="panel-head">
+      <span class="panel-title">Live queue <span style="color:var(--ink-4)">4</span></span>
+      <div style="display:flex;gap:7px">
+        <button class="pill-btn">+ New patient</button>
+        <button class="pill-btn">&#9998; Task MOA</button>
+      </div>
+    </div>
+
+    <div class="bar">
+      <div class="search">Search by name, PHN, DOB</div>
+      <span class="marked" style="display:inline-block" id="wrapAuto">
+        <span class="tag"><b>2</b> Persistent auto state</span>
+        <span class="auto-chip" id="autoChip">
+          <span class="dot"></span>Auto-advancing
+          <span class="sub">&middot; 2:00 &ndash; 5:00</span>
+        </span>
+      </span>
+      <button class="pill-btn">Visit status All &#8964;</button>
+      <button class="pill-btn">Billing status All &#8964;</button>
+      <span class="day">&lsaquo; Today &middot; Thu Jul 23 &rsaquo;</span>
+    </div>
+
+    <div class="notice marked" id="noticeRow">
+      <span class="tag"><b>3</b> Window-change notice</span>
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#1e40af" stroke-width="1.6">
+        <circle cx="8" cy="8" r="6.4"/><path d="M8 5.2v3.2l2 1.4" stroke-linecap="round"/>
+      </svg>
+      <span>The <b>2:00 &ndash; 5:00</b> window has started. <b>2 patients</b> remain from 10:00 &ndash; 2:00 and are held in Carryover above.</span>
+    </div>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Patient</th>
+            <th>Health card</th>
+            <th>Clinical concern</th>
+            <th class="marked" style="position:relative">
+              <span class="tag"><b>4</b> Moved</span>
+              Billing status
+            </th>
+            <th>Visit status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- legend -->
+  <div class="legend">
+    <h3>What changed</h3>
+    <ol>
+      <li><span class="n">1</span><span><b>"Alerts" renamed to "Needs your attention"</b> and moved above the Live Queue, combining urgent items from the Inbox and the Doctor Action Centre. The blocking / "2 routine items (not blocking)" split is kept.</span></li>
+      <li><span class="n">2</span><span><b>Auto-advance is a visible state,</b> not an option hidden in the dropdown. Selecting a window manually switches this chip to "Paused &mdash; 2:00 &ndash; 5:00" with one tap back.</span></li>
+      <li><span class="n">3</span><span><b>Window-change notice</b> naming the new window and how many patients carried over.</span></li>
+      <li><span class="n">4</span><span><b>Billing status moved beside Visit status,</b> forming one status cluster at the right edge.</span></li>
+      <li><span class="n">5</span><span><b>Carryover section</b> pinned above the current window so unfinished patients are never hidden when you're running behind.</span></li>
+      <li><span class="n">6</span><span><b>Time separators</b> in All view marking which patients belong to each call window. Switch the toggle to "All" to see them.</span></li>
+    </ol>
+    <ol style="margin-top:9px">
+      <li><span class="n">7</span><span><b>All row actions reveal on hover.</b> Call and
+      Task MOA stay hidden until you hover, so the queue reads as patient data
+      rather than a wall of buttons. They keep their space in the column, so
+      nothing shifts when they appear.</span></li>
+      <li><span class="n">8</span><span><b>Access Chart button removed.</b> Clicking
+      anywhere on a row opens the chart, so the button was redundant. Rows are
+      keyboard reachable and open with Enter.</span></li>
+      <li><span class="n">9</span><span><b>NEXT marker on the active patient.</b> With
+      Call hidden at rest, this is what tells the doctor who is next in line &mdash;
+      a blue edge on the row plus a NEXT tag by the name.</span></li>
+    </ol>
+    <p class="held">
+      <b>Decided &mdash; Option A.</b> Only the active patient can be called. The Call
+      button itself is now hover-revealed like everything else, with the NEXT marker
+      carrying the "who is up" signal at rest.
+    </p>
+    <p class="held" style="border-top:0;padding-top:0;margin-top:8px">
+      <b>Flag for Daniel.</b> He asked for a Task button on every patient and accepted
+      the clutter by name &mdash; "it can look a bit cluttered ... but it serves a useful
+      purpose." Task is now hover-revealed instead, so this is worth raising with him
+      rather than letting him find it.
+    </p>
+    <p class="held" style="border-top:0;padding-top:0;margin-top:8px">
+      <b>Also worth confirming:</b> hover doesn't exist on touch. If any doctor works
+      on an iPad the actions must stay visible there &mdash; handled here via
+      <code>@media (hover: none)</code>.
+    </p>
+  </div>
+</div>
+
+<div class="scrim" id="chartScrim" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="chartTitle">
+    <h3 id="chartTitle">Patient chart</h3>
+    <p>Opening the chart for <b id="chartWho"></b>.</p>
+    <p style="font-size:12.5px;color:var(--ink-3);margin-bottom:18px">
+      Stand-in for the chart view &mdash; the point here is that the whole row is the
+      target, so no Access Chart button is needed.
+    </p>
+    <div class="dialog-acts">
+      <button class="btn btn-primary" id="chartClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
+    <h3 id="dlgTitle">Call out of order?</h3>
+    <p><b id="dlgNext"></b> is next in line. Call <b id="dlgWho"></b> anyway?</p>
+    <div class="dialog-acts">
+      <button class="btn" id="dlgCancel">Cancel</button>
+      <button class="btn btn-primary" id="dlgGo">Call anyway</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const P = [
+    { n:1, name:'Gloria Anne McDonald', pref:'Gloria', meta:'74Y, Female',
+      card:'Verified', cardTone:'s-green', bill:'Submit claim', billTone:'t-amber',
+      ct:'Follow up &mdash; chest pressure noted',
+      cb:'Chest pressure on exertion x3 days, eased by rest. Known HTN; no prior cardiac workup.',
+      vs:'In queue', vsTone:'s-amber', win:'10:00 &ndash; 2:00', carry:true, active:true },
+
+    { n:2, name:'Carol-Anne Feldman', pref:'Carol', meta:'44Y, Female',
+      card:'Check required', cardTone:'s-amber', bill:'Review claim', billTone:'t-amber',
+      ct:'Yeast infection',
+      cb:'Recurrent vaginal itching and discharge x5 days; third episode this year.',
+      vs:'In queue', vsTone:'s-amber', win:'10:00 &ndash; 2:00', carry:true },
+
+    { n:3, name:'Andrey Abushakhmanov', pref:'Andrey', meta:'24Y, Male',
+      card:'Verified', cardTone:'s-green', bill:'Claim submitted', billTone:'t-plain',
+      ct:'Follow up appointment',
+      cb:'Routine follow-up after sinus infection; reports symptoms fully resolved.',
+      vs:'In queue', vsTone:'s-amber', win:'2:00 &ndash; 5:00' },
+
+    { n:4, name:'Behdis Maleki', pref:'Behdis', meta:'35Y, Female',
+      card:'Verified', cardTone:'s-green', bill:'Claim paid', billTone:'t-plain',
+      ct:'Follow up appointment',
+      cb:'Follow-up on iron deficiency; still fatigued despite supplementation.',
+      vs:'In queue', vsTone:'s-amber', win:'2:00 &ndash; 5:00' },
+
+    { n:null, name:'Kathleen Arli Eyre', pref:'Arli', meta:'41Y, Female',
+      card:'Invalid card', cardTone:'s-red', bill:'Claim rejected', billTone:'t-red',
+      ct:'Standard visit',
+      cb:'New patient, standard visit. No intake detail submitted before the call.',
+      vs:'Missed call', vsTone:'s-red', win:'10:00 &ndash; 2:00', done:true },
+
+    { n:null, name:'Gregory Paul Nakashima', pref:'Greg', meta:'58Y, Male',
+      card:'Private pay', cardTone:'s-blue', bill:'Payment due', billTone:'t-amber',
+      ct:'Rx renewal',
+      cb:'Requests renewal of blood pressure medication; last dispensed 90 days ago.',
+      vs:'Call dropped', vsTone:'s-red', win:'10:00 &ndash; 2:00', done:true },
+
+    { n:null, name:'Manjit Kaur Dhillon', pref:'Manjit', meta:'66Y, Female',
+      card:'Private pay', cardTone:'s-blue', bill:'Payment paid', billTone:'t-plain',
+      ct:'Lab follow-up',
+      cb:'Reviewing lab results ordered at last visit; asymptomatic.',
+      vs:'Completed', vsTone:'s-green', win:'10:00 &ndash; 2:00', done:true },
+  ];
+
+  let view = 'current';
+
+  const ICON = {
+    's-green': '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="8" cy="8" r="6.3"/><path d="M5.4 8.2l1.8 1.8 3.4-3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    's-amber': '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="8" cy="8" r="6.3"/><path d="M8 4.8v3.4l2.1 1.3" stroke-linecap="round"/></svg>',
+    's-red':   '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="8" cy="8" r="6.3"/><path d="M8 4.9v3.6M8 11.1v.1" stroke-linecap="round"/></svg>',
+    's-blue':  '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="8" cy="8" r="6.3"/><path d="M8 7.4v3.4M8 5.2v.1" stroke-linecap="round"/></svg>',
+  };
+  const LEAF = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#9ca3af" stroke-width="1.5"><path d="M3 13c0-4 3-7 7-7M6.5 9.5h3.5V6" stroke-linecap="round"/></svg>';
+
+  function statusHTML(label, tone) {
+    return '<span class="stat ' + tone + '">' + (ICON[tone] || '') + label + '</span>';
+  }
+
+  const CALL_ICON = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7">'
+    + '<path d="M3 4.2c0 5 3.8 8.8 8.8 8.8l1.4-1.9-2.6-1.6-1.3 1.2A8 8 0 0 1 5.3 6.7l1.2-1.3L4.9 2.8 3 4.2Z" stroke-linejoin="round"/></svg>';
+
+  function actionsHTML(p) {
+    // Option A: only the active patient can be called. Access Chart is gone -
+    // clicking anywhere on the row opens it.
+    const call = p.active
+      ? '<button class="btn btn-call" data-call="' + p.name + '">' + CALL_ICON + 'Call</button>'
+      : '';
+    return '<div class="acts"><span class="on-hover">' + call
+      + '<button class="btn">&#9998; Task MOA</button></span></div>';
+  }
+
+  function rowHTML(p) {
+    const chip = p.active ? '<span class="next-chip">NEXT</span>' : '';
+    return '<tr data-row tabindex="0" class="' + (p.active ? 'active-row' : '') + '">'
+      + '<td class="num">' + (p.n ?? '&mdash;') + '</td>'
+      + '<td><div class="pname">' + p.name + chip + '</div>'
+      +     '<div class="pmeta">Preferred: ' + p.pref + ' &middot; ' + p.meta + '</div></td>'
+      + '<td>' + statusHTML(p.card, p.cardTone) + '</td>'
+      + '<td style="max-width:380px"><div class="concern-t">' + p.ct + '</div>'
+      +     '<div class="concern-b">' + LEAF + '<span>' + p.cb + '</span></div></td>'
+      + '<td><span class="tagpill ' + p.billTone + '">' + p.bill + '</span></td>'
+      + '<td>' + statusHTML(p.vs, p.vsTone) + '</td>'
+      + '<td style="text-align:right">' + actionsHTML(p) + '</td></tr>';
+  }
+
+  function sepHTML(label, count, carry, tagNum) {
+    const tag = tagNum
+      ? '<span class="tag" style="position:static;margin-right:8px"><b>' + tagNum + '</b> New</span>' : '';
+    return '<tr class="sep ' + (carry ? 'carry' : '') + '"><td colspan="7"><div class="sep-in">'
+      + tag + label + '<span class="sep-count">' + count + '</span></div></td></tr>';
+  }
+
+  function render() {
+    const tb = document.getElementById('rows');
+    let h = '';
+
+    if (view === 'current') {
+      const carry = P.filter(p => p.carry && !p.done);
+      const now   = P.filter(p => p.win === '2:00 &ndash; 5:00');
+      h += sepHTML('Carryover from 10:00 &ndash; 2:00', carry.length, true, 5);
+      carry.forEach(p => h += rowHTML(p));
+      h += sepHTML('Current window &middot; 2:00 &ndash; 5:00', now.length, false, null);
+      now.forEach(p => h += rowHTML(p));
+    } else {
+      ['8:00 &ndash; 10:00', '10:00 &ndash; 2:00', '2:00 &ndash; 5:00', '5:00 &ndash; 7:00'].forEach(w => {
+        const g = P.filter(p => p.win === w);
+        if (!g.length) return;
+        h += sepHTML(w, g.length, false, w === '10:00 &ndash; 2:00' ? 6 : null);
+        g.forEach(p => h += rowHTML(p));
+      });
+    }
+    tb.innerHTML = h;
+
+    document.getElementById('noticeRow').style.display = view === 'current' ? '' : 'none';
+    const chip = document.getElementById('autoChip');
+    chip.innerHTML = view === 'current'
+      ? '<span class="dot"></span>Auto-advancing <span class="sub">&middot; 2:00 &ndash; 5:00</span>'
+      : '<span class="dot" style="background:#b45309"></span>Paused &mdash; viewing All <span class="sub">&middot; back to Auto</span>';
+    chip.style.background = view === 'current' ? 'var(--blue-bg)' : 'var(--amber-bg)';
+    chip.style.borderColor = view === 'current' ? '#c9dbff' : '#f0dcbb';
+    chip.style.color = view === 'current' ? '#1d4ed8' : 'var(--amber)';
+
+    tb.querySelectorAll('[data-call]').forEach(b => {
+      b.addEventListener('click', e => { e.stopPropagation(); onCall(b.dataset.call); });
+    });
+
+    // Buttons sit inside the clickable row, so they must not also open the chart.
+    tb.querySelectorAll('.acts button').forEach(b => {
+      b.addEventListener('click', e => e.stopPropagation());
+    });
+
+    tb.querySelectorAll('tr[data-row]').forEach(tr => {
+      const open = () => openChart(tr);
+      tr.addEventListener('click', open);
+      tr.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+      });
+    });
+  }
+
+  function openChart(tr) {
+    const name = tr.querySelector('.pname').childNodes[0].textContent.trim();
+    document.getElementById('chartWho').textContent = name;
+    document.getElementById('chartScrim').hidden = false;
+    document.getElementById('chartClose').focus();
+  }
+
+  function nextInLine() {
+    const q = view === 'current'
+      ? P.filter(p => !p.done && (p.carry || p.win === '2:00 &ndash; 5:00'))
+      : P.filter(p => !p.done);
+    return q[0];
+  }
+
+  function onCall(name) {
+    const p = P.find(x => x.name === name);
+    if (p.active) return;
+    document.getElementById('dlgNext').textContent = nextInLine().name;
+    document.getElementById('dlgWho').textContent  = p.pref;
+    document.getElementById('scrim').hidden = false;
+    document.getElementById('dlgCancel').focus();
+  }
+
+  function wire(id, fn) {
+    const box = document.getElementById(id);
+    box.addEventListener('click', e => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      [...box.children].forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      fn(b.dataset.v);
+    });
+  }
+
+  wire('segMarks',  v => document.body.classList.toggle('no-marks', v === 'off'));
+  wire('segWindow', v => { view = v; render(); });
+
+
+  const chartScrim = document.getElementById('chartScrim');
+  const closeChart = () => { chartScrim.hidden = true; };
+  document.getElementById('chartClose').addEventListener('click', closeChart);
+  chartScrim.addEventListener('click', e => { if (e.target === chartScrim) closeChart(); });
+
+  const scrim = document.getElementById('scrim');
+  const close = () => { scrim.hidden = true; };
+  document.getElementById('dlgCancel').addEventListener('click', close);
+  document.getElementById('dlgGo').addEventListener('click', close);
+  scrim.addEventListener('click', e => { if (e.target === scrim) close(); });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (!scrim.hidden) close();
+    if (!chartScrim.hidden) closeChart();
+  });
+
+  render();
+</script>
