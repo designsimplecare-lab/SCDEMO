@@ -2670,6 +2670,7 @@
   }
   .auto-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;}
   .auto-chip .sub{font-weight:500;opacity:.75;}
+  .auto-chip .sub::before{content:"\00b7";margin:0 6px 0 0;}
   .auto-chip.paused{background:var(--warn-wash);color:var(--warn);}
   .auto-chip.paused .dot{background:var(--warn);}
 
@@ -4229,9 +4230,15 @@ function renderQueueChip(today, cw, rows, cwi){
   chip.hidden = false;
   var live = (QV === 'current');
   chip.className = 'auto-chip' + (live ? '' : ' paused');
+  /* Say what you are looking at and what the click does. "Auto-advancing"
+     described the mechanism, which is the one thing the doctor does not
+     need to know. */
   chip.innerHTML = live
-    ? '<span class="dot"></span>Auto-advancing<span class="sub">&middot; '+winLabel(cw)+'</span>'
-    : '<span class="dot"></span>Paused &mdash; viewing all<span class="sub">&middot; back to auto</span>';
+    ? '<span class="dot"></span>Showing now<span class="sub">'+winLabel(cw)+'</span>'
+    : '<span class="dot"></span>Showing whole day';
+  chip.title = live
+    ? 'The queue follows the call windows. Click to see the whole day.'
+    : 'Click to follow the call window that is running now.';
   var held = rows.filter(function(r){
     return WIN_ORDER.indexOf(r.win) < cwi && r.status !== 'done' && r.status !== 'noshow';
   }).length;
