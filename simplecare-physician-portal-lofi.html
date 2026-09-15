@@ -10,9 +10,9 @@
     --line:#E6E6E3; --line-strong:#D5D5D2;
     --paper:#F1F1EF; --panel:#FFFFFF; --wash:#F7F7F5;
     --accent:#4353E8; --accent-wash:#EEF0FD; --accent-ink:#3A46C8;
-    --good:#3E7D52; --good-wash:#E9F2EB;
-    --warn:#9A7622; --warn-wash:#F7EFDA; --warn-line:#E4CE93;
-    --crit:#C24A3F; --crit-wash:#FBEBE8; --crit-line:#E8B7AF; --crit-ink:#C24A3F;
+    --good:#2E9153; --good-wash:#DFF6E7; --good-line:#94D9AC;
+    --warn:#A87400; --warn-wash:#FDF1CF; --warn-line:#EBC65E;
+    --crit:#DA3A2F; --crit-wash:#FDE7E4; --crit-line:#F3A79E; --crit-ink:#DA3A2F;
     --badge:#E5322D;   /* notification counts — one red, everywhere */
     --gradient-agent:linear-gradient(100deg,#8CC6F0 0%,#3C6AB2 32%,#162660 100%);
     --shadow-card:0 1px 2px rgba(23,24,28,.04), 0 8px 24px rgba(23,24,28,.05);
@@ -2434,6 +2434,14 @@
   /* the assistant lines up with the right edge of the content, not an
      arbitrary offset — 34px is .main-inner's own padding */
   .ai-launcher{right:34px;}
+
+  /* Brighter status tones. The fill and ink are more saturated and each
+     pill carries a hairline of its own colour — that reads vivid without
+     dropping the 10.5px bold label to a contrast it cannot hold, which is
+     what happens if the ink alone is lightened. */
+  .q-table td.q-card .q-ver.ok{background:var(--good-wash);color:var(--good);box-shadow:inset 0 0 0 1px var(--good-line);}
+  .q-table td.q-card .q-ver.warn{background:var(--warn-wash);color:var(--warn);box-shadow:inset 0 0 0 1px var(--warn-line);}
+  .q-table td.q-card .q-ver.bad{background:var(--crit-wash);color:var(--crit);box-shadow:inset 0 0 0 1px var(--crit-line);}
 </style>
 </head>
 <body>
