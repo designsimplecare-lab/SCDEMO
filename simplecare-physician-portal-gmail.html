@@ -2825,6 +2825,10 @@
   :root[data-theme="dark"] .q-sep.carry td{background:rgba(255,255,255,.04);border-color:var(--line);}
   :root[data-theme="dark"] .q-sep.carry .q-sepin{color:var(--ink-soft);}
   :root[data-theme="dark"] .q-sep.carry .q-sepn{background:rgba(255,255,255,.10);color:var(--ink);}
+
+  /* task actions carry their glyph, same as the row actions */
+  .tk-acts .btn,.tk-card .btn{display:inline-flex;align-items:center;gap:6px;}
+  .tk-acts .btn .ic,.tk-card .btn .ic{width:18px;height:18px;flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -5484,10 +5488,10 @@ function taskCard(t){
     (t.carried ? '<span class="tk-carried">Carried forward &times;' + t.carried + '</span>' : '');
   var overdue = t.due === 'Overdue';
   var acts = t.status==='complete'
-    ? '<button class="btn xs" onclick="taskReopen(&#39;'+t.id+'&#39;)">Reopen</button>'
-    : '<button class="btn xs" onclick="openTaskMoa(&#39;'+t.patient.replace(/'/g,"\\'")+'&#39;)">Reassign</button>'+
-      '<button class="btn xs" onclick="taskCarry(&#39;'+t.id+'&#39;)">Carry Forward</button>'+
-      '<button class="btn xs dark" onclick="taskComplete(&#39;'+t.id+'&#39;)">Complete</button>';
+    ? '<button class="btn xs" onclick="taskReopen(&#39;'+t.id+'&#39;)"><span class="ic" data-pdic="reopen"></span>Reopen</button>'
+    : '<button class="btn xs" onclick="openTaskMoa(&#39;'+t.patient.replace(/'/g,"\\'")+'&#39;)"><span class="ic" data-pdic="reassign"></span>Reassign</button>'+
+      '<button class="btn xs" onclick="taskCarry(&#39;'+t.id+'&#39;)"><span class="ic" data-pdic="carryforward"></span>Carry Forward</button>'+
+      '<button class="btn xs dark" onclick="taskComplete(&#39;'+t.id+'&#39;)"><span class="ic" data-pdic="complete"></span>Complete</button>';
   return '<div class="'+cls+'">'+
     '<span class="tk-dot"></span>'+
     '<div class="tk-body">'+
@@ -5556,6 +5560,12 @@ function renderTasks(){
     });
   });
   lw.innerHTML = html || '<p class="pc-empty">Nothing in this view.</p>';
+  /* ICONS is defined further down the file than the first render, so the
+     glyphs are painted in after the markup rather than inlined into it. */
+  lw.querySelectorAll('[data-pdic]').forEach(function(el){
+    var k = el.getAttribute('data-pdic');
+    if(typeof ICONS !== 'undefined' && ICONS[k]) el.innerHTML = ICONS[k];
+  });
   updateTaskFlag();
 }
 
@@ -6430,6 +6440,9 @@ function aiSend(preset){
 
 /* ===== Streamline line-icons: swap glyphs for SVGs ===== */
 var ICONS = {
+"reassign": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\"><path d=\"M3.53 11.47v2.118a4.235 4.235 0 0 0 4.235 4.236H20.47M3.53 6.176h12.705a4.235 4.235 0 0 1 4.236 4.236v2.117\"/><path d=\"m17.294 14.647l3.177 3.176L17.294 21M6.706 9.353L3.529 6.176L6.706 3\"/></g></svg>",
+"complete": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\" d=\"m4.5 11.795l4.221 4.221a1.596 1.596 0 0 0 2.272 0L19.5 7.51\"/></svg>",
+"reopen": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.6\"><path stroke-miterlimit=\"10\" d=\"M6.395 7.705A7.9 7.9 0 0 1 12 5.382a7.93 7.93 0 0 1 7.929 7.929A7.94 7.94 0 0 1 12 21.25a7.94 7.94 0 0 1-7.929-7.94\"/><path stroke-linejoin=\"round\" d=\"m7.12 2.75l-.95 3.858a1.33 1.33 0 0 0 .97 1.609l3.869.948\"/></g></svg>",
 "moon": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\" d=\"M21.182 14.86A9.474 9.474 0 1 1 9.139 2.819a1.053 1.053 0 0 1 1.38 1.295a7.7 7.7 0 0 0-.085 4.642a7 7 0 0 0 4.81 4.811c1.52.45 3.14.42 4.643-.084a1.053 1.053 0 0 1 1.295 1.379\"/></svg>",
 "sun": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\"><g stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\" clip-path=\"url(#SVGXv8lpc2Y)\"><path d=\"M12 17.885a5.885 5.885 0 1 0 0-11.77a5.885 5.885 0 0 0 0 11.77m-9.281-5.879H1.5m21 0h-1.207m-9.287-9.287V1.5m0 21v-1.207M5.435 5.435l-.859-.859m14.848 14.848l-.86-.86m.001-13.129l.858-.859M4.576 19.424l.86-.86\"/></g><defs><clipPath id=\"SVGXv8lpc2Y\"><path fill=\"#fff\" d=\"M0 0h24v24H0z\"/></clipPath></defs></g></svg>",
 "cardinfo": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke-width=\"1.7\" d=\"M12 21.5a9.5 9.5 0 1 0 0-19a9.5 9.5 0 0 0 0 19m.005-4.222v-6.333\"/><path stroke-width=\"2\" d=\"M11.956 7.443h.01\"/></g></svg>",
