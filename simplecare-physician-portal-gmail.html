@@ -2463,16 +2463,6 @@
 
   /* the clock sits with the date, one notch quieter than it */
 
-  /* the rotating day summary — one fact at a time, cross-fading in place */
-  .tb-tick{display:inline-flex;align-items:center;overflow:hidden;vertical-align:bottom;}
-  .tb-tickline{
-    display:inline-block;color:var(--ink);font-weight:600;white-space:nowrap;
-    opacity:0;transform:translateY(5px);transition:opacity .26s ease, transform .26s ease;
-  }
-  .tb-tickline.in{opacity:1;transform:none;}
-  @media (prefers-reduced-motion: reduce){
-    .tb-tickline{transition:none;transform:none;}
-  }
 
   /* collapsed rail: the glyph is black at rest and on hover, white only on
      the one that is selected */
@@ -2489,7 +2479,7 @@
   /* ===== one step up on type, across the board ===== */
   body{font-size:15.5px;}
   .tb-title{font-size:24px;}
-  .tb-tickline,.tb-date{font-size:15px;}
+  .tb-date{font-size:15px;}
   .sect-title{font-size:23.5px;}
   .nav-btn .nav-label{font-size:16.5px;}
   .q-table{font-size:15.5px;}
@@ -2532,8 +2522,6 @@
   .q-table td.q-card .q-ver .ic{width:16px;height:16px;flex-shrink:0;display:inline-flex;align-items:center;}
   .q-table td.q-card .q-ver .ic svg{width:100%;height:100%;display:block;}
 
-  /* the day summary is a quiet line, not a headline */
-  .tb-tickline{font-weight:400;}
 
   /* A real frosted edge on the sticky bar: content blurs and desaturates
      as it passes under, and the bar fades out at its bottom instead of
@@ -2820,6 +2808,14 @@
   /* the separator band was reading as a second card edge */
   :root[data-theme="dark"] .q-sep td{background:rgba(255,255,255,.04);}
   :root[data-theme="dark"] .q-sep.carry td{background:rgba(255,159,10,.10);}
+
+  /* the top line: today's BC date, the doctor's own clock when they are
+     elsewhere, and where the BC call day stands */
+  .tb-clock{display:inline-flex;align-items:center;flex-wrap:wrap;gap:0;}
+  .tb-dot{margin:0 8px;color:var(--ink-faint);}
+  .tb-date-part{color:var(--ink-soft);font-weight:600;}
+  .tb-local{color:var(--ink-soft);font-variant-numeric:tabular-nums;}
+  .tb-win{color:var(--ink);font-weight:600;}
 </style>
 </head>
 <body>
@@ -4022,54 +4018,7 @@ function loadProfilePhoto(){
    ticker can never claim a number the table below it disagrees with.
    Counts that are zero are dropped rather than shown as "0 left" — the
    line is for what is outstanding, not a scoreboard. */
-function tickerLines(){
-  var out = [];
-  var open = 0, cards = 0, claims = 0;
-  QUEUE_DATA.forEach(function(r){
-    /* same definition as the Live queue badge: everyone not finished with.
-       A missed or dropped call still has to be made. */
-    if(r.status!=='done' && r.status!=='noshow') open++;
-    if(r.card !== 'verified') cards++;
-    if(BILL_OPEN.indexOf(r.bill) !== -1) claims++;
-  });
-  var alerts = document.querySelectorAll('#alerts-box .al-row').length;
-  var tasks  = DOC_TASKS.filter(function(t){ return t.status !== 'complete'; }).length;
-  var urgent = DOC_TASKS.filter(function(t){ return t.status !== 'complete' && t.prio === 'urgent'; }).length;
-  var carried = DOC_TASKS.filter(function(t){ return t.status !== 'complete' && t.age > 0; }).length;
 
-  function n(count, one, many){ return count + ' ' + (count === 1 ? one : many); }
-  if(open)    out.push(n(open,   'patient still to call', 'patients still to call'));
-  if(alerts)  out.push(n(alerts, 'alert to review before calling', 'alerts to review before calling'));
-  if(urgent)  out.push(n(urgent, 'task needs action today', 'tasks need action today'));
-  else if(tasks) out.push(n(tasks, 'task open', 'tasks open'));
-  if(claims)  out.push(n(claims,  'claim waiting on you', 'claims waiting on you'));
-  if(cards)   out.push(n(cards,   'health card to check', 'health cards to check'));
-  if(carried) out.push(n(carried, 'task carried from an earlier day', 'tasks carried from earlier days'));
-  return out;
-}
-
-var tickerIdx = 0, tickerTimer = null;
-function tickerStart(){
-  var host = document.getElementById('tb-tickline'); if(!host) return;
-  var lines = tickerLines();
-  if(!lines.length){ var t = document.getElementById('tb-tick'); if(t) t.style.display='none'; return; }
-  tickerIdx = 0;
-  host.textContent = lines[0];
-  host.classList.add('in');
-  if(tickerTimer) clearInterval(tickerTimer);
-  /* one line at a time, and only while the tab is actually being watched */
-  tickerTimer = setInterval(function(){
-    if(document.hidden) return;
-    var h = document.getElementById('tb-tickline'); if(!h){ clearInterval(tickerTimer); return; }
-    var l = tickerLines(); if(!l.length) return;
-    h.classList.remove('in');
-    setTimeout(function(){
-      tickerIdx = (tickerIdx + 1) % l.length;
-      h.textContent = l[tickerIdx];
-      h.classList.add('in');
-    }, 260);
-  }, 4200);
-}
 
 
 function syncTopTitle(){
@@ -4081,8 +4030,8 @@ function syncTopTitle(){
     var h = new Date().getHours();
     el.textContent = (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', Dr. Pannozzo';
     if(dt){
-      dt.innerHTML = '<span class="tb-tick" id="tb-tick"><span class="tb-tickline" id="tb-tickline"></span></span>';
-      dt.style.display = 'inline'; tickerStart();
+      dt.innerHTML = '<span class="tb-clock" id="tb-clock"></span>';
+      dt.style.display = 'inline'; renderTopClock();
     }
   } else {
     var t = scr.querySelector('h1');
@@ -4170,9 +4119,14 @@ var BILL_STATUS = {
                     why:'Paid in full. Nothing to do.'}
 };
 var BILL_OPEN = ['msp-submit','msp-review','msp-rejected','pri-due','pri-review'];
+/* Daniel 6: "Remove In visit, call dropped, scheduled. Have In queue,
+   Completed, Doctor to Callback, No-Show."
+   A missed or dropped call is not a state the doctor reads and moves on
+   from — it is a job. Both now say what has to happen: call them back. */
 var STATUS_LABEL = {
-  waiting:'In queue', next:'In queue', progress:'In visit', delayed:'In queue',
-  missed:'Missed call', dropped:'Call dropped', done:'Completed', noshow:'No-show', scheduled:'Scheduled'
+  waiting:'In queue', next:'In queue', delayed:'In queue', progress:'In queue',
+  missed:'Doctor to Callback', dropped:'Doctor to Callback',
+  done:'Completed', noshow:'No-show', scheduled:'In queue'
 };
 var AI_SUMMARY = {
   'Gloria Mcdonald, 74F':'Chest pressure on exertion x3 days, eased by rest. Known HTN; no prior cardiac workup.',
@@ -4350,10 +4304,94 @@ function renderQueueChip(today, cw, rows, cwi){
 }
 
 
+
+/* ===== Daniel 8: local time + the BC call window =====
+   SimpleCare doctors are not necessarily in BC; the patients always are.
+   So the line carries both — the doctor's own clock, and where the BC
+   call day currently stands. His six states, verbatim:
+     before window    · BC call window 3-5 PM · starts in 1 hr
+     window active    · BC call window 3-5 PM · 1 hr 30 min left
+     between windows  · Next BC call window 6-8 PM · starts in 1 hr
+     final window     · BC call window 7-9 PM · 30 min left
+     day complete     · Next BC call window tomorrow at 3 PM
+     none scheduled   · No BC call windows scheduled today          */
+var BC_ZONE = 'America/Vancouver';
+var BC_WINDOWS = [
+  {key:'8-10', start:8,  end:10},
+  {key:'10-2', start:10, end:14},
+  {key:'2-5',  start:14, end:17},
+  {key:'5-7',  start:17, end:19}
+];
+function zoneParts(date, zone){
+  try{
+    var f = new Intl.DateTimeFormat('en-CA', {timeZone:zone, hour:'numeric', minute:'2-digit',
+              hour12:false, weekday:'short', month:'short', day:'numeric'});
+    var p = {}; f.formatToParts(date).forEach(function(x){ p[x.type] = x.value; });
+    return {h:+p.hour % 24, m:+p.minute, weekday:p.weekday, month:p.month, day:p.day};
+  }catch(e){
+    return {h:date.getHours(), m:date.getMinutes(), weekday:'', month:'', day:''};
+  }
+}
+function localZoneLabel(){
+  try{
+    var z = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    var city = z.split('/').pop().replace(/_/g,' ');
+    return city || z;
+  }catch(e){ return ''; }
+}
+function clockText(date, zone){
+  try{
+    return new Intl.DateTimeFormat('en-US',{timeZone:zone,hour:'numeric',minute:'2-digit',hour12:true}).format(date);
+  }catch(e){ return ''; }
+}
+function hLabel(h){
+  var ampm = h < 12 ? 'AM' : 'PM', hh = h % 12; if(hh === 0) hh = 12;
+  return hh + ' ' + ampm;
+}
+function winRange(w){ return hLabel(w.start).replace(' AM','').replace(' PM','') + '–' + hLabel(w.end); }
+function gapText(mins){
+  if(mins < 60) return mins + ' min';
+  var h = Math.floor(mins/60), m = mins % 60;
+  return h + ' hr' + (m ? ' ' + m + ' min' : '');
+}
+function bcWindowState(now){
+  var bc = zoneParts(now, BC_ZONE);
+  var mins = bc.h * 60 + bc.m;
+  if(!BC_WINDOWS.length) return 'No BC call windows scheduled today';
+  for(var i = 0; i < BC_WINDOWS.length; i++){
+    var w = BC_WINDOWS[i], s = w.start*60, e = w.end*60;
+    if(mins < s){
+      var lead = 'BC call window ' + winRange(w) + ' · starts in ' + gapText(s - mins);
+      return (i === 0) ? lead : 'Next ' + lead.charAt(0).toLowerCase() + lead.slice(1);
+    }
+    if(mins < e){
+      return 'BC call window ' + winRange(w) + ' · ' + gapText(e - mins) + ' left';
+    }
+  }
+  return 'Next BC call window tomorrow at ' + hLabel(BC_WINDOWS[0].start);
+}
+function renderTopClock(){
+  var el = document.getElementById('tb-clock'); if(!el) return;
+  var now = new Date();
+  var zone = localZoneLabel();
+  var bcNow = zoneParts(now, BC_ZONE);
+  var sameZone = (clockText(now, BC_ZONE) === clockText(now, Intl.DateTimeFormat().resolvedOptions().timeZone));
+  var dateStr = bcNow.weekday + ' ' + bcNow.month + ' ' + bcNow.day;
+  var local = sameZone ? '' :
+    '<span class="tb-local">Local ' + clockText(now, Intl.DateTimeFormat().resolvedOptions().timeZone) +
+    (zone ? ' · ' + zone : '') + '</span><span class="tb-dot">·</span>';
+  el.innerHTML = '<span class="tb-date-part">' + dateStr + '</span><span class="tb-dot">·</span>' +
+    local + '<span class="tb-win">' + bcWindowState(now) + '</span>';
+}
+setInterval(renderTopClock, 30000);
+
 var WIN_ORDER = ['8-10','10-2','2-5','5-7'];
 var QV = 'current';
 function currentWin(){
-  var h = new Date().getHours();
+  /* The call windows are BC windows. Reading them off the doctor's own
+     clock put the queue three hours ahead of the line in the topbar when
+     the doctor is not in BC — which is the normal case here. */
+  var h = zoneParts(new Date(), BC_ZONE).h;
   if(h < 10) return '8-10';
   if(h < 14) return '10-2';
   if(h < 17) return '2-5';
@@ -4676,9 +4714,10 @@ function qfBillOptions(){
 }
 /* The call window is no longer something you filter by. The queue follows
    the clock on its own and says so; the chip is how you step out of that. */
+/* Daniel 7: "Remove this - we will have this in Claims." The billing
+   filter is gone from the day sheet; Claims is where you work claims. */
 var QF_DEFS = [
-  {key:'visit', label:'Visit status',   opts:qfVisitOptions},
-  {key:'bill',  label:'Billing status', opts:qfBillOptions}
+  {key:'visit', label:'Visit status', opts:qfVisitOptions}
 ];
 
 function qfCurrentLabel(def){
@@ -5989,12 +6028,24 @@ function inboxRowHtml(item, i){
   '</div>';
 }
 
+/* "Ensure oldest first — everything in chronological order." Safe only
+   because urgent results also surface in Needs your attention; without
+   that, a critical result arriving late would sit at the bottom. */
+function inboxWhen(it){
+  var m = (it.received||'').match(/(\d+):(\d+)\s*(AM|PM)/i);
+  if(!m) return 0;
+  var h = +m[1] % 12; if(/PM/i.test(m[3])) h += 12;
+  var day = /yesterday/i.test(it.received) ? -1 : 0;
+  return day*1440 + h*60 + (+m[2]);
+}
+function byOldest(a,b){ return inboxWhen(a) - inboxWhen(b); }
+
 function renderInboxList(){
   var recv = INBOX_ITEMS.filter(function(x){ return x.status==='received'; });
-  // Flagged (critical) sit above everything. The rest is purely chronological — no severity ordering.
-  var flagged = recv.filter(inboxIsCritical);
-  var rest    = recv.filter(function(x){ return !inboxIsCritical(x); });
-  var reviewed = INBOX_ITEMS.filter(function(x){ return x.status==='reviewed'; });
+  // Flagged (critical) sit above everything. The rest is purely chronological.
+  var flagged = recv.filter(inboxIsCritical).sort(byOldest);
+  var rest    = recv.filter(function(x){ return !inboxIsCritical(x); }).sort(byOldest);
+  var reviewed = INBOX_ITEMS.filter(function(x){ return x.status==='reviewed'; }).sort(byOldest);
 
   var f = document.getElementById('inbox-received');
   if(f){
@@ -6004,7 +6055,7 @@ function renderInboxList(){
           flagged.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('')
         : '') +
       (rest.length
-        ? '<p class="ix-secttl">Everything else &mdash; newest first <span>'+rest.length+'</span></p>'+
+        ? '<p class="ix-secttl">Everything else &mdash; oldest first <span>'+rest.length+'</span></p>'+
           rest.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('')
         : '<p class="empty">Nothing waiting.</p>');
   }
