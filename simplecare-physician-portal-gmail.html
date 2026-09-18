@@ -2662,12 +2662,6 @@
   .auto-chip.paused{background:var(--warn-wash);color:var(--warn);}
   .auto-chip.paused .dot{background:var(--warn);}
 
-  .q-notice{
-    display:flex;align-items:center;gap:8px;margin:0 0 14px;
-    background:var(--accent-wash);color:var(--accent-ink);
-    border-radius:10px;padding:10px 14px;font-size:14.5px;
-  }
-  .q-notice b{font-weight:700;}
 
   .q-sep td{
     background:var(--wash);padding:8px 14px;
@@ -2933,7 +2927,7 @@
           <div class="q-toolbar">
             <div class="day-nav">
               <button class="day-arrow" onclick="shiftDay(-1)" title="Previous day">&#8249;</button>
-              <span class="day-label" id="day-label">Today &middot; Thu Jul 23</span>
+              <span class="day-label" id="day-label">Today</span>
               <button class="day-arrow" onclick="shiftDay(1)" title="Next day">&#8250;</button>
               <button class="day-today" id="day-today-btn" onclick="goToday()">Today</button>
               <span class="day-count" id="day-count"></span>
@@ -2949,7 +2943,6 @@
             <div class="qf-row" id="qf-row"></div>
           </div>
 
-          <div class="q-notice" id="q-notice" hidden></div>
           <div class="q-tablewrap" id="q-tablewrap">
             <table class="q-table" id="queue-table">
               <thead><tr><th>#</th><th>Patient</th><th>Health card</th><th>Billing status</th><th>Visit status</th><th>Clinical concern</th></tr></thead>
@@ -4155,9 +4148,17 @@ var currentWindow = 'all';
 var queueSearch = '';
 var dayOffset = 0;
 var DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-var DAY_LABELS = {
-  '-2':'Tue Jul 21', '-1':'Wed Jul 22', '0':'Thu Jul 23', '1':'Fri Jul 24', '2':'Sat Jul 25', '3':'Sun Jul 26'
-};
+/* The topbar clock is real, so a day sheet frozen on one fixed date put
+   two different dates on the same screen. These derive from today's BC
+   date — the demo data still belongs to "today", whenever today is. */
+function dayLabelFor(offset){
+  var d = new Date(); d.setDate(d.getDate() + offset);
+  try{
+    return new Intl.DateTimeFormat('en-US',{timeZone:BC_ZONE,weekday:'short',month:'short',day:'numeric'}).format(d);
+  }catch(e){ return ''; }
+}
+var DAY_LABELS = {};
+[-2,-1,0,1,2,3].forEach(function(n){ DAY_LABELS[String(n)] = dayLabelFor(n); });
 var OTHER_DAYS = {
   '-2':[{name:'Priya Raman, 39F',concern:'Rash review',win:'8-10',status:'done'},
         {name:'Tom Alvarez, 61M',concern:'Blood pressure check',win:'10-2',status:'done'},
@@ -4283,37 +4284,23 @@ function toggleTheme(){
 
 var QUEUE_NEXT = null;
 
-/* The chip says what the queue is doing and is the way to override it. The
-   notice below it explains a window turning over, which is the moment a
-   doctor would otherwise wonder where two patients went. */
+/* The chip is a control, so it says what the click does. The running
+   window is already on the topbar and the carryover count is already on
+   its own band — the notice that used to sit here said both again, and
+   pointed "above" at a band below it. */
 function renderQueueChip(today, cw, rows, cwi){
   var chip = document.getElementById('auto-chip');
-  var notice = document.getElementById('q-notice');
-  if(!chip || !notice) return;
-  if(!today){ chip.hidden = true; notice.hidden = true; return; }
+  if(!chip) return;
+  if(!today){ chip.hidden = true; return; }
   chip.hidden = false;
   var live = (QV === 'current');
   chip.className = 'auto-chip' + (live ? '' : ' paused');
-  /* Say what you are looking at and what the click does. "Auto-advancing"
-     described the mechanism, which is the one thing the doctor does not
-     need to know. */
   chip.innerHTML = live
-    ? '<span class="dot"></span>Showing now<span class="sub">'+winLabel(cw)+'</span>'
+    ? '<span class="dot"></span>Showing now'
     : '<span class="dot"></span>Showing whole day';
   chip.title = live
     ? 'The queue follows the call windows. Click to see the whole day.'
     : 'Click to follow the call window that is running now.';
-  var held = rows.filter(function(r){
-    return WIN_ORDER.indexOf(r.win) < cwi && r.status !== 'done' && r.status !== 'noshow';
-  }).length;
-  if(live && held){
-    notice.hidden = false;
-    notice.innerHTML = 'The <b>'+winLabel(cw)+'</b> window has started. <b>'+held+
-      (held===1 ? ' patient</b> remains' : ' patients</b> remain')+
-      ' from earlier and '+(held===1?'is':'are')+' held in Carryover above.';
-  } else {
-    notice.hidden = true;
-  }
 }
 
 
@@ -4845,7 +4832,7 @@ function renderClaims(){
   lw.innerHTML = rows.length ? rows.map(function(r){
     var f = feeFor(r), bs = BILL_STATUS[r.bill];
     return '<div class="cl-row">'+
-      '<div class="cl-who"><b>'+r.legal+'</b><span>'+winLabel(r.win)+' &middot; Thu Jul 23</span></div>'+
+      '<div class="cl-who"><b>'+r.legal+'</b><span>'+winLabel(r.win)+' &middot; '+dayLabelFor(0)+'</span></div>'+
       '<div class="cl-fee"><b>'+f.code+'</b><span>'+f.name+'</span></div>'+
       '<div class="cl-amt">'+money(f.amt)+'</div>'+
       (bs.open
@@ -7410,6 +7397,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-18 17:45</div>
+  <div class="build-stamp">build 2026-09-18 17:48</div>
 </body>
 </html>
