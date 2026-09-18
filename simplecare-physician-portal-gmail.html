@@ -2867,6 +2867,17 @@
   .attn-chev.up{transform:rotate(-135deg) translate(-2px,-2px);}
   .attn-wrap{display:flex;justify-content:center;}
   :root[data-theme="dark"] .attn-handle{box-shadow:0 2px 10px rgba(0,0,0,.5);}
+
+  /* which tier the standard put this in, and therefore how fast it is phoned */
+  .lab-tier{
+    display:inline-block;margin-left:9px;padding:2px 8px;border-radius:999px;
+    font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+    vertical-align:1.5px;
+  }
+  .lab-tier.critical{background:var(--crit-wash);color:var(--crit);}
+  .lab-tier.alert{background:var(--warn-wash);color:var(--warn);}
+  #alerts-box .al-row.tier-alert .al-mark{background:var(--warn);}
+  #alerts-box .al-row.tier-alert .al-val{color:var(--warn);}
 </style>
 </head>
 <body>
@@ -4690,19 +4701,29 @@ function renderAttnTasks(){
 function renderCriticals(){
   var list=document.getElementById('crit-list');
   if(!list || typeof INBOX_ITEMS === 'undefined') return;
-  // single source of truth: unreviewed inbox results carrying a critical value
-  var open = INBOX_ITEMS.filter(function(it){ return inboxIsCritical(it) && it.status === 'received'; });
+  /* Single source of truth: unreviewed results that the LifeLabs standard
+     puts in a tier. Critical first — those are phoned round the clock —
+     then alert, which is phoned 08:00-20:00. */
+  var open = INBOX_ITEMS.filter(function(it){ return labTier(it) && it.status === 'received'; });
+  open.sort(function(a,b){
+    var r = {critical:0, alert:1};
+    return r[labTier(a)] - r[labTier(b)];
+  });
   list.innerHTML = open.map(function(c){
     var idx = INBOX_ITEMS.indexOf(c);
-    var cx = c.tests.filter(function(t){ return t.f && t.f.indexOf('crit')===0; })[0];
+    var tier = labTier(c);
+    var pick = tier === 'critical' ? 'crit' : 'alert';
+    var cx = c.tests.filter(function(t){ return t.f && t.f.indexOf(pick) === 0; })[0];
     var dir = cx.f.indexOf('high')>-1 ? '&uarr;' : '&darr;';
-    return '<div class="al-row" onclick="openInboxItem('+idx+')">'+
+    return '<div class="al-row '+(tier==='alert'?'tier-alert':'')+'" onclick="openInboxItem('+idx+')"'+
+      (cx.basis ? ' title="'+cx.basis+'"' : '')+'>'+
       '<span class="al-mark"></span>'+
       '<span class="al-who"><b>'+c.patient+'</b><i>'+(c.age||'')+'</i></span>'+
-      '<span class="al-test">'+cx.n+'</span>'+
+      '<span class="al-test">'+cx.n+
+        '<span class="lab-tier '+tier+'">'+(tier==='critical'?'Critical':'Alert')+'</span></span>'+
       '<span class="al-val">'+cx.v+' <u>'+cx.u+'</u> <em>'+dir+'</em></span>'+
       '<span class="al-ref">ref '+cx.ref+'</span>'+
-      '<span class="al-src">'+c.panel+' &middot; '+c.received+'</span>'+
+      '<span class="al-src">'+(cx.basis || (c.panel + ' \u00b7 ' + c.received))+'</span>'+
       '<span class="al-acts">'+
         '<button class="al-btn primary" onclick="event.stopPropagation();openReview('+idx+')">Review result</button>'+
       '</span></div>';
@@ -6081,6 +6102,119 @@ var INBOX_ITEMS = [
 
 var IX_TYPE_CLS = {'Lab':'','Imaging':'img','Consult':'con','Micro':'mic','Trace':'tra','Screening':'scr'};
 function inboxAbnormal(item){ return (item.tests||[]).filter(function(t){ return t.f; }); }
+
+/* ===== Deterministic safety layer =====
+   Source of truth: LifeLabs, "British Columbia Critical and Alert Laboratory
+   Test Results", Doc#56548 Ver 3.0 — saved at
+   reference/lifelabs-critical-results-bc.pdf and linked from Daniel's Notion.
+
+   Two tiers, and LifeLabs defines them by how fast they must be phoned:
+     critical — called 24 hours a day          -> Urgent
+     alert    — called 08:00-20:00, 7 days     -> High
+     neither  — routine channels               -> Routine
+
+   Encoded verbatim. Nothing is inferred: a test that is not on this list
+   returns no tier, however far outside its reference range it sits. That is
+   the point of a deterministic floor — the numbers decide, not the person
+   who typed the mock data. AI never downgrades a hit here.
+
+   Deliberately NOT encoded: Digoxin. The published row extracts as "Less
+   than 3.5 nmol/L", which is the opposite of how digoxin toxicity presents,
+   so the direction is ambiguous in the copy I have. Guessing a direction on
+   a toxicity threshold is exactly the kind of thing this layer exists to
+   prevent. Confirm with Daniel before adding it. */
+var LAB_RULES = {
+  'Potassium':      {u:'mmol/L', crit:{lo:2.5,  hi:6.5},   alert:{lo:2.8, hi:6.2}},
+  'Sodium':         {u:'mmol/L', crit:{lo:120,  hi:160}},
+  'Calcium, Total': {u:'mmol/L', crit:{lo:1.50, hi:3.25}},
+  'Calcium':        {u:'mmol/L', crit:{lo:1.50, hi:3.25}},
+  'Calcium, Ionized':{u:'mmol/L',crit:{lo:0.80, hi:1.60}},
+  'CO2':            {u:'mmol/L', crit:{lo:10,   hi:40}},
+  'Magnesium':      {u:'mmol/L', crit:{lo:0.3,  hi:3.0}},
+  'Phosphate':      {u:'mmol/L', crit:{lo:0.32}},
+  'Lactate':        {u:'mmol/L', crit:{hi:4.00}},
+  'Glucose':        {u:'mmol/L', crit:{lo:2.5,  hi:30.0}, peds:{maxAge:16, crit:{lo:2.5, hi:11.1}}},
+  'TSH':            {u:'mU/L',   crit:{hi:10.00}},
+  'Troponin':       {u:'ng/L',   crit:{hi:50.0}},
+  'Troponin I':     {u:'ng/L',   crit:{hi:50.0}},
+  'Hemoglobin':     {u:'g/L',    crit:{lo:60}},
+  'Haemoglobin':    {u:'g/L',    crit:{lo:60}},
+  'Platelet count': {u:'x10^9/L',crit:{lo:20}},
+  'Platelets':      {u:'x10^9/L',crit:{lo:20}},
+  'Absolute Neutrophil Count':{u:'x10^9/L', crit:{lo:0.5, hi:100.0}},
+  'Absolute Lymphocyte Count':{u:'x10^9/L', crit:{hi:250.0}},
+  'Fibrinogen':     {u:'g/L',    crit:{lo:1.00}},
+  'INR':            {u:'',       crit:{hi:6.0}},
+  'PT (INR)':       {u:'',       crit:{hi:6.0}},
+  'PTT':            {u:'sec',    crit:{hi:100}},
+  'APTT':           {u:'sec',    crit:{hi:100}},
+  'Lithium':        {u:'mmol/L', crit:{hi:2.0}, senior:{minAge:66, crit:{hi:1.5}}},
+  'Theophylline':   {u:'µmol/L', crit:{hi:165}},
+  'Valproic Acid':  {u:'',       crit:{hi:1000}},
+  'Phenytoin':      {u:'',       crit:{hi:120}},
+  'Phenobarbital':  {u:'',       crit:{hi:260}},
+  'Carbamazepine':  {u:'',       crit:{hi:65}}
+};
+
+/* the few unit mismatches between how a result is reported and how the
+   standard states its limit */
+function labToRuleUnits(name, v, u){
+  if(/troponin/i.test(name) && /µg\/L|ug\/L/i.test(u||'')) return v * 1000;  /* µg/L -> ng/L */
+  return v;
+}
+function ageYears(s){ var m = String(s||'').match(/(\d+)/); return m ? +m[1] : null; }
+
+/* Returns {tier:'critical'|'alert', basis:'...'} or null. */
+function labCheck(name, value, unit, age){
+  var r = LAB_RULES[name]; if(!r) return null;
+  var v = labToRuleUnits(name, parseFloat(value), unit);
+  if(isNaN(v)) return null;
+  var crit = r.crit, alert = r.alert;
+  if(r.peds   && age !== null && age <= r.peds.maxAge)   crit = r.peds.crit;
+  if(r.senior && age !== null && age >= r.senior.minAge) crit = r.senior.crit;
+  var unitTxt = r.u ? ' ' + r.u : '';
+  if(crit){
+    if(crit.lo !== undefined && v < crit.lo)
+      return {tier:'critical', dir:'low',  basis:'LifeLabs critical · ' + name + ' below ' + crit.lo + unitTxt};
+    if(crit.hi !== undefined && v > crit.hi)
+      return {tier:'critical', dir:'high', basis:'LifeLabs critical · ' + name + ' above ' + crit.hi + unitTxt};
+  }
+  if(alert){
+    if(alert.lo !== undefined && v < alert.lo)
+      return {tier:'alert', dir:'low',  basis:'LifeLabs alert · ' + name + ' below ' + alert.lo + unitTxt};
+    if(alert.hi !== undefined && v > alert.hi)
+      return {tier:'alert', dir:'high', basis:'LifeLabs alert · ' + name + ' above ' + alert.hi + unitTxt};
+  }
+  return null;
+}
+
+/* Re-derive every flag from the standard, once, at load. Whatever severity
+   was typed into the mock data is discarded — two of ours disagreed with
+   the published thresholds. */
+function applyLabRules(){
+  if(typeof INBOX_ITEMS === 'undefined') return;
+  INBOX_ITEMS.forEach(function(it){
+    var age = ageYears(it.age);
+    (it.tests||[]).forEach(function(t){
+      var hit = labCheck(t.n, t.v, t.u, age);
+      if(hit){
+        t.f = (hit.tier === 'critical' ? 'crit-' : 'alert-') + hit.dir;
+        t.basis = hit.basis;
+      } else if(t.f && /^(crit|alert)-/.test(t.f)){
+        /* it was marked severe by hand but the standard does not agree */
+        t.f = t.f.indexOf('low') > -1 ? 'low' : 'high';
+        t.basis = null;
+      }
+    });
+  });
+}
+function inboxIsAlert(item){
+  return (item.tests||[]).some(function(t){ return t.f && t.f.indexOf('alert') === 0; });
+}
+function labTier(item){
+  return inboxIsCritical(item) ? 'critical' : (inboxIsAlert(item) ? 'alert' : null);
+}
+
 function inboxIsCritical(item){ return (item.tests||[]).some(function(t){ return t.f && t.f.indexOf('crit')===0; }); }
 function inboxRowHtml(item, i){
   var abn = inboxAbnormal(item), crit = inboxIsCritical(item);
@@ -7479,6 +7613,7 @@ applyIcons();
 syncTopTitle();
 renderFilters();
 loadProfilePhoto();
+applyLabRules();
 renderCriticals();
 renderAttnTasks();
 renderTasks();
@@ -7498,6 +7633,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-18 17:54</div>
+  <div class="build-stamp">build 2026-09-18 18:15</div>
 </body>
 </html>
