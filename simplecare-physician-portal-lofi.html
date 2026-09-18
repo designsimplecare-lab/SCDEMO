@@ -2823,6 +2823,50 @@
   /* task actions carry their glyph, same as the row actions */
   .tk-acts .btn,.tk-card .btn{display:inline-flex;align-items:center;gap:6px;}
   .tk-acts .btn .ic,.tk-card .btn .ic{width:18px;height:18px;flex-shrink:0;}
+
+  /* multi-select: a tick box rather than a highlight, so it is obvious more
+     than one can be on at a time */
+  .qf-opt{display:flex;align-items:center;gap:9px;}
+  .qf-tick{
+    width:16px;height:16px;border-radius:4px;flex-shrink:0;
+    border:1.5px solid var(--line-strong);background:var(--panel);position:relative;
+  }
+  .qf-opt.sel .qf-tick{background:var(--accent);border-color:var(--accent);}
+  .qf-opt.sel .qf-tick::after{
+    content:"";position:absolute;left:4.5px;top:1.5px;width:4px;height:8px;
+    border:solid #fff;border-width:0 2px 2px 0;transform:rotate(43deg);
+  }
+
+  /* the fold, and the glass it fades behind */
+  #alerts-box{position:relative;}
+  #alerts-box.folded{max-height:var(--attn-h,320px);overflow:hidden;transition:max-height .22s ease;}
+  #alerts-box.folded.open{max-height:none;}
+  #alerts-box.folded:not(.open)::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:120px;pointer-events:none;
+    background:linear-gradient(to bottom, rgba(255,255,255,0) 0%, var(--panel) 78%);
+    -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
+    -webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 55%);
+    mask-image:linear-gradient(to bottom, transparent 0%, #000 55%);
+  }
+  :root[data-theme="dark"] #alerts-box.folded:not(.open)::after{
+    background:linear-gradient(to bottom, rgba(28,28,30,0) 0%, var(--panel) 78%);
+  }
+  .attn-handle{
+    position:relative;z-index:2;margin:-20px auto 18px;display:flex;align-items:center;gap:8px;
+    background:var(--panel);border:1px solid var(--line);border-radius:999px;
+    padding:0 16px;height:36px;cursor:pointer;font-family:inherit;
+    font-size:14px;font-weight:700;color:var(--ink);
+    box-shadow:0 2px 10px rgba(23,24,28,.10);
+  }
+  .attn-handle:hover{background:var(--wash);}
+  .attn-handle[hidden]{display:none;}
+  .attn-chev{
+    width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;
+    transform:rotate(45deg) translate(-2px,-2px);transition:transform .18s ease;
+  }
+  .attn-chev.up{transform:rotate(-135deg) translate(-2px,-2px);}
+  .attn-wrap{display:flex;justify-content:center;}
+  :root[data-theme="dark"] .attn-handle{box-shadow:0 2px 10px rgba(0,0,0,.5);}
 </style>
 </head>
 <body>
@@ -2910,6 +2954,7 @@
         </div>
         <div id="attn-tasks"></div>
       </div>
+      <div class="attn-wrap"><button class="attn-handle" id="attn-handle" onclick="attnToggle()" hidden></button></div>
 
       <!-- Live queue + Inbox in one card, switched by tabs -->
       <div class="work-tabs">
@@ -4425,9 +4470,9 @@ function renderQueue(){
   var q = queueSearch.trim().toLowerCase();
   var source = (dayOffset === 0) ? QUEUE_DATA : (OTHER_DAYS[String(dayOffset)] || []);
   var rows = source.filter(function(r){
-    var winOk   = (QF.win==='all'   || r.win===QF.win);
-    var visitOk = (QF.visit==='all' || STATUS_LABEL[r.status]===QF.visit);
-    var billOk  = (QF.bill==='all'  || r.bill===QF.bill);
+    var winOk   = (!qfAny('win')   || qfHas('win', r.win));
+    var visitOk = (!qfAny('visit') || qfHas('visit', STATUS_LABEL[r.status]));
+    var billOk  = (!qfAny('bill')  || qfHas('bill', r.bill));
     if(!visitOk || !billOk) return false;
     if(!winOk) return false;
     if(!q) return true;
@@ -4585,6 +4630,43 @@ function attnTasks(){
     return (a.dueIn || 0) - (b.dueIn || 0);                /* then by deadline */
   });
 }
+
+/* ===== the attention band collapses =====
+   It draws from the Inbox and the Action Centre, so on a busy morning it
+   can fill the screen before the queue is even visible. It shows the
+   first few and fades the rest under the card edge, with a handle that
+   says how many are hidden. */
+var ATTN_SHOW = 5;
+var attnOpen = false;
+function attnToggle(){ attnOpen = !attnOpen; syncAttnFold(); }
+function syncAttnFold(){
+  var box = document.getElementById('alerts-box'); if(!box) return;
+  var rows = box.querySelectorAll('.al-row');
+  var handle = document.getElementById('attn-handle');
+  var hidden = rows.length - ATTN_SHOW;
+  if(hidden <= 0){
+    box.classList.remove('folded','open');
+    if(handle) handle.hidden = true;
+    box.style.removeProperty('--attn-h');
+    return;
+  }
+  if(handle) handle.hidden = false;
+  box.classList.add('folded');
+  box.classList.toggle('open', attnOpen);
+  if(!attnOpen){
+    /* measure where the cut should fall rather than guessing a pixel height */
+    var cut = rows[ATTN_SHOW];
+    var top = box.getBoundingClientRect().top;
+    box.style.setProperty('--attn-h', Math.round(cut.getBoundingClientRect().top - top) + 'px');
+  }
+  if(handle){
+    handle.innerHTML = attnOpen
+      ? '<span>Show less</span><span class="attn-chev up"></span>'
+      : '<span>' + hidden + ' more</span><span class="attn-chev"></span>';
+    handle.setAttribute('aria-expanded', attnOpen ? 'true' : 'false');
+  }
+}
+
 function renderAttnTasks(){
   var host = document.getElementById('attn-tasks'); if(!host) return;
   host.innerHTML = attnTasks().map(function(t){
@@ -4602,6 +4684,7 @@ function renderAttnTasks(){
       '<span class="al-src">'+t.type+' &middot; '+(t.to||'unassigned')+'</span>'+
     '</div>';
   }).join('');
+  syncAttnFold();
 }
 
 function renderCriticals(){
@@ -4695,7 +4778,13 @@ function renderGlance(){
    vocabularies the rows render, so a filter can never offer a state
    the table cannot show.
    ============================================================ */
-var QF = { win:'all', visit:'all', bill:'all' };
+/* A filter holds a set, not a single value. "In queue" and "Doctor to
+   Callback" are the two a doctor most often wants at once — one filter
+   that can only hold one of them makes them look at the list twice. An
+   empty set means All. */
+var QF = { win:[], visit:[], bill:[] };
+function qfHas(key, val){ return QF[key].indexOf(val) > -1; }
+function qfAny(key){ return QF[key].length > 0; }
 
 function qfVisitOptions(){
   var seen = [], out = [{v:'all', l:'All'}];
@@ -4721,13 +4810,18 @@ var QF_DEFS = [
 ];
 
 function qfCurrentLabel(def){
-  var o = def.opts().filter(function(x){ return x.v === QF[def.key]; })[0];
-  return o ? o.l : 'All';
+  var sel = QF[def.key];
+  if(!sel.length) return 'All';
+  if(sel.length === 1){
+    var o = def.opts().filter(function(x){ return x.v === sel[0]; })[0];
+    return o ? o.l : sel[0];
+  }
+  return sel.length + ' selected';
 }
 function renderFilters(){
   var host = document.getElementById('qf-row'); if(!host) return;
   host.innerHTML = QF_DEFS.map(function(d){
-    var on = QF[d.key] !== 'all';
+    var on = qfAny(d.key);
     return '<div class="qf" data-qf="'+d.key+'">'+
       '<button class="qf-btn'+(on?' on':'')+'" onclick="qfToggle(&#39;'+d.key+'&#39;)">'+
         '<span class="qf-k">'+d.label+'</span>'+
@@ -4736,11 +4830,14 @@ function renderFilters(){
       '</button>'+
       '<div class="qf-menu" id="qf-menu-'+d.key+'">'+
         d.opts().map(function(o){
-          return '<button class="qf-opt'+(QF[d.key]===o.v?' sel':'')+'" onclick="qfPick(&#39;'+d.key+'&#39;,&#39;'+String(o.v).replace(/'/g,"\\'")+'&#39;)">'+o.l+'</button>';
+          var chosen = (o.v === 'all') ? !qfAny(d.key) : qfHas(d.key, o.v);
+          return '<button class="qf-opt'+(chosen?' sel':'')+'" role="menuitemcheckbox" aria-checked="'+chosen+'"'+
+            ' onclick="qfPick(&#39;'+d.key+'&#39;,&#39;'+String(o.v).replace(/'/g,"\\'")+'&#39;)">'+
+            '<span class="qf-tick"></span>'+o.l+'</button>';
         }).join('')+
       '</div>'+
     '</div>';
-  }).join('') + (Object.keys(QF).some(function(k){ return QF[k]!=='all'; })
+  }).join('') + (Object.keys(QF).some(function(k){ return qfAny(k); })
       ? '<button class="qf-clear" onclick="qfClear()">Clear filters</button>' : '');
 }
 function qfToggle(key){
@@ -4750,13 +4847,17 @@ function qfToggle(key){
   if(open && !wasOpen) open.classList.add('show');
 }
 function qfPick(key, val){
-  QF[key] = val;
-  if(key === 'win') currentWindow = val;
-  document.querySelectorAll('.qf-menu').forEach(function(m){ m.classList.remove('show'); });
+  if(val === 'all'){ QF[key] = []; }
+  else {
+    var i = QF[key].indexOf(val);
+    if(i > -1) QF[key].splice(i, 1); else QF[key].push(val);
+  }
+  /* the menu stays open — picking a second value is the point */
   renderFilters(); renderQueue();
+  var m = document.getElementById('qf-menu-'+key); if(m) m.classList.add('show');
 }
 function qfClear(){
-  QF = { win:'all', visit:'all', bill:'all' };
+  QF = { win:[], visit:[], bill:[] };
   currentWindow = 'all';
   renderFilters(); renderQueue();
 }
@@ -7397,6 +7498,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-18 17:48</div>
+  <div class="build-stamp">build 2026-09-18 17:54</div>
 </body>
 </html>
