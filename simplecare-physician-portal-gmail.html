@@ -2910,6 +2910,114 @@
   .q-table th:nth-child(2),.q-table td:nth-child(2){width:272px;}
   #queue-table{min-width:1022px;}
   .q-legal{text-wrap:pretty;}
+
+  /* ===== no capitals, anywhere =====
+     Ani: "never use capital letters anywhere in this portal."
+
+     55 separate rules forced text-transform:uppercase, spread across the
+     stylesheet layers this file has accumulated. Listing them by selector
+     missed a dozen, because several no longer match the DOM they were
+     written for. A blanket override is the only way to state a rule this
+     absolute and have it hold as the file grows — this is the one place
+     !important earns its keep. The copy underneath was already sentence
+     case; nothing needed rewriting. */
+  *,*::before,*::after{text-transform:none !important;}
+
+  /* tracking tuned for capitals reads loose and broken on lowercase */
+  .brand-sub,
+  .nav-group-label,
+  .box-title,
+  .alert-tier,
+  .q-table,
+  th,
+  .inbox-type,
+  .inbox-section-label,
+  .copilot-section,
+  .k,
+  .stat,
+  .l,
+  .due-chip,
+  small,
+  .recall,
+  .rc-k,
+  .q-aitag,
+  .crit-tier,
+  .ix-type,
+  .ix-critmark,
+  .ix-meas,
+  i,
+  .pc-k,
+  .pc-card,
+  h3,
+  .rail-card,
+  h5,
+  .sumstrip,
+  .m,
+  .k,
+  .vc-vit,
+  .k,
+  .cp-sum,
+  .k,
+  .tk-prio,
+  .tk-band,
+  b,
+  .tk-day,
+  .tk-grp,
+  b,
+  .svc-lbl,
+  .sc-lbl,
+  .cd-rail-row,
+  .nm,
+  .st,
+  .cd-st,
+  .cd-last,
+  .k,
+  .cd-log-row,
+  .a,
+  .cd-lbl,
+  .bl-eyebrow,
+  .bl-k,
+  .cl-stat,
+  .k,
+  .cpt-grp,
+  b,
+  .vd-sug,
+  p,
+  .vd-subhead,
+  .lab-dates,
+  i,
+  .an-head,
+  .lo-standing,
+  .lo-prog,
+  span,
+  .lo-fact,
+  i,
+  .lo-unmapped,
+  b,
+  .rv-fact,
+  i,
+  .rv-aitag,
+  .rv-field,
+  label,
+  .ix-secttl,
+  .ix-hardflag,
+  .rv-doclbl,
+  .defer-lbl,
+  .dsw-sec,
+  p,
+  .q-sepin,
+  .lab-tier{text-transform:none;letter-spacing:0;}
+
+  /* the critical badge keeps its red ink on a grey ground */
+  .ix-hardflag{background:var(--wash);color:var(--crit);border:1px solid var(--line-strong);}
+  :root[data-theme="dark"] .ix-hardflag{background:var(--wash);color:var(--crit);border-color:var(--line);}
+
+  /* the four that still carried capital-tuned tracking, found by measuring
+     rendered letter-spacing against font-size rather than by reading rules */
+  .q-table thead th{letter-spacing:.01em;}
+  .q-nextchip{letter-spacing:.02em;}
+  .cl-stats .cl-stat .k{letter-spacing:.01em;}
+  .tk-band b{letter-spacing:.01em;}
 </style>
 </head>
 <body>
@@ -4611,7 +4719,7 @@ function renderQueue(){
       '<td><div class="q-patient" title="Open chart">'+
         '<span class="q-pmeta">'+
           '<span class="q-legal">'+(r.legal||r.name)+flagTag+
-            (isNext ? '<span class="q-nextchip">NEXT</span>' : '')+'</span>'+
+            (isNext ? '<span class="q-nextchip">Next</span>' : '')+'</span>'+
           '<span class="q-idline">'+
             '<span class="q-pref">Preferred: '+(r.pref||r.name.split(' ')[0])+'</span>'+
             '<span class="q-demo">'+(r.age||'')+', '+(r.sex||'')+'</span>'+
@@ -7676,6 +7784,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-18 21:04</div>
+  <div class="build-stamp">build 2026-09-18 22:13</div>
 </body>
 </html>
