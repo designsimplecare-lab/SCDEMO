@@ -3018,6 +3018,14 @@
   .q-nextchip{letter-spacing:.02em;}
   .cl-stats .cl-stat .k{letter-spacing:.01em;}
   .tk-band b{letter-spacing:.01em;}
+
+  /* Daniel: "ensure the clinical concern is shared - it is a reminder to the
+     doctor to pay attention". It leads the line, ahead of the rule. */
+  .al-concern{color:var(--ink);font-weight:700;}
+
+  /* time tolerance sits with the deadline: one is the date, the other the
+     promise about how long it may wait */
+  .tk-tol{color:var(--ink-soft);}
 </style>
 </head>
 <body>
@@ -3785,7 +3793,10 @@
       <p class="sub">Every result that comes in — reviewed and signed off individually.</p>
       <div class="ia-note">Biggest dashboard gap from his walkthrough: "every test result, lab, imaging report, and consult note that comes in must be reviewed and individually signed off — not just lab work." Modeled as a real state machine: received &rarr; reviewed &rarr; signed off. Clicking an item opens it and marks it reviewed in one step (per his feedback that preview-then-open elsewhere was one click too many); signing off is a separate, deliberate action.</div>
 
-      <div class="box" id="outstanding-box">
+      <!-- Daniel: "remove this". The strip listed every test not yet back
+           across all patients. Spec 6.3 replaces it: outstanding results are
+           shown against the order they belong to, when that order is cleared. -->
+      <div class="box" id="outstanding-box" hidden>
         <p class="box-title">Lab work still outstanding</p>
         <div id="outstanding"></div>
       </div>
@@ -4874,7 +4885,9 @@ function renderCriticals(){
         '<span class="lab-tier '+tier+'">'+(tier==='critical'?'Critical':'Alert')+'</span></span>'+
       '<span class="al-val">'+cx.v+' <u>'+cx.u+'</u> <em>'+dir+'</em></span>'+
       '<span class="al-ref">ref '+cx.ref+'</span>'+
-      '<span class="al-src">'+(cx.basis || (c.panel + ' \u00b7 ' + c.received))+'</span>'+
+      '<span class="al-src">'+
+        (cx.concern ? '<b class="al-concern">'+cx.concern+'</b> \u00b7 ' : '')+
+        (cx.basis || (c.panel + ' \u00b7 ' + c.received))+'</span>'+
       '<span class="al-acts">'+
         '<button class="al-btn primary" onclick="event.stopPropagation();openReview('+idx+')">Review result</button>'+
       '</span></div>';
@@ -5340,6 +5353,22 @@ var TASK_KINDS = TASK_TYPES;   /* kept for the scribe and older callers */
 
 /* What actually orders the queue. "The work that needs attention should win
    over whether it is imaging, referral, or lab work." */
+
+/* ===== time tolerance =====
+   Daniel confirmed the shape — "must be done within 24h / 3 days / 1 week" —
+   and that today there is one value in use: "Right now - its 'Needs
+   Attention' and that means the same day the item needs to be addressed."
+
+   So it is how long the item may wait, which is not the same as its deadline:
+   the deadline is a date, the tolerance is the promise. Derived from priority
+   until he fills the rest in — he is reviewing each task type into Notion. */
+var TIME_TOLERANCE = {
+  urgent:  'Same day',
+  high:    'Within 24h',
+  routine: 'Within 1 week'
+};
+function taskTolerance(t){ return t.tol || TIME_TOLERANCE[t.prio] || ''; }
+
 var TASK_PRIO = {
   urgent:  {label:'Urgent',  hint:'Needs action today'},
   high:    {label:'High',    hint:'Within 1 business day'},
@@ -5747,6 +5776,7 @@ function taskCard(t){
     (t.verified ? '<span class="tk-vf">Verified</span>' : '') +
     (t.carried ? '<span class="tk-carried">Carried forward &times;' + t.carried + '</span>' : '');
   var overdue = t.due === 'Overdue';
+  var tol = taskTolerance(t);
   var acts = t.status==='complete'
     ? '<button class="btn xs" onclick="taskReopen(&#39;'+t.id+'&#39;)"><span class="ic" data-pdic="reopen"></span>Reopen</button>'
     : '<button class="btn xs" onclick="openTaskMoa(&#39;'+t.patient.replace(/'/g,"\\'")+'&#39;)"><span class="ic" data-pdic="reassign"></span>Reassign</button>'+
@@ -5764,7 +5794,10 @@ function taskCard(t){
       '<p class="tk-note">Note: '+t.note+'</p>'+
       '<p class="tk-route">Assigned to <b>'+t.to+'</b> &middot; '+t.role+
         '<span class="sep">&middot;</span><span class="'+(overdue?'od':'')+'">'+
-        (t.status==='complete' ? 'Completed ' + t.due : 'Due ' + t.due)+'</span></p>'+
+        (t.status==='complete' ? 'Completed ' + t.due : 'Due ' + t.due)+'</span>'+
+        (tol && t.status!=='complete'
+          ? '<span class="sep">&middot;</span><span class="tk-tol" title="Time tolerance \u2014 how long this may wait">'+tol+'</span>'
+          : '')+'</p>'+
     '</div>'+
     '<div class="tk-acts">'+acts+'</div>'+
   '</div>';
@@ -6274,6 +6307,45 @@ function inboxAbnormal(item){ return (item.tests||[]).filter(function(t){ return
    so the direction is ambiguous in the copy I have. Guessing a direction on
    a toxicity threshold is exactly the kind of thing this layer exists to
    prevent. Confirm with Daniel before adding it. */
+
+/* ===== SimpleCare escalation over the LifeLabs floor =====
+   Notion, "Review Labwork" — Cardiac / perfusion:
+
+     Troponin  | laboratory-designated significant/alert elevation
+               | LifeLabs BC Alert -> Simple Care: escalated to URGENT
+               | Acute myocardial injury
+     Lactate   | >4.0 mmol/L
+               | LifeLabs BC Alert -> Simple Care: escalated to URGENT
+               | Tissue hypoperfusion concern
+
+   So the LifeLabs tier is a floor, not the answer: SimpleCare may raise it,
+   never lower it. And Daniel: "ensure the clinical concern is shared - it is
+   a reminder to the doctor to pay attention", so each rule carries the
+   concern in his words.
+
+   Only cardiac/perfusion is filled in so far — "I am going to review each
+   type of task add that information into notion". Analytes with no entry
+   here keep the LifeLabs tier untouched. */
+var SC_ESCALATE = {
+  'Troponin':   {to:'critical', concern:'Acute myocardial injury'},
+  'Troponin I': {to:'critical', concern:'Acute myocardial injury'},
+  'Lactate':    {to:'critical', concern:'Tissue hypoperfusion concern'}
+};
+var TIER_RANK = {alert:1, critical:2};
+function scEscalate(name, hit){
+  if(!hit) return hit;
+  var e = SC_ESCALATE[name];
+  if(!e) return hit;
+  if(e.concern) hit.concern = e.concern;
+  /* raise only — a rule here can never soften the deterministic floor */
+  if(TIER_RANK[e.to] > TIER_RANK[hit.tier]){
+    hit.escalated = hit.tier;
+    hit.tier = e.to;
+    hit.basis = hit.basis + ' · SimpleCare raises this to urgent';
+  }
+  return hit;
+}
+
 var LAB_RULES = {
   'Potassium':      {u:'mmol/L', crit:{lo:2.5,  hi:6.5},   alert:{lo:2.8, hi:6.2}},
   'Sodium':         {u:'mmol/L', crit:{lo:120,  hi:160}},
@@ -6317,6 +6389,9 @@ function ageYears(s){ var m = String(s||'').match(/(\d+)/); return m ? +m[1] : n
 
 /* Returns {tier:'critical'|'alert', basis:'...'} or null. */
 function labCheck(name, value, unit, age){
+  return scEscalate(name, labFloor(name, value, unit, age));
+}
+function labFloor(name, value, unit, age){
   var r = LAB_RULES[name]; if(!r) return null;
   var v = labToRuleUnits(name, parseFloat(value), unit);
   if(isNaN(v)) return null;
@@ -6351,6 +6426,7 @@ function applyLabRules(){
       if(hit){
         t.f = (hit.tier === 'critical' ? 'crit-' : 'alert-') + hit.dir;
         t.basis = hit.basis;
+        t.concern = hit.concern || null;
       } else if(t.f && /^(crit|alert)-/.test(t.f)){
         /* it was marked severe by hand but the standard does not agree */
         t.f = t.f.indexOf('low') > -1 ? 'low' : 'high';
@@ -7784,6 +7860,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-18 22:13</div>
+  <div class="build-stamp">build 2026-09-19 21:27</div>
 </body>
 </html>
