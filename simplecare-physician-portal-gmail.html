@@ -3026,6 +3026,20 @@
   /* time tolerance sits with the deadline: one is the date, the other the
      promise about how long it may wait */
   .tk-tol{color:var(--ink-soft);}
+
+  /* the coloured bar on each attention row is gone — the tier chip and the
+     value already say how severe it is, and a third mark saying the same
+     thing was just noise down the left edge */
+  #alerts-box .al-mark,#attn-tasks .al-mark{display:none;}
+
+  /* Removing the mark meant removing its column too — .al-row is a grid with
+     a fixed 3px first track, so display:none shifted every cell one column
+     left and the name landed in the 3px slot. */
+  #alerts-box .al-row{grid-template-columns:1.5fr 1fr 0.9fr 0.8fr 1.6fr auto;}
+
+  /* the flagged card sits on grey, with no outline */
+  .inbox-row.ix.critical{background:var(--wash);border-color:transparent;}
+  :root[data-theme="dark"] .inbox-row.ix.critical{background:var(--wash);border-color:transparent;}
 </style>
 </head>
 <body>
@@ -7860,6 +7874,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-19 21:27</div>
+  <div class="build-stamp">build 2026-09-19 21:46</div>
 </body>
 </html>
