@@ -3051,6 +3051,24 @@
   .q-table th:nth-child(5),.q-table td:nth-child(5){width:194px;}
   .q-table .status-pill{white-space:nowrap;}
   #queue-table{min-width:1092px;}
+
+  /* the drafted disposition — clearly a draft, clearly editable */
+  #rv-draft .rv-aimark{
+    float:right;font-size:11.5px;font-weight:600;color:var(--ink-soft);
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  #rv-draft .rv-aimark svg{width:18px;height:18px;}
+  #rv-draft input[type="text"],#rv-draft textarea{
+    width:100%;font-family:inherit;font-size:14.5px;color:var(--ink);
+    background:var(--wash);border:1px solid var(--line);border-radius:9px;
+    padding:9px 11px;margin-top:5px;resize:vertical;
+  }
+  #rv-draft input[type="text"]:focus,#rv-draft textarea:focus{
+    outline:none;border-color:var(--accent);background:var(--panel);
+  }
+  #rv-draft .rv-field{margin-bottom:11px;}
+  #rv-draft .rv-field label{font-size:12.5px;font-weight:700;color:var(--ink-soft);}
+  .rv-done{display:flex;gap:8px;flex-wrap:wrap;}
 </style>
 </head>
 <body>
@@ -3221,6 +3239,8 @@
           </div>
 
           <div id="rv-follow" style="display:none;">
+            <div class="box" id="rv-draft" style="margin-bottom:12px;display:none;"></div>
+
             <div class="box" style="margin-bottom:12px;">
               <p class="box-title">Which results drove this?</p>
               <p class="rv-hint">Optional. Only the results you pick will show <em>Reviewed &mdash; action needed</em>; the rest stay <em>Reviewed</em>.</p>
@@ -3253,8 +3273,9 @@
           <div class="box">
             <p class="rv-commit" id="rv-commit">Records your review. Nothing is sent.</p>
             <div class="rv-done">
-              <button class="btn dark" onclick="rvDone(false)">Done</button>
-              <button class="btn" onclick="rvDone(true)">Done and next</button>
+              <button class="btn dark" onclick="rvAccept()">Accept &amp; assign</button>
+              <button class="btn" onclick="rvModify()">Modify</button>
+              <button class="btn" onclick="rvDone(false)">No follow-up required</button>
             </div>
           </div>
         </aside>
@@ -7201,8 +7222,130 @@ function openReview(i){
   rvCommit();
   showScreen('review');
 }
+
+/* ===== AI clinical-context layer =====
+   Daniel, on video: "I don't want the doctor clicking a bunch of stupid
+   buttons... anything critical, what has to happen? Contact the patient.
+   That's what has to happen." And: "the AI can pick up on the panel and
+   pre-populate that, and the fact that it's doing that and making it
+   editable has value... that work is already done."
+
+   So the draft is written before the doctor arrives, every field stays
+   editable, and nothing is sent until they sign off. The deterministic
+   layer decides the tier; this only proposes wording. It can never change
+   a tier — see scEscalate for the one thing that can. */
+function rvPairedMoa(){ return MOA_ON_SERVICE; }
+
+function rvDraft(it){
+  var tier = labTier(it);
+  var hits = (it.tests||[]).filter(function(t){ return t.f && /^(crit|alert)-/.test(t.f); });
+  var lead = hits[0];
+  var concern = (hits.filter(function(t){ return t.concern; })[0]||{}).concern || null;
+  var who = (it.patient||'').split(',')[0].split(' ')[0];
+  var val = lead ? (lead.n + ' ' + lead.v + (lead.u ? ' ' + lead.u : '')) : it.panel;
+
+  var action = (tier === 'critical')
+    ? 'Contact ' + who + ' today about ' + val
+    : 'Arrange follow-up with ' + who + ' for ' + val;
+
+  var plan = [];
+  if(concern) plan.push(concern + '.');
+  if(lead && lead.basis) plan.push(lead.basis + '.');
+  plan.push(tier === 'critical'
+    ? 'Needs to be addressed the same day.'
+    : 'Review alongside the current care plan and repeat if indicated.');
+
+  var contact = [];
+  contact.push('Phone ' + who + ' today and explain the result.');
+  contact.push('Book them back in, or hand to the doctor if they want to speak directly.');
+  if(tier === 'critical'){
+    /* his words: "if you can't contact the patient, maybe they have an
+       emergency contact" */
+    contact.push('If unreachable after two attempts, try the emergency contact on file and tell the doctor.');
+  }
+
+  return {tier:tier, action:action, plan:plan.join(' '), contact:contact.join(' '),
+          concern:concern, basis:lead ? lead.basis : null, value:val};
+}
+
+function rvRenderDraft(it){
+  var host = document.getElementById('rv-draft'); if(!host) return;
+  var d = rvDraft(it);
+  RV_DRAFT = d;
+  if(!d.tier){ host.innerHTML = ''; host.style.display='none'; return; }
+  host.style.display = 'block';
+  host.innerHTML =
+    '<p class="box-title">Suggested disposition <span class="rv-aimark">'+(typeof AI_MARK!=='undefined'?AI_MARK:'')+' drafted for you</span></p>'+
+    '<p class="rv-hint">Everything here is editable. Nothing is sent until you sign off.</p>'+
+    '<div class="rv-field"><label>Suggested action</label>'+
+      '<input type="text" id="rv-d-action" value="'+d.action.replace(/"/g,'&quot;')+'"></div>'+
+    '<div class="rv-field"><label>Suggested plan</label>'+
+      '<textarea id="rv-d-plan" rows="2">'+d.plan+'</textarea></div>'+
+    '<div class="rv-field"><label>Patient contact instructions</label>'+
+      '<textarea id="rv-d-contact" rows="3">'+d.contact+'</textarea></div>'+
+    '<p class="rv-hint">Goes to <b>'+rvPairedMoa()+'</b>, paired with you for this call window.</p>';
+}
+
+/* Contact the patient is the default for anything critical, pre-ticked, so
+   the common case is one button. */
+function rvPrefill(it){
+  var d = RV_DRAFT || rvDraft(it);
+  if(d.tier !== 'critical') return;
+  ['a-book','a-moa'].forEach(function(id){
+    var cb = document.getElementById(id);
+    if(cb && !cb.checked){ cb.checked = true; rvToggle(id.replace('a-','')); }
+  });
+  var moa = document.getElementById('rv-moa');
+  if(moa) moa.value = d.contact;
+}
+
+function rvModify(){
+  var el = document.getElementById('rv-d-action');
+  if(el){ el.focus(); el.select(); el.scrollIntoView({block:'center'}); }
+}
+
+/* Accept & assign: mark the report reviewed, keep the result, the concern
+   and the guideline basis with it, and open a task in the Action Centre
+   that points back at the document. Spec 3.1 — the document does not move. */
+function rvAccept(){
+  var it = INBOX_ITEMS[RV_I]; if(!it) return;
+  var d = RV_DRAFT || rvDraft(it);
+  var action  = (document.getElementById('rv-d-action')||{}).value || d.action;
+  var plan    = (document.getElementById('rv-d-plan')||{}).value || d.plan;
+  var contact = (document.getElementById('rv-d-contact')||{}).value || d.contact;
+  var prio = d.tier === 'critical' ? 'urgent' : 'high';
+
+  it.status = 'reviewed';
+  it.actioned = true;
+
+  if(typeof DOC_TASKS !== 'undefined'){
+    DOC_TASKS.unshift({
+      id: 'lab'+Date.now(), title: action, type: it.type || 'Lab',
+      prio: prio, age: 0, to: rvPairedMoa(), role: 'MOA',
+      patient: it.patient, preferred: (it.patient||'').split(' ')[0], chart: '#' + (it.phn||'').slice(-4),
+      verified: true, status: 'open', carried: 0,
+      due: prio === 'urgent' ? 'Today' : 'Tomorrow', dueIn: prio === 'urgent' ? 0 : 1,
+      tol: prio === 'urgent' ? 'Same day' : 'Within 24h',
+      note: plan + ' ' + contact,
+      /* the task remembers the document it came from; the document stays put */
+      source: {kind:'inbox', index: RV_I, panel: it.panel, received: it.received,
+               concern: d.concern, basis: d.basis, value: d.value}
+    });
+  }
+  renderCriticals(); renderAttnTasks(); renderInboxList(); renderInboxToday();
+  if(typeof renderTasks === 'function') renderTasks();
+  if(typeof updateWorkCounts === 'function') updateWorkCounts();
+  toast('Assigned to ' + rvPairedMoa() + ' · ' + action);
+  rvBack();
+}
+var RV_DRAFT = null;
+
 function rvSetFollow(v){
   RV_FOLLOW = v;
+  if(v){
+    var it = INBOX_ITEMS[RV_I];
+    if(it){ rvRenderDraft(it); rvPrefill(it); }
+  }
   document.getElementById('rv-no').classList.toggle('on', v===false);
   document.getElementById('rv-yes').classList.toggle('on', v===true);
   document.getElementById('rv-follow').style.display = v ? 'block' : 'none';
@@ -7904,6 +8047,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-21 18:09</div>
+  <div class="build-stamp">build 2026-09-21 18:15</div>
 </body>
 </html>
