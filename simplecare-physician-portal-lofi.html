@@ -3190,7 +3190,7 @@
 
     <!-- ===================== REVIEW ASSIGNMENT (spec v7 §5.6) ===================== -->
     <div class="screen" id="screen-review">
-      <button class="pc-back" onclick="showScreen('inbox')"><span class="ic" data-pcic="back"></span> Back to Inbox</button>
+      <button class="pc-back" id="rv-back" onclick="rvBack()"><span class="ic" data-pcic="back"></span> <span id="rv-backlbl">Back to inbox</span></button>
       <h1 id="rv-title">Review</h1>
       <p class="sub" id="rv-sub">&nbsp;</p>
 
@@ -4905,7 +4905,7 @@ function renderCriticals(){
     var pick = tier === 'critical' ? 'crit' : 'alert';
     var cx = c.tests.filter(function(t){ return t.f && t.f.indexOf(pick) === 0; })[0];
     var dir = cx.f.indexOf('high')>-1 ? '&uarr;' : '&darr;';
-    return '<div class="al-row '+(tier==='alert'?'tier-alert':'')+'" onclick="openInboxItem('+idx+')"'+
+    return '<div class="al-row '+(tier==='alert'?'tier-alert':'')+'" onclick="openReview('+idx+')"'+
       (cx.basis ? ' title="'+cx.basis+'"' : '')+'>'+
       '<span class="al-mark"></span>'+
       '<span class="al-who"><b>'+c.patient+'</b><i>'+(c.age||'')+'</i></span>'+
@@ -7133,8 +7133,24 @@ function showRecall(patient){
     '<button class="rc-x" onclick="this.parentNode.classList.remove(&#39;on&#39;)" title="Dismiss">&times;</button>';
   el.classList.add('on');
 }
+/* Daniel: "If I click here, it needs to take me back to the previous page,
+   not the inbox, because the inbox is only for external reports, nothing
+   that's internally generated." So Review remembers where you came from
+   and goes back there. Opening a critical result from Home returns to
+   Home; opening it from the Inbox returns to the Inbox. */
+var RV_RETURN = 'inbox';
+function rvBack(){ showScreen(RV_RETURN || 'inbox'); }
+function rvSetReturn(){
+  var cur = document.querySelector('.screen.active');
+  var id = cur ? cur.id.replace('screen-','') : 'inbox';
+  if(id !== 'review') RV_RETURN = id;
+  var lbl = document.getElementById('rv-backlbl');
+  if(lbl) lbl.textContent = (RV_RETURN === 'today') ? 'Back to home' : 'Back to inbox';
+}
+
 function openReview(i){
   var it = INBOX_ITEMS[i]; if(!it) return;
+  rvSetReturn();
   RV_I = i; RV_FOLLOW = null;
   document.getElementById('rv-title').textContent = it.patient;
   document.getElementById('rv-sub').textContent = it.panel + ' · ' + (it.age||'');
@@ -7888,6 +7904,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-21 17:55</div>
+  <div class="build-stamp">build 2026-09-21 18:09</div>
 </body>
 </html>
