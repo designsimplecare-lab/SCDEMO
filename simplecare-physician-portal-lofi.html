@@ -4888,13 +4888,16 @@ function renderAttnTasks(){
 function renderCriticals(){
   var list=document.getElementById('crit-list');
   if(!list || typeof INBOX_ITEMS === 'undefined') return;
-  /* Single source of truth: unreviewed results that the LifeLabs standard
-     puts in a tier. Critical first — those are phoned round the clock —
-     then alert, which is phoned 08:00-20:00. */
-  var open = INBOX_ITEMS.filter(function(it){ return labTier(it) && it.status === 'received'; });
-  open.sort(function(a,b){
-    var r = {critical:0, alert:1};
-    return r[labTier(a)] - r[labTier(b)];
+  /* Daniel: "So as to not overwhelm the doctor - we are keeping it to
+     critical values."
+
+     So the band is critical only. Alert-tier results are still flagged, but
+     in the Inbox, where the doctor goes looking — they do not interrupt the
+     top of Home. The way an alert reaches this band is through the
+     SimpleCare escalation table, which is deliberate rather than automatic:
+     troponin and lactate are there because he put them there. */
+  var open = INBOX_ITEMS.filter(function(it){
+    return labTier(it) === 'critical' && it.status === 'received';
   });
   list.innerHTML = open.map(function(c){
     var idx = INBOX_ITEMS.indexOf(c);
@@ -7885,6 +7888,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-21 17:47</div>
+  <div class="build-stamp">build 2026-09-21 17:55</div>
 </body>
 </html>
