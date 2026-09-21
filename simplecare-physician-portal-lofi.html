@@ -3075,6 +3075,14 @@
   .work-tabs .wt-new{border-color:var(--ink);}
   .work-tabs .wt-dark{border-color:var(--ink-dark);}
   :root[data-theme="dark"] .work-tabs .wt-new{border-color:var(--ink);}
+
+  /* Live queue title and the clock beneath it; actions stay right */
+  .lq-head{display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:0;}
+  .lq-sub{
+    margin:0;font-size:14.5px;color:var(--ink-soft);
+    display:flex;align-items:center;flex-wrap:wrap;
+  }
+  .work-tabs{align-items:flex-end;}
 </style>
 </head>
 <body>
@@ -3168,7 +3176,10 @@
 
       <!-- Live queue + Inbox in one card, switched by tabs -->
       <div class="work-tabs">
-          <span class="sect-title">Live queue <span class="wt-count" id="wt-queue-count">0</span></span>
+          <div class="lq-head">
+            <span class="sect-title">Live queue <span class="wt-count" id="wt-queue-count">0</span></span>
+            <p class="lq-sub" id="tb-clock"></p>
+          </div>
           <button class="wt-new" onclick="showScreen('registerpatient')" title="Register a new patient">
             <span class="ic" data-pcic="newpatient"></span> New patient
           </button>
@@ -4297,8 +4308,10 @@ function syncTopTitle(){
     var h = new Date().getHours();
     el.textContent = (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', Dr. Pannozzo';
     if(dt){
-      dt.innerHTML = '<span class="tb-clock" id="tb-clock"></span>';
-      dt.style.display = 'inline'; renderTopClock();
+      /* the clock now lives under the Live queue title, where the call
+         window it describes actually applies */
+      dt.style.display = 'none';
+      renderTopClock();
     }
   } else {
     var t = scr.querySelector('h1');
@@ -8053,6 +8066,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-21 18:23</div>
+  <div class="build-stamp">build 2026-09-21 18:26</div>
 </body>
 </html>
