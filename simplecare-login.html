@@ -145,12 +145,14 @@
   .show-scrim{
     position:absolute;inset:0;pointer-events:none;
     background:linear-gradient(to bottom,
-      rgba(8,14,26,.42) 0%, rgba(8,14,26,.10) 32%,
+      rgba(8,14,26,.66) 0%, rgba(8,14,26,.40) 9%, rgba(8,14,26,.10) 30%,
       rgba(8,14,26,.55) 72%, rgba(8,14,26,.82) 100%);
   }
   .show::before{display:none;}           /* the watermark gives way to the footage */
   .brand svg path{fill:#FFFFFF;}
   :root[data-theme="dark"] .brand svg path{fill:#FFFFFF;}
+  /* white mark over moving footage: the scrim carries it, this insures it */
+  .show .brand svg{filter:drop-shadow(0 1px 10px rgba(8,14,26,.55));}
 
   /* ---------- the value proposition, one at a time ---------- */
   .vp{color:#fff;}
