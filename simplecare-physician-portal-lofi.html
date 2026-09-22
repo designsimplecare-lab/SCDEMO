@@ -1807,7 +1807,7 @@
   .bill-pill.go:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   .q-ver.go{border:none;font-family:inherit;cursor:pointer;}
   .q-ver.go:hover{filter:brightness(.94);}
-  .q-ver.ok{background:var(--good-wash);color:var(--good);font-weight:700;}
+  .q-ver.ok{background:var(--wash);color:var(--ink-faint);font-weight:700;}
 
   .bl-eyebrow{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;
     color:var(--ink-faint);margin:0 0 6px;}
@@ -2439,7 +2439,7 @@
   .ai-launcher{right:34px;}
 
   /* Brighter status tones — saturated fill and ink, no outline. */
-  .q-table td.q-card .q-ver.ok{background:var(--good-wash);color:var(--good);box-shadow:none;}
+  .q-table td.q-card .q-ver.ok{background:var(--wash);color:var(--ink-faint);box-shadow:none;}
   .q-table td.q-card .q-ver.warn{background:var(--warn-wash);color:var(--warn);box-shadow:none;}
   .q-table td.q-card .q-ver.bad{background:var(--crit-wash);color:var(--crit);box-shadow:none;}
 
@@ -2558,7 +2558,7 @@
   .q-table td.q-card .q-ver.warn,
   .q-table td.q-card .q-ver.bad,
   .q-table td.q-card .q-ver.info{color:var(--ink);}
-  .q-table td.q-card .q-ver.ok  .ic{color:var(--good);}
+  .q-table td.q-card .q-ver.ok  .ic{color:var(--ink-faint);}
   .q-table td.q-card .q-ver.warn .ic{color:var(--warn);}
   .q-table td.q-card .q-ver.bad  .ic{color:var(--crit);}
   .q-table td.q-card .q-ver.info .ic{color:var(--accent);}
@@ -3058,13 +3058,13 @@
      column still reads as status at a glance rather than as a form control. */
   .q-table button.status-pill{
     font-family:inherit;font-size:inherit;cursor:pointer;
-    border-style:solid;gap:6px;
+    border:0;gap:5px;
   }
   .q-table button.status-pill .q-caret{
-    width:0;height:0;flex-shrink:0;margin-left:1px;
-    border-left:4px solid transparent;border-right:4px solid transparent;
-    border-top:5px solid currentColor;opacity:.62;
+    width:13px;height:13px;flex-shrink:0;margin:0 -1px 0 1px;
+    display:inline-flex;align-items:center;justify-content:center;opacity:.55;
   }
+  .q-table button.status-pill .q-caret svg{width:13px;height:13px;display:block;}
   .q-table button.status-pill:hover{filter:brightness(.96);}
   .q-table button.status-pill:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 
@@ -4843,7 +4843,7 @@ function renderQueue(){
       ' aria-haspopup="true" title="Change visit status"'+
       ' onclick="event.stopPropagation();openStatusMenu(this,\''+esc1(r.name)+'\')">'+
       (STATUS_ICON[r.status]||'')+'<span>'+STATUS_LABEL[r.status]+'</span>'+
-      '<span class="q-caret" aria-hidden="true"></span></button>';
+      '<span class="q-caret" data-pdic="chevdown" aria-hidden="true"></span></button>';
 
     /* Claims sit on the day sheet, not behind Practice. "Leave no claim behind." */
     /* Plan and card state are one fact, so they stay one element in every
@@ -7124,6 +7124,7 @@ function aiSend(preset){
 
 /* ===== Streamline line-icons: swap glyphs for SVGs ===== */
 var ICONS = {
+"chevdown": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.9\" d=\"m4 8.417l6.587 6.587a2.013 2.013 0 0 0 2.826 0L20 8.417\"/></svg>",
 "reassign": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\"><path d=\"M3.53 11.47v2.118a4.235 4.235 0 0 0 4.235 4.236H20.47M3.53 6.176h12.705a4.235 4.235 0 0 1 4.236 4.236v2.117\"/><path d=\"m17.294 14.647l3.177 3.176L17.294 21M6.706 9.353L3.529 6.176L6.706 3\"/></g></svg>",
 "complete": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\" d=\"m4.5 11.795l4.221 4.221a1.596 1.596 0 0 0 2.272 0L19.5 7.51\"/></svg>",
 "reopen": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.6\"><path stroke-miterlimit=\"10\" d=\"M6.395 7.705A7.9 7.9 0 0 1 12 5.382a7.93 7.93 0 0 1 7.929 7.929A7.94 7.94 0 0 1 12 21.25a7.94 7.94 0 0 1-7.929-7.94\"/><path stroke-linejoin=\"round\" d=\"m7.12 2.75l-.95 3.858a1.33 1.33 0 0 0 .97 1.609l3.869.948\"/></g></svg>",
@@ -8233,6 +8234,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-22 19:38</div>
+  <div class="build-stamp">build 2026-09-22 19:48</div>
 </body>
 </html>
