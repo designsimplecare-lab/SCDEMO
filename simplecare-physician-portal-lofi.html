@@ -2180,6 +2180,7 @@
     margin:16px 0 9px;display:flex;align-items:center;gap:8px;}
   .ix-secttl:first-child{margin-top:0;}
   .ix-secttl span{background:var(--wash);border-radius:20px;padding:2px 8px;font-size:11.5px;}
+  .ix-secttl.warn{color:var(--warn);}
   .ix-secttl.crit{color:var(--crit);} .ix-secttl.crit span{background:var(--crit);color:#fff;}
   .ix-id{font-size:12.5px;color:var(--ink-faint);font-weight:500;}
   .ix-panelrow{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:3px 0 8px;}
@@ -6732,9 +6733,12 @@ function inboxRowHtml(item, i){
   '</div>';
 }
 
-/* "Ensure oldest first — everything in chronological order." Safe only
-   because urgent results also surface in Needs your attention; without
-   that, a critical result arriving late would sit at the bottom. */
+/* "Ensure oldest first — everything in chronological order", refined by
+   Daniel on 21 Sep: first in, first out, but only against its own category.
+   "What comes in first, if it's routine, is not superior to anything within
+   its respective category... so it's routine, priority high, and then
+   critical." So the bands rank, and time orders inside a band -- a routine
+   from 6am no longer sits above a high from 9am. */
 function inboxWhen(it){
   var m = (it.received||'').match(/(\d+):(\d+)\s*(AM|PM)/i);
   if(!m) return 0;
@@ -6746,9 +6750,11 @@ function byOldest(a,b){ return inboxWhen(a) - inboxWhen(b); }
 
 function renderInboxList(){
   var recv = INBOX_ITEMS.filter(function(x){ return x.status==='received'; });
-  // Flagged (critical) sit above everything. The rest is purely chronological.
+  /* three bands, oldest first inside each. labTier already knew the middle
+     one -- it just was not being used to group. */
   var flagged = recv.filter(inboxIsCritical).sort(byOldest);
-  var rest    = recv.filter(function(x){ return !inboxIsCritical(x); }).sort(byOldest);
+  var high    = recv.filter(function(x){ return !inboxIsCritical(x) && labTier(x) === 'alert'; }).sort(byOldest);
+  var rest    = recv.filter(function(x){ return labTier(x) === null; }).sort(byOldest);
   var reviewed = INBOX_ITEMS.filter(function(x){ return x.status==='reviewed'; }).sort(byOldest);
 
   var f = document.getElementById('inbox-received');
@@ -6758,8 +6764,12 @@ function renderInboxList(){
         ? '<p class="ix-secttl crit">Flagged &mdash; review these first <span>'+flagged.length+'</span></p>'+
           flagged.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('')
         : '') +
+      (high.length
+        ? '<p class="ix-secttl warn">High &mdash; oldest first <span>'+high.length+'</span></p>'+
+          high.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('')
+        : '') +
       (rest.length
-        ? '<p class="ix-secttl">Everything else &mdash; oldest first <span>'+rest.length+'</span></p>'+
+        ? '<p class="ix-secttl">Routine &mdash; oldest first <span>'+rest.length+'</span></p>'+
           rest.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('')
         : '<p class="empty">Nothing waiting.</p>');
   }
@@ -8232,6 +8242,14 @@ syncTopTitle();
 renderFilters();
 loadProfilePhoto();
 applyLabRules();
+/* The inbox painted itself a thousand lines above this, off the flags the
+   demo data carries by hand. applyLabRules then re-derives every one of them
+   against the LifeLabs standard -- which demoted two of the three the inbox
+   had already drawn as critical. Only renderCriticals was being re-run, so
+   the inbox kept showing the hand-marked count: three flagged where the
+   standard says one. Exactly the over-flagging Daniel warned about. */
+renderInboxList();
+renderInboxToday();
 renderCriticals();
 renderAttnTasks();
 renderTasks();
@@ -8251,6 +8269,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-22 20:10</div>
+  <div class="build-stamp">build 2026-09-22 20:13</div>
 </body>
 </html>
