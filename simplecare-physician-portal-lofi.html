@@ -1086,9 +1086,13 @@
      and there is nothing to press. A dot and a word, no container.
 
      Billing status is a way in: it is a control, so it looks like one —
-     an outlined chip with a chevron. The two that cannot be acted on
-     drop the chip and the chevron and read as plain muted text, so the
-     shape itself says whether there is anything to do.
+     a filled chip with a chevron. The two that cannot be acted on drop the
+     chip and the chevron and read as plain muted text, so the shape itself
+     says whether there is anything to do.
+
+     Filled rather than outlined: the stroke is gone, and the tone's own wash
+     carries the chip instead, which is how the health card column already
+     works. The word stays black there too — colour rides the chevron.
      ============================================================ */
   .q-table .status-pill{
     background:none !important;padding:0;font-weight:600;gap:8px;font-size:14px;
@@ -1098,16 +1102,22 @@
   .q-table .status-pill .ic{width:19px;height:19px;flex-shrink:0;}
 
   .q-table td.q-bill button.bill-pill{
-    display:inline-flex;align-items:center;gap:7px;background:none;
-    border:1px solid currentColor;border-radius:8px;padding:5px 10px;
+    display:inline-flex;align-items:center;gap:7px;
+    border:none;border-radius:8px;padding:5px 10px;
     font-size:12.5px;font-weight:700;letter-spacing:0;
   }
+  /* the chevron keeps the tone; the label goes black, as everywhere else */
+  .q-table td.q-bill button.bill-pill{--bp-tone:currentColor;color:var(--ink);}
+  .q-table td.q-bill button.bill-pill.warn{--bp-tone:var(--warn);}
+  .q-table td.q-bill button.bill-pill.info{--bp-tone:var(--accent-ink);}
+  .q-table td.q-bill button.bill-pill.ok{--bp-tone:var(--good);}
+  .q-table td.q-bill button.bill-pill.bad{--bp-tone:var(--crit);}
   .q-table td.q-bill button.bill-pill::after{
-    content:"";width:5px;height:5px;flex-shrink:0;border-right:1.6px solid currentColor;
-    border-bottom:1.6px solid currentColor;transform:rotate(-45deg);margin-left:1px;
+    content:"";width:5px;height:5px;flex-shrink:0;border-right:1.6px solid var(--bp-tone);
+    border-bottom:1.6px solid var(--bp-tone);transform:rotate(-45deg);margin-left:1px;
   }
-  .q-table td.q-bill button.bill-pill:hover{background:var(--ink-dark);border-color:var(--ink-dark);color:#fff;filter:none;}
-  .q-table td.q-bill button.bill-pill:hover::after{border-color:#fff;}
+  .q-table td.q-bill button.bill-pill:hover{background:var(--ink-dark);color:#fff;filter:none;}
+  .q-table td.q-bill button.bill-pill:hover::after{border-right-color:#fff;border-bottom-color:#fff;}
   /* nothing to do here — not a control, so not shaped like one */
   .q-table td.q-bill span.bill-pill{background:none;border:none;padding:0;font-weight:500;color:var(--ink-faint);}
   /* muted default acuity so only Urgent pops */
@@ -2671,9 +2681,9 @@
   :root[data-theme="dark"] .q-table tr.redflag td{background:rgba(255,69,58,.10);}
   :root[data-theme="dark"] .q-table tbody tr.redflag:hover td{background:rgba(255,69,58,.16);}
   :root[data-theme="dark"] .q-table td.q-bill button.bill-pill:hover{
-    background:#FFFFFF;border-color:#FFFFFF;color:#000;
+    background:#FFFFFF;color:#000;
   }
-  :root[data-theme="dark"] .q-table td.q-bill button.bill-pill:hover::after{border-color:#000;}
+  :root[data-theme="dark"] .q-table td.q-bill button.bill-pill:hover::after{border-right-color:#000;border-bottom-color:#000;}
   :root[data-theme="dark"] .q-search{background:var(--wash);}
   :root[data-theme="dark"] .profile-trigger{background:var(--panel);}
   :root[data-theme="dark"] .pf-status{box-shadow:0 0 0 2.5px var(--panel);}
@@ -8363,6 +8373,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-22 20:28</div>
+  <div class="build-stamp">build 2026-09-22 20:45</div>
 </body>
 </html>
