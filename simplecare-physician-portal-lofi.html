@@ -2604,6 +2604,17 @@
   .pd-item .pd-ic,
   .q-aidot{width:24px;height:24px;}
   .ic svg,.pd-ic svg,.q-aidot svg{width:100%;height:100%;display:block;}
+
+  /* The group rule above pulls these to 24px, which is 1.55x the 15.5px label
+     beside them -- the glyph was reading as the subject and the word as the
+     caption. A glyph set next to text belongs near 1.1x it. Only the two in
+     the row are touched; the topbar and the assistant keep their size. */
+  .q-table .status-pill .ic,
+  .q-table td.q-card .q-ver .ic{width:17px;height:17px;}
+  /* specific enough to beat the button.status-pill rule above; the caret is
+     a hint, it should not compete with the glyph that carries the state */
+  .q-table button.status-pill .q-caret,
+  .q-table button.status-pill .q-caret svg{width:12px;height:12px;}
   .sidebar.collapsed .nav-icon{font-size:24px;}
 
   /* the lockup was reading small against the topbar */
@@ -8327,6 +8338,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-22 20:20</div>
+  <div class="build-stamp">build 2026-09-22 20:25</div>
 </body>
 </html>
