@@ -4778,7 +4778,8 @@ function renderQueue(){
     var winOk   = (!qfAny('win')   || qfHas('win', r.win));
     var visitOk = (!qfAny('visit') || qfHas('visit', STATUS_LABEL[r.status]));
     var billOk  = (!qfAny('bill')  || qfHas('bill', r.bill));
-    if(!visitOk || !billOk) return false;
+    var cardOk  = (!qfAny('card')  || qfHas('card', r.card));
+    if(!visitOk || !billOk || !cardOk) return false;
     if(!winOk) return false;
     if(!q) return true;
     return (r.name+' '+r.concern+' '+(r.phn||'')+' '+(r.dob||'')).toLowerCase().indexOf(q) !== -1;
@@ -5110,7 +5111,7 @@ function renderGlance(){
    Callback" are the two a doctor most often wants at once — one filter
    that can only hold one of them makes them look at the list twice. An
    empty set means All. */
-var QF = { win:[], visit:[], bill:[] };
+var QF = { win:[], visit:[], bill:[], card:[] };
 function qfHas(key, val){ return QF[key].indexOf(val) > -1; }
 function qfAny(key){ return QF[key].length > 0; }
 
@@ -5133,9 +5134,22 @@ function qfBillOptions(){
    the clock on its own and says so; the chip is how you step out of that. */
 /* Daniel 7: "Remove this - we will have this in Claims." The billing
    filter is gone from the day sheet; Claims is where you work claims. */
+/* Daniel was not sold -- "I'm not a big filter guy" -- until Ani put the
+   volume to him: ninety or a hundred in a window and you need them. "You
+   got me on that one." Three, in the order the columns now read. */
 var QF_DEFS = [
-  {key:'visit', label:'Visit status', opts:qfVisitOptions}
+  {key:'visit', label:'Visit status',   opts:qfVisitOptions},
+  {key:'bill',  label:'Billing status', opts:qfBillOptions},
+  {key:'card',  label:'Health card',    opts:qfCardOptions}
 ];
+
+function qfCardOptions(){
+  var out = [{v:'all', l:'All'}];
+  Object.keys(CARD_STATUS).forEach(function(k){
+    out.push({v:k, l:CARD_STATUS[k].label});
+  });
+  return out;
+}
 
 function qfCurrentLabel(def){
   var sel = QF[def.key];
@@ -5185,7 +5199,7 @@ function qfPick(key, val){
   var m = document.getElementById('qf-menu-'+key); if(m) m.classList.add('show');
 }
 function qfClear(){
-  QF = { win:[], visit:[], bill:[] };
+  QF = { win:[], visit:[], bill:[], card:[] };
   currentWindow = 'all';
   renderFilters(); renderQueue();
 }
@@ -6711,7 +6725,10 @@ function inboxRowHtml(item, i){
       findings+
       '<div class="ix-meta">'+item.lab+' &middot; received '+item.received+'</div>'+
     '</div>'+
-    '<div class="ix-right"><span class="ix-ago">'+(item.ago||'')+'</span>'+actions+'</div>'+
+    /* Ani: "it came two hour ago, one day ago -- it's redundant." Daniel
+       agreed. The received time is already on the line above, and the list
+       is ordered first in, first out, so the age was saying it twice. */
+    '<div class="ix-right">'+actions+'</div>'+
   '</div>';
 }
 
@@ -7296,7 +7313,7 @@ function labDoc(it){
     '<table class="doc-tbl"><thead><tr><th>TEST</th><th>RESULT</th><th>UNITS</th><th>FLAG</th><th>REFERENCE</th></tr></thead>'+
     '<tbody>'+rows+'</tbody></table>'+
     '<div class="doc-legend">* outside reference range &nbsp;&nbsp; ** critical value &mdash; telephoned to ordering provider</div>'+
-    '<div class="doc-foot"><span>Collected '+it.received+'</span><span>'+it.lab+'</span><span>Page 1 of 1</span></div>'+
+    '<div class="doc-foot"><span>Received '+it.received+'</span><span>'+it.lab+'</span><span>Page 1 of 1</span></div>'+
   '</div>';
 }
 function renderSourceDoc(it){
@@ -8234,6 +8251,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-22 19:48</div>
+  <div class="build-stamp">build 2026-09-22 20:10</div>
 </body>
 </html>

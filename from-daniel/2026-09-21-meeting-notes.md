@@ -35,6 +35,32 @@ actionable half is reproduced here so it is not lost behind a login.
 
 - Finalise the design for the EMR chart.
 
+## Agreed in conversation but missing from Gemini's summary
+
+These were settled on the call and do not appear in the decisions or the next
+steps, which is how they were missed on the first pass.
+
+- **Three filters, not one.** Daniel: *"I'm not a big filter guy."* Ani put the
+  volume to him -- ninety or a hundred rows in a window -- and he conceded:
+  *"You got me on that one."* Ani: *"we need three filter here"* -- visit
+  status, billing status, health card.
+- **The relative age is redundant.** Ani called out *"it came two hour ago, one
+  day ago"* sitting beside a received time; Daniel agreed. The order still has
+  to be first in, first out.
+- **FIFO inside each band, never across them.** Routine, high, critical. First
+  in wins, but only against its own category: *"it is not superior to anything
+  within its respective category."*
+- **What Daniel meant by "remove it"** was never the time windows -- it was the
+  visit status filter, and he abandoned that too. The windows stay open.
+- **Greens are too loud.** *"Even this colour scheme is a little bit
+  overwhelming."* Colour only where it should pull the eye.
+- **A new visit status is coming from Daniel** -- "doctor is running late",
+  name to follow -- with a time tolerance and an automated text and email to
+  the patient.
+- **The attention line must say what is wrong, drawn from the report itself.**
+  *"Review MRI report"* is a mystery; the AI should synthesise under five words
+  of context. *"Don't keep it a mystery."*
+
 ## Points worth keeping from the detail
 
 - **Why the windows must stay open.** Daniel is a visual thinker and loses track
