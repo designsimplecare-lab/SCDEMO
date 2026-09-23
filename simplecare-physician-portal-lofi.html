@@ -722,6 +722,27 @@
   .q-search:focus-within{background:var(--panel);border-color:var(--line-strong);}
 
   /* ===== day sheet filters — one dropdown per thing you can narrow by ===== */
+  /* Daniel: "I want them call windows like here like boom boom boom boom."
+     Open segments, never behind a dropdown -- he reads the day off these to
+     work out where he is, and a click to reveal them defeats the purpose. */
+  .qwin{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+  .qwin button{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:inherit;font-size:13px;font-weight:600;line-height:1;
+    padding:9px 12px;border-radius:20px;cursor:pointer;
+    background:var(--wash);border:1px solid transparent;color:var(--ink-soft);
+  }
+  .qwin button:hover{background:var(--line);color:var(--ink);}
+  .qwin button.on{background:var(--ink-dark);border-color:var(--ink-dark);color:#fff;}
+  .qwin button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  /* the window the clock is in, so he can see at a glance that the day has
+     moved on without him */
+  .qwin button .qwin-now{
+    width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none;
+  }
+  .qwin button.on .qwin-now{background:#fff;}
+  .qwin .qwin-sep{width:1px;height:20px;background:var(--line);margin:0 4px;flex:none;}
+
   .qf-row{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;min-width:0;}
   .qf{position:relative;}
   .qf-btn{
@@ -3053,6 +3074,12 @@
      124px cell, so it ran into the clinical concern. 194px = the widest
      label plus the cell's own padding. */
   .q-table .status-pill{white-space:nowrap;}
+  /* the glyph carries the state, the word stays black -- the same split the
+     health card chips use, and it stops four rows that all say "In queue"
+     appearing in four different colours. The pill keeps its own colour so the
+     icon inherits it; only the label and the caret are overridden. */
+  .q-table .status-pill > span:not(.q-caret){color:var(--ink);}
+  .q-table .status-pill .q-caret{color:var(--ink-faint);}
 
   /* Daniel, 21 Sep: set the visit status from the list, without opening the
      chart. The pill keeps its shape and colour and gains a caret, so the
@@ -3255,7 +3282,7 @@
                 <button class="q-clear" id="queue-search-clear" onclick="clearQueueSearch()" title="Clear">&times;</button>
               </div>
             </div>
-            <button class="auto-chip" id="auto-chip" onclick="qvToggle()"></button>
+            <div class="qwin" id="qwin" role="group" aria-label="Call window"></div>
             <div class="qf-row" id="qf-row"></div>
           </div>
 
@@ -4750,6 +4777,36 @@ function currentWin(){
 }
 function qvToggle(){ QV = (QV === 'current') ? 'all' : 'current'; renderQueue(); }
 
+/* Ani: "get rid of the showing now and have previous version when we had our
+   time windows showing openly." Daniel: "Good. Good."
+
+   Nothing selected is the resting state and means the queue is following the
+   clock -- the live window plus anyone carried over from earlier, which is
+   what he asked the default to be. Picking a window pins the queue to it. */
+function renderWinBar(){
+  var host = document.getElementById('qwin'); if(!host) return;
+  var live = shownWin();
+  var pinned = qfAny('win');
+  var html = '<button type="button" class="'+(!pinned ? 'on' : '')+'"'+
+    ' onclick="winPick(null)" title="Follow the call windows as the day moves">'+
+    (!pinned ? '<span class="qwin-now"></span>' : '')+'Live</button>'+
+    '<span class="qwin-sep"></span>';
+  html += WIN_ORDER.map(function(w){
+    var on = qfHas('win', w);
+    return '<button type="button" class="'+(on?'on':'')+'" onclick="winPick(&#39;'+w+'&#39;)">'+
+      (w === live ? '<span class="qwin-now" title="The window the clock is in"></span>' : '')+
+      winLabel(w)+'</button>';
+  }).join('');
+  host.innerHTML = html;
+}
+
+function winPick(w){
+  if(w === null){ QF.win = []; QV = 'current'; }
+  else if(qfHas('win', w)){ QF.win = []; QV = 'current'; }   /* clicking the pinned one releases it */
+  else { QF.win = [w]; QV = 'all'; }                          /* pinned: show that window whole */
+  renderQueue();
+}
+
 /* Spec 4.3: the window must never change under a doctor who is mid-call or
    reading a chart. The queue keeps showing the window it was on and applies
    the switch once both are closed. */
@@ -4907,6 +4964,7 @@ function renderQueue(){
     });
   });
   renderQueueChip(today, cw, rows, cwi);
+  renderWinBar();
   document.querySelectorAll('#queue-body [data-pdic]').forEach(function(el){
     var k = el.getAttribute('data-pdic');
     if(typeof ICONS !== 'undefined' && ICONS[k]) el.innerHTML = ICONS[k];
@@ -8269,6 +8327,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-22 20:13</div>
+  <div class="build-stamp">build 2026-09-22 20:20</div>
 </body>
 </html>
