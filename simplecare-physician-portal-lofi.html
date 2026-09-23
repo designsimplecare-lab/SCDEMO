@@ -3092,6 +3092,24 @@
   .q-table .status-pill > span:not(.q-caret){color:var(--ink);}
   .q-table .status-pill .q-caret{color:var(--ink-faint);}
 
+  /* Daniel: "I like a minimum of shapes and colours... if I don't need to pay
+     attention to it, then I don't want to pay attention to it."
+
+     Five internal states all read "In queue", and each carried a different
+     hue -- blue, green, amber -- for a distinction the word had already
+     dropped. Nothing about a patient waiting needs the eye, so they go quiet
+     together. Colour is left where there is a job: Doctor to Callback is one,
+     and it keeps the red. Completed and No-show are finished, so they rest. */
+  .q-table .status-pill.waiting .ic,
+  .q-table .status-pill.next .ic,
+  .q-table .status-pill.delayed .ic,
+  .q-table .status-pill.progress .ic,
+  .q-table .status-pill.scheduled .ic{color:var(--ink-faint);}
+  .q-table .status-pill.missed .ic,
+  .q-table .status-pill.dropped .ic{color:var(--crit);}
+  .q-table .status-pill.done .ic,
+  .q-table .status-pill.noshow .ic{color:var(--ink-faint);}
+
   /* Daniel, 21 Sep: set the visit status from the list, without opening the
      chart. The pill keeps its shape and colour and gains a caret, so the
      column still reads as status at a glance rather than as a form control. */
@@ -8345,6 +8363,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-22 20:27</div>
+  <div class="build-stamp">build 2026-09-22 20:28</div>
 </body>
 </html>
