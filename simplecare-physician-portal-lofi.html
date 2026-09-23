@@ -4998,6 +4998,13 @@ function renderQueue(){
 var ATTN_BAND = {urgent:0, high:1, routine:2};
 function attnTasks(){
   if(typeof DOC_TASKS === 'undefined') return [];
+  /* Daniel, 21 Sep, reading this very list aloud: "referral for [HSAT] --
+     no way that goes there"; "sign off on imaging due in two days -- nope."
+     Three tasks were marked high and so cleared this filter, which is how a
+     band he wants empty most of the time had seven rows in it. The filter
+     was right; the data was not. They are routine now.
+
+     "If everything needs your attention, then nothing needs your attention." */
   return DOC_TASKS.filter(function(t){
     if(t.status === 'complete') return false;
     return t.prio === 'urgent' || t.prio === 'high' || t.dueIn < 0;
@@ -5680,7 +5687,7 @@ var TASK_PRIO = {
 var PRIO_ORDER = ['urgent','high','routine'];
 
 var DOC_TASKS = [
-  { id:'t1', title:'Referral for HSAT', type:'Referrals', prio:'high', age:0,
+  { id:'t1', title:'Referral for HSAT', type:'Referrals', prio:'routine', age:0,
     to:'Amrisha Singh', role:'MOA',
     patient:'Lorraine Anne Verville', preferred:'Lori (Lorraine) Verville', chart:'#6448',
     verified:true, status:'open', carried:0, due:'Sep 19', dueIn:6,
@@ -5700,7 +5707,7 @@ var DOC_TASKS = [
     patient:'Behdis Maleki', preferred:'Behdis', chart:'#5120',
     verified:true, status:'open', carried:1, due:'Sep 26', dueIn:13,
     note:'Still fatigued on supplementation. Requisition to LifeLabs, patient to attend when convenient.' },
-  { id:'t5', title:'Confirm new follow-up date', type:'Patient Notes', prio:'high', age:0,
+  { id:'t5', title:'Confirm new follow-up date', type:'Patient Notes', prio:'routine', age:0,
     to:'Amrisha Singh', role:'MOA',
     patient:'Gloria Mcdonald', preferred:'Gloria', chart:'#6448',
     verified:true, status:'open', carried:0, due:'Sep 15', dueIn:2,
@@ -5710,7 +5717,7 @@ var DOC_TASKS = [
     patient:'Frank Delacroix', preferred:'Frank', chart:'#3908',
     verified:true, status:'open', carried:0, due:'Today', dueIn:0,
     note:'Report came back overnight. Read before the afternoon window.' },
-  { id:'t7', title:'Sign off imaging', type:'Imaging', prio:'high', age:1,
+  { id:'t7', title:'Sign off imaging', type:'Imaging', prio:'routine', age:1,
     to:'Dr. D. Pannozzo', role:'Physician',
     patient:'Carol-Anne Feldman', preferred:'Carol', chart:'#2251',
     verified:true, status:'open', carried:1, due:'Sep 15', dueIn:2,
@@ -8338,6 +8345,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-22 20:25</div>
+  <div class="build-stamp">build 2026-09-22 20:27</div>
 </body>
 </html>
