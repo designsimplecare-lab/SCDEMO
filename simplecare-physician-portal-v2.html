@@ -3637,6 +3637,13 @@
   #pcv-c .vc-tabsrow button{min-height:44px;font-size:15px;}
   #pcv-c .vc-vit .k{font-size:14px;}
   #pcv-c .vc-vit .v{font-size:17px;}
+
+  /* V1 / V2 switch -- the same control in both files, so either can reach the other */
+  .vsw{display:inline-flex;align-items:center;gap:2px;height:44px;padding:3px;box-sizing:border-box;border-radius:999px;background:var(--wash);margin-right:6px;}
+  .vsw a{display:inline-flex;align-items:center;height:38px;padding:0 16px;border-radius:999px;font-size:15px;font-weight:600;color:var(--ink-soft);text-decoration:none;}
+  .vsw a:hover{color:var(--ink);}
+  .vsw a[aria-current="page"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(23,24,28,.08);}
+  .vsw a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 </style>
 </head>
 <body>
@@ -3673,6 +3680,7 @@
     <div class="topbar">
       <div class="tb-left"><span class="tb-title" id="tb-title">Today</span><span class="tb-date" id="tb-date"></span></div>
       <div class="topbar-right">
+      <nav class="vsw" aria-label="Prototype version"><a href="simplecare-physician-portal-lofi.html" onclick="vswGo(event,this)">V1</a><a href="simplecare-physician-portal-v2.html" onclick="vswGo(event,this)" aria-current="page">V2</a></nav>
       <button class="dsw-fab" id="dsw-fab" onclick="dswOpen()" title="Demo walkthrough" aria-label="Demo walkthrough"><span class="ic" data-pdic="demo"></span></button>
       <button class="chat-fab theme-btn" id="theme-btn" onclick="toggleTheme()" title="Switch to dark" aria-label="Switch to dark"><span class="ic" id="theme-icon"></span></button>
       <button class="chat-fab" id="chat-fab" onclick="toggleChatPanel()" title="MOA chat">
@@ -9115,7 +9123,17 @@ function dswNotes(){
   document.body.classList.toggle('show-notes');
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
+
+/* V1 / V2 switch: carry the screen you are on across. Review and chart open
+   from a list, so they land on that list. */
+function vswGo(e, a){
+  e.preventDefault();
+  var s = (document.querySelector('.screen.active')||{id:'screen-today'}).id.replace('screen-','');
+  if(s === 'review') s = 'inbox';
+  if(s === 'patientchart') s = 'today';
+  location.href = a.getAttribute('href') + '#' + s;
+}
 </script>
-  <div class="build-stamp">v2 · build 2026-09-24 14:05</div>
+  <div class="build-stamp">v2 · build 2026-09-24 14:32</div>
 </body>
 </html>
