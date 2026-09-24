@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SimpleCare Physician Portal — Low-Fi IA Mockup</title>
+<title>SimpleCare Physician Portal — v2</title>
 <style>
   :root{
     /* Dioptra design-system tokens */
@@ -3201,6 +3201,215 @@
     display:flex;align-items:center;flex-wrap:wrap;
   }
   .work-tabs{align-items:flex-end;}
+
+  /* ============================================================
+     Inbox + Review redesign, 23 Sep -- keep this block last.
+     Ani: "overwhelming, fonts are small, buttons are small ... make it
+     clean, easy to use and beautiful." Built from a four-lens design audit
+     (hierarchy, typography, controls and accessibility, clinical fit).
+     Every selector leads with an id, so it outranks the earlier layers.
+     ============================================================ */
+
+  /* critical text that passes AA: #DA3A2F is 4.23:1 on --wash; this is 6.18:1 on white */
+  :root{--crit-text:#B52F27;}
+  :root[data-theme="dark"]{--crit-text:#FF7A70;}
+
+  /* surfaces: no strokes around cards, rows or values */
+  #screen-inbox > .box{border-color:transparent;}
+  #screen-review .rv-cols > div > .box{border-color:transparent;}
+  #screen-review .rv-cols{gap:24px;}
+  /* room at the foot so the Assistant launcher never sits on a row's button */
+  #screen-inbox,#screen-review{padding-bottom:96px;}
+  #screen-inbox .inbox-row.ix{scroll-margin-bottom:96px;}
+
+  /* two heading levels: the section, then Daniel's three bands */
+  #screen-inbox .inbox-section-label{display:flex;align-items:baseline;gap:8px;margin:40px 0 4px;font-size:20px;font-weight:600;line-height:28px;letter-spacing:0;color:var(--ink);}
+  #screen-inbox .inbox-section-label:first-child{margin-top:0;}
+  #screen-inbox .ix-n{font-weight:400;color:var(--ink-faint);}
+  #screen-inbox .ix-order{margin-left:auto;font-size:14px;font-weight:400;line-height:20px;color:var(--ink-faint);}
+  #screen-inbox .ix-secttl{display:flex;align-items:center;gap:8px;margin:28px 0 6px;font-size:16px;font-weight:600;line-height:24px;letter-spacing:0;color:var(--ink);}
+  #screen-inbox .ix-secttl:first-child{margin-top:12px;}
+  #screen-inbox .ix-secttl span{padding:0;border-radius:0;background:none;color:inherit;font-size:inherit;}
+  #screen-inbox .ix-secttl .ix-n{font-weight:400;color:var(--ink-faint);}
+  #screen-inbox .ix-secttl .ic,#screen-inbox .ix-secttl .ic svg{display:inline-flex;width:17px;height:17px;}
+  #screen-inbox .ix-secttl.crit .ic{color:var(--crit);}
+  #screen-inbox .ix-secttl.warn .ic{color:var(--warn);}
+  #screen-inbox .ix-empty{margin:8px 0 0;font-size:15px;line-height:22px;color:var(--ink-soft);}
+
+  /* the row: one flat surface, two lines, three aligned columns */
+  :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix{position:relative;display:flex;align-items:center;gap:16px;box-sizing:border-box;min-height:72px;margin:0 0 4px;padding:12px 16px;border:0;border-radius:12px;background:transparent;cursor:pointer;transition:background-color .12s;}
+  #screen-inbox .inbox-row.ix{margin:0 -16px 4px;}
+  :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix:hover,:is(#screen-inbox,#today-inbox-preview) .inbox-row.ix:focus-within{background:var(--wash);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-body{flex:1;min-width:0;display:grid;grid-template-columns:minmax(150px,240px) minmax(0,1fr) auto;column-gap:16px;row-gap:4px;align-items:baseline;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-top{grid-column:1;grid-row:1;display:block;margin:0;min-width:0;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-open{appearance:none;-webkit-appearance:none;display:block;max-width:100%;margin:0;padding:0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;}
+  /* the name is the button, and its hit area is the whole row */
+  :is(#screen-inbox,#today-inbox-preview) .ix-open::after{content:"";position:absolute;inset:0;border-radius:12px;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-open:focus-visible{outline:none;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-open:focus-visible::after{outline:2px solid var(--accent);outline-offset:-2px;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-top b{display:block;font-size:17px;font-weight:600;line-height:24px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-panelrow{grid-column:2;grid-row:1;display:flex;align-items:baseline;margin:0;min-width:0;white-space:nowrap;overflow:hidden;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-panel{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:16px;font-weight:400;line-height:24px;color:var(--ink);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-panel::before{content:none;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-context{flex-shrink:0;padding:0;border-radius:0;background:none;font-size:15px;font-weight:500;line-height:24px;color:var(--ink);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-context::before{content:"·";margin:0 8px;font-weight:400;color:var(--ink-faint);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-meta{grid-column:3;grid-row:1;margin:0;font-size:14px;line-height:24px;color:var(--ink-soft);white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-find{grid-column:2 / -1;grid-row:2;min-width:0;margin:0;padding:0;border:0;border-radius:0;background:none;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 20px;font-size:15px;font-weight:400;line-height:22px;color:var(--ink-soft);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-find.abn{font-weight:600;color:var(--ink);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-out{padding:0;border-radius:0;background:none;font-size:inherit;font-weight:inherit;color:inherit;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-recall{padding:0;border-radius:0;background:none;font-size:14px;font-weight:400;color:var(--ink-faint);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-cult2{flex-direction:column;align-items:flex-start;gap:2px;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-org{display:block;margin:0;font-size:15px;color:var(--ink);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-org em{font-style:italic;font-weight:600;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-sens{display:flex;flex-wrap:wrap;gap:2px 20px;color:var(--ink-soft);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-sens b{font-weight:600;color:var(--ink);}
+  @media (max-width:1100px){:is(#screen-inbox,#today-inbox-preview) .ix-body{grid-template-columns:minmax(140px,180px) minmax(0,1fr) auto;}}
+  /* very narrow: stack the row rather than let the unwrappable received time
+     starve the panel column down to nothing */
+  @media (max-width:800px){
+    :is(#screen-inbox,#today-inbox-preview) .ix-body{grid-template-columns:minmax(0,1fr);}
+    :is(#screen-inbox,#today-inbox-preview) .ix-body > *{grid-column:1;grid-row:auto;}
+    :is(#screen-inbox,#today-inbox-preview) .ix-meta{text-align:left;}
+  }
+
+  /* tone: every word ink; colour only on the arrow of the value that set the
+     band, red ink only on a critical value, and the critical row sits on grey */
+  :is(#screen-inbox,#today-inbox-preview) .ix-v{display:inline-flex;align-items:baseline;gap:5px;white-space:nowrap;color:var(--ink);font-variant-numeric:tabular-nums;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-v b{font-weight:600;color:var(--ink);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-v i{font-style:normal;font-size:14px;color:var(--ink-faint);}
+  /* the glyph must inherit from its wrapper: the svg carries class="ic" too, so
+     a colour set on it directly would pin every arrow to one grey */
+  :is(#screen-inbox,#today-inbox-preview) .ix-dir{display:inline-flex;align-self:center;width:16px;height:16px;color:var(--ink-soft);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-dir svg{display:block;width:16px;height:16px;color:inherit;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-v.alert .ix-dir{color:var(--warn);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-v.crit b{color:var(--crit-text);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-v.crit .ix-dir{color:var(--crit);}
+  /* a thin amber stroke beside dark grey ones barely registered, and it is the
+     one mark that says why a row is High -- so the other arrows step back and
+     the tier arrow gets weight */
+  :is(#screen-inbox,#today-inbox-preview) .ix-v:not(.alert):not(.crit) .ix-dir{color:var(--ink-faint);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-v.alert .ix-dir svg *,:is(#screen-inbox,#today-inbox-preview) .ix-v.crit .ix-dir svg *{stroke-width:2.4;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-okn{font-size:14px;color:var(--ink-faint);white-space:nowrap;}
+  :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix.critical{background:var(--paper);}
+  :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix.critical:hover,:is(#screen-inbox,#today-inbox-preview) .inbox-row.ix.critical:focus-within{background:var(--line);}
+  :root[data-theme="dark"] :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix.critical{background:var(--wash);}
+  :root[data-theme="dark"] :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix.critical:hover,:root[data-theme="dark"] :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix.critical:focus-within{background:var(--line);}
+  /* in the inbox the Critical band heading already says it; on Home there is no band */
+  #screen-inbox .ix-hardflag{display:none;}
+  #today-inbox-preview .ix-hardflag{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;margin-left:12px;padding:0;border:0;border-radius:0;background:none;font-size:15px;font-weight:600;color:var(--ink);}
+  #today-inbox-preview .ix-hardflag .ic,#today-inbox-preview .ix-hardflag svg{width:16px;height:16px;color:var(--crit);}
+
+  /* row controls: 44px outline pills with black Mage icons. Open chart on
+     hover and focus, like the queue's row actions; Sign off always shown */
+  :is(#screen-inbox,#today-inbox-preview) .ix-right{position:absolute;top:50%;right:16px;z-index:1;transform:translateY(-50%);display:flex;align-items:center;gap:8px;padding-left:24px;background:inherit;opacity:0;pointer-events:none;transition:opacity .12s;}
+  :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix:hover .ix-right,:is(#screen-inbox,#today-inbox-preview) .inbox-row.ix:focus-within .ix-right{opacity:1;pointer-events:auto;}
+  #screen-inbox #inbox-reviewed .ix-right{position:relative;top:auto;right:auto;transform:none;flex-shrink:0;padding-left:0;background:none;opacity:1;pointer-events:auto;}
+  @media (hover:none){:is(#screen-inbox,#today-inbox-preview) .ix-right{position:relative;top:auto;right:auto;transform:none;flex-shrink:0;padding-left:0;background:none;opacity:1;pointer-events:auto;}}
+  :is(#screen-inbox,#today-inbox-preview) .ix-right .btn{display:inline-flex;align-items:center;gap:8px;height:44px;min-height:44px;padding:0 18px;border:1px solid var(--ink);border-radius:999px;background:var(--panel);color:var(--ink);font-size:15px;font-weight:600;line-height:20px;white-space:nowrap;box-shadow:none;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-right .btn .ic,:is(#screen-inbox,#today-inbox-preview) .ix-right .btn svg{width:17px;height:17px;flex-shrink:0;color:var(--ink);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-right .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  /* Signed off: a real disclosure button, not a paragraph with a typed triangle */
+  #screen-inbox .ix-disclose{display:inline-flex;align-items:center;gap:8px;height:44px;margin:32px 0 8px;padding:0 18px;border:1px solid var(--ink);border-radius:999px;background:var(--panel);color:var(--ink);font-size:15px;font-weight:600;line-height:20px;box-shadow:none;}
+  #screen-inbox .ix-disclose .ic,#screen-inbox .ix-disclose svg{width:17px;height:17px;color:var(--ink);transform:rotate(-90deg);transition:transform .15s;}
+  #screen-inbox .ix-disclose[aria-expanded="true"] .ic{transform:none;}
+  #screen-inbox .ix-disclose:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #screen-inbox #inbox-reviewed .ix-top b,#screen-inbox #inbox-signedoff .ix-top b{font-weight:500;}
+
+  /* ---- Review screen ---- */
+  #screen-review [hidden]{display:none !important;}
+  /* 44px controls, one line each, a Mage icon on every one */
+  #screen-review .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;min-height:44px;padding:0 18px;border-radius:999px;font-size:15px;font-weight:600;line-height:20px;white-space:nowrap;box-shadow:none;}
+  #screen-review .btn:not(.dark){background:var(--panel);border:1px solid var(--ink);color:var(--ink);}
+  #screen-review .btn .ic,#screen-review .btn svg{width:17px;height:17px;flex-shrink:0;}
+  #screen-review .btn:not(.dark) .ic{color:var(--ink);}
+  #screen-review .btn:focus-visible,#screen-review .pc-back:focus-visible,#screen-review .rv-win:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #screen-review .pc-back{height:44px;gap:8px;margin:0 0 16px;padding:0 18px 0 14px;border:1px solid var(--ink);border-radius:999px;background:var(--panel);color:var(--ink);font-size:15px;font-weight:600;}
+  #screen-review .pc-back .ic{color:var(--ink);}
+
+  /* reading order: title, one meta line, the tier and why, values, AI caption */
+  #screen-review #rv-sub{display:none;}
+  #screen-review .rv-paneltitle{margin:0 0 4px;font-size:20px;font-weight:600;line-height:28px;letter-spacing:0;color:var(--ink);}
+  #screen-review .rv-facts{display:block;margin:0 0 20px;}
+  #screen-review .rv-meta{margin:0;font-size:15px;line-height:22px;color:var(--ink-soft);}
+  #screen-review .rv-tier{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;margin:12px 0 0;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-review .rv-tier b{font-weight:600;}
+  #screen-review .rv-tier .ic{display:inline-flex;width:17px;height:17px;flex-shrink:0;}
+  #screen-review .rv-tier .ic svg{width:17px;height:17px;color:inherit;}
+  #screen-review .rv-tier.crit .ic{color:var(--crit);}
+  #screen-review .rv-tier.warn .ic{color:var(--warn);}
+  #screen-review .rv-tier span:not(.ic){color:var(--ink-soft);}
+  #screen-review .rv-ai{display:block;margin:0 0 24px;padding:14px 16px;border:0;border-radius:12px;background:var(--wash);color:var(--ink);}
+  :root[data-theme="dark"] #screen-review .rv-ai{background:var(--wash);color:var(--ink);}
+  #screen-review .rv-aitag{display:inline-flex;align-items:center;gap:6px;margin:0 0 4px;padding:0;border-radius:0;background:none;font-size:14px;font-weight:600;line-height:20px;letter-spacing:0;color:var(--ink-soft);}
+  #screen-review .rv-aitag svg{width:16px;height:16px;}
+  #screen-review .rv-ai p{margin:0;font-size:16px;line-height:24px;color:var(--ink);}
+  #screen-review .rv-ai em{display:block;margin-top:4px;font-style:normal;font-size:14px;line-height:20px;color:var(--ink-faint);}
+
+  /* results table: no fills, the value beside its name, arrows carry the tier */
+  #screen-review .rv-results{margin:0 0 16px;}
+  #screen-review .rv-row{grid-template-columns:minmax(0,220px) 170px 150px minmax(0,1fr);column-gap:16px;min-height:44px;padding:10px 12px;border-bottom:0;border-radius:10px;background:transparent;font-size:16px;line-height:24px;}
+  #screen-review .rv-row.crit{background:var(--paper);}
+  :root[data-theme="dark"] #screen-review .rv-row.crit{background:var(--wash);}
+  #screen-review .rv-n{font-weight:500;color:var(--ink);}
+  #screen-review .rv-v{display:inline-flex;align-items:baseline;gap:5px;font-weight:400;color:var(--ink);}
+  #screen-review .rv-row.abn .rv-v,#screen-review .rv-row.crit .rv-v{font-weight:600;color:var(--ink);}
+  #screen-review .rv-row.crit .rv-v{color:var(--crit-text);}
+  #screen-review .rv-v i{font-style:normal;font-size:14px;font-weight:400;color:var(--ink-faint);}
+  /* colour on the wrapper, inherited by the glyph (the svg is .ic too) */
+  #screen-review .rv-dir{display:inline-flex;align-self:center;width:17px;height:17px;color:var(--ink-faint);}
+  #screen-review .rv-dir svg{display:block;width:17px;height:17px;color:inherit;}
+  #screen-review .rv-row.alert .rv-dir{color:var(--warn);}
+  #screen-review .rv-row.crit .rv-dir{color:var(--crit);}
+  #screen-review .rv-row.alert .rv-dir svg *,#screen-review .rv-row.crit .rv-dir svg *{stroke-width:2.4;}
+  #screen-review .rv-ref,#screen-review .rv-prior{font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-review .rv-narr{margin:0;padding:0;border-radius:0;background:none;font-size:16px;line-height:24px;color:var(--ink);}
+
+  /* the source document: a header that stays when the sheet is hidden */
+  #screen-review .rv-srchd{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:24px 0 12px;}
+  #screen-review .rv-doclbl{margin:0;font-size:16px;font-weight:600;line-height:24px;letter-spacing:0;color:var(--ink);}
+  #screen-review .rv-doc{margin-top:0;padding-top:0;border-top:0;}
+  #screen-review .doc-brand,#screen-review .doc-tag,#screen-review .doc-ttl,#screen-review .doc-tbl th{letter-spacing:0;}
+  #screen-review .doc-tbl,#screen-review .doc-pt,#screen-review .doc-meta{font-size:14px;}
+  #screen-review .doc-tbl th,#screen-review .doc-legend,#screen-review .doc-foot,#screen-review .doc-hid,#screen-review .doc-tag{font-size:13px;}
+
+  /* the decision: two 44px pills, stacked */
+  #screen-review .rv-decide .box-title{margin:0 0 14px;}
+  #screen-review .rv-choice{display:flex;flex-direction:column;gap:10px;}
+  #screen-review .rv-opt{display:flex;align-items:center;gap:10px;width:100%;height:44px;padding:0 18px;border:1px solid var(--ink);border-radius:999px;background:var(--panel);color:var(--ink);font-family:inherit;font-size:15px;font-weight:600;line-height:20px;text-align:left;white-space:nowrap;cursor:pointer;}
+  #screen-review .rv-opt .ic{display:inline-flex;width:17px;height:17px;flex-shrink:0;color:inherit;}
+  #screen-review .rv-opt .ic svg{width:17px;height:17px;color:inherit;}
+  #screen-review .rv-opt:hover{background:var(--wash);}
+  #screen-review .rv-opt.on{background:var(--ink-dark);border-color:var(--ink-dark);color:var(--panel);}
+  /* pressing Follow-up again would re-draft and wipe the doctor's edits */
+  #screen-review #rv-yes.on{pointer-events:none;}
+  #screen-review .rv-opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #screen-review .rv-nohint{margin:12px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-review .rv-commit{margin:0 0 14px;padding:0;border-radius:0;background:none;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-review .rv-done{display:flex;flex-direction:column;flex-wrap:nowrap;gap:10px;}
+  #screen-review .rv-done .btn{width:100%;flex:none;}
+
+  /* the right rail: one flat surface, readable labels, 44px choices */
+  #screen-review .rv-side{position:static;padding:4px 0 20px;border-radius:22px;background:var(--panel);box-shadow:0 6px 22px rgba(28,31,38,.06);}
+  :root[data-theme="dark"] #screen-review .rv-side{box-shadow:var(--shadow-card);}
+  #screen-review .rv-side .box{margin:0;padding:20px 24px 4px;border:0;border-radius:0;box-shadow:none;background:transparent;}
+  #screen-review .rv-side .box-title{margin:0 0 12px;font-size:16px;font-weight:600;line-height:24px;letter-spacing:0;color:var(--ink);}
+  #screen-review .rv-hint{margin:0 0 12px;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-review .rv-field{margin:12px 0 0;}
+  #screen-review .rv-field label{margin:0 0 6px;font-size:14px;font-weight:500;line-height:20px;letter-spacing:0;color:var(--ink-soft);}
+  #screen-review .rv-field input,#screen-review .rv-field textarea,#screen-review .rv-exp input,#screen-review .rv-exp textarea{padding:10px 12px;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-review #rv-draft .rv-aimark{font-size:14px;}
+  #screen-review .rv-pick,#screen-review .rv-act{min-height:44px;font-size:15px;border-bottom:0;}
+  #screen-review .rv-act i{font-size:14px;color:var(--ink-soft);}
+  #screen-review .rv-exp{padding:0 0 12px 28px;}
+  #screen-review .rv-wins{gap:8px;}
+  #screen-review .rv-win{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:1px solid var(--line-strong);border-radius:999px;background:var(--panel);font-size:15px;font-weight:500;color:var(--ink);}
+  #screen-review .rv-win .ic{display:inline-flex;width:17px;height:17px;flex-shrink:0;color:var(--ink);}
+  #screen-review .rv-win .ic svg{width:17px;height:17px;color:inherit;}
+  #screen-review .rv-win.on{border-color:var(--ink);background:var(--wash);color:var(--ink);}
+  /* with a draft showing, its contact text is what Accept sends; the MOA box
+     below would print the same paragraph a second time */
+  #screen-review #rv-draft[style*="block"] ~ .box #exp-moa{display:none;}
 </style>
 </head>
 <body>
@@ -3350,34 +3559,40 @@
 
       <div class="rv-cols">
         <div>
+          <!-- Reading order: what the result is, where and when it came in, how
+               urgent and why, the values, a quiet AI caption, then the source
+               document -- which stays open by default and is the authority. -->
           <div class="box">
-            <p class="box-title">Delivery</p>
+            <h2 class="rv-paneltitle" id="rv-panel"></h2>
             <div class="rv-facts" id="rv-facts"></div>
-            <div class="rv-ai" id="rv-ai"></div>
             <div class="rv-results" id="rv-results"></div>
             <div id="rv-unmapped"></div>
-            <div class="rv-doc" id="rv-doc"></div>
-            <div class="rv-src">
-              <button class="btn xs" id="rv-srcbtn" onclick="rvToggleSource()">Hide source document</button>
+            <div class="rv-ai" id="rv-ai"></div>
+            <div class="rv-srchd">
+              <h3 class="rv-doclbl">Source document — as received</h3>
+              <button type="button" class="btn" id="rv-srcbtn" aria-expanded="true" aria-controls="rv-doc" onclick="rvToggleSource()"><span class="ic" id="rv-srcic" data-pdic="eyeoff"></span><span id="rv-srclbl">Hide source document</span></button>
             </div>
+            <div class="rv-doc" id="rv-doc"></div>
           </div>
         </div>
 
         <aside class="rv-side">
-          <div class="box" style="margin-bottom:12px;">
-            <p class="box-title">Does this delivery require follow-up?</p>
-            <div class="rv-choice">
-              <button class="rv-opt" id="rv-no" onclick="rvSetFollow(false)">
-                <b>No follow-up required</b><span>Records the review and closes the assignment.</span></button>
-              <button class="rv-opt" id="rv-yes" onclick="rvSetFollow(true)">
-                <b>Follow-up required</b><span>Choose the results that drove it, then what happens next.</span></button>
+          <!-- Asked once. "No follow-up required" records the review in one click.
+               Critical and High open with the drafted follow-up already showing,
+               and Accept & assign sits directly under the draft it acts on. -->
+          <div class="box rv-decide">
+            <h2 class="box-title" id="rv-q">Does this delivery require follow-up?</h2>
+            <div class="rv-choice" role="group" aria-labelledby="rv-q">
+              <button type="button" class="rv-opt" id="rv-no" onclick="rvSetFollow(false);rvDone(false)"><span class="ic" data-pdic="complete"></span>No follow-up required</button>
+              <button type="button" class="rv-opt" id="rv-yes" aria-pressed="false" onclick="rvSetFollow(true)"><span class="ic" data-pdic="flag"></span>Follow-up required</button>
             </div>
+            <p class="rv-nohint">No follow-up required records the review. Nothing is sent to the patient.</p>
           </div>
 
           <div id="rv-follow" style="display:none;">
-            <div class="box" id="rv-draft" style="margin-bottom:12px;display:none;"></div>
+            <div class="box" id="rv-draft" style="display:none;"></div>
 
-            <div class="box" style="margin-bottom:12px;">
+            <div class="box" id="rv-picksbox">
               <p class="box-title">Which results drove this?</p>
               <p class="rv-hint">Optional. Only the results you pick will show <em>Reviewed &mdash; action needed</em>; the rest stay <em>Reviewed</em>.</p>
               <div id="rv-picks"></div>
@@ -3385,20 +3600,20 @@
                 <input type="text" id="rv-reason" placeholder="e.g. K+ 6.3, ramipril held, repeat today"></div>
             </div>
 
-            <div class="box" style="margin-bottom:12px;">
+            <div class="box" id="rv-nextbox">
               <p class="box-title">What happens next</p>
               <label class="rv-act"><input type="checkbox" id="a-book" onchange="rvToggle('book')"> <span><b>Book into scheduler &amp; call</b></span></label>
               <div class="rv-exp" id="exp-book">
                 <div class="rv-wins">
-                  <button class="rv-win on" onclick="rvWin(this)">Today 4:00 &ndash; 5:30 &middot; 6 queued</button>
-                  <button class="rv-win" onclick="rvWin(this)">Tomorrow 9:00 &ndash; 10:30 &middot; 3</button>
-                  <button class="rv-win" onclick="rvWin(this)">Tomorrow 3:00 &ndash; 4:30 &middot; 1</button>
+                  <button type="button" class="rv-win on" aria-pressed="true" onclick="rvWin(this)"><span class="ic" data-pdic="calendar"></span>Today 4:00 &ndash; 5:30 &middot; 6 queued</button>
+                  <button type="button" class="rv-win" aria-pressed="false" onclick="rvWin(this)"><span class="ic" data-pdic="calendar"></span>Tomorrow 9:00 &ndash; 10:30 &middot; 3</button>
+                  <button type="button" class="rv-win" aria-pressed="false" onclick="rvWin(this)"><span class="ic" data-pdic="calendar"></span>Tomorrow 3:00 &ndash; 4:30 &middot; 1</button>
                 </div>
               </div>
 
-              <label class="rv-act"><input type="checkbox" id="a-moa" onchange="rvToggle('moa')"> <span><b>MOA to contact patient</b><i>Japneet &middot; paired with you</i></span></label>
+              <label class="rv-act"><input type="checkbox" id="a-moa" onchange="rvToggle('moa')"> <span><b>MOA to contact patient</b><i id="rv-moa-who">MOA on service &middot; paired with you</i></span></label>
               <div class="rv-exp" id="exp-moa">
-                <input type="text" id="rv-moa" placeholder="What should Japneet do?" value="Call patient today to arrange a repeat draw">
+                <input type="text" id="rv-moa" placeholder="What should the MOA do?" value="Call patient today to arrange a repeat draw">
               </div>
 
               <label class="rv-act"><input type="checkbox" id="a-msg" onchange="rvToggle('msg')"> <span><b>Message patient to book</b></span></label>
@@ -3406,12 +3621,12 @@
             </div>
           </div>
 
-          <div class="box">
-            <p class="rv-commit" id="rv-commit">Records your review. Nothing is sent.</p>
+          <div class="box" id="rv-commitbox" hidden>
+            <p class="rv-commit" id="rv-commit" aria-live="polite"></p>
             <div class="rv-done">
-              <button class="btn dark" onclick="rvAccept()">Accept &amp; assign</button>
-              <button class="btn" onclick="rvModify()">Modify</button>
-              <button class="btn" onclick="rvDone(false)">No follow-up required</button>
+              <button type="button" class="btn dark" id="rv-accept" onclick="rvAccept()"><span class="ic" data-pdic="usercheck"></span>Accept &amp; assign</button>
+              <button type="button" class="btn" id="rv-modify" onclick="rvModify()"><span class="ic" data-pdic="edit"></span>Modify</button>
+              <button type="button" class="btn dark" id="rv-record" onclick="rvDone(false)"><span class="ic" data-pdic="complete"></span>Record follow-up</button>
             </div>
           </div>
         </aside>
@@ -3983,13 +4198,13 @@
       </div>
 
       <div class="box">
-        <p class="inbox-section-label">Needs review</p>
+        <h2 class="inbox-section-label">Needs review <span class="ix-n" id="inbox-recv-count"></span><span class="ix-order">Oldest received first, within each priority</span></h2>
         <div id="inbox-received"></div>
 
-        <p class="inbox-section-label">Reviewed — awaiting sign-off</p>
+        <h2 class="inbox-section-label">Reviewed — awaiting sign-off <span class="ix-n" id="inbox-rev-count"></span></h2>
         <div id="inbox-reviewed"></div>
 
-        <p class="inbox-section-label" style="cursor:pointer;" onclick="toggleSignedOff()">▸ Signed off (<span id="signedoff-count">0</span>) — click to expand</p>
+        <button type="button" class="btn ix-disclose" aria-expanded="false" aria-controls="inbox-signedoff" onclick="toggleSignedOff()"><span class="ic" data-pdic="chevdown"></span>Signed off <span class="ix-n" id="signedoff-count">0</span></button>
         <div id="inbox-signedoff" style="display:none;"></div>
       </div>
     </div>
@@ -4325,7 +4540,7 @@
   <div class="dsw-sec">
     <p>Portal</p>
     <div class="dsw-grid">
-      <a href="simplecare-physician-portal-lofi.html" class='on'>Physician</a>
+      <a href="simplecare-physician-portal-v2.html" class='on'>Physician</a>
       <a href="simplecare-moa-portal.html">MOA</a>
       <a href="simplecare-patient-portal-v2.html">Patient</a>
     </div>
@@ -4392,7 +4607,7 @@
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <script>
 
@@ -6597,7 +6812,7 @@ var INBOX_ITEMS = [
 
   { patient:'Gloria Mcdonald', age:'74F', phn:'9650 115 886', dob:'28-10-1951', type:'Trace', panel:'12-lead ECG', received:'Today, 7:55 AM', ago:'2h',
     status:'received', lab:'In-clinic', kind:'trace',
-    interp:'ABNORMAL ECG: ATRIAL FIBRILLATION · left anterior divisional block · nonspecific repolarization abnormality', abnormalTrace:true,
+    interp:'Abnormal ECG: atrial fibrillation · left anterior divisional block · nonspecific repolarization abnormality', abnormalTrace:true,
     measures:[ {n:'Rate',v:'92 bpm'}, {n:'PR',v:'168 ms'}, {n:'QRS',v:'94 ms'}, {n:'QTc',v:'451 ms'} ] },
 
   { patient:'Priya Raman', age:'39F', phn:'9650 129 891', dob:'17-12-1984', type:'Screening', panel:'Cervical screening (Pap)', received:'Yesterday, 1:15 PM', ago:'1d',
@@ -6681,7 +6896,7 @@ function scEscalate(name, hit){
   if(TIER_RANK[e.to] > TIER_RANK[hit.tier]){
     hit.escalated = hit.tier;
     hit.tier = e.to;
-    hit.basis = hit.basis + ' · SimpleCare raises this to urgent';
+    hit.basis = hit.basis + ' · SimpleCare raises this to critical';
   }
   return hit;
 }
@@ -6784,60 +6999,80 @@ function labTier(item){
 
 function inboxIsCritical(item){ return (item.tests||[]).some(function(t){ return t.f && t.f.indexOf('crit')===0; }); }
 function inboxRowHtml(item, i){
-  var abn = inboxAbnormal(item), crit = inboxIsCritical(item);
+  var crit = inboxIsCritical(item);
   var total = (item.tests||[]).length;
+  var attr = function(t){ return String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); };
 
-  // Soft flag = outside reference range. Hard flag = critical, needs immediate assessment.
+  /* Line 2 carries only what is abnormal, as plain text. The value that set
+     the band gets the only colour -- on its arrow, and in red ink only when
+     it is critical. Normal values collapse to a count. Reference ranges move
+     to a tooltip here; they stay on the review table and the source document.
+     No type tag (the panel name already says Chest X-ray, Pap, ECG), no chip
+     per value, and no drawn ECG trace -- it was one hard-coded line for every
+     patient, so it showed no data. */
   var findings = '';
   if(total){
-    findings = '<div class="ix-chips">' + item.tests.map(function(t){
-      if(!t.f) return '<span class="ix-chip ok"><b>'+t.n+'</b> '+t.v+(t.u?' <i>'+t.u+'</i>':'')+'</span>';
-      var hard = t.f.indexOf('crit')===0;
-      var dir = t.f.indexOf('high')>-1 ? '&uarr;' : '&darr;';
-      return '<span class="ix-chip'+(hard?' hard':' soft')+'">'+
-        '<b>'+t.n+'</b> '+t.v+(t.u?' <i>'+t.u+'</i>':'')+' <em>'+dir+'</em>'+
-        '<span class="ix-ref">ref '+t.ref+'</span></span>';
-    }).join('') + '</div>';
+    var okN = item.tests.filter(function(t){ return !t.f; }).length;
+    /* the value that set the band leads the line: critical, then alert, then the rest */
+    var rank = function(t){ return t.f.indexOf('crit')===0 ? 0 : (t.f.indexOf('alert')===0 ? 1 : 2); };
+    findings = '<div class="ix-find">' + item.tests.filter(function(t){ return t.f; })
+      .map(function(t,k){ return {t:t,k:k}; })
+      .sort(function(a,b){ return (rank(a.t)-rank(b.t)) || (a.k-b.k); })
+      .map(function(x){ return x.t; }).map(function(t){
+      var tier = t.f.indexOf('crit')===0 ? ' crit' : (t.f.indexOf('alert')===0 ? ' alert' : '');
+      var up = t.f.indexOf('high') > -1;
+      return '<span class="ix-v'+tier+'"'+(t.ref ? ' title="ref '+attr(t.ref)+'"' : '')+'>'+t.n+' <b>'+t.v+'</b>'+
+        (t.u ? ' <i>'+t.u+'</i>' : '')+
+        '<span class="ic ix-dir" role="img" aria-label="'+(up?'high':'low')+'" data-pdic="'+(up?'arrowup':'arrowdown')+'"></span></span>';
+    }).join('') +
+    (okN ? '<span class="ix-okn">'+(okN===total ? 'All '+total+' in range' : '+'+okN+' in range')+'</span>' : '') +
+    '</div>';
   } else if(item.kind==='culture'){
-    findings = '<div class="ix-cult">'+
-      '<div class="ix-org"><b>'+item.organism+'</b><span>'+item.growth+'</span></div>'+
-      '<div class="ix-sens">'+ item.sens.map(function(x){
-          var cls = x.r==='S' ? 's' : (x.r==='R' ? 'r' : 'i');
-          return '<span class="ix-ab '+cls+'">'+x.ab+' <b>'+x.r+'</b></span>';
-        }).join('') +'</div></div>';
+    var grp = function(r){ return item.sens.filter(function(x){ return x.r===r; }).map(function(x){ return x.ab; }).join(', '); };
+    findings = '<div class="ix-find ix-cult2"><span class="ix-org"><em>'+item.organism+'</em> '+item.growth+'</span>'+
+      '<span class="ix-sens">'+[['Susceptible','S'],['Intermediate','I'],['Resistant','R']]
+        .filter(function(p){ return grp(p[1]); })
+        .map(function(p){ return '<span><b>'+p[0]+'</b> '+grp(p[1])+'</span>'; }).join('')+'</span></div>';
   } else if(item.kind==='trace'){
-    findings = '<div class="ix-trace">'+
-      '<div class="ix-strip"><svg viewBox="0 0 240 34" preserveAspectRatio="none"><polyline points="0,24 18,24 22,20 26,28 30,6 34,30 38,22 42,24 60,24 78,24 82,20 86,28 90,6 94,30 98,22 102,24 120,24 138,24 142,20 146,28 150,6 154,30 158,22 162,24 180,24 198,24 202,20 206,28 210,6 214,30 218,22 222,24 240,24" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></div>'+
-      '<div class="ix-tbody"><p class="ix-interp'+(item.abnormalTrace?' abn':'')+'">'+item.interp+'</p></div></div>';
+    findings = '<div class="ix-find'+(item.abnormalTrace?' abn':'')+'">'+item.interp+'</div>';
   } else if(item.kind==='screening'){
-    findings = '<div class="ix-screen'+(item.outcomeOk?'':' abn')+'">'+
-      '<span class="ix-out">'+item.outcome+'</span><span class="ix-recall">'+item.recall+'</span></div>';
+    findings = '<div class="ix-find'+(item.outcomeOk?'':' abn')+'"><span class="ix-out">'+item.outcome+'</span>'+
+      (item.recall ? '<span class="ix-recall">'+item.recall+'</span>' : '')+'</div>';
   } else if(item.impression){
-    findings = '<div class="ix-impression'+(item.abnormal?' abn':'')+'">'+item.impression+'</div>';
+    findings = '<div class="ix-find'+(item.abnormal?' abn':'')+'">'+item.impression+'</div>';
   }
 
+  /* The row itself opens the review, so there is no "Review result" button.
+     Open chart appears on hover and focus, and only where a chart exists --
+     otherwise it dead-ends in a toast. Sign off is the one action on a
+     reviewed row and a deliberate step, so it stays visible. */
+  var pt = item.patient.replace(/'/g,'');
   var actions = item.status === 'received'
-    ? '<button class="btn xs dark" onclick="event.stopPropagation();openReview('+i+')">Review result</button>'+
-      '<button class="btn xs" onclick="event.stopPropagation();fastTrack(&#39;'+item.patient.replace(/'/g,"")+'&#39;)" title="Open the chart with the plan this belongs to">Open chart</button>'
-    : (item.status === 'reviewed' ? '<span class="pill mut">Reviewed</span>' : '');
+    ? (inboxHasChart(pt)
+        ? '<button type="button" class="btn ix-chart" onclick="fastTrack(&#39;'+attr(pt)+'&#39;)" title="Open the chart with the plan this belongs to">'+
+          '<span class="ic" data-pdic="chartnote"></span>Open chart</button>'
+        : '')
+    : (item.status === 'reviewed'
+        ? '<button type="button" class="btn ix-sign" onclick="signOffInbox('+i+')"><span class="ic" data-pdic="complete"></span>Sign off</button>'
+        : '');
 
-  return '<div class="inbox-row ix'+(crit?' critical':'')+'" onclick="openReview('+i+')">'+
-    '<span class="ix-type '+IX_TYPE_CLS[item.type]+'">'+item.type+'</span>'+
+  return '<div class="inbox-row ix'+(crit?' critical':'')+'">'+
     '<div class="ix-body">'+
       /* Name only. Age, DOB and PHN are on the chart, one click away, and on
          the source document itself -- the same call Daniel made for the queue
          list: "it's nice to have it there, but you're probably right." */
-      '<div class="ix-top"><b>'+item.patient+'</b></div>'+
+      '<div class="ix-top"><button type="button" class="ix-open" onclick="openReview('+i+')"'+
+        ' aria-label="'+attr(item.patient+', '+item.panel+(crit?', critical':''))+'"><b>'+item.patient+'</b></button></div>'+
       '<div class="ix-panelrow"><span class="ix-panel">'+item.panel+'</span>'+
-        (crit?'<span class="ix-hardflag">Critical &mdash; immediate assessment</span>':'')+
-        (item.context?'<span class="ix-context">'+item.context+'</span>':'')+'</div>'+
-      findings+
+        (item.context ? '<span class="ix-context">'+item.context+'</span>' : '')+
+        (crit ? '<span class="ix-hardflag"><span class="ic" data-pdic="crit"></span>Critical &mdash; immediate assessment</span>' : '')+'</div>'+
+      /* Ani: "it came two hour ago, one day ago -- it's redundant." Daniel
+         agreed. The clinic's received time, on the right edge, so first in,
+         first out reads straight down the column. */
       '<div class="ix-meta">'+item.lab+' &middot; received '+item.received+'</div>'+
+      findings+
     '</div>'+
-    /* Ani: "it came two hour ago, one day ago -- it's redundant." Daniel
-       agreed. The received time is already on the line above, and the list
-       is ordered first in, first out, so the age was saying it twice. */
-    '<div class="ix-right">'+actions+'</div>'+
+    (actions ? '<div class="ix-right">'+actions+'</div>' : '')+
   '</div>';
 }
 
@@ -6856,6 +7091,15 @@ function inboxWhen(it){
 }
 function byOldest(a,b){ return inboxWhen(a) - inboxWhen(b); }
 
+/* Rows are rebuilt on every render, long after the one-time startup paint,
+   and the first render runs before ICONS exists -- so each render paints
+   its own glyphs. */
+function paintPd(root){
+  if(!root || typeof ICONS === 'undefined') return;
+  root.querySelectorAll('[data-pdic]').forEach(function(el){
+    var k = el.getAttribute('data-pdic'); if(ICONS[k]) el.innerHTML = ICONS[k];
+  });
+}
 function renderInboxList(){
   var recv = INBOX_ITEMS.filter(function(x){ return x.status==='received'; });
   /* three bands, oldest first inside each. labTier already knew the middle
@@ -6864,32 +7108,40 @@ function renderInboxList(){
   var high    = recv.filter(function(x){ return !inboxIsCritical(x) && labTier(x) === 'alert'; }).sort(byOldest);
   var rest    = recv.filter(function(x){ return labTier(x) === null; }).sort(byOldest);
   var reviewed = INBOX_ITEMS.filter(function(x){ return x.status==='reviewed'; }).sort(byOldest);
+  var rc = document.getElementById('inbox-recv-count'); if(rc) rc.textContent = recv.length || '';
+  var vc = document.getElementById('inbox-rev-count');  if(vc) vc.textContent = reviewed.length || '';
 
+  /* Daniel's three words, critical / high / routine, as the band names. The
+     order note is said once, on the section heading, not on every band. The
+     colour is on the icon; the words stay ink. */
   var f = document.getElementById('inbox-received');
   if(f){
     f.innerHTML =
       (flagged.length
-        ? '<p class="ix-secttl crit">Flagged &mdash; review these first <span>'+flagged.length+'</span></p>'+
+        ? '<h3 class="ix-secttl crit"><span class="ic" data-pdic="crit"></span>Critical <span class="ix-n">'+flagged.length+'</span></h3>'+
           flagged.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('')
         : '') +
       (high.length
-        ? '<p class="ix-secttl warn">High &mdash; oldest first <span>'+high.length+'</span></p>'+
+        ? '<h3 class="ix-secttl warn"><span class="ic" data-pdic="alert"></span>High <span class="ix-n">'+high.length+'</span></h3>'+
           high.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('')
         : '') +
       (rest.length
-        ? '<p class="ix-secttl">Routine &mdash; oldest first <span>'+rest.length+'</span></p>'+
+        ? '<h3 class="ix-secttl">Routine <span class="ix-n">'+rest.length+'</span></h3>'+
           rest.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('')
-        : '<p class="empty">Nothing waiting.</p>');
+        : '') +
+      /* empty only when every band is empty, not whenever Routine is */
+      ((flagged.length || high.length || rest.length) ? '' : '<p class="ix-empty">Nothing waiting for review</p>');
   }
   var r = document.getElementById('inbox-reviewed');
   if(r) r.innerHTML = reviewed.length
     ? reviewed.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('')
-    : '<p class="empty">Nothing awaiting sign-off.</p>';
+    : '<p class="ix-empty">Nothing awaiting sign-off</p>';
   var so = document.getElementById('inbox-signedoff');
   var done = INBOX_ITEMS.filter(function(x){ return x.status==='signed-off'; });
   if(so) so.innerHTML = done.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('');
   var sc = document.getElementById('signedoff-count'); if(sc) sc.textContent = done.length;
   renderOutstanding();
+  paintPd(document.getElementById('screen-inbox'));
 }
 /* Outstanding lab work — count first, tests named where we have them (§ feedback 6) */
 function renderOutstanding(){
@@ -6924,6 +7176,7 @@ function renderInboxToday(){
       var i = INBOX_ITEMS.indexOf(item);
       return inboxRowHtml(item, i);
     }).join('');
+    paintPd(preview);
     countBadge.textContent = needsReview.length;
     countBadge.style.display = 'inline-flex';
     navFlag.textContent = needsReview.length;
@@ -6951,6 +7204,8 @@ function signOffInbox(i){
 function toggleSignedOff(){
   var el = document.getElementById('inbox-signedoff');
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  var b = document.querySelector('#screen-inbox .ix-disclose');
+  if(b) b.setAttribute('aria-expanded', el.style.display === 'block' ? 'true' : 'false');
 }
 
 /* Daniel, 21 Sep: collapsed by default, to maximise the space the queue gets.
@@ -7259,6 +7514,15 @@ function aiSend(preset){
 
 /* ===== Streamline line-icons: swap glyphs for SVGs ===== */
 var ICONS = {
+"arrowup": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"><path stroke-miterlimit=\"10\" d=\"M12 4v16\"/><path stroke-linejoin=\"round\" d=\"M19.66 11.033L13.089 4.46a1.53 1.53 0 0 0-2.176 0L4.34 11.033\"/></g></svg>",
+"arrowdown": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"><path stroke-miterlimit=\"10\" d=\"M12 20V4\"/><path stroke-linejoin=\"round\" d=\"m4.34 12.968l6.572 6.572a1.53 1.53 0 0 0 2.176 0l6.573-6.572\"/></g></svg>",
+"crit": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M12 1.75A10.25 10.25 0 1 0 22.25 12A10.26 10.26 0 0 0 12 1.75m-1 5a1 1 0 0 1 2 0v6.33a1 1 0 0 1-2 0zm1 11.08a1.25 1.25 0 1 1 1.25-1.25a1.24 1.24 0 0 1-1.21 1.23z\"/></svg>",
+"alert": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke-width=\"1.5\" d=\"M10.367 4.462L2.752 17.655a1.885 1.885 0 0 0 1.634 2.827h15.228a1.885 1.885 0 0 0 1.633-2.827L13.633 4.462a1.885 1.885 0 0 0-3.266 0m1.628 3.116v6.277\"/><path stroke-width=\"2\" d=\"M12.043 17.326h-.009\"/></g></svg>",
+"eye": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><path d=\"M2.899 12.735a1.87 1.87 0 0 1 0-1.47c.808-1.92 2.1-3.535 3.716-4.647S10.103 4.945 12 5.004c1.897-.059 3.768.502 5.385 1.614s2.908 2.727 3.716 4.647a1.87 1.87 0 0 1 0 1.47c-.808 1.92-2.1 3.535-3.716 4.647S13.897 19.055 12 18.996c-1.897.059-3.768-.502-5.385-1.614S3.707 14.655 2.9 12.735\"/><path d=\"M12 15.5a3.5 3.5 0 1 0 0-7a3.5 3.5 0 0 0 0 7\"/></g></svg>",
+"eyeoff": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><path d=\"M5.45 16.92a10.8 10.8 0 0 1-2.55-3.71a1.85 1.85 0 0 1 0-1.46A10.6 10.6 0 0 1 6.62 7.1A9 9 0 0 1 12 5.48a8.8 8.8 0 0 1 4 .85m2.56 1.72a10.85 10.85 0 0 1 2.54 3.7a1.85 1.85 0 0 1 0 1.46a10.6 10.6 0 0 1-3.72 4.65A9 9 0 0 1 12 19.48a8.8 8.8 0 0 1-4-.85\"/><path d=\"M8.71 13.65a3.3 3.3 0 0 1-.21-1.17a3.5 3.5 0 0 1 3.5-3.5c.4-.002.796.07 1.17.21m2.12 2.12c.14.374.212.77.21 1.17a3.5 3.5 0 0 1-3.5 3.5a3.3 3.3 0 0 1-1.17-.21M3 20L19 4\"/></g></svg>",
+"edit": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><path d=\"M19.09 14.441v4.44a2.37 2.37 0 0 1-2.369 2.369H5.12a2.37 2.37 0 0 1-2.369-2.383V7.279a2.356 2.356 0 0 1 2.37-2.37H9.56\"/><path d=\"M6.835 15.803v-2.165c.002-.357.144-.7.395-.953l9.532-9.532a1.36 1.36 0 0 1 1.934 0l2.151 2.151a1.36 1.36 0 0 1 0 1.934l-9.532 9.532a1.36 1.36 0 0 1-.953.395H8.197a1.36 1.36 0 0 1-1.362-1.362M19.09 8.995l-4.085-4.086\"/></g></svg>",
+"usercheck": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M12.359 14.724c-3.6 0-7.62 2.928-7.62 6.526m7.62-9.785a4.36 4.36 0 0 0 4.035-2.683a4.355 4.355 0 0 0-3.171-5.948a4.362 4.362 0 0 0-5.215 4.274a4.356 4.356 0 0 0 4.35 4.357m.904 6.897l1.688 1.689a.637.637 0 0 0 .909 0l3.403-3.403\"/></svg>",
+"flag": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M4.382 14.72s1.089-1.088 4.353-1.088c3.265 0 3.265 2.177 6.53 2.177a11.3 11.3 0 0 0 4.353-1.088V3.838a11.3 11.3 0 0 1-4.353 1.088C12 4.926 12 2.75 8.735 2.75c-3.264 0-4.353 1.088-4.353 1.088m0 17.412V3.838\"/></svg>",
 "chevdown": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.9\" d=\"m4 8.417l6.587 6.587a2.013 2.013 0 0 0 2.826 0L20 8.417\"/></svg>",
 "reassign": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\"><path d=\"M3.53 11.47v2.118a4.235 4.235 0 0 0 4.235 4.236H20.47M3.53 6.176h12.705a4.235 4.235 0 0 1 4.236 4.236v2.117\"/><path d=\"m17.294 14.647l3.177 3.176L17.294 21M6.706 9.353L3.529 6.176L6.706 3\"/></g></svg>",
 "complete": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\" d=\"m4.5 11.795l4.221 4.221a1.596 1.596 0 0 0 2.272 0L19.5 7.51\"/></svg>",
@@ -7395,19 +7659,19 @@ function ecgDoc(it){
   });
   return '<div class="doc-sheet ecg">'+
     '<div class="doc-head">'+
-      '<div class="doc-brand">SIMPLE CARE</div>'+
+      '<div class="doc-brand">SimpleCare</div>'+
       '<div class="doc-hid">ID:00010186 &nbsp; '+it.received+'</div>'+
-      '<div class="doc-tag">ROUTINE RECORD</div>'+
+      '<div class="doc-tag">Routine record</div>'+
     '</div>'+
     '<div class="doc-meta">'+
       '<div><span>'+(it.dob||'')+' ('+(it.age||'')+')</span><span>Vent. rate <b>92</b> BPM</span></div>'+
       '<div><span>PR interval <b>168</b> ms</span><span>QRS <b>94</b> ms</span><span>QT/QTc <b>398/451</b> ms</span></div>'+
       '<div class="doc-interp">'+
-        '<p>ATRIAL FIBRILLATION</p>'+
-        '<p>LEFT ANTERIOR DIVISIONAL BLOCK</p>'+
-        '<p>NONSPECIFIC REPOLARIZATION ABNORMALITY(IES)</p>'+
-        '<p class="abn">ABNORMAL ECG</p>'+
-        '<p>PREVIOUS ECGS NOT AVAILABLE FOR COMPARISON</p>'+
+        '<p>Atrial fibrillation</p>'+
+        '<p>Left anterior divisional block</p>'+
+        '<p>Nonspecific repolarization abnormality(ies)</p>'+
+        '<p class="abn">Abnormal ECG</p>'+
+        '<p>Previous ECGs not available for comparison</p>'+
       '</div>'+
     '</div>'+
     '<svg class="doc-ecg" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet">'+ecgGrid()+rows+'</svg>'+
@@ -7422,13 +7686,13 @@ function labDoc(it){
       '<td class="fl">'+hl+flag+'</td><td>'+t.ref+'</td></tr>';
   }).join('');
   return '<div class="doc-sheet lab">'+
-    '<div class="doc-head"><div class="doc-brand">'+it.lab.toUpperCase()+'</div>'+
-      '<div class="doc-hid">ACCESSION 4471-'+(it.patient.length*137%9000+1000)+'</div>'+
-      '<div class="doc-tag">FINAL REPORT</div></div>'+
-    '<div class="doc-pt"><b>'+it.patient.toUpperCase()+'</b><span>DOB '+(it.dob||'')+' &nbsp; PHN '+(it.phn||'')+'</span>'+
-      '<span>Ordering: DR. D. PANNOZZO</span></div>'+
-    '<div class="doc-ttl">'+it.panel.toUpperCase()+'</div>'+
-    '<table class="doc-tbl"><thead><tr><th>TEST</th><th>RESULT</th><th>UNITS</th><th>FLAG</th><th>REFERENCE</th></tr></thead>'+
+    '<div class="doc-head"><div class="doc-brand">'+it.lab+'</div>'+
+      '<div class="doc-hid">Accession 4471-'+(it.patient.length*137%9000+1000)+'</div>'+
+      '<div class="doc-tag">Final report</div></div>'+
+    '<div class="doc-pt"><b>'+it.patient+'</b><span>DOB '+(it.dob||'')+' &nbsp; PHN '+(it.phn||'')+'</span>'+
+      '<span>Ordering: Dr. D. Pannozzo</span></div>'+
+    '<div class="doc-ttl">'+it.panel+'</div>'+
+    '<table class="doc-tbl"><thead><tr><th>Test</th><th>Result</th><th>Units</th><th>Flag</th><th>Reference</th></tr></thead>'+
     '<tbody>'+rows+'</tbody></table>'+
     '<div class="doc-legend">* outside reference range &nbsp;&nbsp; ** critical value &mdash; telephoned to ordering provider</div>'+
     '<div class="doc-foot"><span>Received '+it.received+'</span><span>'+it.lab+'</span><span>Page 1 of 1</span></div>'+
@@ -7436,17 +7700,23 @@ function labDoc(it){
 }
 function renderSourceDoc(it){
   var m=document.getElementById('rv-doc'); if(!m) return;
-  m.innerHTML = '<p class="rv-doclbl">Source document &mdash; as received</p>' +
+  /* the heading lives outside #rv-doc now, so hiding the document keeps it */
+  m.innerHTML =
     (it.kind==='trace' ? ecgDoc(it) : ((it.tests||[]).length ? labDoc(it)
-      : '<div class="doc-sheet lab"><div class="doc-ttl">'+it.panel.toUpperCase()+'</div><p class="doc-narr">'+
-        (it.impression||it.outcome||'Report text as received.')+'</p></div>'));
+      : '<div class="doc-sheet lab"><div class="doc-ttl">'+it.panel+'</div><p class="doc-narr">'+
+        (it.kind==='culture'
+          ? it.organism+' '+it.growth+'. '+(it.specimen ? it.specimen+'. ' : '')+
+            it.sens.map(function(x){ return x.ab+' '+x.r; }).join(' · ')
+          : (it.impression||it.outcome||'Report text as received.'))+'</p></div>'));
   m.style.display='block';
 }
 function rvToggleSource(){
   var m=document.getElementById('rv-doc'), b=document.getElementById('rv-srcbtn');
   var open = m.style.display!=='none';
   m.style.display = open ? 'none' : 'block';
-  b.textContent = open ? 'Open the source document' : 'Hide source document';
+  document.getElementById('rv-srclbl').textContent = open ? 'Show source document' : 'Hide source document';
+  b.setAttribute('aria-expanded', String(!open));
+  document.getElementById('rv-srcic').innerHTML = ICONS[open ? 'eye' : 'eyeoff'];
 }
 
 /* ===== Review assignment (spec v7 §5.6) ===== */
@@ -7460,6 +7730,12 @@ function fastTrack(patient){
   if(!row){ toast('No open chart for ' + patient + ' in today\'s sheet'); return; }
   openChart(row.name);
   showRecall(patient);
+}
+/* the inbox offers Open chart only where fastTrack would find one */
+function inboxHasChart(p){
+  return typeof QUEUE_DATA !== 'undefined' && QUEUE_DATA.some(function(r){
+    return r.name.indexOf(p)===0 || (r.legal||'').indexOf(p.toUpperCase()) > -1;
+  });
 }
 /* the reminder that makes the fast track worth taking */
 var RECALL = {
@@ -7482,7 +7758,11 @@ function showRecall(patient){
    and goes back there. Opening a critical result from Home returns to
    Home; opening it from the Inbox returns to the Inbox. */
 var RV_RETURN = 'inbox';
-function rvBack(){ showScreen(RV_RETURN || 'inbox'); }
+/* after a review, the keyboard lands on the next result, not on <body> */
+function inboxFocusNext(){
+  requestAnimationFrame(function(){ var b = document.querySelector('#inbox-received .ix-open'); if(b) b.focus(); });
+}
+function rvBack(){ var to = RV_RETURN || 'inbox'; showScreen(to); if(to === 'inbox') inboxFocusNext(); }
 function rvSetReturn(){
   var cur = document.querySelector('.screen.active');
   var id = cur ? cur.id.replace('screen-','') : 'inbox';
@@ -7496,36 +7776,62 @@ function openReview(i){
   rvSetReturn();
   RV_I = i; RV_FOLLOW = null;
   document.getElementById('rv-title').textContent = it.patient;
-  document.getElementById('rv-sub').textContent = it.panel + ' · ' + (it.age||'');
+  document.getElementById('rv-sub').textContent = it.panel;
+  document.getElementById('rv-panel').textContent = it.panel;
 
+  /* One meta line, then -- only when there is one -- the tier and the rule
+     that set it. SimpleCare re-derives the tier from the LifeLabs standard,
+     so it no longer claims to be "as reported by the laboratory". */
+  var tier = labTier(it), hits = (it.tests||[]).filter(function(t){ return t.f && /^(crit|alert)-/.test(t.f); });
+  var lead = hits.filter(function(t){ return t.f.indexOf('crit')===0; })[0] || hits[0];
+  var leadTxt = lead ? lead.n + ' ' + lead.v + (lead.u ? ' ' + lead.u : '') : '';
   document.getElementById('rv-facts').innerHTML =
-    '<span class="rv-fact"><i>Received</i>'+it.received+'</span>'+
-    '<span class="rv-fact"><i>Source</i>'+it.lab+'</span>'+
-    '<span class="rv-fact"><i>Type</i>'+it.type+'</span>'+
-    (inboxIsCritical(it)
-      ? '<span class="rv-fact lab-urgent"><i>Urgency</i>Urgent — as reported by the laboratory</span>' : '');
+    '<p class="rv-meta">'+it.type+' · '+it.lab+' · received '+it.received+'</p>'+
+    (tier
+      ? '<p class="rv-tier '+(tier==='critical'?'crit':'warn')+'"><span class="ic" data-pdic="'+(tier==='critical'?'crit':'alert')+'"></span>'+
+        '<b>'+(tier==='critical' ? 'Critical — immediate assessment' : 'High')+'</b>'+
+        (lead && lead.basis ? '<span>'+lead.basis+'</span>' : '')+'</p>'
+      : '');
 
+  /* the AI line names the value, and it comes after the values it describes */
   document.getElementById('rv-ai').innerHTML =
-    '<span class="rv-aitag">AI summary</span>'+
-    '<p>'+(inboxIsCritical(it)
-      ? 'A critical value is present in this delivery. Verify against the source report before acting.'
-      : 'No critical values detected in this delivery.')+
+    '<span class="rv-aitag">'+(typeof AI_MARK !== 'undefined' ? AI_MARK : '')+'AI summary</span>'+
+    '<p>'+(tier === 'critical'
+      ? 'A critical value is present: '+leadTxt+'. Verify against the source report before acting.'
+      : (tier === 'alert'
+          ? 'A laboratory alert value is present: '+leadTxt+'. No critical values.'
+          : 'No critical values detected in this delivery.'))+
     ' <em>Assistive only — the source report remains authoritative.</em></p>';
 
   var tests = it.tests || [];
   document.getElementById('rv-results').innerHTML = tests.length
     ? tests.map(function(t){
-        var cls = !t.f ? '' : (t.f.indexOf('crit')===0 ? 'crit' : 'abn');
+        /* no fills: the arrow carries direction, and its colour carries the tier */
+        var cls = !t.f ? '' : (t.f.indexOf('crit')===0 ? 'crit' : (t.f.indexOf('alert')===0 ? 'abn alert' : 'abn'));
+        var up = t.f && t.f.indexOf('high') > -1;
+        var dir = t.f ? '<span class="ic rv-dir" role="img" aria-label="'+(up?'high':'low')+'" data-pdic="'+(up?'arrowup':'arrowdown')+'"></span>' : '';
         return '<div class="rv-row '+cls+'"><span class="rv-n">'+t.n+'</span>'+
-          '<span class="rv-v">'+t.v+' <i>'+t.u+'</i></span>'+
-          '<span class="rv-ref">ref '+t.ref+'</span>'+
+          '<span class="rv-v">'+t.v+(t.u ? ' <i>'+t.u+'</i>' : '')+dir+'</span>'+
+          '<span class="rv-ref">'+(t.ref ? 'ref '+t.ref : '')+'</span>'+
           (t.prior?'<span class="rv-prior">was '+t.prior+'</span>':'<span class="rv-prior">no prior result</span>')+'</div>';
       }).join('')
-    : '<p class="rv-narr">'+(it.impression||it.interp||it.outcome||'See source report.')+'</p>';
+    /* a culture has no tests and no narrative, so it used to print "See
+       source report" -- the organism and sensitivities are shown instead */
+    : (it.kind === 'culture'
+        ? '<div class="rv-row"><span class="rv-n"><em>'+it.organism+'</em></span><span class="rv-v">'+it.growth+'</span>'+
+            '<span class="rv-ref">'+(it.specimen||'')+'</span><span class="rv-prior"></span></div>'+
+          it.sens.map(function(x){
+            return '<div class="rv-row'+(x.r==='S' ? '' : ' abn')+'"><span class="rv-n">'+x.ab+'</span>'+
+              '<span class="rv-v">'+({S:'Susceptible', I:'Intermediate', R:'Resistant'})[x.r]+'</span>'+
+              '<span class="rv-ref"></span><span class="rv-prior"></span></div>';
+          }).join('')
+        : '<p class="rv-narr">'+(it.impression||it.interp||it.outcome||'See source report.')+'</p>');
 
   document.getElementById('rv-unmapped').innerHTML = '';
   renderSourceDoc(it);
-  document.getElementById('rv-srcbtn').textContent = 'Hide source document';
+  document.getElementById('rv-srclbl').textContent = 'Hide source document';
+  document.getElementById('rv-srcbtn').setAttribute('aria-expanded', 'true');
+  if(typeof ICONS !== 'undefined') document.getElementById('rv-srcic').innerHTML = ICONS.eyeoff;
   document.getElementById('rv-picks').innerHTML = tests.length
     ? tests.map(function(t,ix){
         return '<label class="rv-pick"><input type="checkbox" data-t="'+ix+'"'+(t.f&&t.f.indexOf('crit')===0?' checked':'')+'> '+
@@ -7541,7 +7847,17 @@ function openReview(i){
   document.getElementById('rv-follow').style.display='none';
   document.getElementById('rv-no').classList.remove('on');
   document.getElementById('rv-yes').classList.remove('on');
+  /* the MOA on service for this window, not a name typed into the markup:
+     the label said Japneet while the task went to whoever is on service */
+  var moa = rvPairedMoa(), who = document.getElementById('rv-moa-who'), moaIn = document.getElementById('rv-moa');
+  if(who) who.textContent = moa + ' · paired with you';
+  if(moaIn) moaIn.placeholder = 'What should ' + moa.split(' ')[0] + ' do?';
   rvCommit();
+  rvSyncDecision();
+  /* the draft is written before the doctor arrives, "so the common case is
+     one button" -- so a Critical or High result opens on it */
+  if(labTier(it)) rvSetFollow(true);
+  paintPd(document.getElementById('screen-review'));
   showScreen('review');
 }
 
@@ -7594,17 +7910,20 @@ function rvRenderDraft(it){
   var host = document.getElementById('rv-draft'); if(!host) return;
   var d = rvDraft(it);
   RV_DRAFT = d;
+  var esc = function(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;'); };
   if(!d.tier){ host.innerHTML = ''; host.style.display='none'; return; }
   host.style.display = 'block';
   host.innerHTML =
     '<p class="box-title">Suggested disposition <span class="rv-aimark">'+(typeof AI_MARK!=='undefined'?AI_MARK:'')+' drafted for you</span></p>'+
     '<p class="rv-hint">Everything here is editable. Nothing is sent until you sign off.</p>'+
+    /* sized to their text: a one-line input cut the action off before the
+       value it was about ("...for Potassium"), and the plan lost its last line */
     '<div class="rv-field"><label>Suggested action</label>'+
-      '<input type="text" id="rv-d-action" value="'+d.action.replace(/"/g,'&quot;')+'"></div>'+
+      '<textarea id="rv-d-action" rows="2">'+esc(d.action)+'</textarea></div>'+
     '<div class="rv-field"><label>Suggested plan</label>'+
-      '<textarea id="rv-d-plan" rows="2">'+d.plan+'</textarea></div>'+
+      '<textarea id="rv-d-plan" rows="3">'+esc(d.plan)+'</textarea></div>'+
     '<div class="rv-field"><label>Patient contact instructions</label>'+
-      '<textarea id="rv-d-contact" rows="3">'+d.contact+'</textarea></div>'+
+      '<textarea id="rv-d-contact" rows="4">'+esc(d.contact)+'</textarea></div>'+
     '<p class="rv-hint">Goes to <b>'+rvPairedMoa()+'</b>, paired with you for this call window.</p>';
 }
 
@@ -7662,6 +7981,30 @@ function rvAccept(){
 }
 var RV_DRAFT = null;
 
+/* Which commit buttons show, and where. Accept & assign acts on the draft,
+   so it appears only once follow-up is chosen and a draft exists, directly
+   under that draft. Without a draft there is one button, Record follow-up. */
+function rvSyncDecision(){
+  var g = function(id){ return document.getElementById(id); }, cb = g('rv-commitbox');
+  if(!cb) return;
+  var hasDraft = RV_FOLLOW === true && !!(RV_DRAFT && RV_DRAFT.tier);
+  cb.hidden = RV_FOLLOW !== true;
+  if(hasDraft) g('rv-draft').after(cb); else g('rv-follow').appendChild(cb);
+  g('rv-accept').hidden = !hasDraft;
+  g('rv-modify').hidden = !hasDraft;
+  g('rv-record').hidden = hasDraft;
+  g('rv-yes').setAttribute('aria-pressed', String(RV_FOLLOW === true));
+  /* rvAccept files the draft as the MOA's task and reads nothing else. The
+     result picks and the book / MOA / message checkboxes feed only Record
+     follow-up, so on the drafted path they were controls that did nothing --
+     and the line above Accept promised a booking Accept never made. */
+  g('rv-picksbox').hidden = hasDraft;
+  g('rv-nextbox').hidden = hasDraft;
+  if(hasDraft){
+    var c = g('rv-commit');
+    if(c) c.textContent = 'Accept & assign records the review and sends this plan to ' + rvPairedMoa() + ' as a task.';
+  }
+}
 function rvSetFollow(v){
   RV_FOLLOW = v;
   if(v){
@@ -7672,13 +8015,17 @@ function rvSetFollow(v){
   document.getElementById('rv-yes').classList.toggle('on', v===true);
   document.getElementById('rv-follow').style.display = v ? 'block' : 'none';
   rvCommit();
+  rvSyncDecision();
 }
 function rvToggle(k){
   var cb=document.getElementById('a-'+k);
   document.getElementById('exp-'+k).classList.toggle('open', cb.checked);
   rvCommit();
 }
-function rvWin(b){ b.parentNode.querySelectorAll('.rv-win').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); rvCommit(); }
+function rvWin(b){
+  b.parentNode.querySelectorAll('.rv-win').forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-pressed', String(x===b)); });
+  b.classList.add('on'); rvCommit();
+}
 function rvCommit(){
   var el=document.getElementById('rv-commit'); if(!el) return;
   if(RV_FOLLOW === null){ el.textContent='Choose whether this delivery requires follow-up.'; return; }
@@ -7688,7 +8035,7 @@ function rvCommit(){
     var w=document.querySelector('#exp-book .rv-win.on');
     bits.push('books '+(w?w.textContent.split('·')[0].trim():'a slot')+' and queues your call');
   }
-  if(document.getElementById('a-moa').checked) bits.push('asks Japneet to contact the patient');
+  if(document.getElementById('a-moa').checked) bits.push('asks '+rvPairedMoa()+' to contact the patient');
   if(document.getElementById('a-msg').checked) bits.push('messages the patient to book');
   el.textContent = bits.length
     ? 'Records the review and ' + bits.join(', ') + '.'
@@ -7712,7 +8059,8 @@ function rvDone(next){
     if(nxt>-1){ openReview(nxt); return; }
     toast('Inbox clear');
   }
-  showScreen('inbox');
+  /* back to wherever the result was opened from, as rvAccept already does */
+  rvBack();
 }
 
 /* ===== Patient detail screen (second layer of the queue) ===== */
@@ -8365,6 +8713,15 @@ renderService();
 renderDayNav();
 updateWorkCounts();
 
+/* Deep links, so a screen can be shared or screenshotted directly:
+   #inbox opens the Inbox, #inbox:review:3 also opens result 3 in review. */
+(function(){
+  var h = (location.hash || '').slice(1); if(!h) return;
+  var parts = h.split(':');
+  if(document.getElementById('screen-' + parts[0])) showScreen(parts[0]);
+  if(parts[1] === 'review' && typeof openReview === 'function') openReview(+parts[2] || 0);
+})();
+
 function dswOpen(){ document.getElementById('dsw').classList.add('open'); document.getElementById('dsw-fab').style.display='none'; }
 function dswClose(){ document.getElementById('dsw').classList.remove('open'); document.getElementById('dsw-fab').style.display='flex'; }
 
@@ -8377,6 +8734,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-23 22:17</div>
+  <div class="build-stamp">v2 · build 2026-09-23 22:17</div>
 </body>
 </html>
