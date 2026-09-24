@@ -3644,6 +3644,70 @@
   .vsw a:hover{color:var(--ink);}
   .vsw a[aria-current="page"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(23,24,28,.08);}
   .vsw a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  /* ============================================================
+     Colour and hierarchy pass, 24 Sep. Ani: "everything looks the same, no
+     clear hierarchy, very little colour." Colour comes back where it
+     carries meaning: brand blue for what to do and where you are now, one
+     tone per priority band, and heavier headings so sections lead.
+     ============================================================ */
+  :root{--brand:#4353E8;--brand-ink:#2F3CC0;--brand-wash:#EEF0FD;--brand-line:#C9CEF8;}
+  :root[data-theme="dark"]{--brand:#7C89FF;--brand-ink:#A9B1FF;--brand-wash:#1E2340;--brand-line:#3A4380;}
+
+  /* primary actions in brand blue */
+  .btn.dark,.work-tabs .wt-dark,#screen-review .btn.dark,#screen-patientchart .btn.dark{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .btn.dark:hover,.work-tabs .wt-dark:hover{background:var(--brand-ink);border-color:var(--brand-ink);}
+  .btn.dark .ic,.work-tabs .wt-dark .ic,#screen-review .btn.dark .ic{color:#fff;}
+  #screen-review .rv-opt.on{background:var(--brand-wash);border-color:var(--brand);color:var(--ink);}
+  #screen-review .rv-opt.on .ic{color:var(--brand);}
+
+  /* where you are now: the live window, active filters, active tabs */
+  #screen-today .qwin button.on{background:var(--brand);border-color:var(--brand);color:#fff;}
+  #screen-today .qwin button .qwin-now{background:var(--brand);}
+  #screen-today .qwin button.on .qwin-now{background:#fff;}
+  #screen-today .qf-btn.on{background:var(--brand-wash);border-color:var(--brand);}
+  #screen-today .qf-btn.on .qf-k{color:var(--ink-soft);}
+  #screen-today .qf-btn.on .qf-v{color:var(--ink);}
+  #pcv-c .vc-tabsrow button.active{color:var(--ink);border-bottom-color:var(--brand);border-bottom-width:3px;}
+  #screen-today .lq-sub b,#screen-today .lq-sub strong{color:var(--brand-ink);}
+
+  /* headings lead: bigger, heavier, a brand icon */
+  #screen-today .sect-title,#screen-inbox .inbox-section-label{font-size:22px;font-weight:700;letter-spacing:-.01em;}
+  #pcv-c .vc-h h4,#screen-review .rv-paneltitle{font-weight:700;}
+  #pcv-c .vc-h > .ic,#screen-review .rv-side .box-title .ic{color:var(--brand);}
+
+  /* one tone per priority band: tinted heading labels */
+  #screen-inbox .ix-secttl{display:inline-flex;padding:4px 12px 4px 10px;border-radius:999px;background:var(--wash);}
+  #screen-inbox .ix-secttl.crit{background:var(--crit-wash);}
+  #screen-inbox .ix-secttl.warn{background:var(--warn-wash);}
+  #screen-inbox .ix-secttl:not(.crit):not(.warn)::before{content:none;}
+  #screen-inbox .ix-secttl .ix-n{font-weight:600;color:var(--ink-soft);}
+  :root[data-theme="dark"] #screen-inbox .ix-secttl.crit{background:rgba(255,69,58,.18);}
+  :root[data-theme="dark"] #screen-inbox .ix-secttl.warn{background:rgba(255,159,10,.18);}
+
+  /* rows that need you carry a coloured edge, not a coloured fill */
+  #screen-inbox .inbox-row.ix.critical,#screen-inbox .inbox-row.ix.high{box-shadow:inset 4px 0 0 var(--crit);}
+  #screen-inbox .inbox-row.ix.high{box-shadow:inset 4px 0 0 var(--warn);}
+  #screen-today .al-row:has(.al-tone.crit){box-shadow:inset 4px 0 0 var(--crit);}
+  #screen-today .al-row:has(.al-tone.warn){box-shadow:inset 4px 0 0 var(--warn);}
+  #screen-today .q-table tr.q-next td:first-child{box-shadow:inset 4px 0 0 var(--brand);}
+  /* an edge reads as a bar, not a bracket: square the left corners and make room */
+  #screen-today .al-row:has(.al-tone.crit),#screen-today .al-row:has(.al-tone.warn),
+  #screen-inbox .inbox-row.ix.critical,#screen-inbox .inbox-row.ix.high{border-radius:4px 12px 12px 4px;padding-left:24px;}
+  #screen-today .q-nextchip{background:var(--brand-wash);color:var(--brand-ink);}
+
+  /* status chips get their tone back, softly */
+  #screen-today .q-table td.q-card .q-ver.warn,#screen-inbox .q-ver.warn{background:var(--warn-wash);}
+  #screen-today .q-table td.q-card .q-ver.info{background:var(--brand-wash);}
+  #screen-today .q-table .status-pill.missed .ic,#screen-today .q-table .status-pill.dropped .ic{color:var(--crit);}
+  #screen-today .q-table .status-pill.waiting .ic,#screen-today .q-table .status-pill.next .ic{color:var(--brand);}
+  #screen-today .q-table .status-pill.done .ic{color:var(--good);}
+
+  /* the chart header reads as the page's anchor */
+  #pcv-c .vc-banner{box-shadow:inset 0 4px 0 var(--brand);}
+  #pcv-c .vc-av{background:var(--brand-wash);color:var(--brand-ink);}
+  #pcv-c .vc-count{background:var(--brand-wash);color:var(--brand-ink);}
+  #pcv-c .cp-line{color:var(--ink);}
 </style>
 </head>
 <body>
@@ -7319,7 +7383,7 @@ function inboxRowHtml(item, i){
         ? '<button type="button" class="btn ix-sign" onclick="signOffInbox('+i+')"><span class="ic" data-pdic="complete"></span>Sign off</button>'
         : '');
 
-  return '<div class="inbox-row ix'+(crit?' critical':'')+'">'+
+  return '<div class="inbox-row ix'+(crit?' critical':(labTier(item)==='alert'?' high':''))+'">'+
     '<div class="ix-body">'+
       /* Name only. Age, DOB and PHN are on the chart, one click away, and on
          the source document itself -- the same call Daniel made for the queue
@@ -9134,6 +9198,6 @@ function vswGo(e, a){
   location.href = a.getAttribute('href') + '#' + s;
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-24 14:32</div>
+  <div class="build-stamp">v2 · build 2026-09-24 15:40</div>
 </body>
 </html>
