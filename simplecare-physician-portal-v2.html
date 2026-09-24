@@ -3563,6 +3563,80 @@
   #screen-today .q-table button.status-pill{min-height:44px;padding-top:0;padding-bottom:0;}
   #screen-today .q-table td.q-bill button.bill-pill,#screen-today .q-table td.q-card button.q-ver{position:relative;}
   #screen-today .q-table td.q-bill button.bill-pill::before,#screen-today .q-table td.q-card button.q-ver::before{content:"";position:absolute;inset:-4px -2px;}
+
+  /* ============================================================
+     Chart (version C), 24 Sep -- Ani: "so much going on... prioritize
+     actions for the doctor, clear hierarchy... sees what is needed and
+     not what is not commonly used, but has access anytime."
+     Same patterns as the inbox and Home.
+     ============================================================ */
+  #pcv-c .vc-banner{border:0;}
+  #pcv-c .vc-nm{font-size:22px;font-weight:600;}
+  #pcv-c .vc-sub{font-size:15px;color:var(--ink-soft);}
+  #pcv-c .vc-allergy{display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:500;color:var(--ink);}
+  #pcv-c .vc-allergy .ic,#pcv-c .vc-allergy svg{width:17px;height:17px;color:var(--good);}
+  #pcv-c .vc-sf{font-size:15px;font-weight:500;color:var(--ink);border:0;background:var(--paper);min-height:36px;padding:0 12px;border-radius:999px;}
+  #pcv-c .vc-sf[hidden],#pcv-c [hidden]{display:none !important;}
+  #pcv-c .vc-sf.crit{background:var(--paper);color:var(--ink);}
+  #pcv-c .vc-sf.crit::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--crit);flex:none;}
+  #pcv-c .cond-chip .gap{color:var(--ink);font-weight:600;}
+  #pcv-c .cond-chip:hover{background:var(--wash);color:var(--ink);}
+  /* 44px buttons with icons, throughout the chart */
+  #screen-patientchart .btn{display:inline-flex;align-items:center;gap:8px;height:44px;min-height:44px;padding:0 18px;border-radius:999px;font-size:15px;font-weight:600;white-space:nowrap;}
+  #screen-patientchart .btn:not(.dark){background:var(--panel);border:1px solid var(--ink);color:var(--ink);}
+  #screen-patientchart .btn .ic,#screen-patientchart .btn svg{width:17px;height:17px;flex-shrink:0;}
+  #screen-patientchart .btn:not(.dark) .ic{color:var(--ink);}
+  #screen-patientchart .pc-back{height:44px;padding:0 18px 0 14px;border:1px solid var(--ink);border-radius:999px;background:var(--panel);color:var(--ink);font-size:15px;font-weight:600;}
+  /* cards: no strokes, one heading size */
+  #pcv-c .vc-block{border-color:transparent;}
+  #pcv-c .vc-h h4{font-size:17px;font-weight:600;color:var(--ink);}
+  #pcv-c .vc-n{font-size:15px;font-weight:400;color:var(--ink-faint);margin-left:6px;}
+  #pcv-c .vc-count{font-size:14px;font-weight:500;color:var(--ink-soft);background:var(--paper);padding:4px 10px;border-radius:999px;}
+  /* links read as ink, not blue */
+  #screen-patientchart .vc-more{font-size:15px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px;min-height:44px;}
+  /* the scribe is a slim row inside the visit card */
+  #pcv-c .vc-visit .sc-block{margin:4px 0 14px;padding:10px 14px;border:0;border-radius:12px;background:var(--wash);box-shadow:none;}
+  #pcv-c .vc-visit .sc-hd{display:flex;align-items:center;gap:10px;}
+  #pcv-c .vc-visit .sc-hd h4{font-size:15px;font-weight:600;margin:0;white-space:nowrap;}
+  #pcv-c .vc-visit .sc-sub{flex:1;min-width:0;margin:0;font-size:14px;color:var(--ink-soft);}
+  #pcv-c .vc-visit .sc-hd .right{margin-left:auto;}
+  #pcv-c .vc-visit .sc-hd .btn{height:44px;}
+  #pcv-c .vc-note{font-size:16px;line-height:24px;}
+  #pcv-c .vc-chips{display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
+  #pcv-c .vc-chips-l{font-size:14px;color:var(--ink-faint);margin-right:4px;}
+  #pcv-c .vc-chip{min-height:44px;padding:0 14px;border:0;background:var(--wash);color:var(--ink);font-size:15px;font-weight:500;}
+  #pcv-c .vc-chip:hover{background:var(--paper);}
+  /* care plan: a line, not four tiles */
+  #pcv-c .cp-line{margin:2px 0 14px;font-size:15px;color:var(--ink-soft);}
+  #pcv-c .cp-line .od{font-weight:600;color:var(--ink);}
+  #screen-patientchart .cp-own,#screen-patientchart .cp-own.gp,#screen-patientchart .cp-own.spec{font-size:14px;font-weight:600;letter-spacing:0;background:var(--paper);color:var(--ink);border:0;}
+  #screen-patientchart .cp-st{font-size:14px;font-weight:600;background:var(--paper);color:var(--ink);}
+  #screen-patientchart .cp-act{font-size:16px;}
+  #screen-patientchart .cp-det,#screen-patientchart .cp-meta,#screen-patientchart .cp-note{font-size:14px;}
+  #screen-patientchart .cp-grp-h{font-size:15px;}
+  #screen-patientchart .cp-grp-h b{font-size:15px;}
+  #screen-patientchart .cp-grp-h span{font-size:14px;}
+  #screen-patientchart .cp-grp-h .n{font-size:14px;background:none;color:var(--ink-faint);}
+  #screen-patientchart .cp-do button{min-height:44px;padding:0 16px;font-size:15px;border-radius:999px;}
+  /* rail: results flag by icon, words ink */
+  #pcv-c .vc-line .l{font-size:16px;}
+  #pcv-c .vc-line .r{font-size:15px;color:var(--ink);}
+  #pcv-c .vc-line .r.flag{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--ink);}
+  #pcv-c .vc-line .r.flag .ic,#pcv-c .vc-line .r.flag svg{width:16px;height:16px;color:var(--warn);}
+  #pcv-c .vc-sub2{font-size:14px;}
+  /* More: closed by default, everything still one click away */
+  #pcv-c .vc-morebox summary{display:flex;align-items:center;gap:8px;min-height:44px;cursor:pointer;list-style:none;font-size:17px;font-weight:600;color:var(--ink);}
+  #pcv-c .vc-morebox summary::-webkit-details-marker{display:none;}
+  #pcv-c .vc-morebox summary .ic,#pcv-c .vc-morebox summary svg{width:17px;height:17px;transition:transform .15s;}
+  #pcv-c .vc-morebox[open] summary .ic{transform:rotate(90deg);}
+  #pcv-c .vc-morebox summary .vc-n{font-size:14px;}
+  #pcv-c .vc-morebox .vc-h2{margin-top:16px;}
+  #pcv-c .vc-qa{display:flex;flex-direction:column;gap:8px;}
+  #pcv-c .vc-qa .btn{justify-content:flex-start;}
+  /* record tabs */
+  #pcv-c .vc-tabsrow button{min-height:44px;font-size:15px;}
+  #pcv-c .vc-vit .k{font-size:14px;}
+  #pcv-c .vc-vit .v{font-size:17px;}
 </style>
 </head>
 <body>
@@ -3949,13 +4023,15 @@
             </span>
           </div>
           <div class="vc-safety">
-            <span class="vc-sf ok"><span class="ic" data-pcic="verified"></span> No Known Drug Allergies</span>
-            <span class="vc-sf" data-f="bannerflag">No active alerts</span>
+            <!-- allergy status is always shown, because "none" is itself a safety
+                 fact; alerts and conditions show only when there are some -->
+            <span class="vc-allergy"><span class="ic" data-pdic="complete"></span>No known drug allergies</span>
+            <span class="vc-sf" data-f="bannerflag" hidden></span>
             <button class="vc-sf cond-chip" id="cond-chip" onclick="openConditions()">&mdash;</button>
           </div>
           <div class="vc-acts">
-            <button class="btn dark xs" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call</button>
-            <button class="btn xs" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pcic="task"></span> Task</button>
+            <button class="btn dark" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call</button>
+            <button class="btn" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pcic="task"></span> Task MOA</button>
             <span class="pc-callstrip" id="pc-callstrip-c"><span class="dot"></span> <span id="pc-timer-c">00:00</span> <button class="hang" onclick="pcEndCall()">End</button></span>
           </div>
         </div>
@@ -3965,29 +4041,31 @@
           <div>
             <div class="recall" id="recall"></div>
 
-            <div class="sc-block" id="sc-block">
-              <div class="sc-hd">
-                <span class="sc-dot"></span>
-                <h4>Ambient scribe</h4>
-                <span class="right" id="sc-actions"></span>
-              </div>
-              <p class="sc-sub" id="sc-sub">Drafts the note and proposes orders while you talk. It files nothing on its own.</p>
-              <div id="sc-body"></div>
-            </div>
-
-            <div class="vc-block">
+            <!-- one card for the visit, in the order it happens: the reason, the
+                 scribe (a tool for writing the note, so it lives with the note),
+                 the note, then finalize -->
+            <div class="vc-block vc-visit">
               <div class="vc-h"><span class="ic" data-pcic="edit"></span><h4>This visit</h4>
                 <span class="right"><span class="vc-count" data-f="concern">--</span></span></div>
+              <div class="sc-block" id="sc-block">
+                <div class="sc-hd">
+                  <span class="sc-dot"></span>
+                  <h4>Ambient scribe</h4>
+                  <p class="sc-sub" id="sc-sub">Drafts the note and proposes orders while you talk. It files nothing on its own.</p>
+                  <span class="right" id="sc-actions"></span>
+                </div>
+                <div id="sc-body"></div>
+              </div>
               <textarea class="vc-note" id="vc-note-input" placeholder="Document the visit..."></textarea>
-              <div class="vc-chips">
+              <div class="vc-chips"><span class="vc-chips-l">Insert</span>
                 <button class="vc-chip" onclick="vcInsert('Follow-up template')">+ Follow-up template</button>
                 <button class="vc-chip" onclick="vcInsert('Normal exam')">+ Normal exam</button>
                 <button class="vc-chip" onclick="vcInsert('Rx renewal')">+ Rx renewal</button>
                 <button class="vc-chip" onclick="toast('Diagnosis picker')">+ Diagnosis</button>
               </div>
               <div style="margin-top:14px;display:flex;gap:8px;">
-                <button class="btn dark xs" onclick="finalizeVisit()">Finalize &amp; review billing</button>
-                <button class="btn xs">Save draft</button>
+                <button class="btn dark" onclick="finalizeVisit()"><span class="ic" data-pdic="complete"></span>Finalize &amp; review billing</button>
+                <button class="btn" onclick="toast('Draft saved')"><span class="ic" data-pdic="edit"></span>Save draft</button>
               </div>
             </div>
 
@@ -3998,8 +4076,8 @@
               <div class="vc-tabsrow">
                 <button class="active" data-vcp="summary" onclick="vcPane('summary')">Summary</button>
                 <button data-vcp="timeline" onclick="vcPane('timeline')">Timeline</button>
-                <button data-vcp="orders" onclick="vcPane('orders')">Lab Work</button>
-                <button data-vcp="results" onclick="vcPane('results')">Labs</button>
+                <button data-vcp="orders" onclick="vcPane('orders')">Orders</button>
+                <button data-vcp="results" onclick="vcPane('results')">Results</button>
                 <button data-vcp="meds" onclick="vcPane('meds')">Medications</button>
                 <button data-vcp="imaging" onclick="vcPane('imaging')">Imaging</button>
                 <button data-vcp="refs" onclick="vcPane('refs')">Referrals</button>
@@ -4027,7 +4105,7 @@
                 <div class="lab-orders-mount"></div>
               </div>
               <div class="vc-pane" id="vcp-results">
-                <div class="vc-line"><span><span class="l">Ferritin</span><div class="vc-sub2">Jun 25, 2026 &middot; LifeLabs</div></span><span class="r flag">18 &micro;g/L &middot; Low</span></div>
+                <div class="vc-line"><span><span class="l">Ferritin</span><div class="vc-sub2">Jun 25, 2026 &middot; LifeLabs</div></span><span class="r flag"><span class="ic" data-pdic="arrowdown"></span>18 &micro;g/L &middot; Low</span></div>
                 <div class="vc-line"><span><span class="l">CBC + differential</span><div class="vc-sub2">Jun 25, 2026</div></span><span class="r">Normal</span></div>
                 <div class="vc-line"><span><span class="l">HbA1c</span><div class="vc-sub2">Ordered today</div></span><span class="r">Pending</span></div>
               </div>
@@ -4044,44 +4122,44 @@
           </div>
 
           <!-- RIGHT: reference data, boxed by type -->
+          <!-- the rail answers "what do I need to know before I phone?": results
+               that are off, then what they take, then their conditions. History,
+               pharmacy and the rarer actions sit under More, one click away. -->
           <aside class="side">
             <div class="vc-block" style="margin-bottom:0;">
+              <div class="vc-h"><span class="ic" data-pcic="labs"></span><h4>Recent results</h4>
+                <span class="right"><button class="vc-more" onclick="vcPane('results')">View all</button></span></div>
+              <div class="vc-line"><span><span class="l">Ferritin</span><div class="vc-sub2">Jun 25</div></span><span class="r flag"><span class="ic" data-pdic="arrowdown"></span>18 &micro;g/L &middot; Low</span></div>
+              <div class="vc-line"><span><span class="l">CBC</span><div class="vc-sub2">Jun 25</div></span><span class="r">Normal</span></div>
+            </div>
+
+            <div class="vc-block" style="margin-bottom:0;">
+              <div class="vc-h"><span class="ic" data-pcic="meds"></span><h4>Medications <span class="vc-n">2</span></h4></div>
+              <div class="vc-line"><span><span class="l">Metformin 500 mg</span><div class="vc-sub2">Twice daily</div></span></div>
+              <div class="vc-line"><span><span class="l">Amlodipine 5 mg</span><div class="vc-sub2">Once daily</div></span></div>
+            </div>
+
+            <div class="vc-block vc-condcard" style="margin-bottom:0;">
               <div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Ongoing conditions</h4>
                 <span class="right"><button class="vc-more" onclick="openConditions()">Open list</button></span></div>
               <div id="cond-rail"></div>
             </div>
 
-            <div class="vc-block" style="margin-bottom:0;">
-              <div class="vc-h"><span class="ic" data-pcic="meds"></span><h4>Medications</h4>
-                <span class="right"><span class="vc-count">2</span></span></div>
-              <div class="vc-line"><span><span class="l">Metformin 500 mg</span><div class="vc-sub2">Twice daily</div></span><span class="r">Ongoing</span></div>
-              <div class="vc-line"><span><span class="l">Amlodipine 5 mg</span><div class="vc-sub2">Once daily</div></span><span class="r">Ongoing</span></div>
-            </div>
-
-            <div class="vc-block" style="margin-bottom:0;">
-              <div class="vc-h"><span class="ic" data-pcic="labs"></span><h4>Recent results</h4>
-                <span class="right"><button class="vc-more" onclick="vcPane('results')">View all</button></span></div>
-              <div class="vc-line"><span class="l">Ferritin</span><span class="r flag">Low</span></div>
-              <div class="vc-line"><span class="l">CBC</span><span class="r">Normal</span></div>
-            </div>
-
-            <div class="vc-block" style="margin-bottom:0;">
+            <details class="vc-block vc-morebox" style="margin-bottom:0;">
+              <summary><span class="ic" data-pdic="chevr"></span>More <span class="vc-n">Care history, pharmacy, orders and referrals</span></summary>
               <div class="vc-h"><span class="ic" data-pcic="chart"></span><h4>Care history</h4></div>
               <div class="vc-line"><span><span class="l">Last visit</span><div class="vc-sub2">Dr. Pannozzo</div></span><span class="r">Jun 25, 2026</span></div>
               <div class="vc-line"><span><span class="l">Visits, 12 mo</span></span><span class="r">3</span></div>
               <div class="vc-line"><span><span class="l">Pharmacy</span><div class="vc-sub2">Lincoln, Coquitlam</div></span><span class="r">&nbsp;</span></div>
-            </div>
 
-            <div class="vc-block" style="margin-bottom:0;">
-              <div class="vc-h"><span class="ic" data-pcic="task"></span><h4>Quick actions</h4></div>
+              <div class="vc-h vc-h2"><span class="ic" data-pcic="task"></span><h4>Actions</h4></div>
               <div class="vc-qa">
-                <button class="btn xs" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pcic="task"></span> Send task to MOA</button>
                 <button class="btn xs" onclick="toast('Transferred to Dolly (demo)')"><span class="ic" data-pcic="transfer"></span> Transfer to Dolly</button>
                 <button class="btn xs" onclick="toast('Lab requisition started (demo)')"><span class="ic" data-pcic="labs"></span> Order labs</button>
                 <button class="btn xs" onclick="toast('Prescription started (demo)')"><span class="ic" data-pcic="meds"></span> Write prescription</button>
                 <button class="btn xs" onclick="toast('Referral started (demo)')"><span class="ic" data-pcic="referrals"></span> Create referral</button>
               </div>
-            </div>
+            </details>
           </aside>
         </div>
       </div>
@@ -6275,7 +6353,8 @@ function renderConditions(){
   var sugg = condSuggFor(name);
 
   if(chip){
-    if(!act.length){ chip.innerHTML = 'No ongoing conditions'; }
+    chip.hidden = !act.length;
+    if(!act.length){ chip.innerHTML = ''; }
     else {
       /* the header carries diagnoses; preventive care contributes its care
          items but is not a condition to list alongside them */
@@ -6294,6 +6373,8 @@ function renderConditions(){
     }
   }
 
+  var cc = document.querySelector('#pcv-c .vc-condcard');
+  if(cc) cc.hidden = !act.length && !condFor(name).some(function(c){ return c.status==='investigating'; }) && !sugg.length;
   if(rail){
     rail.innerHTML = act.concat(condFor(name).filter(function(c){ return c.status==='investigating'; }))
       .map(function(c){
@@ -6784,7 +6865,8 @@ function renderScribe(){
   block.classList.toggle('review', scState==='review');
 
   if(scState === 'off'){
-    acts.innerHTML = '<button class="btn xs dark" onclick="scAskConsent()">Turn on scribe</button>';
+    /* optional tool, so secondary: Finalize is the one primary in this card */
+    acts.innerHTML = '<button class="btn xs" onclick="scAskConsent()"><span class="ic" data-pcic="edit"></span> Turn on scribe</button>';
     sub.textContent = 'Drafts the note and proposes orders while you talk. It files nothing on its own.';
     body.innerHTML = '';
     return;
@@ -8590,7 +8672,9 @@ function openChart(name){
   if(vn) vn.value = 'Patient presents for ' + r.concern.toLowerCase() + '. ';
   document.querySelectorAll('[data-f="bannerflag"]').forEach(function(el){
     el.className = 'vc-sf' + (r.redflag ? ' crit vc-sf-btn' : '');
-    el.textContent = r.redflag ? 'Intake flag — read it before calling' : 'No active alerts';
+    /* exception-based: nothing to say, nothing shown */
+    el.hidden = !r.redflag;
+    el.textContent = r.redflag ? 'Intake flag — read it before calling' : '';
     el.onclick = r.redflag ? function(){ openBrief(PC_CURRENT); } : null;
     el.title = r.redflag ? 'Open the intake note' : '';
   });
@@ -8604,6 +8688,7 @@ function openChart(name){
   pcShowSec('chart'); vcPane('summary'); setChartVer('c'); pcEndCall();
   syncTopTitle();
   scReset();
+  paintPd(document.getElementById('screen-patientchart'));
   showScreen('patientchart');
   syncTopTitle();
 }
@@ -8830,12 +8915,14 @@ function renderCarePlan(name){
 
   var h = '<div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Care plan &mdash; what are we doing?</h4>'+
     '<span class="right"><button class="vc-more" onclick="cpAddItem()">+ Add plan item</button></span></div>'+
-    '<div class="cp-sum">'+
-      '<div><p class="k">Outstanding</p><p class="v">'+open.length+'</p></div>'+
-      '<div><p class="k">Ours to do</p><p class="v gp">'+gp+'</p></div>'+
-      '<div><p class="k">With a specialist</p><p class="v spec">'+sp+'</p></div>'+
-      '<div><p class="k">Overdue</p><p class="v'+(od?' od':'')+'">'+od+'</p></div>'+
-    '</div>';
+    /* one line of the counts that are not zero; four tiles of mostly 0 were
+       decoration on the normal case */
+    '<p class="cp-line">'+[
+      open.length ? open.length+' outstanding' : 'Nothing outstanding',
+      gp ? gp+' ours to do' : '',
+      sp ? sp+' with a specialist' : '',
+      od ? '<b class="od">'+od+' overdue</b>' : ''
+    ].filter(Boolean).join(' &middot; ')+'</p>';
 
   var pend = CP_PENDING[name || PC_CURRENT];
   if(pend){
@@ -9013,6 +9100,8 @@ paintPd(document.getElementById('screen-today'));
   var parts = h.split(':');
   if(document.getElementById('screen-' + parts[0])) showScreen(parts[0]);
   if(parts[1] === 'review' && typeof openReview === 'function') openReview(+parts[2] || 0);
+  /* #chart:N opens the chart of queue row N */
+  if(parts[0] === 'chart' && typeof openChart === 'function' && QUEUE_DATA[+parts[1]||0]) openChart(QUEUE_DATA[+parts[1]||0].name);
 })();
 
 function dswOpen(){ document.getElementById('dsw').classList.add('open'); document.getElementById('dsw-fab').style.display='none'; }
@@ -9027,6 +9116,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-24 13:54</div>
+  <div class="build-stamp">v2 · build 2026-09-24 14:05</div>
 </body>
 </html>
