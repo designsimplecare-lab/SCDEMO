@@ -3708,15 +3708,33 @@
   #pcv-c .vc-av{background:var(--brand-wash);color:var(--brand-ink);}
   #pcv-c .vc-count{background:var(--brand-wash);color:var(--brand-ink);}
   #pcv-c .cp-line{color:var(--ink);}
+
+  /* Grouping, 24 Sep. Ani: "everything stacked on one another, not clear where
+     rows are ending, what belongs to what." Rows get a hairline divider (the
+     queue table already has one), and a band label sits tight to its rows with
+     real space before the next band -- so proximity says what belongs where. */
+  #screen-inbox .inbox-row.ix{margin:0 -16px;padding:16px;border-radius:0;border-bottom:1px solid var(--line);}
+  #screen-inbox .inbox-row.ix:has(+ .ix-secttl),#screen-inbox .inbox-row.ix:last-child{border-bottom:0;}
+  #screen-inbox .ix-secttl{margin:40px 0 8px;}
+  #screen-inbox .ix-secttl:first-child{margin-top:16px;}
+  #screen-inbox .inbox-row.ix.critical,#screen-inbox .inbox-row.ix.high{border-radius:0;padding-left:24px;}
+  #screen-inbox .inbox-row.ix:hover,#screen-inbox .inbox-row.ix:has(:focus-visible){border-radius:0;}
+  /* the attention band on Home, the same way */
+  #screen-today .al-row{border-radius:0;border-bottom:1px solid var(--line);}
+  #screen-today .al-row:last-child,#screen-today #crit-list .al-row:last-child:has(+ *){border-bottom:1px solid var(--line);}
+  #screen-today #attn-tasks .al-row:last-child{border-bottom:0;}
+  #screen-today .al-row:has(.al-tone.crit),#screen-today .al-row:has(.al-tone.warn){border-radius:0;}
 </style>
 </head>
 <body>
 
 <svg width="0" height="0" aria-hidden="true" style="position:absolute">
   <defs>
+    <!-- the AI mark: bright, in the brand blue family (Ani: "use bright gradient for AI") -->
     <linearGradient id="aiGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#8CC6F0"/>
-      <stop offset="100%" stop-color="#162660"/>
+      <stop offset="0%" stop-color="#5FDDFF"/>
+      <stop offset="55%" stop-color="#4F8CFF"/>
+      <stop offset="100%" stop-color="#4353E8"/>
     </linearGradient>
   </defs>
 </svg>
@@ -9198,6 +9216,6 @@ function vswGo(e, a){
   location.href = a.getAttribute('href') + '#' + s;
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-24 15:40</div>
+  <div class="build-stamp">v2 · build 2026-09-24 15:44</div>
 </body>
 </html>
