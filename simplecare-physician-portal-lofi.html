@@ -3315,6 +3315,101 @@
   #screen-inbox .ix-disclose[aria-expanded="true"] .ic{transform:none;}
   #screen-inbox .ix-disclose:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   #screen-inbox #inbox-reviewed .ix-top b,#screen-inbox #inbox-signedoff .ix-top b{font-weight:500;}
+
+  /* ---- Review screen ---- */
+  #screen-review [hidden]{display:none !important;}
+  /* 44px controls, one line each, a Mage icon on every one */
+  #screen-review .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;min-height:44px;padding:0 18px;border-radius:999px;font-size:15px;font-weight:600;line-height:20px;white-space:nowrap;box-shadow:none;}
+  #screen-review .btn:not(.dark){background:var(--panel);border:1px solid var(--ink);color:var(--ink);}
+  #screen-review .btn .ic,#screen-review .btn svg{width:17px;height:17px;flex-shrink:0;}
+  #screen-review .btn:not(.dark) .ic{color:var(--ink);}
+  #screen-review .btn:focus-visible,#screen-review .pc-back:focus-visible,#screen-review .rv-win:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #screen-review .pc-back{height:44px;gap:8px;margin:0 0 16px;padding:0 18px 0 14px;border:1px solid var(--ink);border-radius:999px;background:var(--panel);color:var(--ink);font-size:15px;font-weight:600;}
+  #screen-review .pc-back .ic{color:var(--ink);}
+
+  /* reading order: title, one meta line, the tier and why, values, AI caption */
+  #screen-review #rv-sub{display:none;}
+  #screen-review .rv-paneltitle{margin:0 0 4px;font-size:20px;font-weight:600;line-height:28px;letter-spacing:0;color:var(--ink);}
+  #screen-review .rv-facts{display:block;margin:0 0 20px;}
+  #screen-review .rv-meta{margin:0;font-size:15px;line-height:22px;color:var(--ink-soft);}
+  #screen-review .rv-tier{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;margin:12px 0 0;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-review .rv-tier b{font-weight:600;}
+  #screen-review .rv-tier .ic{display:inline-flex;width:17px;height:17px;flex-shrink:0;}
+  #screen-review .rv-tier .ic svg{width:17px;height:17px;color:inherit;}
+  #screen-review .rv-tier.crit .ic{color:var(--crit);}
+  #screen-review .rv-tier.warn .ic{color:var(--warn);}
+  #screen-review .rv-tier span:not(.ic){color:var(--ink-soft);}
+  #screen-review .rv-ai{display:block;margin:0 0 24px;padding:14px 16px;border:0;border-radius:12px;background:var(--wash);color:var(--ink);}
+  :root[data-theme="dark"] #screen-review .rv-ai{background:var(--wash);color:var(--ink);}
+  #screen-review .rv-aitag{display:inline-flex;align-items:center;gap:6px;margin:0 0 4px;padding:0;border-radius:0;background:none;font-size:14px;font-weight:600;line-height:20px;letter-spacing:0;color:var(--ink-soft);}
+  #screen-review .rv-aitag svg{width:16px;height:16px;}
+  #screen-review .rv-ai p{margin:0;font-size:16px;line-height:24px;color:var(--ink);}
+  #screen-review .rv-ai em{display:block;margin-top:4px;font-style:normal;font-size:14px;line-height:20px;color:var(--ink-faint);}
+
+  /* results table: no fills, the value beside its name, arrows carry the tier */
+  #screen-review .rv-results{margin:0 0 16px;}
+  #screen-review .rv-row{grid-template-columns:minmax(0,220px) 170px 150px minmax(0,1fr);column-gap:16px;min-height:44px;padding:10px 12px;border-bottom:0;border-radius:10px;background:transparent;font-size:16px;line-height:24px;}
+  #screen-review .rv-row.crit{background:var(--paper);}
+  :root[data-theme="dark"] #screen-review .rv-row.crit{background:var(--wash);}
+  #screen-review .rv-n{font-weight:500;color:var(--ink);}
+  #screen-review .rv-v{display:inline-flex;align-items:baseline;gap:5px;font-weight:400;color:var(--ink);}
+  #screen-review .rv-row.abn .rv-v,#screen-review .rv-row.crit .rv-v{font-weight:600;color:var(--ink);}
+  #screen-review .rv-row.crit .rv-v{color:var(--crit-text);}
+  #screen-review .rv-v i{font-style:normal;font-size:14px;font-weight:400;color:var(--ink-faint);}
+  /* colour on the wrapper, inherited by the glyph (the svg is .ic too) */
+  #screen-review .rv-dir{display:inline-flex;align-self:center;width:17px;height:17px;color:var(--ink-faint);}
+  #screen-review .rv-dir svg{display:block;width:17px;height:17px;color:inherit;}
+  #screen-review .rv-row.alert .rv-dir{color:var(--warn);}
+  #screen-review .rv-row.crit .rv-dir{color:var(--crit);}
+  #screen-review .rv-row.alert .rv-dir svg *,#screen-review .rv-row.crit .rv-dir svg *{stroke-width:2.4;}
+  #screen-review .rv-ref,#screen-review .rv-prior{font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-review .rv-narr{margin:0;padding:0;border-radius:0;background:none;font-size:16px;line-height:24px;color:var(--ink);}
+
+  /* the source document: a header that stays when the sheet is hidden */
+  #screen-review .rv-srchd{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:24px 0 12px;}
+  #screen-review .rv-doclbl{margin:0;font-size:16px;font-weight:600;line-height:24px;letter-spacing:0;color:var(--ink);}
+  #screen-review .rv-doc{margin-top:0;padding-top:0;border-top:0;}
+  #screen-review .doc-brand,#screen-review .doc-tag,#screen-review .doc-ttl,#screen-review .doc-tbl th{letter-spacing:0;}
+  #screen-review .doc-tbl,#screen-review .doc-pt,#screen-review .doc-meta{font-size:14px;}
+  #screen-review .doc-tbl th,#screen-review .doc-legend,#screen-review .doc-foot,#screen-review .doc-hid,#screen-review .doc-tag{font-size:13px;}
+
+  /* the decision: two 44px pills, stacked */
+  #screen-review .rv-decide .box-title{margin:0 0 14px;}
+  #screen-review .rv-choice{display:flex;flex-direction:column;gap:10px;}
+  #screen-review .rv-opt{display:flex;align-items:center;gap:10px;width:100%;height:44px;padding:0 18px;border:1px solid var(--ink);border-radius:999px;background:var(--panel);color:var(--ink);font-family:inherit;font-size:15px;font-weight:600;line-height:20px;text-align:left;white-space:nowrap;cursor:pointer;}
+  #screen-review .rv-opt .ic{display:inline-flex;width:17px;height:17px;flex-shrink:0;color:inherit;}
+  #screen-review .rv-opt .ic svg{width:17px;height:17px;color:inherit;}
+  #screen-review .rv-opt:hover{background:var(--wash);}
+  #screen-review .rv-opt.on{background:var(--ink-dark);border-color:var(--ink-dark);color:var(--panel);}
+  /* pressing Follow-up again would re-draft and wipe the doctor's edits */
+  #screen-review #rv-yes.on{pointer-events:none;}
+  #screen-review .rv-opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #screen-review .rv-nohint{margin:12px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-review .rv-commit{margin:0 0 14px;padding:0;border-radius:0;background:none;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-review .rv-done{display:flex;flex-direction:column;flex-wrap:nowrap;gap:10px;}
+  #screen-review .rv-done .btn{width:100%;flex:none;}
+
+  /* the right rail: one flat surface, readable labels, 44px choices */
+  #screen-review .rv-side{position:static;padding:4px 0 20px;border-radius:22px;background:var(--panel);box-shadow:0 6px 22px rgba(28,31,38,.06);}
+  :root[data-theme="dark"] #screen-review .rv-side{box-shadow:var(--shadow-card);}
+  #screen-review .rv-side .box{margin:0;padding:20px 24px 4px;border:0;border-radius:0;box-shadow:none;background:transparent;}
+  #screen-review .rv-side .box-title{margin:0 0 12px;font-size:16px;font-weight:600;line-height:24px;letter-spacing:0;color:var(--ink);}
+  #screen-review .rv-hint{margin:0 0 12px;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-review .rv-field{margin:12px 0 0;}
+  #screen-review .rv-field label{margin:0 0 6px;font-size:14px;font-weight:500;line-height:20px;letter-spacing:0;color:var(--ink-soft);}
+  #screen-review .rv-field input,#screen-review .rv-field textarea,#screen-review .rv-exp input,#screen-review .rv-exp textarea{padding:10px 12px;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-review #rv-draft .rv-aimark{font-size:14px;}
+  #screen-review .rv-pick,#screen-review .rv-act{min-height:44px;font-size:15px;border-bottom:0;}
+  #screen-review .rv-act i{font-size:14px;color:var(--ink-soft);}
+  #screen-review .rv-exp{padding:0 0 12px 28px;}
+  #screen-review .rv-wins{gap:8px;}
+  #screen-review .rv-win{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:1px solid var(--line-strong);border-radius:999px;background:var(--panel);font-size:15px;font-weight:500;color:var(--ink);}
+  #screen-review .rv-win .ic{display:inline-flex;width:17px;height:17px;flex-shrink:0;color:var(--ink);}
+  #screen-review .rv-win .ic svg{width:17px;height:17px;color:inherit;}
+  #screen-review .rv-win.on{border-color:var(--ink);background:var(--wash);color:var(--ink);}
+  /* with a draft showing, its contact text is what Accept sends; the MOA box
+     below would print the same paragraph a second time */
+  #screen-review #rv-draft[style*="block"] ~ .box #exp-moa{display:none;}
 </style>
 </head>
 <body>
@@ -3464,34 +3559,40 @@
 
       <div class="rv-cols">
         <div>
+          <!-- Reading order: what the result is, where and when it came in, how
+               urgent and why, the values, a quiet AI caption, then the source
+               document -- which stays open by default and is the authority. -->
           <div class="box">
-            <p class="box-title">Delivery</p>
+            <h2 class="rv-paneltitle" id="rv-panel"></h2>
             <div class="rv-facts" id="rv-facts"></div>
-            <div class="rv-ai" id="rv-ai"></div>
             <div class="rv-results" id="rv-results"></div>
             <div id="rv-unmapped"></div>
-            <div class="rv-doc" id="rv-doc"></div>
-            <div class="rv-src">
-              <button class="btn xs" id="rv-srcbtn" onclick="rvToggleSource()">Hide source document</button>
+            <div class="rv-ai" id="rv-ai"></div>
+            <div class="rv-srchd">
+              <h3 class="rv-doclbl">Source document — as received</h3>
+              <button type="button" class="btn" id="rv-srcbtn" aria-expanded="true" aria-controls="rv-doc" onclick="rvToggleSource()"><span class="ic" id="rv-srcic" data-pdic="eyeoff"></span><span id="rv-srclbl">Hide source document</span></button>
             </div>
+            <div class="rv-doc" id="rv-doc"></div>
           </div>
         </div>
 
         <aside class="rv-side">
-          <div class="box" style="margin-bottom:12px;">
-            <p class="box-title">Does this delivery require follow-up?</p>
-            <div class="rv-choice">
-              <button class="rv-opt" id="rv-no" onclick="rvSetFollow(false)">
-                <b>No follow-up required</b><span>Records the review and closes the assignment.</span></button>
-              <button class="rv-opt" id="rv-yes" onclick="rvSetFollow(true)">
-                <b>Follow-up required</b><span>Choose the results that drove it, then what happens next.</span></button>
+          <!-- Asked once. "No follow-up required" records the review in one click.
+               Critical and High open with the drafted follow-up already showing,
+               and Accept & assign sits directly under the draft it acts on. -->
+          <div class="box rv-decide">
+            <h2 class="box-title" id="rv-q">Does this delivery require follow-up?</h2>
+            <div class="rv-choice" role="group" aria-labelledby="rv-q">
+              <button type="button" class="rv-opt" id="rv-no" onclick="rvSetFollow(false);rvDone(false)"><span class="ic" data-pdic="complete"></span>No follow-up required</button>
+              <button type="button" class="rv-opt" id="rv-yes" aria-pressed="false" onclick="rvSetFollow(true)"><span class="ic" data-pdic="flag"></span>Follow-up required</button>
             </div>
+            <p class="rv-nohint">No follow-up required records the review. Nothing is sent to the patient.</p>
           </div>
 
           <div id="rv-follow" style="display:none;">
-            <div class="box" id="rv-draft" style="margin-bottom:12px;display:none;"></div>
+            <div class="box" id="rv-draft" style="display:none;"></div>
 
-            <div class="box" style="margin-bottom:12px;">
+            <div class="box" id="rv-picksbox">
               <p class="box-title">Which results drove this?</p>
               <p class="rv-hint">Optional. Only the results you pick will show <em>Reviewed &mdash; action needed</em>; the rest stay <em>Reviewed</em>.</p>
               <div id="rv-picks"></div>
@@ -3499,20 +3600,20 @@
                 <input type="text" id="rv-reason" placeholder="e.g. K+ 6.3, ramipril held, repeat today"></div>
             </div>
 
-            <div class="box" style="margin-bottom:12px;">
+            <div class="box" id="rv-nextbox">
               <p class="box-title">What happens next</p>
               <label class="rv-act"><input type="checkbox" id="a-book" onchange="rvToggle('book')"> <span><b>Book into scheduler &amp; call</b></span></label>
               <div class="rv-exp" id="exp-book">
                 <div class="rv-wins">
-                  <button class="rv-win on" onclick="rvWin(this)">Today 4:00 &ndash; 5:30 &middot; 6 queued</button>
-                  <button class="rv-win" onclick="rvWin(this)">Tomorrow 9:00 &ndash; 10:30 &middot; 3</button>
-                  <button class="rv-win" onclick="rvWin(this)">Tomorrow 3:00 &ndash; 4:30 &middot; 1</button>
+                  <button type="button" class="rv-win on" aria-pressed="true" onclick="rvWin(this)"><span class="ic" data-pdic="calendar"></span>Today 4:00 &ndash; 5:30 &middot; 6 queued</button>
+                  <button type="button" class="rv-win" aria-pressed="false" onclick="rvWin(this)"><span class="ic" data-pdic="calendar"></span>Tomorrow 9:00 &ndash; 10:30 &middot; 3</button>
+                  <button type="button" class="rv-win" aria-pressed="false" onclick="rvWin(this)"><span class="ic" data-pdic="calendar"></span>Tomorrow 3:00 &ndash; 4:30 &middot; 1</button>
                 </div>
               </div>
 
-              <label class="rv-act"><input type="checkbox" id="a-moa" onchange="rvToggle('moa')"> <span><b>MOA to contact patient</b><i>Japneet &middot; paired with you</i></span></label>
+              <label class="rv-act"><input type="checkbox" id="a-moa" onchange="rvToggle('moa')"> <span><b>MOA to contact patient</b><i id="rv-moa-who">MOA on service &middot; paired with you</i></span></label>
               <div class="rv-exp" id="exp-moa">
-                <input type="text" id="rv-moa" placeholder="What should Japneet do?" value="Call patient today to arrange a repeat draw">
+                <input type="text" id="rv-moa" placeholder="What should the MOA do?" value="Call patient today to arrange a repeat draw">
               </div>
 
               <label class="rv-act"><input type="checkbox" id="a-msg" onchange="rvToggle('msg')"> <span><b>Message patient to book</b></span></label>
@@ -3520,12 +3621,12 @@
             </div>
           </div>
 
-          <div class="box">
-            <p class="rv-commit" id="rv-commit">Records your review. Nothing is sent.</p>
+          <div class="box" id="rv-commitbox" hidden>
+            <p class="rv-commit" id="rv-commit" aria-live="polite"></p>
             <div class="rv-done">
-              <button class="btn dark" onclick="rvAccept()">Accept &amp; assign</button>
-              <button class="btn" onclick="rvModify()">Modify</button>
-              <button class="btn" onclick="rvDone(false)">No follow-up required</button>
+              <button type="button" class="btn dark" id="rv-accept" onclick="rvAccept()"><span class="ic" data-pdic="usercheck"></span>Accept &amp; assign</button>
+              <button type="button" class="btn" id="rv-modify" onclick="rvModify()"><span class="ic" data-pdic="edit"></span>Modify</button>
+              <button type="button" class="btn dark" id="rv-record" onclick="rvDone(false)"><span class="ic" data-pdic="complete"></span>Record follow-up</button>
             </div>
           </div>
         </aside>
@@ -6711,7 +6812,7 @@ var INBOX_ITEMS = [
 
   { patient:'Gloria Mcdonald', age:'74F', phn:'9650 115 886', dob:'28-10-1951', type:'Trace', panel:'12-lead ECG', received:'Today, 7:55 AM', ago:'2h',
     status:'received', lab:'In-clinic', kind:'trace',
-    interp:'ABNORMAL ECG: ATRIAL FIBRILLATION · left anterior divisional block · nonspecific repolarization abnormality', abnormalTrace:true,
+    interp:'Abnormal ECG: atrial fibrillation · left anterior divisional block · nonspecific repolarization abnormality', abnormalTrace:true,
     measures:[ {n:'Rate',v:'92 bpm'}, {n:'PR',v:'168 ms'}, {n:'QRS',v:'94 ms'}, {n:'QTc',v:'451 ms'} ] },
 
   { patient:'Priya Raman', age:'39F', phn:'9650 129 891', dob:'17-12-1984', type:'Screening', panel:'Cervical screening (Pap)', received:'Yesterday, 1:15 PM', ago:'1d',
@@ -7558,19 +7659,19 @@ function ecgDoc(it){
   });
   return '<div class="doc-sheet ecg">'+
     '<div class="doc-head">'+
-      '<div class="doc-brand">SIMPLE CARE</div>'+
+      '<div class="doc-brand">SimpleCare</div>'+
       '<div class="doc-hid">ID:00010186 &nbsp; '+it.received+'</div>'+
-      '<div class="doc-tag">ROUTINE RECORD</div>'+
+      '<div class="doc-tag">Routine record</div>'+
     '</div>'+
     '<div class="doc-meta">'+
       '<div><span>'+(it.dob||'')+' ('+(it.age||'')+')</span><span>Vent. rate <b>92</b> BPM</span></div>'+
       '<div><span>PR interval <b>168</b> ms</span><span>QRS <b>94</b> ms</span><span>QT/QTc <b>398/451</b> ms</span></div>'+
       '<div class="doc-interp">'+
-        '<p>ATRIAL FIBRILLATION</p>'+
-        '<p>LEFT ANTERIOR DIVISIONAL BLOCK</p>'+
-        '<p>NONSPECIFIC REPOLARIZATION ABNORMALITY(IES)</p>'+
-        '<p class="abn">ABNORMAL ECG</p>'+
-        '<p>PREVIOUS ECGS NOT AVAILABLE FOR COMPARISON</p>'+
+        '<p>Atrial fibrillation</p>'+
+        '<p>Left anterior divisional block</p>'+
+        '<p>Nonspecific repolarization abnormality(ies)</p>'+
+        '<p class="abn">Abnormal ECG</p>'+
+        '<p>Previous ECGs not available for comparison</p>'+
       '</div>'+
     '</div>'+
     '<svg class="doc-ecg" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet">'+ecgGrid()+rows+'</svg>'+
@@ -7585,13 +7686,13 @@ function labDoc(it){
       '<td class="fl">'+hl+flag+'</td><td>'+t.ref+'</td></tr>';
   }).join('');
   return '<div class="doc-sheet lab">'+
-    '<div class="doc-head"><div class="doc-brand">'+it.lab.toUpperCase()+'</div>'+
-      '<div class="doc-hid">ACCESSION 4471-'+(it.patient.length*137%9000+1000)+'</div>'+
-      '<div class="doc-tag">FINAL REPORT</div></div>'+
-    '<div class="doc-pt"><b>'+it.patient.toUpperCase()+'</b><span>DOB '+(it.dob||'')+' &nbsp; PHN '+(it.phn||'')+'</span>'+
-      '<span>Ordering: DR. D. PANNOZZO</span></div>'+
-    '<div class="doc-ttl">'+it.panel.toUpperCase()+'</div>'+
-    '<table class="doc-tbl"><thead><tr><th>TEST</th><th>RESULT</th><th>UNITS</th><th>FLAG</th><th>REFERENCE</th></tr></thead>'+
+    '<div class="doc-head"><div class="doc-brand">'+it.lab+'</div>'+
+      '<div class="doc-hid">Accession 4471-'+(it.patient.length*137%9000+1000)+'</div>'+
+      '<div class="doc-tag">Final report</div></div>'+
+    '<div class="doc-pt"><b>'+it.patient+'</b><span>DOB '+(it.dob||'')+' &nbsp; PHN '+(it.phn||'')+'</span>'+
+      '<span>Ordering: Dr. D. Pannozzo</span></div>'+
+    '<div class="doc-ttl">'+it.panel+'</div>'+
+    '<table class="doc-tbl"><thead><tr><th>Test</th><th>Result</th><th>Units</th><th>Flag</th><th>Reference</th></tr></thead>'+
     '<tbody>'+rows+'</tbody></table>'+
     '<div class="doc-legend">* outside reference range &nbsp;&nbsp; ** critical value &mdash; telephoned to ordering provider</div>'+
     '<div class="doc-foot"><span>Received '+it.received+'</span><span>'+it.lab+'</span><span>Page 1 of 1</span></div>'+
@@ -7599,17 +7700,23 @@ function labDoc(it){
 }
 function renderSourceDoc(it){
   var m=document.getElementById('rv-doc'); if(!m) return;
-  m.innerHTML = '<p class="rv-doclbl">Source document &mdash; as received</p>' +
+  /* the heading lives outside #rv-doc now, so hiding the document keeps it */
+  m.innerHTML =
     (it.kind==='trace' ? ecgDoc(it) : ((it.tests||[]).length ? labDoc(it)
-      : '<div class="doc-sheet lab"><div class="doc-ttl">'+it.panel.toUpperCase()+'</div><p class="doc-narr">'+
-        (it.impression||it.outcome||'Report text as received.')+'</p></div>'));
+      : '<div class="doc-sheet lab"><div class="doc-ttl">'+it.panel+'</div><p class="doc-narr">'+
+        (it.kind==='culture'
+          ? it.organism+' '+it.growth+'. '+(it.specimen ? it.specimen+'. ' : '')+
+            it.sens.map(function(x){ return x.ab+' '+x.r; }).join(' · ')
+          : (it.impression||it.outcome||'Report text as received.'))+'</p></div>'));
   m.style.display='block';
 }
 function rvToggleSource(){
   var m=document.getElementById('rv-doc'), b=document.getElementById('rv-srcbtn');
   var open = m.style.display!=='none';
   m.style.display = open ? 'none' : 'block';
-  b.textContent = open ? 'Open the source document' : 'Hide source document';
+  document.getElementById('rv-srclbl').textContent = open ? 'Show source document' : 'Hide source document';
+  b.setAttribute('aria-expanded', String(!open));
+  document.getElementById('rv-srcic').innerHTML = ICONS[open ? 'eye' : 'eyeoff'];
 }
 
 /* ===== Review assignment (spec v7 §5.6) ===== */
@@ -7669,36 +7776,62 @@ function openReview(i){
   rvSetReturn();
   RV_I = i; RV_FOLLOW = null;
   document.getElementById('rv-title').textContent = it.patient;
-  document.getElementById('rv-sub').textContent = it.panel + ' · ' + (it.age||'');
+  document.getElementById('rv-sub').textContent = it.panel;
+  document.getElementById('rv-panel').textContent = it.panel;
 
+  /* One meta line, then -- only when there is one -- the tier and the rule
+     that set it. SimpleCare re-derives the tier from the LifeLabs standard,
+     so it no longer claims to be "as reported by the laboratory". */
+  var tier = labTier(it), hits = (it.tests||[]).filter(function(t){ return t.f && /^(crit|alert)-/.test(t.f); });
+  var lead = hits.filter(function(t){ return t.f.indexOf('crit')===0; })[0] || hits[0];
+  var leadTxt = lead ? lead.n + ' ' + lead.v + (lead.u ? ' ' + lead.u : '') : '';
   document.getElementById('rv-facts').innerHTML =
-    '<span class="rv-fact"><i>Received</i>'+it.received+'</span>'+
-    '<span class="rv-fact"><i>Source</i>'+it.lab+'</span>'+
-    '<span class="rv-fact"><i>Type</i>'+it.type+'</span>'+
-    (inboxIsCritical(it)
-      ? '<span class="rv-fact lab-urgent"><i>Urgency</i>Urgent — as reported by the laboratory</span>' : '');
+    '<p class="rv-meta">'+it.type+' · '+it.lab+' · received '+it.received+'</p>'+
+    (tier
+      ? '<p class="rv-tier '+(tier==='critical'?'crit':'warn')+'"><span class="ic" data-pdic="'+(tier==='critical'?'crit':'alert')+'"></span>'+
+        '<b>'+(tier==='critical' ? 'Critical — immediate assessment' : 'High')+'</b>'+
+        (lead && lead.basis ? '<span>'+lead.basis+'</span>' : '')+'</p>'
+      : '');
 
+  /* the AI line names the value, and it comes after the values it describes */
   document.getElementById('rv-ai').innerHTML =
-    '<span class="rv-aitag">AI summary</span>'+
-    '<p>'+(inboxIsCritical(it)
-      ? 'A critical value is present in this delivery. Verify against the source report before acting.'
-      : 'No critical values detected in this delivery.')+
+    '<span class="rv-aitag">'+(typeof AI_MARK !== 'undefined' ? AI_MARK : '')+'AI summary</span>'+
+    '<p>'+(tier === 'critical'
+      ? 'A critical value is present: '+leadTxt+'. Verify against the source report before acting.'
+      : (tier === 'alert'
+          ? 'A laboratory alert value is present: '+leadTxt+'. No critical values.'
+          : 'No critical values detected in this delivery.'))+
     ' <em>Assistive only — the source report remains authoritative.</em></p>';
 
   var tests = it.tests || [];
   document.getElementById('rv-results').innerHTML = tests.length
     ? tests.map(function(t){
-        var cls = !t.f ? '' : (t.f.indexOf('crit')===0 ? 'crit' : 'abn');
+        /* no fills: the arrow carries direction, and its colour carries the tier */
+        var cls = !t.f ? '' : (t.f.indexOf('crit')===0 ? 'crit' : (t.f.indexOf('alert')===0 ? 'abn alert' : 'abn'));
+        var up = t.f && t.f.indexOf('high') > -1;
+        var dir = t.f ? '<span class="ic rv-dir" role="img" aria-label="'+(up?'high':'low')+'" data-pdic="'+(up?'arrowup':'arrowdown')+'"></span>' : '';
         return '<div class="rv-row '+cls+'"><span class="rv-n">'+t.n+'</span>'+
-          '<span class="rv-v">'+t.v+' <i>'+t.u+'</i></span>'+
-          '<span class="rv-ref">ref '+t.ref+'</span>'+
+          '<span class="rv-v">'+t.v+(t.u ? ' <i>'+t.u+'</i>' : '')+dir+'</span>'+
+          '<span class="rv-ref">'+(t.ref ? 'ref '+t.ref : '')+'</span>'+
           (t.prior?'<span class="rv-prior">was '+t.prior+'</span>':'<span class="rv-prior">no prior result</span>')+'</div>';
       }).join('')
-    : '<p class="rv-narr">'+(it.impression||it.interp||it.outcome||'See source report.')+'</p>';
+    /* a culture has no tests and no narrative, so it used to print "See
+       source report" -- the organism and sensitivities are shown instead */
+    : (it.kind === 'culture'
+        ? '<div class="rv-row"><span class="rv-n"><em>'+it.organism+'</em></span><span class="rv-v">'+it.growth+'</span>'+
+            '<span class="rv-ref">'+(it.specimen||'')+'</span><span class="rv-prior"></span></div>'+
+          it.sens.map(function(x){
+            return '<div class="rv-row'+(x.r==='S' ? '' : ' abn')+'"><span class="rv-n">'+x.ab+'</span>'+
+              '<span class="rv-v">'+({S:'Susceptible', I:'Intermediate', R:'Resistant'})[x.r]+'</span>'+
+              '<span class="rv-ref"></span><span class="rv-prior"></span></div>';
+          }).join('')
+        : '<p class="rv-narr">'+(it.impression||it.interp||it.outcome||'See source report.')+'</p>');
 
   document.getElementById('rv-unmapped').innerHTML = '';
   renderSourceDoc(it);
-  document.getElementById('rv-srcbtn').textContent = 'Hide source document';
+  document.getElementById('rv-srclbl').textContent = 'Hide source document';
+  document.getElementById('rv-srcbtn').setAttribute('aria-expanded', 'true');
+  if(typeof ICONS !== 'undefined') document.getElementById('rv-srcic').innerHTML = ICONS.eyeoff;
   document.getElementById('rv-picks').innerHTML = tests.length
     ? tests.map(function(t,ix){
         return '<label class="rv-pick"><input type="checkbox" data-t="'+ix+'"'+(t.f&&t.f.indexOf('crit')===0?' checked':'')+'> '+
@@ -7714,7 +7847,17 @@ function openReview(i){
   document.getElementById('rv-follow').style.display='none';
   document.getElementById('rv-no').classList.remove('on');
   document.getElementById('rv-yes').classList.remove('on');
+  /* the MOA on service for this window, not a name typed into the markup:
+     the label said Japneet while the task went to whoever is on service */
+  var moa = rvPairedMoa(), who = document.getElementById('rv-moa-who'), moaIn = document.getElementById('rv-moa');
+  if(who) who.textContent = moa + ' · paired with you';
+  if(moaIn) moaIn.placeholder = 'What should ' + moa.split(' ')[0] + ' do?';
   rvCommit();
+  rvSyncDecision();
+  /* the draft is written before the doctor arrives, "so the common case is
+     one button" -- so a Critical or High result opens on it */
+  if(labTier(it)) rvSetFollow(true);
+  paintPd(document.getElementById('screen-review'));
   showScreen('review');
 }
 
@@ -7767,17 +7910,20 @@ function rvRenderDraft(it){
   var host = document.getElementById('rv-draft'); if(!host) return;
   var d = rvDraft(it);
   RV_DRAFT = d;
+  var esc = function(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;'); };
   if(!d.tier){ host.innerHTML = ''; host.style.display='none'; return; }
   host.style.display = 'block';
   host.innerHTML =
     '<p class="box-title">Suggested disposition <span class="rv-aimark">'+(typeof AI_MARK!=='undefined'?AI_MARK:'')+' drafted for you</span></p>'+
     '<p class="rv-hint">Everything here is editable. Nothing is sent until you sign off.</p>'+
+    /* sized to their text: a one-line input cut the action off before the
+       value it was about ("...for Potassium"), and the plan lost its last line */
     '<div class="rv-field"><label>Suggested action</label>'+
-      '<input type="text" id="rv-d-action" value="'+d.action.replace(/"/g,'&quot;')+'"></div>'+
+      '<textarea id="rv-d-action" rows="2">'+esc(d.action)+'</textarea></div>'+
     '<div class="rv-field"><label>Suggested plan</label>'+
-      '<textarea id="rv-d-plan" rows="2">'+d.plan+'</textarea></div>'+
+      '<textarea id="rv-d-plan" rows="3">'+esc(d.plan)+'</textarea></div>'+
     '<div class="rv-field"><label>Patient contact instructions</label>'+
-      '<textarea id="rv-d-contact" rows="3">'+d.contact+'</textarea></div>'+
+      '<textarea id="rv-d-contact" rows="4">'+esc(d.contact)+'</textarea></div>'+
     '<p class="rv-hint">Goes to <b>'+rvPairedMoa()+'</b>, paired with you for this call window.</p>';
 }
 
@@ -7835,6 +7981,30 @@ function rvAccept(){
 }
 var RV_DRAFT = null;
 
+/* Which commit buttons show, and where. Accept & assign acts on the draft,
+   so it appears only once follow-up is chosen and a draft exists, directly
+   under that draft. Without a draft there is one button, Record follow-up. */
+function rvSyncDecision(){
+  var g = function(id){ return document.getElementById(id); }, cb = g('rv-commitbox');
+  if(!cb) return;
+  var hasDraft = RV_FOLLOW === true && !!(RV_DRAFT && RV_DRAFT.tier);
+  cb.hidden = RV_FOLLOW !== true;
+  if(hasDraft) g('rv-draft').after(cb); else g('rv-follow').appendChild(cb);
+  g('rv-accept').hidden = !hasDraft;
+  g('rv-modify').hidden = !hasDraft;
+  g('rv-record').hidden = hasDraft;
+  g('rv-yes').setAttribute('aria-pressed', String(RV_FOLLOW === true));
+  /* rvAccept files the draft as the MOA's task and reads nothing else. The
+     result picks and the book / MOA / message checkboxes feed only Record
+     follow-up, so on the drafted path they were controls that did nothing --
+     and the line above Accept promised a booking Accept never made. */
+  g('rv-picksbox').hidden = hasDraft;
+  g('rv-nextbox').hidden = hasDraft;
+  if(hasDraft){
+    var c = g('rv-commit');
+    if(c) c.textContent = 'Accept & assign records the review and sends this plan to ' + rvPairedMoa() + ' as a task.';
+  }
+}
 function rvSetFollow(v){
   RV_FOLLOW = v;
   if(v){
@@ -7845,13 +8015,17 @@ function rvSetFollow(v){
   document.getElementById('rv-yes').classList.toggle('on', v===true);
   document.getElementById('rv-follow').style.display = v ? 'block' : 'none';
   rvCommit();
+  rvSyncDecision();
 }
 function rvToggle(k){
   var cb=document.getElementById('a-'+k);
   document.getElementById('exp-'+k).classList.toggle('open', cb.checked);
   rvCommit();
 }
-function rvWin(b){ b.parentNode.querySelectorAll('.rv-win').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); rvCommit(); }
+function rvWin(b){
+  b.parentNode.querySelectorAll('.rv-win').forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-pressed', String(x===b)); });
+  b.classList.add('on'); rvCommit();
+}
 function rvCommit(){
   var el=document.getElementById('rv-commit'); if(!el) return;
   if(RV_FOLLOW === null){ el.textContent='Choose whether this delivery requires follow-up.'; return; }
@@ -7861,7 +8035,7 @@ function rvCommit(){
     var w=document.querySelector('#exp-book .rv-win.on');
     bits.push('books '+(w?w.textContent.split('·')[0].trim():'a slot')+' and queues your call');
   }
-  if(document.getElementById('a-moa').checked) bits.push('asks Japneet to contact the patient');
+  if(document.getElementById('a-moa').checked) bits.push('asks '+rvPairedMoa()+' to contact the patient');
   if(document.getElementById('a-msg').checked) bits.push('messages the patient to book');
   el.textContent = bits.length
     ? 'Records the review and ' + bits.join(', ') + '.'
@@ -8560,6 +8734,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">build 2026-09-23 21:29</div>
+  <div class="build-stamp">build 2026-09-23 21:38</div>
 </body>
 </html>
