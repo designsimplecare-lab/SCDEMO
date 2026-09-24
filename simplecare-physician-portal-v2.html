@@ -3410,6 +3410,83 @@
   /* with a draft showing, its contact text is what Accept sends; the MOA box
      below would print the same paragraph a second time */
   #screen-review #rv-draft[style*="block"] ~ .box #exp-moa{display:none;}
+
+  /* ---- reviewer fixes, 24 Sep ---- */
+  /* inbox: a real icon slot for every band word, so all three line up and no
+     band heading passes for a patient row */
+  #screen-inbox .ix-secttl{margin:32px 0 12px;}
+  #screen-inbox .ix-secttl:first-child{margin-top:16px;}
+  #screen-inbox .ix-secttl:not(.crit):not(.warn)::before{content:"";flex:0 0 17px;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-panelrow{gap:0;}
+  /* a whole bold sentence was the heaviest ink in the Routine band */
+  :is(#screen-inbox,#today-inbox-preview) .ix-find.abn{font-weight:500;}
+  /* the critical row is marked by its icon; the fill is left for hover alone,
+     and hover is strong enough to see */
+  :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix.critical{background:transparent;}
+  :root[data-theme="dark"] :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix.critical{background:transparent;}
+  :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix:hover,
+  :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix:has(:focus-visible),
+  :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix.critical:hover,
+  :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix.critical:has(:focus-visible){background:var(--paper);}
+  :root[data-theme="dark"] :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix:hover,
+  :root[data-theme="dark"] :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix:has(:focus-visible),
+  :root[data-theme="dark"] :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix.critical:hover,
+  :root[data-theme="dark"] :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix.critical:has(:focus-visible){background:var(--wash);}
+  /* script focus after a review (mouse-driven) no longer lights a row; only
+     keyboard focus does */
+  :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix:focus-within:not(:has(:focus-visible)):not(:hover){background:transparent;}
+  :is(#screen-inbox,#today-inbox-preview) .inbox-row.ix:focus-within:not(:has(:focus-visible)):not(:hover) .ix-right{opacity:0;pointer-events:none;}
+  #screen-inbox #inbox-reviewed .inbox-row.ix .ix-right{opacity:1;pointer-events:auto;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-top{display:flex;align-items:center;gap:8px;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-top .ix-open{min-width:0;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-critic{display:inline-flex;flex:0 0 17px;width:17px;height:17px;color:var(--crit);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-critic svg{width:17px;height:17px;color:inherit;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-v .ix-ref{margin-left:2px;font-style:normal;font-size:14px;font-weight:400;color:var(--ink-faint);}
+  /* hovering Open chart swaps the time out cleanly instead of half-covering it */
+  @media (hover:hover){
+    #screen-inbox #inbox-received .inbox-row.ix:has(.ix-right):is(:hover,:has(:focus-visible)) .ix-meta{visibility:hidden;}
+  }
+  /* reviewed rows: what was decided, and Sign off in the grid */
+  #screen-inbox .ix-disp{grid-column:2 / 3;grid-row:3;margin:2px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-inbox #inbox-reviewed .ix-find{grid-column:2;}
+  #screen-inbox #inbox-reviewed .ix-body > .ix-right{grid-column:3;grid-row:2 / span 2;justify-self:end;align-self:center;position:static;transform:none;padding:0;background:none;opacity:1;pointer-events:auto;}
+  #screen-inbox #inbox-signedoff .ix-disp{grid-row:3;}
+  /* the disclosure chevron: the span and its svg are both .ic, so only the span turns */
+  #screen-inbox .ix-disclose > .ic{transform:rotate(-90deg);}
+  #screen-inbox .ix-disclose > .ic svg{transform:none;}
+  #screen-inbox .ix-disclose[aria-expanded="true"] > .ic{transform:none;}
+
+  /* review: the back button and the chart side by side */
+  #screen-review .rv-top{display:flex;align-items:center;gap:8px;margin:0 0 16px;}
+  #screen-review .rv-top .pc-back{margin:0;}
+  #screen-review .rv-also{margin:8px 0 0;font-size:15px;line-height:22px;color:var(--ink-soft);}
+  #screen-review .rv-also b{font-weight:600;color:var(--ink);}
+  #screen-review .rv-also a{color:var(--ink);text-decoration:underline;text-underline-offset:2px;}
+  /* a chosen option reads as chosen, not as a second primary button */
+  #screen-review .rv-opt.on{background:var(--wash);border:2px solid var(--ink);color:var(--ink);padding:0 17px;}
+  :root[data-theme="dark"] #screen-review .rv-opt.on{background:var(--wash);border-color:var(--ink);color:var(--ink);}
+  /* the draft shows its whole text, with no resize grabbers */
+  #screen-review #rv-draft textarea{field-sizing:content;resize:none;min-height:44px;}
+  /* results: one left edge with the card, numbers right-aligned in a column */
+  #screen-review .rv-results{margin:0 -12px 16px;}
+  #screen-review .rv-row{grid-template-columns:minmax(0,1fr) 150px 120px 130px;}
+  #screen-review .rv-num{display:inline-block;min-width:4ch;text-align:right;font-variant-numeric:tabular-nums;}
+  #screen-review .rv-v i{display:inline-block;min-width:52px;}
+  #screen-review .rv-prior{white-space:nowrap;}
+  #screen-review .rv-narr.rv-org{margin:0 12px 8px;}
+  /* the results block hangs 12px into the card padding so table rows line up;
+     a narrative line has no row padding, so it takes the 12px back */
+  #screen-review .rv-results > .rv-narr:not(.rv-org){padding:0 12px;}
+  /* both review cards share one surface language */
+  #screen-review .rv-side{border-radius:20px;box-shadow:0 1px 2px rgba(23,24,28,.04),0 8px 24px rgba(23,24,28,.05);}
+  /* the source document is paper on a desk: no stroke, and a scan does not
+     invert in dark mode -- its colours are printed for white */
+  #screen-review .rv-doc{padding:16px;border-radius:12px;background:var(--paper);}
+  #screen-review .doc-sheet{border-color:transparent;box-shadow:0 1px 3px rgba(23,24,28,.10);}
+  #screen-review .doc-tbl th:nth-child(2){text-align:right;}
+  :root[data-theme="dark"] #screen-review .rv-doc{background:var(--wash);}
+  :root[data-theme="dark"] #screen-review .doc-sheet{background:#fff;color:#1a1a1a;border-color:transparent;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 2px 10px rgba(0,0,0,.5);}
+  :root[data-theme="dark"] #screen-review .doc-ecg{background:#FDF3F4;}
 </style>
 </head>
 <body>
@@ -3553,7 +3630,10 @@
 
     <!-- ===================== REVIEW ASSIGNMENT (spec v7 §5.6) ===================== -->
     <div class="screen" id="screen-review">
-      <button class="pc-back" id="rv-back" onclick="rvBack()"><span class="ic" data-pcic="back"></span> <span id="rv-backlbl">Back to inbox</span></button>
+      <div class="rv-top">
+        <button class="pc-back" id="rv-back" onclick="rvBack()"><span class="ic" data-pcic="back"></span> <span id="rv-backlbl">Back to inbox</span></button>
+        <button type="button" class="btn" id="rv-chart" hidden><span class="ic" data-pdic="chartnote"></span>Open chart</button>
+      </div>
       <h1 id="rv-title">Review</h1>
       <p class="sub" id="rv-sub">&nbsp;</p>
 
@@ -3580,10 +3660,10 @@
           <!-- Asked once. "No follow-up required" records the review in one click.
                Critical and High open with the drafted follow-up already showing,
                and Accept & assign sits directly under the draft it acts on. -->
-          <div class="box rv-decide">
+          <div class="box rv-decide" id="rv-decidebox">
             <h2 class="box-title" id="rv-q">Does this delivery require follow-up?</h2>
             <div class="rv-choice" role="group" aria-labelledby="rv-q">
-              <button type="button" class="rv-opt" id="rv-no" onclick="rvSetFollow(false);rvDone(false)"><span class="ic" data-pdic="complete"></span>No follow-up required</button>
+              <button type="button" class="rv-opt" id="rv-no" onclick="rvNo()"><span class="ic" data-pdic="complete"></span>No follow-up required</button>
               <button type="button" class="rv-opt" id="rv-yes" aria-pressed="false" onclick="rvSetFollow(true)"><span class="ic" data-pdic="flag"></span>Follow-up required</button>
             </div>
             <p class="rv-nohint">No follow-up required records the review. Nothing is sent to the patient.</p>
@@ -3594,7 +3674,7 @@
 
             <div class="box" id="rv-picksbox">
               <p class="box-title">Which results drove this?</p>
-              <p class="rv-hint">Optional. Only the results you pick will show <em>Reviewed &mdash; action needed</em>; the rest stay <em>Reviewed</em>.</p>
+              <p class="rv-hint">Optional. The results you pick are named on the reviewed row, so sign-off shows what needed action.</p>
               <div id="rv-picks"></div>
               <div class="rv-field"><label>Reason</label>
                 <input type="text" id="rv-reason" placeholder="e.g. K+ 6.3, ramipril held, repeat today"></div>
@@ -3605,19 +3685,19 @@
               <label class="rv-act"><input type="checkbox" id="a-book" onchange="rvToggle('book')"> <span><b>Book into scheduler &amp; call</b></span></label>
               <div class="rv-exp" id="exp-book">
                 <div class="rv-wins">
-                  <button type="button" class="rv-win on" aria-pressed="true" onclick="rvWin(this)"><span class="ic" data-pdic="calendar"></span>Today 4:00 &ndash; 5:30 &middot; 6 queued</button>
-                  <button type="button" class="rv-win" aria-pressed="false" onclick="rvWin(this)"><span class="ic" data-pdic="calendar"></span>Tomorrow 9:00 &ndash; 10:30 &middot; 3</button>
-                  <button type="button" class="rv-win" aria-pressed="false" onclick="rvWin(this)"><span class="ic" data-pdic="calendar"></span>Tomorrow 3:00 &ndash; 4:30 &middot; 1</button>
+                  <button type="button" class="rv-win on" aria-pressed="true" onclick="rvWin(this)"><span class="ic" data-pdic="calendar"></span>Today 2:00 &ndash; 5:00 &middot; 6 queued</button>
+                  <button type="button" class="rv-win" aria-pressed="false" onclick="rvWin(this)"><span class="ic" data-pdic="calendar"></span>Today 5:00 &ndash; 7:00 &middot; 3 queued</button>
+                  <button type="button" class="rv-win" aria-pressed="false" onclick="rvWin(this)"><span class="ic" data-pdic="calendar"></span>Tomorrow 8:00 &ndash; 10:00 &middot; 1 queued</button>
                 </div>
               </div>
 
               <label class="rv-act"><input type="checkbox" id="a-moa" onchange="rvToggle('moa')"> <span><b>MOA to contact patient</b><i id="rv-moa-who">MOA on service &middot; paired with you</i></span></label>
               <div class="rv-exp" id="exp-moa">
-                <input type="text" id="rv-moa" placeholder="What should the MOA do?" value="Call patient today to arrange a repeat draw">
+                <input type="text" id="rv-moa" placeholder="What should the MOA do?" value="">
               </div>
 
               <label class="rv-act"><input type="checkbox" id="a-msg" onchange="rvToggle('msg')"> <span><b>Message patient to book</b></span></label>
-              <div class="rv-exp" id="exp-msg"><textarea id="rv-msg" rows="3">Your potassium came back high. Please book a follow-up today so we can review it.</textarea></div>
+              <div class="rv-exp" id="exp-msg"><textarea id="rv-msg" rows="3"></textarea></div>
             </div>
           </div>
 
@@ -3627,6 +3707,7 @@
               <button type="button" class="btn dark" id="rv-accept" onclick="rvAccept()"><span class="ic" data-pdic="usercheck"></span>Accept &amp; assign</button>
               <button type="button" class="btn" id="rv-modify" onclick="rvModify()"><span class="ic" data-pdic="edit"></span>Modify</button>
               <button type="button" class="btn dark" id="rv-record" onclick="rvDone(false)"><span class="ic" data-pdic="complete"></span>Record follow-up</button>
+              <button type="button" class="btn dark" id="rv-recordno" onclick="rvDone(false)"><span class="ic" data-pdic="complete"></span>Record no follow-up</button>
             </div>
           </div>
         </aside>
@@ -6741,14 +6822,14 @@ function sendTaskMoa(){
 
 /* ===== Inbox — clear-the-inbox review/sign-off state machine (received -> reviewed -> signed-off) ===== */
 var INBOX_ITEMS = [
-  { patient:'Behdis Maleki', age:'35F', phn:'9650 333 502', dob:'20-02-1979', type:'Lab', panel:'Renal function panel', received:'Today, 7:22 AM', ago:'2h',
+  { patient:'Behdis Maleki', age:'35F', phn:'9650 333 502', dob:'20-02-1991', type:'Lab', panel:'Renal function panel', received:'Today, 7:22 AM', ago:'2h',
     status:'received', lab:'LifeLabs',
     tests:[ {n:'Potassium',v:'6.3',u:'mmol/L',ref:'3.5–5.1',f:'crit-high',prior:'5.1'},
             {n:'Creatinine',v:'104',u:'µmol/L',ref:'45–90',f:'high',prior:'96'},
             {n:'eGFR',v:'54',u:'mL/min',ref:'>60',f:'low',prior:'60'},
             {n:'Urea',v:'9.1',u:'mmol/L',ref:'2.5–7.1',f:'high'} ] },
 
-  { patient:'Manjit Dhaliwal', age:'58M', phn:'9650 293 478', dob:'20-05-1970', type:'Lab', panel:'Complete blood count', received:'Today, 6:05 AM', ago:'3h',
+  { patient:'Manjit Dhaliwal', age:'58M', phn:'9650 293 478', dob:'20-05-1968', type:'Lab', panel:'Complete blood count', received:'Today, 6:05 AM', ago:'3h',
     status:'received', lab:'LifeLabs',
     tests:[ {n:'Haemoglobin',v:'71',u:'g/L',ref:'130–175',f:'crit-low',prior:'118'},
             {n:'MCV',v:'72',u:'fL',ref:'80–100',f:'low'},
@@ -6760,53 +6841,53 @@ var INBOX_ITEMS = [
     tests:[ {n:'Troponin I',v:'0.42',u:'µg/L',ref:'<0.04',f:'crit-high'},
             {n:'CK',v:'210',u:'U/L',ref:'30–200',f:'high'} ] },
 
-  { patient:'Grace Lin', age:'52F', phn:'9650 654 746', dob:'17-07-1969', type:'Lab', panel:'Coagulation studies', received:'Today, 8:40 AM', ago:'1h',
+  { patient:'Grace Lin', age:'52F', phn:'9650 654 746', dob:'17-07-1974', type:'Lab', panel:'Coagulation studies', received:'Today, 8:40 AM', ago:'1h',
     status:'received', lab:'LifeLabs', context:'On warfarin',
     tests:[ {n:'INR',v:'3.8',u:'',ref:'2.0–3.0',f:'high',prior:'2.6'},
             {n:'PT',v:'38',u:'sec',ref:'11–15',f:'high'},
             {n:'APTT',v:'34',u:'sec',ref:'25–35',f:''} ] },
 
-  { patient:'Andrey Abushakhmanov', age:'24M', phn:'9650 724 614', dob:'20-03-1963', type:'Lab', panel:'Liver function', received:'Today, 9:14 AM', ago:'1h',
+  { patient:'Andrey Abushakhmanov', age:'24M', phn:'9650 724 614', dob:'20-03-2002', type:'Lab', panel:'Liver function', received:'Today, 9:14 AM', ago:'1h',
     status:'received', lab:'LifeLabs',
     tests:[ {n:'ALT',v:'88',u:'U/L',ref:'10–40',f:'high',prior:'34'},
             {n:'AST',v:'65',u:'U/L',ref:'10–35',f:'high'},
             {n:'ALP',v:'96',u:'U/L',ref:'40–130',f:''},
             {n:'Bilirubin',v:'14',u:'µmol/L',ref:'<21',f:''} ] },
 
-  { patient:'Priya Raman', age:'39F', phn:'9650 129 891', dob:'17-12-1984', type:'Lab', panel:'Thyroid function', received:'Today, 9:02 AM', ago:'1h',
+  { patient:'Priya Raman', age:'39F', phn:'9650 129 891', dob:'17-12-1986', type:'Lab', panel:'Thyroid function', received:'Today, 9:02 AM', ago:'1h',
     status:'received', lab:'LifeLabs',
     tests:[ {n:'TSH',v:'8.9',u:'mIU/L',ref:'0.4–4.0',f:'high',prior:'5.2'},
             {n:'Free T4',v:'10.1',u:'pmol/L',ref:'10–22',f:'low'} ] },
 
-  { patient:'Nadia Hassan', age:'28F', phn:'9650 779 405', dob:'22-04-1982', type:'Lab', panel:'Urinalysis', received:'Today, 8:15 AM', ago:'1h',
+  { patient:'Nadia Hassan', age:'28F', phn:'9650 779 405', dob:'22-04-1998', type:'Lab', panel:'Urinalysis', received:'Today, 8:15 AM', ago:'1h',
     status:'received', lab:'In-clinic',
     tests:[ {n:'Leukocytes',v:'+++',u:'',ref:'Negative',f:'high'},
             {n:'Nitrites',v:'Positive',u:'',ref:'Negative',f:'high'},
             {n:'Blood',v:'++',u:'',ref:'Negative',f:'high'},
             {n:'Protein',v:'Trace',u:'',ref:'Negative',f:''} ] },
 
-  { patient:'K Arli Eyre', age:'41M', phn:'9650 912 170', dob:'23-05-1970', type:'Lab', panel:'Glycemic control', received:'Yesterday, 3:20 PM', ago:'1d',
+  { patient:'K Arli Eyre', age:'41M', phn:'9650 912 170', dob:'23-05-1985', type:'Lab', panel:'Glycemic control', received:'Yesterday, 3:20 PM', ago:'1d',
     status:'received', lab:'LifeLabs',
     tests:[ {n:'HbA1c',v:'7.1',u:'%',ref:'<7.0',f:'high',prior:'6.8'},
             {n:'Fasting glucose',v:'7.8',u:'mmol/L',ref:'4.0–6.0',f:'high'} ] },
 
-  { patient:'Greg Whitmore', age:'61M', phn:'9650 882 721', dob:'26-11-1955', type:'Lab', panel:'Lipid panel', received:'Yesterday, 2:05 PM', ago:'1d',
+  { patient:'Greg Whitmore', age:'61M', phn:'9650 882 721', dob:'26-11-1964', type:'Lab', panel:'Lipid panel', received:'Yesterday, 2:05 PM', ago:'1d',
     status:'received', lab:'LifeLabs',
     tests:[ {n:'LDL',v:'4.6',u:'mmol/L',ref:'<2.0',f:'high',prior:'4.1'},
             {n:'HDL',v:'0.9',u:'mmol/L',ref:'>1.0',f:'low'},
             {n:'Triglycerides',v:'2.8',u:'mmol/L',ref:'<1.7',f:'high'},
             {n:'Total cholesterol',v:'6.4',u:'mmol/L',ref:'<5.2',f:'high'} ] },
 
-  { patient:'Frank Delgado', age:'47M', phn:'9650 257 913', dob:'11-05-1952', type:'Lab', panel:'Electrolytes', received:'Today, 9:14 AM', ago:'1h',
+  { patient:'Frank Delgado', age:'47M', phn:'9650 257 913', dob:'11-05-1979', type:'Lab', panel:'Electrolytes', received:'Today, 9:14 AM', ago:'1h',
     status:'received', lab:'LifeLabs',
     tests:[ {n:'Sodium',v:'140',u:'mmol/L',ref:'135–145',f:''},
             {n:'Potassium',v:'4.2',u:'mmol/L',ref:'3.5–5.1',f:''},
             {n:'Chloride',v:'102',u:'mmol/L',ref:'98–107',f:''},
             {n:'Bicarbonate',v:'25',u:'mmol/L',ref:'22–29',f:''} ] },
 
-  { patient:'Nadia Hassan', age:'28F', phn:'9650 779 405', dob:'22-04-1982', type:'Micro', panel:'Urine culture & sensitivity', received:'Today, 10:05 AM', ago:'40m',
+  { patient:'Nadia Hassan', age:'28F', phn:'9650 779 405', dob:'22-04-1998', type:'Micro', panel:'Urine culture & sensitivity', received:'Today, 10:05 AM', ago:'40m',
     status:'received', lab:'LifeLabs', kind:'culture',
-    organism:'Escherichia coli', growth:'>10⁸ CFU/L · pure growth', specimen:'Midstream urine, collected Jul 21',
+    organism:'Escherichia coli', growth:'>10⁸ CFU/L · pure growth', specimen:'Midstream urine, collected yesterday',
     sens:[ {ab:'Nitrofurantoin', r:'S'}, {ab:'Trimethoprim–SMX', r:'R'}, {ab:'Ciprofloxacin', r:'R'},
            {ab:'Amoxicillin–clav', r:'S'}, {ab:'Fosfomycin', r:'S'}, {ab:'Cephalexin', r:'I'} ] },
 
@@ -6815,27 +6896,27 @@ var INBOX_ITEMS = [
     interp:'Abnormal ECG: atrial fibrillation · left anterior divisional block · nonspecific repolarization abnormality', abnormalTrace:true,
     measures:[ {n:'Rate',v:'92 bpm'}, {n:'PR',v:'168 ms'}, {n:'QRS',v:'94 ms'}, {n:'QTc',v:'451 ms'} ] },
 
-  { patient:'Priya Raman', age:'39F', phn:'9650 129 891', dob:'17-12-1984', type:'Screening', panel:'Cervical screening (Pap)', received:'Yesterday, 1:15 PM', ago:'1d',
+  { patient:'Priya Raman', age:'39F', phn:'9650 129 891', dob:'17-12-1986', type:'Screening', panel:'Cervical screening (Pap)', received:'Yesterday, 1:15 PM', ago:'1d',
     status:'received', lab:'BC Cancer Screening', kind:'screening',
     outcome:'Negative for intraepithelial lesion', outcomeOk:true, recall:'Next due Jul 2029', program:'BC Cervix Screening' },
 
-  { patient:'Owen Brady', age:'45M', phn:'9650 596 732', dob:'04-09-1962', type:'Screening', panel:'FIT — colorectal screening', received:'Yesterday, 9:40 AM', ago:'1d',
+  { patient:'Owen Brady', age:'45M', phn:'9650 596 732', dob:'04-09-1981', type:'Screening', panel:'FIT — colorectal screening', received:'Yesterday, 9:40 AM', ago:'1d',
     status:'received', lab:'BC Cancer Screening', kind:'screening',
     outcome:'Positive — refer for colonoscopy', outcomeOk:false, recall:'Referral required within 60 days', program:'BC Colon Screening' },
 
-  { patient:'Carol-Anne Feldman', age:'44F', phn:'9650 849 225', dob:'01-04-1965', type:'Imaging', panel:'MRI lumbar spine', received:'Today, 8:02 AM', ago:'1h',
+  { patient:'Carol-Anne Feldman', age:'44F', phn:'9650 849 225', dob:'01-04-1982', type:'Imaging', panel:'MRI lumbar spine', received:'Today, 8:02 AM', ago:'1h',
     status:'received', lab:'Eagle Ridge Imaging',
     impression:'L4–L5 disc protrusion with right nerve root contact. No cord compression.', abnormal:true },
 
-  { patient:'Owen Brady', age:'45M', phn:'9650 596 732', dob:'04-09-1962', type:'Imaging', panel:'Chest X-ray', received:'Yesterday, 11:30 AM', ago:'1d',
+  { patient:'Owen Brady', age:'45M', phn:'9650 596 732', dob:'04-09-1981', type:'Imaging', panel:'Chest X-ray', received:'Yesterday, 11:30 AM', ago:'1d',
     status:'received', lab:'Eagle Ridge Imaging',
     impression:'No acute cardiopulmonary abnormality.', abnormal:false },
 
-  { patient:'Louise ("Chickadee")', age:'33F', phn:'9650 177 746', dob:'07-07-1961', type:'Consult', panel:'EDS specialist consult', received:'Yesterday, 4:40 PM', ago:'1d',
+  { patient:'Louise ("Chickadee")', age:'33F', phn:'9650 177 746', dob:'07-07-1993', type:'Consult', panel:'EDS specialist consult', received:'Yesterday, 4:40 PM', ago:'1d',
     status:'reviewed', lab:'Dr. Okafor',
     impression:'Confirms hypermobile EDS. Recommends physiotherapy referral and annual echo.' },
 
-  { patient:'Brian Koehler', age:'66M', phn:'9650 365 807', dob:'22-05-1958', type:'Imaging', panel:'Chest X-ray', received:'Mon', ago:'3d',
+  { patient:'Brian Koehler', age:'66M', phn:'9650 365 807', dob:'22-05-1960', type:'Imaging', panel:'Chest X-ray', received:'Mon', ago:'3d',
     status:'signed-off', lab:'Eagle Ridge Imaging', impression:'Clear.', abnormal:false }
 ];
 
@@ -6953,18 +7034,23 @@ function labFloor(name, value, unit, age){
   var crit = r.crit, alert = r.alert;
   if(r.peds   && age !== null && age <= r.peds.maxAge)   crit = r.peds.crit;
   if(r.senior && age !== null && age >= r.senior.minAge) crit = r.senior.crit;
-  var unitTxt = r.u ? ' ' + r.u : '';
+  /* The limit is stated in the result's own unit (a troponin in µg/L gets
+     0.05 µg/L, not 50 ng/L), and the credit goes to the LifeLabs BC standard
+     the rule comes from, not to whichever lab ran the test. */
+  var k = labToRuleUnits(name, 1, unit), conv = (k && k !== 1);
+  var unitTxt = conv ? (unit ? ' ' + unit : '') : (r.u ? ' ' + r.u : '');
+  var lim = function(x){ return conv ? +(x / k).toPrecision(3) : x; };
   if(crit){
     if(crit.lo !== undefined && v < crit.lo)
-      return {tier:'critical', dir:'low',  basis:'LifeLabs critical · ' + name + ' below ' + crit.lo + unitTxt};
+      return {tier:'critical', dir:'low',  basis:name + ' below ' + lim(crit.lo) + unitTxt + ' · LifeLabs BC critical limit'};
     if(crit.hi !== undefined && v > crit.hi)
-      return {tier:'critical', dir:'high', basis:'LifeLabs critical · ' + name + ' above ' + crit.hi + unitTxt};
+      return {tier:'critical', dir:'high', basis:name + ' above ' + lim(crit.hi) + unitTxt + ' · LifeLabs BC critical limit'};
   }
   if(alert){
     if(alert.lo !== undefined && v < alert.lo)
-      return {tier:'alert', dir:'low',  basis:'LifeLabs alert · ' + name + ' below ' + alert.lo + unitTxt};
+      return {tier:'alert', dir:'low',  basis:name + ' below ' + lim(alert.lo) + unitTxt + ' · LifeLabs BC alert limit'};
     if(alert.hi !== undefined && v > alert.hi)
-      return {tier:'alert', dir:'high', basis:'LifeLabs alert · ' + name + ' above ' + alert.hi + unitTxt};
+      return {tier:'alert', dir:'high', basis:name + ' above ' + lim(alert.hi) + unitTxt + ' · LifeLabs BC alert limit'};
   }
   return null;
 }
@@ -7023,7 +7109,9 @@ function inboxRowHtml(item, i){
       var up = t.f.indexOf('high') > -1;
       return '<span class="ix-v'+tier+'"'+(t.ref ? ' title="ref '+attr(t.ref)+'"' : '')+'>'+t.n+' <b>'+t.v+'</b>'+
         (t.u ? ' <i>'+t.u+'</i>' : '')+
-        '<span class="ic ix-dir" role="img" aria-label="'+(up?'high':'low')+'" data-pdic="'+(up?'arrowup':'arrowdown')+'"></span></span>';
+        '<span class="ic ix-dir" role="img" aria-label="'+(up?'high':'low')+'" data-pdic="'+(up?'arrowup':'arrowdown')+'"></span>'+
+        /* the range is shown where magnitude matters: on the value that set the band */
+        (tier && t.ref ? '<i class="ix-ref">ref '+t.ref+'</i>' : '')+'</span>';
     }).join('') +
     (okN ? '<span class="ix-okn">'+(okN===total ? 'All '+total+' in range' : '+'+okN+' in range')+'</span>' : '') +
     '</div>';
@@ -7032,7 +7120,8 @@ function inboxRowHtml(item, i){
     findings = '<div class="ix-find ix-cult2"><span class="ix-org"><em>'+item.organism+'</em> '+item.growth+'</span>'+
       '<span class="ix-sens">'+[['Susceptible','S'],['Intermediate','I'],['Resistant','R']]
         .filter(function(p){ return grp(p[1]); })
-        .map(function(p){ return '<span><b>'+p[0]+'</b> '+grp(p[1])+'</span>'; }).join('')+'</span></div>';
+        /* the exceptions carry the weight: resistant and intermediate, not susceptible */
+        .map(function(p){ return '<span>'+(p[1]==='S' ? p[0] : '<b>'+p[0]+'</b>')+' '+grp(p[1])+'</span>'; }).join('')+'</span></div>';
   } else if(item.kind==='trace'){
     findings = '<div class="ix-find'+(item.abnormalTrace?' abn':'')+'">'+item.interp+'</div>';
   } else if(item.kind==='screening'){
@@ -7061,7 +7150,10 @@ function inboxRowHtml(item, i){
       /* Name only. Age, DOB and PHN are on the chart, one click away, and on
          the source document itself -- the same call Daniel made for the queue
          list: "it's nice to have it there, but you're probably right." */
-      '<div class="ix-top"><button type="button" class="ix-open" onclick="openReview('+i+')"'+
+      /* a critical row carries its own mark, not just a fill that hover and
+         focus also paint on any row */
+      '<div class="ix-top">'+(crit ? '<span class="ic ix-critic" role="img" aria-label="critical" data-pdic="crit"></span>' : '')+
+        '<button type="button" class="ix-open" onclick="openReview('+i+')"'+
         ' aria-label="'+attr(item.patient+', '+item.panel+(crit?', critical':''))+'"><b>'+item.patient+'</b></button></div>'+
       '<div class="ix-panelrow"><span class="ix-panel">'+item.panel+'</span>'+
         (item.context ? '<span class="ix-context">'+item.context+'</span>' : '')+
@@ -7071,8 +7163,12 @@ function inboxRowHtml(item, i){
          first out reads straight down the column. */
       '<div class="ix-meta">'+item.lab+' &middot; received '+item.received+'</div>'+
       findings+
+      /* sign-off shows what was decided, so it is never signed blind */
+      (item.status !== 'received' && item.disposition ? '<div class="ix-disp">'+item.disposition+'</div>' : '')+
+      /* a reviewed row's Sign off sits in the grid, so its time lines up with the rows above */
+      (item.status === 'reviewed' && actions ? '<div class="ix-right">'+actions+'</div>' : '')+
     '</div>'+
-    (actions ? '<div class="ix-right">'+actions+'</div>' : '')+
+    (item.status !== 'reviewed' && actions ? '<div class="ix-right">'+actions+'</div>' : '')+
   '</div>';
 }
 
@@ -7698,16 +7794,32 @@ function labDoc(it){
     '<div class="doc-foot"><span>Received '+it.received+'</span><span>'+it.lab+'</span><span>Page 1 of 1</span></div>'+
   '</div>';
 }
+/* A narrative report gets the same header and footer as a lab sheet --
+   lab, accession, patient, DOB, PHN, ordering doctor, received -- which is
+   where Daniel's rule puts those identifiers. */
+function narrDoc(it, body){
+  return '<div class="doc-sheet lab">'+
+    '<div class="doc-head"><div class="doc-brand">'+it.lab+'</div>'+
+      '<div class="doc-hid">Accession 4471-'+(it.patient.length*137%9000+1000)+'</div>'+
+      '<div class="doc-tag">Final report</div></div>'+
+    '<div class="doc-pt"><b>'+it.patient+'</b><span>DOB '+(it.dob||'')+' &nbsp; PHN '+(it.phn||'')+'</span>'+
+      '<span>Ordering: Dr. D. Pannozzo</span></div>'+
+    '<div class="doc-ttl">'+it.panel+'</div>'+ body +
+    '<div class="doc-foot"><span>Received '+it.received+'</span><span>'+it.lab+'</span><span>Page 1 of 1</span></div>'+
+  '</div>';
+}
 function renderSourceDoc(it){
   var m=document.getElementById('rv-doc'); if(!m) return;
   /* the heading lives outside #rv-doc now, so hiding the document keeps it */
   m.innerHTML =
     (it.kind==='trace' ? ecgDoc(it) : ((it.tests||[]).length ? labDoc(it)
-      : '<div class="doc-sheet lab"><div class="doc-ttl">'+it.panel+'</div><p class="doc-narr">'+
-        (it.kind==='culture'
-          ? it.organism+' '+it.growth+'. '+(it.specimen ? it.specimen+'. ' : '')+
-            it.sens.map(function(x){ return x.ab+' '+x.r; }).join(' · ')
-          : (it.impression||it.outcome||'Report text as received.'))+'</p></div>'));
+      : narrDoc(it, it.kind==='culture'
+          ? '<p class="doc-narr">'+it.organism+' '+it.growth+'.'+(it.specimen ? ' '+it.specimen+'.' : '')+'</p>'+
+            '<table class="doc-tbl"><thead><tr><th>Antibiotic</th><th>Result</th></tr></thead><tbody>'+
+            it.sens.map(function(x){ return '<tr><td>'+x.ab+'</td><td>'+x.r+'</td></tr>'; }).join('')+'</tbody></table>'+
+            '<div class="doc-legend">S susceptible &nbsp;&nbsp; I intermediate &nbsp;&nbsp; R resistant</div>'
+          : '<p class="doc-narr">'+(it.impression||it.outcome||it.interp||'Report text as received.')+
+            (it.recall ? '<br>'+it.recall : '')+'</p>')));
   m.style.display='block';
 }
 function rvToggleSource(){
@@ -7793,15 +7905,38 @@ function openReview(i){
         (lead && lead.basis ? '<span>'+lead.basis+'</span>' : '')+'</p>'
       : '');
 
-  /* the AI line names the value, and it comes after the values it describes */
+  /* the AI line names the value, and it comes after the values it describes.
+     It never gives an all-clear under an abnormal finding: narrative results
+     (ECG, imaging, screening, cultures) have no lab tier to go on. */
+  var narrAbn = it.abnormalTrace || it.abnormal || (it.kind === 'screening' && !it.outcomeOk) ||
+                (it.kind === 'culture' && (it.sens||[]).some(function(x){ return x.r !== 'S'; }));
+  var outN = (it.tests||[]).filter(function(t){ return t.f; }).length;
   document.getElementById('rv-ai').innerHTML =
     '<span class="rv-aitag">'+(typeof AI_MARK !== 'undefined' ? AI_MARK : '')+'AI summary</span>'+
     '<p>'+(tier === 'critical'
       ? 'A critical value is present: '+leadTxt+'. Verify against the source report before acting.'
       : (tier === 'alert'
           ? 'A laboratory alert value is present: '+leadTxt+'. No critical values.'
-          : 'No critical values detected in this delivery.'))+
+          : (narrAbn
+              ? 'An abnormal finding is reported: '+(it.interp||it.impression||it.outcome||((it.organism||'')+', resistant to '+(it.sens||[]).filter(function(x){return x.r==='R';}).map(function(x){return x.ab;}).join(', ')))+'. Verify against the source report before acting.'
+              : (outN ? 'No critical or alert values. '+outN+' outside the reference range.' : 'All values are within the reference range.'))))+
     ' <em>Assistive only — the source report remains authoritative.</em></p>';
+
+  /* other results for the same patient still waiting -- a troponin read
+     without the ECG that came in five minutes later is read out of context */
+  var others = INBOX_ITEMS.filter(function(x){ return x !== it && x.patient === it.patient && x.status === 'received'; });
+  if(others.length){
+    document.getElementById('rv-facts').insertAdjacentHTML('beforeend',
+      '<p class="rv-also">Also waiting for '+it.patient.split(' ')[0]+': '+others.map(function(x){
+        return '<a href="#" onclick="openReview('+INBOX_ITEMS.indexOf(x)+');return false">'+x.panel+'</a>'; }).join(', ')+'</p>');
+  }
+  /* a reviewed result says what was decided */
+  if(it.disposition){
+    document.getElementById('rv-facts').insertAdjacentHTML('beforeend', '<p class="rv-also"><b>Reviewed</b> · '+it.disposition+'</p>');
+  }
+  /* the chart, one click away, where one exists */
+  var chp = it.patient.replace(/'/g,''), chb = document.getElementById('rv-chart');
+  if(chb){ chb.hidden = !inboxHasChart(chp); chb.onclick = function(){ fastTrack(chp); }; }
 
   var tests = it.tests || [];
   document.getElementById('rv-results').innerHTML = tests.length
@@ -7811,15 +7946,15 @@ function openReview(i){
         var up = t.f && t.f.indexOf('high') > -1;
         var dir = t.f ? '<span class="ic rv-dir" role="img" aria-label="'+(up?'high':'low')+'" data-pdic="'+(up?'arrowup':'arrowdown')+'"></span>' : '';
         return '<div class="rv-row '+cls+'"><span class="rv-n">'+t.n+'</span>'+
-          '<span class="rv-v">'+t.v+(t.u ? ' <i>'+t.u+'</i>' : '')+dir+'</span>'+
+          /* numbers, units and arrows each form a column */
+          '<span class="rv-v"><span class="rv-num">'+t.v+'</span>'+(t.u ? '<i>'+t.u+'</i>' : '<i></i>')+dir+'</span>'+
           '<span class="rv-ref">'+(t.ref ? 'ref '+t.ref : '')+'</span>'+
           (t.prior?'<span class="rv-prior">was '+t.prior+'</span>':'<span class="rv-prior">no prior result</span>')+'</div>';
       }).join('')
     /* a culture has no tests and no narrative, so it used to print "See
        source report" -- the organism and sensitivities are shown instead */
     : (it.kind === 'culture'
-        ? '<div class="rv-row"><span class="rv-n"><em>'+it.organism+'</em></span><span class="rv-v">'+it.growth+'</span>'+
-            '<span class="rv-ref">'+(it.specimen||'')+'</span><span class="rv-prior"></span></div>'+
+        ? '<p class="rv-narr rv-org"><em>'+it.organism+'</em> '+it.growth+(it.specimen ? ' · '+it.specimen : '')+'</p>'+
           it.sens.map(function(x){
             return '<div class="rv-row'+(x.r==='S' ? '' : ' abn')+'"><span class="rv-n">'+x.ab+'</span>'+
               '<span class="rv-v">'+({S:'Susceptible', I:'Intermediate', R:'Resistant'})[x.r]+'</span>'+
@@ -7852,11 +7987,18 @@ function openReview(i){
   var moa = rvPairedMoa(), who = document.getElementById('rv-moa-who'), moaIn = document.getElementById('rv-moa');
   if(who) who.textContent = moa + ' · paired with you';
   if(moaIn) moaIn.placeholder = 'What should ' + moa.split(' ')[0] + ' do?';
+  /* this patient's text, never the last patient's */
+  var first = it.patient.split(' ')[0];
+  if(moaIn) moaIn.value = 'Call ' + first + ' to arrange follow-up on the ' + it.panel.charAt(0).toLowerCase() + it.panel.slice(1) + '.';
+  var msgIn = document.getElementById('rv-msg');
+  if(msgIn) msgIn.value = 'Your ' + it.panel.charAt(0).toLowerCase() + it.panel.slice(1) + ' result is back. Please book a follow-up so we can go over it.';
+  var rsn = document.getElementById('rv-reason'); if(rsn) rsn.value = '';
+  RV_DRAFT = null; RV_DRAFT_FOR = -1;
   rvCommit();
   rvSyncDecision();
   /* the draft is written before the doctor arrives, "so the common case is
      one button" -- so a Critical or High result opens on it */
-  if(labTier(it)) rvSetFollow(true);
+  if(labTier(it) && it.status === 'received') rvSetFollow(true);
   paintPd(document.getElementById('screen-review'));
   showScreen('review');
 }
@@ -7882,20 +8024,26 @@ function rvDraft(it){
   var who = (it.patient||'').split(',')[0].split(' ')[0];
   var val = lead ? (lead.n + ' ' + lead.v + (lead.u ? ' ' + lead.u : '')) : it.panel;
 
+  /* critical reads as critical: now, and to the doctor, not "today" and a
+     booking -- the tier line above it says immediate assessment */
   var action = (tier === 'critical')
-    ? 'Contact ' + who + ' today about ' + val
+    ? 'Contact ' + who + ' now about ' + val
     : 'Arrange follow-up with ' + who + ' for ' + val;
 
   var plan = [];
   if(concern) plan.push(concern + '.');
   if(lead && lead.basis) plan.push(lead.basis + '.');
   plan.push(tier === 'critical'
-    ? 'Needs to be addressed the same day.'
+    ? 'Needs immediate assessment.'
     : 'Review alongside the current care plan and repeat if indicated.');
 
   var contact = [];
-  contact.push('Phone ' + who + ' today and explain the result.');
-  contact.push('Book them back in, or hand to the doctor if they want to speak directly.');
+  if(tier === 'critical'){
+    contact.push('Phone ' + who + ' now and hand them to the doctor.');
+  } else {
+    contact.push('Phone ' + who + ' today and explain the result.');
+    contact.push('Book them back in, or hand to the doctor if they want to speak directly.');
+  }
   if(tier === 'critical'){
     /* his words: "if you can't contact the patient, maybe they have an
        emergency contact" */
@@ -7915,7 +8063,8 @@ function rvRenderDraft(it){
   host.style.display = 'block';
   host.innerHTML =
     '<p class="box-title">Suggested disposition <span class="rv-aimark">'+(typeof AI_MARK!=='undefined'?AI_MARK:'')+' drafted for you</span></p>'+
-    '<p class="rv-hint">Everything here is editable. Nothing is sent until you sign off.</p>'+
+    /* Accept & assign files the task at once; sign-off is a later inbox step */
+    '<p class="rv-hint">Everything here is editable. Nothing is sent until you press Accept &amp; assign.</p>'+
     /* sized to their text: a one-line input cut the action off before the
        value it was about ("...for Potassium"), and the plan lost its last line */
     '<div class="rv-field"><label>Suggested action</label>'+
@@ -7923,8 +8072,8 @@ function rvRenderDraft(it){
     '<div class="rv-field"><label>Suggested plan</label>'+
       '<textarea id="rv-d-plan" rows="3">'+esc(d.plan)+'</textarea></div>'+
     '<div class="rv-field"><label>Patient contact instructions</label>'+
-      '<textarea id="rv-d-contact" rows="4">'+esc(d.contact)+'</textarea></div>'+
-    '<p class="rv-hint">Goes to <b>'+rvPairedMoa()+'</b>, paired with you for this call window.</p>';
+      '<textarea id="rv-d-contact" rows="'+(d.tier === 'critical' ? 5 : 4)+'">'+esc(d.contact)+'</textarea></div>';
+  /* the recipient is named once, on the line above Accept & assign */
 }
 
 /* Contact the patient is the default for anything critical, pre-ticked, so
@@ -7940,9 +8089,11 @@ function rvPrefill(it){
   if(moa) moa.value = d.contact;
 }
 
+/* the cursor lands at the end: selecting everything meant the first
+   keystroke erased the drafted action */
 function rvModify(){
   var el = document.getElementById('rv-d-action');
-  if(el){ el.focus(); el.select(); el.scrollIntoView({block:'center'}); }
+  if(el){ el.focus(); var n = el.value.length; el.setSelectionRange(n, n); el.scrollIntoView({block:'center'}); }
 }
 
 /* Accept & assign: mark the report reviewed, keep the result, the concern
@@ -7956,8 +8107,10 @@ function rvAccept(){
   var contact = (document.getElementById('rv-d-contact')||{}).value || d.contact;
   var prio = d.tier === 'critical' ? 'urgent' : 'high';
 
+  if(it.actioned){ toast('Already assigned to ' + rvPairedMoa()); return; }
   it.status = 'reviewed';
   it.actioned = true;
+  it.disposition = 'Assigned to ' + rvPairedMoa() + ' · ' + action;
 
   if(typeof DOC_TASKS !== 'undefined'){
     DOC_TASKS.unshift({
@@ -7979,21 +8132,37 @@ function rvAccept(){
   toast('Assigned to ' + rvPairedMoa() + ' · ' + action);
   rvBack();
 }
-var RV_DRAFT = null;
+var RV_DRAFT = null, RV_DRAFT_FOR = -1;
 
-/* Which commit buttons show, and where. Accept & assign acts on the draft,
-   so it appears only once follow-up is chosen and a draft exists, directly
-   under that draft. Without a draft there is one button, Record follow-up. */
+/* One click closes a routine result. A Critical or High one opens on its
+   drafted follow-up, so "No follow-up required" there only switches the
+   choice, and closing it takes a second, deliberate click. */
+function rvNo(){
+  var it = INBOX_ITEMS[RV_I];
+  rvSetFollow(false);
+  if(!(it && labTier(it))) rvDone(false);
+}
+/* Which commit buttons show, and where. With a draft, Accept & assign sits
+   right under the question -- above the fold -- and the editable draft follows
+   as the detail it acts on. Without one there is a single Record button. */
 function rvSyncDecision(){
   var g = function(id){ return document.getElementById(id); }, cb = g('rv-commitbox');
   if(!cb) return;
+  var it = INBOX_ITEMS[RV_I], tiered = !!(it && labTier(it));
   var hasDraft = RV_FOLLOW === true && !!(RV_DRAFT && RV_DRAFT.tier);
-  cb.hidden = RV_FOLLOW !== true;
-  if(hasDraft) g('rv-draft').after(cb); else g('rv-follow').appendChild(cb);
+  var closing = RV_FOLLOW === false && tiered;
+  cb.hidden = !(RV_FOLLOW === true || closing);
+  if(hasDraft) g('rv-draft').before(cb);
+  else if(closing) g('rv-decidebox').after(cb);
+  else g('rv-follow').appendChild(cb);
   g('rv-accept').hidden = !hasDraft;
   g('rv-modify').hidden = !hasDraft;
-  g('rv-record').hidden = hasDraft;
+  g('rv-record').hidden = !(RV_FOLLOW === true && !hasDraft);
+  g('rv-recordno').hidden = !closing;
   g('rv-yes').setAttribute('aria-pressed', String(RV_FOLLOW === true));
+  /* the hint describes an option; once one is chosen it has said its piece */
+  var nh = document.querySelector('#screen-review .rv-nohint'); if(nh) nh.hidden = RV_FOLLOW !== null;
+  if(closing){ var cc = g('rv-commit'); if(cc) cc.textContent = 'Records the review with no follow-up. Nothing is sent to the patient.'; }
   /* rvAccept files the draft as the MOA's task and reads nothing else. The
      result picks and the book / MOA / message checkboxes feed only Record
      follow-up, so on the drafted path they were controls that did nothing --
@@ -8006,10 +8175,14 @@ function rvSyncDecision(){
   }
 }
 function rvSetFollow(v){
+  /* choosing the option already chosen changes nothing (Enter or Space on it
+     used to re-draft and wipe the doctor's edits) */
+  if(v === true && RV_FOLLOW === true) return;
   RV_FOLLOW = v;
   if(v){
     var it = INBOX_ITEMS[RV_I];
-    if(it){ rvRenderDraft(it); rvPrefill(it); }
+    /* drafted once per result, so switching away and back keeps the edits */
+    if(it && RV_DRAFT_FOR !== RV_I){ rvRenderDraft(it); rvPrefill(it); RV_DRAFT_FOR = RV_I; }
   }
   document.getElementById('rv-no').classList.toggle('on', v===false);
   document.getElementById('rv-yes').classList.toggle('on', v===true);
@@ -8030,16 +8203,20 @@ function rvCommit(){
   var el=document.getElementById('rv-commit'); if(!el) return;
   if(RV_FOLLOW === null){ el.textContent='Choose whether this delivery requires follow-up.'; return; }
   if(RV_FOLLOW === false){ el.textContent='Records the review. Nothing is sent to the patient.'; return; }
+  /* with a draft, the line names what Accept & assign does */
+  if(RV_DRAFT && RV_DRAFT.tier){ el.textContent = 'Accept & assign records the review and sends this plan to ' + rvPairedMoa() + ' as a task.'; return; }
+  /* each tick becomes an instruction in one task for the MOA on service --
+     the booking and the message are the MOA's to make (tasks run doctor to MOA) */
   var bits=[];
   if(document.getElementById('a-book').checked){
     var w=document.querySelector('#exp-book .rv-win.on');
-    bits.push('books '+(w?w.textContent.split('·')[0].trim():'a slot')+' and queues your call');
+    bits.push('book '+(w?w.textContent.split('·')[0].trim():'the next call window')+' and queue your call');
   }
-  if(document.getElementById('a-moa').checked) bits.push('asks '+rvPairedMoa()+' to contact the patient');
-  if(document.getElementById('a-msg').checked) bits.push('messages the patient to book');
+  if(document.getElementById('a-moa').checked) bits.push('contact the patient');
+  if(document.getElementById('a-msg').checked) bits.push('message the patient to book');
   el.textContent = bits.length
-    ? 'Records the review and ' + bits.join(', ') + '.'
-    : 'Records follow-up on this delivery with no action attached.';
+    ? 'Records the review and sends ' + rvPairedMoa() + ' a task to ' + bits.join(', ') + '.'
+    : 'Records the follow-up with no action attached.';
 }
 function rvDone(next){
   if(RV_FOLLOW === null){ toast('Choose whether follow-up is required first'); return; }
@@ -8048,9 +8225,36 @@ function rvDone(next){
   if(RV_FOLLOW){
     var picks=[...document.querySelectorAll('#rv-picks input:checked')].map(function(c){ return it.tests[c.dataset.t].n; });
     it.followUp = picks;
-    toast('Reviewed — follow-up recorded' + (picks.length?' on '+picks.join(', '):''));
+    var g = function(id){ return document.getElementById(id); };
+    var asks = [];
+    if(g('a-book').checked){
+      var w = document.querySelector('#exp-book .rv-win.on');
+      asks.push('Book into ' + (w ? w.textContent.split('·')[0].trim() : 'the next call window') + ' and queue the doctor\'s call');
+    }
+    if(g('a-moa').checked) asks.push((g('rv-moa').value || 'Contact the patient about this result').trim());
+    if(g('a-msg').checked) asks.push('Send the patient: "' + (g('rv-msg').value || '').trim() + '"');
+    var on = picks.length ? ' on ' + picks.join(', ') : '';
+    if(asks.length && typeof DOC_TASKS !== 'undefined'){
+      var reason = (g('rv-reason').value || '').trim();
+      DOC_TASKS.unshift({
+        id:'lab'+Date.now(), title: asks[0], type: it.type || 'Lab',
+        prio:'routine', age:0, to: rvPairedMoa(), role:'MOA',
+        patient: it.patient, preferred: (it.patient||'').split(' ')[0], chart: '#' + (it.phn||'').slice(-4),
+        verified:true, status:'open', carried:0, due:'This week', dueIn:7,
+        tol: (typeof TIME_TOLERANCE !== 'undefined' && TIME_TOLERANCE.routine) || 'Within 1 week',
+        note: asks.join(' · ') + (reason ? ' — ' + reason : ''),
+        source: {kind:'inbox', index: RV_I, panel: it.panel, received: it.received}
+      });
+      it.disposition = 'Follow-up' + on + ' · task to ' + rvPairedMoa();
+      if(typeof renderTasks === 'function') renderTasks();
+      toast('Reviewed — task to ' + rvPairedMoa() + ': ' + asks[0]);
+    } else {
+      it.disposition = 'Follow-up' + on + ' · no action attached';
+      toast('Reviewed — follow-up recorded' + on);
+    }
   } else {
     it.followUp = [];
+    it.disposition = 'No follow-up';
     toast('Reviewed — no follow-up required');
   }
   renderInboxList(); renderInboxToday(); renderCriticals(); renderAttnTasks(); updateWorkCounts();
@@ -8734,6 +8938,6 @@ function dswNotes(){
   document.getElementById('dsw-notes').classList.toggle('on', document.body.classList.contains('show-notes'));
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-23 22:17</div>
+  <div class="build-stamp">v2 · build 2026-09-24 08:19</div>
 </body>
 </html>
