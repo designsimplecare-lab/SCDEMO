@@ -3950,6 +3950,23 @@
   html body #screen-today .q-table td.q-bill button.bill-pill .q-caret svg,
   html body #screen-today .q-table td .status-pill .q-caret svg{width:16px;height:16px;color:var(--ink);}
   html body #screen-today .q-table td.q-bill span.bill-pill{font-size:15px;}
+  /* Ani, 25 Sep: the band pills did not read as separators. Each band now opens with a full-width
+     group bar -- tone tint, tone edge, label and count -- and its rows sit directly under it. */
+  html body #screen-inbox .ix-secttl{display:flex;align-items:center;gap:10px;width:auto;box-sizing:border-box;
+    height:48px;margin:32px 0 0;padding:0 16px 0 18px;border-radius:12px;background:var(--wash);
+    box-shadow:inset 4px 0 0 var(--line-strong);font-size:17px;font-weight:600;color:var(--ink);}
+  html body #screen-inbox .ix-secttl:first-child{margin-top:12px;}
+  html body #screen-inbox .ix-secttl.crit{background:var(--tag-bad);box-shadow:inset 4px 0 0 var(--crit);}
+  html body #screen-inbox .ix-secttl.warn{background:var(--tag-warn);box-shadow:inset 4px 0 0 var(--warn);}
+  html body #screen-inbox .ix-secttl .ix-n{margin-left:auto;min-width:28px;height:28px;padding:0 9px;box-sizing:border-box;
+    display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:var(--panel);
+    font-size:15px;font-weight:600;color:var(--ink);}
+  html body #screen-inbox .ix-secttl .ic,html body #screen-inbox .ix-secttl .ic svg{width:19px;height:19px;}
+  html body #screen-inbox .ix-secttl:not(.crit):not(.warn)::before{content:none;}
+  /* rows no longer carry their own tone edge: the bar above says which band they are in */
+  html body #screen-inbox .inbox-row.ix.critical,html body #screen-inbox .inbox-row.ix.high{box-shadow:none;border-radius:0;padding-left:18px;}
+  html body #screen-inbox .inbox-row.ix{padding-left:18px;}
+  html body #screen-inbox .ix-secttl{margin-left:-16px;margin-right:-16px;}
 </style>
 </head>
 <body>
@@ -9585,6 +9602,6 @@ function rxSend(){
   toast('Prescription faxed to ' + RX_PHARM);
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-25 12:09</div>
+  <div class="build-stamp">v2 · build 2026-09-25 12:11</div>
 </body>
 </html>
