@@ -3923,6 +3923,13 @@
   html body .topbar .chat-fab:hover{background:var(--panel);box-shadow:0 2px 8px rgba(23,24,28,.12);}
   html body .topbar .chat-fab .chat-badge{top:-2px;right:-2px;}
   .topbar .topbar-right{gap:10px;}
+  /* a billing state with nothing to do is plain muted text -- never a tinted shape */
+  html body .q-table td.q-bill span.bill-pill,html body #screen-today .q-table td.q-bill span.bill-pill{
+    background:none !important;height:auto;padding:0;border:0;display:inline;color:var(--ink-soft);font-weight:400;}
+  /* a long visit status shortens inside its column instead of running into billing */
+  html body #screen-today .q-table td .status-pill{overflow:hidden;min-width:0;}
+  html body #screen-today .q-table td .status-pill > span:not(.q-caret):not(.ic){overflow:hidden;text-overflow:ellipsis;min-width:0;}
+  html body #screen-today .q-table td .status-pill > .q-caret,html body #screen-today .q-table td .status-pill > .ic{flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -9558,6 +9565,6 @@ function rxSend(){
   toast('Prescription faxed to ' + RX_PHARM);
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-25 12:05</div>
+  <div class="build-stamp">v2 · build 2026-09-25 12:06</div>
 </body>
 </html>
