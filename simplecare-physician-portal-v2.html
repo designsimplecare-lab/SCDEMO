@@ -3915,6 +3915,8 @@
   @media (max-width:760px){.topbar .profile-trigger .tb-now{display:none;}}
   .pf-ph{position:relative;display:inline-flex;flex-shrink:0;}
   .pf-ph .pf-status{left:auto;top:auto;right:-1px;bottom:-1px;}
+  /* photo first, then the time (Ani, 25 Sep) */
+  .topbar .profile-trigger .tb-now{align-items:flex-start;text-align:left;padding:0 2px 0 0;}
 </style>
 </head>
 <body>
@@ -3971,9 +3973,9 @@
            Before: 7:21 AM Toronto · 3h 39m until window / During: 10:18 AM Toronto · 1h 42m left -->
           <!-- Ani, 25 Sep: the time lives in the profile pill, not a pill of its own -->
         <button class="profile-trigger" onclick="toggleProfileMenu()" aria-label="Your profile">
-          <span class="tb-now" id="tb-now"></span>
           <span class="pf-ph"><span class="pf-photo" id="pf-photo"><span class="pf-initials">DP</span></span>
           <span class="pf-status on" id="pf-status" title="Available"></span></span>
+          <span class="tb-now" id="tb-now"></span>
           <span class="pf-chev" data-pdic="chevrondown"></span>
         </button>
         <div class="profile-dropdown" id="profile-dropdown">
@@ -9550,6 +9552,6 @@ function rxSend(){
   toast('Prescription faxed to ' + RX_PHARM);
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-25 12:01</div>
+  <div class="build-stamp">v2 · build 2026-09-25 12:04</div>
 </body>
 </html>
