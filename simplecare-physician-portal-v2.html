@@ -3789,6 +3789,33 @@
   #screen-today .q-table td.q-card button.q-ver,
   #screen-today .q-table td.q-card span.q-ver{border:0 !important;box-shadow:none !important;}
   #screen-tasks .tk-kind,#screen-tasks .tk-prio{border:0 !important;box-shadow:none !important;background:var(--wash);}
+
+  /* prototype tools at the foot of the sidebar (Ani, 25 Sep): stacked when collapsed */
+  .demo-dock{display:flex;align-items:center;gap:8px;margin:auto 0 12px;}
+  .sidebar.collapsed .demo-dock{flex-direction:column;}
+  .demo-dock .vsw{margin:0;background:var(--wash);box-shadow:none;}
+  .sidebar.collapsed .demo-dock .vsw{flex-direction:column;height:auto;width:44px;padding:3px;}
+  .sidebar.collapsed .demo-dock .vsw a{height:38px;width:38px;padding:0;justify-content:center;}
+  .demo-dock .vsw a[aria-current="page"]{background:var(--panel);box-shadow:0 1px 2px rgba(23,24,28,.08);}
+  .demo-dock .dsw-fab{width:44px;height:44px;border-radius:50%;padding:0;margin:0;gap:0;border:0;
+    background:none;color:var(--ink);display:flex;align-items:center;justify-content:center;}
+  .demo-dock .dsw-fab:hover{background:var(--wash);opacity:1;}
+  .demo-dock .dsw-fab .ic{width:22px;height:22px;}
+  .sidebar.collapsed .sidebar-collapse-wrap{margin-top:0;}
+  /* the walkthrough opens from where it was asked for */
+  .dsw{top:auto;right:auto;left:94px;bottom:22px;}
+
+  /* Ani, 25 Sep: "make these colours less vivid" -- tag fills barely tinted, tones muted */
+  :root{--tag-warn:#FAF5EA;--tag-warn-ic:#9C7B3C;--tag-bad:#FAF0EE;--tag-bad-ic:#B8564D;--tag-info:#F3F4FA;--tag-info-ic:#5C67C9;}
+  :root[data-theme="dark"]{--tag-warn:rgba(214,178,110,.12);--tag-warn-ic:#D2B47A;--tag-bad:rgba(226,128,118,.12);--tag-bad-ic:#E0938B;--tag-info:rgba(140,150,230,.12);--tag-info-ic:#A2AAEC;}
+  html body .q-table td.q-bill button.bill-pill.warn,html body .q-table td.q-card .q-ver.warn{background:var(--tag-warn);--bp-tone:var(--tag-warn-ic);}
+  html body .q-table td.q-bill button.bill-pill.bad,html body .q-table td.q-card .q-ver.bad{background:var(--tag-bad);--bp-tone:var(--tag-bad-ic);}
+  html body .q-table td.q-bill button.bill-pill.info,html body .q-table td.q-card .q-ver.info{background:var(--tag-info);--bp-tone:var(--tag-info-ic);}
+  html body .q-table td.q-bill button.bill-pill.warn::after{border-right-color:var(--tag-warn-ic);border-bottom-color:var(--tag-warn-ic);}
+  html body .q-table td.q-bill button.bill-pill.bad::after{border-right-color:var(--tag-bad-ic);border-bottom-color:var(--tag-bad-ic);}
+  html body .q-table td.q-card .q-ver.warn svg{color:var(--tag-warn-ic);}
+  html body .q-table td.q-card .q-ver.bad svg{color:var(--tag-bad-ic);}
+  html body .q-table td.q-card .q-ver.info svg{color:var(--tag-info-ic);}
 </style>
 </head>
 <body>
@@ -3817,6 +3844,13 @@
       <button class="nav-btn" data-screen="support" onclick="showScreen('support')"><span class="nav-icon">&#9432;</span><span class="nav-label">Technical Support</span></button>
     </div>
 
+    <!-- Ani, 25 Sep: the version switch and the demo walkthrough are prototype tools, not
+         product; in the top bar they read as part of the header. They sit at the
+         foot of the sidebar, beside its expand button, away from the queue. -->
+    <div class="demo-dock" id="demo-dock" aria-label="Prototype tools">
+      <nav class="vsw" aria-label="Prototype version"><a href="simplecare-physician-portal-lofi.html" onclick="vswGo(event,this)">V1</a><a href="simplecare-physician-portal-v2.html" onclick="vswGo(event,this)" aria-current="page">V2</a></nav>
+      <button class="dsw-fab" id="dsw-fab" onclick="dswOpen()" title="Demo walkthrough" aria-label="Demo walkthrough"><span class="ic" data-pdic="demo"></span></button>
+    </div>
     <div class="sidebar-collapse-wrap">
       <button class="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" id="collapse-btn"><span class="nav-icon" id="collapse-icon"></span><span class="collapse-label">Collapse</span></button>
     </div>
@@ -3831,8 +3865,6 @@
            Before: 7:21 AM Toronto · 3h 39m until window / During: 10:18 AM Toronto · 1h 42m left -->
       <div class="tb-now" id="tb-now" role="timer" aria-live="off"></div>
       <div class="topbar-right">
-      <nav class="vsw" aria-label="Prototype version"><a href="simplecare-physician-portal-lofi.html" onclick="vswGo(event,this)">V1</a><a href="simplecare-physician-portal-v2.html" onclick="vswGo(event,this)" aria-current="page">V2</a></nav>
-      <button class="dsw-fab" id="dsw-fab" onclick="dswOpen()" title="Demo walkthrough" aria-label="Demo walkthrough"><span class="ic" data-pdic="demo"></span></button>
       <button class="chat-fab theme-btn" id="theme-btn" onclick="toggleTheme()" title="Switch to dark" aria-label="Switch to dark"><span class="ic" id="theme-icon"></span></button>
       <button class="chat-fab" id="chat-fab" onclick="toggleChatPanel()" title="MOA chat">
         <span class="ic" data-pcic="chatic"></span>
@@ -9327,6 +9359,21 @@ paintPd(document.getElementById('screen-today'));
   if(parts[0] === 'chart' && typeof openChart === 'function' && QUEUE_DATA[+parts[1]||0]) openChart(QUEUE_DATA[+parts[1]||0].name);
 })();
 
+function dockPlace(){
+  var d = document.getElementById('demo-dock'), sb = document.getElementById('sidebar'),
+      cb = document.getElementById('collapse-btn');
+  if(!d || !sb) return;
+  var r = sb.getBoundingClientRect();
+  var w = document.getElementById('dsw'); if(w) w.style.left = Math.round(r.right + 12) + 'px';
+  if(typeof paintPd === 'function') paintPd(d);
+}
+window.addEventListener('resize', dockPlace);
+window.addEventListener('load', dockPlace);
+document.addEventListener('DOMContentLoaded', function(){
+  dockPlace();
+  var sb = document.getElementById('sidebar');
+  if(sb) sb.addEventListener('transitionend', dockPlace);
+});
 function dswOpen(){ document.getElementById('dsw').classList.add('open'); document.getElementById('dsw-fab').style.display='none'; }
 function dswClose(){ document.getElementById('dsw').classList.remove('open'); document.getElementById('dsw-fab').style.display='flex'; }
 
@@ -9385,6 +9432,6 @@ function rxSend(){
   toast('Prescription faxed to ' + RX_PHARM);
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-25 11:45</div>
+  <div class="build-stamp">v2 · build 2026-09-25 11:48</div>
 </body>
 </html>
