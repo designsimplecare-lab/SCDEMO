@@ -3975,6 +3975,23 @@
   html body :is(#screen-inbox,#today-inbox-preview) .ix-find:has(> .ix-v){display:grid;grid-template-columns:repeat(2,max-content);
     column-gap:32px;row-gap:6px;align-items:baseline;justify-content:start;}
   html body :is(#screen-inbox,#today-inbox-preview) .ix-find:has(> .ix-v) > .ix-okn{grid-column:1 / -1;}
+  /* inbox tabs, after Gmail's category tabs: icon + label + count, a brand underline on the open one */
+  html body #screen-inbox .ix-tabs{display:flex;gap:0;margin:-8px -16px 8px;border-bottom:1px solid var(--line);}
+  html body #screen-inbox .ix-tabs button{flex:1 1 0;display:flex;align-items:center;gap:10px;height:60px;padding:0 20px;border:0;background:none;
+    font:inherit;font-size:17px;font-weight:500;color:var(--ink-soft);cursor:pointer;position:relative;border-radius:12px 12px 0 0;}
+  html body #screen-inbox .ix-tabs button:hover{background:var(--paper);color:var(--ink);}
+  html body #screen-inbox .ix-tabs button .ic,html body #screen-inbox .ix-tabs button svg{width:20px;height:20px;color:var(--ink-soft);}
+  html body #screen-inbox .ix-tabs button .ix-n{font-size:15px;font-weight:500;color:var(--ink-faint);}
+  html body #screen-inbox .ix-tabs button[aria-selected="true"]{color:var(--brand-ink);font-weight:600;}
+  html body #screen-inbox .ix-tabs button[aria-selected="true"] .ic,html body #screen-inbox .ix-tabs button[aria-selected="true"] svg{color:var(--brand);}
+  html body #screen-inbox .ix-tabs button[aria-selected="true"] .ix-n{color:var(--brand-ink);}
+  html body #screen-inbox .ix-tabs button[aria-selected="true"]::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:var(--brand);}
+  html body #screen-inbox .ix-tabs button:focus-visible{outline:2px solid var(--brand);outline-offset:-2px;}
+  html body #screen-inbox .ix-tabpanel[hidden]{display:none;}
+  html body #screen-inbox .ix-tabpanel > .ix-order{margin:12px 0 0;font-size:14px;color:var(--ink-faint);text-align:right;}
+  html body #screen-inbox .ix-tabpanel > .ix-order + div > .ix-secttl:first-child{margin-top:8px;}
+  :root[data-theme="dark"] #screen-inbox .ix-tabs button:hover{background:var(--wash);}
+  @media (max-width:760px){html body #screen-inbox .ix-tabs button{font-size:15px;padding:0 12px;gap:6px;}}
 </style>
 </head>
 <body>
@@ -4804,14 +4821,19 @@
       </div>
 
       <div class="box">
-        <h2 class="inbox-section-label">Needs review <span class="ix-n" id="inbox-recv-count"></span><span class="ix-order">Oldest received first, within each priority</span></h2>
-        <div id="inbox-received"></div>
-
-        <h2 class="inbox-section-label">Reviewed — awaiting sign-off <span class="ix-n" id="inbox-rev-count"></span></h2>
-        <div id="inbox-reviewed"></div>
-
-        <button type="button" class="btn ix-disclose" aria-expanded="false" aria-controls="inbox-signedoff" onclick="toggleSignedOff()"><span class="ic" data-pdic="chevdown"></span>Signed off <span class="ix-n" id="signedoff-count">0</span></button>
-        <div id="inbox-signedoff" style="display:none;"></div>
+        <!-- Ani, 25 Sep: "this should be tabs on top -- too much under the scroll". Gmail-style tabs:
+             the three stages of a result, each its own list, the one that needs you first. -->
+        <div class="ix-tabs" role="tablist" aria-label="Inbox">
+          <button type="button" role="tab" id="ixt-recv" aria-controls="ixp-recv" aria-selected="true" onclick="ixTab('recv')"><span class="ic" data-pdic="eye"></span>Needs review <span class="ix-n" id="inbox-recv-count"></span></button>
+          <button type="button" role="tab" id="ixt-rev" aria-controls="ixp-rev" aria-selected="false" onclick="ixTab('rev')"><span class="ic" data-pdic="edit"></span>Awaiting sign-off <span class="ix-n" id="inbox-rev-count"></span></button>
+          <button type="button" role="tab" id="ixt-done" aria-controls="ixp-done" aria-selected="false" onclick="ixTab('done')"><span class="ic" data-pdic="complete"></span>Signed off <span class="ix-n" id="signedoff-count"></span></button>
+        </div>
+        <div class="ix-tabpanel" role="tabpanel" id="ixp-recv" aria-labelledby="ixt-recv">
+          <p class="ix-order">Oldest received first, within each priority</p>
+          <div id="inbox-received"></div>
+        </div>
+        <div class="ix-tabpanel" role="tabpanel" id="ixp-rev" aria-labelledby="ixt-rev" hidden><div id="inbox-reviewed"></div></div>
+        <div class="ix-tabpanel" role="tabpanel" id="ixp-done" aria-labelledby="ixt-done" hidden><div id="inbox-signedoff"></div></div>
       </div>
     </div>
 
@@ -7812,7 +7834,8 @@ function renderInboxList(){
   var so = document.getElementById('inbox-signedoff');
   var done = INBOX_ITEMS.filter(function(x){ return x.status==='signed-off'; });
   if(so) so.innerHTML = done.map(function(it){ return inboxRowHtml(it, INBOX_ITEMS.indexOf(it)); }).join('');
-  var sc = document.getElementById('signedoff-count'); if(sc) sc.textContent = done.length;
+  var sc = document.getElementById('signedoff-count'); if(sc) sc.textContent = done.length || '';
+  if(so && !done.length) so.innerHTML = '<p class="ix-empty">Nothing signed off yet</p>';
   renderOutstanding();
   paintPd(document.getElementById('screen-inbox'));
 }
@@ -7874,7 +7897,16 @@ function signOffInbox(i){
   renderInboxList();
   toast('Signed off — '+item.patient);
 }
-function toggleSignedOff(){
+var IX_TAB = 'recv';
+function ixTab(k){
+  IX_TAB = k;
+  ['recv','rev','done'].forEach(function(t){
+    var b = document.getElementById('ixt-'+t), pn = document.getElementById('ixp-'+t);
+    if(b){ b.setAttribute('aria-selected', String(t===k)); b.classList.toggle('on', t===k); }
+    if(pn) pn.hidden = (t !== k);
+  });
+}
+function toggleSignedOff(){ ixTab(IX_TAB === 'done' ? 'recv' : 'done'); return;
   var el = document.getElementById('inbox-signedoff');
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
   var b = document.querySelector('#screen-inbox .ix-disclose');
@@ -9610,6 +9642,6 @@ function rxSend(){
   toast('Prescription faxed to ' + RX_PHARM);
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-25 12:14</div>
+  <div class="build-stamp">v2 · build 2026-09-25 12:15</div>
 </body>
 </html>
