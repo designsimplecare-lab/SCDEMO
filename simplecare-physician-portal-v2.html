@@ -3730,6 +3730,12 @@
      background gradient"). Text stays ink and passes AA on both ends. */
   #screen-review .rv-ai{background:linear-gradient(120deg,#E9F8FF 0%,#EEF1FF 60%,#F1EEFF 100%);}
   :root[data-theme="dark"] #screen-review .rv-ai{background:linear-gradient(120deg,rgba(95,221,255,.14) 0%,rgba(79,140,255,.14) 60%,rgba(67,83,232,.18) 100%);}
+
+  /* Last vitals on one line: four across, label over value (Ani: "this all should be one line") */
+  #pcv-c .vc-vitals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
+  #pcv-c .vc-vit .k{font-size:14px;font-weight:500;letter-spacing:0;color:var(--ink-soft);}
+  #pcv-c .vc-vit .v{font-size:18px;font-weight:600;white-space:nowrap;}
+  @media (max-width:900px){#pcv-c .vc-vitals{grid-template-columns:repeat(2,minmax(0,1fr));}}
 </style>
 </head>
 <body>
@@ -9222,6 +9228,6 @@ function vswGo(e, a){
   location.href = a.getAttribute('href') + '#' + s;
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-24 21:15</div>
+  <div class="build-stamp">v2 · build 2026-09-24 21:17</div>
 </body>
 </html>
