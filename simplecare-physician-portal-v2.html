@@ -3933,6 +3933,23 @@
   /* Ani, 25 Sep: the count was small and floated off the circle -- larger, and sat on the icon's corner inside the circle */
   html body .topbar .chat-fab .chat-badge{top:5px;right:5px;min-width:22px;height:22px;padding:0 6px;box-sizing:border-box;
     border-radius:999px;font-size:13px;font-weight:600;line-height:1;border:2px solid var(--panel);}
+  /* Ani, 25 Sep: "why do these 3 have different font sizes" -- one tag spec for visit status, billing and health card */
+  html body #screen-today .q-table td .status-pill,
+  html body #screen-today .q-table td.q-bill button.bill-pill,
+  html body #screen-today .q-table td.q-card .q-ver{
+    font-size:15px;font-weight:500;height:40px;padding:0 12px;gap:6px;border-radius:999px;box-sizing:border-box;
+    display:inline-flex;align-items:center;line-height:1;letter-spacing:0;}
+  html body #screen-today .q-table td .status-pill *,
+  html body #screen-today .q-table td.q-bill button.bill-pill *,
+  html body #screen-today .q-table td.q-card .q-ver *{font-size:15px;}
+  html body #screen-today .q-table td .status-pill .ic,html body #screen-today .q-table td .status-pill svg.ic,
+  html body #screen-today .q-table td.q-card .q-ver .ic,html body #screen-today .q-table td.q-card .q-ver svg.ic{width:17px;height:17px;flex-shrink:0;}
+  html body #screen-today .q-table td.q-bill button.bill-pill::after{content:none;display:none;}
+  html body #screen-today .q-table td.q-bill button.bill-pill .q-caret,
+  html body #screen-today .q-table td .status-pill .q-caret{display:inline-flex;width:16px;height:16px;flex-shrink:0;color:var(--ink);}
+  html body #screen-today .q-table td.q-bill button.bill-pill .q-caret svg,
+  html body #screen-today .q-table td .status-pill .q-caret svg{width:16px;height:16px;color:var(--ink);}
+  html body #screen-today .q-table td.q-bill span.bill-pill{font-size:15px;}
 </style>
 </head>
 <body>
@@ -5765,7 +5782,7 @@ function renderQueue(){
 
     var bs = BILL_STATUS[r.bill] || BILL_STATUS['msp-submit'];
     var billCell = bs.open
-      ? '<button class="bill-pill '+bs.tone+' go" aria-haspopup="menu" onclick="event.stopPropagation();openBillMenu(this,\''+r.name+'\')">'+bs.label+'</button>'
+      ? '<button class="bill-pill '+bs.tone+' go" aria-haspopup="menu" onclick="event.stopPropagation();openBillMenu(this,\''+r.name+'\')"><span>'+bs.label+'</span><span class="q-caret" data-pdic="chevdown" aria-hidden="true"></span></button>'
       : '<span class="bill-pill '+bs.tone+'">'+bs.label+'</span>';
 
     QUEUE_ACTIONS.push(actions);
@@ -9568,6 +9585,6 @@ function rxSend(){
   toast('Prescription faxed to ' + RX_PHARM);
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-25 12:07</div>
+  <div class="build-stamp">v2 · build 2026-09-25 12:09</div>
 </body>
 </html>
