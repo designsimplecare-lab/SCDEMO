@@ -3747,6 +3747,48 @@
   #screen-today .q-table button.status-pill .q-caret svg *{stroke-width:2.2;}
   /* the caret's svg is .ic too, so the status tone rules reached it; the chevron stays ink */
   #screen-today .q-table button.status-pill .q-caret > svg.ic{color:var(--ink);}
+
+  /* shadowing, 25 Sep: pharmacy in the header, renewal in one flow, a call button that answers */
+  #pcv-c .vc-pharm{display:flex;align-items:center;gap:6px;margin:4px 0 0;font-size:15px;color:var(--ink);}
+  #pcv-c .vc-pharm .ic,#pcv-c .vc-pharm svg{width:16px;height:16px;color:var(--brand);}
+  #pcv-c .vc-pharm-fax{font-size:14px;color:var(--ink-faint);margin-left:4px;}
+  #pcv-c .rx-card{margin:0 0 14px;padding:16px;border-radius:12px;background:var(--brand-wash);}
+  #pcv-c .rx-hd{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  #pcv-c .rx-hd h5{margin:0;font-size:16px;font-weight:700;color:var(--ink);}
+  #pcv-c .rx-hd .ic,#pcv-c .rx-hd svg{width:17px;height:17px;color:var(--brand);}
+  #pcv-c .rx-x{margin-left:auto;width:44px;height:44px;border:0;background:none;font-size:22px;color:var(--ink-soft);cursor:pointer;border-radius:999px;}
+  #pcv-c .rx-grid{display:grid;grid-template-columns:1.3fr 1fr 1.2fr;gap:14px;align-items:start;}
+  #pcv-c .rx-f{display:flex;flex-direction:column;gap:6px;}
+  #pcv-c .rx-f > span{font-size:14px;font-weight:500;color:var(--ink-soft);}
+  #pcv-c .rx-f select{height:44px;padding:0 12px;border:1px solid var(--line-strong);border-radius:12px;background:var(--panel);font:inherit;font-size:15px;color:var(--ink);}
+  #pcv-c .rx-seg{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:var(--panel);}
+  #pcv-c .rx-seg button{height:38px;padding:0 12px;border:0;border-radius:999px;background:none;font:inherit;font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;white-space:nowrap;}
+  #pcv-c .rx-seg button.on{background:var(--brand);color:#fff;}
+  #pcv-c .rx-to{margin:0;min-height:44px;display:flex;align-items:center;font-size:15px;color:var(--ink);}
+  #pcv-c .rx-act{display:flex;align-items:center;gap:12px;margin-top:14px;}
+  #pcv-c .rx-status{display:flex;align-items:center;gap:8px;margin:0;font-size:15px;font-weight:600;color:var(--ink);}
+  #pcv-c .rx-status .ic,#pcv-c .rx-status svg{width:18px;height:18px;color:var(--good);}
+  #pcv-c .rx-card[hidden],#pcv-c .rx-status[hidden],#pcv-c .rx-act .btn[hidden]{display:none !important;}
+  #pcv-c .vc-acts .btn.dark.on-call{background:var(--good);border-color:var(--good);}
+  @media (max-width:1100px){#pcv-c .rx-grid{grid-template-columns:1fr;}}
+
+  /* Daniel, 25 Sep: the time line front and centre, on every screen */
+  .topbar .tb-now{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;margin:0 auto;
+    border-radius:999px;background:var(--wash);font-size:17px;color:var(--ink);white-space:nowrap;
+    font-variant-numeric:tabular-nums;}
+  .topbar .tb-now b{font-weight:700;}
+  .topbar .tb-now .tb-dot{color:var(--ink-faint);}
+  .topbar .tb-now .ic,.topbar .tb-now svg{width:19px;height:19px;color:var(--ink-soft);}
+  .topbar .tb-now.live{background:var(--brand-wash);}
+  .topbar .tb-now.live .ic,.topbar .tb-now.live svg{color:var(--brand);}
+  .topbar .tb-now:empty{display:none;}
+  @media (max-width:900px){.topbar .tb-now{font-size:15px;padding:0 12px;}}
+
+  /* Ani, 25 Sep: "do not have stroke on tags" -- tags are a tint, the tone rides on the chevron */
+  #screen-today .q-table td.q-bill button.bill-pill,
+  #screen-today .q-table td.q-card button.q-ver,
+  #screen-today .q-table td.q-card span.q-ver{border:0 !important;box-shadow:none !important;}
+  #screen-tasks .tk-kind,#screen-tasks .tk-prio{border:0 !important;box-shadow:none !important;background:var(--wash);}
 </style>
 </head>
 <body>
@@ -3784,6 +3826,10 @@
   <div class="main">
     <div class="topbar">
       <div class="tb-left"><span class="tb-title" id="tb-title">Today</span><span class="tb-date" id="tb-date"></span></div>
+      <!-- Daniel, 25 Sep: "This is very useful info and I want it front and center...
+           when I am in other time zones it orients me." His wording, verbatim:
+           Before: 7:21 AM Toronto · 3h 39m until window / During: 10:18 AM Toronto · 1h 42m left -->
+      <div class="tb-now" id="tb-now" role="timer" aria-live="off"></div>
       <div class="topbar-right">
       <nav class="vsw" aria-label="Prototype version"><a href="simplecare-physician-portal-lofi.html" onclick="vswGo(event,this)">V1</a><a href="simplecare-physician-portal-v2.html" onclick="vswGo(event,this)" aria-current="page">V2</a></nav>
       <button class="dsw-fab" id="dsw-fab" onclick="dswOpen()" title="Demo walkthrough" aria-label="Demo walkthrough"><span class="ic" data-pdic="demo"></span></button>
@@ -3844,7 +3890,6 @@
       <div class="work-tabs">
           <div class="lq-head">
             <span class="sect-title">Live queue <span class="wt-count" id="wt-queue-count">0</span></span>
-            <p class="lq-sub" id="tb-clock"></p>
           </div>
           <button class="wt-new" onclick="showScreen('registerpatient')" title="Register a new patient">
             <span class="ic" data-pcic="newpatient"></span> New patient
@@ -4132,6 +4177,9 @@
             <span>
               <p class="vc-nm" data-f="name">--</p>
               <p class="vc-sub"><span data-f="demo">--</span> &middot; PHN <span class="pc-mono" data-f="phn">--</span></p>
+              <!-- the pharmacy is part of who this patient is for any prescription:
+                   in the shadowed renewal it was the one thing read off the chart -->
+              <p class="vc-pharm"><span class="ic" data-pdic="chartnote"></span><span id="vc-pharm-name">Lincoln Pharmacy, Coquitlam</span><span class="vc-pharm-fax">fax on file</span></p>
             </span>
           </div>
           <div class="vc-safety">
@@ -4168,11 +4216,31 @@
                 </div>
                 <div id="sc-body"></div>
               </div>
+              <!-- Renewal in one flow, from the shadowed visit: "send along a
+                   three-month supply, 90 tablets, directly to Shoppers... when you
+                   receive that copy it means the fax has been delivered." -->
+              <div class="rx-card" id="rx-card" hidden>
+                <div class="rx-hd"><span class="ic" data-pdic="chartnote"></span><h5>Renew a prescription</h5>
+                  <button type="button" class="rx-x" onclick="rxClose()" aria-label="Close">&times;</button></div>
+                <div class="rx-grid">
+                  <label class="rx-f"><span>Medication</span><select id="rx-med"></select></label>
+                  <div class="rx-f"><span>Supply</span>
+                    <div class="rx-seg" role="group" aria-label="Supply">
+                      <button type="button" data-d="30" onclick="rxSupply(30)">1 month &middot; 30</button>
+                      <button type="button" data-d="90" class="on" onclick="rxSupply(90)">3 months &middot; 90</button>
+                    </div></div>
+                  <div class="rx-f"><span>Send to</span><p class="rx-to" id="rx-to"></p></div>
+                </div>
+                <div class="rx-act">
+                  <button type="button" class="btn dark" id="rx-send" onclick="rxSend()"><span class="ic" data-pdic="arrowup"></span>Send by fax</button>
+                  <p class="rx-status" id="rx-status" hidden></p>
+                </div>
+              </div>
               <textarea class="vc-note" id="vc-note-input" placeholder="Document the visit..."></textarea>
               <div class="vc-chips"><span class="vc-chips-l">Insert</span>
                 <button class="vc-chip" onclick="vcInsert('Follow-up template')">+ Follow-up template</button>
                 <button class="vc-chip" onclick="vcInsert('Normal exam')">+ Normal exam</button>
-                <button class="vc-chip" onclick="vcInsert('Rx renewal')">+ Rx renewal</button>
+                <button class="vc-chip" onclick="rxOpen()">+ Renew prescription</button>
                 <button class="vc-chip" onclick="toast('Diagnosis picker')">+ Diagnosis</button>
               </div>
               <div style="margin-top:14px;display:flex;gap:8px;">
@@ -4258,11 +4326,10 @@
             </div>
 
             <details class="vc-block vc-morebox" style="margin-bottom:0;">
-              <summary><span class="ic" data-pdic="chevr"></span>More <span class="vc-n">Care history, pharmacy, orders and referrals</span></summary>
+              <summary><span class="ic" data-pdic="chevr"></span>More <span class="vc-n">Care history, orders and referrals</span></summary>
               <div class="vc-h"><span class="ic" data-pcic="chart"></span><h4>Care history</h4></div>
               <div class="vc-line"><span><span class="l">Last visit</span><div class="vc-sub2">Dr. Pannozzo</div></span><span class="r">Jun 25, 2026</span></div>
               <div class="vc-line"><span><span class="l">Visits, 12 mo</span></span><span class="r">3</span></div>
-              <div class="vc-line"><span><span class="l">Pharmacy</span><div class="vc-sub2">Lincoln, Coquitlam</div></span><span class="r">&nbsp;</span></div>
 
               <div class="vc-h vc-h2"><span class="ic" data-pcic="task"></span><h4>Actions</h4></div>
               <div class="vc-qa">
@@ -5351,7 +5418,32 @@ function bcWindowState(now){
   }
   return 'Next BC call window tomorrow at ' + hLabel(BC_WINDOWS[0].start);
 }
+function shortGap(mins){
+  if(mins < 60) return mins + 'm';
+  var h = Math.floor(mins/60), m = mins % 60;
+  return h + 'h' + (m ? ' ' + m + 'm' : '');
+}
+function nowPill(now){
+  var bc = zoneParts(now, BC_ZONE), mins = bc.h*60 + bc.m;
+  var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  var head = clockText(now, tz) + ' ' + (localZoneLabel() || 'local');
+  if(!BC_WINDOWS.length) return {head:head, tail:'no call windows today', live:false};
+  for(var i = 0; i < BC_WINDOWS.length; i++){
+    var w = BC_WINDOWS[i], st = w.start*60, en = w.end*60;
+    if(mins < st) return {head:head, tail:shortGap(st - mins) + (i ? ' until next window' : ' until window'), live:false};
+    if(mins < en) return {head:head, tail:shortGap(en - mins) + ' left', live:true};
+  }
+  return {head:head, tail:'next window tomorrow ' + hLabel(BC_WINDOWS[0].start), live:false};
+}
 function renderTopClock(){
+  var pill = document.getElementById('tb-now');
+  if(pill){
+    var n = new Date(), s = nowPill(n), b = zoneParts(n, BC_ZONE);
+    pill.classList.toggle('live', s.live);
+    pill.title = b.weekday + ' ' + b.month + ' ' + b.day + ' · ' + bcWindowState(n);
+    pill.innerHTML = '<span class="ic" data-pdic="clock"></span><b>' + s.head + '</b><span class="tb-dot">·</span><span>' + s.tail + '</span>';
+    if(typeof paintPd === 'function') paintPd(pill);
+  }
   var el = document.getElementById('tb-clock'); if(!el) return;
   var now = new Date();
   var zone = localZoneLabel();
@@ -5365,6 +5457,7 @@ function renderTopClock(){
     local + '<span class="tb-win">' + bcWindowState(now) + '</span>';
 }
 setInterval(renderTopClock, 30000);
+document.addEventListener('DOMContentLoaded', renderTopClock);
 
 var WIN_ORDER = ['8-10','10-2','2-5','5-7'];
 var QV = 'current';
@@ -8800,6 +8893,7 @@ function openChart(name){
   pcShowSec('chart'); vcPane('summary'); setChartVer('c'); pcEndCall();
   syncTopTitle();
   scReset();
+  rxClose(); if(/renew|refill|rx\b|prescription/i.test(r.concern || '')) rxOpen();
   paintPd(document.getElementById('screen-patientchart'));
   showScreen('patientchart');
   syncTopTitle();
@@ -8811,7 +8905,22 @@ function pcShowSec(sec){
 }
 var pcInt=null, pcSecs=0;
 /* every chart version has its own call strip — drive them all */
+/* One press starts the call and the button says so: in the shadowed visit the
+   doctor pressed Call "like fifty times" because nothing showed it had worked.
+   A second press while a call is up does nothing. */
+var PC_ON_CALL = false;
+function pcCallBtns(txt, on){
+  document.querySelectorAll('#pcv-c .vc-acts .btn.dark').forEach(function(b){
+    b.classList.toggle('on-call', on); b.setAttribute('aria-pressed', String(on));
+    var t = b.querySelector('.pc-calltxt'); if(!t){ t=document.createElement('span'); t.className='pc-calltxt';
+      [].slice.call(b.childNodes).forEach(function(n){ if(n.nodeType===3) n.remove(); }); b.appendChild(t); }
+    t.textContent = txt; });
+}
 function pcStartCall(){
+  if(PC_ON_CALL) return;
+  PC_ON_CALL = true;
+  pcCallBtns('Calling…', true);
+  setTimeout(function(){ if(PC_ON_CALL) pcCallBtns('On call', true); }, 1200);
   document.querySelectorAll('.pc-callstrip').forEach(function(s){ s.classList.add('live'); });
   pcSecs=0;
   clearInterval(pcInt); pcInt=setInterval(function(){ pcSecs++;
@@ -8820,6 +8929,8 @@ function pcStartCall(){
   },1000);
 }
 function pcEndCall(){
+  PC_ON_CALL = false;
+  if(document.querySelector('#pcv-c .vc-acts .btn.dark')) pcCallBtns('Call', false);
   clearInterval(pcInt);
   document.querySelectorAll('.pc-callstrip').forEach(function(s){ s.classList.remove('live'); });
   /* a window change held back during the call can land now */
@@ -9237,7 +9348,43 @@ function vswGo(e, a){
   if(s === 'patientchart') s = 'today';
   location.href = a.getAttribute('href') + '#' + s;
 }
+
+/* ===== Renew a prescription (shadowing, 25 Sep) ===== */
+var RX_DAYS = 90;
+var RX_MEDS = {'default':[['Metformin 500 mg','twice daily'],['Amlodipine 5 mg','once daily']]};
+var RX_PHARM = 'Lincoln Pharmacy, Coquitlam';
+function rxOpen(){
+  var c = document.getElementById('rx-card'); if(!c) return;
+  var meds = RX_MEDS[PC_CURRENT] || RX_MEDS['default'];
+  document.getElementById('rx-med').innerHTML = meds.map(function(m,i){ return '<option value="'+i+'">'+m[0]+' &middot; '+m[1]+'</option>'; }).join('');
+  document.getElementById('rx-to').textContent = RX_PHARM + ' · by fax, with a copy to the patient';
+  document.getElementById('rx-status').hidden = true;
+  document.getElementById('rx-send').hidden = false;
+  rxSupply(90);
+  c.hidden = false;
+  paintPd(c);
+}
+function rxClose(){ var c = document.getElementById('rx-card'); if(c) c.hidden = true; }
+function rxSupply(d){
+  RX_DAYS = d;
+  document.querySelectorAll('#rx-card .rx-seg button').forEach(function(b){ b.classList.toggle('on', +b.dataset.d === d); b.setAttribute('aria-pressed', String(+b.dataset.d === d)); });
+}
+function rxSend(){
+  var meds = RX_MEDS[PC_CURRENT] || RX_MEDS['default'];
+  var m = meds[+document.getElementById('rx-med').value || 0];
+  var qty = RX_DAYS === 90 ? '90 tablets (3 months)' : '30 tablets (1 month)';
+  var now = new Date(), t = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  var st = document.getElementById('rx-status');
+  st.innerHTML = '<span class="ic" data-pdic="complete"></span>Faxed to ' + RX_PHARM + ' &middot; delivered ' + t + ' &middot; patient copy sent';
+  st.hidden = false;
+  document.getElementById('rx-send').hidden = true;
+  paintPd(st);
+  /* the note writes itself: "just send along ninety... and leave it at that" */
+  var n = document.getElementById('vc-note-input');
+  if(n) n.value = (n.value.trim() ? n.value.trim() + '\n' : '') + 'Rx renewal: ' + m[0] + ' ' + m[1] + ', ' + qty + ', faxed to ' + RX_PHARM + '.';
+  toast('Prescription faxed to ' + RX_PHARM);
+}
 </script>
-  <div class="build-stamp">v2 · build 2026-09-25 11:34</div>
+  <div class="build-stamp">v2 · build 2026-09-25 11:45</div>
 </body>
 </html>
