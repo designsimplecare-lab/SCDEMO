@@ -3997,6 +3997,32 @@
   :is(#screen-inbox,#today-inbox-preview) .ix-meta b{font-weight:600;color:var(--ink);}
   @media (max-width:800px){:is(#screen-inbox,#today-inbox-preview) .ix-src{grid-column:1;grid-row:auto;}}
   html body #screen-inbox #ixp-recv > #inbox-received > .ix-secttl:first-child{margin-top:16px;}
+  /* profile menu on SimpleCare Paper: opens below the pill, clear of the top bar's fade */
+  .topbar:has(.profile-dropdown.show){-webkit-mask-image:none;mask-image:none;}
+  html body .profile-dropdown{top:calc(100% + 10px);right:0;width:300px;padding:8px;border:0;border-radius:20px;z-index:220;
+    box-shadow:0 16px 48px rgba(23,24,28,.16),0 2px 6px rgba(23,24,28,.06);line-height:1.4;}
+  html body .pd-head{display:block;padding:12px 12px 14px;border-bottom:1px solid var(--line);margin-bottom:6px;}
+  html body .pd-head b{display:block;font-size:17px;font-weight:600;color:var(--ink);}
+  html body .pd-head .tb-name{font-size:14px;color:var(--ink-soft);margin-top:2px;}
+  html body .pd-head .pd-window{font-size:14px;color:var(--ink);margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--wash);}
+  html body .pd-item{height:44px;padding:0 12px;gap:12px;border-radius:12px;font-size:15px;color:var(--ink);}
+  html body .pd-item:hover{background:var(--paper);}
+  html body .pd-item .pd-ic,html body .pd-item .pd-ic svg{width:20px;height:20px;color:var(--ink);}
+  html body .pd-divider{border-top:1px solid var(--line);margin:6px 4px;}
+  .profile-trigger:focus:not(:focus-visible){outline:none;}
+  .profile-trigger:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+  :root[data-theme="dark"] html body .pd-item:hover{background:var(--wash);}
+  /* Ani, 25 Sep: a strict line-length rule. Reading text caps at 66 characters (the 45-75ch
+     readability band; 66 is the classic measure) and wraps to the next line instead of running across */
+  :root{--measure:66ch;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-body > :is(.ix-panelrow,.ix-find,.ix-disp){max-width:var(--measure);}
+  :is(#screen-inbox,#today-inbox-preview) .ix-find:not(:has(> .ix-v)){overflow-wrap:break-word;}
+  #screen-review .rv-narr,#screen-review .rv-ai p,#pcv-c .vc-sub2,#pcv-c .cp-det{max-width:var(--measure);}
+  /* culture sensitivities: one class per line, the label in its own column so the drug lists align */
+  html body :is(#screen-inbox,#today-inbox-preview) .ix-sens{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:2px 12px;}
+  html body :is(#screen-inbox,#today-inbox-preview) .ix-sens > span{display:contents;}
+  html body :is(#screen-inbox,#today-inbox-preview) .ix-sens .ix-sl{color:var(--ink-soft);}
+  html body :is(#screen-inbox,#today-inbox-preview) .ix-sens b.ix-sl{color:var(--ink);font-weight:600;}
 </style>
 </head>
 <body>
@@ -4060,7 +4086,7 @@
         </button>
         <div class="profile-dropdown" id="profile-dropdown">
           <div class="pd-head">
-            <div><b>Dr. Daniel Pannozzo</b><div class="tb-name">Physician</div></div>
+            <div><b>Dr. Daniel Pannozzo</b><div class="tb-name">Physician</div><div class="pd-window" id="pd-window"></div></div>
           </div>
           <button class="pd-item" onclick="toggleProfileMenu();showScreen('calendar')"><span class="pd-ic" data-pdic="calendar"></span> Schedule &amp; availability</button>
           <button class="pd-item" onclick="toggleProfileMenu();showScreen('feesettings')"><span class="pd-ic" data-pdic="feesettings"></span> Fee settings</button>
@@ -5658,7 +5684,8 @@ function renderTopClock(){
   if(pill){
     var n = new Date(), s = nowPill(n), b = zoneParts(n, BC_ZONE);
     pill.classList.toggle('live', s.live);
-    pill.title = b.weekday + ' ' + b.month + ' ' + b.day + ' · ' + bcWindowState(n);
+    var pdw = document.getElementById('pd-window');
+    if(pdw) pdw.textContent = b.weekday + ' ' + b.month + ' ' + b.day + ' · ' + bcWindowState(n);
     pill.innerHTML = '<b>' + s.head + '</b><span class="tbn-tail"><span class="ic" data-pdic="clock"></span>' + s.tail + '</span>';
     if(typeof paintPd === 'function') paintPd(pill);
   }
@@ -7724,7 +7751,7 @@ function inboxRowHtml(item, i){
       '<span class="ix-sens">'+[['Susceptible','S'],['Intermediate','I'],['Resistant','R']]
         .filter(function(p){ return grp(p[1]); })
         /* the exceptions carry the weight: resistant and intermediate, not susceptible */
-        .map(function(p){ return '<span>'+(p[1]==='S' ? p[0] : '<b>'+p[0]+'</b>')+' '+grp(p[1])+'</span>'; }).join('')+'</span></div>';
+        .map(function(p){ return '<span>'+(p[1]==='S' ? '<span class="ix-sl">'+p[0]+'</span>' : '<b class="ix-sl">'+p[0]+'</b>')+'<span>'+grp(p[1])+'</span></span>'; }).join('')+'</span></div>';
   } else if(item.kind==='trace'){
     findings = '<div class="ix-find'+(item.abnormalTrace?' abn':'')+'">'+item.interp+'</div>';
   } else if(item.kind==='screening'){
@@ -9649,6 +9676,6 @@ function rxSend(){
   toast('Prescription faxed to ' + RX_PHARM);
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-25 12:18</div>
+  <div class="build-stamp">v2 · build 2026-09-25 12:20</div>
 </body>
 </html>
