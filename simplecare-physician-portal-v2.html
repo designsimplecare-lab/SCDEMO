@@ -3867,6 +3867,38 @@
   .topbar .tb-left{flex:1 1 auto;min-width:0;}
   .topbar .tb-title{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .topbar .tb-now{flex:0 0 auto;margin:0 16px;}
+
+  /* Ani, 25 Sep: the chat docks to the bottom edge, like a messenger window, not dropping from the top */
+  .chat-panel{top:auto;bottom:0;right:24px;height:520px;max-height:calc(100vh - 96px);border-radius:20px 20px 0 0;
+    box-shadow:0 -8px 40px rgba(23,24,28,.14),0 -1px 4px rgba(23,24,28,.05);}
+  .chat-thread-list{flex:1;overflow-y:auto;}
+  body:has(#chat-panel.show) #ai-launcher{opacity:0;pointer-events:none;}
+
+  /* Ani, 25 Sep: "these tag texts are very bold" -- tags are medium weight; the name in the row stays the one bold thing */
+  html body .q-table td .status-pill,html body .q-table td .status-pill *,
+  html body .q-table td.q-bill .bill-pill,html body .q-table td.q-card .q-ver,
+  html body #screen-today .q-table td .status-pill,html body #screen-today .q-table td.q-bill .bill-pill,
+  html body #screen-today .q-table td.q-card .q-ver{font-weight:500;}
+  html body #screen-today .q-table td .status-pill{max-width:100%;box-sizing:border-box;white-space:nowrap;}
+  /* the soft tag tints must win over the older #screen-today tone rules */
+  html body #screen-today .q-table td.q-card .q-ver.warn,html body #screen-today .q-table td.q-bill .bill-pill.warn{background:var(--tag-warn);}
+  html body #screen-today .q-table td.q-card .q-ver.bad,html body #screen-today .q-table td.q-bill .bill-pill.bad{background:var(--tag-bad);}
+  html body #screen-today .q-table td.q-card .q-ver.info,html body #screen-today .q-table td.q-bill .bill-pill.info{background:var(--tag-info);}
+  html body #screen-today .q-table td.q-card .q-ver.warn svg{color:var(--tag-warn-ic);}
+  html body #screen-today .q-table td.q-card .q-ver.bad svg{color:var(--tag-bad-ic);}
+  html body #screen-today .q-table td.q-card .q-ver.info svg{color:var(--tag-info-ic);}
+
+  /* Ani, 25 Sep: billing opens like visit status does -- a black down caret, not a tinted arrow */
+  html body .q-table td.q-bill button.bill-pill::after,
+  html body .q-table td.q-bill button.bill-pill.warn::after,
+  html body .q-table td.q-bill button.bill-pill.bad::after,
+  html body .q-table td.q-bill button.bill-pill.info::after,
+  html body .q-table td.q-bill button.bill-pill.ok::after{
+    width:6px;height:6px;border-right:1.6px solid var(--ink);border-bottom:1.6px solid var(--ink);
+    transform:translateY(-2px) rotate(45deg);margin-left:4px;}
+  html body .q-table td.q-bill button.bill-pill{--bp-tone:var(--ink);}
+  /* the bill menu has no current choice, so its tick column stays empty */
+  .q-statusmenu button:not(.sel) .q-tick{visibility:hidden;}
 </style>
 </head>
 <body>
@@ -5698,7 +5730,7 @@ function renderQueue(){
 
     var bs = BILL_STATUS[r.bill] || BILL_STATUS['msp-submit'];
     var billCell = bs.open
-      ? '<button class="bill-pill '+bs.tone+' go" onclick="event.stopPropagation();openBilling(\''+r.name+'\')">'+bs.label+'</button>'
+      ? '<button class="bill-pill '+bs.tone+' go" aria-haspopup="menu" onclick="event.stopPropagation();openBillMenu(this,\''+r.name+'\')">'+bs.label+'</button>'
       : '<span class="bill-pill '+bs.tone+'">'+bs.label+'</span>';
 
     QUEUE_ACTIONS.push(actions);
@@ -6263,6 +6295,20 @@ function openStatusMenu(btn, name){
   menu.style.left = left + 'px';
 }
 
+/* Ani, 25 Sep: billing is a dropdown like visit status -- the next step first, the explanation behind it */
+function openBillMenu(btn, name){
+  var menu = document.getElementById('q-statusmenu');
+  if(qsmName === 'bill:'+name && menu && menu.classList.contains('show')){ closeStatusMenu(); return; }
+  var r = QUEUE_DATA.find(function(x){ return x.name===name; }); if(!r) return;
+  openStatusMenu(btn, name);
+  qsmName = 'bill:'+name;
+  var n = esc1(name);
+  menu.innerHTML =
+    '<button type="button" onclick="event.stopPropagation();closeStatusMenu();BL_FOR=\''+n+'\';BL_KIND=\'bill\';billingAct()">'+
+      '<span class="q-tick">&#10003;</span>'+(BILL_DO[r.bill]||'Continue')+'</button>'+
+    '<button type="button" onclick="event.stopPropagation();closeStatusMenu();openBilling(\''+n+'\')">'+
+      '<span class="q-tick">&#10003;</span>Details</button>';
+}
 function closeStatusMenu(){
   var menu = document.getElementById('q-statusmenu');
   if(menu) menu.classList.remove('show');
@@ -9487,6 +9533,6 @@ function rxSend(){
   toast('Prescription faxed to ' + RX_PHARM);
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-25 11:54</div>
+  <div class="build-stamp">v2 · build 2026-09-25 11:56</div>
 </body>
 </html>
