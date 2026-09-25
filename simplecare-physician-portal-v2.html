@@ -3971,6 +3971,10 @@
      The bar also drops its tone edge, which curved with the radius: tint and icon are enough. */
   html body #screen-inbox .ix-secttl + .inbox-row .ix-critic,html body #screen-inbox .inbox-row .ix-critic{display:none;}
   html body #screen-inbox .ix-secttl,html body #screen-inbox .ix-secttl.crit,html body #screen-inbox .ix-secttl.warn{box-shadow:none;}
+  /* Ani, 25 Sep: lab values ran too far across -- two per line, in aligned columns */
+  html body :is(#screen-inbox,#today-inbox-preview) .ix-find:has(> .ix-v){display:grid;grid-template-columns:repeat(2,max-content);
+    column-gap:32px;row-gap:6px;align-items:baseline;justify-content:start;}
+  html body :is(#screen-inbox,#today-inbox-preview) .ix-find:has(> .ix-v) > .ix-okn{grid-column:1 / -1;}
 </style>
 </head>
 <body>
@@ -9606,6 +9610,6 @@ function rxSend(){
   toast('Prescription faxed to ' + RX_PHARM);
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-25 12:13</div>
+  <div class="build-stamp">v2 · build 2026-09-25 12:14</div>
 </body>
 </html>
