@@ -3724,6 +3724,12 @@
   #screen-today .al-row:last-child,#screen-today #crit-list .al-row:last-child:has(+ *){border-bottom:1px solid var(--line);}
   #screen-today #attn-tasks .al-row:last-child{border-bottom:0;}
   #screen-today .al-row:has(.al-tone.crit),#screen-today .al-row:has(.al-tone.warn){border-radius:0;}
+
+  /* the AI summary wears the AI mark's colours: a soft wash from its sky cyan
+     to its brand blue, so the block reads as AI at a glance (Ani: "make gray
+     background gradient"). Text stays ink and passes AA on both ends. */
+  #screen-review .rv-ai{background:linear-gradient(120deg,#E9F8FF 0%,#EEF1FF 60%,#F1EEFF 100%);}
+  :root[data-theme="dark"] #screen-review .rv-ai{background:linear-gradient(120deg,rgba(95,221,255,.14) 0%,rgba(79,140,255,.14) 60%,rgba(67,83,232,.18) 100%);}
 </style>
 </head>
 <body>
@@ -9216,6 +9222,6 @@ function vswGo(e, a){
   location.href = a.getAttribute('href') + '#' + s;
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-24 15:44</div>
+  <div class="build-stamp">v2 · build 2026-09-24 21:15</div>
 </body>
 </html>
