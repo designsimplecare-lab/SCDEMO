@@ -3992,6 +3992,11 @@
   html body #screen-inbox .ix-tabpanel > .ix-order + div > .ix-secttl:first-child{margin-top:8px;}
   :root[data-theme="dark"] #screen-inbox .ix-tabs button:hover{background:var(--wash);}
   @media (max-width:760px){html body #screen-inbox .ix-tabs button{font-size:15px;padding:0 12px;gap:6px;}}
+  :is(#screen-inbox,#today-inbox-preview) .ix-src{grid-column:1;grid-row:2;font-size:14px;line-height:20px;color:var(--ink-soft);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+  :is(#screen-inbox,#today-inbox-preview) .ix-meta b{font-weight:600;color:var(--ink);}
+  @media (max-width:800px){:is(#screen-inbox,#today-inbox-preview) .ix-src{grid-column:1;grid-row:auto;}}
+  html body #screen-inbox #ixp-recv > #inbox-received > .ix-secttl:first-child{margin-top:16px;}
 </style>
 </head>
 <body>
@@ -4829,7 +4834,6 @@
           <button type="button" role="tab" id="ixt-done" aria-controls="ixp-done" aria-selected="false" onclick="ixTab('done')"><span class="ic" data-pdic="complete"></span>Signed off <span class="ix-n" id="signedoff-count"></span></button>
         </div>
         <div class="ix-tabpanel" role="tabpanel" id="ixp-recv" aria-labelledby="ixt-recv">
-          <p class="ix-order">Oldest received first, within each priority</p>
           <div id="inbox-received"></div>
         </div>
         <div class="ix-tabpanel" role="tabpanel" id="ixp-rev" aria-labelledby="ixt-rev" hidden><div id="inbox-reviewed"></div></div>
@@ -7760,7 +7764,10 @@ function inboxRowHtml(item, i){
       /* Ani: "it came two hour ago, one day ago -- it's redundant." Daniel
          agreed. The clinic's received time, on the right edge, so first in,
          first out reads straight down the column. */
-      '<div class="ix-meta">'+item.lab+' &middot; received '+item.received+'</div>'+
+      /* Ani, 25 Sep: the source sits under the patient's name; the right edge is just the time, bold,
+         without the word "received" */
+      '<div class="ix-src">'+item.lab+'</div>'+
+      '<div class="ix-meta" title="Received '+attr(item.received)+'"><b>'+item.received+'</b></div>'+
       findings+
       /* sign-off shows what was decided, so it is never signed blind */
       (item.status !== 'received' && item.disposition ? '<div class="ix-disp">'+item.disposition+'</div>' : '')+
@@ -9642,6 +9649,6 @@ function rxSend(){
   toast('Prescription faxed to ' + RX_PHARM);
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-25 12:15</div>
+  <div class="build-stamp">v2 · build 2026-09-25 12:18</div>
 </body>
 </html>
