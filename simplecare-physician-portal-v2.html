@@ -3736,6 +3736,17 @@
   #pcv-c .vc-vit .k{font-size:14px;font-weight:500;letter-spacing:0;color:var(--ink-soft);}
   #pcv-c .vc-vit .v{font-size:18px;font-weight:600;white-space:nowrap;}
   @media (max-width:900px){#pcv-c .vc-vitals{grid-template-columns:repeat(2,minmax(0,1fr));}}
+
+  /* The visit-status dropdown has to look like one (Ani: "not visible"): a solid
+     caret in ink, and a light pill behind the status so it reads as a control. */
+  #screen-today .q-table button.status-pill{background:var(--wash) !important;padding:0 12px 0 10px;border-radius:999px;min-height:40px;}
+  #screen-today .q-table button.status-pill:hover{background:var(--line) !important;}
+  :root[data-theme="dark"] #screen-today .q-table button.status-pill{background:var(--wash) !important;}
+  #screen-today .q-table button.status-pill .q-caret{opacity:1;color:var(--ink);width:14px;height:14px;margin-left:2px;}
+  #screen-today .q-table button.status-pill .q-caret svg{width:14px;height:14px;color:inherit;}
+  #screen-today .q-table button.status-pill .q-caret svg *{stroke-width:2.2;}
+  /* the caret's svg is .ic too, so the status tone rules reached it; the chevron stays ink */
+  #screen-today .q-table button.status-pill .q-caret > svg.ic{color:var(--ink);}
 </style>
 </head>
 <body>
@@ -9228,6 +9239,6 @@ function vswGo(e, a){
   location.href = a.getAttribute('href') + '#' + s;
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-24 21:17</div>
+  <div class="build-stamp">v2 · build 2026-09-24 21:18</div>
 </body>
 </html>
