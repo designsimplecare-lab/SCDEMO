@@ -4023,6 +4023,115 @@
   html body :is(#screen-inbox,#today-inbox-preview) .ix-sens > span{display:contents;}
   html body :is(#screen-inbox,#today-inbox-preview) .ix-sens .ix-sl{color:var(--ink-soft);}
   html body :is(#screen-inbox,#today-inbox-preview) .ix-sens b.ix-sl{color:var(--ink);font-weight:600;}
+  /* ===== Doctor review, 25 Sep (asks 1-5), ux-designer pass ===== */
+  #pcv-c :is(#vc-alerts,#slv,.slv-note,#rx-review,#rx-status,#rx-act,#rx-also,#vc-signed,#vc-finwarn,#pc-callsum,#vc-chips,#vc-finalize,#vc-savedraft,#vc-nextpt)[hidden],
+  #screen-review :is(#rv-nextbtn,#rv-callnow)[hidden]{display:none !important;}
+  #pcv-c #rx-card .btn,#pcv-c #slv .btn,#pcv-c #vc-alerts .btn,#pcv-c #vc-finwarn .btn,#pcv-c #vc-finrow .btn,#screen-review #rv-nextbtn,#screen-review #rv-callnow{
+    height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 18px;font-size:15px;font-weight:600;white-space:nowrap;box-sizing:border-box;}
+  #pcv-c #rx-card .btn .ic,#pcv-c #rx-card .btn svg,#pcv-c #slv .btn svg,#pcv-c #vc-alerts .btn svg,#pcv-c #vc-finwarn .btn svg,#pcv-c #vc-finrow .btn svg,
+  #screen-review #rv-nextbtn svg,#screen-review #rv-callnow svg{width:18px;height:18px;}
+  #pcv-c #rx-card .btn:disabled{opacity:.45;cursor:not-allowed;}
+
+  /* ask 1: the unsigned critical / high result, above the fold. Grey surface, tone on the icon,
+     the critical value the only red text -- the inbox's language */
+  #pcv-c #vc-alerts{display:flex;flex-direction:column;gap:10px;margin:0 0 14px;}
+  #pcv-c #vc-alerts .vca-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:6px 14px;align-items:start;
+    padding:16px 20px;border-radius:16px;background:var(--panel);box-shadow:var(--shadow-card);}
+  #pcv-c #vc-alerts .vca-ic,#pcv-c #vc-alerts .vca-ic svg{width:24px;height:24px;margin-top:1px;}
+  #pcv-c #vc-alerts .vca-row.crit .vca-ic{color:var(--crit);}
+  #pcv-c #vc-alerts .vca-row.alert .vca-ic{color:var(--warn);}
+  #pcv-c #vc-alerts .vca-main{min-width:0;}
+  #pcv-c #vc-alerts .vca-t{margin:0;font-size:17px;line-height:26px;color:var(--ink);}
+  #pcv-c #vc-alerts .vca-t b{font-weight:700;}
+  #pcv-c #vc-alerts .vca-v{font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);}
+  #pcv-c #vc-alerts .vca-row.crit .vca-v{color:var(--crit-text);}
+  #pcv-c #vc-alerts .vca-dir,#pcv-c #vc-alerts .vca-dir svg{display:inline-block;width:16px;height:16px;vertical-align:-2px;margin-left:2px;}
+  #pcv-c #vc-alerts .vca-row.crit .vca-dir{color:var(--crit);}
+  #pcv-c #vc-alerts .vca-row.alert .vca-dir{color:var(--warn);}
+  #pcv-c #vc-alerts .vca-ref{font-size:15px;color:var(--ink-soft);margin-left:6px;}
+  #pcv-c #vc-alerts .vca-s{margin:2px 0 0;font-size:15px;line-height:22px;color:var(--ink-soft);max-width:var(--measure);}
+  #pcv-c #vc-alerts .vca-s b{font-weight:600;color:var(--ink);}
+  #pcv-c #vc-alerts .vca-also{margin:0;padding:12px 20px;border-radius:16px;background:var(--panel);font-size:15px;line-height:22px;color:var(--ink);}
+  #pcv-c #vc-alerts .vca-also b{font-weight:600;}
+  @media (max-width:800px){#pcv-c #vc-alerts .vca-row{grid-template-columns:28px minmax(0,1fr);} #pcv-c #vc-alerts .vca-row .btn{grid-column:2;justify-self:start;}}
+
+  /* ask 3: since last visit, compact, one click to the full note */
+  #pcv-c #slv{margin:0 0 14px;padding:16px 18px;border-radius:12px;background:var(--paper);}
+  #pcv-c #slv .slv-hd{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin-bottom:10px;}
+  #pcv-c #slv .slv-hd .ic,#pcv-c #slv .slv-hd svg{width:18px;height:18px;color:var(--brand);align-self:center;}
+  #pcv-c #slv .slv-hd h5{margin:0;font-size:16px;font-weight:700;color:var(--ink);}
+  #pcv-c #slv .slv-when{font-size:15px;color:var(--ink-soft);}
+  #pcv-c #slv .slv-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 20px;}
+  #pcv-c #slv .slv-k{margin:0 0 4px;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  #pcv-c #slv ul{margin:0;padding-left:18px;font-size:15px;line-height:22px;color:var(--ink);}
+  #pcv-c #slv li{margin:0 0 4px;}
+  #pcv-c #slv ul.slv-pend{padding-left:0;list-style:none;}
+  #pcv-c #slv .slv-pend li{display:flex;gap:8px;align-items:flex-start;}
+  #pcv-c #slv .slv-pend .ic,#pcv-c #slv .slv-pend svg{flex:none;width:16px;height:16px;margin-top:3px;color:var(--ink-faint);}
+  #pcv-c #slv .slv-pend b{font-weight:600;}
+  #pcv-c #slv .slv-pend .vc-more{min-height:0;font-size:15px;}
+  #pcv-c #slv .slv-none{margin:0;font-size:15px;color:var(--ink-soft);}
+  #pcv-c #slv .slv-open{margin-top:12px;}
+  #pcv-c #slv .slv-note{margin-top:12px;padding:14px 16px;border-radius:12px;background:var(--panel);}
+  #pcv-c #slv .slv-ro{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  #pcv-c #slv .slv-ro .ic,#pcv-c #slv .slv-ro svg{width:16px;height:16px;color:var(--good);}
+  #pcv-c #slv dl{margin:0;max-width:var(--measure);}
+  #pcv-c #slv dt{font-size:14px;font-weight:600;color:var(--ink-soft);}
+  #pcv-c #slv dd{margin:0 0 10px;font-size:15px;line-height:22px;color:var(--ink);}
+  @media (max-width:1100px){#pcv-c #slv .slv-grid{grid-template-columns:1fr;}}
+
+  /* ask 2: the renewal card */
+  #pcv-c #rx-card .rx-line{display:grid;grid-template-columns:minmax(0,1.5fr) 112px 190px 124px 44px;gap:10px 14px;align-items:end;
+    padding:0 0 14px;margin:0 0 14px;border-bottom:1px solid var(--brand-line);}
+  #pcv-c #rx-card .rx-drug{align-self:center;min-width:0;}
+  #pcv-c #rx-card .rx-drug b{display:block;font-size:16px;font-weight:600;color:var(--ink);}
+  #pcv-c #rx-card .rx-drug i{display:block;font-style:normal;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #pcv-c #rx-card .rx-f input,#pcv-c #rx-card .rx-f select{height:44px;box-sizing:border-box;padding:0 12px;border:1px solid var(--line-strong);border-radius:12px;
+    background:var(--panel);font:inherit;font-size:15px;color:var(--ink);width:100%;}
+  #pcv-c #rx-card .rx-f input:disabled,#pcv-c #rx-card .rx-f select:disabled{background:transparent;border-color:transparent;padding-left:0;opacity:1;color:var(--ink);}
+  #pcv-c #rx-card .rx-qty p{margin:0;height:44px;display:flex;align-items:center;gap:4px;font-size:15px;color:var(--ink);}
+  #pcv-c #rx-card .rx-qty b{font-weight:700;font-variant-numeric:tabular-nums;}
+  #pcv-c #rx-card .rx-rm{width:44px;height:44px;border:0;border-radius:999px;background:none;font-size:22px;color:var(--ink-soft);cursor:pointer;}
+  #pcv-c #rx-card .rx-rm:hover{background:var(--panel);}
+  #pcv-c #rx-card .rx-none{margin:0 0 14px;font-size:15px;color:var(--ink-soft);}
+  #pcv-c #rx-card .rx-grid2{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px 24px;align-items:start;}
+  #pcv-c #rx-card .rx-seg button{font-size:15px;height:38px;}
+  #pcv-c #rx-card .rx-seg button:disabled{cursor:default;}
+  #pcv-c #rx-card .rx-seg button:disabled:not(.on){display:none;}
+  #pcv-c #rx-card .rx-also{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-top:14px;}
+  #pcv-c #rx-card .rx-also-k{font-size:14px;font-weight:600;color:var(--ink-soft);}
+  #pcv-c #rx-card .rx-also-i{display:inline-flex;align-items:center;gap:10px;font-size:15px;color:var(--ink);}
+  #pcv-c #rx-card .rx-review{margin-top:14px;padding:14px 16px;border-radius:12px;background:var(--panel);}
+  #pcv-c #rx-card .rx-rvh{margin:0 0 6px;font-size:15px;font-weight:700;color:var(--ink);}
+  #pcv-c #rx-card .rx-review ul{margin:0 0 8px;padding-left:18px;font-size:15px;line-height:22px;color:var(--ink);max-width:var(--measure);}
+  #pcv-c #rx-card .rx-review b{font-weight:600;}
+  #pcv-c #rx-card .rx-rvto{margin:0;font-size:15px;line-height:22px;color:var(--ink);max-width:var(--measure);}
+  #pcv-c #rx-card .rx-review .rx-act{margin-top:12px;}
+  #pcv-c #rx-card #rx-status{display:flex;flex-direction:column;align-items:stretch;gap:10px;margin-top:14px;font-weight:400;}
+  #pcv-c #rx-card :is(#rx-lines,#rx-opts)[hidden]{display:none !important;}
+  #pcv-c #rx-card #rx-lines[hidden] ~ .rx-also{margin-top:0;}
+  #pcv-c #rx-card .rx-st{display:flex;align-items:flex-start;gap:10px;margin:0;}
+  #pcv-c #rx-card .rx-st .ic,#pcv-c #rx-card .rx-st svg{flex:none;width:18px;height:18px;margin-top:2px;}
+  #pcv-c #rx-card .rx-st.wait .ic{color:var(--ink-faint);}
+  #pcv-c #rx-card .rx-st.done .ic{color:var(--good);}
+  #pcv-c #rx-card .rx-st b{display:block;font-size:15px;font-weight:600;color:var(--ink);}
+  #pcv-c #rx-card .rx-st i{display:block;font-style:normal;font-size:14px;line-height:20px;color:var(--ink-soft);max-width:var(--measure);}
+  @media (max-width:1100px){#pcv-c #rx-card .rx-line{grid-template-columns:1fr 1fr;} #pcv-c #rx-card .rx-drug{grid-column:1 / -1;} #pcv-c #rx-card .rx-grid2{grid-template-columns:1fr;}}
+
+  /* ask 3: one scroll region -- the note grows, it never scrolls inside the page */
+  #pcv-c .vc-note{overflow:hidden;resize:none;min-height:120px;}
+  #pcv-c .vc-note.signed{background:var(--wash);border-color:transparent;cursor:default;}
+  /* ask 4: signed state, the check before finalizing, the running call total */
+  #pcv-c #vc-signed{display:flex;align-items:center;gap:8px;margin:10px 0 0;font-size:15px;color:var(--ink);}
+  #pcv-c #vc-signed .ic,#pcv-c #vc-signed svg{width:18px;height:18px;color:var(--good);}
+  #pcv-c #vc-finwarn{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;margin-top:14px;padding:12px 16px;border-radius:12px;background:var(--paper);}
+  #pcv-c #vc-finwarn > .ic,#pcv-c #vc-finwarn > .ic svg{width:20px;height:20px;color:var(--warn);}
+  #pcv-c #vc-finwarn p{flex:1 1 240px;margin:0;font-size:15px;line-height:22px;color:var(--ink);max-width:var(--measure);}
+  #pcv-c #vc-finrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+  #pcv-c #pc-callsum{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums;}
+  #pcv-c #pc-callsum .ic,#pcv-c #pc-callsum svg{width:18px;height:18px;color:var(--ink-faint);}
+  #pcv-c #pc-callstrip-c{font-size:15px;font-variant-numeric:tabular-nums;}
+  #pcv-c .sc-held{color:var(--ink);}
 </style>
 </head>
 <body>
@@ -4110,7 +4219,7 @@
       <div class="box" id="alerts-box">
         <div id="attn-clip">
         <div id="crit-list"></div>
-        <div class="al-row">
+        <div class="al-row" data-intake="Gloria Mcdonald">
           <span class="al-mark"></span>
           <span class="al-who"><span class="ic al-tone warn" role="img" aria-label="flagged" data-pdic="alert"></span><b>Gloria Mcdonald</b><i>74F</i></span>
           <span class="al-test">Intake flag</span>
@@ -4180,6 +4289,8 @@
       <div class="rv-top">
         <button class="pc-back" id="rv-back" onclick="rvBack()"><span class="ic" data-pcic="back"></span> <span id="rv-backlbl">Back to inbox</span></button>
         <button type="button" class="btn" id="rv-chart" hidden><span class="ic" data-pdic="chartnote"></span>Open chart</button>
+        <!-- Doctor review ask 5: "With 14 routine results that's 14 round trips." -->
+        <button type="button" class="btn" id="rv-nextbtn" hidden onclick="rvNextResult()"><span class="ic" data-pdic="chevr"></span>Next result</button>
       </div>
       <h1 id="rv-title">Review</h1>
       <p class="sub" id="rv-sub">&nbsp;</p>
@@ -4252,6 +4363,8 @@
             <p class="rv-commit" id="rv-commit" aria-live="polite"></p>
             <div class="rv-done">
               <button type="button" class="btn dark" id="rv-accept" onclick="rvAccept()"><span class="ic" data-pdic="usercheck"></span>Accept &amp; assign</button>
+              <!-- Doctor review ask 1: "Gloria is next in my own queue, and the review doesn't say so." -->
+              <button type="button" class="btn" id="rv-callnow" hidden><span class="ic" data-pdic="phone"></span>Call now</button>
               <button type="button" class="btn" id="rv-modify" onclick="rvModify()"><span class="ic" data-pdic="edit"></span>Modify</button>
               <button type="button" class="btn dark" id="rv-record" onclick="rvDone(false)"><span class="ic" data-pdic="complete"></span>Record follow-up</button>
               <button type="button" class="btn dark" id="rv-recordno" onclick="rvDone(false)"><span class="ic" data-pdic="complete"></span>Record no follow-up</button>
@@ -4433,8 +4546,15 @@
             <button class="btn dark" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call</button>
             <button class="btn" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pcic="task"></span> Task MOA</button>
             <span class="pc-callstrip" id="pc-callstrip-c"><span class="dot"></span> <span id="pc-timer-c">00:00</span> <button class="hang" onclick="pcEndCall()">End</button></span>
+            <!-- shadowing 3: "the timer restarts from 0:00, so the screen no longer shows how long he has been with the patient" -->
+            <span class="pc-callsum" id="pc-callsum" hidden></span>
           </div>
         </div>
+
+        <!-- Doctor review 25 Sep, ask 1: "I opened Gloria's chart from the queue, and the troponin isn't
+             on it." An unsigned critical or high result for this patient sits here, above the fold,
+             in the inbox's own language: grey surface, tone on the icon, the critical value in red. -->
+        <div class="vc-alerts" id="vc-alerts" hidden></div>
 
         <div class="vc-cols">
           <!-- LEFT: this visit -->
@@ -4447,6 +4567,10 @@
             <div class="vc-block vc-visit">
               <div class="vc-h"><span class="ic" data-pcic="edit"></span><h4>This visit</h4>
                 <span class="right"><span class="vc-count" data-f="concern">--</span></span></div>
+              <!-- Doctor review ask 3 / shadowing 2: "The whole call (about 2.5 min) was spent reading the
+                   previous visit's note." The last plan in short lines, what to ask, what is pending.
+                   Hidden when there is no previous visit. -->
+              <div class="slv" id="slv" hidden></div>
               <div class="sc-block" id="sc-block">
                 <div class="sc-hd">
                   <span class="sc-dot"></span>
@@ -4459,33 +4583,41 @@
               <!-- Renewal in one flow, from the shadowed visit: "send along a
                    three-month supply, 90 tablets, directly to Shoppers... when you
                    receive that copy it means the fax has been delivered." -->
+              <!-- Doctor review ask 2: "Twice daily for 3 months is 180 tablets. Ninety tablets is 45 days."
+                   The card now takes the patient's own medications, shows the dose, works the quantity
+                   out from directions x days, checks before anything leaves, and offers the MOA route
+                   from shadowing 2 ("Can you hear me, Jebney, or am I talking to myself?"). -->
               <div class="rx-card" id="rx-card" hidden>
                 <div class="rx-hd"><span class="ic" data-pdic="chartnote"></span><h5>Renew a prescription</h5>
                   <button type="button" class="rx-x" onclick="rxClose()" aria-label="Close">&times;</button></div>
-                <div class="rx-grid">
-                  <label class="rx-f"><span>Medication</span><select id="rx-med"></select></label>
-                  <div class="rx-f"><span>Supply</span>
-                    <div class="rx-seg" role="group" aria-label="Supply">
-                      <button type="button" data-d="30" onclick="rxSupply(30)">1 month &middot; 30</button>
-                      <button type="button" data-d="90" class="on" onclick="rxSupply(90)">3 months &middot; 90</button>
-                    </div></div>
+                <div id="rx-lines"></div>
+                <div class="rx-grid2" id="rx-opts">
+                  <div class="rx-f"><span>Supply</span><div class="rx-seg" id="rx-seg" role="group" aria-label="Supply"></div></div>
                   <div class="rx-f"><span>Send to</span><p class="rx-to" id="rx-to"></p></div>
                 </div>
-                <div class="rx-act">
-                  <button type="button" class="btn dark" id="rx-send" onclick="rxSend()"><span class="ic" data-pdic="arrowup"></span>Send by fax</button>
-                  <p class="rx-status" id="rx-status" hidden></p>
+                <div class="rx-also" id="rx-also"></div>
+                <div class="rx-review" id="rx-review" hidden></div>
+                <div class="rx-act" id="rx-act">
+                  <button type="button" class="btn dark" id="rx-send" onclick="rxReview('fax')"><span class="ic" data-pdic="eye"></span>Review &amp; fax</button>
+                  <button type="button" class="btn" id="rx-moa" onclick="rxReview('moa')"><span class="ic" data-pdic="taskmoa"></span>Ask MOA to send</button>
                 </div>
+                <div class="rx-status" id="rx-status" hidden></div>
               </div>
-              <textarea class="vc-note" id="vc-note-input" placeholder="Document the visit..."></textarea>
-              <div class="vc-chips"><span class="vc-chips-l">Insert</span>
+              <textarea class="vc-note" id="vc-note-input" placeholder="Document the visit..." oninput="vcGrow()"></textarea>
+              <p class="vc-signed" id="vc-signed" hidden></p>
+              <div class="vc-chips" id="vc-chips"><span class="vc-chips-l">Insert</span>
                 <button class="vc-chip" onclick="vcInsert('Follow-up template')">+ Follow-up template</button>
                 <button class="vc-chip" onclick="vcInsert('Normal exam')">+ Normal exam</button>
                 <button class="vc-chip" onclick="rxOpen()">+ Renew prescription</button>
                 <button class="vc-chip" onclick="toast('Diagnosis picker')">+ Diagnosis</button>
               </div>
-              <div style="margin-top:14px;display:flex;gap:8px;">
-                <button class="btn dark" onclick="finalizeVisit()"><span class="ic" data-pdic="complete"></span>Finalize &amp; review billing</button>
-                <button class="btn" onclick="toast('Draft saved')"><span class="ic" data-pdic="edit"></span>Save draft</button>
+              <!-- Doctor review ask 4 / shadowing 2: "The big 'Finalize Visit' button beneath does not say which
+                   visit it finalizes." It names today's visit, asks first on an empty note, and closes the visit. -->
+              <div class="vc-finwarn" id="vc-finwarn" hidden></div>
+              <div class="vc-finrow" id="vc-finrow">
+                <button class="btn dark" id="vc-finalize" onclick="finalizeVisit()"><span class="ic" data-pdic="complete"></span>Finalize today&rsquo;s visit</button>
+                <button class="btn" id="vc-savedraft" onclick="toast('Draft saved')"><span class="ic" data-pdic="edit"></span>Save draft</button>
+                <button class="btn dark" id="vc-nextpt" hidden><span class="ic" data-pdic="chevr"></span><span></span></button>
               </div>
             </div>
 
@@ -4553,7 +4685,7 @@
               <div class="vc-line"><span><span class="l">CBC</span><div class="vc-sub2">Jun 25</div></span><span class="r">Normal</span></div>
             </div>
 
-            <div class="vc-block" style="margin-bottom:0;">
+            <div class="vc-block" id="vc-medrail" style="margin-bottom:0;">
               <div class="vc-h"><span class="ic" data-pcic="meds"></span><h4>Medications <span class="vc-n">2</span></h4></div>
               <div class="vc-line"><span><span class="l">Metformin 500 mg</span><div class="vc-sub2">Twice daily</div></span></div>
               <div class="vc-line"><span><span class="l">Amlodipine 5 mg</span><div class="vc-sub2">Once daily</div></span></div>
@@ -4568,7 +4700,7 @@
             <details class="vc-block vc-morebox" style="margin-bottom:0;">
               <summary><span class="ic" data-pdic="chevr"></span>More <span class="vc-n">Care history, orders and referrals</span></summary>
               <div class="vc-h"><span class="ic" data-pcic="chart"></span><h4>Care history</h4></div>
-              <div class="vc-line"><span><span class="l">Last visit</span><div class="vc-sub2">Dr. Pannozzo</div></span><span class="r">Jun 25, 2026</span></div>
+              <div class="vc-line"><span><span class="l">Last visit</span><div class="vc-sub2">Dr. Pannozzo</div></span><span class="r" id="vc-lastvisit">Jun 25, 2026</span></div>
               <div class="vc-line"><span><span class="l">Visits, 12 mo</span></span><span class="r">3</span></div>
 
               <div class="vc-h vc-h2"><span class="ic" data-pcic="task"></span><h4>Actions</h4></div>
@@ -5211,6 +5343,10 @@
       <button data-v="c" class="on" onclick="setChartVer('c');dswSync()">C &middot; Focused</button>
       <button data-v="d" onclick="setChartVer('d');dswSync()">D &middot; Dark rail</button>
     </div>
+  </div>
+  <div class="dsw-sec">
+    <p>Simulate</p>
+    <div class="dsw-grid"><button onclick="pcDropCall()" style="width:100%;">Drop the current call</button></div>
   </div>
   <div class="dsw-sec">
     <div class="dsw-row"><span>Show design notes</span><button class="dsw-tog" id="dsw-notes" onclick="dswNotes()"></button></div>
@@ -6025,8 +6161,14 @@ function renderCriticals(){
   var open = INBOX_ITEMS.filter(function(it){
     return labTier(it) === 'critical' && it.status === 'received';
   });
+  /* doctor review ask 5: "Gloria takes two rows. That's one patient and one decision."
+     The intake flag folds into her result row, as a second reason and a second button. */
+  var intakeRows = [].slice.call(document.querySelectorAll('#attn-clip .al-row[data-intake]'));
+  intakeRows.forEach(function(r){ r.style.display = ''; });
   list.innerHTML = open.map(function(c){
     var idx = INBOX_ITEMS.indexOf(c);
+    var ir = intakeRows.filter(function(r){ return r.dataset.intake === c.patient; })[0], flag = '';
+    if(ir){ ir.style.display = 'none'; var ft = ir.querySelector('.flagtext'); flag = ft ? ft.textContent : ''; }
     var tier = labTier(c);
     var pick = tier === 'critical' ? 'crit' : 'alert';
     var cx = c.tests.filter(function(t){ return t.f && t.f.indexOf(pick) === 0; })[0];
@@ -6045,9 +6187,12 @@ function renderCriticals(){
       '<span class="al-ref">ref '+cx.ref+'</span>'+
       '<span class="al-src">'+
         (cx.concern ? '<b class="al-concern">'+cx.concern+'</b> \u00b7 ' : '')+
+        /* the second reason goes before the basis, which is what the ellipsis may cut */
+        (flag ? 'Intake flag ' + flag + ' \u00b7 ' : '')+
         (cx.basis || (c.panel + ' \u00b7 ' + c.received))+'</span>'+
       '<span class="al-acts">'+
         '<button type="button" class="al-btn" onclick="event.stopPropagation();openReview('+idx+')"><span class="ic" data-pdic="eye"></span>Review result</button>'+
+        (flag ? '<button type="button" class="al-btn" onclick="event.stopPropagation();openBrief(\''+c.patient.replace(/'/g,'')+'\')"><span class="ic" data-pdic="eye"></span>Review intake</button>' : '')+
       '</span></div>';
   }).join('');
   paintPd(list);
@@ -6664,11 +6809,10 @@ var DOC_TASKS = [
     patient:'Gloria Mcdonald', preferred:'Gloria', chart:'#6448',
     verified:true, status:'open', carried:0, due:'Sep 15', dueIn:2,
     note:'Wants to move her follow-up to next week. Anything after the stress test on Sep 12.' },
-  { id:'t6', title:'Review MRI report', type:'Imaging', prio:'urgent', age:0,
-    to:'Dr. D. Pannozzo', role:'Physician',
-    patient:'Frank Delacroix', preferred:'Frank', chart:'#3908',
-    verified:true, status:'open', carried:0, due:'Today', dueIn:0,
-    note:'Report came back overnight. Read before the afternoon window.' },
+  /* t6 "Review MRI report" removed. Daniel, 21 Sep: "Review MRI report" is a mystery, the
+     line should say what is wrong in under five words -- "Don't keep it a mystery." -- and
+     imaging and consult reports rarely need urgent review. There is no report behind it to
+     draw a finding from, so it goes rather than being given an invented one. */
   { id:'t7', title:'Sign off imaging', type:'Imaging', prio:'routine', age:1,
     to:'Dr. D. Pannozzo', role:'Physician',
     patient:'Carol-Anne Feldman', preferred:'Carol', chart:'#2251',
@@ -6944,21 +7088,36 @@ function closeConditions(){ document.getElementById('cd-panel').classList.remove
 
 /* The spec's trigger: the problem-list review surfaces at the end of the
    visit, on the way through billing — not as something to remember to open. */
-function finalizeVisit(){
+function finalizeVisit(force){
+  var r = QUEUE_DATA.filter(function(x){ return x.name===PC_CURRENT; })[0];
+  if(r && r.signed){ toast('Today\u2019s visit is already signed'); return; }
   var sugg = condSuggFor(PC_CURRENT);
   if(sugg.length){
     openConditions();
     toast(sugg.length + ' suggested problem-list update' + (sugg.length>1?'s':'') + ' before you sign');
     return;
   }
-  var r = QUEUE_DATA.filter(function(x){ return x.name===PC_CURRENT; })[0];
-  if(r && (r.bill==='pending' || r.bill==='none')){
-    r.bill = 'submitted';
-    if(typeof renderQueue==='function'){ renderQueue(); updateClaimCount(); renderClaims(); }
-    toast('Visit signed and claim submitted — nothing left behind');
-  } else {
-    toast('Visit signed');
+  /* shadowing 2: "Finalize with an empty note today asks first." Shadowing 3: a signed note
+     still carried "[document findings including reducibility ...]". */
+  var n = document.getElementById('vc-note-input'), txt = n ? n.value.trim() : '';
+  if(!force){
+    if(!txt){ vcFinWarn('Today\u2019s note is empty. Finalize anyway?'); return; }
+    var br = txt.match(/\[[^\]]{3,}\]/);
+    if(br){ vcFinWarn('Today\u2019s note still has template text: \u201c' + br[0].slice(0, 60) + (br[0].length > 60 ? '\u2026' : '') + '\u201d. Finalize anyway?'); return; }
   }
+  if(PC_ON_CALL) pcEndCall();
+  if(!r){ toast('Visit signed'); return; }
+  /* shadowing 2: "The patient leaves the queue at once." */
+  r.status = 'done'; r.wait = '\u2014';
+  r.signed = {at: new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}), note: txt};
+  var billed = false;
+  if(r.bill==='pending' || r.bill==='none'){ r.bill = 'submitted'; billed = true; }
+  if(typeof renderQueue==='function') renderQueue();
+  if(billed && typeof updateClaimCount==='function'){ updateClaimCount(); renderClaims(); }
+  if(typeof updateWorkCounts==='function') updateWorkCounts();
+  pcFill({visitline: 'Visit completed \u00b7 today \u00b7 signed ' + r.signed.at, statuslbl: STATUS_LABEL[r.status]});
+  vcNoteState(r);
+  toast('Today\u2019s visit signed \u00b7 ' + (r.pref || r.name.split(',')[0]) + ' moved to Completed' + (billed ? ' \u00b7 claim submitted' : ''));
 }
 function condApprove(id){
   var name = PC_CURRENT;
@@ -7205,7 +7364,7 @@ var SC_PROPOSALS = [
    quote:'&ldquo;Cardiology asked that I start you on a low dose of bisoprolol, two point five milligrams once a day.&rdquo;',
    at:'02:09', owner:'moa'},
   {id:'s4', after:15, kind:'Follow-up', conf:'hi',
-   action:'Telephone review in 4 weeks', prio:'routine',
+   action:'Telephone review in 4 weeks', prio:'routine', holdOnCrit:true,
    detail:'Assess heart rate and blood pressure response to bisoprolol. Around Oct 7.',
    quote:'&ldquo;I want to see how your blood pressure and pulse sit on it, so let&rsquo;s speak again in four weeks.&rdquo;',
    at:'02:41', owner:'moa'},
@@ -7215,7 +7374,7 @@ var SC_PROPOSALS = [
    quote:'&ldquo;If that pressure comes on while you&rsquo;re sitting still, or it lasts more than about ten minutes &hellip; call 911.&rdquo;',
    at:'03:01', owner:'self'},
   {id:'s6', after:5, kind:'Diagnosis', conf:'mid',
-   action:'Code as stable angina',
+   action:'Code as stable angina', holdOnCrit:true,
    detail:'Exertional, relieved by rest, unchanged in character. Suggested only &mdash; no coding is applied without you.',
    quote:'&ldquo;Still get that pressure when I walk up the hill &hellip; settles after a minute or two &hellip; not worse.&rdquo;',
    at:'00:31', owner:'self'}
@@ -7224,8 +7383,8 @@ var SC_PROPOSALS = [
 var SC_NOTE = [
   {after:5, text:'SUBJECTIVE\nExertional chest pressure, unchanged in character since last review. Comes on walking uphill, settles within one to two minutes of rest. No pain at rest, no nocturnal symptoms, no orthopnoea.'},
   {after:11, text:'\n\nBACKGROUND\nSeen by cardiology Jul 28. Exercise stress test arranged for Sep 12 &mdash; patient has received no confirmation. Lipid profile and HbA1c requested pre-visit; requisition not attended.'},
-  {after:15, text:'\n\nASSESSMENT\nStable exertional angina. No features of instability. Known hypertension, type 2 diabetes.'},
-  {after:18, text:'\n\nPLAN\nStart bisoprolol 2.5 mg daily alongside existing amlodipine. Fresh requisition for lipids and HbA1c. Office to chase the cardiology booking. Telephone review in four weeks for rate and pressure response. Chest pain safety netting given verbally and released to the portal.'}
+  {after:15, holdOnCrit:true, text:'\n\nASSESSMENT\nStable exertional angina. No features of instability. Known hypertension, type 2 diabetes.'},
+  {after:18, holdOnCrit:true, text:'\n\nPLAN\nStart bisoprolol 2.5 mg daily alongside existing amlodipine. Fresh requisition for lipids and HbA1c. Office to chase the cardiology booking. Telephone review in four weeks for rate and pressure response. Chest pain safety netting given verbally and released to the portal.'}
 ];
 
 var scState = 'off';     // off | consent | live | review
@@ -7252,29 +7411,40 @@ function scStart(){
   scTimer = setInterval(scTick, 1100);
   toast('Recording. Gloria consented at the start of the call.');
 }
-function scTick(){
-  if(scIdx >= SC_TURNS.length){ scStop(); return; }
-  scIdx++;
+/* Doctor review ask 1: the scripted call drafts "ASSESSMENT: Stable exertional angina. No
+   features of instability" and "Telephone review in four weeks" -- written before today's
+   critical troponin existed. With an unsigned critical result on the chart, the scribe keeps
+   what the patient said and holds back the assessment, the plan and the two proposals that
+   contradict the result, and says so. */
+function scHeld(x){ return !!(x && x.holdOnCrit && PC_CURRENT && chartCritical(PC_CURRENT)); }
+function scCritLine(){
+  var it = chartCritical(PC_CURRENT); if(!it) return '';
+  var t = (it.tests||[]).filter(function(x){ return x.f && x.f.indexOf('crit')===0; })[0];
+  return '\n\nASSESSMENT AND PLAN\nNot drafted. ' + (t ? t.n + ' ' + t.v + ' ' + t.u : it.panel) +
+    ' (critical, received ' + it.received.replace(/^Today, /,'today ') + ') is not part of this conversation. Assess with the result before writing the plan.';
+}
+function scStep(){
   SC_PROPOSALS.forEach(function(p){
-    if(p.after === scIdx && scSeen.indexOf(p.id) === -1) scSeen.push(p.id);
+    if(p.after === scIdx && scSeen.indexOf(p.id) === -1 && !scHeld(p)) scSeen.push(p.id);
   });
   SC_NOTE.forEach(function(nb){
     if(nb.after === scIdx){
-      var n = document.getElementById('vc-note-input');
-      if(n) n.value += (n.value ? '' : '') + nb.text.replace(/&rsquo;/g,'’').replace(/&mdash;/g,'—');
+      var n = document.getElementById('vc-note-input'); if(!n) return;
+      if(scHeld(nb)){ if(n.value.indexOf('ASSESSMENT AND PLAN') === -1) n.value += scCritLine(); }
+      else n.value += nb.text.replace(/&rsquo;/g,'’').replace(/&mdash;/g,'—');
+      vcGrow();
     }
   });
+}
+function scTick(){
+  if(scIdx >= SC_TURNS.length){ scStop(); return; }
+  scIdx++;
+  scStep();
   renderScribe();
 }
 function scSkip(){
   clearInterval(scTimer);
-  while(scIdx < SC_TURNS.length){ scIdx++;
-    SC_PROPOSALS.forEach(function(p){ if(p.after===scIdx && scSeen.indexOf(p.id)===-1) scSeen.push(p.id); });
-    SC_NOTE.forEach(function(nb){ if(nb.after===scIdx){
-      var n=document.getElementById('vc-note-input');
-      if(n) n.value += nb.text.replace(/&rsquo;/g,'’').replace(/&mdash;/g,'—');
-    }});
-  }
+  while(scIdx < SC_TURNS.length){ scIdx++; scStep(); }
   scStop();
 }
 function scStop(){
@@ -7404,6 +7574,7 @@ function renderScribe(){
     '<p class="sc-lbl">Proposed &mdash; not yet created</p>'+
     props+
     ((accepted||dropped) ? '<p class="sc-rule"><b>'+accepted+'</b> accepted &middot; <b>'+dropped+'</b> dismissed this call.</p>' : '')+
+    (chartCritical(PC_CURRENT) ? '<p class="sc-rule sc-held"><b>Held back:</b> the assessment, the plan, &ldquo;Code as stable angina&rdquo; and &ldquo;Telephone review in 4 weeks&rdquo;. They were drafted without today&rsquo;s critical result.</p>' : '')+
     '<p class="sc-rule">The scribe writes the draft note and suggests what follows from it. It cannot create a task, send a requisition, prescribe, or release anything to the patient &mdash; <b>you press the button, every time</b>.</p>';
 
   var tx = document.getElementById('sc-tx');
@@ -7432,20 +7603,10 @@ function sendTaskMoa(){
   var type = chip ? chip.textContent : 'Other';
   var self = document.getElementById('tm-keep') && document.getElementById('tm-keep').checked;
   var prioEl = document.querySelector('#tm-prio .tm-chip.active');
-  var row = QUEUE_DATA.filter(function(x){ return x.name===patient; })[0];
-  DOC_TASKS.unshift({
-    id:'t'+Date.now(), title: note ? note.split('.')[0].slice(0,60) : (type + ' task'),
+  moaTask({patient: patient, self: self, note: note,
+    title: note ? note.split('.')[0].slice(0,60) : (type + ' task'),
     type: TASK_TYPES.indexOf(type)>-1 ? type : 'Documents',
-    prio: prioEl ? prioEl.dataset.p : 'routine', age:0,
-    to: self ? 'Dr. D. Pannozzo' : MOA_ON_SERVICE,
-    role: self ? 'Physician' : 'MOA',
-    patient: row ? row.legal : (patient || 'Not patient-specific'),
-    preferred: row ? row.pref : '—',
-    chart: row ? (row.chart || '#—') : '#—',
-    verified:true, status:'open', carried:0, due:'Sep 19', dueIn:6,
-    note: note || 'No note added'
-  });
-  renderTasks();
+    prio: prioEl ? prioEl.dataset.p : 'routine'});
   closeTaskMoa();
   toast(self ? 'Kept as your own task' : ('Task sent to ' + MOA_ON_SERVICE));
 }
@@ -8790,15 +8951,30 @@ var RV_DRAFT = null, RV_DRAFT_FOR = -1;
 function rvNo(){
   var it = INBOX_ITEMS[RV_I];
   rvSetFollow(false);
-  if(!(it && labTier(it))) rvDone(false);
+  /* doctor review ask 5: from the inbox, a routine "No follow-up" lands on the next result */
+  if(!(it && labTier(it))) rvDone(RV_RETURN === 'inbox');
 }
 /* Which commit buttons show, and where. With a draft, Accept & assign sits
    right under the question -- above the fold -- and the editable draft follows
    as the detail it acts on. Without one there is a single Record button. */
+/* the patient's row in today's queue, if they are still to be seen or called back */
+function rvQueueRow(it){
+  if(!it || typeof QUEUE_DATA === 'undefined') return null;
+  return QUEUE_DATA.filter(function(r){
+    return r.name.split(',')[0].trim() === it.patient && ['waiting','next','delayed','progress','missed','dropped'].indexOf(r.status) > -1;
+  })[0] || null;
+}
+function rvNextIndex(){
+  var n = INBOX_ITEMS.length;
+  for(var k = 1; k < n; k++){ var j = (RV_I + k) % n; if(INBOX_ITEMS[j].status === 'received') return j; }
+  return -1;
+}
+function rvNextResult(){ var j = rvNextIndex(); if(j > -1) openReview(j); else toast('No other results waiting'); }
 function rvSyncDecision(){
   var g = function(id){ return document.getElementById(id); }, cb = g('rv-commitbox');
   if(!cb) return;
   var it = INBOX_ITEMS[RV_I], tiered = !!(it && labTier(it));
+  var nb = g('rv-nextbtn'); if(nb) nb.hidden = rvNextIndex() === -1;
   var hasDraft = RV_FOLLOW === true && !!(RV_DRAFT && RV_DRAFT.tier);
   var closing = RV_FOLLOW === false && tiered;
   cb.hidden = !(RV_FOLLOW === true || closing);
@@ -8819,9 +8995,15 @@ function rvSyncDecision(){
      and the line above Accept promised a booking Accept never made. */
   g('rv-picksbox').hidden = hasDraft;
   g('rv-nextbox').hidden = hasDraft;
+  var qr = rvQueueRow(it), cn = g('rv-callnow');
+  if(cn){
+    cn.hidden = !(hasDraft && qr);
+    if(qr) cn.onclick = function(){ callPatient(qr.name); };
+  }
   if(hasDraft){
     var c = g('rv-commit');
-    if(c) c.textContent = 'Accept & assign records the review and sends this plan to ' + rvPairedMoa() + ' as a task.';
+    if(c) c.textContent = 'Accept & assign records the review and sends this plan to ' + rvPairedMoa() + ' as a task.' +
+      (qr ? ' ' + (qr.pref || it.patient.split(' ')[0]) + ' is ' + (qr.status === 'next' ? 'next in your queue' : 'in today\u2019s queue') + ': Call now opens the chart on the call.' : '');
   }
 }
 function rvSetFollow(v){
@@ -8935,7 +9117,8 @@ function buildCareEvents(r){
   ev.push({when:'Today, 8:02 AM', kind:'note', title:'Joined the live queue', desc:'Window ' + (WIN_TEXT[r.win]||r.win) + ' \u00b7 status ' + STATUS_LABEL[r.status] + '.', pill:'Visit', pcls:'note'});
   ev.push({when:'Jun 25, 2026', kind:'lab', title:'Lab result: Ferritin', desc:'18 \u00b5g/L \u2014 below reference range. Consider iron studies.', pill:'Low', pcls:'low'});
   ev.push({when:'Jun 25, 2026', kind:'lab', title:'Lab result: CBC + differential', desc:'Within normal limits.', pill:'Normal', pcls:'normal'});
-  ev.push({when:'Jun 25, 2026', kind:'note', title:'Visit note', desc:'Discussed medication adherence and follow-up plan with ' + base.split(' ')[0] + '.', pill:'Note', pcls:'note'});
+  var L = (typeof PT_LAST !== 'undefined') ? PT_LAST[r.name] : null;
+  if(L) ev.push({when:L.date, kind:'note', title:'Visit note \u00b7 ' + L.why, desc:L.note.P, pill:'Note', pcls:'note'});
   ev.push({when:'Jun 25, 2026', kind:'vitals', title:'Vitals recorded', desc:'BP 122/78 mmHg \u00b7 HR 72 bpm \u00b7 Temp 36.8 \u00b0C', pill:'Normal', pcls:'normal'});
   ev.push({when:'Ongoing', kind:'med', title:'Medication: Metformin 500 mg', desc:'Twice daily with meals', pill:'Ongoing', pcls:'ongoing'});
   ev.push({when:'Ongoing', kind:'med', title:'Medication: Amlodipine 5 mg', desc:'Once daily', pill:'Ongoing', pcls:'ongoing'});
@@ -9097,7 +9280,9 @@ function vcToggle(grp, btn){
 }
 function vcInsert(t){
   var n=document.getElementById('vc-note-input'); if(!n) return;
+  if(n.readOnly) return;
   n.value = (n.value ? n.value.replace(/\s*$/,'') + '\n' : '') + t + ': ';
+  vcGrow();
   n.focus();
 }
 function pcFill(map){
@@ -9118,18 +9303,23 @@ function openChart(name){
   var demo = (name.match(/(\d+)([MF])/)||[]);
   var sexTxt = demo[2]==='M' ? 'Male' : (demo[2]==='F' ? 'Female' : 'Not recorded');
   var ageTxt = demo[1] ? demo[1]+' yrs' : 'Age not recorded';
+  /* doctor review: the banner read "Greg · Age not recorded · Not recorded" while the queue
+     row said Gregory Paul Nakashima, 58Y, Male. On a renewal he confirms identity out loud. */
+  if(r.sex){ sexTxt = r.sex; }
+  if(r.age){ ageTxt = r.age.replace(/Y$/, '') + ' yrs'; }
   pcFill({
-    name: base,
-    initials: pcInitials(name),
-    pref: base.split(' ')[0],
-    demo: ageTxt + ' \u00b7 ' + sexTxt,
+    name: r.legal || base,
+    initials: pcInitials(r.legal || name),
+    pref: r.pref || base.split(' ')[0],
+    /* REQ-ID-01/03: the name the patient goes by, worded as the queue row words it */
+    demo: ((r.pref && r.legal && r.legal.split(' ')[0] !== r.pref) ? 'Preferred: ' + r.pref + ' \u00b7 ' : '') + ageTxt + ' \u00b7 ' + sexTxt,
     dob: 'Mar 10, 1952',
     sex: sexTxt,
-    phn: '9650 791 088',
+    phn: ptChart(name).phn,
     concern: r.concern,
     window: WIN_TEXT[r.win] || r.win,
     statuslbl: STATUS_LABEL[r.status],
-    visitline: 'Open visit \u00b7 today \u00b7 ' + STATUS_LABEL[r.status],
+    visitline: (r.signed ? 'Visit completed \u00b7 today \u00b7 signed ' + r.signed.at : 'Open visit \u00b7 today \u00b7 ' + STATUS_LABEL[r.status]),
     twh: '0'+Math.max(0, 2), twm: (r.wait && /min/.test(r.wait)) ? r.wait.replace(/\D/g,'').padStart(2,'0') : '00',
     acuitychip: r.redflag ? 'Urgent' : 'Routine',
     reason: base + ' booked a virtual visit for ' + r.concern.toLowerCase() + '.' + (r.redflag ? ' Pre-visit intake flagged concerning symptoms.' : ''),
@@ -9159,6 +9349,10 @@ function openChart(name){
     el.onclick = r.redflag ? function(){ openBrief(PC_CURRENT); } : null;
     el.title = r.redflag ? 'Open the intake note' : '';
   });
+  var phEl = document.getElementById('vc-pharm-name'), ph = ptChart(name).pharm;
+  if(phEl){ phEl.textContent = ph || 'No pharmacy on file'; var fx = phEl.parentNode.querySelector('.vc-pharm-fax'); if(fx) fx.hidden = !ph; }
+  var lv = document.getElementById('vc-lastvisit'); if(lv) lv.textContent = PT_LAST[name] ? PT_LAST[name].date : 'No previous visit';
+  renderMedRail(name); renderSinceLast(name); renderChartAlerts(name);
   vdTab('overview');
   renderLabPanels(); renderLabOrders();
   clearInterval(vdInt); var vdw=document.getElementById('vd-call'); if(vdw) vdw.classList.remove('live');
@@ -9169,10 +9363,11 @@ function openChart(name){
   pcShowSec('chart'); vcPane('summary'); setChartVer('c'); pcEndCall();
   syncTopTitle();
   scReset();
-  rxClose(); if(/renew|refill|rx\b|prescription/i.test(r.concern || '')) rxOpen();
+  rxClose(); if(/renew|refill|rx\b|prescription/i.test(r.concern || '') || (RX_STATE[name] && RX_STATE[name].status.length)) rxOpen();
   paintPd(document.getElementById('screen-patientchart'));
   showScreen('patientchart');
   syncTopTitle();
+  vcNoteState(r);
 }
 function pcShowSec(sec){
   document.querySelectorAll('.pc-sec').forEach(function(s){ s.classList.remove('active'); });
@@ -9192,21 +9387,46 @@ function pcCallBtns(txt, on){
       [].slice.call(b.childNodes).forEach(function(n){ if(n.nodeType===3) n.remove(); }); b.appendChild(t); }
     t.textContent = txt; });
 }
+/* Shadowing 3: a dropped call, a redial, "and the timer restarts from 0:00, so the screen
+   no longer shows how long he has been with the patient". A redial is the same contact:
+   the timer carries on, and the strip counts the calls ("2 calls · 04:10"). */
+var PC_CALL = {};
+function pcFmt(n){ return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0'); }
+function pcCallRec(){ return PC_CALL[PC_CURRENT] || (PC_CALL[PC_CURRENT] = {calls:0, secs:0, dropped:false}); }
+function pcTimerText(c){ return (c.calls > 1 ? c.calls + ' calls \u00b7 ' : '') + pcFmt(c.secs); }
 function pcStartCall(){
   if(PC_ON_CALL) return;
+  var c = pcCallRec(); c.calls++; c.dropped = false;
   PC_ON_CALL = true;
   pcCallBtns('Calling…', true);
   setTimeout(function(){ if(PC_ON_CALL) pcCallBtns('On call', true); }, 1200);
   document.querySelectorAll('.pc-callstrip').forEach(function(s){ s.classList.add('live'); });
-  pcSecs=0;
-  clearInterval(pcInt); pcInt=setInterval(function(){ pcSecs++;
-    var t = String(Math.floor(pcSecs/60)).padStart(2,'0')+':'+String(pcSecs%60).padStart(2,'0');
-    ['pc-timer','pc-timer-c'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=t; });
-  },1000);
+  pcSecs = c.secs;
+  var paint = function(){ ['pc-timer','pc-timer-c'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=pcTimerText(c); }); };
+  paint(); pcCallSum();
+  clearInterval(pcInt); pcInt=setInterval(function(){ pcSecs++; c.secs = pcSecs; paint(); },1000);
+}
+function pcCallSum(){
+  var el = document.getElementById('pc-callsum'); if(!el) return;
+  var c = PC_CALL[PC_CURRENT];
+  if(!c || !c.calls || PC_ON_CALL){ el.hidden = true; el.innerHTML = ''; return; }
+  el.innerHTML = '<span class="ic" data-pdic="phone"></span><span>' +
+    (c.dropped ? 'Call dropped at ' + pcFmt(c.secs) : 'Call ended \u00b7 ' + pcFmt(c.secs) + (c.calls > 1 ? ' total' : '')) +
+    (c.calls > 1 ? ' \u00b7 ' + c.calls + ' calls' : '') + '</span>';
+  el.hidden = false;
+  paintPd(el);
+}
+/* demo: what shadowing 3 showed, the line going dead mid-call */
+function pcDropCall(){
+  if(!PC_ON_CALL){ toast('Start a call on a chart first'); return; }
+  pcCallRec().dropped = true; pcEndCall();
+  if(typeof dswClose === 'function') dswClose();
 }
 function pcEndCall(){
   PC_ON_CALL = false;
-  if(document.querySelector('#pcv-c .vc-acts .btn.dark')) pcCallBtns('Call', false);
+  var c = PC_CALL[PC_CURRENT];
+  if(document.querySelector('#pcv-c .vc-acts .btn.dark')) pcCallBtns(c && c.calls ? (c.dropped ? 'Redial' : 'Call again') : 'Call', false);
+  pcCallSum();
   clearInterval(pcInt);
   document.querySelectorAll('.pc-callstrip').forEach(function(s){ s.classList.remove('live'); });
   /* a window change held back during the call can land now */
@@ -9593,15 +9813,19 @@ updateWorkCounts();
 paintPd(document.getElementById('screen-today'));
 
 /* Deep links, so a screen can be shared or screenshotted directly:
-   #inbox opens the Inbox, #inbox:review:3 also opens result 3 in review. */
-(function(){
+   #inbox opens the Inbox, #inbox:review:3 also opens result 3 in review.
+   Doctor review, 25 Sep: "#chart:5 ... throws in rxOpen because RX_MEDS is declared further
+   down the script than the deep-link code. The rest of the script then stops." A var is
+   hoisted but not yet assigned at this point, so the links now wait for the whole script:
+   an inline script at the end of <body> has run in full before DOMContentLoaded fires. */
+document.addEventListener('DOMContentLoaded', function(){
   var h = (location.hash || '').slice(1); if(!h) return;
   var parts = h.split(':');
   if(document.getElementById('screen-' + parts[0])) showScreen(parts[0]);
   if(parts[1] === 'review' && typeof openReview === 'function') openReview(+parts[2] || 0);
   /* #chart:N opens the chart of queue row N */
   if(parts[0] === 'chart' && typeof openChart === 'function' && QUEUE_DATA[+parts[1]||0]) openChart(QUEUE_DATA[+parts[1]||0].name);
-})();
+});
 
 function dockPlace(){
   var d = document.getElementById('demo-dock'), sb = document.getElementById('sidebar'),
@@ -9640,42 +9864,465 @@ function vswGo(e, a){
   location.href = a.getAttribute('href') + '#' + s;
 }
 
-/* ===== Renew a prescription (shadowing, 25 Sep) ===== */
-var RX_DAYS = 90;
-var RX_MEDS = {'default':[['Metformin 500 mg','twice daily'],['Amlodipine 5 mg','once daily']]};
-var RX_PHARM = 'Lincoln Pharmacy, Coquitlam';
+/* ===== Per-patient chart facts =====
+   Doctor review, 25 Sep: "Every chart shows the same PHN (9650 791 088), the same
+   pharmacy (Lincoln Pharmacy, Coquitlam) and the same two medications." In a demo
+   to doctors, a PHN that differs between a lab and a chart reads as a wrong-patient error.
+   DEMO DATA: invented, plausible, not clinical guidance. PHNs match the inbox where the
+   inbox has the same patient. */
+var PT_CHART = {
+  'Gloria Mcdonald, 74F':      {phn:'9650 115 886', pharm:'Lincoln Pharmacy, Coquitlam'},
+  'Andrey Abushakhmanov, 24M': {phn:'9650 724 614', pharm:'London Drugs, Burnaby'},
+  'Carol-Anne Feldman, 44F':   {phn:'9650 849 225', pharm:'Lincoln Pharmacy, Coquitlam'},
+  'Behdis Maleki, 35F':        {phn:'9650 333 502', pharm:'Save-On-Foods Pharmacy, Kamloops'},
+  'K Arli Eyre, 41':           {phn:'9650 912 170', pharm:''},
+  'Greg':                      {phn:'9650 441 207', pharm:'Shoppers Drug Mart, Maple Ridge'},
+  'Manjit':                    {phn:'9650 618 334', pharm:'London Drugs, Surrey'},
+  'Korynn':                    {phn:'9650 507 961', pharm:''}
+};
+function ptChart(name){ return PT_CHART[name] || {phn:'—', pharm:''}; }
+
+/* ===== Renew a prescription (shadowing 1 and 2, 25 Sep; doctor review ask 2) =====
+   DEMO DATA: each queue patient's active medications, chosen to fit their concern
+   (Greg's blood pressure renewal -> an antihypertensive). Not clinical guidance.
+     intake   the drug the intake names, preselected
+     plan     the last plan's current dose, where the demo data has one (shadowing 2:
+              "I'm happy to represcribe this three months at 300" -- the titration target,
+              not the starting dose)
+   The quantity is never typed into the data: it is worked out from the directions. */
+var RX_FREQ = [['once daily',1],['twice daily',2],['three times daily',3],['at bedtime',1]];
+var RX_MEDS = {
+  'Gloria Mcdonald, 74F': [
+    {drug:'Amlodipine', dose:'5 mg', freq:'once daily', form:'tablets', last:'Aug 30'},
+    {drug:'Metformin', dose:'500 mg', freq:'twice daily', form:'tablets', last:'Aug 30'}],
+  'Behdis Maleki, 35F': [
+    {drug:'Ferrous fumarate', dose:'300 mg', freq:'once daily', form:'tablets', last:'Jun 27', intake:true,
+     plan:{dose:'300 mg', src:'Aug 4 plan: continue 300 mg daily'}}],
+  'Greg': [
+    {drug:'Metoprolol tartrate', dose:'25 mg', freq:'twice daily', form:'tablets', last:'Jun 26', intake:true,
+     plan:{dose:'50 mg', src:'Jun 24 plan: titrated to 50 mg twice daily'}},
+    {drug:'Ramipril', dose:'10 mg', freq:'once daily', form:'capsules', last:'Jun 26'},
+    {drug:'Atorvastatin', dose:'20 mg', freq:'once daily', form:'tablets', last:'Jun 26'}],
+  'Manjit': [
+    {drug:'Levothyroxine', dose:'75 mcg', freq:'once daily', form:'tablets', last:'Aug 14', intake:true}]
+};
+function rxMeds(name){ return RX_MEDS[name] || []; }
+function rxPerDay(freq){ var f = RX_FREQ.filter(function(x){ return x[0]===freq; })[0]; return f ? f[1] : 1; }
+function rxQty(line, days){ return rxPerDay(line.freq) * days; }
+function rxMonths(days){ return days === 90 ? '3 months' : '1 month'; }
+function rxEsc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+function rxPharm(){ return ptChart(PC_CURRENT).pharm; }
+function rxNowTime(){ return new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
+
+/* the card's state lives with the patient, so a fax that is still sending keeps its
+   status if the doctor opens another chart and comes back */
+var RX_STATE = {};
+function rxLineFrom(m){
+  return {drug:m.drug, dose:(m.plan && m.plan.dose) || m.dose, listDose:m.dose, freq:m.freq,
+          form:m.form, last:m.last, planSrc:m.plan ? m.plan.src : ''};
+}
+function rxStateFor(name){
+  if(RX_STATE[name]) return RX_STATE[name];
+  var meds = rxMeds(name);
+  var first = meds.filter(function(m){ return m.intake; })[0] || meds[0];
+  return (RX_STATE[name] = {lines: first ? [rxLineFrom(first)] : [], days:90, stage:'edit', route:null, sent:[], status:[]});
+}
 function rxOpen(){
-  var c = document.getElementById('rx-card'); if(!c) return;
-  var meds = RX_MEDS[PC_CURRENT] || RX_MEDS['default'];
-  document.getElementById('rx-med').innerHTML = meds.map(function(m,i){ return '<option value="'+i+'">'+m[0]+' &middot; '+m[1]+'</option>'; }).join('');
-  document.getElementById('rx-to').textContent = RX_PHARM + ' · by fax, with a copy to the patient';
-  document.getElementById('rx-status').hidden = true;
-  document.getElementById('rx-send').hidden = false;
-  rxSupply(90);
+  var c = document.getElementById('rx-card'); if(!c || !PC_CURRENT) return;
+  rxStateFor(PC_CURRENT);
+  rxRender();
   c.hidden = false;
-  paintPd(c);
 }
 function rxClose(){ var c = document.getElementById('rx-card'); if(c) c.hidden = true; }
-function rxSupply(d){
-  RX_DAYS = d;
-  document.querySelectorAll('#rx-card .rx-seg button').forEach(function(b){ b.classList.toggle('on', +b.dataset.d === d); b.setAttribute('aria-pressed', String(+b.dataset.d === d)); });
+function rxRender(){
+  var c = document.getElementById('rx-card'); if(!c || !PC_CURRENT) return;
+  var st = rxStateFor(PC_CURRENT), single = st.lines.length === 1;
+  var editing = st.stage === 'edit', sent = st.stage === 'sent';
+  /* a signed visit is closed: the card keeps only what was sent */
+  var qrow = QUEUE_DATA.filter(function(x){ return x.name === PC_CURRENT; })[0];
+  var locked = !!(qrow && qrow.signed);
+  if(locked && !st.status.length){ rxClose(); return; }
+  if(locked){ sent = true; editing = false; }
+  var linesEl = document.getElementById('rx-lines');
+  linesEl.innerHTML = st.lines.length ? st.lines.map(function(l, i){
+    var sub = [];
+    if(l.planSrc) sub.push('Dose from the ' + l.planSrc.split(':')[0] + (l.listDose !== l.dose ? ' (list says ' + l.listDose + ')' : ''));
+    if(l.last) sub.push('last dispensed ' + l.last);
+    return '<div class="rx-line">' +
+      '<div class="rx-drug"><b>' + l.drug + '</b><i>' + sub.join(' · ') + '</i></div>' +
+      '<label class="rx-f rx-dose"><span>Dose</span><input type="text" value="' + rxEsc(l.dose) + '"' + (editing ? '' : ' disabled') +
+        ' oninput="rxSet(' + i + ',\'dose\',this.value)" aria-label="Dose for ' + rxEsc(l.drug) + '"></label>' +
+      '<label class="rx-f rx-dir"><span>Directions</span><select' + (editing ? '' : ' disabled') + ' onchange="rxSet(' + i + ',\'freq\',this.value)">' +
+        RX_FREQ.map(function(f){ return '<option' + (f[0]===l.freq ? ' selected' : '') + '>' + f[0] + '</option>'; }).join('') + '</select></label>' +
+      '<div class="rx-f rx-qty"><span>Quantity</span><p><b>' + rxQty(l, st.days) + '</b> ' + l.form + '</p></div>' +
+      (!single && editing ? '<button type="button" class="rx-rm" onclick="rxRemove(' + i + ')" aria-label="Remove ' + rxEsc(l.drug) + '">&times;</button>' : '') +
+    '</div>';
+  }).join('') : '<p class="rx-none">No active medications on file for this patient.</p>';
+
+  /* "3 months · 180 tablets" when one medication is being renewed; with several,
+     each row carries its own quantity and the supply says only how long */
+  var seg = document.getElementById('rx-seg');
+  seg.innerHTML = [30, 90].map(function(d){
+    var lbl = rxMonths(d) + (single ? ' &middot; ' + rxQty(st.lines[0], d) + ' ' + st.lines[0].form : '');
+    return '<button type="button" class="' + (st.days===d ? 'on' : '') + '" aria-pressed="' + (st.days===d) + '"' +
+      (editing ? '' : ' disabled') + ' onclick="rxSupply(' + d + ')">' + lbl + '</button>';
+  }).join('');
+  var ph = rxPharm();
+  document.getElementById('rx-to').textContent = ph ? ph + ' · by fax, with a copy to the patient' : 'No pharmacy on file. Ask the patient on the call.';
+
+  /* shadowing 2: "Is the gabapentin the only medication that you need right now?" */
+  var inCard = st.lines.map(function(l){ return l.drug; });
+  var others = rxMeds(PC_CURRENT).filter(function(m){ return inCard.indexOf(m.drug) === -1; });
+  var also = document.getElementById('rx-also');
+  also.hidden = !others.length || locked;
+  also.innerHTML = others.length ? '<span class="rx-also-k">Also active</span>' + others.map(function(m){
+    var done = st.sent.indexOf(m.drug) > -1;
+    return '<span class="rx-also-i"><span>' + m.drug + (done ? ' &middot; renewed today' : ' ' + m.dose + ' &middot; ' + m.freq) + '</span>' +
+      (done ? '' : '<button type="button" class="btn" onclick="rxAdd(\'' + m.drug.replace(/'/g,'') + '\')"><span class="ic" data-pdic="reopen"></span>Renew too</button>') + '</span>';
+  }).join('') : '';
+
+  /* once sent, the card is its status: the form goes, "Renew too" stays for the rest */
+  linesEl.hidden = sent; document.getElementById('rx-opts').hidden = sent;
+  var none = !st.lines.length;
+  document.getElementById('rx-send').disabled = none;
+  document.getElementById('rx-moa').disabled = none;
+  document.getElementById('rx-act').hidden = !editing;
+  if(locked){ document.getElementById('rx-review').hidden = true; rxRenderStatus(st); paintPd(c); return; }
+  rxRenderReview(st);
+  rxRenderStatus(st);
+  paintPd(c);
 }
-function rxSend(){
-  var meds = RX_MEDS[PC_CURRENT] || RX_MEDS['default'];
-  var m = meds[+document.getElementById('rx-med').value || 0];
-  var qty = RX_DAYS === 90 ? '90 tablets (3 months)' : '30 tablets (1 month)';
-  var now = new Date(), t = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-  var st = document.getElementById('rx-status');
-  st.innerHTML = '<span class="ic" data-pdic="complete"></span>Faxed to ' + RX_PHARM + ' &middot; delivered ' + t + ' &middot; patient copy sent';
-  st.hidden = false;
-  document.getElementById('rx-send').hidden = true;
-  paintPd(st);
-  /* the note writes itself: "just send along ninety... and leave it at that" */
-  var n = document.getElementById('vc-note-input');
-  if(n) n.value = (n.value.trim() ? n.value.trim() + '\n' : '') + 'Rx renewal: ' + m[0] + ' ' + m[1] + ', ' + qty + ', faxed to ' + RX_PHARM + '.';
-  toast('Prescription faxed to ' + RX_PHARM);
+function rxSet(i, k, v){
+  var st = rxStateFor(PC_CURRENT); if(!st.lines[i]) return;
+  st.lines[i][k] = v;
+  if(k === 'freq') rxRender();
+}
+function rxSupply(d){ var st = rxStateFor(PC_CURRENT); st.days = d; rxRender(); }
+function rxRemove(i){ var st = rxStateFor(PC_CURRENT); st.lines.splice(i, 1); rxRender(); }
+function rxAdd(drug){
+  var st = rxStateFor(PC_CURRENT);
+  var m = rxMeds(PC_CURRENT).filter(function(x){ return x.drug.replace(/'/g,'') === drug; })[0]; if(!m) return;
+  /* after a send, Renew too starts the next one rather than reopening the sent one */
+  if(st.stage === 'sent'){ st.lines = []; st.stage = 'edit'; st.route = null; }
+  st.lines.push(rxLineFrom(m));
+  rxRender();
+}
+function rxLineText(l, days){
+  return l.drug + ' ' + l.dose.trim() + ' ' + l.freq + ', ' + rxQty(l, days) + ' ' + l.form + ' (' + rxMonths(days) + ')';
+}
+/* A fax to a pharmacy cannot be taken back, so nothing goes before this check. */
+function rxReview(route){
+  var st = rxStateFor(PC_CURRENT); if(!st.lines.length) return;
+  var bad = st.lines.filter(function(l){ return !l.dose.trim(); })[0];
+  if(bad){ toast('Add the dose for ' + bad.drug); return; }
+  st.stage = 'review'; st.route = route;
+  rxRender();
+  var b = document.getElementById('rx-confirm'); if(b) b.focus();
+}
+function rxEdit(){ var st = rxStateFor(PC_CURRENT); st.stage = 'edit'; st.route = null; rxRender(); }
+function rxRenderReview(st){
+  var el = document.getElementById('rx-review');
+  if(st.stage !== 'review'){ el.hidden = true; el.innerHTML = ''; return; }
+  var ph = rxPharm() || 'the pharmacy the patient names';
+  var moa = MOA_ON_SERVICE;
+  el.hidden = false;
+  el.innerHTML = '<p class="rx-rvh">Check before it goes</p><ul>' + st.lines.map(function(l){
+      return '<li><b>' + l.drug + ' ' + rxEsc(l.dose.trim()) + '</b> &middot; ' + l.freq + ' &middot; <b>' + rxQty(l, st.days) + ' ' + l.form + '</b> (' + st.days + ' days)' +
+        (l.last ? ' &middot; last dispensed ' + l.last : '') + '</li>';
+    }).join('') + '</ul>' +
+    '<p class="rx-rvto">' + (st.route === 'moa'
+      ? 'Goes to <b>' + moa + '</b>, the MOA on shift, to fax to ' + ph + ', with a copy to the patient.'
+      : 'Faxed to <b>' + ph + '</b>, with a copy to the patient.') + '</p>' +
+    '<div class="rx-act">' +
+      '<button type="button" class="btn dark" id="rx-confirm" onclick="rxConfirm()"><span class="ic" data-pdic="' + (st.route === 'moa' ? 'taskmoa' : 'arrowup') + '"></span>' +
+        (st.route === 'moa' ? 'Send to ' + moa.split(' ')[0] : 'Send by fax') + '</button>' +
+      '<button type="button" class="btn" onclick="rxEdit()"><span class="ic" data-pdic="edit"></span>Edit</button>' +
+    '</div>';
+}
+function rxConfirm(){
+  var name = PC_CURRENT, st = rxStateFor(name); if(st.stage !== 'review') return;
+  var ph = rxPharm() || 'the pharmacy on file', moa = MOA_ON_SERVICE;
+  var lines = st.lines.map(function(l){ return rxLineText(l, st.days); });
+  var row = QUEUE_DATA.filter(function(x){ return x.name === name; })[0];
+  var entry = {route: st.route, text: lines.join('; '), state: 'pending', at: rxNowTime()};
+  st.status.push(entry);
+  st.lines.forEach(function(l){ if(st.sent.indexOf(l.drug) === -1) st.sent.push(l.drug); });
+  st.stage = 'sent';
+
+  var n = document.getElementById('vc-note-input'), noteLine;
+  if(st.route === 'moa'){
+    /* the same task the Task MOA dialog files, with the drug already written in */
+    var t = moaTask({patient: name, type: 'Prescriptions', prio: 'routine',
+      title: 'Fax renewal: ' + st.lines.map(function(l){ return l.drug; }).join(', '),
+      note: 'Renew ' + lines.join('; ') + '. Fax to ' + ph + ', copy to the patient.'});
+    entry.task = t.id;
+    noteLine = 'Rx renewal: ' + lines.join('; ') + '. Sent to ' + moa + ' (MOA) to fax to ' + ph + '.';
+    /* shadowing 2: "Can you hear me, Jebney, or am I talking to myself?" -- the hand-off answers */
+    setTimeout(function(){
+      entry.state = 'done'; entry.doneAt = rxNowTime();
+      var tk = typeof taskFind === 'function' ? taskFind(t.id) : null; if(tk) tk.picked = entry.doneAt;
+      if(PC_CURRENT === name) rxRender();
+    }, 7000);
+    toast('Sent to ' + moa);
+  } else {
+    noteLine = 'Rx renewal: ' + lines.join('; ') + ', faxed to ' + ph + '.';
+    /* shadowing 1: "When you receive that copy, it just means the fax has been successfully
+       delivered." Delivered is a later event than sent, never the same second. */
+    setTimeout(function(){
+      entry.state = 'done'; entry.doneAt = rxNowTime();
+      if(PC_CURRENT === name) rxRender();
+    }, 5000);
+    toast('Faxing to ' + ph);
+  }
+  if(n && !n.readOnly){ n.value = (n.value.trim() ? n.value.trim() + '\n' : '') + noteLine; vcGrow(); }
+  rxRender();
+}
+function rxRenderStatus(st){
+  var el = document.getElementById('rx-status');
+  if(!st.status.length){ el.hidden = true; el.innerHTML = ''; return; }
+  var ph = rxPharm() || 'the pharmacy', moa = MOA_ON_SERVICE;
+  el.hidden = false;
+  el.innerHTML = st.status.map(function(e){
+    var ic, txt;
+    if(e.route === 'moa'){
+      ic = e.state === 'done' ? 'usercheck' : 'clock';
+      txt = e.state === 'done' ? 'Picked up by ' + moa + ' &middot; ' + e.doneAt : 'Sent to ' + moa + ' &middot; waiting';
+    } else {
+      ic = e.state === 'done' ? 'complete' : 'clock';
+      txt = e.state === 'done' ? 'Delivered to ' + ph + ' &middot; ' + e.doneAt + ' &middot; patient copy sent' : 'Sending to ' + ph + '&hellip;';
+    }
+    return '<p class="rx-st ' + (e.state === 'done' ? 'done' : 'wait') + '" aria-live="polite"><span class="ic" data-pdic="' + ic + '"></span>' +
+      '<span><b>' + txt + '</b><i>' + e.text + '</i></span></p>';
+  }).join('');
+}
+
+/* One way to file a doctor -> MOA task, shared by the Task MOA dialog and the renewal
+   card. Due follows priority the way the inbox review already does it (the dialog used
+   to stamp every task "due Sep 19", six days in the past). */
+function moaTask(o){
+  var row = QUEUE_DATA.filter(function(x){ return x.name === o.patient; })[0];
+  var prio = o.prio || 'routine';
+  var due = prio === 'urgent' ? ['Today', 0] : (prio === 'high' ? ['Tomorrow', 1] : ['This week', 7]);
+  var t = {
+    id:'t' + Date.now(), title: o.title, type: o.type, prio: prio, age:0,
+    to: o.self ? 'Dr. D. Pannozzo' : MOA_ON_SERVICE, role: o.self ? 'Physician' : 'MOA',
+    patient: row ? row.legal : (o.patient || 'Not patient-specific'),
+    preferred: row ? row.pref : '—', chart: row ? (row.chart || '#—') : '#—',
+    verified:true, status:'open', carried:0, due: due[0], dueIn: due[1],
+    tol: (typeof TIME_TOLERANCE !== 'undefined' && TIME_TOLERANCE[prio]) || '',
+    note: o.note || 'No note added'
+  };
+  DOC_TASKS.unshift(t);
+  if(typeof renderTasks === 'function') renderTasks();
+  return t;
+}
+
+/* ===== Since last visit (doctor review ask 3; shadowing 2 and 3) =====
+   DEMO DATA: each queue patient's previous visit, written to fit today's concern and the
+   care plan already on the chart. Not clinical guidance. No entry = no previous visit,
+   and the block stays hidden. */
+var PT_LAST = {
+  'Gloria Mcdonald, 74F': {date:'Jun 25, 2026', why:'Exertional chest pressure',
+    plan:['Referred to cardiology (seen Jul 28)', 'Continue amlodipine 5 mg and metformin 500 mg', 'Chest pain safety netting given, copy on her portal'],
+    ask:['Chest pressure: any at rest, or lasting longer', 'Home blood pressure readings'],
+    pending:[{what:'Exercise stress test', when:'booked Sep 12', state:'report not back'},
+             {what:'Lipid panel and HbA1c', when:'due Aug 20', state:'not drawn'}],
+    note:{S:'Three weeks of chest pressure walking uphill, settles with rest within two minutes. No pain at rest, no syncope.',
+          O:'Virtual visit. BP 122/78 (home cuff). HR 72.',
+          A:'Exertional chest pressure, cause not yet established. Known hypertension and type 2 diabetes.',
+          P:'Refer to cardiology. Continue amlodipine 5 mg and metformin 500 mg. Safety netting: call 911 for pain at rest or lasting over ten minutes. Follow up after cardiology.'}},
+  'Andrey Abushakhmanov, 24M': {date:'Jun 25, 2026', why:'Sinus infection',
+    plan:['Amoxicillin-clavulanate for 7 days', 'Saline rinses', 'Follow up if not better in 10 days'],
+    ask:['Facial pain and congestion gone', 'Finished the antibiotic course'],
+    pending:[],
+    note:{S:'Nine days of facial pain and congestion, worse on bending forward, after a cold.',
+          O:'Virtual visit. Afebrile by report.',
+          A:'Acute bacterial sinusitis.',
+          P:'Amoxicillin-clavulanate for 7 days. Saline rinses. Follow up if not better in 10 days.'}},
+  'Carol-Anne Feldman, 44F': {date:'Aug 28, 2026', why:'Low back pain with right leg pain',
+    plan:['MRI lumbar spine requested', 'Physiotherapy referral', 'Follow up after the MRI, or sooner if symptoms progress'],
+    ask:['Right leg pain since physio started', 'Any numbness or weakness'],
+    pending:[{what:'Physiotherapy', when:'referred Aug 28', state:'first visit not confirmed'}],
+    note:{S:'Six weeks of low back pain spreading to the right calf. Worse sitting.',
+          O:'Virtual visit. No exam.',
+          A:'Low back pain with right-sided radicular symptoms.',
+          P:'MRI lumbar spine. Physiotherapy referral. Follow up after the MRI, or sooner if symptoms progress.'}},
+  'Behdis Maleki, 35F': {date:'Aug 4, 2026', why:'Iron deficiency follow-up',
+    plan:['Ferrous fumarate 300 mg daily, continue', 'Repeat ferritin and CBC', 'Abdominal ultrasound for a source of loss', 'GI referral only if ferritin stays low'],
+    ask:['Fatigue since the last visit', 'Taking iron daily, away from dairy'],
+    pending:[{what:'Repeat ferritin and CBC', when:'due Aug 31', state:'not drawn'},
+             {what:'Abdominal ultrasound', when:'due Sep 10', state:'not booked'},
+             {what:'GI referral', when:'conditional', state:'waiting on the repeat ferritin'}],
+    note:{S:'Still tired after three months of iron. Taking it most days.',
+          O:'Ferritin 18 µg/L on Jun 25. CBC normal.',
+          A:'Iron deficiency, slow response to oral iron.',
+          P:'Continue ferrous fumarate 300 mg daily with vitamin C, away from dairy. Repeat ferritin and CBC by Aug 31. Abdominal ultrasound. Refer to GI if ferritin remains low.'}},
+  'Greg': {date:'Jun 24, 2026', why:'Blood pressure follow-up',
+    plan:['Metoprolol titrated to 50 mg twice daily (from 25 mg)', 'Continue ramipril 10 mg and atorvastatin 20 mg', 'Renew for 3 months if tolerating'],
+    ask:['Dizziness or tiredness since the increase', 'Home blood pressure readings'],
+    pending:[{what:'Home BP log', when:'asked Jun 24', state:'waiting on the patient'}],
+    note:{S:'Home readings mostly in the 140s over 90s. No chest pain, no dizziness.',
+          O:'Virtual visit. BP 146/92 (home cuff). HR 78.',
+          A:'Hypertension, above target on current treatment.',
+          P:'Increase metoprolol tartrate to 50 mg twice daily. Continue ramipril 10 mg and atorvastatin 20 mg. Home BP twice a week, send the log. Renew for 3 months if tolerating.'}},
+  'Manjit': {date:'Aug 14, 2026', why:'Thyroid follow-up',
+    plan:['Levothyroxine 75 mcg daily, as endocrinology set', 'TSH and free T4 every 6 weeks, copy endocrinology'],
+    ask:['Palpitations or tiredness', 'Taking levothyroxine on an empty stomach'],
+    pending:[{what:'Thyroid uptake scan', when:'booked Sep 3', state:'report not back'},
+             {what:'TSH and free T4', when:'due Aug 22', state:'not drawn'}],
+    note:{S:'Feels well. Seen by endocrinology Aug 11.',
+          O:'TSH 5.2 on Jul 30.',
+          A:'Hypothyroidism under endocrinology.',
+          P:'Continue levothyroxine 75 mcg daily. Interval TSH and free T4 every 6 weeks, copy Dr. Osei.'}}
+};
+function inboxFor(name){
+  var base = String(name || '').split(',')[0].trim();
+  return (typeof INBOX_ITEMS === 'undefined') ? [] : INBOX_ITEMS.filter(function(it){ return it.patient === base; });
+}
+function renderSinceLast(name){
+  var el = document.getElementById('slv'); if(!el) return;
+  var L = PT_LAST[name];
+  if(!L){ el.hidden = true; el.innerHTML = ''; return; }
+  /* results that arrived and are still unread belong to "what is pending" too;
+     a critical or high one has its own row above, so it is not repeated here */
+  var hasAlerts = chartAlertsFor(name).length > 0;
+  var fromInbox = inboxFor(name).filter(function(it){
+    /* today's untiered results already sit in the "Also in today" line under a critical/high row */
+    return it.status === 'received' && !labTier(it) && !(hasAlerts && /^Today/.test(it.received));
+  }).map(function(it){
+    return {what: it.panel, when: 'received ' + it.received, state: 'not reviewed', rv: INBOX_ITEMS.indexOf(it)};
+  });
+  var pend = L.pending.concat(fromInbox);
+  var li = function(a){ return '<ul>' + a.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>'; };
+  var nd = L.date.replace(/, \d{4}$/, '');
+  el.innerHTML =
+    '<div class="slv-hd"><span class="ic" data-pdic="reopen"></span><h5>Since last visit</h5>' +
+      '<span class="slv-when">' + L.date + ' &middot; ' + L.why + ' &middot; Dr. Pannozzo</span></div>' +
+    '<div class="slv-grid">' +
+      '<div><p class="slv-k">Plan</p>' + li(L.plan) + '</div>' +
+      '<div><p class="slv-k">Ask about</p>' + li(L.ask) + '</div>' +
+      '<div><p class="slv-k">Pending</p>' + (pend.length ? '<ul class="slv-pend">' + pend.map(function(p){
+          return '<li><span class="ic" data-pdic="clock"></span><span><b>' + p.what + '</b> &middot; ' + p.when + ' &middot; ' + p.state +
+            (p.rv !== undefined ? ' <button type="button" class="vc-more" onclick="openReview(' + p.rv + ')">Review</button>' : '') + '</span></li>';
+        }).join('') + '</ul>' : '<p class="slv-none">Nothing pending.</p>') + '</div>' +
+    '</div>' +
+    '<button type="button" class="btn slv-open" aria-expanded="false" aria-controls="slv-note" onclick="slvToggle(this)">' +
+      '<span class="ic" data-pdic="eye"></span><span>Read the ' + nd + ' note</span></button>' +
+    /* read-only, in place, under the summary: today's note below never changes */
+    '<div class="slv-note" id="slv-note" hidden>' +
+      '<p class="slv-ro"><span class="ic" data-pdic="complete"></span>' + nd + ' note &middot; signed by Dr. Pannozzo &middot; read-only</p>' +
+      '<dl>' + ['S','O','A','P'].map(function(k){
+        var lbl = {S:'Subjective', O:'Objective', A:'Assessment', P:'Plan'}[k];
+        return '<dt>' + lbl + '</dt><dd>' + L.note[k] + '</dd>';
+      }).join('') + '</dl></div>';
+  el.hidden = false;
+  paintPd(el);
+}
+function slvToggle(b){
+  var n = document.getElementById('slv-note'); if(!n) return;
+  n.hidden = !n.hidden;
+  b.setAttribute('aria-expanded', String(!n.hidden));
+  var nd = (PT_LAST[PC_CURRENT] || {date:''}).date.replace(/, \d{4}$/, '');
+  b.lastChild.textContent = n.hidden ? 'Read the ' + nd + ' note' : 'Hide the ' + nd + ' note';
+}
+
+/* ===== Critical and high results on the chart (doctor review ask 1) =====
+   Same data and the same rules as the inbox: labTier decides, nothing new is inferred. */
+function chartAlertsFor(name){
+  return inboxFor(name).filter(function(it){ return it.status !== 'signed-off' && labTier(it); });
+}
+function chartCritical(name){
+  return chartAlertsFor(name).filter(function(it){ return labTier(it) === 'critical'; })[0] || null;
+}
+function renderChartAlerts(name){
+  var el = document.getElementById('vc-alerts'); if(!el) return;
+  var list = chartAlertsFor(name);
+  if(!list.length){ el.hidden = true; el.innerHTML = ''; return; }
+  var base = String(name).split(',')[0].trim();
+  var today = inboxFor(name).filter(function(it){ return /^Today/.test(it.received) && list.indexOf(it) === -1 && it.status !== 'signed-off'; });
+  el.innerHTML = list.map(function(it){
+    var tier = labTier(it), crit = tier === 'critical';
+    var pick = crit ? 'crit' : 'alert';
+    var t = (it.tests || []).filter(function(x){ return x.f && x.f.indexOf(pick) === 0; })[0]; if(!t) return '';
+    var up = t.f.indexOf('high') > -1;
+    var state = it.status === 'reviewed' ? 'Reviewed, not signed off' + (it.disposition ? ' &middot; ' + it.disposition : '') : 'Not reviewed';
+    return '<div class="vca-row ' + (crit ? 'crit' : 'alert') + '">' +
+      '<span class="ic vca-ic" role="img" aria-label="' + (crit ? 'critical' : 'high') + '" data-pdic="' + (crit ? 'crit' : 'alert') + '"></span>' +
+      '<div class="vca-main">' +
+        '<p class="vca-t"><b>' + (crit ? 'Critical' : 'High') + '</b> &middot; ' + t.n +
+          ' <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span><span class="ic vca-dir" role="img" aria-label="' + (up ? 'high' : 'low') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span>' +
+          ' <span class="vca-ref">ref ' + t.ref + '</span></p>' +
+        '<p class="vca-s">' + (t.concern ? '<b>' + t.concern + '</b> &middot; ' : '') + (t.basis || '') + '</p>' +
+        '<p class="vca-s">' + it.panel + ' &middot; ' + it.lab + ' &middot; received ' + it.received + ' &middot; ' + state + '</p>' +
+      '</div>' +
+      '<button type="button" class="btn" onclick="openReview(' + INBOX_ITEMS.indexOf(it) + ')"><span class="ic" data-pdic="eye"></span>Review result</button>' +
+    '</div>';
+  }).join('') + (today.length ? '<p class="vca-also"><b>Also in today for ' + base.split(' ')[0] + ':</b> ' + today.map(function(it){
+      return it.panel + (it.interp ? ' &mdash; ' + it.interp : (it.impression ? ' &mdash; ' + it.impression : ''));
+    }).join('; ') + '</p>' : '');
+  el.hidden = false;
+  paintPd(el);
+}
+
+/* ===== The note grows with its content (shadowing 2: "Nested scrolling. The note box is
+   roughly 200px tall and scrolls. It sits inside the chart modal, which also scrolls") ===== */
+function vcGrow(){
+  var n = document.getElementById('vc-note-input'); if(!n) return;
+  n.style.height = 'auto';
+  n.style.height = Math.max(120, n.scrollHeight + 2) + 'px';
+}
+
+/* ===== Finalize closes today's visit (doctor review ask 4; shadowing 2 and 3) ===== */
+function vcNoteState(row){
+  var n = document.getElementById('vc-note-input'), stamp = document.getElementById('vc-signed');
+  var signed = !!(row && row.signed);
+  if(n){ n.readOnly = signed; n.classList.toggle('signed', signed); if(signed) n.value = row.signed.note; }
+  if(stamp){
+    stamp.hidden = !signed;
+    stamp.innerHTML = signed ? '<span class="ic" data-pdic="complete"></span><span><b>Signed</b> by Dr. Pannozzo &middot; today ' + row.signed.at + ' &middot; read-only</span>' : '';
+  }
+  var hide = function(id, h){ var e = document.getElementById(id); if(e) e.hidden = h; };
+  hide('vc-chips', signed); hide('vc-finalize', signed); hide('vc-savedraft', signed); hide('vc-finwarn', true);
+  var nx = document.getElementById('vc-nextpt');
+  var next = signed && typeof qNext === 'function' ? qNext() : null;
+  if(nx){
+    nx.hidden = !next;
+    if(next){ nx.lastChild.textContent = 'Next: ' + (next.pref || next.name.split(',')[0]); nx.onclick = function(){ openChart(next.name); }; }
+  }
+  if(stamp) paintPd(stamp);
+  if(signed && typeof rxRender === 'function' && !document.getElementById('rx-card').hidden) rxRender();
+  vcGrow();
+}
+function vcFinWarn(msg){
+  var w = document.getElementById('vc-finwarn'); if(!w) return;
+  w.innerHTML = '<span class="ic" data-pdic="alert"></span><p>' + msg + '</p>' +
+    '<button type="button" class="btn" onclick="document.getElementById(\'vc-finwarn\').hidden=true;document.getElementById(\'vc-finalize\').hidden=false;document.getElementById(\'vc-note-input\').focus()"><span class="ic" data-pdic="edit"></span>Keep writing</button>' +
+    '<button type="button" class="btn dark" onclick="finalizeVisit(true)"><span class="ic" data-pdic="complete"></span>Finalize anyway</button>';
+  w.hidden = false;
+  var fb = document.getElementById('vc-finalize'); if(fb) fb.hidden = true;
+  paintPd(w);
+}
+
+/* the rail and the Medications tab read the same list the renewal card does, so the
+   chart can no longer disagree with itself (doctor review: the care plan said ferrous
+   fumarate, the rail said metformin) */
+function renderMedRail(name){
+  var meds = rxMeds(name);
+  var row = function(m, pane){
+    var sub = m.freq.charAt(0).toUpperCase() + m.freq.slice(1) + (m.plan && m.plan.dose !== m.dose ? ' &middot; last plan: ' + m.plan.dose : '');
+    return '<div class="vc-line"><span><span class="l">' + m.drug + ' ' + m.dose + '</span><div class="vc-sub2">' + sub + '</div></span>' +
+      (pane ? '<span class="r">Ongoing</span>' : '') + '</div>';
+  };
+  var rail = document.getElementById('vc-medrail');
+  if(rail){
+    rail.innerHTML = '<div class="vc-h"><span class="ic" data-pdic="encounterlog"></span><h4>Medications <span class="vc-n">' + meds.length + '</span></h4></div>' +
+      (meds.length ? meds.map(function(m){ return row(m, false); }).join('') : '<p class="pc-empty">No active medications on file.</p>');
+    paintPd(rail);
+  }
+  var pane = document.getElementById('vcp-meds');
+  if(pane) pane.innerHTML = meds.length ? meds.map(function(m){ return row(m, true); }).join('') : '<p class="pc-empty">No active medications on file.</p>';
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-25 12:45</div>
+  <div class="build-stamp">v2 · build 2026-09-25 13:10</div>
 </body>
 </html>
