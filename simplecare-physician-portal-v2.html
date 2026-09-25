@@ -3967,6 +3967,10 @@
   html body #screen-inbox .inbox-row.ix.critical,html body #screen-inbox .inbox-row.ix.high{box-shadow:none;border-radius:0;padding-left:18px;}
   html body #screen-inbox .inbox-row.ix{padding-left:18px;}
   html body #screen-inbox .ix-secttl{margin-left:-16px;margin-right:-16px;}
+  /* Ani, 25 Sep: "why two red icons" -- the band bar carries the critical mark; the row does not repeat it.
+     The bar also drops its tone edge, which curved with the radius: tint and icon are enough. */
+  html body #screen-inbox .ix-secttl + .inbox-row .ix-critic,html body #screen-inbox .inbox-row .ix-critic{display:none;}
+  html body #screen-inbox .ix-secttl,html body #screen-inbox .ix-secttl.crit,html body #screen-inbox .ix-secttl.warn{box-shadow:none;}
 </style>
 </head>
 <body>
@@ -9602,6 +9606,6 @@ function rxSend(){
   toast('Prescription faxed to ' + RX_PHARM);
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-25 12:11</div>
+  <div class="build-stamp">v2 · build 2026-09-25 12:13</div>
 </body>
 </html>
