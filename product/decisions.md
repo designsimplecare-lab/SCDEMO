@@ -565,7 +565,8 @@ no client quote; Ani approved it by shipping it.
   (V2b:10060).
 - **Replaced:** a spoken hand-off with no receipt; tasks stamped "due Sep 19" (V2b:10099-10101).
 - **Note:** "Review & fax" is primary and "Ask MOA to send" secondary (V2b:4601-4602). Picked up is
-  a demo timer. Which route leads is OQ-08.
+  a demo timer. Which route leads was OQ-08. **Partly replaced** by D-72 (26 Sep): neither leads;
+  the two are equal choices.
 - **Source:** `d2a2823`; S2:38-40, 62-63.
 
 ### D-65 · 25 Sep 2026 · Finalize closes today's visit
@@ -591,7 +592,8 @@ no client quote; Ani approved it by shipping it.
 - **Note:** it holds one previous visit per patient. S4 (a new reason) shows it must fit today's
   reason instead (REQ-CH-20, S4:99-100). S5 (a first visit) shows it is hidden when there is no
   previous visit, and its Pending cannot hold a result ordered outside SimpleCare (V2b:10185-10195;
-  S5:104-106; REQ-CH-29).
+  S5:104-106; REQ-CH-29). D-74 (26 Sep) confirms a last-note summary at the top and adds the care
+  plan beside it.
 - **Source:** `d2a2823`; V2b:10117-10227.
 
 ### D-67 · 25 Sep 2026 · Critical results on the chart, and "Call now" from review
@@ -635,6 +637,94 @@ no client quote; Ani approved it by shipping it.
   plan (DR:109-110).
 - **Source:** `d2a2823`.
 
+### D-71 · 26 Sep 2026 · Reviewed is a state; sign-off is the doctor's accountable action
+- **Decided:**
+  - *Reviewed* means the doctor is assessing. Nothing further has to happen until he signs off.
+  - *Sign off* is always an action, and it is the doctor's approval with his name on it:
+    - signing off the chart = finalizing the visit;
+    - faxing a script = signing off the prescription;
+    - submitting a bill = signing off the billing.
+  - The product uses the language of sign-off for these approving actions.
+- **By:** Daniel.
+- **Quote:** *"Reviewing is separate, all it means is that the Doctor is assessing - it means no
+  further action is necessarily to be taken until such time as I review and sign off. To sign off is
+  typically an action. So I 'sign off' on the chart - what does that mean? It means the chart is
+  completed. What does that mean? It means that i've finalized the visit."* *"To Fax is to 'sign
+  off' on the script"* *"To submit a bill is to 'sign off' on your billing."* *"It is action
+  oriented."* *"The Doctor has approved this, meaning my a\*\* is on the line."*
+- **Replaced:** confirms the Inbox's received → reviewed → signed off (`07dd1ae`, REQ-IN-01) over
+  v7 §5.6's single question (`1e6c53f`). Answers OQ-10. Extends sign-off beyond results to the
+  chart, the script and the bill (REQ-UI-06). Confirms D-65 (Finalize closes the visit) as the
+  chart's sign-off.
+- **Note:** build 13:10 submits the claim inside Finalize without saying so (V2b:7114), which does
+  not yet read as signing off the bill (OQ-51). Whether one press may sign off a routine result is
+  OQ-62; whose sign-off an MOA-sent script is, OQ-61.
+- **Source:** ANS26:16-34.
+
+### D-72 · 26 Sep 2026 · Either the doctor or the MOA sends a renewal, his choice each time
+- **Decided:** "Send it myself" and "Ask the MOA to send" are equal choices. The doctor picks each
+  time, so neither is the default.
+- **By:** Daniel.
+- **Quote:** *"Either can send - Japneet [has] prescribing experience, but I also have my favorite's
+  pre-populated. So if I am f\*\*\*ing around, she sends it. If I think she'll f\*\*\* it up,
+  then i send it."*
+- **Replaced:** build 13:10's "Review & fax" as the primary button with "Ask MOA to send" secondary
+  (V2b:4601-4602, D-64's note). Answers OQ-08. The two routes should now carry equal weight
+  (REQ-RX-10).
+- **Source:** ANS26:7-13.
+
+### D-73 · 26 Sep 2026 · Favourite prescriptions are pre-populated
+- **Decided:** the doctor keeps favourite prescriptions, saved scripts he reuses, pre-populated. The
+  product supports them (REQ-RX-11).
+- **By:** Daniel.
+- **Quote:** *"I also have my favorite's pre-populated."*
+- **Replaced:** nothing; v2 has no favourites, and the renewal card starts only from the patient's
+  medication list (`RX_MEDS` V2b:9894). Where they live and who manages them is OQ-60.
+- **Source:** ANS26:8-9, 14.
+
+### D-74 · 26 Sep 2026 · The care plan and a last-note summary, both at the top of the chart
+- **Decided:** the top of the chart holds the care plan (the narrative of what we are doing) and a
+  summary of the last note.
+- **By:** Daniel.
+- **Quote:** *"Yes ....exactly - I need a 'Care Plan' and even the last note summary is good too"*
+- **Replaced:** confirms D-66 ("Since last visit" from the previous plan) and adds the care plan to
+  the top. In build 13:10 the care plan sits below today's note and Finalize (V2b:4624-4625).
+  Answers OQ-37 in part; who writes the summary and which notes it draws on is OQ-63.
+- **Source:** ANS26:36-40.
+
+### D-75 · 26 Sep 2026 · Measurements are patient-reported
+- **Decided:** weight, blood pressure and similar readings come from the patient. The doctor reads
+  them as a trend.
+- **By:** Daniel.
+- **Quote:** *"The weights come from me asking the patient. I get my patient's to work. It means I
+  get them to do their blood pressures, their weights etc."*
+- **Replaced:** REQ-CH-21's framing of each reading as "patient-reported or measured"; in this
+  practice they are patient-reported. v2's "Last vitals" shows one static set with no source
+  (V2b:4643-4650). Answers OQ-47; who enters the reading, and where, is OQ-64.
+- **Source:** ANS26:42-47.
+
+### D-76 · 26 Sep 2026 · Results are data, not files
+- **Decided:** results are shown as values and trends by test. Opening raw PDFs to find a result is
+  the problem, not the workflow.
+- **By:** Daniel.
+- **Quote:** *"yes....it is madness that I am opening up raw pdf's to find out what the f\*\*\* is
+  going on."*
+- **Replaced:** confirms REQ-CH-22 and raises its priority. What it replaces is production's lab
+  documents list (S4:40-56).
+- **Source:** ANS26:49-52.
+
+### D-77 · 26 Sep 2026 · Results come from the source by API; a patient upload is a fallback
+- **Decided:** results are taken directly from the lab or source by integration (an API). A result
+  the patient uploads is only a fallback, and it is marked patient-supplied.
+- **By:** Daniel.
+- **Quote:** *"The fact that i need to do this is wild"* *"We need API access so that we get the
+  results from the source. I am relying on patients to help me."*
+- **Replaced:** the S5 plan of a patient upload as the route for an outside result (S5:49-54), and
+  the fix OQ-48 looked for in better PDF uploads. Answers OQ-48 and OQ-53. REQ-PT-09 and REQ-CH-29
+  stay, as the fallback. Which source comes first is OQ-65; the Accelerus API access in his 21 Sep
+  next steps may be related (MTG21:31, not confirmed).
+- **Source:** ANS26:54-60.
+
 ## Changelog
 
 - 25 Sep 2026, first run: 60 entries from 27 Jul to 25 Sep 2026, including the reversals: D-11,
@@ -648,3 +738,8 @@ no client quote; Ani approved it by shipping it.
   doctor's *"I'm running this platform for continuity"* (S5:30-32) was said to a patient, not
   decided in a meeting, so it is evidence for REQ-ID-06 and OQ-58, not a D entry. D-66 gains a
   note on what S5 shows about "Since last visit". S5's questions are in `open-questions.md`.
+- 26 Sep 2026, fourth run: 77 entries. Added D-71 to D-77 from Daniel's written answers (ANS26,
+  `from-daniel/2026-09-26-answers-to-shadowing-questions.md`): review versus sign-off (D-71),
+  either sends a renewal (D-72, which replaces D-64's primary/secondary order), favourites (D-73),
+  care plan and last-note summary at the top (D-74, confirming D-66), patient-reported
+  measurements (D-75), results as data (D-76) and results from the source by API (D-77).

@@ -2,10 +2,17 @@
 
 Owner: product manager agent. First written 25 Sep 2026. The source codes are the same as in
 `use-cases.md`: MTG21, S1-S5, SIA, IA, HUX, COMP, SCS, SPEC, DR, V2 (build 12:45), V2b (build 13:10,
-`d2a2823`), MOAP, PP, MEM and commit hashes. "Assumption" marks a claim with no source. Status:
-**built** (works in v2), **partly built**, **not built**. "Open" names the open questions that
-block a requirement (see `open-questions.md`). This file sets no clinical thresholds, doses or
-billing codes. Where one is needed, it points to an open question.
+`d2a2823`), MOAP, PP, MEM, ANS26 (Daniel's written answers of 26 Sep 2026,
+`from-daniel/2026-09-26-answers-to-shadowing-questions.md`) and commit hashes. "Assumption" marks a
+claim with no source. Status: **built** (works in v2), **partly built**, **not built**. "Open" names
+the open questions that block a requirement (see `open-questions.md`). This file sets no clinical
+thresholds, doses or billing codes. Where one is needed, it points to an open question.
+
+Priority is set from 26 Sep 2026 on the requirements that Daniel's answers touch; the others are
+not yet prioritised.
+- **P1:** Daniel has asked for it in his own words, and v2 lacks it or contradicts it. Next build.
+- **P2:** needed, but it waits on an open question or on P1 work.
+- **P3:** keep, but later (for example, it serves only a fallback).
 
 Areas: [Home and queue](#home-and-queue-hq) · [Call](#call-call) · [Chart](#chart-ch) ·
 [Prescribing](#prescribing-rx) · [Inbox](#inbox-in) · [Review](#review-rv) · [MOA hand-off and
@@ -220,7 +227,10 @@ concern.**
   and Pending, and adds unread Inbox results to Pending (`renderSinceLast` V2b:10182). It holds one
   visit per patient (`PT_LAST` V2b:10124), so it does not follow the reason across notes. For a new
   reason it would show the wrong plan (S4:99-100); see REQ-CH-20.
-- Open: OQ-37.
+- 26 Sep: Daniel confirms a last-note summary at the top, with the care plan beside it (ANS26:37;
+  D-74). See REQ-CH-31.
+- Priority: P1.
+- Open: OQ-63 (OQ-37 answered).
 
 **REQ-CH-02 · Older notes open read-only beside today's note, and the chart has one scroll region.**
 - Rationale: nested scrolling (S2:18-20, S3:81-83). Reading history pushed today's note off-screen
@@ -262,6 +272,9 @@ concern.**
 - Status: built (build 13:10). `finalizeVisit` (V2b:7091) ends a live call, sets Completed, stamps
   and locks the note (`vcNoteState` V2b:10276), submits a pending claim, and offers "Next: <patient>"
   (V2b:4620). The label no longer promises a billing review (see REQ-BIL-04, D-65).
+- 26 Sep: Finalize is the chart's sign-off: *"It means the chart is completed... It means that i've
+  finalized the visit."* (ANS26:18-20; D-71). Its wording follows REQ-UI-06.
+- Priority: P1.
 - Open: OQ-17.
 
 **REQ-CH-07 · Ask before finalizing an empty note, or a note with bracketed template text.**
@@ -369,29 +382,34 @@ patient".**
 - Accept: for a new reason, nothing from an unrelated plan is presented as today's plan; for a
   follow-up, the matching thread is shown even when it is not in the latest note.
 - Status: not built. `renderSinceLast` (V2b:10182) always shows the previous visit.
-- Open: OQ-37.
+- Priority: P2 (which notes match today's reason waits on OQ-63).
+- Open: OQ-63 (OQ-37 answered).
 
 **REQ-CH-21 · Weight is a trend, with BMI.**
-- For a weight reason, the chart shows weight over time. Each reading says whether it was
-  patient-reported or measured. The intake figure is the newest point. BMI is worked out from height
-  and weight, with the change since the first reading.
+- For a weight reason, the chart shows weight over time. Each reading is patient-reported and
+  carries its date and who entered it (REQ-CH-32). The intake figure is the newest point. BMI is
+  worked out from height and weight, with the change since the first reading.
 - Rationale: the intake had the patient's own height and weight, no BMI, and no earlier weight to
-  compare with (S4:19-22, 76-77, 108-111).
+  compare with (S4:19-22, 76-77, 108-111). Daniel, 26 Sep: *"The weights come from me asking the
+  patient."* (ANS26:43; D-75). This replaces "patient-reported or measured".
 - Accept: the doctor can say how the weight has changed without asking the patient or opening a
   file. No weight target or BMI cut-off is shown unless Daniel sets one.
 - Status: not built. "Last vitals" shows one static weight (V2b:4643-4650).
-- Open: OQ-47.
+- Priority: P2.
+- Open: OQ-64 (OQ-47 answered).
 
 **REQ-CH-22 · Results are read by test, over time, not as files.**
 - Every test in Results shows its earlier values and dates in one line, with the latest flagged
   where the lab flagged it. A reason can bring a preset group of tests to the top.
 - Rationale: in S4 the doctor spent about four minutes opening lab PDFs one at a time, and nothing
-  put a test beside its earlier values (S4:46-56, 74-77, 112-115).
+  put a test beside its earlier values (S4:46-56, 74-77, 112-115). Daniel, 26 Sep: *"it is madness
+  that I am opening up raw pdf's to find out what the f\*\*\* is going on."* (ANS26:50; D-76).
 - Accept: a test's history is readable without opening a document. Which tests go in a preset
   group is set by Daniel (OQ-46), not by the product.
 - Status: not built. Results is a static list of three lines, the same for every patient
   (`vcp-results` V2b:4659-4663). The value-and-flag line format is there (S4:96-98).
-- Open: OQ-46, OQ-48.
+- Priority: P1 (raised on 26 Sep). The data comes from REQ-IN-12.
+- Open: OQ-46, OQ-65 (OQ-48 answered).
 
 **REQ-CH-23 · Uploaded documents are named, dated, sorted and de-duplicated.**
 - An uploaded report takes its collection date and the tests it holds as its title, not "Custom
@@ -403,7 +421,11 @@ patient".**
   (S4:40-45, 50-51, 56-58, 116-121).
 - Accept: the doctor can pick the report he wants from the list without opening another first.
 - Status: not built. Documents is an empty placeholder (`vcp-docs` V2b:4672).
-- Open: OQ-48.
+- 26 Sep: results should come from the source as data (D-76, D-77), so this now serves only what
+  still arrives as a file: a patient upload or a fax. A patient upload is also marked
+  patient-supplied (REQ-IN-13).
+- Priority: P3.
+- Open: none (OQ-48 answered).
 
 **REQ-CH-24 · The document list keeps its place, and its actions are safe.**
 - Closing the viewer returns to the same scroll position with that row highlighted. View is always
@@ -473,7 +495,10 @@ patient".**
 - Status: not built. "Since last visit" is hidden with no previous visit (V2b:10185), and its
   Pending comes only from the previous visit's plan and unread Inbox results (V2b:10187-10195). The
   demo data can already say "waiting on the patient" (V2b:10163).
-- Open: OQ-52, OQ-53, OQ-54.
+- 26 Sep: the patient upload is a fallback: *"I am relying on patients to help me."* The goal is the
+  result from the source (ANS26:56; D-77, REQ-IN-12). The pending item stays, and closes on either.
+- Priority: P2.
+- Open: OQ-52, OQ-54, OQ-65 (OQ-53 answered).
 
 **REQ-CH-30 · Standard patient education is sent with one press after the visit.**
 - Patient instructions get a small library of standard handouts. The doctor picks one during or
@@ -488,6 +513,35 @@ patient".**
   content or library.
 - Open: OQ-56.
 
+**REQ-CH-31 · The top of the chart holds the care plan and a summary of the last note.**
+- Above today's note: the care plan (what we are doing, REQ-CH-11) and a short summary of the last
+  note, with its date and a way to open the note read-only.
+- Rationale: Daniel, 26 Sep: *"Yes ....exactly - I need a 'Care Plan' and even the last note summary
+  is good too"* (ANS26:37; D-74). S2's whole call went on reading the last plan (S2:11-17).
+- Accept: on a follow-up, both are readable without scrolling and before today's note. If the
+  summary is machine-written, it says so, as the intake summary does (REQ-INT-05); who writes it and
+  whether he approves it are OQ-63.
+- Status: partly built. "Since last visit" sits at the top of the visit card (`slv` V2b:4573,
+  `renderSinceLast` V2b:10182). The care plan sits below today's note and Finalize
+  (`care-plan-mount` V2b:4624-4625).
+- Priority: P1.
+- Open: OQ-63.
+
+**REQ-CH-32 · Patient-reported measurements are entered once and read as a trend.**
+- Blood pressure and weight (and whatever else "etc." covers) are the patient's readings. Each is
+  stored as a value with a date, marked patient-reported, with who entered it. The chart shows each
+  measure over time. A home BP series feeds the hypertension care item (REQ-PT-10).
+- Rationale: Daniel, 26 Sep: *"I get my patient's to work. It means I get them to do their blood
+  pressures, their weights etc."* (ANS26:43-44; D-75).
+- Accept: the doctor can read the latest readings and their trend without asking the patient. No
+  target or cut-off is shown unless Daniel sets one. Whether the patient enters readings in the
+  portal, the doctor enters them on the call, or both, is OQ-64.
+- Status: not built. "Last vitals" is one static set, including heart rate and temperature, with no
+  source or date per reading (V2b:4643-4650). The patient portal has no readings entry (no match
+  found by search).
+- Priority: P2.
+- Open: OQ-64, OQ-56.
+
 ---
 
 ## Prescribing (RX)
@@ -499,7 +553,8 @@ patient".**
 - Accept: a renewal completes from the chart without leaving "This visit".
 - Status: built (build 13:10, `rxOpen` V2b:9930). The fax status sits on the card and the note line
   is drafted into today's note (`rxConfirm` V2b:10042). Failed faxes are REQ-RX-05.
-- Open: OQ-08.
+- Priority: P1.
+- Open: none (OQ-08 answered: either sends, REQ-RX-10).
 
 **REQ-RX-02 · The quantity is correct for the directions.**
 - The supply buttons do not fix the tablet count whatever the dosing.
@@ -508,7 +563,9 @@ patient".**
 - Status: built differently (build 13:10). Quantity is worked out as doses a day × days
   (`rxQty` V2b:9911), so twice daily for 3 months reads 180. It is shown, not typed. This departs
   from the interim accept line above; see D-63. The rule still waits on OQ-09.
-- Open: OQ-09.
+- 26 Sep: a favourite may carry the quantity (ANS26:8-9; REQ-RX-11).
+- Priority: P2 (waits on OQ-09 and OQ-60).
+- Open: OQ-09, OQ-60.
 
 **REQ-RX-03 · The renewal is prefilled from the intake and the last plan.**
 - It preselects the drug the patient asked for, at the current (titration-target) dose, with
@@ -526,6 +583,9 @@ patient".**
   last dispensed and where it goes, then Send by fax / Edit (`rxReview` V2b:10014,
   `rxRenderReview` V2b:10023). Code: "A fax to a pharmacy cannot be taken back, so nothing goes
   before this check." (V2b:10013).
+- 26 Sep: *"To Fax is to 'sign off' on the script"* (ANS26:22; D-71). The press that sends is the
+  doctor's sign-off, so it reads as one (REQ-UI-06). Today it reads "Send by fax".
+- Priority: P1.
 
 **REQ-RX-05 · Real fax states are shown.**
 - Queued, sending, then delivered or failed, with a retry.
@@ -547,7 +607,10 @@ patient".**
   with the drug and pharmacy written in (`moaTask` V2b:10102), writes the note line, and shows "Sent
   to <MOA> · waiting", then "Picked up by <MOA>" (V2b:10055-10064). Picked up is a 7 s demo timer.
   "Review & fax" is the primary button and "Ask MOA to send" the secondary (V2b:4601-4602).
-- Open: OQ-08, OQ-41.
+- 26 Sep: that order no longer matches Daniel: either can send, his call each time (ANS26:8-9;
+  D-72). See REQ-RX-10.
+- Priority: P1.
+- Open: OQ-41, OQ-61 (OQ-08 answered).
 
 **REQ-RX-08 · The last-dispensed date shows on the card.**
 - Rationale: the queue's AI line already knows it (DR:84).
@@ -566,6 +629,32 @@ patient".**
 - Status: not built. The renewal card has Send, Ask MOA to send and Edit only (V2b:4601-4602).
 - Open: OQ-55.
 
+**REQ-RX-10 · "Send it myself" and "Ask the MOA to send" carry equal weight.**
+- Both routes sit side by side with the same visual weight. Neither is preselected or styled as the
+  default, and the product does not choose by drug or pharmacy.
+- Rationale: Daniel, 26 Sep: *"Either can send... So if I am f\*\*\*ing around, she sends it. If I
+  think she'll f\*\*\* it up, then i send it."* (ANS26:8-9; D-72). It is the doctor's call each
+  time (ANS26:12-13).
+- Accept: at rest, neither button is the primary style; either completes the renewal; the visit
+  record says which route was taken and by whom.
+- Status: not built. "Review & fax" is the dark primary button and "Ask MOA to send" the plain
+  secondary one (V2b:4601-4602).
+- Priority: P1.
+- Open: OQ-61 (whose sign-off it is when the MOA sends).
+
+**REQ-RX-11 · The doctor's favourite prescriptions are pre-populated.**
+- A prescription or renewal can start from one of the doctor's favourites, a saved script that fills
+  in its fields. The check step still runs before anything is sent (REQ-RX-04).
+- Rationale: Daniel, 26 Sep: *"I also have my favorite's pre-populated."* (ANS26:8-9; D-73). He
+  describes them as something he has now, so a v2 without them would be a step back from production
+  (inference from the quote; OQ-60 asks where they live).
+- Accept: from the renewal card, the doctor can pick a favourite and see it filled in, then edit or
+  send it. Which fields a favourite holds, and who may add, change or use one, are OQ-60.
+- Status: not built. The renewal card starts only from the patient's medication list (`RX_MEDS`
+  V2b:9894).
+- Priority: P1.
+- Open: OQ-60, OQ-09.
+
 ---
 
 ## Inbox (IN)
@@ -575,8 +664,12 @@ patient".**
 - Rationale: *"every test result, lab, imaging report, and consult note ... must be reviewed and
   individually signed off"* (SIA:22). Tabs: `07dd1ae`.
 - Accept: Sign off is reachable (it once was not, `8444fe4`), and a signed item leaves Needs review.
+- 26 Sep: Daniel confirms the two stages: *"Reviewing is separate, all it means is that the Doctor
+  is assessing... To sign off is typically an action."* (ANS26:17-18; D-71). Reviewed is a state,
+  set by opening the item (V2:4976); Sign off is the action (REQ-UI-06).
 - Status: built.
-- Open: OQ-10.
+- Priority: P1 (built; keep).
+- Open: OQ-62 (OQ-10 answered).
 
 **REQ-IN-02 · The Inbox holds external reports only.**
 - Internal work is in Tasks. Review returns to wherever it was opened from.
@@ -635,7 +728,39 @@ off together.**
 - Status: partly built (build 13:10). A routine "No follow-up" opened from the Inbox lands on the
   next result (`rvNo` V2b:8951), and review has "Next result" (`rvNextResult` V2b:8972). Batch
   sign-off is not built.
-- Open: OQ-10.
+- 26 Sep: sign-off is his accountable action (ANS26:25), so whether one press or a batch may sign
+  off is his call (OQ-62).
+- Priority: P2.
+- Open: OQ-62 (OQ-10 answered).
+
+**REQ-IN-12 · Results come from the source by integration, as data.**
+- Results reach SimpleCare directly from the lab or other source through an API: test, value,
+  units, reference range, the lab's flag, collection date and the source's name. They enter the
+  Inbox and are tiered as now (REQ-IN-07), and they feed results by test on the chart (REQ-CH-22).
+  The source document stays viewable (REQ-RV-05).
+- Rationale: Daniel, 26 Sep: *"We need API access so that we get the results from the source. I am
+  relying on patients to help me."* and *"it is madness that I am opening up raw pdf's"*
+  (ANS26:50, 56; D-76, D-77). S4 and S5 show both halves: PDFs read one at a time (S4:46-56), and
+  an outside result that depends on the patient (S5:52-54).
+- Accept: a result from a connected source can be read, trended and signed off without opening a
+  file. Which source is connected first is OQ-65; no source is assumed here.
+- Status: not built as an integration. The Inbox's demo results already carry values, flags and
+  tiers (REQ-IN-07); the chart's Results tab does not (`vcp-results` V2b:4659-4663).
+- Priority: P1.
+- Open: OQ-65.
+
+**REQ-IN-13 · A result the patient uploads is a fallback, and is marked patient-supplied.**
+- Wherever it appears (the Inbox if it goes there, the chart's Results and Documents, "Since last
+  visit"), a patient upload carries a "patient-supplied" label. It never looks like a result from a
+  connected source, and its values do not join a trend unmarked.
+- Rationale: *"I am relying on patients to help me."* (ANS26:56). The answer file: a patient upload
+  is only a fallback, marked as patient-supplied (ANS26:59-60; D-77).
+- Accept: the doctor can tell from the row alone that a result came from the patient. Where an
+  upload lands, and whether it is tiered, is OQ-54.
+- Status: not built. PP's "Add a document" saves to health records (PP:929-933, 2279-2282), and the
+  physician portal shows nothing on arrival (S5:112-114).
+- Priority: P2.
+- Open: OQ-54, OQ-52.
 
 ---
 
@@ -821,8 +946,12 @@ Inbox.**
 - Open: OQ-51.
 
 **REQ-BIL-05 · Leave no claim behind: signing the visit submits its claim.**
-- Rationale: `11b0ecb`, `632998a`.
-- Status: partly built (only when the demo bill state is pending or none, V2b:7114).
+- Rationale: `11b0ecb`, `632998a`. Daniel, 26 Sep: *"To submit a bill is to 'sign off' on your
+  billing."* (ANS26:23; D-71). So submitting is his sign-off and must say so (REQ-UI-06).
+- Status: partly built (only when the demo bill state is pending or none, V2b:7114). The claim is
+  submitted inside Finalize, and nothing on the button says the bill is being signed off.
+- Priority: P1.
+- Open: OQ-51.
 
 **REQ-BIL-06 · Add-On encounters reach Claims.**
 - Rationale: SCS:49.
@@ -905,6 +1034,24 @@ way out.**
 - Rationale: `9d298c7`, `00649ec`, `1518976`, `affc632`, `29d956d`.
 - Status: built.
 
+**REQ-UI-06 · Approving actions are sign-offs, in words and in the record.**
+- Three actions are the doctor's sign-off: finalizing the visit (the chart), sending a script by
+  fax, and submitting a bill. A result's Sign off is the same kind of action. Each one uses the
+  language of sign-off, records the doctor's name and the time, and is never done as an unnamed side
+  effect of another press. *Reviewed* is shown as a state, never as a sign-off.
+- Rationale: Daniel, 26 Sep: *"To Fax is to 'sign off' on the script"*, *"To submit a bill is to
+  'sign off' on your billing."*, *"It is action oriented."* and *"The Doctor has approved this,
+  meaning my a\*\* is on the line."* (ANS26:17-25; D-71).
+- Accept: every approving button says it signs off; after it, the record reads "Signed off by
+  Dr. <name> · <time>" or the same in the product's words. If one press signs off two things (the
+  visit and the bill), the label says both (OQ-51). The exact copy is the designer's to draft.
+- Status: partly built. Inbox Sign off is an action with a toast "Signed off" (V2b:8093), and a
+  finalized note reads "Signed by … · read-only" (V2b:10282). The fax reads "Send by fax" with no
+  sign-off wording (V2b:10014), and the claim is submitted inside Finalize without saying so
+  (V2b:7114).
+- Priority: P1.
+- Open: OQ-51, OQ-61, OQ-62.
+
 ---
 
 ## MOA portal (MP)
@@ -978,11 +1125,15 @@ way out.**
   upload there reaches the physician portal marked "sent by the patient" and closes the pending
   item. The general "Add a document" stays for anything else.
 - Rationale: the doctor named a place, *"attach it to the chart under the follow-up section of
-  SimpleCare"* (S5:49-51, 136-140). Getting the result depends on the patient (S5:52-54).
+  SimpleCare"* (S5:49-51, 136-140). Getting the result depends on the patient (S5:52-54). Daniel,
+  26 Sep: *"The fact that i need to do this is wild"* (ANS26:55): the upload is a fallback, and the
+  goal is the result from the source (D-77, REQ-IN-12). The label is "patient-supplied"
+  (REQ-IN-13).
 - Accept: the doctor can see that the upload arrived without searching Documents.
 - Status: partly built. PP's "Add a document" ("Lab result from elsewhere…") saves to health
   records (PP:929-933, 2279-2282). It is not linked to a request, and the physician portal shows
   nothing when it arrives (S5:112-114).
+- Priority: P2.
 - Open: OQ-52, OQ-54.
 
 **REQ-PT-10 · The patient can send home readings back after instructions.**
@@ -995,8 +1146,11 @@ way out.**
   pending item reads "Home BP log · waiting on the patient" (V2b:10163).
 - Accept: readings arrive as values with dates, not as a file. How many readings and over how long
   are Daniel's (OQ-56).
+- 26 Sep: *"I get them to do their blood pressures, their weights etc."* (ANS26:43-44; D-75). The
+  readings land in REQ-CH-32's trend.
 - Status: not built.
-- Open: OQ-56.
+- Priority: P2.
+- Open: OQ-56, OQ-64.
 
 ---
 
@@ -1018,3 +1172,14 @@ way out.**
   S5 evidence: CALL-01, CH-05, CH-10, CH-19, and CH-16 and INT-04, whose other-platforms question
   has now come up in 2 of 5 visits (S1, S5) and is raised in priority. No statuses moved; the build
   is still 13:10.
+- 26 Sep 2026, fourth run: Daniel's written answers (ANS26). 138 requirements (7 new): CH-31 (care
+  plan and last-note summary at the top), CH-32 (patient-reported measurements and their trend),
+  RX-10 (equal-weight send options), RX-11 (favourites), IN-12 (results from the source by API),
+  IN-13 (patient uploads marked patient-supplied) and UI-06 (approving actions are sign-offs).
+  Updated with his words: CH-01, CH-06, CH-20, CH-21 ("patient-reported or measured" replaced),
+  CH-22 (raised), CH-23 (now fallback only), CH-29, RX-01, RX-02, RX-04, RX-07 (the build's button
+  order no longer matches), IN-01, IN-11, BIL-05, PT-09 and PT-10. Priorities (P1-P3) introduced
+  and set on these 23. No statuses moved; the build is still 13:10. Note: the prototype's working
+  tree already holds uncommitted changes toward these answers ("Send it myself (fax)" no longer
+  primary, a Favourites button, "Sign off & finalize visit"). Statuses stay on the committed build
+  until those are committed.

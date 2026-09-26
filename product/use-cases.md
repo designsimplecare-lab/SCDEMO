@@ -9,6 +9,7 @@ here. Demo patients are described by their role in the demo, never by name.
 | Code | Source |
 |---|---|
 | MTG21 | `from-daniel/2026-09-21-meeting-notes.md` (line numbers as `MTG21:43`) |
+| ANS26 | `from-daniel/2026-09-26-answers-to-shadowing-questions.md` (Daniel's written answers, 26 Sep 2026) |
 | S1 | `shadowing/2026-09-25-rx-renewal-by-fax.md` (shadowing 1) |
 | S2 | `shadowing/2026-09-25-medication-follow-up-mri.md` (shadowing 2) |
 | S3 | `shadowing/2026-09-25-recurrent-hernia.md` (shadowing 3) |
@@ -174,6 +175,12 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   wrong). Offer a renewal flow that lists the current medication, defaults to 3 months, prefills the
   pharmacy, sends by fax, shows the fax status on the visit, and drafts the one-line note
   (S1:24-28).
+  - From Daniel, 26 Sep (ANS26):
+    - "Send it myself" and "Ask the MOA to send" are equal choices, his call each time; neither
+      is the default (ANS26:8-13; D-72, REQ-RX-10).
+    - A script can start from one of his pre-populated favourites (ANS26:8-9; D-73, REQ-RX-11).
+    - Sending the fax is his sign-off on the script, so the press says so and the record carries
+      his name (ANS26:22-25; D-71, REQ-UI-06).
 - **Status:** partly built. Build 13:10 rebuilt the card (`rxOpen` V2b:9930) and fixed the five DR
   defects (DR:72-86, 200-206):
   - Each patient has their own medications, pharmacy and PHN (`RX_MEDS` V2b:9894, `ptChart`
@@ -189,8 +196,11 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - "Also active · Renew too" offers the other medications (V2b:9972-9983).
   - Not built: a failed fax and retry; any supply other than 1 or 3 months. The quantity rule waits
     on OQ-09.
+  - Now out of line with Daniel (26 Sep): "Review & fax" is the primary button and "Ask MOA to
+    send" secondary (V2b:4601-4602); there are no favourites; "Send by fax" does not read as a
+    sign-off. Open: OQ-60, OQ-61.
 - **Sources:** S1 (all); `29d956d`, `d2a2823`; V2:3751, 4424-4480, 9643-9681; V2b:9885-10095;
-  DR:55-93, 200-206.
+  DR:55-93, 200-206; ANS26:7-34.
 
 ### UC-07 Follow-up where the last plan sets the renewal (shadowing 2)
 
@@ -227,6 +237,8 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - Make "Ask MOA to send" a one-tap task that shows "picked up" (S2:62-63).
   - Record side effects as tick-lines (S2:64-65).
   - Tie the next step to the pending result (S2:66-67).
+  - From Daniel, 26 Sep: put the care plan and a summary of the last note at the top of the chart
+    (ANS26:37; D-74, REQ-CH-31). Either he or the MOA sends the renewal, his choice (D-72).
 - **Status:** partly built (build 13:10). DR:97-104 had judged v2 "worse than production here".
   - "Since last visit" shows the previous visit's Plan, Ask about and Pending, and adds any unread
     result from the Inbox to Pending (`renderSinceLast` V2b:10182).
@@ -236,8 +248,9 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - The button reads "Finalize today's visit" (V2b:4618).
   - The renewal takes the plan's dose, and "Ask MOA to send" shows "Picked up by <MOA>" (UC-06,
     UC-10).
-  - Not built: side effects as tick-lines; the next step tied to the pending result.
-- **Sources:** S2 (all); DR:95-136, 207-212; `d2a2823`.
+  - Not built: side effects as tick-lines; the next step tied to the pending result; the care plan
+    at the top (it sits below today's note, V2b:4624-4625).
+- **Sources:** S2 (all); DR:95-136, 207-212; `d2a2823`; ANS26:8-9, 37.
 
 ### UC-08 Follow-up whose history spans several notes and outside records (shadowing 3)
 
@@ -270,6 +283,8 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     (S3:102-103).
   - Ask before signing a note with bracketed placeholders (S3:104-105), and show an honestly empty
     note (S3:106-108).
+  - From Daniel, 26 Sep: the care plan and a last-note summary at the top (ANS26:37; REQ-CH-31).
+    Which notes the summary draws on when the thread is two notes back is OQ-63.
 - **Status:** partly built. DR:174-177: "this visit couldn't be done in v2 at all". Build 13:10
   added pieces:
   - Finalize asks first when the note is empty or holds bracketed template text (`finalizeVisit`
@@ -295,14 +310,18 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
 - **v2 should:** close the visit on Finalize: set it Completed, lock and stamp the note, ask about
   an empty note or unfilled placeholders, open billing review if the button promises it, and offer
   the next patient (DR:213-217). Review the problem list at the end of the visit, on the way through
-  billing (`632998a`).
+  billing (`632998a`). From Daniel, 26 Sep: Finalize is his sign-off on the chart, *"It means that
+  i've finalized the visit."*, and submitting the bill is a second sign-off (ANS26:18-23; D-71).
+  Both say so, and carry his name (REQ-UI-06). Whether they are one press or two is OQ-51.
 - **Status:** built (build 13:10). `finalizeVisit` (V2b:7091) first surfaces problem-list
   suggestions. It asks before signing an empty note or one with bracketed text. It ends a live call,
   sets the row to Completed, stamps "Signed by … · read-only" and locks the note (`vcNoteState`
   V2b:10276), submits a pending claim, and offers "Next: <patient>" (V2b:4620). The button now reads
-  "Finalize today's visit" (V2b:4618), so it no longer promises a billing review. See D-65.
+  "Finalize today's visit" (V2b:4618), so it no longer promises a billing review. See D-65. Still
+  missing against D-71: the claim is submitted inside Finalize and the button does not say it signs
+  off the bill (V2b:7114).
 - **Sources:** S2:21-26, 51-53; S3:63-66, 104-108; S4:66-67; S5:37-46, 66-68, 71-74; SIA:40;
-  `632998a`, `d2a2823`; DR:87-93, 213-217.
+  `632998a`, `d2a2823`; DR:87-93, 213-217; ANS26:17-25.
 
 ### UC-10 Hand work to the MOA and know it was picked up
 
@@ -319,14 +338,17 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   when they are sub-steps of it (SIA:48).
 - **v2 should:** create a task only when the doctor presses Task (`9b7b5f6`, V2:1656). Route it to
   the MOA on service, copy the primary MOA, and forward it to Admin (V2:6591). Prefill it with the
-  patient and context (`56e5f20`). Show that it was picked up (S2:62-63).
+  patient and context (`56e5f20`). Show that it was picked up (S2:62-63). For a renewal, "Ask the
+  MOA to send" is an equal choice to sending it himself, not a secondary one: *"Either can send"*
+  (ANS26:8-9; D-72, REQ-RX-10). Whose sign-off an MOA-sent script is, is OQ-61; what "picked up"
+  means is still OQ-41.
 - **Status:** partly built. Task MOA from the chart banner, the row hover and review (`sendTaskMoa`
   V2b:7599). Build 13:10: one task function for the dialog and the renewal card, with due set from
   priority (`moaTask` V2b:10102). The renewal hand-off shows "Sent to <MOA> · waiting", then "Picked
   up by <MOA>" on a 7 s demo timer (V2b:10060-10064). Not built: "picked up" anywhere else (the
   Tasks screen does not show it), and scribe tasks are still stamped "Sep 19" (V2b:7475).
 - **Sources:** S2:38-40, 62-63; S3:74-77, 95-97; S4:82; S5:85-89; SIA:28-38, 48; `9b7b5f6`,
-  `afdc728`, `11b0ecb`, `d2a2823`; DR:121-128.
+  `afdc728`, `11b0ecb`, `d2a2823`; DR:121-128; ANS26:8-13.
 
 ### UC-11 Keep my own unfinished work on my desk
 
@@ -382,11 +404,14 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - Show the clinic received time (MTG21:78-79).
   - Show the name only on rows (`236eed3`).
   - Close a routine result with one "No follow-up" and move to the next one (DR:157).
+  - Keep reviewed and signed off apart. Daniel, 26 Sep: *"Reviewing is separate, all it means is
+    that the Doctor is assessing"*; sign-off is his accountable action (ANS26:17-25; D-71). Whether
+    one press or a batch may sign off routine results is OQ-62.
 - **Status:** partly built. Tabs, bands, FIFO, received time and sign-off are built. Build 13:10: a
   routine "No follow-up" opened from the Inbox lands on the next result (`rvNo` V2b:8951), and review
   has a "Next result" button (`rvNextResult` V2b:8972). Batch sign-off is not built.
 - **Sources:** MTG21:47-52, 75-79; SIA:22-24; SCS:17; `8444fe4`, `133c966`, `07dd1ae`, `535ad1a`,
-  `d2a2823`; DR:155-170.
+  `d2a2823`; DR:155-170; ANS26:17-25.
 
 ### UC-14 Go from a result straight into the chart, with the reason on top
 
@@ -410,11 +435,14 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   The Care Plan Tracker is *"a chart view tool ... an in the moment refresher"* (`11b0ecb`).
 - **v2 should:** suggest additions with their evidence, have them land nowhere until approved, and
   log every change (`11b0ecb`, `74660d7`). Keep specialist-owned items with the specialist
-  (`2b4ea14`).
-- **Status:** built (conditions panel, care plan block). DR:109-110 found the care plan and the
+  (`2b4ea14`). From Daniel, 26 Sep: *"I need a 'Care Plan'"*, at the top of the chart with the last
+  note summary (ANS26:37; D-74, REQ-CH-31).
+- **Status:** built (conditions panel, care plan block), but the care plan sits below today's note
+  and Finalize (V2b:4624-4625), not at the top. DR:109-110 found the care plan and the
   medication list disagreeing for one demo patient. Build 13:10 has the rail and the Medications tab
   read the renewal card's list (`renderMedRail` V2b:10309).
-- **Sources:** `2b4ea14`, `afdc728`, `9b7b5f6`, `11b0ecb`, `74660d7`, `632998a`; DR:106-112.
+- **Sources:** `2b4ea14`, `afdc728`, `9b7b5f6`, `11b0ecb`, `74660d7`, `632998a`; DR:106-112;
+  ANS26:37.
 
 ### UC-16 Act on billing from the queue and from Claims
 
@@ -425,12 +453,14 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   `c0cae95`).
 - **v2 should:** make billing status the way in: an actionable state is a dropdown whose next step
   comes first, and a finished state is plain text (`944d26a`, `5d36fa1`, V2:6428). Put Claims in the
-  nav with a neutral count (`74660d7`).
+  nav with a neutral count (`74660d7`). Submitting a claim is the doctor's sign-off on the billing:
+  *"To submit a bill is to 'sign off' on your billing."* (ANS26:23; D-71, REQ-UI-06).
 - **Status:** built (`openBilling` V2:6328, `renderClaims` V2:6261). "Finalize & review billing"
   does not open a billing review (DR:87-88). Fee codes and amounts in the demo are placeholders
-  (V2:6246-6254), not rules.
+  (V2:6246-6254), not rules. Build 13:10 renamed the button "Finalize today's visit" and submits
+  the claim inside it with no sign-off wording (V2b:4618, 7114; D-65, OQ-51).
 - **Sources:** `27c18b3`, `3c5f4fe`, `c0cae95`, `944d26a`, `2983802`, `5d36fa1`, `9b496d2`;
-  SPEC:297-300.
+  SPEC:297-300; ANS26:23.
 
 ### UC-17 Confirm who the patient is, and how they pay
 
@@ -486,7 +516,8 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
 
 ### UC-26 A new problem in an established patient, read through uploaded lab PDFs (shadowing 4)
 
-- **Actor:** physician (the MOA uploads the documents; assumption, see OQ-48).
+- **Actor:** physician (the MOA uploads the documents; assumption, never confirmed: OQ-48 was
+  answered on direction, not on who uploads).
 - **Trigger:** a queue row with the category "Weight Loss". The intake asks for medication-assisted
   weight loss, lists type 2 diabetes or prediabetes and joint problems, and says a GLP-1 was tried
   before (S4:14-22). The patient's earlier notes are about unrelated problems (S4:28-31).
@@ -518,12 +549,17 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - When no earlier note touches today's reason, "Since last visit" says so ("First visit for
     weight") and shows that reason's context: intake answers, weight history, latest relevant labs.
     The unrelated last plan drops to one line (S4:105-107).
-  - Show weight over time, each reading marked patient-reported or measured, with BMI and the change
-    since the first reading (S4:108-111).
+  - Show weight over time, with BMI and the change since the first reading (S4:108-111). Daniel,
+    26 Sep: *"The weights come from me asking the patient."* The readings are patient-reported,
+    each with its date and who entered it (ANS26:43-44; D-75, REQ-CH-21, REQ-CH-32).
   - Show each test with its earlier values and dates in one line, and a preset group first for a
-    weight or diabetes reason (S4:112-115).
-  - Name uploaded reports by collection date and tests, sort newest collection first, flag
-    duplicates, mark a cancelled-only report, and name the report in the viewer (S4:116-121).
+    weight or diabetes reason (S4:112-115). Daniel, 26 Sep: *"it is madness that I am opening up
+    raw pdf's"* (ANS26:50; D-76, REQ-CH-22).
+  - Take the results from the source by API, so they arrive as data, not files (ANS26:56; D-77,
+    REQ-IN-12). Which source first is OQ-65.
+  - For whatever still arrives as a file: name uploaded reports by collection date and tests, sort
+    newest collection first, flag duplicates, mark a cancelled-only report, and name the report in
+    the viewer (S4:116-121; REQ-CH-23, now P3).
   - Say when the latest relevant labs are over a year old, and offer a prefilled requisition as a
     draft the doctor sends (S4:122-124).
   - Keep the list's place after the viewer closes; show view always; keep delete behind the row's
@@ -541,7 +577,8 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - "Since last visit" would show the latest, unrelated plan (`renderSinceLast` V2b:10182;
     S4:99-100).
   - The intake is still a separate view (V2b:4641).
-- **Sources:** S4 (all); V2b as cited.
+  - No result source is connected; results are demo data (REQ-IN-12).
+- **Sources:** S4 (all); V2b as cited; ANS26:42-60.
 
 ### UC-27 A new patient after a hospital stay: no refill until outside bloodwork (shadowing 5)
 
@@ -586,10 +623,14 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     go to the problem list only when approved (S5:127-130; REQ-CH-28).
   - Track an expected result from bloodwork ordered outside SimpleCare, "waiting on the patient",
     in "Since last visit" and the care plan, with no task made on its own (S5:131-135; REQ-CH-29).
-  - Tie a request to upload to a named item in the patient portal, and show the upload to the
-    doctor (S5:136-140; REQ-PT-09).
+  - Get the outside result from the source by API, so the doctor is not *"relying on patients to
+    help me"* (ANS26:56; D-77, REQ-IN-12). Until then, and as a fallback only: tie a request to
+    upload to a named item in the patient portal, show the upload to the doctor, and mark it
+    patient-supplied (S5:136-140; ANS26:59-60; REQ-PT-09, REQ-IN-13).
   - Send standard patient education with one press, with a way for the patient to send readings
-    back (S5:141-148; REQ-CH-30, REQ-PT-10). The handout content is Daniel's (OQ-56).
+    back (S5:141-148; REQ-CH-30, REQ-PT-10). The handout content is Daniel's (OQ-56). Home
+    readings are how he works: *"I get them to do their blood pressures, their weights etc."*
+    (ANS26:43-44; D-75); they land in a trend (REQ-CH-32), entered where OQ-64 settles.
   - Mark a new patient as continuing with the doctor (S5:149-152; REQ-ID-06).
   - Ask about other platforms at intake (S5:153-155; REQ-INT-04).
 - **Status:** not built. What v2 has:
@@ -607,7 +648,9 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - The patient portal's general "Add a document" saves to health records (PP:929-933,
     2279-2282). It is not linked to a request, and the physician portal shows nothing on arrival.
   - Not built: the other-platforms question (UC-05) and any "continuing with me" mark.
-- **Sources:** S5 (all); V2b and PP as cited.
+  - Not built: any result source integration (REQ-IN-12), a patient-supplied label (REQ-IN-13) or
+    a readings trend (REQ-CH-32).
+- **Sources:** S5 (all); V2b and PP as cited; ANS26:42-60.
 
 ---
 
@@ -686,9 +729,11 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   which conflicts with `5a4fb10`. S5 adds two patient-side needs: a named place to upload a result
   the doctor asked for (REQ-PT-09), and instructions sent after the visit with a way to send
   readings back (REQ-CH-30, REQ-PT-10). PP has only a general "Add a document" saved to health
-  records (PP:929-933, 2279-2282).
+  records (PP:929-933, 2279-2282). From Daniel, 26 Sep: an upload is a fallback to results from
+  the source, and is marked patient-supplied (ANS26:56-60; REQ-IN-13); patients report their own
+  BP and weight (ANS26:43-44; REQ-CH-32). Whether they enter readings in the portal is OQ-64.
 - **Sources:** `5a4fb10`, `c503ece`; HUX:11, 18; PP:860, 929-933, 1970-1973, 2279-2282;
-  S5:49-54, 60-65, 136-148.
+  S5:49-54, 60-65, 136-148; ANS26:43-60.
 
 ---
 
@@ -754,3 +799,11 @@ cannot be judged from that recording.
   rows: other platforms asked out loud, the patient asked to send something that nothing tracks,
   and an outcome that is not an order. S5 evidence added to UC-03, UC-05, UC-09, UC-10, UC-19,
   UC-24 and UC-25.
+- 26 Sep 2026, fourth run: added ANS26 (Daniel's written answers) to the source key. "v2 should"
+  updated with his words in UC-06 (equal send options, favourites, fax as sign-off), UC-07 and UC-08
+  (care plan and last-note summary at the top), UC-09 and UC-16 (Finalize and the bill as
+  sign-offs), UC-10 (the MOA route is equal), UC-13 (reviewed versus signed off), UC-15 (care plan
+  at the top), UC-26 (patient-reported weights, results as data from the source), UC-27 (API first,
+  patient upload as a marked fallback, home readings) and UC-25. No status word moved, because the
+  build is still 13:10; UC-06, UC-09, UC-15 and UC-16 now name where the build departs from his
+  answers.

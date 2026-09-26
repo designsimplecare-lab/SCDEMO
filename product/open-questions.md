@@ -2,25 +2,40 @@
 
 Owner: product manager agent. First written 25 Sep 2026. Every question waiting on Daniel or Ani.
 Each one gives the owner, the date raised, what it blocks and its source. Source codes are as in
-`use-cases.md`. Daniel answers well in numbered batches of 5 to 8, one line each, with the work each
-answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
+`use-cases.md`; ANS26 is Daniel's written answers of 26 Sep 2026
+(`from-daniel/2026-09-26-answers-to-shadowing-questions.md`). Daniel answers well in numbered
+batches of 5 to 8, one line each, with the work each answer unblocks (Ani's working note). **Top 8**
+marks the batch to send next. **ANSWERED** marks a question Daniel has answered: the entry keeps his
+words and the date, and whatever the answer left open moves to a new question.
 
-## Top 6 for Daniel
+## Top 8 for Daniel
+
+Answered on 26 Sep 2026 (ANS26), so no longer in this list: OQ-08, OQ-10, OQ-37, OQ-47, OQ-48 and
+OQ-53. Everything below is still unanswered.
 
 1. **OQ-01**: does High urgency belong on Home, or critical only?
-2. **OQ-09**: how is a renewal's quantity set?
-3. **OQ-18**: should intake ask whether the patient was seen on another platform? He asked it out
-   loud in 2 of 5 visits (S1:10-12; S5:26-29). Added 26 Sep.
-4. **OQ-08**: who sends renewal faxes, the doctor or the MOA?
-5. **OQ-10**: is a separate sign-off after review a legal or College requirement?
-6. **OQ-04**: how does the doctor call a Doctor to Callback or urgent patient, when Call shows only
+2. **OQ-61**: when the MOA sends a renewal, whose sign-off is it, and does the doctor check it
+   first? Opened by his answers on who sends and on sign-off (ANS26:8-9, 22-25).
+3. **OQ-60**: where do your favourite prescriptions live, and who can add, change or use them?
+   (ANS26:8-9).
+4. **OQ-09**: how is a renewal's quantity set? Does a favourite carry it?
+5. **OQ-65**: which lab or result source should be connected first? Is the Accelerus API access in
+   your 21 Sep next steps that route? (ANS26:56; MTG21:31).
+6. **OQ-64**: does the patient enter their own BP and weight in the portal, or do you enter what
+   they tell you on the call, or both? (ANS26:43-44).
+7. **OQ-18**: should intake ask whether the patient was seen on another platform? He asked it out
+   loud in 2 of 5 visits (S1:10-12; S5:26-29).
+8. **OQ-04**: how does the doctor call a Doctor to Callback or urgent patient, when Call shows only
    on the next patient?
+
+Next batch: OQ-62 (one press to sign off a routine result), OQ-51 (the bill's sign-off at
+Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
 
 ---
 
 ## Home and queue
 
-### OQ-01 · Does High belong in Needs your attention? · Top 6
+### OQ-01 · Does High belong in Needs your attention? · Top 8
 - **Owner:** Daniel. **Raised:** 21 Sep 2026 (a conflict within the same day). **Blocks:**
   REQ-HQ-11, REQ-HQ-12.
 - **The conflict:**
@@ -44,7 +59,7 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
 - **Why:** the aligned decision "Remove noisy detail fields" (MTG21:14) names no fields. Only DOB
   and PHN are named (MTG21:82).
 
-### OQ-04 · Calling out of order: callbacks and urgent patients · Top 6
+### OQ-04 · Calling out of order: callbacks and urgent patients · Top 8
 - **Owner:** Daniel. **Raised:** 15 Sep 2026 (SPEC:322-323); again 25 Sep (DR:249-250). **Blocks:**
   REQ-HQ-14; UC-04.
 - **Why:** Call renders only on the next patient (*"mirrors a walk-in queue"*, SPEC:167-177), and
@@ -125,7 +140,11 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
 - **Owner:** Ani (check production), then Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-03,
   REQ-CH-06.
 - **Ask:** the old "Charting" note, today's visit, or both?
-- **Source:** S2:72.
+- **Now (26 Sep):** Daniel: *"So I 'sign off' on the chart - what does that mean? It means the
+  chart is completed. What does that mean? It means that i've finalized the visit."*
+  (ANS26:18-20). So Finalize is the chart's sign-off and closes the visit (D-71), which matches
+  D-65. What production's button closed is still Ani's check.
+- **Source:** S2:72; ANS26:18-20.
 
 ### OQ-16 · Signing a note that still holds a template placeholder
 - **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-07.
@@ -133,14 +152,33 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
   signed knowingly?
 - **Source:** S3:48-50, 118; DR:251.
 
-### OQ-37 · Is "Since last visit" generated or verbatim?
-- **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-01, REQ-CH-20.
+### OQ-37 · Is "Since last visit" generated or verbatim? · ANSWERED 26 Sep 2026
+- **Answer (Daniel, 26 Sep 2026):** *"Yes ....exactly - I need a 'Care Plan' and even the last note
+  summary is good too"* (ANS26:37).
+- **Means:** both belong at the top of the chart: the care plan (the narrative of what we are doing)
+  and a summary of the last note (ANS26:39-40). A summary, not only a quote, is acceptable to him.
+  Recorded as D-74 and REQ-CH-31.
+- **Not answered:** who or what writes the summary, whether the doctor must review generated text,
+  and how the product picks the notes that match today's reason. These move to OQ-63.
+- **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocked:** REQ-CH-01, REQ-CH-20.
 - **Why:** it summarises the last plan mid-call. SPEC:264-272 treats a generated care-plan summary
   as a clinical-safety question. Build 13:10 shows Plan / Ask about / Pending as short lines beside
   the signed note (V2b:10182). S4 adds a second question: to fit today's reason, something has to
   decide which earlier notes "touch" it (S4:105-107).
-- **Ask:** quote the last P section, synthesise it, or both, and what is the review path? Who or
+- **Asked:** quote the last P section, synthesise it, or both, and what is the review path? Who or
   what decides that a note matches today's reason: the problem list, the category, or AI?
+
+### OQ-63 · The last-note summary: who writes it, and which notes it draws on
+- **Owner:** Daniel. **Raised:** 26 Sep 2026 (opened by the answer to OQ-37). **Blocks:**
+  REQ-CH-31, REQ-CH-01, REQ-CH-20.
+- **Why:** he wants *"a 'Care Plan' and even the last note summary"* at the top (ANS26:37). A
+  generated summary of a clinical note was treated as a safety question in the spec (SPEC:264-272),
+  and his answer does not say how it is made.
+- **Ask:** may AI write the summary from the signed note, marked as machine-written like the intake
+  summary (REQ-INT-05)? Or is it the doctor's own words, for example the last P section? Must he
+  approve it before it shows? When today's reason is new, is "the last note" the latest note, or the
+  latest note about this reason (S4:105-107)?
+- **Source:** ANS26:37-40; SPEC:264-272; S4:99-107.
 
 ### OQ-20 · Is the production timeline in date order?
 - **Owner:** Ani. **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-02.
@@ -155,7 +193,7 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
   tracks it (S5:78-82). For a patient-uploaded result, see OQ-52 and OQ-54.
 - **Source:** S3:54-57, 116-117; S5:49-54, 78-82.
 
-### OQ-18 · Continuity on other platforms · Top 6
+### OQ-18 · Continuity on other platforms · Top 8
 - **Owner:** Daniel (the question and its wording), then Ani (where the answer shows). **Raised:**
   25 Sep 2026 (S1); again 26 Sep 2026 (S5). **Blocks:** REQ-CH-16, REQ-INT-04.
 - **Why it moved up:** the doctor asked it out loud in 2 of 5 visits, both times in front of a
@@ -214,17 +252,47 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
   across the files in S4: glucose, lipids, or an A1c not seen in the frames (S4:141-142)?
 - **Source:** S4:112-115, 141-142.
 
-### OQ-47 · Where do weights come from?
-- **Owner:** Ani (check production), then Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-21.
-- **Ask:** are weights only the patient's own intake answers today? Does production store any vitals
+### OQ-47 · Where do weights come from? · ANSWERED 26 Sep 2026
+- **Answer (Daniel, 26 Sep 2026):** *"The weights come from me asking the patient. I get my
+  patient's to work. It means I get them to do their blood pressures, their weights etc."*
+  (ANS26:43-44).
+- **Means:** measurements are reported by the patient, and the doctor reads them as a trend
+  (ANS26:46-47). Recorded as D-75, REQ-CH-21 and REQ-CH-32.
+- **Not answered:** whether the patient enters the reading in the portal or the doctor enters it on
+  the call, what "etc." covers, and whether production stores any vitals history. These move to
+  OQ-64.
+- **Owner:** Ani (check production), then Daniel. **Raised:** 25 Sep 2026. **Blocked:** REQ-CH-21.
+- **Asked:** are weights only the patient's own intake answers today? Does production store any vitals
   history? Should a patient-reported weight and a measured one look different?
 - **Source:** S4:19-22, 143-144.
 
-### OQ-48 · How do lab PDFs get onto the chart?
-- **Owner:** Ani and Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-22, REQ-CH-23; UC-26.
+### OQ-64 · Patient-reported vitals: who enters them, and where
+- **Owner:** Daniel; Ani (what production stores today). **Raised:** 26 Sep 2026 (opened by the
+  answer to OQ-47). **Blocks:** REQ-CH-32, REQ-CH-21, REQ-PT-10.
+- **Why:** *"I get them to do their blood pressures, their weights etc."* (ANS26:43-44). The answer
+  file reads this as "portal or on the call" (ANS26:46-47); Daniel did not say which. v2's "Last
+  vitals" shows one static set, including heart rate and temperature, with no source
+  (V2b:4643-4650).
+- **Ask:** does the patient type readings into the patient portal, does he type what they tell him
+  on the call, or both? Which measurements beyond BP and weight does "etc." cover? Should a reading
+  he enters on the call look different from one the patient entered? Does production keep any
+  vitals history? No target or cut-off is assumed here.
+- **Source:** ANS26:43-47; S4:19-22, 143-144; V2b:4643-4650.
+
+### OQ-48 · How do lab PDFs get onto the chart? · ANSWERED 26 Sep 2026
+- **Answer (Daniel, 26 Sep 2026):** *"yes....it is madness that I am opening up raw pdf's to find
+  out what the f\*\*\* is going on."* and *"We need API access so that we get the results from the
+  source."* (ANS26:50, 56).
+- **Means:** the fix is not a better PDF upload. Results must be data (values and trends by test),
+  taken from the source by integration (ANS26:52, 59). Recorded as D-76, D-77, REQ-CH-22 and
+  REQ-IN-12. Anything that still arrives as a file (a patient upload, a fax) keeps REQ-CH-23's
+  naming and sorting.
+- **Not answered:** how the MOA uploads today, and how much can be read from a scanned report.
+  With the direction set, these matter only for the fallback; which source comes first is OQ-65.
+- **Owner:** Ani and Daniel. **Raised:** 25 Sep 2026. **Blocked:** REQ-CH-22, REQ-CH-23; UC-26.
 - **Why:** every file in S4 had the same upload date and a generic name, with a duplicate
   (S4:40-45).
-- **Ask:** does the MOA upload them in batches? Could the upload step capture the collection date
+- **Asked:** does the MOA upload them in batches? Could the upload step capture the collection date
   and test names, or can they be read from the PDF? How much can be read from a scanned report?
 - **Source:** S4:116-121, 145-146.
 
@@ -243,16 +311,40 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
   records (PP:929-933, 2279-2282).
 - **Ask:** is it a real upload place in production? Does an upload there reach the doctor, or land
   in a general document list?
+- **Now (26 Sep):** Daniel calls the patient upload a stopgap, *"I am relying on patients to help
+  me."*, and wants results from the source (ANS26:56; D-77). An upload stays as the fallback,
+  marked patient-supplied (REQ-IN-13), so this check is still needed but no longer decides the
+  main route.
 - **Source:** S5:49-51, 158-159.
 
-### OQ-53 · Can SimpleCare get an outside result directly?
-- **Owner:** Daniel. **Raised:** 26 Sep 2026. **Blocks:** REQ-CH-29.
+### OQ-53 · Can SimpleCare get an outside result directly? · ANSWERED 26 Sep 2026
+- **Answer (Daniel, 26 Sep 2026):** *"The fact that i need to do this is wild"* and *"We need API
+  access so that we get the results from the source. I am relying on patients to help me."*
+  (ANS26:55-56).
+- **Means:** yes, that is the goal: results come from the lab or source by API. Until then a patient
+  upload is the fallback, and it is marked patient-supplied (ANS26:59-60). Recorded as D-77,
+  REQ-IN-12 and REQ-IN-13.
+- **Not answered:** who orders in a case like S5, and whether SimpleCare can be named as a copy-to
+  in the meantime. Which source to connect first is OQ-65.
+- **Owner:** Daniel. **Raised:** 26 Sep 2026. **Blocked:** REQ-CH-29.
 - **Why:** the bloodwork was ordered elsewhere, so the result will not come to him by itself; it
   depends on the patient uploading it (S5:52-54).
-- **Ask:** who usually orders it in a case like this: the hospital or the previous clinic? Could
+- **Asked:** who usually orders it in a case like this: the hospital or the previous clinic? Could
   SimpleCare be named as a copy-to, so the result arrives in the Inbox? Until then, is a patient
   upload the plan?
 - **Source:** S5:52-54, 160-161.
+
+### OQ-65 · Which result source is connected first?
+- **Owner:** Daniel (the source and the access); Ani (what the demo shows). **Raised:** 26 Sep 2026
+  (opened by the answers to OQ-48 and OQ-53). **Blocks:** REQ-IN-12, REQ-CH-22, REQ-CH-29.
+- **Why:** *"We need API access so that we get the results from the source."* (ANS26:56). The only
+  lab named in the sources is LifeLabs, whose BC critical list sets the Inbox tiers (MTG21:75;
+  REQ-IN-07). His 21 Sep next steps include "Contact Accelerus to finalise onboarding and secure API
+  access" (MTG21:31); what Accelerus provides is not recorded.
+- **Ask:** which source first: LifeLabs, other BC labs, hospital results, or all through one
+  provider? Is the Accelerus access that route? Until it exists, should the demo show results as
+  data labelled with their source?
+- **Source:** ANS26:50-60; MTG21:31, 75.
 
 ### OQ-54 · Should a patient upload prompt a doctor review?
 - **Owner:** Daniel. **Raised:** 26 Sep 2026. **Blocks:** REQ-PT-09, REQ-CH-29.
@@ -263,7 +355,9 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
 - **Ask:** does a patient upload go to the Inbox for review and sign-off, to Home, or only to the
   chart? Is it tiered like a lab report? When the expected result is overdue, does he want to see
   that, and does he or the MOA chase it (a task only if he presses Task)?
-- **Source:** S5:49-54, 112-114, 131-140; REQ-IN-01, REQ-IN-02.
+- **Now (26 Sep):** a patient upload is only a fallback and is marked patient-supplied
+  (ANS26:59-60; D-77, REQ-IN-13). Where it lands, and whether it is tiered, is still his call.
+- **Source:** S5:49-54, 112-114, 131-140; REQ-IN-01, REQ-IN-02; ANS26:59-60.
 
 ### OQ-57 · Medication reconciliation for medications started elsewhere
 - **Owner:** Daniel. **Raised:** 26 Sep 2026. **Blocks:** REQ-CH-27, REQ-CH-28.
@@ -286,15 +380,22 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
 
 ## Prescribing
 
-### OQ-08 · Who sends renewal faxes? · Top 6
-- **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-RX-01, REQ-RX-07.
+### OQ-08 · Who sends renewal faxes? · ANSWERED 26 Sep 2026
+- **Answer (Daniel, 26 Sep 2026):** *"Either can send - Japneet [has] prescribing experience, but I
+  also have my favorite's pre-populated. So if I am f\*\*\*ing around, she sends it. If I think
+  she'll f\*\*\* it up, then i send it."* (ANS26:8-9).
+- **Means:** "Send it myself" and "Ask the MOA to send" are equal choices, the doctor's call each
+  time, so neither is the default or the primary button (ANS26:12-13). Recorded as D-72 and
+  REQ-RX-10. Build 13:10 makes "Review & fax" primary (V2b:4601-4602), which no longer matches.
+- **Opened:** OQ-60 (favourites) and OQ-61 (whose sign-off it is when the MOA sends).
+- **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocked:** REQ-RX-01, REQ-RX-07.
 - **Why:** S1 suggests the doctor faxes; S2 suggests the MOA, on a spoken instruction (S2:38-39,
   73-74). The answer decides whether "Send by fax" or "Ask MOA to send" is the primary button
   (DR:243-244). Build 13:10 has both, with "Review & fax" primary and "Ask MOA to send" secondary
   (V2b:4601-4602, D-64). The designer raised it again on that build.
-- **Ask:** which should be primary, or should it follow the pharmacy or the drug?
+- **Asked:** which should be primary, or should it follow the pharmacy or the drug?
 
-### OQ-09 · Renewal quantity rules · Top 6
+### OQ-09 · Renewal quantity rules · Top 8
 - **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-RX-02, REQ-RX-03.
 - **Why:** v2 ties "3 months" to 90 tablets whatever the directions. A twice-daily drug is sent
   short, and the note records it (DR:75-77).
@@ -305,7 +406,10 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
   - Does the quantity come from directions × days, or does he always type it?
 - **Now:** build 13:10 defaults to 3 months and computes directions × days (`rxQty` V2b:9911,
   D-63). The designer asks again: is 3 months the default supply for every chronic medication?
-- **Source:** DR:240-242; S1:15-16; S2:30-32; `d2a2823`.
+- **Now (26 Sep):** the doctor keeps favourite prescriptions pre-populated (ANS26:8-9, D-73). If a
+  favourite holds the quantity, the rule may be his per drug rather than the product's. Ask with
+  OQ-60.
+- **Source:** DR:240-242; S1:15-16; S2:30-32; `d2a2823`; ANS26:8-9.
 
 ### OQ-50 · What real signal says a fax was delivered, or failed?
 - **Owner:** Ani (production and the fax provider). **Raised:** 25 Sep 2026. **Blocks:** REQ-RX-05.
@@ -323,16 +427,50 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
   how many days before? No number is set here.
 - **Source:** S5:55-59, 118-121.
 
+### OQ-60 · Favourite prescriptions: where they live and who manages them
+- **Owner:** Daniel. **Raised:** 26 Sep 2026 (opened by the answer to OQ-08). **Blocks:**
+  REQ-RX-11, REQ-RX-02.
+- **Why:** *"I also have my favorite's pre-populated."* (ANS26:8-9). v2 has no favourites; the
+  renewal card starts from the patient's medication list only (`RX_MEDS` V2b:9894).
+- **Ask:** where are they today (production's prescribing screen, or somewhere else)? What does one
+  hold: drug, strength, directions, quantity, supply, repeats? Are they his alone, or shared with
+  other doctors? Who may add or change one: only him, or the MOA too? Can the MOA send from one?
+- **Source:** ANS26:8-14.
+
+### OQ-61 · When the MOA sends a renewal, whose sign-off is it?
+- **Owner:** Daniel. **Raised:** 26 Sep 2026 (opened by the answers to OQ-08 and OQ-10).
+  **Blocks:** REQ-RX-10, REQ-RX-07, REQ-UI-06.
+- **Why:** either can send (ANS26:8-9), but *"To Fax is to 'sign off' on the script"* and *"The
+  Doctor has approved this, meaning my a\*\* is on the line."* (ANS26:22-25). When the MOA sends,
+  it is not clear who has signed off. Build 13:10 puts "Ask MOA to send" through the doctor's own
+  check step first (V2b:10014), which may be more than he wants when he hands it off.
+- **Ask:** when he asks the MOA to send, has he signed off at that moment, or does the MOA's send
+  carry his name? Does he see the script before it goes, or only after? Should the visit's record
+  say "sent by <MOA> for Dr. <name>"? No prescribing rule is assumed here.
+- **Source:** ANS26:8-9, 17-34; V2b:10014, 10055-10064.
+
 ---
 
 ## Inbox and review
 
-### OQ-10 · Review versus sign-off · Top 6
-- **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-IN-01, REQ-IN-11.
+### OQ-10 · Review versus sign-off · ANSWERED 26 Sep 2026
+- **Answer (Daniel, 26 Sep 2026):** *"Reviewing is separate, all it means is that the Doctor is
+  assessing - it means no further action is necessarily to be taken until such time as I review and
+  sign off. To sign off is typically an action."* Then: *"To Fax is to 'sign off' on the script"*,
+  *"To submit a bill is to 'sign off' on your billing."*, *"It is action oriented."* and *"The
+  Doctor has approved this, meaning my a\*\* is on the line."* (ANS26:17-25).
+- **Means:** reviewed is a state (the doctor is assessing); sign-off is a separate, accountable
+  action by the doctor. So the two stages stay. Signing off the chart is finalizing the visit,
+  faxing is signing off the script, and submitting a bill is signing off the billing (ANS26:27-34).
+  Recorded as D-71 and REQ-UI-06.
+- **Not answered:** whether this is a legal or College rule (he answered in terms of his own
+  accountability, not a regulation), and whether one press may record "No follow-up required" and
+  sign off a routine result. The second moves to OQ-62.
+- **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocked:** REQ-IN-01, REQ-IN-11.
 - **The conflict:** v7 §5.6 replaced review-then-sign-off with one question (`1e6c53f`). The
   stakeholder interview asks for every result to be "reviewed and individually signed off" (SIA:22).
   v2 has both steps, so a normal result takes four actions (DR:168-170).
-- **Ask:** is the separate sign-off a legal or College requirement? Can a physician's "No follow-up
+- **Asked:** is the separate sign-off a legal or College requirement? Can a physician's "No follow-up
   required" on a routine result count as sign-off?
 
 ### OQ-11 · First contact on a critical result
@@ -342,6 +480,16 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
 - **Now:** build 13:10 shows "Call now" as a secondary button beside Accept & assign when the
   patient is queued (V2b:8998-9006, D-67). The designer asks whether it should be primary there.
 - **Source:** DR:144-146, 247-248; `2094417`, `d2a2823`.
+
+### OQ-62 · One press to sign off a routine result, and signing off in a batch
+- **Owner:** Daniel. **Raised:** 26 Sep 2026 (opened by the answer to OQ-10). **Blocks:**
+  REQ-IN-11, REQ-IN-01.
+- **Why:** reviewed and signed off stay separate (ANS26:17-20), and sign-off carries his
+  accountability (ANS26:25). A normal result still takes four actions (DR:168-170), and 14 routine
+  results take 14 round trips (DR:157-170).
+- **Ask:** may one press on a routine result say "No follow-up · sign off" and do both? Is signing
+  off several reviewed results together acceptable, or must each be its own action?
+- **Source:** ANS26:17-25; DR:157-170.
 
 ### OQ-07 · Interrupting a call for a new critical result
 - **Owner:** Daniel. **Raised:** 15 Sep 2026. **Blocks:** REQ-RV-07, REQ-CH-13.
@@ -381,7 +529,9 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
 - **Ask:** is a task picked up when it is opened, accepted, or started? Who sees it, and when?
 - **Now:** build 13:10 shows "Picked up by <MOA>" on the renewal card after a 7 s demo timer
   (V2b:10060-10064). No real signal exists yet.
-- **Source:** S2:38-40, 62-63; `d2a2823`.
+- **Still open (26 Sep):** the heading of Daniel's first answer names "what 'picked up' means"
+  (ANS26:7), but his words answer only who sends (ANS26:8-9). Nothing in them defines picked up.
+- **Source:** S2:38-40, 62-63; `d2a2823`; ANS26:7-9.
 
 ### OQ-15 · Time tolerance values
 - **Owner:** Daniel. **Raised:** 19 Sep 2026. **Blocks:** REQ-TK-05, REQ-TK-09.
@@ -434,12 +584,16 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
   was restored the same day (`c0cae95`).
 
 ### OQ-51 · Should Finalize open a billing review?
-- **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-BIL-04.
+- **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-BIL-04, REQ-BIL-05, REQ-UI-06.
 - **Why:** the button used to read "Finalize & review billing" and opened no review (DR:87-88).
   Build 13:10 renamed it "Finalize today's visit" and submits a pending claim with no review
   (V2b:4618, 7114; D-65).
 - **Ask:** is signing the visit and submitting the claim in one step right, or does he want to see
   the claim before it goes?
+- **Now (26 Sep):** *"To submit a bill is to 'sign off' on your billing."* (ANS26:23). Submitting
+  the claim is his sign-off, an accountable action (D-71). Build 13:10 submits it as a side effect
+  of Finalize, and the button does not say so. So the question is now: one press that says it signs
+  off both the visit and the bill, or two sign-offs?
 
 ---
 
@@ -471,7 +625,10 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
 - **Ask:** which protocol and which handout (his own text, or a published one he names)? How many
   readings, over how long, and in what form should the patient send them back? What other handouts
   does he send often? Where did the S5 instructions come from after the call?
-- **Source:** S5:60-65, 141-148, 164-165.
+- **Now (26 Sep):** Daniel confirms home readings are how he works: *"I get them to do their blood
+  pressures, their weights etc."* (ANS26:43-44; D-75). The protocol and the handout are still his to
+  give. How the readings are entered is OQ-64.
+- **Source:** S5:60-65, 141-148, 164-165; ANS26:43-44.
 
 ---
 
@@ -493,6 +650,8 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
 - **Owner:** Daniel. **Raised:** 21 Sep 2026. **Blocks:** no current requirement.
 - **Items:** written feedback on the AI workflow; Open Evidence as a clinical sidekick; Accelerus
   onboarding and API access; UI for AI interaction including voice (MTG21:25-32).
+- **Now (26 Sep):** *"We need API access so that we get the results from the source."* (ANS26:56).
+  Whether the Accelerus API access is that route is asked in OQ-65.
 
 ## Changelog
 
@@ -512,3 +671,11 @@ answer unblocks (Ani's working note). **Top 6** marks the batch to send first.
   (medication reconciliation), OQ-58 (taking a new patient into ongoing care) and OQ-59 (before and
   after the S5 recording). OQ-18 (other platforms) moved into the first batch, now Top 6, citing S1
   and S5. OQ-19 and OQ-31 gained S5 evidence; OQ-31 now also blocks REQ-CH-28.
+- 26 Sep 2026, fourth run: Daniel's written answers (ANS26). 65 questions, 59 open. Six ANSWERED,
+  each with his words and the date: OQ-08 (either sends, his call), OQ-10 (review is a state,
+  sign-off an action), OQ-37 (care plan and last-note summary), OQ-47 (patient-reported), OQ-48
+  (results as data, not PDFs) and OQ-53 (from the source by API). Six new, opened by the answers:
+  OQ-60 (favourites), OQ-61 (sign-off when the MOA sends), OQ-62 (one-press and batch sign-off),
+  OQ-63 (who writes the last-note summary), OQ-64 (who enters vitals) and OQ-65 (which source
+  first). Notes added to OQ-09, OQ-17, OQ-36, OQ-41 (not answered, though the heading names it),
+  OQ-51, OQ-52, OQ-54 and OQ-56. The first batch is now Top 8 and holds only unanswered questions.
