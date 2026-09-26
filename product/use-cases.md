@@ -13,6 +13,7 @@ here. Demo patients are described by their role in the demo, never by name.
 | S2 | `shadowing/2026-09-25-medication-follow-up-mri.md` (shadowing 2) |
 | S3 | `shadowing/2026-09-25-recurrent-hernia.md` (shadowing 3) |
 | S4 | `shadowing/2026-09-25-weight-medication-diverticulitis.md` (shadowing 4, screen only) |
+| S5 | `shadowing/2026-09-26-medication-refill-bloodwork.md` (shadowing 5, screen plus transcript) |
 | SIA | `simplecare-stakeholder-interview-analysis.md` |
 | IA | `physician-portal-ia-redesign.md` |
 | HUX | `healthcare-ux-design-reference.md` |
@@ -86,7 +87,9 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     at about 0:25 and he redialled, and the timer restarted at 0:00. That makes four presses for one
     patient (S3:18-26).
   - S4: one press, Calling…, then Connected, with no drop (S4:35-37).
-  - Two visits out of four had call trouble: S1 and S3 (S4:80-81).
+  - S5: "Call Again" again only reset the button to "Call Patient", and a second press dialled. The
+    call then stayed up with no drop (S5:13-19).
+  - Three visits out of five had call trouble: S1, S3 and S5 (S4:80-81; S5:83-84).
   - Daniel likes branded calling, where the caller ID shows the clinic (SIA:56). A branded number
     plus a doctor-to-callback status gets *"95% contact rate"* (MTG21:86-87).
 - **v2 should:** dial on one press, whatever the label. Show Calling… and then Connected with a
@@ -101,8 +104,8 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   Not built: In progress is set only when the call starts from the queue (`callPatient` V2b:6372);
   the chart's own Call button does not set it (V2b:4546). Transfer is still always enabled where it
   appears (V2b:4708, 4775).
-- **Sources:** S1:8-9, 27; S2:9-10; S3:18-26, 71-73, 86-88; S4:35-37, 80-81; SIA:52, 56;
-  MTG21:86-87; DR:65-70; `d2a2823`.
+- **Sources:** S1:8-9, 27; S2:9-10; S3:18-26, 71-73, 86-88; S4:35-37, 80-81; S5:13-19, 83-84,
+  95-96; SIA:52, 56; MTG21:86-87; DR:65-70; `d2a2823`.
 
 ### UC-04 Call back a missed or dropped patient
 
@@ -129,6 +132,9 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     *"What the f\*\*\* is this?"* (S2:41-42).
   - S1: the doctor asked whether they had spoken before on other platforms (*"Tia or Rocket"*),
     because "No previous notes" only covers SimpleCare (S1:10-12).
+  - S5: the same question again, *"Have we spoken before at either Tia Health or Rocket, or is this
+    the first time?"*, with "This is the patient's first visit" on screen. That is 2 visits out of
+    5 (S5:26-29, 75-77).
   - S2: "Prescription Renewal" was the right category, but it did not say which medication, or that
     the dose had just been titrated (S2:54-56).
   - S4: the same detour, intake modal, then close, then Access Chart (S4:18-23). The weight intake
@@ -144,7 +150,7 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   is still a separate view ("View intake note", V2b:4641, `openBrief` V2b:6652). Request flags, the
   other-platforms question, intake inside the chart and BMI are not built.
 - **Sources:** S1:10-12, 29-30; S2:7-8, 26-27, 41-42, 54-58, 68-69; S4:14-23, 104-111, 131-132;
-  `1a9c71b`, `56e5f20`.
+  S5:26-29, 75-77, 153-155; `1a9c71b`, `56e5f20`.
 
 ### UC-06 Renew a prescription by fax (shadowing 1)
 
@@ -279,9 +285,11 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
 
 - **Actor:** physician.
 - **Trigger:** the call ends.
-- **Today (evidence):** across all four recordings the note is not written during the call. The
+- **Today (evidence):** across all five recordings the note is not written during the call. The
   call is spent talking and reading, and writing happens after, or not at all (S3:63-66,
-  S4:66-67). Daniel on
+  S4:66-67). In S5 the caret sat in an empty note for over four minutes while the patient gave the
+  richest history of the five: a hospital stay, a new diagnosis, three new medications with dates
+  and a planned test (S5:37-46, 71-74). Daniel on
   documentation: *"I don't want you to spend your time now on that sick note, call ends, that's it"*
   (SIA:40). The patient leaves the queue at once on Finalize (S2:26).
 - **v2 should:** close the visit on Finalize: set it Completed, lock and stamp the note, ask about
@@ -293,8 +301,8 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   sets the row to Completed, stamps "Signed by … · read-only" and locks the note (`vcNoteState`
   V2b:10276), submits a pending claim, and offers "Next: <patient>" (V2b:4620). The button now reads
   "Finalize today's visit" (V2b:4618), so it no longer promises a billing review. See D-65.
-- **Sources:** S2:21-26, 51-53; S3:63-66, 104-108; S4:66-67; SIA:40; `632998a`, `d2a2823`;
-  DR:87-93, 213-217.
+- **Sources:** S2:21-26, 51-53; S3:63-66, 104-108; S4:66-67; S5:37-46, 66-68, 71-74; SIA:40;
+  `632998a`, `d2a2823`; DR:87-93, 213-217.
 
 ### UC-10 Hand work to the MOA and know it was picked up
 
@@ -303,7 +311,9 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   chase records, book a follow-up.
 - **Today (evidence):** the action row (Prescribe, Labs, Imaging, Referral, Send Task, Transfer)
   went nearly unused across the four recordings. Work was handed off by fax (S1), by voice (S2), or
-  by asking the patient to email support (S3) (S3:74-77). S4 shows no hand-off at all (S4:82).
+  by asking the patient to email support (S3) (S3:74-77). S4 shows no hand-off at all (S4:82). In
+  S5 the "hand-off" went to the patient, who is to upload the result, and none of the visit's
+  outputs (no refill, a pending result, education to send) is a button in the row (S5:85-89).
   Daniel does not use in-app MOA chat and uses Google Meet instead, because "70% of the time"
   coordination is complicated (SIA:38). Task categories currently read as peers of "Send to MOA"
   when they are sub-steps of it (SIA:48).
@@ -315,8 +325,8 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   priority (`moaTask` V2b:10102). The renewal hand-off shows "Sent to <MOA> · waiting", then "Picked
   up by <MOA>" on a 7 s demo timer (V2b:10060-10064). Not built: "picked up" anywhere else (the
   Tasks screen does not show it), and scribe tasks are still stamped "Sep 19" (V2b:7475).
-- **Sources:** S2:38-40, 62-63; S3:74-77, 95-97; S4:82; SIA:28-38, 48; `9b7b5f6`, `afdc728`,
-  `11b0ecb`, `d2a2823`; DR:121-128.
+- **Sources:** S2:38-40, 62-63; S3:74-77, 95-97; S4:82; S5:85-89; SIA:28-38, 48; `9b7b5f6`,
+  `afdc728`, `11b0ecb`, `d2a2823`; DR:121-128.
 
 ### UC-11 Keep my own unfinished work on my desk
 
@@ -455,14 +465,15 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
 
 - **Actor:** physician (the patient consents).
 - **Trigger:** a call starts and the patient agrees to be recorded.
-- **Today (evidence):** the note is not written during the call (S3:63-66). Daniel called AI
+- **Today (evidence):** the note is not written during the call (S3:63-66). In S5 a full history
+  was said aloud and none of it was written anywhere (S5:37-46). Daniel called AI
   documentation *"the thing we have to do to compete"* but put it in phase two (SIA:40, 62).
 - **v2 should:** capture nothing without consent. The scribe proposes and the doctor presses: *"The
   doctor decide what is a Task. By pressing Task button. always."* Every proposal links to the
   moment it came from (`1b201eb`, V2:1656, V2:7157).
 - **Status:** built as a demo inside "This visit" (`1b201eb`). DR:148-151: for the demo's
   critical-troponin patient, the scribe drafts "stable angina" because the chart lacks the result.
-- **Sources:** SIA:40, 62; `1b201eb`; DR:147-151.
+- **Sources:** SIA:40, 62; `1b201eb`; DR:147-151; S5:37-46.
 
 ### UC-20 Go off service
 
@@ -532,6 +543,72 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - The intake is still a separate view (V2b:4641).
 - **Sources:** S4 (all); V2b as cited.
 
+### UC-27 A new patient after a hospital stay: no refill until outside bloodwork (shadowing 5)
+
+- **Actor:** physician (the patient uploads the result later).
+- **Trigger:** a new patient whose family doctor stopped practising last year. After a hospital
+  stay, three secondary-prevention medications were started elsewhere, and bloodwork is booked
+  elsewhere. The patient wants help after the result, and ongoing care (S5:37-42). The chart says
+  "This is the patient's first visit" (S5:22-23).
+- **Today (evidence), from the screen and the transcript (S5:3-10):**
+  1. "Call Again" only resets to "Call Patient", and a second press dials (S5:13-17).
+  2. The chart shows an empty "Today's Note" with the ear-pain placeholder, and a "Note documented"
+     stamp that follows the clock with nothing written (S5:20-25).
+  3. He asks whether they have spoken before on Tia Health or Rocket, with "first visit" on screen
+     (S5:26-29).
+  4. He offers continuity, not a one-off: *"I'm running this platform for continuity"* (S5:30-32).
+  5. He confirms the medications and one dose by voice. Medication list, Prescriptions and intake
+     are never opened (S5:33-36).
+  6. The patient gives the history: the previous doctor, the hospital stay, the new diagnosis, the
+     three medications with start and dose-change months, and the booked bloodwork. The caret sits
+     in the note. Nothing is typed (S5:37-46).
+  7. The pointer rests on Documents; nothing opens (S5:47-48).
+  8. The plan for the result is a patient upload: *"attach it to the chart under the follow-up
+     section of SimpleCare, and then we can review together."* No order is made, and nothing
+     records that a result is expected (S5:49-54).
+  9. No refill today: the supply lasts past the booked draw, and the patient would rather wait for
+     the result. Prescribe is never touched, and nothing records the decision or the supply date
+     (S5:55-59).
+  10. Home blood-pressure instructions are promised for after the call, *"in keeping with Canada's
+      antihypertensive guidelines"*. Nothing is sent or queued on screen (S5:60-65).
+  11. The recording ends mid-call: note empty, no prescription, order, task, instructions or
+      finalize (S5:66-68).
+- **Friction observed:** two presses to dial; continuity lives outside the chart; medications
+  started elsewhere exist only in speech; the richest history of the five visits is not captured;
+  an expected outside result is tracked by nobody; a decision not to prescribe leaves no trace;
+  promised education has no place to be sent from; the patient's wish to stay is not recorded.
+- **v2 should:**
+  - Record a decision not to prescribe: "No renewal today" with a reason and the supply-until date,
+    as one note line (S5:118-121; REQ-RX-09).
+  - Let the doctor add medications started elsewhere during the call, each with its source and
+    start or change month (S5:122-126; REQ-CH-27).
+  - Capture history said aloud as short lines (previous doctor, hospital stay, new diagnoses) that
+    go to the problem list only when approved (S5:127-130; REQ-CH-28).
+  - Track an expected result from bloodwork ordered outside SimpleCare, "waiting on the patient",
+    in "Since last visit" and the care plan, with no task made on its own (S5:131-135; REQ-CH-29).
+  - Tie a request to upload to a named item in the patient portal, and show the upload to the
+    doctor (S5:136-140; REQ-PT-09).
+  - Send standard patient education with one press, with a way for the patient to send readings
+    back (S5:141-148; REQ-CH-30, REQ-PT-10). The handout content is Daniel's (OQ-56).
+  - Mark a new patient as continuing with the doctor (S5:149-152; REQ-ID-06).
+  - Ask about other platforms at intake (S5:153-155; REQ-INT-04).
+- **Status:** not built. What v2 has:
+  - One-press calling and a drop state, which cover the two-press fault (S5:95-96; UC-03).
+  - An honestly empty note and a Finalize that asks first (S5:97-100; UC-09).
+  - The renewal card, not needed here. Its lines come from the chart's medication list (`RX_MEDS`
+    V2b:9894), so for a new patient with nothing on file it would open empty (S5:101-103).
+  - "Since last visit" is hidden when there is no previous visit (`renderSinceLast`
+    V2b:10182-10185). Its Pending comes from the previous visit's plan and unread Inbox results
+    only (V2b:10187-10195), so an outside result cannot be added at a first visit.
+  - "Send patient instructions" releases instructions to the patient portal (V2b:9480), and the
+    scribe can draft a "Patient instructions" line (V2b:7371). The hypertension care item already
+    flags "Valid home BP series needed" (V2b:6852-6853). There is no handout content and no way to
+    return readings.
+  - The patient portal's general "Add a document" saves to health records (PP:929-933,
+    2279-2282). It is not linked to a request, and the physician portal shows nothing on arrival.
+  - Not built: the other-platforms question (UC-05) and any "continuing with me" mark.
+- **Sources:** S5 (all); V2b and PP as cited.
+
 ---
 
 ## MOA
@@ -587,11 +664,14 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
 - **Trigger:** the patient needs care, either a one-off concern or an ongoing family doctor.
 - **Today (evidence):** episodic patients *"want you to fix the problem, they move on"*, while
   comprehensive care pairs a patient with one doctor (SIA:16). Pain clusters at scheduling and
-  intake (HUX:9).
+  intake (HUX:9). S5 shows the physician side: a patient whose family doctor stopped practising
+  wants ongoing care, and the doctor offers it out loud (*"I'm running this platform for
+  continuity"*), but nothing on the chart records it (S5:30-32, 37-38, 90-92). See UC-27.
 - **v2 should:** fork into walk-in or family practice. Keep the concern grid as the default and put
   Family Practice above it (SCS:21, 25-27).
-- **Status:** built in PP and the landing flow (SCS:21-29). Trusted Person is parked (SCS:27).
-- **Sources:** SIA:12-18; HUX:7-12; SCS:19-29.
+- **Status:** built in PP and the landing flow (SCS:21-29). Trusted Person is parked (SCS:27). The
+  physician-side end (marking the patient as continuing with the doctor) is not built (REQ-ID-06).
+- **Sources:** SIA:12-18; HUX:7-12; SCS:19-29; S5:30-32, 90-92, 149-152.
 
 ### UC-25 Follow my results and tests
 
@@ -603,37 +683,61 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   call you"). No red, and no clinical flags (`5a4fb10`). No visit summaries or physician notes
   (`5a4fb10`).
 - **Status:** partly built. PP's "done" queue state still offers "View visit summary" (PP:1973),
-  which conflicts with `5a4fb10`.
-- **Sources:** `5a4fb10`, `c503ece`; HUX:11, 18; PP:860, 1970-1973.
+  which conflicts with `5a4fb10`. S5 adds two patient-side needs: a named place to upload a result
+  the doctor asked for (REQ-PT-09), and instructions sent after the visit with a way to send
+  readings back (REQ-CH-30, REQ-PT-10). PP has only a general "Add a document" saved to health
+  records (PP:929-933, 2279-2282).
+- **Sources:** `5a4fb10`, `c503ece`; HUX:11, 18; PP:860, 929-933, 1970-1973, 2279-2282;
+  S5:49-54, 60-65, 136-148.
 
 ---
 
 ## Patterns across the shadowing visits
 
-Four recordings, all 25 Sep 2026, all current production. S3 and S4 are screen only, with no audio.
+Five recordings, all current production. S1 to S4 are from 25 Sep 2026, S5 from 26 Sep. S3 and S4
+are screen only, with no audio; S5 has the screen and the transcript. "No audio" means the row
+cannot be judged from that recording.
 
-| Pattern | S1 | S2 | S3 | S4 | Use cases |
-|---|---|---|---|---|---|
-| The note is not written during the call | yes | yes | yes | yes | UC-09, UC-19 |
-| The call is spent reading | no | old note | old notes | note, then PDFs | UC-07, 08, 26 |
-| The latest note is the wrong place | n/a | no | yes | yes | UC-08, 26 |
-| What he needs comes from outside | platforms | no | op reports | outside labs | UC-05, 08, 26 |
-| Call trouble | yes | no | yes | no | UC-03 |
-| Action row unused; hand-off by | fax | voice | patient email | none seen | UC-10 |
-| Nested scrolling hides today's note | no | yes | yes | yes, 5 regions | UC-07, 08, 26 |
-| Entry detours | no | intake | no | intake, search | UC-05 |
+| Pattern | S1 | S2 | S3 | S4 | S5 | Use cases |
+|---|---|---|---|---|---|---|
+| The note is not written during the call | yes | yes | yes | yes | yes | UC-09, 19 |
+| The call is spent reading | no | old note | old notes | note, PDFs | no, listening | UC-07, 08, 26 |
+| The latest note is the wrong place | n/a | no | yes | yes | n/a, first visit | UC-08, 26 |
+| What he needs comes from outside | platforms | no | op reports | outside labs | hospital, labs | UC-05, 08, 26, 27 |
+| Other platforms asked out loud | yes | no | no audio | no audio | yes | UC-05 |
+| Asks the patient to send it; nothing tracks it | no | no | yes, email | no | yes, upload | UC-08, 27 |
+| Call trouble | yes | no | yes | no | yes | UC-03 |
+| Action row unused; hand-off by | fax | voice | patient email | none seen | patient upload | UC-10 |
+| The outcome is not an order | no | partly | no audio | no audio | yes | UC-27 |
+| Nested scrolling hides today's note | no | yes | yes | yes, 5 regions | one small scroll | UC-07, 08, 26 |
+| Entry detours | no | intake | no | intake, search | no | UC-05 |
 
-- **The note, 4 out of 4.** Nothing is typed during any call. In S4 today's note was on screen for
-  about one second (S1:20-21; S2:24-25; S3:63-66; S4:66-67).
+- **The note, 5 out of 5.** Nothing is typed during any call. In S4 today's note was on screen for
+  about one second. In S5 the caret sat in an empty note for over four minutes during the richest
+  history of the five (S1:20-21; S2:24-25; S3:63-66; S4:66-67; S5:71-74). See REQ-CH-28.
 - **Reading, not doing.** Follow-ups (S2, S3) need the last plan. A new reason (S4) needs data the
   notes do not hold: a weight history, recent metabolic labs, the earlier GLP-1 (S4:68-73). So
-  "Since last visit" has to fit today's reason, not only the latest note (REQ-CH-01, REQ-CH-20).
+  "Since last visit" has to fit today's reason, not only the latest note (REQ-CH-01, REQ-CH-20). In
+  S5 there was nothing to read: the history came only from the patient (S5:33-46).
 - **Results are files, not data (new in S4).** Generic names, upload dates, no order, duplicates,
   one file at a time, and no test beside its earlier values (S4:74-77). See REQ-CH-21 to REQ-CH-23.
-- **Calling, 2 out of 4.** Clean in S2 and S4, wrong in S1 and S3 (S4:80-81).
-- **The action row, 4 out of 4.** Barely touched during any call (S3:71-77; S4:82).
+- **What he needs comes from outside, 4 out of 5.** Other platforms (S1), outside operative reports
+  (S3), outside lab PDFs (S4), and a hospital stay plus bloodwork ordered elsewhere (S5)
+  (S5:78-82). In S3 and S5 the doctor asks the patient to send something, and nothing tracks it
+  (REQ-CH-10, REQ-CH-29, REQ-PT-09).
+- **Other platforms, 2 out of 5.** The same question in S1 and S5, both times in front of a chart
+  that said "no previous notes" (S1:10-12; S5:26-29, 75-77). REQ-INT-04 and OQ-18 are raised.
+- **Calling, 3 out of 5.** Clean in S2 and S4, wrong in S1, S3 and S5. In S3 and S5 "Call Again"
+  reset the button instead of dialling (S4:80-81; S5:83-84).
+- **The action row, 5 out of 5.** Barely touched during any call (S3:71-77; S4:82; S5:85-86).
+- **The outcome is not an order (new in S5).** "No refill until after the bloodwork", "review the
+  result together", "send home BP instructions". The product has places for prescriptions and
+  requisitions, but none for these (S5:87-89). See REQ-RX-09, REQ-CH-29, REQ-CH-30.
+- **A new patient who wants a family doctor (new in S5).** S1 was a one-off renewal. In S5 the
+  patient lost their family doctor, the doctor offered continuity out loud, and nothing on the
+  chart marks it (S5:90-92). See REQ-ID-06.
 - **Nested scrolling.** S4 had five scroll regions, and opening history or results pushed today's
-  note off-screen, as in S3 (S4:83-85).
+  note off-screen, as in S3 (S4:83-85). In S5 one small scroll half-hid the action row (S5:43-45).
 
 ## Changelog
 
@@ -645,3 +749,8 @@ Four recordings, all 25 Sep 2026, all current production. S3 and S4 are screen o
   Statuses moved for build 13:10: UC-09 and UC-12 to built; UC-07 and UC-08 to partly built. UC-01,
   UC-03, UC-06, UC-10, UC-13, UC-15 and UC-17 stay partly built or built, with the new functions
   named. S4 evidence added to UC-03, UC-05, UC-09 and UC-10.
+- 26 Sep 2026, third run: added S5 (shadowing 5, screen plus transcript) to the source key. New
+  UC-27 for shadowing 5 (not built). The patterns table now covers five visits, with three new
+  rows: other platforms asked out loud, the patient asked to send something that nothing tracks,
+  and an outcome that is not an order. S5 evidence added to UC-03, UC-05, UC-09, UC-10, UC-19,
+  UC-24 and UC-25.

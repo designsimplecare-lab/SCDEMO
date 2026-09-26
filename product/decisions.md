@@ -589,7 +589,9 @@ no client quote; Ani approved it by shipping it.
   (V2b:10268).
 - **Replaced:** nothing; v2 had no previous note to open (DR:97-100).
 - **Note:** it holds one previous visit per patient. S4 (a new reason) shows it must fit today's
-  reason instead (REQ-CH-20, S4:99-100).
+  reason instead (REQ-CH-20, S4:99-100). S5 (a first visit) shows it is hidden when there is no
+  previous visit, and its Pending cannot hold a result ordered outside SimpleCare (V2b:10185-10195;
+  S5:104-106; REQ-CH-29).
 - **Source:** `d2a2823`; V2b:10117-10227.
 
 ### D-67 · 25 Sep 2026 · Critical results on the chart, and "Call now" from review
@@ -642,3 +644,7 @@ no client quote; Ani approved it by shipping it.
   D-65 replaces "Finalize & review billing". D-63 notes that the computed quantity departs from
   REQ-RX-02's interim rule. Shadowing 4 brought no decisions; its questions are in
   `open-questions.md`.
+- 26 Sep 2026, third run: still 70 entries. Shadowing 5 (S5) brought no product decision: the
+  doctor's *"I'm running this platform for continuity"* (S5:30-32) was said to a patient, not
+  decided in a meeting, so it is evidence for REQ-ID-06 and OQ-58, not a D entry. D-66 gains a
+  note on what S5 shows about "Since last visit". S5's questions are in `open-questions.md`.

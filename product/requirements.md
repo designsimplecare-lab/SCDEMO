@@ -1,7 +1,7 @@
 # SimpleCare requirements
 
 Owner: product manager agent. First written 25 Sep 2026. The source codes are the same as in
-`use-cases.md`: MTG21, S1-S4, SIA, IA, HUX, COMP, SCS, SPEC, DR, V2 (build 12:45), V2b (build 13:10,
+`use-cases.md`: MTG21, S1-S5, SIA, IA, HUX, COMP, SCS, SPEC, DR, V2 (build 12:45), V2b (build 13:10,
 `d2a2823`), MOAP, PP, MEM and commit hashes. "Assumption" marks a claim with no source. Status:
 **built** (works in v2), **partly built**, **not built**. "Open" names the open questions that
 block a requirement (see `open-questions.md`). This file sets no clinical thresholds, doses or
@@ -159,7 +159,7 @@ concern.**
 - A press dials whatever the button's label. A second press during a call does nothing. The state is
   visible: Calling…, then connected with a timer.
 - Rationale: *"Double tap for call now like fifty times."* (S1:8-9). "Call Again" only reset the
-  button (S3:18-20).
+  button (S3:18-20), and again in S5 (S5:13-17). Call trouble in 3 of 5 visits (S5:83-84).
 - Accept: from rest, one press reaches Calling…; there is no reset-only press.
 - Status: built (`pcStartCall` V2:9195, `29d956d`).
 
@@ -248,7 +248,8 @@ concern.**
 **REQ-CH-05 · An empty note looks empty.**
 - The placeholder is neutral, or the note starts from the intake reason as CC. There is no invented
   clinical example. "Documented at" appears only after the first word.
-- Rationale: S3:31-35, 106-108. S4 shows the same ear-pain placeholder and early stamp (S4:24-27).
+- Rationale: S3:31-35, 106-108. S4 shows the same ear-pain placeholder and early stamp (S4:24-27),
+  and S5 again, with the stamp following the clock while nothing is written (S5:20-25).
 - Status: partly built. The note is prefilled "Patient presents for <reason>." (V2:9153), and the
   placeholder is neutral.
 
@@ -283,7 +284,9 @@ concern.**
 **REQ-CH-10 · Outstanding requests carry a status and an owner, including "waiting on the
 patient".**
 - A patient's email about the item attaches to it.
-- Rationale: S3:78-80, 93-97. v2 owners are only GP or specialist (DR:178-180).
+- Rationale: S3:78-80, 93-97. v2 owners are only GP or specialist (DR:178-180). S5 repeats the
+  pattern: the doctor asks the patient to send something, and nothing tracks it (S5:49-54, 78-82).
+  For results ordered elsewhere, see REQ-CH-29.
 - Accept: "asked 3 weeks ago, not received" is readable beside the reason. Nothing becomes a task on
   its own (S3:95-97).
 - Status: partly built. "Since last visit" Pending lines carry a date and a state, including
@@ -325,8 +328,14 @@ patient".**
   for every patient (V2b:4659-4663).
 
 **REQ-CH-16 · Continuity is visible.**
-- A returning-patient indicator, and whether the patient was seen on another platform.
-- Rationale: SIA:46; S1:10-12.
+- A returning-patient indicator, and whether the patient was seen on another platform. The
+  other-platform answer shows beside "No previous notes".
+- Rationale: SIA:46. The doctor asked about other platforms in 2 of 5 visits, both times in front of
+  a chart that said "no previous notes": *"Tia or Rocket"* (S1:10-12) and *"Have we spoken before at
+  either Tia Health or Rocket, or is this the first time?"* (S5:26-29, 75-77, 153-155). Raised in
+  priority on 26 Sep.
+- Accept: on a chart with no SimpleCare notes, the doctor can tell from the screen whether the
+  patient was seen on another platform, without asking.
 - Status: not built.
 - Open: OQ-18.
 
@@ -345,7 +354,8 @@ patient".**
 **REQ-CH-19 · The ambient scribe proposes and the doctor presses.**
 - Consent comes first. The scribe files nothing. Each proposal links to the moment it came from.
 - Rationale: *"The doctor decide what is a Task. By pressing Task button. always."* (`1b201eb`,
-  V2:1656).
+  V2:1656). S5 is the strongest case for it: a full history said aloud and none of it written
+  (S5:37-46, 71-74). See REQ-CH-28.
 - Status: built as a demo.
 - Open: OQ-31.
 
@@ -423,6 +433,61 @@ patient".**
   V2b:10309).
 - Open: OQ-44.
 
+**REQ-CH-27 · Medications started elsewhere go on the list during the call.**
+- For a patient with nothing on file, the medications section offers "Add what the patient takes":
+  drug, dose, start month, any dose change, and where it came from (for example "started in
+  hospital", "patient-reported"). The lines then feed the renewal card and later visits.
+- Rationale: in S5, three medications started in hospital, and one dose change, were confirmed by
+  voice only. The medication list, Prescriptions and intake were never opened (S5:33-46, 122-126).
+  The renewal card reads the medication list (`RX_MEDS` V2b:9894), so it would open empty for this
+  patient (S5:101-103). S4 is the same gap for a drug tried elsewhere (REQ-CH-26).
+- Accept: each line shows its source; a patient-reported line looks different from one SimpleCare
+  prescribed. No dose or interaction rule is added by the product.
+- Status: not built. `RX_MEDS` is fixed demo data per patient, with no way to add a line.
+- Open: OQ-57.
+
+**REQ-CH-28 · History said aloud is captured as short lines.**
+- A "New to SimpleCare" chart has a short history block the doctor fills from the call: previous
+  family doctor (and whether records were transferred), a recent hospital stay (reason, length,
+  month), new diagnoses. A new diagnosis is offered to the problem list and lands only when
+  approved (REQ-CH-17). The scribe may draft these lines; the doctor presses (REQ-CH-19).
+- Rationale: in S5 the caret sat in an empty note for over four minutes while the patient gave a
+  hospital stay, a new diagnosis, three new medications with dates and a planned test. None of it
+  was written (S5:37-46, 71-74, 127-130). The note is not written during the call in 5 of 5 visits.
+- Accept: the history can be recorded in one line per event without writing a SOAP note mid-call.
+- Status: not built. The scribe demo drafts note lines and proposals (V2b:7371), but there is no
+  history block.
+- Open: OQ-31, OQ-57.
+
+**REQ-CH-29 · Results expected from tests ordered outside SimpleCare are tracked.**
+- The doctor can add a pending item with no SimpleCare requisition: what, when it is booked, who
+  ordered it, and "waiting on the patient" when the patient is to upload it. It shows in "Since last
+  visit" at the next visit and under the care plan now. When its date passes with nothing received,
+  it shows as overdue to the doctor, who decides whether to task the MOA. Nothing becomes a task on
+  its own (REQ-TK-01). An upload tied to it closes it (REQ-PT-09).
+- Rationale: the doctor's words: *"When you have that lab work done, you can just attach it to the
+  chart under the follow-up section of SimpleCare, and then we can review together."* The result
+  will not reach him by itself, and nothing records that it is expected (S5:49-54, 131-135). The
+  same pattern as S3's outside records asked by email (S3:54-57, 93-97; S5:78-82).
+- Accept: at the next visit, "Since last visit" says whether the expected result arrived.
+- Status: not built. "Since last visit" is hidden with no previous visit (V2b:10185), and its
+  Pending comes only from the previous visit's plan and unread Inbox results (V2b:10187-10195). The
+  demo data can already say "waiting on the patient" (V2b:10163).
+- Open: OQ-52, OQ-53, OQ-54.
+
+**REQ-CH-30 · Standard patient education is sent with one press after the visit.**
+- Patient instructions get a small library of standard handouts. The doctor picks one during or
+  after the call; it is released to the patient portal; the note records "<handout> sent". The
+  first handout is home blood-pressure measurement, because the doctor promised it in S5.
+- Rationale: *"I'm going to give you instructions on how to take your blood pressure. That's going
+  to be the most important thing."* Nothing was sent or queued on screen (S5:60-65, 141-145).
+- Accept: the handout's content is Daniel's. The product ships no protocol, number of readings or
+  target until he supplies it (OQ-56). The designer's example in S5:142-143 is not adopted.
+- Status: partly built. "Send patient instructions" releases instructions to the patient portal
+  (V2b:9480), and the scribe drafts a "Patient instructions" line (V2b:7371). There is no handout
+  content or library.
+- Open: OQ-56.
+
 ---
 
 ## Prescribing (RX)
@@ -487,6 +552,19 @@ patient".**
 **REQ-RX-08 · The last-dispensed date shows on the card.**
 - Rationale: the queue's AI line already knows it (DR:84).
 - Status: built (build 13:10), on each line and in the check step (V2b:9950, 10031).
+
+**REQ-RX-09 · A decision not to prescribe is recorded.**
+- The renewal card offers "No renewal today" with a reason (for example "supply lasts past the
+  draw; awaiting bloodwork") and the date the patient's supply runs out. It writes one note line
+  and marks the medication "next review after <item>", linked to the pending item (REQ-CH-29).
+- Rationale: the outcome of S5 was a decision not to prescribe: *"Do you need medications from now
+  until after your blood work, or are you okay?"* Prescribe was never touched, and nothing on
+  screen recorded the decision or the supply date (S5:55-59, 87-89, 118-121).
+- Accept: after the visit, the chart shows that no renewal was given, why, and until when the
+  supply lasts. Whether and when the chart warns about a running-out supply is OQ-55; no number of
+  days is set here.
+- Status: not built. The renewal card has Send, Ask MOA to send and Edit only (V2b:4601-4602).
+- Open: OQ-55.
 
 ---
 
@@ -692,7 +770,11 @@ Inbox.**
 - Open: OQ-40.
 
 **REQ-INT-04 · Intake asks whether the patient has been seen on another platform.**
-- Rationale: S1:10-12, 29-30.
+- For example: "Have you been seen on another virtual platform (e.g. Tia Health, Rocket Doctor)?"
+  The answer feeds REQ-CH-16.
+- Rationale: asked out loud in 2 of 5 visits, S1 and S5 (S1:10-12, 29-30; S5:26-29, 75-77,
+  153-155). Priority raised on 26 Sep: now in the first batch for Daniel (OQ-18).
+- Accept: the answer is on the chart before the call starts.
 - Status: not built.
 - Open: OQ-18.
 
@@ -781,6 +863,18 @@ way out.**
 **REQ-ID-05 · A returning patient is marked.**
 - Rationale: SIA:46.
 - Status: not built.
+
+**REQ-ID-06 · A new patient taking up ongoing care is marked as continuing with the doctor.**
+- When a new patient wants ongoing care (for example after losing their family doctor), the doctor
+  can mark them as continuing with him. The chart header shows it, and the follow-up is booked with
+  the same doctor. It is the physician-side end of the patient's Family Practice path (REQ-PT-06).
+- Rationale: *"I'm running this platform for continuity, which is to say if you need ongoing
+  assistance, you know, lab work, referrals, blood work… then I'm more than happy to help."* The
+  patient's family doctor had stopped practising. Nothing on the chart records the choice
+  (S5:30-32, 37-38, 90-92, 149-152). Comprehensive care pairs a patient with one doctor (SIA:16).
+- Accept: from the chart, the doctor can tell a one-off patient from one continuing with him.
+- Status: not built.
+- Open: OQ-58.
 
 ---
 
@@ -879,6 +973,31 @@ way out.**
 - Status: not specified.
 - Open: OQ-28.
 
+**REQ-PT-09 · A doctor's request to upload is a named item in the patient portal.**
+- "Your doctor asked for your bloodwork results · Upload", tied to the pending item (REQ-CH-29). An
+  upload there reaches the physician portal marked "sent by the patient" and closes the pending
+  item. The general "Add a document" stays for anything else.
+- Rationale: the doctor named a place, *"attach it to the chart under the follow-up section of
+  SimpleCare"* (S5:49-51, 136-140). Getting the result depends on the patient (S5:52-54).
+- Accept: the doctor can see that the upload arrived without searching Documents.
+- Status: partly built. PP's "Add a document" ("Lab result from elsewhere…") saves to health
+  records (PP:929-933, 2279-2282). It is not linked to a request, and the physician portal shows
+  nothing when it arrives (S5:112-114).
+- Open: OQ-52, OQ-54.
+
+**REQ-PT-10 · The patient can send home readings back after instructions.**
+- A handout that asks for readings (first, home blood pressure) carries a readings form in the
+  patient portal. The series reaches the chart as data, marked patient-reported, beside the
+  hypertension care item's "Valid home BP series needed".
+- Rationale: the patient already has a machine and measures regularly; the doctor is sending
+  instructions (S5:60-65, 146-148). v2 already names the gap: "No home readings logged …
+  Hypertension Canada asks for a series before changing treatment." (V2b:6852-6853), and a demo
+  pending item reads "Home BP log · waiting on the patient" (V2b:10163).
+- Accept: readings arrive as values with dates, not as a file. How many readings and over how long
+  are Daniel's (OQ-56).
+- Status: not built.
+- Open: OQ-56.
+
 ---
 
 ## Changelog
@@ -892,3 +1011,10 @@ way out.**
   current rule); to partly built CALL-04, CH-01, CH-02, CH-10, CH-15, RX-05, IN-11, TK-03, TK-09 and
   ID-03. RX-02 is built differently from its interim accept line (D-63). BIL-04 is superseded (D-65).
   S4 evidence added to CH-02, CH-05 and INT-01.
+- 26 Sep 2026, third run: 131 requirements (8 new), from shadowing 5 (S5). New: CH-27 (medications
+  started elsewhere), CH-28 (history said aloud), CH-29 (results expected from outside tests),
+  CH-30 (patient education), RX-09 (a decision not to prescribe), ID-06 (a new patient continuing
+  with the doctor), PT-09 (a request to upload) and PT-10 (home readings back). Strengthened with
+  S5 evidence: CALL-01, CH-05, CH-10, CH-19, and CH-16 and INT-04, whose other-platforms question
+  has now come up in 2 of 5 visits (S1, S5) and is raised in priority. No statuses moved; the build
+  is still 13:10.
