@@ -1,11 +1,11 @@
 # SimpleCare requirements
 
 Owner: product manager agent. First written 25 Sep 2026. The source codes are the same as in
-`use-cases.md`: MTG21, S1-S3, SIA, IA, HUX, COMP, SCS, SPEC, DR, V2, MOAP, PP, MEM and commit
-hashes. "Assumption" marks a claim with no source. Status: **built** (works in v2), **partly
-built**, **not built**. "Open" names the open questions that block a requirement (see
-`open-questions.md`). This file sets no clinical thresholds, doses or billing codes. Where one is
-needed, it points to an open question.
+`use-cases.md`: MTG21, S1-S4, SIA, IA, HUX, COMP, SCS, SPEC, DR, V2 (build 12:45), V2b (build 13:10,
+`d2a2823`), MOAP, PP, MEM and commit hashes. "Assumption" marks a claim with no source. Status:
+**built** (works in v2), **partly built**, **not built**. "Open" names the open questions that
+block a requirement (see `open-questions.md`). This file sets no clinical thresholds, doses or
+billing codes. Where one is needed, it points to an open question.
 
 Areas: [Home and queue](#home-and-queue-hq) · [Call](#call-call) · [Chart](#chart-ch) ·
 [Prescribing](#prescribing-rx) · [Inbox](#inbox-in) · [Review](#review-rv) · [MOA hand-off and
@@ -100,8 +100,10 @@ concern.**
   context: *"Don't keep it a mystery."* (MTG21:60-62).
 - Accept: the section is absent on a clean day. Each row names the finding and never a bare task
   title. There is one row per patient (DR:46-48).
-- Status: partly built. The intake-flag row is static markup (V2:4110-4121), and "Review MRI report"
-  remains in the task data (DR:47-48).
+- Status: built to the current rule (build 13:10). A patient's intake flag folds into their critical
+  result row as a second reason and a second button (`renderCriticals` V2b:6164-6172). "Review MRI
+  report" is removed from the task data (V2b:6812). The intake-flag row is still static markup
+  (V2b:4230).
 - Open: OQ-01, OQ-35.
 
 **REQ-HQ-12 · The attention list is not an inbox.**
@@ -140,6 +142,15 @@ concern.**
 - Status: partly built. The MOA roll-up is in the chat tooltip. The dot on the avatar is the
   doctor's own status (`f047109`).
 
+**REQ-HQ-17 · Opening the queue never carries a search over from the last patient.**
+- The search clears when the Daysheet opens, or shows as a filter chip with a clear button.
+- Rationale: S4 opened on "Search all appointments" still filtered by the previous patient's name
+  (S4:14-17, 131-132).
+- Accept: after closing a chart, the queue shows every row in the window, or a visible chip says
+  what is filtering it.
+- Status: partly built. v2's queue search has a clear button (`clearQueueSearch` V2b:4265, 6236),
+  but nothing clears it when the doctor comes back from a chart (no other caller found).
+
 ---
 
 ## Call (CALL)
@@ -157,19 +168,22 @@ concern.**
   silence.
 - Rationale: S3:22-26, 86-88.
 - Accept: a drop changes the call state within a second, and one press redials.
-- Status: not built (DR:69-70).
+- Status: built (build 13:10). "Call dropped at 00:31" and a Redial label (`pcCallSum` V2b:9409,
+  `pcEndCall` V2b:9425). In the demo the drop is triggered from the demo switcher (`pcDropCall`
+  V2b:9420).
 - Open: OQ-06, OQ-21.
 
 **REQ-CALL-03 · The timer counts the whole contact across reconnects ("2 calls · 4:10").**
 - Rationale: *"the timer restarts from 0:00, so the screen no longer shows how long he has been with
   the patient."* (S3:24-25).
 - Accept: a redial keeps the running total.
-- Status: not built.
+- Status: built (`pcCallRec`, `pcTimerText` V2b:9395-9396).
 
 **REQ-CALL-04 · Starting a call from the chart sets the visit to in progress.**
 - Rationale: DR:67-68.
 - Accept: the queue row reflects the call whichever door it was started from.
-- Status: not built.
+- Status: partly built. From the queue, `callPatient` sets In progress (V2b:6372). The chart's own
+  Call button calls `pcStartCall` directly and does not (V2b:4546, 9397).
 
 **REQ-CALL-05 · Transfer to the MOA is offered only during a live call.**
 - Rationale: *"you can't transfer a call you're not currently on"* (SIA:52).
@@ -202,22 +216,28 @@ concern.**
   sat two notes back (S3:67-70, 89-92).
 - Accept: on a follow-up, the plan items needed for today are readable without scrolling or opening
   a note.
-- Status: not built (DR:97-104).
+- Status: partly built (build 13:10). "Since last visit" shows the previous visit's Plan, Ask about
+  and Pending, and adds unread Inbox results to Pending (`renderSinceLast` V2b:10182). It holds one
+  visit per patient (`PT_LAST` V2b:10124), so it does not follow the reason across notes. For a new
+  reason it would show the wrong plan (S4:99-100); see REQ-CH-20.
 - Open: OQ-37.
 
 **REQ-CH-02 · Older notes open read-only beside today's note, and the chart has one scroll region.**
 - Rationale: nested scrolling (S2:18-20, S3:81-83). Reading history pushed today's note off-screen
-  (S3:39-42).
+  (S3:39-42), and again in S4, where the chart had five scroll regions (S4:28-31, 83-85).
 - Accept: no box-inside-box scrolling; today's note stays in view while an older one is open.
-- Status: not built. v2 has no openable previous note (DR:97-100).
+- Status: partly built (build 13:10). "Read the <date> note" opens the previous note read-only in
+  place, above today's note (`slvToggle` V2b:10221). The note box grows with its text instead of
+  scrolling (`vcGrow` V2b:10269). Only the latest note can be opened, and nothing keeps today's note
+  in view beside it.
 - Open: OQ-20.
 
 **REQ-CH-03 · The editor always says whose note it is.**
 - The primary button names what it does ("Finalize today's visit").
 - Rationale: S2:21-23, 51-53.
 - Accept: an older note is never shown inside today's editor.
-- Status: partly built. "This visit" holds only today's note; the button reads "Finalize & review
-  billing".
+- Status: built (build 13:10). "This visit" holds only today's note, and the button reads
+  "Finalize today's visit" (V2b:4618). A signed note says "Signed by … · read-only" (V2b:10282).
 - Open: OQ-17.
 
 **REQ-CH-04 · "Copy to today's note" on each section of an older note.**
@@ -228,7 +248,7 @@ concern.**
 **REQ-CH-05 · An empty note looks empty.**
 - The placeholder is neutral, or the note starts from the intake reason as CC. There is no invented
   clinical example. "Documented at" appears only after the first word.
-- Rationale: S3:31-35, 106-108.
+- Rationale: S3:31-35, 106-108. S4 shows the same ear-pain placeholder and early stamp (S4:24-27).
 - Status: partly built. The note is prefilled "Patient presents for <reason>." (V2:9153), and the
   placeholder is neutral.
 
@@ -238,13 +258,17 @@ concern.**
 - Rationale: in production the patient leaves the queue at once (S2:26). v2 shows a toast only
   (DR:87-91).
 - Accept: after Finalize the row reads Completed and the note is read-only.
-- Status: partly built (`finalizeVisit` V2:6947).
+- Status: built (build 13:10). `finalizeVisit` (V2b:7091) ends a live call, sets Completed, stamps
+  and locks the note (`vcNoteState` V2b:10276), submits a pending claim, and offers "Next: <patient>"
+  (V2b:4620). The label no longer promises a billing review (see REQ-BIL-04, D-65).
 - Open: OQ-17.
 
 **REQ-CH-07 · Ask before finalizing an empty note, or a note with bracketed template text.**
 - Rationale: S2:53; a signed note carried "[document findings …]" (S3:48-50, 104-105).
 - Accept: the prompt marks the line to fill or remove.
-- Status: not built.
+- Status: built (build 13:10). "Today's note is empty. Finalize anyway?" and "still has template
+  text: "[…]". Finalize anyway?", with Keep writing / Finalize anyway (`finalizeVisit`
+  V2b:7100-7107, `vcFinWarn` V2b:10296). Whether it should block instead is OQ-16.
 - Open: OQ-16.
 
 **REQ-CH-08 · The plan's watch-list becomes quick tick-lines in today's note.**
@@ -262,7 +286,8 @@ patient".**
 - Rationale: S3:78-80, 93-97. v2 owners are only GP or specialist (DR:178-180).
 - Accept: "asked 3 weeks ago, not received" is readable beside the reason. Nothing becomes a task on
   its own (S3:95-97).
-- Status: not built.
+- Status: partly built. "Since last visit" Pending lines carry a date and a state, including
+  "waiting on the patient", in the demo data (V2b:10163). There is no owner and no attached email.
 - Open: OQ-19.
 
 **REQ-CH-11 · The care plan (narrative) and Tasks (practical) stay separate.**
@@ -281,7 +306,11 @@ patient".**
 - Rationale: DR:147-151, 195-199 ("The biggest risk I found").
 - Accept: opening the chart of a patient with an unreviewed critical shows it at the top of This
   visit.
-- Status: not built.
+- Status: built (build 13:10). Critical and high results not yet signed off sit at the top of the
+  chart with value, reference, concern, received time, review state, "Review result", and "Also in
+  today" for the patient's other results (`renderChartAlerts` V2b:10237). It uses the Inbox's own
+  tiering: "labTier decides, nothing new is inferred" (V2b:10230). Whether the scribe now reads it
+  was not checked.
 
 **REQ-CH-14 · The "Where this came from" recall shows whatever door the doctor came in by.**
 - Rationale: `632998a`; DR:113-115.
@@ -290,7 +319,10 @@ patient".**
 **REQ-CH-15 · Chart data is the patient's own.**
 - PHN, medications, pharmacy, age and sex match the queue row and the patient's documents.
 - Rationale: in a demo to doctors, a PHN mismatch reads as a wrong-patient error (DR:61-63).
-- Status: not built (demo data defect).
+- Status: partly built (build 13:10). PHN, pharmacy and medications are per patient (`PT_CHART`
+  V2b:9873, `RX_MEDS` V2b:9894), and the medication rail reads the same list (`renderMedRail`
+  V2b:10309). Age and sex on the banner were not re-checked. The Results tab is the same static list
+  for every patient (V2b:4659-4663).
 
 **REQ-CH-16 · Continuity is visible.**
 - A returning-patient indicator, and whether the patient was seen on another platform.
@@ -317,6 +349,80 @@ patient".**
 - Status: built as a demo.
 - Open: OQ-31.
 
+**REQ-CH-20 · "Since last visit" fits today's reason, not only the latest note.**
+- When no earlier note touches today's reason, the block says so ("First visit for weight") and
+  shows that reason's context instead: the intake answers, the relevant history and the latest
+  relevant results. The unrelated last plan drops to one line below.
+- Rationale: in S4 the reason was new (weight) and the latest note was about something else. He read
+  it anyway, because the chart opens on it (S4:32-39, 71-73, 105-107). S3 is the same problem for a
+  follow-up (S3:89-92).
+- Accept: for a new reason, nothing from an unrelated plan is presented as today's plan; for a
+  follow-up, the matching thread is shown even when it is not in the latest note.
+- Status: not built. `renderSinceLast` (V2b:10182) always shows the previous visit.
+- Open: OQ-37.
+
+**REQ-CH-21 · Weight is a trend, with BMI.**
+- For a weight reason, the chart shows weight over time. Each reading says whether it was
+  patient-reported or measured. The intake figure is the newest point. BMI is worked out from height
+  and weight, with the change since the first reading.
+- Rationale: the intake had the patient's own height and weight, no BMI, and no earlier weight to
+  compare with (S4:19-22, 76-77, 108-111).
+- Accept: the doctor can say how the weight has changed without asking the patient or opening a
+  file. No weight target or BMI cut-off is shown unless Daniel sets one.
+- Status: not built. "Last vitals" shows one static weight (V2b:4643-4650).
+- Open: OQ-47.
+
+**REQ-CH-22 · Results are read by test, over time, not as files.**
+- Every test in Results shows its earlier values and dates in one line, with the latest flagged
+  where the lab flagged it. A reason can bring a preset group of tests to the top.
+- Rationale: in S4 the doctor spent about four minutes opening lab PDFs one at a time, and nothing
+  put a test beside its earlier values (S4:46-56, 74-77, 112-115).
+- Accept: a test's history is readable without opening a document. Which tests go in a preset
+  group is set by Daniel (OQ-46), not by the product.
+- Status: not built. Results is a static list of three lines, the same for every patient
+  (`vcp-results` V2b:4659-4663). The value-and-flag line format is there (S4:96-98).
+- Open: OQ-46, OQ-48.
+
+**REQ-CH-23 · Uploaded documents are named, dated, sorted and de-duplicated.**
+- An uploaded report takes its collection date and the tests it holds as its title, not "Custom
+  Lab" and the upload date. The list sorts newest collection first. A file identical to one already
+  on the chart is flagged. A report holding only cancelled tests says "Cancelled by lab". The viewer
+  names the report, never an internal file id.
+- Rationale: every file was "Custom Lab — <date> — Reported.pdf" with the same upload date, in no
+  order, with two identical names; the viewer showed the same file id for every file
+  (S4:40-45, 50-51, 56-58, 116-121).
+- Accept: the doctor can pick the report he wants from the list without opening another first.
+- Status: not built. Documents is an empty placeholder (`vcp-docs` V2b:4672).
+- Open: OQ-48.
+
+**REQ-CH-24 · The document list keeps its place, and its actions are safe.**
+- Closing the viewer returns to the same scroll position with that row highlighted. View is always
+  visible, not only on hover. Delete sits behind the row's menu, away from View.
+- Rationale: the list reset to the top after each report; view and delete appeared only on hover,
+  side by side; one eye click opened nothing (S4:44-45, 52-53, 59-60, 125-127).
+- Status: not built.
+- Open: OQ-49.
+
+**REQ-CH-25 · The age of the latest relevant results is stated.**
+- When the most recent relevant result is old, the group says so ("Last drawn 13 months ago") and
+  offers a prefilled requisition as a draft the doctor sends with one press. It never orders on its
+  own.
+- Rationale: the latest labs he read were about a year old, ordered by other physicians
+  (S4:47-48, 122-124, 140).
+- Accept: the age is shown; the draft is sent only by the doctor. How old counts as old is not set
+  here (OQ-45).
+- Status: not built.
+- Open: OQ-45, OQ-46.
+
+**REQ-CH-26 · The medication history answers what the intake says was tried.**
+- When the intake says a medication was tried before (in S4, a GLP-1), the chart shows when, what
+  dose and why it stopped, from the medication list, or "not on file" if it was prescribed elsewhere.
+- Rationale: S4:20-21, 69-70, 128-130.
+- Accept: the doctor can ask about the gap instead of hunting for it.
+- Status: not built. The Medications tab lists active medications only (`renderMedRail`
+  V2b:10309).
+- Open: OQ-44.
+
 ---
 
 ## Prescribing (RX)
@@ -326,47 +432,61 @@ patient".**
   and a one-line note drafted.
 - Rationale: S1:26-28; `29d956d`.
 - Accept: a renewal completes from the chart without leaving "This visit".
-- Status: partly built (`rxOpen` V2:9643).
+- Status: built (build 13:10, `rxOpen` V2b:9930). The fax status sits on the card and the note line
+  is drafted into today's note (`rxConfirm` V2b:10042). Failed faxes are REQ-RX-05.
 - Open: OQ-08.
 
 **REQ-RX-02 · The quantity is correct for the directions.**
 - The supply buttons do not fix the tablet count whatever the dosing.
 - Rationale: twice daily for 3 months was sent as 90 tablets, and the note recorded it (DR:75-77).
 - Accept: to be set by OQ-09. Until then, quantity is its own field and is never inferred.
-- Status: not built (defect).
+- Status: built differently (build 13:10). Quantity is worked out as doses a day × days
+  (`rxQty` V2b:9911), so twice daily for 3 months reads 180. It is shown, not typed. This departs
+  from the interim accept line above; see D-63. The rule still waits on OQ-09.
 - Open: OQ-09.
 
 **REQ-RX-03 · The renewal is prefilled from the intake and the last plan.**
 - It preselects the drug the patient asked for, at the current (titration-target) dose, with
   strength shown.
 - Rationale: S2:30-32, 59-61; DR:78, 121-123.
-- Status: not built. The card lists fixed demo medications (V2:9645).
+- Status: built (build 13:10). The drug the intake names is preselected at the last plan's dose,
+  with "Dose from the <date> plan (list says …)" (`rxStateFor` V2b:9924, `rxLineFrom` V2b:9920).
+  The medications are demo data per patient (`RX_MEDS` V2b:9894).
 - Open: OQ-09.
 
 **REQ-RX-04 · A summary is confirmed before Send.**
 - Drug, strength, directions, quantity, pharmacy.
 - Rationale: a pharmacy fax cannot be taken back (DR:79-80).
-- Status: not built.
+- Status: built (build 13:10). "Check before it goes" lists drug, dose, directions, quantity, days,
+  last dispensed and where it goes, then Send by fax / Edit (`rxReview` V2b:10014,
+  `rxRenderReview` V2b:10023). Code: "A fax to a pharmacy cannot be taken back, so nothing goes
+  before this check." (V2b:10013).
 
 **REQ-RX-05 · Real fax states are shown.**
 - Queued, sending, then delivered or failed, with a retry.
 - Rationale: the doctor explains fax delivery to the patient but has no status himself (S1:17-19).
-  v2 says "delivered" instantly (DR:81-83).
-- Status: not built.
+  v2 said "delivered" instantly (DR:81-83).
+- Status: partly built (build 13:10). "Sending to …", then "Delivered to … · patient copy sent"
+  a few seconds later, on a demo timer (`rxConfirm` V2b:10066-10074, `rxRenderStatus` V2b:10080).
+  Failed and retry are not built.
+- Open: OQ-50.
 
 **REQ-RX-06 · Other active medications are offered with "renew too?".**
 - Rationale: *"Is the gabapentin the only medication that you need right now?"* (S2:35-36, 59-61).
-- Status: not built.
+- Status: built (build 13:10). "Also active · Renew too" (V2b:9972-9983).
 
 **REQ-RX-07 · "Ask MOA to send" is on the renewal card.**
 - It files the task with the drug filled in, and shows "Sent to <MOA> → picked up".
 - Rationale: S2:38-40, 62-63.
-- Status: not built.
+- Status: built (build 13:10). "Ask MOA to send" goes through the same check step, files the task
+  with the drug and pharmacy written in (`moaTask` V2b:10102), writes the note line, and shows "Sent
+  to <MOA> · waiting", then "Picked up by <MOA>" (V2b:10055-10064). Picked up is a 7 s demo timer.
+  "Review & fax" is the primary button and "Ask MOA to send" the secondary (V2b:4601-4602).
 - Open: OQ-08, OQ-41.
 
 **REQ-RX-08 · The last-dispensed date shows on the card.**
 - Rationale: the queue's AI line already knows it (DR:84).
-- Status: not built.
+- Status: built (build 13:10), on each line and in the check step (V2b:9950, 10031).
 
 ---
 
@@ -434,7 +554,9 @@ cleared.**
 **REQ-IN-11 · A routine "No follow-up" moves to the next result, and reviewed items can be signed
 off together.**
 - Rationale: 14 routine results means 14 round trips; a normal Pap takes four actions (DR:157-170).
-- Status: not built. `rvDone(true)` exists but nothing calls it (DR:157).
+- Status: partly built (build 13:10). A routine "No follow-up" opened from the Inbox lands on the
+  next result (`rvNo` V2b:8951), and review has "Next result" (`rvNextResult` V2b:8972). Batch
+  sign-off is not built.
 - Open: OQ-10.
 
 ---
@@ -472,7 +594,9 @@ off together.**
 
 **REQ-RV-07 · When the patient is in today's queue, review offers "Call now".**
 - Rationale: DR:144-146.
-- Status: not built.
+- Status: built (build 13:10). On a drafted review, "Call now" shows when the patient is in today's
+  queue (waiting, next, delayed, in progress, missed or dropped), and opens the chart on the call
+  (`rvQueueRow` V2b:8961, V2b:8998-9006). It is secondary to Accept & assign; OQ-11 asks which leads.
 - Open: OQ-11, OQ-07.
 
 **REQ-RV-08 · A reviewed row shows what was decided.**
@@ -496,8 +620,9 @@ forwarded to Admin.**
 - Status: built.
 
 **REQ-TK-03 · The doctor sees that the task was received and picked up.**
-- Rationale: *"Can you hear me, Jebney, or am I talking to myself?"* (S2:38-40, 62-63).
-- Status: not built.
+- Rationale: *"Can you hear me, … or am I talking to myself?"* (S2:38-40, 62-63).
+- Status: partly built (build 13:10). Only the renewal card's hand-off shows "Picked up by <MOA>",
+  on a demo timer (V2b:10060-10064). The Tasks screen does not show it.
 - Open: OQ-41.
 
 **REQ-TK-04 · A task starts with the patient and context filled in.**
@@ -531,7 +656,9 @@ dashboard.**
 
 **REQ-TK-09 · The due date comes from priority or tolerance, never a fixed date.**
 - Rationale: new tasks are hard-coded to Sep 19 (DR:128; V2:7445).
-- Status: not built (defect).
+- Status: partly built (build 13:10). Tasks from the Task MOA dialog and the renewal card get Today,
+  Tomorrow or This week from priority (`moaTask` V2b:10102). Tasks accepted from the scribe are
+  still stamped "Sep 19" (V2b:7475).
 - Open: OQ-15.
 
 **REQ-TK-10 · A task made from a result links back to the source, and the document stays in the
@@ -549,9 +676,9 @@ Inbox.**
 
 **REQ-INT-01 · The reason is shown in the patient's words with its category.**
 - It is on the queue row and at the top of the chart, with no separate intake modal.
-- Rationale: S2:26-27, 54-58.
+- Rationale: S2:26-27, 54-58. S4 repeats the detour: intake modal, close, then chart (S4:18-23).
 - Status: partly built. There is an AI line on the row, and "View intake note" still opens a
-  separate view (V2:4509).
+  separate view (V2b:4641, `openBrief` V2b:6652).
 
 **REQ-INT-02 · A red-flag intake explains itself.**
 - It sorts to the top and shows on the chart banner ("read it before calling").
@@ -572,6 +699,16 @@ Inbox.**
 **REQ-INT-05 · The AI intake summary is marked as machine-written.**
 - Rationale: *"so nobody mistakes a machine summary for a colleague's note"* (`944d26a`).
 - Status: built.
+
+**REQ-INT-06 · The full intake is readable inside the chart.**
+- The patient's answers (goal, history ticked, what was tried, the figures they typed) sit in the
+  chart next to today's note, not in a modal opened from the queue.
+- Rationale: S2 and S4 both show intake, then close, then chart (S2:26-27; S4:18-23). In S4 the
+  intake held what the visit needed: the goal, a GLP-1 tried before, height and weight
+  (S4:19-22, 101-102).
+- Accept: every intake answer is readable from the chart without a separate view, and today's note
+  stays in view.
+- Status: not built. "View intake note" opens `openBrief` (V2b:4641, 6652).
 
 ---
 
@@ -597,11 +734,13 @@ Inbox.**
 
 **REQ-BIL-04 · "Finalize & review billing" opens the billing review.**
 - Rationale: DR:87-88.
-- Status: not built.
+- Status: superseded by build 13:10. The button is now "Finalize today's visit" (V2b:4618) and
+  promises no billing review (D-65). Whether Finalize should open one is OQ-51.
+- Open: OQ-51.
 
 **REQ-BIL-05 · Leave no claim behind: signing the visit submits its claim.**
 - Rationale: `11b0ecb`, `632998a`.
-- Status: partly built (only when the demo bill state is pending, V2:6955).
+- Status: partly built (only when the demo bill state is pending or none, V2b:7114).
 
 **REQ-BIL-06 · Add-On encounters reach Claims.**
 - Rationale: SCS:49.
@@ -630,7 +769,7 @@ Inbox.**
 
 **REQ-ID-03 · Identity is the same on the queue, the chart and the documents.**
 - Rationale: DR:59-63.
-- Status: not built (see REQ-CH-15).
+- Status: partly built (see REQ-CH-15).
 
 **REQ-ID-04 · Health card: Verified is quiet; Check required and Invalid card open the cause and the
 way out.**
@@ -689,7 +828,7 @@ way out.**
 
 **REQ-MP-03 · Picking up a task is visible to the physician.**
 - Rationale: see REQ-TK-03.
-- Status: not built.
+- Status: not built in the MOA portal. The physician side simulates it for renewals (REQ-TK-03).
 - Open: OQ-41.
 
 **REQ-MP-04 · Records or emails a patient sends for a waiting item are attached to that item.**
@@ -747,3 +886,9 @@ way out.**
 - 25 Sep 2026, first run: 114 requirements across 13 areas, each with a source and a status against
   v2 build 2026-09-25 12:45. Defects and gaps from the doctor review (DR) are folded in: HQ-15,
   CALL-02 to CALL-04, CH-13, CH-15, RX-02 to RX-08, IN-11, TK-09 and BIL-04.
+- 25 Sep 2026, second run: 123 requirements (9 new). New from shadowing 4: HQ-17, CH-20 to CH-26
+  and INT-06. Moved for build 13:10 (`d2a2823`), naming the function: to built CALL-02, CALL-03,
+  CH-03, CH-06, CH-07, CH-13, RX-01, RX-03, RX-04, RX-06, RX-07, RX-08, RV-07, and HQ-11 (to the
+  current rule); to partly built CALL-04, CH-01, CH-02, CH-10, CH-15, RX-05, IN-11, TK-03, TK-09 and
+  ID-03. RX-02 is built differently from its interim accept line (D-63). BIL-04 is superseded (D-65).
+  S4 evidence added to CH-02, CH-05 and INT-01.

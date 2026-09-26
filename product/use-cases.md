@@ -12,6 +12,7 @@ here. Demo patients are described by their role in the demo, never by name.
 | S1 | `shadowing/2026-09-25-rx-renewal-by-fax.md` (shadowing 1) |
 | S2 | `shadowing/2026-09-25-medication-follow-up-mri.md` (shadowing 2) |
 | S3 | `shadowing/2026-09-25-recurrent-hernia.md` (shadowing 3) |
+| S4 | `shadowing/2026-09-25-weight-medication-diverticulitis.md` (shadowing 4, screen only) |
 | SIA | `simplecare-stakeholder-interview-analysis.md` |
 | IA | `physician-portal-ia-redesign.md` |
 | HUX | `healthcare-ux-design-reference.md` |
@@ -20,6 +21,7 @@ here. Demo patients are described by their role in the demo, never by name.
 | SPEC | `from-other-session/portal-change-spec.md` (the 15 Sep change spec) |
 | DR | `product/doctor-review-2026-09-25.md` (the doctor agent's walk-through of v2) |
 | V2 | `simplecare-physician-portal-v2.html`, build 2026-09-25 12:45 (line numbers as `V2:5397`) |
+| V2b | the same file, build 2026-09-25 13:10, commit `d2a2823` (line numbers as `V2b:10182`) |
 | MOAP | `simplecare-moa-portal.html` |
 | PP | `simplecare-patient-portal-v2.html` |
 | `abc1234` | a git commit; its message quotes the decision |
@@ -45,10 +47,12 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   The four call windows show as open segments, and the running one is marked (MTG21:13, `c3c67dd`).
   Needs your attention shows only when something is critical (MTG21:10, MTG21:72-74).
 - **Status:** partly built. Home (`screen-today`), `renderCriticals` (V2:6017) and the profile-pill
-  clock are built. Gaps found by DR:29-53: local time and BC windows are unlabelled; "Live queue 6"
-  sits above 8 rows; one patient takes two attention rows; "Review MRI report" is still in the task
-  data.
-- **Sources:** MTG21:10-13, 64-74; SIA:6, 22; IA:44-53; SPEC:30-45; `1518976`, `392eccb`; DR:27-53.
+  clock are built. Build 13:10 fixed two gaps: a patient's intake flag folds into their critical
+  result row, so there is one row per patient (V2b:6164-6172), and the "Review MRI report" task is
+  gone (V2b:6812). Still open from DR:29-40: local time and BC windows are unlabelled; "Live
+  queue 6" sits above 8 rows.
+- **Sources:** MTG21:10-13, 64-74; SIA:6, 22; IA:44-53; SPEC:30-45; `1518976`, `392eccb`, `d2a2823`;
+  DR:27-53, 218.
 
 ### UC-02 Work the live queue across call windows
 
@@ -81,7 +85,8 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - S3: "Call Again" only reset the button, so a second press was needed to dial. The call dropped
     at about 0:25 and he redialled, and the timer restarted at 0:00. That makes four presses for one
     patient (S3:18-26).
-  - Two visits out of three had call trouble (S3:71-73).
+  - S4: one press, Calling…, then Connected, with no drop (S4:35-37).
+  - Two visits out of four had call trouble: S1 and S3 (S4:80-81).
   - Daniel likes branded calling, where the caller ID shows the clinic (SIA:56). A branded number
     plus a doctor-to-callback status gets *"95% contact rate"* (MTG21:86-87).
 - **v2 should:** dial on one press, whatever the label. Show Calling… and then Connected with a
@@ -89,11 +94,15 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   across reconnects ("2 calls · 4:10") (S1:27, S3:86-88). Offer Transfer to MOA only during a live
   call (SIA:52). Calls always go outward; the patient never dials the doctor (MEM; MOAP:258 says the
   MOA line is admin only).
-- **Status:** partly built. One press works and a second press does nothing (`pcStartCall` V2:9195,
-  `29d956d`). Not built: the dropped-call state, the running total, and setting In progress when a
-  call starts from the chart (DR:65-70). Transfer is absent from chart version C and always enabled
-  in the other layouts (V2:4576, 4643, 4832).
-- **Sources:** S1:8-9, 27; S2:9-10; S3:18-26, 71-73, 86-88; SIA:52, 56; MTG21:86-87; DR:65-70.
+- **Status:** partly built. One press works and a second press does nothing (`pcStartCall`
+  V2b:9397). Build 13:10 added the dropped-call line ("Call dropped at 00:31", `pcCallSum`
+  V2b:9409), a Redial label, and a running total across redials ("2 calls · 04:10",
+  `pcTimerText` V2b:9396). The drop is simulated from the demo switcher (`pcDropCall` V2b:9420).
+  Not built: In progress is set only when the call starts from the queue (`callPatient` V2b:6372);
+  the chart's own Call button does not set it (V2b:4546). Transfer is still always enabled where it
+  appears (V2b:4708, 4775).
+- **Sources:** S1:8-9, 27; S2:9-10; S3:18-26, 71-73, 86-88; S4:35-37, 80-81; SIA:52, 56;
+  MTG21:86-87; DR:65-70; `d2a2823`.
 
 ### UC-04 Call back a missed or dropped patient
 
@@ -122,14 +131,20 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     because "No previous notes" only covers SimpleCare (S1:10-12).
   - S2: "Prescription Renewal" was the right category, but it did not say which medication, or that
     the dose had just been titrated (S2:54-56).
+  - S4: the same detour, intake modal, then close, then Access Chart (S4:18-23). The weight intake
+    has the patient's own height and weight, with no BMI and nothing to compare with (S4:19-22).
+  - S4: the Daysheet opened still filtered by a search from the previous patient (S4:14-17).
 - **v2 should:** show the reason in the patient's words beside the category, on the row and at the
   top of the chart, with no separate modal (S2:54-58). Flag patient-written requests in the row
-  (S2:68-69). A red-flag intake explains itself and sorts to the top (`1a9c71b`, `1ca73bc`).
+  (S2:68-69). A red-flag intake explains itself and sorts to the top (`1a9c71b`, `1ca73bc`). The
+  intake answers are readable inside the chart, with BMI worked out from height and weight
+  (S4:104-111). Opening the Daysheet clears an earlier patient search (S4:131-132).
 - **Status:** partly built. The one-line AI intake summary is on every row (`874f906`, `944d26a`). A
   red-flag intake is on Home, sorts to the top, and shows on the chart banner (V2:9157). The intake
-  is still a separate view ("View intake note", V2:4509, `openBrief`). Request flags and the
-  other-platforms question are not built.
-- **Sources:** S1:10-12, 29-30; S2:7-8, 26-27, 41-42, 54-58, 68-69; `1a9c71b`, `56e5f20`.
+  is still a separate view ("View intake note", V2b:4641, `openBrief` V2b:6652). Request flags, the
+  other-platforms question, intake inside the chart and BMI are not built.
+- **Sources:** S1:10-12, 29-30; S2:7-8, 26-27, 41-42, 54-58, 68-69; S4:14-23, 104-111, 131-132;
+  `1a9c71b`, `56e5f20`.
 
 ### UC-06 Renew a prescription by fax (shadowing 1)
 
@@ -153,16 +168,23 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   wrong). Offer a renewal flow that lists the current medication, defaults to 3 months, prefills the
   pharmacy, sends by fax, shows the fax status on the visit, and drafts the one-line note
   (S1:24-28).
-- **Status:** partly built. The "Renew a prescription" card opens from "+ Renew prescription"
-  (`rxOpen` V2:9643, `29d956d`). The pharmacy is in the banner (V2:4422). The note line writes
-  itself. Defects DR found (DR:72-86):
-  - 90 tablets is tied to 3 months whatever the directions, so a twice-daily drug is prescribed
-    short.
-  - The card defaults to a drug the intake did not name.
-  - There is no summary to confirm before Send.
-  - "Delivered" appears the instant Send is pressed.
-  - Every chart shows the same medications, pharmacy and PHN.
-- **Sources:** S1 (all); `29d956d`; V2:3751, 4424-4480, 9643-9681; DR:55-93.
+- **Status:** partly built. Build 13:10 rebuilt the card (`rxOpen` V2b:9930) and fixed the five DR
+  defects (DR:72-86, 200-206):
+  - Each patient has their own medications, pharmacy and PHN (`RX_MEDS` V2b:9894, `ptChart`
+    V2b:9883). The medication rail reads the same list (`renderMedRail` V2b:10309).
+  - The drug the intake names is preselected, at the last plan's dose when there is one, with "Dose
+    from the <date> plan (list says …)" (`rxStateFor` V2b:9924, `rxLineFrom` V2b:9920).
+  - Quantity is directions × days, never typed into the data (`rxQty` V2b:9911). Supply is 1 or 3
+    months, default 3.
+  - "Check before it goes" lists drug, dose, directions, quantity, days and last dispensed before
+    Send (`rxReview` V2b:10014, `rxRenderReview` V2b:10023).
+  - Status is "Sending to …", then "Delivered to … · patient copy sent" a few seconds later
+    (`rxConfirm` V2b:10042, `rxRenderStatus` V2b:10080). The delay is a demo timer.
+  - "Also active · Renew too" offers the other medications (V2b:9972-9983).
+  - Not built: a failed fax and retry; any supply other than 1 or 3 months. The quantity rule waits
+    on OQ-09.
+- **Sources:** S1 (all); `29d956d`, `d2a2823`; V2:3751, 4424-4480, 9643-9681; V2b:9885-10095;
+  DR:55-93, 200-206.
 
 ### UC-07 Follow-up where the last plan sets the renewal (shadowing 2)
 
@@ -199,10 +221,17 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - Make "Ask MOA to send" a one-tap task that shows "picked up" (S2:62-63).
   - Record side effects as tick-lines (S2:64-65).
   - Tie the next step to the pending result (S2:66-67).
-- **Status:** not built. v2 has no openable previous note and no "Since last visit". DR:97-104
-  judges v2 "worse than production here". The care plan block holds the right material for some demo
-  patients (DR:106-108).
-- **Sources:** S2 (all); DR:95-136.
+- **Status:** partly built (build 13:10). DR:97-104 had judged v2 "worse than production here".
+  - "Since last visit" shows the previous visit's Plan, Ask about and Pending, and adds any unread
+    result from the Inbox to Pending (`renderSinceLast` V2b:10182).
+  - "Read the <date> note" opens it read-only in place, above today's note (`slvToggle`
+    V2b:10221).
+  - The note box grows with its text instead of scrolling (`vcGrow` V2b:10269).
+  - The button reads "Finalize today's visit" (V2b:4618).
+  - The renewal takes the plan's dose, and "Ask MOA to send" shows "Picked up by <MOA>" (UC-06,
+    UC-10).
+  - Not built: side effects as tick-lines; the next step tied to the pending result.
+- **Sources:** S2 (all); DR:95-136, 207-212; `d2a2823`.
 
 ### UC-08 Follow-up whose history spans several notes and outside records (shadowing 3)
 
@@ -235,26 +264,37 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     (S3:102-103).
   - Ask before signing a note with bracketed placeholders (S3:104-105), and show an honestly empty
     note (S3:106-108).
-- **Status:** not built. DR:174-177: "this visit couldn't be done in v2 at all". v2's note starts
-  from the intake reason as CC (V2:9153), which matches part of S3:106-107.
-- **Sources:** S3 (all); DR:172-189.
+- **Status:** partly built. DR:174-177: "this visit couldn't be done in v2 at all". Build 13:10
+  added pieces:
+  - Finalize asks first when the note is empty or holds bracketed template text (`finalizeVisit`
+    V2b:7091, `vcFinWarn` V2b:10296).
+  - Pending items can read "waiting on the patient" in the demo data (V2b:10163).
+  - v2's note starts from the intake reason as CC (V2:9153), which matches part of S3:106-107.
+  - Not built: "Since last visit" holds only the latest visit, one per patient (`PT_LAST`
+    V2b:10124), so it cannot follow today's reason back two notes. Also not built: copy to today's
+    note, a draft referral, and an attached patient email.
+- **Sources:** S3 (all); DR:172-189; `d2a2823`.
 
 ### UC-09 Document the visit and finalize
 
 - **Actor:** physician.
 - **Trigger:** the call ends.
-- **Today (evidence):** across all three recordings the note is not written during the call. The
-  call is spent talking and reading, and writing happens after, or not at all (S3:63-66). Daniel on
+- **Today (evidence):** across all four recordings the note is not written during the call. The
+  call is spent talking and reading, and writing happens after, or not at all (S3:63-66,
+  S4:66-67). Daniel on
   documentation: *"I don't want you to spend your time now on that sick note, call ends, that's it"*
   (SIA:40). The patient leaves the queue at once on Finalize (S2:26).
 - **v2 should:** close the visit on Finalize: set it Completed, lock and stamp the note, ask about
   an empty note or unfilled placeholders, open billing review if the button promises it, and offer
   the next patient (DR:213-217). Review the problem list at the end of the visit, on the way through
   billing (`632998a`).
-- **Status:** partly built. `finalizeVisit` (V2:6947) surfaces problem-list suggestions and submits
-  a pending claim. It sets no status, locks nothing, never opens billing, and does not check the
-  note (DR:87-93).
-- **Sources:** S2:21-26, 51-53; S3:63-66, 104-108; SIA:40; `632998a`; DR:87-93, 213-217.
+- **Status:** built (build 13:10). `finalizeVisit` (V2b:7091) first surfaces problem-list
+  suggestions. It asks before signing an empty note or one with bracketed text. It ends a live call,
+  sets the row to Completed, stamps "Signed by … · read-only" and locks the note (`vcNoteState`
+  V2b:10276), submits a pending claim, and offers "Next: <patient>" (V2b:4620). The button now reads
+  "Finalize today's visit" (V2b:4618), so it no longer promises a billing review. See D-65.
+- **Sources:** S2:21-26, 51-53; S3:63-66, 104-108; S4:66-67; SIA:40; `632998a`, `d2a2823`;
+  DR:87-93, 213-217.
 
 ### UC-10 Hand work to the MOA and know it was picked up
 
@@ -262,17 +302,21 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
 - **Trigger:** something needs doing that the doctor will not do personally: send a prescription,
   chase records, book a follow-up.
 - **Today (evidence):** the action row (Prescribe, Labs, Imaging, Referral, Send Task, Transfer)
-  went nearly unused across the three recordings. Work was handed off by fax (S1), by voice (S2), or
-  by asking the patient to email support (S3) (S3:74-77). Daniel does not use in-app MOA chat and
-  uses Google Meet instead, because "70% of the time" coordination is complicated (SIA:38). Task
-  categories currently read as peers of "Send to MOA" when they are sub-steps of it (SIA:48).
+  went nearly unused across the four recordings. Work was handed off by fax (S1), by voice (S2), or
+  by asking the patient to email support (S3) (S3:74-77). S4 shows no hand-off at all (S4:82).
+  Daniel does not use in-app MOA chat and uses Google Meet instead, because "70% of the time"
+  coordination is complicated (SIA:38). Task categories currently read as peers of "Send to MOA"
+  when they are sub-steps of it (SIA:48).
 - **v2 should:** create a task only when the doctor presses Task (`9b7b5f6`, V2:1656). Route it to
   the MOA on service, copy the primary MOA, and forward it to Admin (V2:6591). Prefill it with the
   patient and context (`56e5f20`). Show that it was picked up (S2:62-63).
 - **Status:** partly built. Task MOA from the chart banner, the row hover and review (`sendTaskMoa`
-  V2:7428). There is no "picked up" state, and due dates are hard-coded (DR:124-128).
-- **Sources:** S2:38-40, 62-63; S3:74-77, 95-97; SIA:28-38, 48; `9b7b5f6`, `afdc728`, `11b0ecb`;
-  DR:121-128.
+  V2b:7599). Build 13:10: one task function for the dialog and the renewal card, with due set from
+  priority (`moaTask` V2b:10102). The renewal hand-off shows "Sent to <MOA> · waiting", then "Picked
+  up by <MOA>" on a 7 s demo timer (V2b:10060-10064). Not built: "picked up" anywhere else (the
+  Tasks screen does not show it), and scribe tasks are still stamped "Sep 19" (V2b:7475).
+- **Sources:** S2:38-40, 62-63; S3:74-77, 95-97; S4:82; SIA:28-38, 48; `9b7b5f6`, `afdc728`,
+  `11b0ecb`, `d2a2823`; DR:121-128.
 
 ### UC-11 Keep my own unfinished work on my desk
 
@@ -306,10 +350,14 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - Show the patient's other waiting results (`e270f7c`).
   - When the patient is in today's queue, offer "Call now" (DR:195-199).
   - Put the critical result on the patient's chart (DR:147-151).
-- **Status:** partly built. Review, drafts and escalation are built (`openReview` V2:8536,
-  `rvAccept` V2:8752). Not built: "Call now" from review, and the critical result on the chart.
-  DR:147-151 calls the chart gap "the biggest risk I found".
-- **Sources:** `2094417`, `aa1e8b8`, `392eccb`, `e270f7c`, `f241a4b`; DR:138-153.
+- **Status:** built (build 13:10). Review, drafts and escalation (`openReview` V2b:8697, `rvAccept`
+  V2b:8913). "Call now" shows on a drafted review when the patient is in today's queue, and opens
+  the chart on the call (`rvQueueRow` V2b:8961, V2b:8998-9006). It is a secondary button beside
+  Accept & assign; which is primary is OQ-11. A critical or high result not yet signed off sits at
+  the top of that patient's chart, with "Review result" and "Also in today" (`renderChartAlerts`
+  V2b:10237). This closes the gap DR:147-151 called "the biggest risk I found".
+- **Sources:** `2094417`, `aa1e8b8`, `392eccb`, `e270f7c`, `f241a4b`, `d2a2823`; DR:138-153,
+  195-199.
 
 ### UC-13 Clear routine results and sign off
 
@@ -324,10 +372,11 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - Show the clinic received time (MTG21:78-79).
   - Show the name only on rows (`236eed3`).
   - Close a routine result with one "No follow-up" and move to the next one (DR:157).
-- **Status:** partly built. Tabs, bands, FIFO, received time and sign-off are built. There is no
-  move-to-next and no batch sign-off, so a normal Pap takes four actions (DR:155-170).
-- **Sources:** MTG21:47-52, 75-79; SIA:22-24; SCS:17; `8444fe4`, `133c966`, `07dd1ae`, `535ad1a`;
-  DR:155-170.
+- **Status:** partly built. Tabs, bands, FIFO, received time and sign-off are built. Build 13:10: a
+  routine "No follow-up" opened from the Inbox lands on the next result (`rvNo` V2b:8951), and review
+  has a "Next result" button (`rvNextResult` V2b:8972). Batch sign-off is not built.
+- **Sources:** MTG21:47-52, 75-79; SIA:22-24; SCS:17; `8444fe4`, `133c966`, `07dd1ae`, `535ad1a`,
+  `d2a2823`; DR:155-170.
 
 ### UC-14 Go from a result straight into the chart, with the reason on top
 
@@ -352,8 +401,9 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
 - **v2 should:** suggest additions with their evidence, have them land nowhere until approved, and
   log every change (`11b0ecb`, `74660d7`). Keep specialist-owned items with the specialist
   (`2b4ea14`).
-- **Status:** built (conditions panel, care plan block). DR:109-110: the care plan and the
-  medication list disagree for one demo patient.
+- **Status:** built (conditions panel, care plan block). DR:109-110 found the care plan and the
+  medication list disagreeing for one demo patient. Build 13:10 has the rail and the Medications tab
+  read the renewal card's list (`renderMedRail` V2b:10309).
 - **Sources:** `2b4ea14`, `afdc728`, `9b7b5f6`, `11b0ecb`, `74660d7`, `632998a`; DR:106-112.
 
 ### UC-16 Act on billing from the queue and from Claims
@@ -385,9 +435,9 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   document, not on list rows (`236eed3`). A verified card stays quiet; "check required" and
   "invalid" open the cause and the way out (`944d26a`). The chart must match the queue row
   (DR:59-63).
-- **Status:** partly built. The vocabulary and quiet-when-verified are built. The chart banner shows
-  the wrong age and sex, and the same PHN for every patient (DR:59-63). There is no
-  returning-patient indicator (SIA:46).
+- **Status:** partly built. The vocabulary and quiet-when-verified are built. Build 13:10 gives each
+  patient their own PHN and pharmacy (`ptChart` V2b:9883). Age and sex on the banner were not
+  re-checked (DR:59-63). There is no returning-patient indicator (SIA:46).
 - **Sources:** SIA:46; MTG21:82; `3c5f4fe`, `236eed3`, `9d298c7`; DR:59-63.
 
 ### UC-18 See a patient the queue did not book (Add-On, New patient)
@@ -422,6 +472,65 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   call the clinic that often."* (V2:7136, `9b7b5f6`). Call-group coverage is future work (SIA:14).
 - **Status:** built (`toggleService` V2:7140).
 - **Sources:** `9b7b5f6`; SIA:14, 62.
+
+### UC-26 A new problem in an established patient, read through uploaded lab PDFs (shadowing 4)
+
+- **Actor:** physician (the MOA uploads the documents; assumption, see OQ-48).
+- **Trigger:** a queue row with the category "Weight Loss". The intake asks for medication-assisted
+  weight loss, lists type 2 diabetes or prediabetes and joint problems, and says a GLP-1 was tried
+  before (S4:14-22). The patient's earlier notes are about unrelated problems (S4:28-31).
+- **Today (evidence), from the screen only, without audio (S4:7-11):**
+  1. The Daysheet opens still filtered by the previous patient's search. He clears it (S4:14-17).
+  2. Intake in its own modal, then close, then Access Chart. The intake has the patient's own
+     height and weight, no BMI, and no earlier weight to compare with (S4:18-23).
+  3. Today's note is empty, with the made-up ear-pain placeholder, and already stamped "Note
+     documented" (S4:24-27).
+  4. Opening "Previous Notes & Events" pushes the action row and today's note out of view
+     (S4:28-31).
+  5. He reads the latest note (iron deficiency), before and after the call connects, for about
+     45 s. Nothing in it is about weight (S4:32-39).
+  6. The call connects on one press (S4:35-37).
+  7. Labs → Results shows "Lab Documents": PDFs all named "Custom Lab — <date> — Reported.pdf", all
+     dated by the upload day, not in date order, with two identical names. View and delete show only
+     on hover, side by side (S4:40-45).
+  8. He opens files one at a time: a year-old report from other physicians; a file holding one
+     cancelled test; an eye click that opens nothing; then the twin file, which is the report with
+     glucose (flagged), lipids, kidney and TSH (S4:46-56). The viewer's header shows the same internal
+     file id for every file (S4:56-58).
+  9. Closing the viewer resets the list to the top (S4:59-60).
+  10. 2 min 20 s on the call with the lab list open, no clicks. The recording ends mid-call with no
+      note, prescription, order, referral, task or finalize (S4:61-63).
+- **Friction observed:** a stale search; the intake detour; the chart opens on the wrong note for a
+  new reason; results are files, not data; unsorted, misnamed and duplicated uploads; no weight
+  trend; the list loses its place; the note is never touched.
+- **v2 should:**
+  - When no earlier note touches today's reason, "Since last visit" says so ("First visit for
+    weight") and shows that reason's context: intake answers, weight history, latest relevant labs.
+    The unrelated last plan drops to one line (S4:105-107).
+  - Show weight over time, each reading marked patient-reported or measured, with BMI and the change
+    since the first reading (S4:108-111).
+  - Show each test with its earlier values and dates in one line, and a preset group first for a
+    weight or diabetes reason (S4:112-115).
+  - Name uploaded reports by collection date and tests, sort newest collection first, flag
+    duplicates, mark a cancelled-only report, and name the report in the viewer (S4:116-121).
+  - Say when the latest relevant labs are over a year old, and offer a prefilled requisition as a
+    draft the doctor sends (S4:122-124).
+  - Keep the list's place after the viewer closes; show view always; keep delete behind the row's
+    menu (S4:125-127).
+  - Answer the intake's "GLP-1 tried before" from the medication history, or say "not on file"
+    (S4:128-130).
+  - Clear a stale patient search when the Daysheet opens (S4:131-132).
+- **Status:** not built. What v2 has:
+  - The call and the honest empty note already work (S4:88-94).
+  - Critical results reach the chart (`renderChartAlerts` V2b:10237), but nothing here was critical.
+  - Results is a static list of lines with a value and a flag, the same for every patient
+    (`vcp-results` V2b:4659-4663). It has no history per test.
+  - "Last vitals" holds one static weight (V2b:4643-4650).
+  - Documents is an empty placeholder (`vcp-docs` V2b:4672).
+  - "Since last visit" would show the latest, unrelated plan (`renderSinceLast` V2b:10182;
+    S4:99-100).
+  - The intake is still a separate view (V2b:4641).
+- **Sources:** S4 (all); V2b as cited.
 
 ---
 
@@ -499,8 +608,40 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
 
 ---
 
+## Patterns across the shadowing visits
+
+Four recordings, all 25 Sep 2026, all current production. S3 and S4 are screen only, with no audio.
+
+| Pattern | S1 | S2 | S3 | S4 | Use cases |
+|---|---|---|---|---|---|
+| The note is not written during the call | yes | yes | yes | yes | UC-09, UC-19 |
+| The call is spent reading | no | old note | old notes | note, then PDFs | UC-07, 08, 26 |
+| The latest note is the wrong place | n/a | no | yes | yes | UC-08, 26 |
+| What he needs comes from outside | platforms | no | op reports | outside labs | UC-05, 08, 26 |
+| Call trouble | yes | no | yes | no | UC-03 |
+| Action row unused; hand-off by | fax | voice | patient email | none seen | UC-10 |
+| Nested scrolling hides today's note | no | yes | yes | yes, 5 regions | UC-07, 08, 26 |
+| Entry detours | no | intake | no | intake, search | UC-05 |
+
+- **The note, 4 out of 4.** Nothing is typed during any call. In S4 today's note was on screen for
+  about one second (S1:20-21; S2:24-25; S3:63-66; S4:66-67).
+- **Reading, not doing.** Follow-ups (S2, S3) need the last plan. A new reason (S4) needs data the
+  notes do not hold: a weight history, recent metabolic labs, the earlier GLP-1 (S4:68-73). So
+  "Since last visit" has to fit today's reason, not only the latest note (REQ-CH-01, REQ-CH-20).
+- **Results are files, not data (new in S4).** Generic names, upload dates, no order, duplicates,
+  one file at a time, and no test beside its earlier values (S4:74-77). See REQ-CH-21 to REQ-CH-23.
+- **Calling, 2 out of 4.** Clean in S2 and S4, wrong in S1 and S3 (S4:80-81).
+- **The action row, 4 out of 4.** Barely touched during any call (S3:71-77; S4:82).
+- **Nested scrolling.** S4 had five scroll regions, and opening history or results pushed today's
+  note off-screen, as in S3 (S4:83-85).
+
 ## Changelog
 
 - 25 Sep 2026, first run: wrote UC-01 to UC-25 from all listed sources, the v2 prototype, git
   history to `0e413e6`, and the doctor review (DR). The three shadowing visits are UC-06, UC-07 and
   UC-08.
+- 25 Sep 2026, second run: added S4 (shadowing 4) and V2b (build 13:10, `d2a2823`) to the source
+  key. New UC-26 for shadowing 4. New section "Patterns across the shadowing visits" (four visits).
+  Statuses moved for build 13:10: UC-09 and UC-12 to built; UC-07 and UC-08 to partly built. UC-01,
+  UC-03, UC-06, UC-10, UC-13, UC-15 and UC-17 stay partly built or built, with the new functions
+  named. S4 evidence added to UC-03, UC-05, UC-09 and UC-10.

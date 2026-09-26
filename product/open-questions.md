@@ -132,10 +132,13 @@ answer unblocks (Ani's working note). **Top 5** marks the batch to send first.
 - **Source:** S3:48-50, 118; DR:251.
 
 ### OQ-37 · Is "Since last visit" generated or verbatim?
-- **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-01.
+- **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-01, REQ-CH-20.
 - **Why:** it summarises the last plan mid-call. SPEC:264-272 treats a generated care-plan summary
-  as a clinical-safety question.
-- **Ask:** quote the last P section, synthesise it, or both, and what is the review path?
+  as a clinical-safety question. Build 13:10 shows Plan / Ask about / Pending as short lines beside
+  the signed note (V2b:10182). S4 adds a second question: to fit today's reason, something has to
+  decide which earlier notes "touch" it (S4:105-107).
+- **Ask:** quote the last P section, synthesise it, or both, and what is the review path? Who or
+  what decides that a note matches today's reason: the problem list, the category, or AI?
 
 ### OQ-20 · Is the production timeline in date order?
 - **Owner:** Ani. **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-02.
@@ -165,6 +168,59 @@ answer unblocks (Ani's working note). **Top 5** marks the batch to send first.
 - **Ask:** are share and download-as-PDF from the preview still wanted?
 - **Source:** SIA:50.
 
+### OQ-43 · Shadowing 4 audio: what was the diverticulitis part?
+- **Owner:** Ani (the audio). **Raised:** 25 Sep 2026. **Blocks:** UC-26 (evidence); REQ-CH-20,
+  REQ-CH-26.
+- **Why:** the recording's title names diverticulitis, but no frame shows anything about it
+  (S4:7-9). The audio is not transcribed.
+- **Ask:** was it a current episode, a past one, or a reason to be careful with the medication? Did
+  it change what he did?
+- **Source:** S4:7-9, 135-136.
+
+### OQ-44 · Shadowing 4: was a weight-loss medication prescribed, and who does the paperwork?
+- **Owner:** Ani (the audio), then Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-26; UC-26.
+- **Ask:** was a medication started, restarted or changed after the recording? Did he use Prescribe
+  or hand it to the MOA? Did it need Special Authority or other coverage paperwork, and who does
+  that? What happened with the GLP-1 the intake says was tried?
+- **Source:** S4:20-21, 128-130, 137-139.
+
+### OQ-45 · When are the latest results "old"?
+- **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-25.
+- **Why:** the latest labs in S4 were about a year old (S4:47-48). S4:122-124 proposes "Last drawn
+  13 months ago" and a prefilled requisition. No threshold is set here.
+- **Ask:** did he order new bloodwork in that visit? Is a stated age plus a draft requisition
+  wanted? From what age, and does it differ by test?
+- **Source:** S4:122-124, 140.
+
+### OQ-46 · Which tests belong in a reason's preset group?
+- **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-22, REQ-CH-25.
+- **Why:** S4:112-115 suggests a weight or diabetes group (glucose/A1c, lipids, kidney, liver,
+  TSH). That list is the designer's note, not Daniel's, and is not a clinical rule.
+- **Ask:** which reasons get a preset, and which tests are in each? Which result was he looking for
+  across the files in S4: glucose, lipids, or an A1c not seen in the frames (S4:141-142)?
+- **Source:** S4:112-115, 141-142.
+
+### OQ-47 · Where do weights come from?
+- **Owner:** Ani (check production), then Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-21.
+- **Ask:** are weights only the patient's own intake answers today? Does production store any vitals
+  history? Should a patient-reported weight and a measured one look different?
+- **Source:** S4:19-22, 143-144.
+
+### OQ-48 · How do lab PDFs get onto the chart?
+- **Owner:** Ani and Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-22, REQ-CH-23; UC-26.
+- **Why:** every file in S4 had the same upload date and a generic name, with a duplicate
+  (S4:40-45).
+- **Ask:** does the MOA upload them in batches? Could the upload step capture the collection date
+  and test names, or can they be read from the PDF? How much can be read from a scanned report?
+- **Source:** S4:116-121, 145-146.
+
+### OQ-49 · Shadowing 4: did the eye click fail?
+- **Owner:** Ani (the audio, or production). **Raised:** 25 Sep 2026. **Blocks:** REQ-CH-24
+  (evidence).
+- **Ask:** at 115 s the eye on a July file opened nothing. Was it a fault, or did he move away
+  before the viewer opened?
+- **Source:** S4:52-53, 147.
+
 ---
 
 ## Prescribing
@@ -173,7 +229,9 @@ answer unblocks (Ani's working note). **Top 5** marks the batch to send first.
 - **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-RX-01, REQ-RX-07.
 - **Why:** S1 suggests the doctor faxes; S2 suggests the MOA, on a spoken instruction (S2:38-39,
   73-74). The answer decides whether "Send by fax" or "Ask MOA to send" is the primary button
-  (DR:243-244).
+  (DR:243-244). Build 13:10 has both, with "Review & fax" primary and "Ask MOA to send" secondary
+  (V2b:4601-4602, D-64). The designer raised it again on that build.
+- **Ask:** which should be primary, or should it follow the pharmacy or the drug?
 
 ### OQ-09 · Renewal quantity rules · Top 5
 - **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-RX-02, REQ-RX-03.
@@ -184,7 +242,16 @@ answer unblocks (Ani's working note). **Top 5** marks the batch to send first.
   - Are there drugs he would not default to 90 days, such as controlled substances or drugs being
     titrated?
   - Does the quantity come from directions × days, or does he always type it?
-- **Source:** DR:240-242; S1:15-16; S2:30-32.
+- **Now:** build 13:10 defaults to 3 months and computes directions × days (`rxQty` V2b:9911,
+  D-63). The designer asks again: is 3 months the default supply for every chronic medication?
+- **Source:** DR:240-242; S1:15-16; S2:30-32; `d2a2823`.
+
+### OQ-50 · What real signal says a fax was delivered, or failed?
+- **Owner:** Ani (production and the fax provider). **Raised:** 25 Sep 2026. **Blocks:** REQ-RX-05.
+- **Why:** build 13:10 shows "Sending", then "Delivered" after a 5 s demo timer (V2b:10066-10074).
+  In production the patient gets a copy as proof of delivery, and the doctor sees nothing (S1:17-19).
+- **Ask:** what does the fax service report, and when? What should a failed fax say, and who
+  retries it: the doctor or the MOA?
 
 ---
 
@@ -202,7 +269,9 @@ answer unblocks (Ani's working note). **Top 5** marks the batch to send first.
 - **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-RV-07.
 - **Ask:** when the patient is already in today's queue, should the default be "I call now" rather
   than "the MOA calls and hands over"? Is there a policy on who makes first contact?
-- **Source:** DR:144-146, 247-248; `2094417`.
+- **Now:** build 13:10 shows "Call now" as a secondary button beside Accept & assign when the
+  patient is queued (V2b:8998-9006, D-67). The designer asks whether it should be primary there.
+- **Source:** DR:144-146, 247-248; `2094417`, `d2a2823`.
 
 ### OQ-07 · Interrupting a call for a new critical result
 - **Owner:** Daniel. **Raised:** 15 Sep 2026. **Blocks:** REQ-RV-07, REQ-CH-13.
@@ -240,7 +309,9 @@ answer unblocks (Ani's working note). **Top 5** marks the batch to send first.
 ### OQ-41 · What counts as "picked up"?
 - **Owner:** Ani, then Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-TK-03, REQ-RX-07, REQ-MP-03.
 - **Ask:** is a task picked up when it is opened, accepted, or started? Who sees it, and when?
-- **Source:** S2:38-40, 62-63.
+- **Now:** build 13:10 shows "Picked up by <MOA>" on the renewal card after a 7 s demo timer
+  (V2b:10060-10064). No real signal exists yet.
+- **Source:** S2:38-40, 62-63; `d2a2823`.
 
 ### OQ-15 · Time tolerance values
 - **Owner:** Daniel. **Raised:** 19 Sep 2026. **Blocks:** REQ-TK-05, REQ-TK-09.
@@ -282,6 +353,14 @@ answer unblocks (Ani's working note). **Top 5** marks the batch to send first.
 - **Owner:** Daniel. **Raised:** 14 Sep 2026. **Blocks:** REQ-BIL-02.
 - **Why:** private pay came off the dashboard because it "may be fully automated" (`944d26a`), and
   was restored the same day (`c0cae95`).
+
+### OQ-51 · Should Finalize open a billing review?
+- **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-BIL-04.
+- **Why:** the button used to read "Finalize & review billing" and opened no review (DR:87-88).
+  Build 13:10 renamed it "Finalize today's visit" and submits a pending claim with no review
+  (V2b:4618, 7114; D-65).
+- **Ask:** is signing the visit and submitting the claim in one step right, or does he want to see
+  the claim before it goes?
 
 ---
 
@@ -330,3 +409,10 @@ answer unblocks (Ani's working note). **Top 5** marks the batch to send first.
 - 25 Sep 2026, first run: 42 questions (OQ-01 to OQ-42), each with an owner, the date raised and
   what it blocks. The doctor review's eight "Needs Daniel" items are folded in as OQ-01, OQ-04,
   OQ-08, OQ-09, OQ-10, OQ-11, OQ-12 and OQ-16.
+- 25 Sep 2026, second run: 51 questions (9 new). New from shadowing 4: OQ-43 (the diverticulitis
+  part, audio needed), OQ-44 (medication and coverage paperwork), OQ-45 (when results are old),
+  OQ-46 (preset test groups), OQ-47 (weight sources), OQ-48 (lab PDF uploads) and OQ-49 (the eye
+  click). New from build 13:10: OQ-50 (the real fax signal) and OQ-51 (billing review at Finalize).
+  The designer's three questions were already open: OQ-08 (fax or MOA as primary), OQ-11 ("Call
+  now" as primary) and OQ-09 (3 months for every chronic medication); each now records what the
+  build does. OQ-37 now also blocks REQ-CH-20, and OQ-41 notes the demo "picked up".

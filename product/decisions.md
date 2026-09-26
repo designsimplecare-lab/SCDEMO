@@ -519,7 +519,126 @@ no client quote; Ani approved it by shipping it.
   - Reading text is capped at 66ch (`affc632`).
   - The inbox source sits under the name (`535ad1a`).
 
+### D-61 · 25 Sep 2026 · The "Review MRI report" task is removed
+- **Decided:** delete the task rather than give it a finding. There is no report behind it to draw
+  one from.
+- **By:** design (the designer agent, from DR:218), shipped by Ani in build 13:10.
+- **Quote:** Daniel, 21 Sep: *"Don't keep it a mystery."* Code: "it goes rather than being given an
+  invented one" (V2b:6812-6815).
+- **Replaced:** an urgent "Review MRI report" task that D-51 had left in the data (DR:47-49).
+- **Source:** `d2a2823`; MTG21:60-62, 75-77.
+
+### D-62 · 25 Sep 2026 · One attention row per patient
+- **Decided:** a patient's intake flag folds into their critical result row on Home, as a second
+  reason and a second button ("Review intake").
+- **By:** design, from the doctor review; shipped in build 13:10.
+- **Quote:** *"That's one patient and one decision."* (DR ask 5, quoted at V2b:6164).
+- **Replaced:** two rows for one patient (a critical result and an intake flag).
+- **Source:** `d2a2823`; DR:218-219; V2b:6164-6172.
+
+### D-63 · 25 Sep 2026 · The renewal card is per patient, with a computed quantity and a check step
+- **Decided:**
+  - Each patient's own medications, pharmacy and PHN; the intake's drug preselected, at the last
+    plan's dose.
+  - Quantity is worked out as doses a day × days, shown, never typed into the data.
+  - Supply is 1 or 3 months, default 3.
+  - "Check before it goes" comes before anything is sent.
+  - Status reads "Sending to …", then "Delivered … · patient copy sent" as a later event.
+  - "Also active · Renew too" for the other medications.
+- **By:** design, from DR ask 2 and S1/S2; shipped in build 13:10.
+- **Quote:** *"A fax to a pharmacy cannot be taken back, so nothing goes before this check."*
+  (V2b:10013). S2: *"I'm happy to represcribe this three months at 300."* (V2b:9890). S1: "Delivered
+  is a later event than sent, never the same second." (V2b:10070).
+- **Replaced:** fixed demo medications on every chart, 90 tablets tied to 3 months, no summary,
+  and "Delivered" at the instant of Send (DR:72-86).
+- **Note:** REQ-RX-02's interim line said quantity should be its own field and never inferred. The
+  build infers it from the directions instead. The rule still waits on Daniel (OQ-09).
+- **Source:** `d2a2823`; V2b:9885-10095; DR:200-206.
+
+### D-64 · 25 Sep 2026 · "Ask MOA to send" on the renewal card
+- **Decided:** the renewal card gets a second route, "Ask MOA to send". It goes through the same
+  check, files the same task the Task MOA dialog files with the drug and pharmacy written in, writes
+  the note line, and shows "Sent to <MOA> · waiting", then "Picked up by <MOA>". One task function
+  now serves both, with due set from priority.
+- **By:** design, from S2 and DR ask 2; shipped in build 13:10.
+- **Quote:** S2: *"Can you hear me, … or am I talking to myself?"*; code: "the hand-off answers"
+  (V2b:10060).
+- **Replaced:** a spoken hand-off with no receipt; tasks stamped "due Sep 19" (V2b:10099-10101).
+- **Note:** "Review & fax" is primary and "Ask MOA to send" secondary (V2b:4601-4602). Picked up is
+  a demo timer. Which route leads is OQ-08.
+- **Source:** `d2a2823`; S2:38-40, 62-63.
+
+### D-65 · 25 Sep 2026 · Finalize closes today's visit
+- **Decided:** Finalize asks first on an empty note or bracketed template text, ends a live call,
+  sets Completed, stamps and locks the note, submits a pending claim, and offers the next patient.
+  The button is renamed "Finalize today's visit".
+- **By:** design, from DR ask 4, S2 and S3; shipped in build 13:10.
+- **Quote:** S2: "The patient leaves the queue at once." S2: "Finalize with an empty note today
+  asks first." (V2b:7100, 7110).
+- **Replaced:** "Finalize & review billing", which showed a toast and opened no billing review
+  (DR:87-91). REQ-BIL-04 is superseded; OQ-51 asks whether a billing review is wanted.
+- **Source:** `d2a2823`; V2b:4618-4620, 7091-7120, 10276-10306.
+
+### D-66 · 25 Sep 2026 · "Since last visit", from the previous visit's plan
+- **Decided:** a block at the top of a follow-up with the previous visit's Plan, Ask about and
+  Pending (plus unread Inbox results), and "Read the <date> note" to open it read-only in place.
+  The note box grows with its text instead of scrolling.
+- **By:** design, from DR ask 3, S2 and S3; shipped in build 13:10.
+- **Quote:** code: "read-only, in place, under the summary: today's note below never changes"
+  (V2b:10211). S2: the note box "scrolls. It sits inside the chart modal, which also scrolls"
+  (V2b:10268).
+- **Replaced:** nothing; v2 had no previous note to open (DR:97-100).
+- **Note:** it holds one previous visit per patient. S4 (a new reason) shows it must fit today's
+  reason instead (REQ-CH-20, S4:99-100).
+- **Source:** `d2a2823`; V2b:10117-10227.
+
+### D-67 · 25 Sep 2026 · Critical results on the chart, and "Call now" from review
+- **Decided:** critical and high results not yet signed off sit at the top of the patient's chart,
+  using the Inbox's own tiering. On a drafted review, "Call now" appears when the patient is in
+  today's queue, as a secondary button beside Accept & assign.
+- **By:** design, from DR ask 1; shipped in build 13:10.
+- **Quote:** DR: "the biggest risk I found" (DR:147-151). Code: "labTier decides, nothing new is
+  inferred" (V2b:10230).
+- **Replaced:** a chart with no sign of a critical result; review with MOA hand-off only.
+- **Note:** whether "Call now" should lead is OQ-11.
+- **Source:** `d2a2823`; V2b:4367, 8961-9006, 10229-10265; DR:195-199.
+
+### D-68 · 25 Sep 2026 · A dropped call is shown, and the timer counts the whole contact
+- **Decided:** "Call dropped at m:ss" with a Redial label; a redial carries on the timer and counts
+  the calls ("2 calls · 04:10").
+- **By:** design, from S3; shipped in build 13:10.
+- **Quote:** S3: "the timer restarts from 0:00, so the screen no longer shows how long he has been
+  with the patient" (V2b:9390-9392).
+- **Replaced:** a timer that reset on each call, and no drop state.
+- **Source:** `d2a2823`; V2b:9390-9435.
+
+### D-69 · 25 Sep 2026 · Next result in review
+- **Decided:** a routine "No follow-up" opened from the Inbox lands on the next result, and review
+  has a "Next result" button.
+- **By:** design, from DR ask 5; shipped in build 13:10.
+- **Quote:** "from the inbox, a routine 'No follow-up' lands on the next result" (V2b:8954).
+- **Replaced:** a round trip to the Inbox after every result (DR:157-170).
+- **Source:** `d2a2823`; V2b:4293, 8951-8972.
+
+### D-70 · 25 Sep 2026 · Other build 13:10 fixes
+- **Decided:**
+  - `#chart:N` deep links wait for the whole script, so opening a chart by link no longer stops the
+    page (V2b:9812-9829).
+  - The medication rail and Medications tab read the renewal card's list, so the chart cannot
+    disagree with itself (V2b:10306-10309).
+- **By:** design, from the doctor review; shipped in build 13:10.
+- **Quote:** DR: "#chart:5 ... throws in rxOpen because RX_MEDS is declared further down the
+  script" (V2b:9817).
+- **Replaced:** a deep link that broke the rest of the script; a rail that disagreed with the care
+  plan (DR:109-110).
+- **Source:** `d2a2823`.
+
 ## Changelog
 
 - 25 Sep 2026, first run: 60 entries from 27 Jul to 25 Sep 2026, including the reversals: D-11,
   D-12, D-15, D-16, D-19, D-25, D-33, D-35 (item 7), D-36, D-55 and D-57.
+- 25 Sep 2026, second run: 70 entries. Added D-61 to D-70 for build 13:10 (`d2a2823`), including
+  the removal of the "Review MRI report" task (D-61) and the "Ask MOA to send" hand-off (D-64).
+  D-65 replaces "Finalize & review billing". D-63 notes that the computed quantity departs from
+  REQ-RX-02's interim rule. Shadowing 4 brought no decisions; its questions are in
+  `open-questions.md`.
