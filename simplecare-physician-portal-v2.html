@@ -4132,6 +4132,103 @@
   #pcv-c #pc-callsum .ic,#pcv-c #pc-callsum svg{width:18px;height:18px;color:var(--ink-faint);}
   #pcv-c #pc-callstrip-c{font-size:15px;font-variant-numeric:tabular-nums;}
   #pcv-c .sc-held{color:var(--ink);}
+
+  /* ===== Daniel's answers, 26 Sep (ux-designer pass 2) ===== */
+  #pcv-c :is(#vc-pr,#rx-favlist,#rx-favbtn)[hidden]{display:none !important;}
+  #pcv-c :is(#vc-pr,#vc-medrail,#vcp-results) .btn,#pcv-c #rx-card #rx-favbtn,#bill-overlay #bl-do{
+    height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 18px;font-size:15px;font-weight:600;white-space:nowrap;box-sizing:border-box;}
+  #pcv-c :is(#vc-pr,#vc-medrail,#vcp-results) .btn svg,#pcv-c #rx-card #rx-favbtn svg,#bill-overlay #bl-do svg{width:18px;height:18px;}
+  #pcv-c :is(#vc-pr,#vc-medrail,#vcp-results) .btn:not(.dark) .ic,#pcv-c #rx-card #rx-favbtn .ic{color:var(--ink);}
+  /* one sign-off stamp: name and time, the check on the icon */
+  :is(#pcv-c,#screen-inbox,#screen-claims) .so-stamp{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:14px;line-height:20px;font-weight:600;color:var(--ink);}
+  :is(#pcv-c,#screen-inbox,#screen-claims) .so-stamp .ic,:is(#pcv-c,#screen-inbox,#screen-claims) .so-stamp svg{flex:none;width:16px;height:16px;color:var(--good);}
+  #screen-inbox .ix-disp .so-stamp{display:inline-flex;margin-top:0;}
+  #screen-claims .cl-who{width:270px;}
+  #screen-claims .cl-who .so-stamp{font-size:14px;color:var(--ink);white-space:nowrap;}
+  #screen-claims .cl-who .so-stamp span.ic{display:inline-flex;font-size:inherit;}
+  #pcv-c #vc-signed b{font-weight:600;}
+
+  /* 1-2. renewal: two equal routes, and favourites */
+  #pcv-c #rx-card #rx-favbtn{margin-left:auto;}
+  #pcv-c #rx-card #rx-favbtn:not([hidden]) ~ .rx-x{margin-left:0;}
+  #pcv-c #rx-card .rx-st .so-stamp .ic,#pcv-c #rx-card .rx-st .so-stamp svg{width:16px;height:16px;margin-top:0;}
+  #pcv-c #rx-card .rx-favlist{margin:0 0 14px;padding:14px 16px;border-radius:12px;background:var(--panel);}
+  #pcv-c #rx-card .rx-favk{margin:0 0 10px;font-size:14px;color:var(--ink-soft);max-width:var(--measure);}
+  #pcv-c #rx-card .rx-favgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;}
+  #pcv-c #rx-card .rx-fav{display:flex;align-items:flex-start;gap:10px;min-height:44px;padding:10px 12px;border:0;border-radius:12px;background:var(--wash);
+    font:inherit;text-align:left;color:var(--ink);cursor:pointer;}
+  #pcv-c #rx-card .rx-fav:hover,#pcv-c #rx-card .rx-fav:focus-visible{background:var(--brand-wash);}
+  #pcv-c #rx-card .rx-fav .ic,#pcv-c #rx-card .rx-fav svg{flex:none;width:17px;height:17px;margin-top:2px;color:var(--brand);}
+  #pcv-c #rx-card .rx-fav b{display:block;font-size:15px;font-weight:600;}
+  #pcv-c #rx-card .rx-fav i{display:block;font-style:normal;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #pcv-c #rx-card #rx-act .btn{flex:1 1 0;justify-content:center;max-width:260px;}
+
+  /* 4. since last visit: the care plan on top, then the last note */
+  #pcv-c #slv .slv-cp{display:flex;align-items:flex-start;gap:8px 20px;margin:0 0 14px;padding:0 0 12px;border-bottom:1px solid var(--line);}
+  #pcv-c #slv .slv-cp-t{flex:1 1 auto;min-width:0;}
+  #pcv-c #slv .slv-cpl{padding-left:18px;max-width:var(--measure);}
+  #pcv-c #slv .slv-cpl b{font-weight:600;}
+  #pcv-c #slv .slv-cpgo{flex:none;white-space:nowrap;margin-top:-10px;}
+  #pcv-c #slv .slv-sum{margin:0 0 6px;font-size:15px;line-height:22px;color:var(--ink);max-width:var(--measure);}
+
+  /* 5. patient-reported readings, in the rail */
+  #pcv-c #vc-pr .vc-h .ic,#pcv-c #vc-pr .vc-h svg{width:18px;height:18px;color:var(--brand);}
+  #pcv-c #vc-pr .vc-h{margin-bottom:2px;}
+  #pcv-c #vc-pr .pr-by{margin:0 0 10px;font-size:14px;color:var(--ink-soft);}
+  #pcv-c #vc-pr .pr-row{display:grid;grid-template-columns:minmax(0,1fr) 72px auto;gap:4px 12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--wash);}
+  #pcv-c #vc-pr .pr-l b{display:block;font-size:16px;font-weight:600;color:var(--ink);}
+  #pcv-c #vc-pr .pr-l span{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #pcv-c #vc-pr .pr-t{color:var(--ink-soft);line-height:0;}
+  #pcv-c #vc-pr .pr-v{text-align:right;}
+  #pcv-c #vc-pr .pr-v b{display:block;font-size:16px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;}
+  #pcv-c #vc-pr .pr-v span{display:block;font-size:14px;color:var(--ink-soft);white-space:nowrap;}
+  #pcv-c #vc-pr .pr-add{margin-top:12px;}
+  #pcv-c #vc-pr .pr-form{margin-top:12px;padding:14px;border-radius:12px;background:var(--wash);}
+  #pcv-c #vc-pr .pr-fk{margin:0 0 10px;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  #pcv-c #vc-pr .pr-seg{display:flex;gap:2px;padding:3px;border-radius:999px;background:var(--panel);margin-bottom:10px;}
+  #pcv-c #vc-pr .pr-seg button{flex:1;height:38px;border:0;border-radius:999px;background:none;font:inherit;font-size:15px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
+  #pcv-c #vc-pr .pr-seg button.on{background:var(--brand);color:#fff;}
+  #pcv-c :is(#vc-pr .pr-f,#vc-medrail .mx-f,#vcp-results .rs-f){display:flex;flex-direction:column;gap:6px;margin-bottom:10px;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  #pcv-c :is(#vc-pr,#vc-medrail,#vcp-results) :is(input,select){height:44px;box-sizing:border-box;padding:0 12px;border:1px solid var(--line-strong);border-radius:12px;
+    background:var(--panel);font:inherit;font-size:15px;font-weight:400;color:var(--ink);width:100%;}
+  #pcv-c :is(#vc-pr .pr-acts,#vc-medrail .mx-acts,#vcp-results .rs-acts){display:flex;flex-wrap:wrap;gap:8px;}
+
+  /* 7a. medications started elsewhere */
+  #pcv-c #vc-medrail .mx-add{margin-top:12px;}
+  #pcv-c #vc-medrail .mx-form{margin-top:12px;padding:14px;border-radius:12px;background:var(--wash);}
+  #pcv-c #vc-medrail .mx-k{margin:0 0 10px;font-size:14px;font-weight:600;color:var(--ink-soft);}
+
+  /* 6. results by test, source on each, the PDF secondary */
+  #pcv-c #vcp-results .rs-row{display:grid;grid-template-columns:minmax(0,1fr) 88px 210px auto;gap:6px 16px;align-items:center;
+    padding:12px 0;border-bottom:1px solid var(--wash);}
+  #pcv-c #vcp-results .rs-main{min-width:0;}
+  #pcv-c #vcp-results .rs-n{display:block;font-size:16px;font-weight:600;color:var(--ink);}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-src{display:flex;align-items:center;gap:6px;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-src .ic,#pcv-c :is(#vcp-results,#vc-resrail) .rs-src svg{flex:none;width:16px;height:16px;color:var(--ink-faint);}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-src.pt .ic,#pcv-c :is(#vcp-results,#vc-resrail) .rs-src.pt svg{color:var(--warn);}
+  #pcv-c #vcp-results .rs-hist{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);max-width:var(--measure);}
+  #pcv-c #vcp-results .rs-t{color:var(--ink-soft);line-height:0;}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-v{display:inline-flex;align-items:center;flex-wrap:wrap;gap:2px 6px;font-size:15px;color:var(--ink);white-space:nowrap;}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-v b{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-v b.crit{color:var(--crit-text);}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-dir,#pcv-c :is(#vcp-results,#vc-resrail) .rs-dir svg{width:16px;height:16px;color:var(--warn);}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-dir.crit,#pcv-c :is(#vcp-results,#vc-resrail) .rs-dir.crit svg{color:var(--crit);}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-flag{font-weight:600;}
+  #pcv-c #vcp-results .rs-ref{flex-basis:100%;font-style:normal;font-size:14px;color:var(--ink-soft);}
+  #pcv-c #vcp-results .rs-row > .rs-v{justify-self:start;}
+  #pcv-c #vcp-results .rs-pdf{display:inline-flex;align-items:center;gap:6px;}
+  #pcv-c #vcp-results .rs-pdf .ic{display:inline-flex;}
+  #pcv-c #vcp-results .rs-pdf svg{width:16px;height:16px;}
+  #pcv-c #vcp-results .rs-exp{margin:0 0 8px;padding:12px 16px;border-radius:12px;background:var(--wash);}
+  #pcv-c #vcp-results .rs-k{margin:0 0 6px;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  #pcv-c #vcp-results .rs-expi{display:flex;gap:8px;align-items:flex-start;margin:0;font-size:15px;line-height:22px;color:var(--ink);max-width:var(--measure);}
+  #pcv-c #vcp-results .rs-expi .ic,#pcv-c #vcp-results .rs-expi svg{flex:none;width:16px;height:16px;margin-top:3px;color:var(--ink-faint);}
+  #pcv-c #vcp-results .rs-expi b{font-weight:600;}
+  #pcv-c #vcp-results .rs-addexp{margin-top:14px;}
+  #pcv-c #vcp-results .rs-form{margin-top:14px;padding:14px 16px;border-radius:12px;background:var(--wash);max-width:520px;}
+  #pcv-c #vc-resrail .rs-rl{align-items:center;}
+  #pcv-c #vc-resrail .rs-rl .rs-v{justify-content:flex-end;}
+  @media (max-width:1100px){#pcv-c #vcp-results .rs-row{grid-template-columns:minmax(0,1fr) 88px;} #pcv-c #vcp-results .rs-row > .rs-v{grid-column:1;} #pcv-c #vcp-results .rs-pdf{justify-self:end;}}
 </style>
 </head>
 <body>
@@ -4511,7 +4608,7 @@
           <section class="pc-sec" id="pcsec-review">
             <div class="sec"><div class="sec-hd"><span class="ic" data-pcic="review"></span><h4>Plan &amp; recommendations</h4> <span class="ai-tag">&#10022; AI generated</span></div>
               <div class="sec-body"><p class="prose" data-f="plan">--</p>
-                <div style="margin-top:14px;display:flex;gap:8px;"><button class="btn dark xs">Sign &amp; complete</button><button class="btn xs">Save draft</button></div></div></div>
+                <div style="margin-top:14px;display:flex;gap:8px;"><button class="btn dark xs">Sign off &amp; finalize visit</button><button class="btn xs">Save draft</button></div></div></div>
           </section>
 
           <section class="pc-sec" id="pcsec-timeline">
@@ -4589,7 +4686,10 @@
                    from shadowing 2 ("Can you hear me, Jebney, or am I talking to myself?"). -->
               <div class="rx-card" id="rx-card" hidden>
                 <div class="rx-hd"><span class="ic" data-pdic="chartnote"></span><h5>Renew a prescription</h5>
+                  <!-- Daniel, 26 Sep: "I also have my favorite's pre-populated." One tap fills the line. -->
+                  <button type="button" class="btn" id="rx-favbtn" onclick="rxFavToggle()" aria-expanded="false" aria-controls="rx-favlist"><span class="ic" data-pdic="star"></span>Favourites</button>
                   <button type="button" class="rx-x" onclick="rxClose()" aria-label="Close">&times;</button></div>
+                <div class="rx-favlist" id="rx-favlist" hidden></div>
                 <div id="rx-lines"></div>
                 <div class="rx-grid2" id="rx-opts">
                   <div class="rx-f"><span>Supply</span><div class="rx-seg" id="rx-seg" role="group" aria-label="Supply"></div></div>
@@ -4598,8 +4698,10 @@
                 <div class="rx-also" id="rx-also"></div>
                 <div class="rx-review" id="rx-review" hidden></div>
                 <div class="rx-act" id="rx-act">
-                  <button type="button" class="btn dark" id="rx-send" onclick="rxReview('fax')"><span class="ic" data-pdic="eye"></span>Review &amp; fax</button>
-                  <button type="button" class="btn" id="rx-moa" onclick="rxReview('moa')"><span class="ic" data-pdic="taskmoa"></span>Ask MOA to send</button>
+                  <!-- Daniel, 26 Sep: "if I am f***ing around, she sends it. If I think she'll f*** it up, then i send it."
+                       His call each time, so the two routes are equal: same style, neither is the default. -->
+                  <button type="button" class="btn" id="rx-send" onclick="rxReview('fax')"><span class="ic" data-pdic="arrowup"></span>Send it myself (fax)</button>
+                  <button type="button" class="btn" id="rx-moa" onclick="rxReview('moa')"><span class="ic" data-pdic="taskmoa"></span><span id="rx-moa-lbl">Ask the MOA to send</span></button>
                 </div>
                 <div class="rx-status" id="rx-status" hidden></div>
               </div>
@@ -4609,13 +4711,15 @@
                 <button class="vc-chip" onclick="vcInsert('Follow-up template')">+ Follow-up template</button>
                 <button class="vc-chip" onclick="vcInsert('Normal exam')">+ Normal exam</button>
                 <button class="vc-chip" onclick="rxOpen()">+ Renew prescription</button>
+                <button class="vc-chip" onclick="prOpenForm()">+ Reading from patient</button>
                 <button class="vc-chip" onclick="toast('Diagnosis picker')">+ Diagnosis</button>
               </div>
               <!-- Doctor review ask 4 / shadowing 2: "The big 'Finalize Visit' button beneath does not say which
                    visit it finalizes." It names today's visit, asks first on an empty note, and closes the visit. -->
               <div class="vc-finwarn" id="vc-finwarn" hidden></div>
               <div class="vc-finrow" id="vc-finrow">
-                <button class="btn dark" id="vc-finalize" onclick="finalizeVisit()"><span class="ic" data-pdic="complete"></span>Finalize today&rsquo;s visit</button>
+                <!-- Daniel, 26 Sep: "I 'sign off' on the chart ... It means that i've finalized the visit." -->
+                <button class="btn dark" id="vc-finalize" onclick="finalizeVisit()"><span class="ic" data-pdic="complete"></span>Sign off &amp; finalize visit</button>
                 <button class="btn" id="vc-savedraft" onclick="toast('Draft saved')"><span class="ic" data-pdic="edit"></span>Save draft</button>
                 <button class="btn dark" id="vc-nextpt" hidden><span class="ic" data-pdic="chevr"></span><span></span></button>
               </div>
@@ -4640,14 +4744,8 @@
                 <div class="vc-h"><span class="ic" data-pcic="consult"></span><h4>Reason for visit</h4>
                   <span class="right"><button class="vc-more" onclick="openBrief(PC_CURRENT)">View intake note</button></span></div>
                 <p class="prose" data-f="reason" style="margin-bottom:16px;">--</p>
-                <div class="vc-h"><span class="ic" data-pcic="chart"></span><h4>Last vitals</h4>
-                  <span class="right"><span class="vc-count">Jun 25</span></span></div>
-                <div class="vc-vitals">
-                  <div class="vc-vit"><p class="k">Blood pressure</p><p class="v">122 / 78</p></div>
-                  <div class="vc-vit"><p class="k">Heart rate</p><p class="v">72 bpm</p></div>
-                  <div class="vc-vit"><p class="k">Temperature</p><p class="v">36.8 &deg;C</p></div>
-                  <div class="vc-vit"><p class="k">Weight</p><p class="v">68 kg</p></div>
-                </div>
+                <!-- the static "Last vitals" (the same for every patient) is replaced by the patient-reported
+                     readings in the rail. Daniel, 26 Sep: "The weights come from me asking the patient." -->
               </div>
 
               <div class="vc-pane" id="vcp-timeline"><div class="care-tl-mount"></div></div>
@@ -4656,11 +4754,9 @@
                 <p class="lo-legend">What was ordered and where each test stands. A requisition that failed says so; one whose receipt was never confirmed says that; a collection not yet due says that rather than implying a result is on its way.</p>
                 <div class="lab-orders-mount"></div>
               </div>
-              <div class="vc-pane" id="vcp-results">
-                <div class="vc-line"><span><span class="l">Ferritin</span><div class="vc-sub2">Jun 25, 2026 &middot; LifeLabs</div></span><span class="r flag"><span class="ic" data-pdic="arrowdown"></span>18 &micro;g/L &middot; Low</span></div>
-                <div class="vc-line"><span><span class="l">CBC + differential</span><div class="vc-sub2">Jun 25, 2026</div></span><span class="r">Normal</span></div>
-                <div class="vc-line"><span><span class="l">HbA1c</span><div class="vc-sub2">Ordered today</div></span><span class="r">Pending</span></div>
-              </div>
+              <!-- Daniel, 26 Sep: "it is madness that I am opening up raw pdf's to find out what the f*** is going on."
+                   Tests with values and a trend; the PDF is a secondary link. Rendered by renderResults(). -->
+              <div class="vc-pane" id="vcp-results"></div>
 
               <div class="vc-pane" id="vcp-meds">
                 <div class="vc-line"><span><span class="l">Metformin 500 mg</span><div class="vc-sub2">Twice daily with meals</div></span><span class="r">Ongoing</span></div>
@@ -4678,12 +4774,11 @@
                that are off, then what they take, then their conditions. History,
                pharmacy and the rarer actions sit under More, one click away. -->
           <aside class="side">
-            <div class="vc-block" style="margin-bottom:0;">
-              <div class="vc-h"><span class="ic" data-pcic="labs"></span><h4>Recent results</h4>
-                <span class="right"><button class="vc-more" onclick="vcPane('results')">View all</button></span></div>
-              <div class="vc-line"><span><span class="l">Ferritin</span><div class="vc-sub2">Jun 25</div></span><span class="r flag"><span class="ic" data-pdic="arrowdown"></span>18 &micro;g/L &middot; Low</span></div>
-              <div class="vc-line"><span><span class="l">CBC</span><div class="vc-sub2">Jun 25</div></span><span class="r">Normal</span></div>
-            </div>
+            <div class="vc-block" id="vc-resrail" style="margin-bottom:0;"></div>
+
+            <!-- Daniel, 26 Sep: "I get my patient's to work. It means I get them to do their blood pressures,
+                 their weights etc." Hidden when the patient has reported nothing. -->
+            <div class="vc-block" id="vc-pr" style="margin-bottom:0;" hidden></div>
 
             <div class="vc-block" id="vc-medrail" style="margin-bottom:0;">
               <div class="vc-h"><span class="ic" data-pcic="meds"></span><h4>Medications <span class="vc-n">2</span></h4></div>
@@ -4939,7 +5034,7 @@
                 <div class="chk"><span class="box"></span> Plan entered</div>
                 <div class="chk"><span class="box"></span> Note signed</div>
               </div>
-              <button class="btn dark xs" style="width:100%;justify-content:center;margin-top:12px;">Sign &amp; complete</button>
+              <button class="btn dark xs" style="width:100%;justify-content:center;margin-top:12px;">Sign off &amp; finalize visit</button>
             </div>
 
             <div class="rail-card">
@@ -5507,7 +5602,7 @@ var CARD_STATUS = {
 var BILL_STATUS = {
   'msp-submit':    {label:'Submit claim',    tone:'warn', open:true,
                     why:'The claim is built and coded, waiting on you to send it.',
-                    next:'Review the fee item and diagnostic code, then submit to MSP.'},
+                    next:'Review the fee item and diagnostic code, then sign off and submit to MSP.'},
   'msp-submitted': {label:'Claim submitted', tone:'info', open:false,
                     why:'Sent to MSP and waiting on their adjudication. Nothing to do.'},
   'msp-review':    {label:'Review claim',    tone:'warn', open:true,
@@ -6435,7 +6530,7 @@ function renderClaims(){
   lw.innerHTML = rows.length ? rows.map(function(r){
     var f = feeFor(r), bs = BILL_STATUS[r.bill];
     return '<div class="cl-row">'+
-      '<div class="cl-who"><b>'+r.legal+'</b><span>'+winLabel(r.win)+' &middot; '+dayLabelFor(0)+'</span></div>'+
+      '<div class="cl-who"><b>'+r.legal+'</b><span>'+winLabel(r.win)+' &middot; '+dayLabelFor(0)+'</span>'+(r.billSigned ? soStamp(r.billSigned) : '')+'</div>'+
       '<div class="cl-fee"><b>'+f.code+'</b><span>'+f.name+'</span></div>'+
       '<div class="cl-amt">'+money(f.amt)+'</div>'+
       (bs.open
@@ -6444,6 +6539,7 @@ function renderClaims(){
       '<button class="btn xs" onclick="openChart(&#39;'+r.name.replace(/'/g,"\\'")+'&#39;)">Chart</button>'+
     '</div>';
   }).join('') : '<p class="pc-empty">Nothing in this view.</p>';
+  paintPd(lw);
 }
 
 function updateClaimCount(){
@@ -6458,13 +6554,14 @@ var BILL_NEXT = {
   'pri-due':'pri-paid', 'pri-review':'pri-paid'
 };
 var BILL_SAID = {
-  'msp-submit':'claim submitted to MSP',
-  'msp-review':'claim reviewed and resubmitted', 'msp-rejected':'claim corrected and resubmitted',
+  'msp-submit':'claim signed off and submitted to MSP',
+  'msp-review':'claim signed off and resubmitted', 'msp-rejected':'claim signed off and resubmitted',
   'pri-due':'payment marked received', 'pri-review':'payment reviewed and cleared'
 };
 var BILL_DO = {
-  'msp-submit':'Submit to MSP',
-  'msp-review':'Resubmit', 'msp-rejected':'Correct and resubmit',
+  /* Daniel, 26 Sep: "To submit a bill is to 'sign off' on your billing." */
+  'msp-submit':'Sign off & submit',
+  'msp-review':'Sign off & resubmit', 'msp-rejected':'Sign off & resubmit',
   'pri-due':'Mark as paid', 'pri-review':'Clear the payment'
 };
 /* One modal for both: a billing state you can act on, or a health card
@@ -6480,7 +6577,9 @@ function openBilling(name){
   document.getElementById('bl-why').textContent = bs.why;
   document.getElementById('bl-next').textContent = bs.next || '';
   document.getElementById('bl-next-wrap').style.display = bs.next ? 'block' : 'none';
-  document.getElementById('bl-do').textContent = BILL_DO[r.bill] || 'Continue';
+  var bdo = document.getElementById('bl-do'), bl = BILL_DO[r.bill] || 'Continue';
+  bdo.innerHTML = '<span class="ic" data-pdic="' + (/^Sign off/.test(bl) ? 'complete' : 'reopen') + '"></span>' + rxEsc(bl);
+  paintPd(bdo);
   document.getElementById('bl-do').style.display = 'inline-flex';
   document.getElementById('bill-overlay').classList.add('show');
 }
@@ -6512,6 +6611,7 @@ function billingAct(){
     return;
   }
   var said = BILL_SAID[r.bill] || 'updated';
+  if(/^Sign off/.test(BILL_DO[r.bill] || '')) r.billSigned = rxNowTime();
   r.bill = BILL_NEXT[r.bill] || r.bill;
   closeBilling(); renderQueue(); updateClaimCount(); renderClaims();
   toast(firstLast(r.name)+' — '+said);
@@ -6750,8 +6850,8 @@ function tmSelectChip(el){
    need to be present and completed asap." Carrying forward keeps an
    item on the list and shows how long it has been sitting.
    ============================================================ */
-var MOA_ROSTER = { primary:'Dolly Aquino', buddy:'Marisol Reyes', admin:'Practice admin' };
-var MOA_ON_SERVICE = 'Marisol Reyes';  // whoever holds the current call window (the buddy today)
+var MOA_ROSTER = { primary:'Dolly Aquino', buddy:'Japneet', admin:'Practice admin' };  // production shows "Japneet Available · Buddy"; Daniel: "she sends it"
+var MOA_ON_SERVICE = 'Japneet';  // whoever holds the current call window (the buddy today)
 
 /* Type is a badge, never a section. Daniel: "pretty much the tools i have
    on the chart ... its all consistent" */
@@ -7090,23 +7190,23 @@ function closeConditions(){ document.getElementById('cd-panel').classList.remove
    visit, on the way through billing — not as something to remember to open. */
 function finalizeVisit(force){
   var r = QUEUE_DATA.filter(function(x){ return x.name===PC_CURRENT; })[0];
-  if(r && r.signed){ toast('Today\u2019s visit is already signed'); return; }
+  if(r && r.signed){ toast('Today\u2019s visit is already signed off'); return; }
   var sugg = condSuggFor(PC_CURRENT);
   if(sugg.length){
     openConditions();
-    toast(sugg.length + ' suggested problem-list update' + (sugg.length>1?'s':'') + ' before you sign');
+    toast(sugg.length + ' suggested problem-list update' + (sugg.length>1?'s':'') + ' before you sign off');
     return;
   }
   /* shadowing 2: "Finalize with an empty note today asks first." Shadowing 3: a signed note
      still carried "[document findings including reducibility ...]". */
   var n = document.getElementById('vc-note-input'), txt = n ? n.value.trim() : '';
   if(!force){
-    if(!txt){ vcFinWarn('Today\u2019s note is empty. Finalize anyway?'); return; }
+    if(!txt){ vcFinWarn('Today\u2019s note is empty. Sign off and finalize the visit anyway?'); return; }
     var br = txt.match(/\[[^\]]{3,}\]/);
-    if(br){ vcFinWarn('Today\u2019s note still has template text: \u201c' + br[0].slice(0, 60) + (br[0].length > 60 ? '\u2026' : '') + '\u201d. Finalize anyway?'); return; }
+    if(br){ vcFinWarn('Today\u2019s note still has template text: \u201c' + br[0].slice(0, 60) + (br[0].length > 60 ? '\u2026' : '') + '\u201d. Sign off and finalize anyway?'); return; }
   }
   if(PC_ON_CALL) pcEndCall();
-  if(!r){ toast('Visit signed'); return; }
+  if(!r){ toast('Visit signed off'); return; }
   /* shadowing 2: "The patient leaves the queue at once." */
   r.status = 'done'; r.wait = '\u2014';
   r.signed = {at: new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}), note: txt};
@@ -7115,9 +7215,9 @@ function finalizeVisit(force){
   if(typeof renderQueue==='function') renderQueue();
   if(billed && typeof updateClaimCount==='function'){ updateClaimCount(); renderClaims(); }
   if(typeof updateWorkCounts==='function') updateWorkCounts();
-  pcFill({visitline: 'Visit completed \u00b7 today \u00b7 signed ' + r.signed.at, statuslbl: STATUS_LABEL[r.status]});
+  pcFill({visitline: 'Visit completed \u00b7 today \u00b7 signed off ' + r.signed.at, statuslbl: STATUS_LABEL[r.status]});
   vcNoteState(r);
-  toast('Today\u2019s visit signed \u00b7 ' + (r.pref || r.name.split(',')[0]) + ' moved to Completed' + (billed ? ' \u00b7 claim submitted' : ''));
+  toast('Signed off by Dr. Pannozzo \u00b7 ' + (r.pref || r.name.split(',')[0]) + ' moved to Completed' + (billed ? ' \u00b7 claim submitted' : ''));
 }
 function condApprove(id){
   var name = PC_CURRENT;
@@ -7708,7 +7808,7 @@ var INBOX_ITEMS = [
     impression:'Confirms hypermobile EDS. Recommends physiotherapy referral and annual echo.' },
 
   { patient:'Brian Koehler', age:'66M', phn:'9650 365 807', dob:'22-05-1960', type:'Imaging', panel:'Chest X-ray', received:'Mon', ago:'3d',
-    status:'signed-off', lab:'Eagle Ridge Imaging', impression:'Clear.', abnormal:false }
+    status:'signed-off', signedAt:'Mon, 4:12 PM', lab:'Eagle Ridge Imaging', impression:'Clear.', abnormal:false }
 ];
 
 var IX_TYPE_CLS = {'Lab':'','Imaging':'img','Consult':'con','Micro':'mic','Trace':'tra','Screening':'scr'};
@@ -7958,7 +8058,9 @@ function inboxRowHtml(item, i){
       '<div class="ix-meta" title="Received '+attr(item.received)+'"><b>'+item.received+'</b></div>'+
       findings+
       /* sign-off shows what was decided, so it is never signed blind */
-      (item.status !== 'received' && item.disposition ? '<div class="ix-disp">'+item.disposition+'</div>' : '')+
+      (item.status === 'reviewed' && item.disposition ? '<div class="ix-disp">'+item.disposition+'</div>' : '')+
+      /* Daniel, 26 Sep: sign-off is the accountable action, so a signed-off row carries the name and time */
+      (item.status === 'signed-off' ? '<div class="ix-disp">'+(item.disposition ? item.disposition+' &middot; ' : '')+soStamp(item.signedAt || item.received)+'</div>' : '')+
       /* a reviewed row's Sign off sits in the grid, so its time lines up with the rows above */
       (item.status === 'reviewed' && actions ? '<div class="ix-right">'+actions+'</div>' : '')+
     '</div>'+
@@ -8089,8 +8191,9 @@ function openInboxItem(i){
 function signOffInbox(i){
   var item = INBOX_ITEMS[i];
   item.status = 'signed-off';
+  item.signedAt = rxNowTime();
   renderInboxList();
-  toast('Signed off — '+item.patient);
+  toast('Signed off by Dr. Pannozzo — '+item.patient);
 }
 var IX_TAB = 'recv';
 function ixTab(k){
@@ -9319,7 +9422,7 @@ function openChart(name){
     concern: r.concern,
     window: WIN_TEXT[r.win] || r.win,
     statuslbl: STATUS_LABEL[r.status],
-    visitline: (r.signed ? 'Visit completed \u00b7 today \u00b7 signed ' + r.signed.at : 'Open visit \u00b7 today \u00b7 ' + STATUS_LABEL[r.status]),
+    visitline: (r.signed ? 'Visit completed \u00b7 today \u00b7 signed off ' + r.signed.at : 'Open visit \u00b7 today \u00b7 ' + STATUS_LABEL[r.status]),
     twh: '0'+Math.max(0, 2), twm: (r.wait && /min/.test(r.wait)) ? r.wait.replace(/\D/g,'').padStart(2,'0') : '00',
     acuitychip: r.redflag ? 'Urgent' : 'Routine',
     reason: base + ' booked a virtual visit for ' + r.concern.toLowerCase() + '.' + (r.redflag ? ' Pre-visit intake flagged concerning symptoms.' : ''),
@@ -9353,6 +9456,7 @@ function openChart(name){
   if(phEl){ phEl.textContent = ph || 'No pharmacy on file'; var fx = phEl.parentNode.querySelector('.vc-pharm-fax'); if(fx) fx.hidden = !ph; }
   var lv = document.getElementById('vc-lastvisit'); if(lv) lv.textContent = PT_LAST[name] ? PT_LAST[name].date : 'No previous visit';
   renderMedRail(name); renderSinceLast(name); renderChartAlerts(name);
+  renderPtReadings(name); renderResults(name);
   vdTab('overview');
   renderLabPanels(); renderLabOrders();
   clearInterval(vdInt); var vdw=document.getElementById('vd-call'); if(vdw) vdw.classList.remove('live');
@@ -9678,6 +9782,7 @@ function renderCarePlan(name){
   document.querySelectorAll('.care-plan-mount').forEach(function(m){ m.innerHTML = h; });
   applyIcons();
   updateCpFlag();
+  if(typeof slvRefresh === 'function') slvRefresh(name || PC_CURRENT);
 }
 
 function toggleCallLog(btn){
@@ -9947,6 +10052,7 @@ function rxRender(){
   linesEl.innerHTML = st.lines.length ? st.lines.map(function(l, i){
     var sub = [];
     if(l.planSrc) sub.push('Dose from the ' + l.planSrc.split(':')[0] + (l.listDose !== l.dose ? ' (list says ' + l.listDose + ')' : ''));
+    if(l.fav) sub.push('From your favourites' + (l.offList ? ' &middot; not on this patient&rsquo;s medication list' : ''));
     if(l.last) sub.push('last dispensed ' + l.last);
     return '<div class="rx-line">' +
       '<div class="rx-drug"><b>' + l.drug + '</b><i>' + sub.join(' · ') + '</i></div>' +
@@ -9986,6 +10092,10 @@ function rxRender(){
   var none = !st.lines.length;
   document.getElementById('rx-send').disabled = none;
   document.getElementById('rx-moa').disabled = none;
+  /* the name of whoever the task will actually reach, never a name typed into the markup */
+  var ml = document.getElementById('rx-moa-lbl'); if(ml) ml.textContent = 'Ask ' + MOA_ON_SERVICE.split(' ')[0] + ' to send';
+  var fb = document.getElementById('rx-favbtn'); if(fb) fb.hidden = !editing || locked;
+  if(!editing || locked){ var fl = document.getElementById('rx-favlist'); if(fl) fl.hidden = true; if(fb) fb.setAttribute('aria-expanded','false'); }
   document.getElementById('rx-act').hidden = !editing;
   if(locked){ document.getElementById('rx-review').hidden = true; rxRenderStatus(st); paintPd(c); return; }
   rxRenderReview(st);
@@ -10032,10 +10142,11 @@ function rxRenderReview(st){
     }).join('') + '</ul>' +
     '<p class="rx-rvto">' + (st.route === 'moa'
       ? 'Goes to <b>' + moa + '</b>, the MOA on shift, to fax to ' + ph + ', with a copy to the patient.'
-      : 'Faxed to <b>' + ph + '</b>, with a copy to the patient.') + '</p>' +
+      : 'Faxed to <b>' + ph + '</b>, with a copy to the patient. Faxing is your sign-off on the script, in your name.') + '</p>' +
     '<div class="rx-act">' +
-      '<button type="button" class="btn dark" id="rx-confirm" onclick="rxConfirm()"><span class="ic" data-pdic="' + (st.route === 'moa' ? 'taskmoa' : 'arrowup') + '"></span>' +
-        (st.route === 'moa' ? 'Send to ' + moa.split(' ')[0] : 'Send by fax') + '</button>' +
+      /* Daniel, 26 Sep: "To Fax is to 'sign off' on the script" */
+      '<button type="button" class="btn dark" id="rx-confirm" onclick="rxConfirm()"><span class="ic" data-pdic="' + (st.route === 'moa' ? 'taskmoa' : 'complete') + '"></span>' +
+        (st.route === 'moa' ? 'Send to ' + moa.split(' ')[0] : 'Sign off &amp; fax') + '</button>' +
       '<button type="button" class="btn" onclick="rxEdit()"><span class="ic" data-pdic="edit"></span>Edit</button>' +
     '</div>';
 }
@@ -10065,14 +10176,15 @@ function rxConfirm(){
     }, 7000);
     toast('Sent to ' + moa);
   } else {
-    noteLine = 'Rx renewal: ' + lines.join('; ') + ', faxed to ' + ph + '.';
+    entry.signedAt = rxNowTime();
+    noteLine = 'Rx renewal: ' + lines.join('; ') + ', faxed to ' + ph + '. Signed off by Dr. Pannozzo ' + entry.signedAt + '.';
     /* shadowing 1: "When you receive that copy, it just means the fax has been successfully
        delivered." Delivered is a later event than sent, never the same second. */
     setTimeout(function(){
       entry.state = 'done'; entry.doneAt = rxNowTime();
       if(PC_CURRENT === name) rxRender();
     }, 5000);
-    toast('Faxing to ' + ph);
+    toast('Signed off \u00b7 faxing to ' + ph);
   }
   if(n && !n.readOnly){ n.value = (n.value.trim() ? n.value.trim() + '\n' : '') + noteLine; vcGrow(); }
   rxRender();
@@ -10092,7 +10204,7 @@ function rxRenderStatus(st){
       txt = e.state === 'done' ? 'Delivered to ' + ph + ' &middot; ' + e.doneAt + ' &middot; patient copy sent' : 'Sending to ' + ph + '&hellip;';
     }
     return '<p class="rx-st ' + (e.state === 'done' ? 'done' : 'wait') + '" aria-live="polite"><span class="ic" data-pdic="' + ic + '"></span>' +
-      '<span><b>' + txt + '</b><i>' + e.text + '</i></span></p>';
+      '<span><b>' + txt + '</b><i>' + e.text + '</i>' + (e.signedAt ? soStamp(e.signedAt) : '') + '</span></p>';
   }).join('');
 }
 
@@ -10160,7 +10272,8 @@ var PT_LAST = {
   'Greg': {date:'Jun 24, 2026', why:'Blood pressure follow-up',
     plan:['Metoprolol titrated to 50 mg twice daily (from 25 mg)', 'Continue ramipril 10 mg and atorvastatin 20 mg', 'Renew for 3 months if tolerating'],
     ask:['Dizziness or tiredness since the increase', 'Home blood pressure readings'],
-    pending:[{what:'Home BP log', when:'asked Jun 24', state:'waiting on the patient'}],
+    /* pass 2: the home readings he asked for are now on the chart (Weight and BP), so this no longer waits */
+    pending:[],
     note:{S:'Home readings mostly in the 140s over 90s. No chest pain, no dizziness.',
           O:'Virtual visit. BP 146/92 (home cuff). HR 78.',
           A:'Hypertension, above target on current treatment.',
@@ -10182,7 +10295,10 @@ function inboxFor(name){
 function renderSinceLast(name){
   var el = document.getElementById('slv'); if(!el) return;
   var L = PT_LAST[name];
-  if(!L){ el.hidden = true; el.innerHTML = ''; return; }
+  if(!L){ el.hidden = true; el.innerHTML = ''; el.removeAttribute('data-for'); return; }
+  /* a care-plan change re-renders this block; keep the full note open if it was */
+  var prev = document.getElementById('slv-note');
+  var keepOpen = !!(prev && !prev.hidden && el.getAttribute('data-for') === name);
   /* results that arrived and are still unread belong to "what is pending" too;
      a critical or high one has its own row above, so it is not repeated here */
   var hasAlerts = chartAlertsFor(name).length > 0;
@@ -10192,32 +10308,72 @@ function renderSinceLast(name){
   }).map(function(it){
     return {what: it.panel, when: 'received ' + it.received, state: 'not reviewed', rv: INBOX_ITEMS.indexOf(it)};
   });
-  var pend = L.pending.concat(fromInbox);
+  /* shadowing 5: bloodwork booked outside SimpleCare, which nothing else would track */
+  var expected = expFor(name).map(function(x){
+    return {what: x.what, when: x.when, state: 'ordered ' + x.by + ', waiting for the result'};
+  });
+  var pend = L.pending.concat(fromInbox, expected);
   var li = function(a){ return '<ul>' + a.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>'; };
   var nd = L.date.replace(/, \d{4}$/, '');
   el.innerHTML =
     '<div class="slv-hd"><span class="ic" data-pdic="reopen"></span><h5>Since last visit</h5>' +
       '<span class="slv-when">' + L.date + ' &middot; ' + L.why + ' &middot; Dr. Pannozzo</span></div>' +
+    /* Daniel, 26 Sep: "I need a 'Care Plan' and even the last note summary is good too."
+       (a) the care plan, as a narrative, from the care-plan items below */
+    '<div class="slv-cp"><div class="slv-cp-t"><p class="slv-k">Care plan</p>' + slvCarePlan(name) + '</div>' +
+      ((CARE_PLAN[name] || []).length || CP_PENDING[name] ? '<button type="button" class="vc-more slv-cpgo" onclick="slvToCarePlan()">Full care plan</button>' : '') + '</div>' +
     '<div class="slv-grid">' +
-      '<div><p class="slv-k">Plan</p>' + li(L.plan) + '</div>' +
+      /* (b) the last note, summarised: its assessment and its plan */
+      '<div><p class="slv-k">Last note &middot; ' + nd + '</p><p class="slv-sum">' + L.note.A + '</p>' + li(L.plan) + '</div>' +
       '<div><p class="slv-k">Ask about</p>' + li(L.ask) + '</div>' +
       '<div><p class="slv-k">Pending</p>' + (pend.length ? '<ul class="slv-pend">' + pend.map(function(p){
           return '<li><span class="ic" data-pdic="clock"></span><span><b>' + p.what + '</b> &middot; ' + p.when + ' &middot; ' + p.state +
             (p.rv !== undefined ? ' <button type="button" class="vc-more" onclick="openReview(' + p.rv + ')">Review</button>' : '') + '</span></li>';
         }).join('') + '</ul>' : '<p class="slv-none">Nothing pending.</p>') + '</div>' +
     '</div>' +
-    '<button type="button" class="btn slv-open" aria-expanded="false" aria-controls="slv-note" onclick="slvToggle(this)">' +
-      '<span class="ic" data-pdic="eye"></span><span>Read the ' + nd + ' note</span></button>' +
+    '<button type="button" class="btn slv-open" aria-expanded="' + keepOpen + '" aria-controls="slv-note" onclick="slvToggle(this)">' +
+      '<span class="ic" data-pdic="eye"></span><span>' + (keepOpen ? 'Hide' : 'Read') + ' the ' + nd + ' note</span></button>' +
     /* read-only, in place, under the summary: today's note below never changes */
-    '<div class="slv-note" id="slv-note" hidden>' +
-      '<p class="slv-ro"><span class="ic" data-pdic="complete"></span>' + nd + ' note &middot; signed by Dr. Pannozzo &middot; read-only</p>' +
+    '<div class="slv-note" id="slv-note"' + (keepOpen ? '' : ' hidden') + '>' +
+      '<p class="slv-ro"><span class="ic" data-pdic="complete"></span>' + nd + ' note &middot; signed off by Dr. Pannozzo &middot; read-only</p>' +
       '<dl>' + ['S','O','A','P'].map(function(k){
         var lbl = {S:'Subjective', O:'Objective', A:'Assessment', P:'Plan'}[k];
         return '<dt>' + lbl + '</dt><dd>' + L.note[k] + '</dd>';
       }).join('') + '</dl></div>';
+  el.setAttribute('data-for', name);
   el.hidden = false;
   paintPd(el);
 }
+/* The care plan as a few plain lines: what we are doing, what a specialist is doing.
+   Built only from the care-plan items on file; nothing is inferred. */
+function slvCarePlan(name){
+  var items = (CARE_PLAN[name] || []).filter(function(x){ return x.status !== 'Completed' && x.id.charAt(0) !== 'd'; });
+  var pend = CP_PENDING[name];
+  if(!items.length && !pend) return '<p class="slv-none">No care plan on file yet.</p>';
+  var lc = function(t){ return /^[A-Z][a-z]/.test(t) ? t.charAt(0).toLowerCase() + t.slice(1) : t; };
+  var short = function(d){ return String(d || '').replace(/, \d{4}$/, ''); };
+  var fmt = function(it){
+    var tail = it.status === 'Overdue' ? ' (overdue since ' + short(it.due) + ')'
+             : (it.status === 'Ordered' && it.due ? ' (' + short(it.due) + ')' : '');
+    return lc(it.action) + tail;
+  };
+  var rows = [];
+  var ours = items.filter(function(x){ return x.owner === 'GP'; });
+  if(ours.length) rows.push('<b>We are doing:</b> ' + ours.map(fmt).join('; ') + '.');
+  var specs = [];
+  items.filter(function(x){ return x.owner !== 'GP'; }).forEach(function(it){
+    var g = specs.filter(function(s){ return s.k === it.specialty; })[0];
+    if(!g){ g = {k: it.specialty, a: []}; specs.push(g); }
+    g.a.push(fmt(it));
+  });
+  specs.forEach(function(g){ rows.push('<b>' + g.k + ' is doing:</b> ' + g.a.join('; ') + '.'); });
+  if(pend) rows.push(pend.recs.length + ' recommendations from a new consult are not in the plan yet.');
+  return '<ul class="slv-cpl">' + rows.map(function(r){ return '<li>' + r + '</li>'; }).join('') + '</ul>';
+}
+function slvToCarePlan(){
+  var b = document.querySelector('#pcv-c .cp-block'); if(b) b.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function slvRefresh(name){ if(name && name === PC_CURRENT && document.getElementById('slv')) renderSinceLast(name); }
 function slvToggle(b){
   var n = document.getElementById('slv-note'); if(!n) return;
   n.hidden = !n.hidden;
@@ -10279,7 +10435,8 @@ function vcNoteState(row){
   if(n){ n.readOnly = signed; n.classList.toggle('signed', signed); if(signed) n.value = row.signed.note; }
   if(stamp){
     stamp.hidden = !signed;
-    stamp.innerHTML = signed ? '<span class="ic" data-pdic="complete"></span><span><b>Signed</b> by Dr. Pannozzo &middot; today ' + row.signed.at + ' &middot; read-only</span>' : '';
+    /* Daniel, 26 Sep: "The Doctor has approved this, meaning my a** is on the line." The name and time are the point. */
+    stamp.innerHTML = signed ? '<span class="ic" data-pdic="complete"></span><span><b>Signed off by Dr. Pannozzo &middot; today ' + row.signed.at + '</b> &middot; visit finalized, read-only</span>' : '';
   }
   var hide = function(id, h){ var e = document.getElementById(id); if(e) e.hidden = h; };
   hide('vc-chips', signed); hide('vc-finalize', signed); hide('vc-savedraft', signed); hide('vc-finwarn', true);
@@ -10297,7 +10454,7 @@ function vcFinWarn(msg){
   var w = document.getElementById('vc-finwarn'); if(!w) return;
   w.innerHTML = '<span class="ic" data-pdic="alert"></span><p>' + msg + '</p>' +
     '<button type="button" class="btn" onclick="document.getElementById(\'vc-finwarn\').hidden=true;document.getElementById(\'vc-finalize\').hidden=false;document.getElementById(\'vc-note-input\').focus()"><span class="ic" data-pdic="edit"></span>Keep writing</button>' +
-    '<button type="button" class="btn dark" onclick="finalizeVisit(true)"><span class="ic" data-pdic="complete"></span>Finalize anyway</button>';
+    '<button type="button" class="btn dark" onclick="finalizeVisit(true)"><span class="ic" data-pdic="complete"></span>Sign off anyway</button>';
   w.hidden = false;
   var fb = document.getElementById('vc-finalize'); if(fb) fb.hidden = true;
   paintPd(w);
@@ -10310,19 +10467,328 @@ function renderMedRail(name){
   var meds = rxMeds(name);
   var row = function(m, pane){
     var sub = m.freq.charAt(0).toUpperCase() + m.freq.slice(1) + (m.plan && m.plan.dose !== m.dose ? ' &middot; last plan: ' + m.plan.dose : '');
+    /* shadowing 5: three medications started in hospital, said aloud and written nowhere */
+    if(m.src) sub += '<br>Started elsewhere: ' + m.src.where + (m.src.when ? ', ' + m.src.when : '') + ' &middot; patient-reported';
     return '<div class="vc-line"><span><span class="l">' + m.drug + ' ' + m.dose + '</span><div class="vc-sub2">' + sub + '</div></span>' +
       (pane ? '<span class="r">Ongoing</span>' : '') + '</div>';
   };
   var rail = document.getElementById('vc-medrail');
   if(rail){
+    if(MX_FOR !== name){ MX_FORM = false; MX_FOR = name; }
     rail.innerHTML = '<div class="vc-h"><span class="ic" data-pdic="encounterlog"></span><h4>Medications <span class="vc-n">' + meds.length + '</span></h4></div>' +
-      (meds.length ? meds.map(function(m){ return row(m, false); }).join('') : '<p class="pc-empty">No active medications on file.</p>');
+      (meds.length ? meds.map(function(m){ return row(m, false); }).join('') : '<p class="pc-empty">No active medications on file.</p>') +
+      (MX_FORM
+        ? '<div class="mx-form"><p class="mx-k">A medication started elsewhere</p>' +
+            '<label class="mx-f"><span>Medication</span><input id="mx-drug" type="text" autocomplete="off" placeholder="e.g. Aspirin"></label>' +
+            '<label class="mx-f"><span>Dose</span><input id="mx-dose" type="text" autocomplete="off" placeholder="e.g. 81 mg"></label>' +
+            '<label class="mx-f"><span>Directions</span><select id="mx-freq">' + RX_FREQ.map(function(f){ return '<option>' + f[0] + '</option>'; }).join('') + '</select></label>' +
+            '<label class="mx-f"><span>Started</span><select id="mx-where"><option>in hospital</option><option>by a specialist</option><option>by another doctor or clinic</option></select></label>' +
+            '<label class="mx-f"><span>When</span><input id="mx-when" type="text" autocomplete="off" placeholder="e.g. Aug 2026"></label>' +
+            '<div class="mx-acts"><button type="button" class="btn dark" onclick="mxSave()"><span class="ic" data-pdic="complete"></span>Add</button>' +
+            '<button type="button" class="btn" onclick="MX_FORM=false;renderMedRail(PC_CURRENT)"><span class="ic" data-pdic="chevl"></span>Cancel</button></div></div>'
+        : '<button type="button" class="btn mx-add" onclick="mxOpen()"><span class="ic" data-pdic="plus"></span>Add one started elsewhere</button>');
     paintPd(rail);
   }
   var pane = document.getElementById('vcp-meds');
   if(pane) pane.innerHTML = meds.length ? meds.map(function(m){ return row(m, true); }).join('') : '<p class="pc-empty">No active medications on file.</p>';
 }
+var MX_FORM = false, MX_FOR = null;
+function mxOpen(){ MX_FOR = PC_CURRENT; MX_FORM = true; renderMedRail(PC_CURRENT); var i = document.getElementById('mx-drug'); if(i) i.focus(); }
+function mxSave(){
+  var g = function(id){ var e = document.getElementById(id); return e ? e.value.trim() : ''; };
+  var drug = g('mx-drug'), dose = g('mx-dose');
+  if(!drug || !dose){ toast('Add the medication and its dose'); return; }
+  drug = drug.charAt(0).toUpperCase() + drug.slice(1);
+  var m = {drug:drug, dose:dose, freq:g('mx-freq') || 'once daily', form:'tablets', last:'', src:{where:g('mx-where'), when:g('mx-when')}};
+  (RX_MEDS[PC_CURRENT] = RX_MEDS[PC_CURRENT] || []).push(m);
+  var n = document.getElementById('vc-note-input');
+  if(n && !n.readOnly){ n.value = (n.value.trim() ? n.value.trim() + '\n' : '') + 'Medication started elsewhere: ' + drug + ' ' + dose + ' ' + m.freq + ', started ' + m.src.where + (m.src.when ? ' (' + m.src.when + ')' : '') + ', patient-reported.'; vcGrow(); }
+  MX_FORM = false; renderMedRail(PC_CURRENT);
+  var c = document.getElementById('rx-card'); if(c && !c.hidden) rxRender();
+  toast(drug + ' ' + dose + ' added to the medication list');
+}
+
+/* ===== Daniel's answers to the shadowing questions, 26 Sep (ux-designer pass 2) =====
+   from-daniel/2026-09-26-answers-to-shadowing-questions.md. His words are the spec. */
+Object.assign(ICONS, {
+"star": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"m12.495 18.587l4.092 2.15a1.044 1.044 0 0 0 1.514-1.106l-.783-4.552a1.05 1.05 0 0 1 .303-.929l3.31-3.226a1.043 1.043 0 0 0-.575-1.785l-4.572-.657A1.04 1.04 0 0 1 15 7.907l-2.088-4.175a1.044 1.044 0 0 0-1.88 0L8.947 7.907a1.04 1.04 0 0 1-.783.575l-4.51.657a1.044 1.044 0 0 0-.584 1.785l3.309 3.226a1.04 1.04 0 0 1 .303.93l-.783 4.55a1.044 1.044 0 0 0 1.513 1.107l4.093-2.15a1.04 1.04 0 0 1 .991 0\"/></svg>",
+"upload": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-width=\"1.5\"><path stroke-miterlimit=\"10\" d=\"M12 3.212v12.026\"/><path stroke-linejoin=\"round\" d=\"M16.625 7.456L12.66 3.49a.937.937 0 0 0-1.318 0L7.375 7.456M2.75 13.85v4.625a2.31 2.31 0 0 0 2.313 2.313h13.875a2.31 2.31 0 0 0 2.312-2.313V13.85\"/></g></svg>",
+"file": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><path d=\"M14.186 2.753v3.596c0 .487.194.955.54 1.3a1.85 1.85 0 0 0 1.306.539h4.125\"/><path d=\"M20.25 8.568v8.568a4.25 4.25 0 0 1-1.362 2.97a4.28 4.28 0 0 1-3.072 1.14h-7.59a4.3 4.3 0 0 1-3.1-1.124a4.26 4.26 0 0 1-1.376-2.986V6.862a4.25 4.25 0 0 1 1.362-2.97a4.28 4.28 0 0 1 3.072-1.14h5.714a3.5 3.5 0 0 1 2.361.905l2.96 2.722a2.97 2.97 0 0 1 1.031 2.189\"/></g></svg>",
+"link": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><path d=\"M10.522 13.48a4.1 4.1 0 0 0 2.892 1.199a4.7 4.7 0 0 0 1.063-.136a4.2 4.2 0 0 0 1.828-1.063l.969-.968l2.878-2.888a4.085 4.085 0 0 0-2.922-6.873a4.1 4.1 0 0 0-2.862 1.096L11.49 6.736\"/><path d=\"m12.445 17.336l-2.892 2.888a4.094 4.094 0 0 1-6.801-2.944a4.1 4.1 0 0 1 1.031-2.833l2.892-2.888l.969-.968A4.2 4.2 0 0 1 9.47 9.53a4.1 4.1 0 0 1 3.956 1.062\"/></g></svg>",
+"plus": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M12 4.5v15m7.5-7.5h-15\"/></svg>",
+"heart": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M12 7.23c-1.733-3.924-5.764-4.273-7.641-2.562c-1.529 1.373-2.263 4.665-.867 7.695C5.9 17.573 12 20.309 12 20.309s6.101-2.736 8.508-7.946c1.396-3.03.662-6.322-.867-7.695C17.764 2.957 13.733 3.306 12 7.229\"/></svg>",
+"chartup": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.3\" d=\"M6 12H4.125c-.6 0-1.087.487-1.087 1.087v7.076c0 .6.487 1.087 1.087 1.087h1.873c.6 0 1.087-.487 1.087-1.087v-7.076c0-.6-.487-1.087-1.087-1.087m6.939-4.625h-1.873c-.6 0-1.087.487-1.087 1.087v11.701c0 .6.486 1.087 1.086 1.087h1.874c.6 0 1.087-.487 1.087-1.087V8.462c0-.6-.487-1.087-1.087-1.087m6.937-4.625h-1.873c-.6 0-1.087.487-1.087 1.087v16.326c0 .6.487 1.087 1.087 1.087h1.873c.6 0 1.087-.487 1.087-1.087V3.837c0-.6-.487-1.087-1.087-1.087\"/></svg>"
+});
+
+/* Sign-off is an accountable action, and it carries his name. Daniel: "The Doctor has approved
+   this, meaning my a** is on the line." One stamp for the note, the script, the bill and the inbox. */
+function soStamp(at){
+  return '<span class="so-stamp"><span class="ic" data-pdic="complete"></span>Signed off by Dr. Pannozzo &middot; ' + at + '</span>';
+}
+
+/* ----- Favourites (Daniel: "I also have my favorite's pre-populated") -----
+   DEMO DATA: invented favourites for the demo, chosen to match the demo medication lists above.
+   His real list is a question for him. Not clinical guidance. */
+var RX_FAVS = [
+  {drug:'Atorvastatin',     dose:'20 mg',  freq:'once daily',  form:'tablets',  days:90},
+  {drug:'Ramipril',         dose:'10 mg',  freq:'once daily',  form:'capsules', days:90},
+  {drug:'Amlodipine',       dose:'5 mg',   freq:'once daily',  form:'tablets',  days:90},
+  {drug:'Metformin',        dose:'500 mg', freq:'twice daily', form:'tablets',  days:90},
+  {drug:'Levothyroxine',    dose:'75 mcg', freq:'once daily',  form:'tablets',  days:90},
+  {drug:'Ferrous fumarate', dose:'300 mg', freq:'once daily',  form:'tablets',  days:90}
+];
+function rxFavToggle(){
+  var l = document.getElementById('rx-favlist'), b = document.getElementById('rx-favbtn'); if(!l) return;
+  if(l.hidden){
+    l.innerHTML = '<p class="rx-favk">One tap fills the medication, dose, directions and quantity.</p><div class="rx-favgrid">' +
+      RX_FAVS.map(function(f, i){
+        return '<button type="button" class="rx-fav" onclick="rxFavPick(' + i + ')"><span class="ic" data-pdic="star"></span><span><b>' + f.drug + ' ' + f.dose + '</b>' +
+          '<i>' + f.freq + ' &middot; ' + rxQty(f, f.days) + ' ' + f.form + ' &middot; ' + rxMonths(f.days) + '</i></span></button>';
+      }).join('') + '</div>';
+    paintPd(l);
+  }
+  l.hidden = !l.hidden;
+  if(b) b.setAttribute('aria-expanded', String(!l.hidden));
+}
+function rxFavPick(i){
+  var f = RX_FAVS[i]; if(!f || !PC_CURRENT) return;
+  var st = rxStateFor(PC_CURRENT);
+  if(st.stage !== 'edit'){ if(st.stage === 'sent') st.lines = []; st.stage = 'edit'; st.route = null; }
+  var onList = rxMeds(PC_CURRENT).filter(function(m){ return m.drug === f.drug; })[0];
+  var ln = st.lines.filter(function(l){ return l.drug === f.drug; })[0];
+  if(!ln){ ln = {drug:f.drug, listDose:onList ? onList.dose : f.dose, last:onList ? onList.last : ''}; st.lines.push(ln); }
+  /* the favourite is the whole script: it replaces the plan-dose note on that line */
+  ln.dose = f.dose; ln.freq = f.freq; ln.form = f.form; ln.planSrc = ''; ln.fav = true; ln.offList = !onList;
+  st.days = f.days;
+  var l = document.getElementById('rx-favlist'); if(l) l.hidden = true;
+  var b = document.getElementById('rx-favbtn'); if(b) b.setAttribute('aria-expanded', 'false');
+  rxRender();
+  toast('Filled from your favourites: ' + f.drug + ' ' + f.dose);
+}
+
+/* ----- Readings the patient reports (Daniel: "I get my patient's to work") -----
+   DEMO DATA: home-cuff and home-scale readings, fitted to each patient's demo story (Greg's
+   home BP log, Arli's weight, Gloria's home cuff in her Jun 25 note). No targets or thresholds
+   are drawn: the doctor reads the trend. Nothing on file = nothing shown. */
+var PT_READINGS = {
+  'Gloria Mcdonald, 74F': {bp:[['Jun 25','122/78'],['Jul 21','128/80'],['Aug 18','131/82'],['Sep 22','126/79']],
+                           wt:[['Jun 25',68.0],['Jul 21',67.6],['Aug 18',67.9],['Sep 22',67.4]]},
+  'K Arli Eyre, 41':      {wt:[['Mar 12',96.4],['Jun 10',94.8],['Aug 19',93.9],['Sep 20',93.1]]},
+  'Greg':                 {bp:[['Jun 24','146/92'],['Jul 15','142/90'],['Aug 12','138/88'],['Sep 9','134/86'],['Sep 23','132/84']],
+                           wt:[['Jun 24',91.8],['Aug 12',91.2],['Sep 23',90.6]]},
+  'Manjit':               {wt:[['Jul 30',63.2],['Aug 14',63.0],['Sep 18',62.4]]}
+};
+var PR_FORM = false, PR_TYPE = 'bp', PR_FOR = null;
+function prSpark(series, w, h){
+  /* each series gets its own band (systolic above diastolic), so both shapes stay readable;
+     the shape is the point, no target line is drawn */
+  var band = (h - 4) / series.length;
+  var n = series[0].length;
+  var x = function(i){ return n < 2 ? w / 2 : 3 + i * (w - 6) / (n - 1); };
+  return '<svg class="spark" viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '" aria-hidden="true">' + series.map(function(s, k){
+    var mn = Math.min.apply(null, s), mx = Math.max.apply(null, s); if(mx === mn){ mx += 1; mn -= 1; }
+    var y = function(v){ return 2 + k * band + 2 + (band - 4) * (1 - (v - mn) / (mx - mn)); };
+    var op = k ? ' opacity=".6"' : '';
+    return (s.length > 1 ? '<polyline points="' + s.map(function(v, i){ return x(i).toFixed(1) + ',' + y(v).toFixed(1); }).join(' ') +
+        '" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"' + op + '/>' : '') +
+      s.map(function(v, i){ return '<circle cx="' + x(i).toFixed(1) + '" cy="' + y(v).toFixed(1) + '" r="' + (i === s.length - 1 ? 2.6 : 1.6) + '" fill="currentColor"' + op + '/>'; }).join('');
+  }).join('') + '</svg>';
+}
+function renderPtReadings(name){
+  var el = document.getElementById('vc-pr'); if(!el) return;
+  if(PR_FOR !== name){ PR_FORM = false; PR_FOR = name; }
+  var R = PT_READINGS[name] || {}, bp = R.bp || [], wt = R.wt || [];
+  if(!bp.length && !wt.length && !PR_FORM){ el.hidden = true; el.innerHTML = ''; return; }
+  var row = function(k, sub, spark, v, d){
+    return '<div class="pr-row"><div class="pr-l"><b>' + k + '</b><span>' + sub + '</span></div>' +
+      '<div class="pr-t">' + spark + '</div><div class="pr-v"><b>' + v + '</b><span>' + d + '</span></div></div>';
+  };
+  var rows = '';
+  if(bp.length){
+    var lb = bp[bp.length - 1];
+    rows += row('Home BP', bp.length + (bp.length > 1 ? ' readings since ' + bp[0][0] : ' reading'),
+      prSpark([bp.map(function(r){ return +r[1].split('/')[0]; }), bp.map(function(r){ return +r[1].split('/')[1]; })], 72, 40),
+      lb[1], lb[2] ? 'Today, on call' : lb[0]);
+  }
+  if(wt.length){
+    var lw = wt[wt.length - 1], dv = lw[1] - wt[0][1];
+    rows += row('Weight', (wt.length > 1 ? (dv > 0 ? '+' : (dv < 0 ? '&minus;' : '')) + Math.abs(dv).toFixed(1) + ' kg since ' + wt[0][0] : '1 reading'),
+      prSpark([wt.map(function(r){ return r[1]; })], 72, 32), lw[1].toFixed(1) + ' kg', lw[2] ? 'Today, on call' : lw[0]);
+  }
+  var form = '<div class="pr-form" id="pr-form"><p class="pr-fk">A reading the patient gives on the call</p>' +
+    '<div class="pr-seg" role="group" aria-label="Reading">' +
+      '<button type="button" class="' + (PR_TYPE === 'bp' ? 'on' : '') + '" aria-pressed="' + (PR_TYPE === 'bp') + '" onclick="prType(\'bp\')">Blood pressure</button>' +
+      '<button type="button" class="' + (PR_TYPE === 'wt' ? 'on' : '') + '" aria-pressed="' + (PR_TYPE === 'wt') + '" onclick="prType(\'wt\')">Weight</button></div>' +
+    '<label class="pr-f"><span>' + (PR_TYPE === 'bp' ? 'Blood pressure, mmHg' : 'Weight, kg') + '</span>' +
+      '<input id="pr-val" type="text" inputmode="decimal" autocomplete="off" placeholder="' + (PR_TYPE === 'bp' ? 'e.g. 128/82' : 'e.g. 67.5') + '" onkeydown="if(event.key===\'Enter\')prSave()"></label>' +
+    '<div class="pr-acts"><button type="button" class="btn dark" onclick="prSave()"><span class="ic" data-pdic="complete"></span>Save reading</button>' +
+      '<button type="button" class="btn" onclick="prCancel()"><span class="ic" data-pdic="chevl"></span>Cancel</button></div></div>';
+  el.innerHTML = '<div class="vc-h"><span class="ic" data-pdic="heart"></span><h4>Weight and BP</h4></div>' +
+    '<p class="pr-by">Reported by patient</p>' + rows +
+    (PR_FORM ? form : '<button type="button" class="btn pr-add" onclick="prOpenForm()"><span class="ic" data-pdic="plus"></span>Record a reading</button>');
+  el.hidden = false;
+  paintPd(el);
+}
+function prOpenForm(){
+  if(!PC_CURRENT) return;
+  PR_FOR = PC_CURRENT; PR_FORM = true; renderPtReadings(PC_CURRENT);
+  var el = document.getElementById('vc-pr'); if(el) el.scrollIntoView({block:'nearest'});
+  var i = document.getElementById('pr-val'); if(i) i.focus({preventScroll:true});
+}
+function prType(t){ PR_TYPE = t; renderPtReadings(PC_CURRENT); var i = document.getElementById('pr-val'); if(i) i.focus(); }
+function prCancel(){ PR_FORM = false; renderPtReadings(PC_CURRENT); }
+function prSave(){
+  var i = document.getElementById('pr-val'); if(!i || !PC_CURRENT) return;
+  var v = i.value.trim(), R = PT_READINGS[PC_CURRENT] || (PT_READINGS[PC_CURRENT] = {}), line;
+  if(PR_TYPE === 'bp'){
+    var m = v.match(/^(\d{2,3})\s*\/\s*(\d{2,3})$/);
+    if(!m){ toast('Enter the blood pressure as two numbers, e.g. 128/82'); i.focus(); return; }
+    (R.bp = R.bp || []).push(['Today', m[1] + '/' + m[2], 'call']);
+    line = 'Patient-reported BP ' + m[1] + '/' + m[2] + ' today, given on the call.';
+  } else {
+    var w = parseFloat(v.replace(',', '.'));
+    if(!/^\d{2,3}([.,]\d)?$/.test(v) || !w){ toast('Enter the weight in kg, e.g. 67.5'); i.focus(); return; }
+    (R.wt = R.wt || []).push(['Today', w, 'call']);
+    line = 'Patient-reported weight ' + w.toFixed(1) + ' kg today, given on the call.';
+  }
+  var n = document.getElementById('vc-note-input');
+  if(n && !n.readOnly){ n.value = (n.value.trim() ? n.value.trim() + '\n' : '') + line; vcGrow(); }
+  PR_FORM = false; renderPtReadings(PC_CURRENT);
+  toast('Reading saved and added to today’s note');
+}
+
+/* ----- Results by test (Daniel: "it is madness that I am opening up raw pdf's") -----
+   DEMO DATA: each queue patient's results, oldest value first: [date, value, flag, source].
+   Flags and reference ranges are the lab's own, as the inbox shows them; today's values match
+   the inbox. Source 'patient' = a report the patient uploaded (Daniel: "I am relying on patients
+   to help me"); any other source came from the lab directly. Not clinical guidance. */
+var PT_RESULTS = {
+  'Gloria Mcdonald, 74F': [
+    {n:'Troponin I', u:'µg/L', ref:'<0.04', pts:[['Today','0.42','crit-high','Eagle Ridge']]},
+    {n:'CK', u:'U/L', ref:'30–200', pts:[['Today','210','high','Eagle Ridge']]},
+    {n:'Ferritin', u:'µg/L', ref:'30–300', pts:[['Mar 12','22','low','LifeLabs'],['Jun 25','18','low','LifeLabs']]},
+    {n:'HbA1c', u:'%', ref:'<7.0', pts:[['Dec 4, 2025','6.9','','patient'],['Mar 12','7.1','high','LifeLabs']]},
+    {n:'Haemoglobin', u:'g/L', ref:'120–160', pts:[['Mar 12','131','','LifeLabs'],['Jun 25','134','','LifeLabs']]}],
+  'Andrey Abushakhmanov, 24M': [
+    {n:'ALT', u:'U/L', ref:'10–40', pts:[['Mar 3','34','','LifeLabs'],['Today','88','high','LifeLabs']]},
+    {n:'AST', u:'U/L', ref:'10–35', pts:[['Today','65','high','LifeLabs']]},
+    {n:'ALP', u:'U/L', ref:'40–130', pts:[['Today','96','','LifeLabs']]},
+    {n:'Bilirubin', u:'µmol/L', ref:'<21', pts:[['Today','14','','LifeLabs']]}],
+  'Behdis Maleki, 35F': [
+    {n:'Potassium', u:'mmol/L', ref:'3.5–5.1', pts:[['Jun 25','5.1','','LifeLabs'],['Today','6.3','crit-high','LifeLabs']]},
+    {n:'Creatinine', u:'µmol/L', ref:'45–90', pts:[['Jun 25','96','high','LifeLabs'],['Today','104','high','LifeLabs']]},
+    {n:'eGFR', u:'mL/min', ref:'>60', pts:[['Jun 25','60','','LifeLabs'],['Today','54','low','LifeLabs']]},
+    {n:'Urea', u:'mmol/L', ref:'2.5\u20137.1', pts:[['Today','9.1','high','LifeLabs']]},
+    {n:'Ferritin', u:'µg/L', ref:'30–300', pts:[['Mar 20','12','low','patient'],['Jun 25','18','low','LifeLabs']]},
+    {n:'Haemoglobin', u:'g/L', ref:'120–160', pts:[['Mar 20','121','','patient'],['Jun 25','124','','LifeLabs']]}],
+  'K Arli Eyre, 41': [
+    {n:'HbA1c', u:'%', ref:'<7.0', pts:[['Mar 12','6.8','','LifeLabs'],['Yesterday','7.1','high','LifeLabs']]},
+    {n:'Fasting glucose', u:'mmol/L', ref:'4.0–6.0', pts:[['Aug 19, 2025','6.9','high','patient'],['Yesterday','7.8','high','LifeLabs']]}],
+  'Greg': [
+    {n:'LDL cholesterol', u:'mmol/L', ref:'<2.0', pts:[['Jan 9','2.4','high','patient']]},
+    {n:'Potassium', u:'mmol/L', ref:'3.5–5.1', pts:[['Mar 18','4.4','','LifeLabs'],['Jun 24','4.6','','LifeLabs']]},
+    {n:'Creatinine', u:'µmol/L', ref:'60–110', pts:[['Mar 18','88','','LifeLabs'],['Jun 24','92','','LifeLabs']]}],
+  'Manjit': [
+    {n:'TSH', u:'mIU/L', ref:'0.4–4.0', pts:[['May 2','8.1','high','patient'],['Jun 18','6.8','high','LifeLabs'],['Jul 30','5.2','high','LifeLabs']]},
+    {n:'Free T4', u:'pmol/L', ref:'10–22', pts:[['Jul 30','12.4','','LifeLabs']]}]
+};
+/* DEMO DATA: bloodwork booked outside SimpleCare (shadowing 5: "we just have to recheck what those
+   levels are"), which no SimpleCare order would otherwise track. */
+var PT_EXPECT = {
+  'Greg': [{what:'Lipid panel and ALT', when:'booked Oct 3', by:'by his previous clinic'}]
+};
+function expFor(name){ return PT_EXPECT[name] || []; }
+var RS_ADD = false;
+function rsLast(t){ return t.pts[t.pts.length - 1]; }
+/* A value that is also in the inbox takes the inbox's flag, which the deterministic safety layer
+   (LifeLabs BC critical and alert limits) has already set: the chart never disagrees with it. */
+function rsSync(name){
+  var items = inboxFor(name);
+  (PT_RESULTS[name] || []).forEach(function(t){
+    var p = rsLast(t);
+    items.forEach(function(it){ (it.tests || []).forEach(function(x){ if(x.n === t.n && x.v === p[1]) p[2] = x.f || ''; }); });
+  });
+}
+function rsRank(t){ var f = rsLast(t)[2] || ''; return f.indexOf('crit') === 0 ? 0 : (f ? 1 : 2); }
+function rsSorted(name){
+  return (PT_RESULTS[name] || []).map(function(t, i){ return {t:t, i:i}; })
+    .sort(function(a, b){ return rsRank(a.t) - rsRank(b.t) || a.i - b.i; });
+}
+function rsSrc(src, date){
+  return src === 'patient'
+    ? '<span class="rs-src pt"><span class="ic" data-pdic="upload"></span>' + date + ' &middot; Uploaded by patient &middot; patient-supplied</span>'
+    : '<span class="rs-src"><span class="ic" data-pdic="link"></span>' + date + ' &middot; From ' + src + ' (direct)</span>';
+}
+function rsVal(p, t, withRef){
+  var f = p[2] || '', crit = f.indexOf('crit') === 0, up = /high/.test(f);
+  return '<span class="rs-v"><b class="' + (crit ? 'crit' : '') + '">' + p[1] + '</b> ' + t.u +
+    (f ? '<span class="ic rs-dir' + (crit ? ' crit' : '') + '" role="img" aria-label="' + (up ? 'high' : 'low') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span>' +
+         '<span class="rs-flag">' + (crit ? 'Critical' : (up ? 'High' : 'Low')) + '</span>' : '') +
+    (withRef ? '<i class="rs-ref">ref ' + t.ref + '</i>' : '') + '</span>';
+}
+function renderResults(name){
+  var pane = document.getElementById('vcp-results'), rail = document.getElementById('vc-resrail');
+  rsSync(name);
+  var list = rsSorted(name), exp = expFor(name);
+  if(pane){
+    var h = '';
+    if(exp.length || RS_ADD){
+      h += '<div class="rs-exp"><p class="rs-k">Expected</p>' + exp.map(function(x){
+        return '<p class="rs-expi"><span class="ic" data-pdic="clock"></span><span><b>' + x.what + '</b> &middot; ' + x.when +
+          ' &middot; ordered ' + x.by + ', outside SimpleCare &middot; waiting for the result</span></p>';
+      }).join('') + '</div>';
+    }
+    h += list.length ? list.map(function(o){
+      var t = o.t, p = rsLast(t), prev = t.pts.slice(0, -1);
+      var nums = t.pts.map(function(q){ return parseFloat(q[1]); });
+      var trend = t.pts.length > 1 && nums.every(function(v){ return !isNaN(v); }) ? prSpark([nums], 88, 32) : '';
+      return '<div class="rs-row">' +
+        '<div class="rs-main"><b class="rs-n">' + t.n + '</b>' + rsSrc(p[3], p[0]) +
+          (prev.length ? '<span class="rs-hist">Before: ' + prev.slice().reverse().map(function(q){
+              return q[1] + ' on ' + q[0] + (q[3] === 'patient' ? ' (uploaded by patient)' : '');
+            }).join(' &middot; ') + '</span>' : '') + '</div>' +
+        '<div class="rs-t">' + trend + '</div>' +
+        rsVal(p, t, true) +
+        '<button type="button" class="vc-more rs-pdf" onclick="toast(\'Opens the ' + (p[3] === 'patient' ? 'uploaded' : p[3]) + ' report for ' + t.n + ' (demo)\')"><span class="ic" data-pdic="file"></span>PDF</button>' +
+      '</div>';
+    }).join('') : '<p class="pc-empty">No lab results on file.</p>';
+    h += RS_ADD
+      ? '<div class="rs-form"><p class="rs-k">Add an expected result</p>' +
+          '<label class="rs-f"><span>Test</span><input id="rs-what" type="text" placeholder="e.g. Lipid panel and ALT"></label>' +
+          '<label class="rs-f"><span>Booked for</span><input id="rs-when" type="text" placeholder="e.g. Oct 3"></label>' +
+          '<label class="rs-f"><span>Ordered by</span><input id="rs-by" type="text" placeholder="e.g. the hospital"></label>' +
+          '<div class="rs-acts"><button type="button" class="btn dark" onclick="rsSaveExp()"><span class="ic" data-pdic="complete"></span>Add</button>' +
+          '<button type="button" class="btn" onclick="RS_ADD=false;renderResults(PC_CURRENT)"><span class="ic" data-pdic="chevl"></span>Cancel</button></div></div>'
+      : '<button type="button" class="btn rs-addexp" onclick="RS_ADD=true;renderResults(PC_CURRENT);var i=document.getElementById(\'rs-what\');if(i)i.focus()"><span class="ic" data-pdic="plus"></span>Add an expected result</button>';
+    pane.innerHTML = h;
+    paintPd(pane);
+  }
+  if(rail){
+    rail.innerHTML = '<div class="vc-h"><span class="ic" data-pdic="claims"></span><h4>Recent results</h4>' +
+      '<span class="right"><button class="vc-more" onclick="rsViewAll()">View all</button></span></div>' +
+      (list.length ? list.slice(0, 3).map(function(o){
+        var t = o.t, p = rsLast(t);
+        return '<div class="vc-line rs-rl"><span><span class="l">' + t.n + '</span><div class="vc-sub2">' + p[0] + ' &middot; ' +
+          (p[3] === 'patient' ? 'uploaded by patient' : p[3] + ', direct') + '</div></span>' + rsVal(p, t, false) + '</div>';
+      }).join('') : '<p class="pc-empty">No results on file.</p>');
+    paintPd(rail);
+  }
+}
+function rsViewAll(){
+  vcPane('results');
+  var p = document.getElementById('vcp-results'); if(p && p.parentNode) p.parentNode.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function rsSaveExp(){
+  var g = function(id){ var e = document.getElementById(id); return e ? e.value.trim() : ''; };
+  var what = g('rs-what'); if(!what){ toast('Name the test that is booked'); return; }
+  var x = {what:what, when:g('rs-when') ? 'booked ' + g('rs-when') : 'date not known', by:g('rs-by') ? 'by ' + g('rs-by') : 'elsewhere'};
+  (PT_EXPECT[PC_CURRENT] = PT_EXPECT[PC_CURRENT] || []).push(x);
+  var n = document.getElementById('vc-note-input');
+  if(n && !n.readOnly){ n.value = (n.value.trim() ? n.value.trim() + '\n' : '') + 'Expected result: ' + what + ', ' + x.when + ', ordered ' + x.by + ' (outside SimpleCare).'; vcGrow(); }
+  RS_ADD = false; renderResults(PC_CURRENT); renderSinceLast(PC_CURRENT);
+  toast('Expected result added · shows under Pending until it arrives');
+}
 </script>
-  <div class="build-stamp">v2 · build 2026-09-25 13:10</div>
+  <div class="build-stamp">v2 · build 2026-09-26 19:16</div>
 </body>
 </html>
