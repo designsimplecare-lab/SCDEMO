@@ -150,7 +150,7 @@ about 22 s, when the call connects. The call timer is quoted where it helps.
   can mark them "Continuing with me" (attachment to his panel). The chart header shows it, and the
   follow-up after the bloodwork is booked with the same doctor. This is the physician-side end of the
   patient's "Family Practice" choice at booking (UC-24).
-- **Ask about other platforms at intake, now seen twice.** "Have you been seen on another virtual
+- **(Superseded 27 Sep. Daniel: "don't mention Rocket or Tia"; see from-daniel/2026-09-27-answers-round-2.md.)** Ask about other platforms at intake, now seen twice. "Have you been seen on another virtual
   platform (e.g. Tia Health, Rocket Doctor)?" becomes an intake question. The answer shows beside "No
   previous notes", so the chart can answer what the doctor asked in shadowing 1 and 5.
 

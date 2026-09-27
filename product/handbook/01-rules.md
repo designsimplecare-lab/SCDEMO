@@ -10,11 +10,16 @@ blocks your task, say so; don't work around it.
    described in `../process.md`.
 3. **Stay in your lane.**
    - Only `ux-designer` and `frontend-engineer` edit prototype HTML, and only one of them at a time.
-   - Only `product-manager` edits the `product/` spec documents.
+   - Only `product-manager` edits the **spec documents**: `product/use-cases.md`, `requirements.md`,
+     `decisions.md`, `open-questions.md` and `backlog.md`.
+   - Only the **lead** edits the setup files: `product/handbook/`, `product/process.md`,
+     `product/team.md`, `product/training/` (except results), `product/tasks/` and `.claude/agents/`.
    - Marketing drafts go in `marketing/`.
    - Everyone else writes a report.
 4. **No agent commits, deploys, posts, sends, schedules, spends money or logs in to any account.** The
    lead commits and deploys, and Ani approves.
+   - "Asking Daniel" means: `product-manager` **prepares** the question list, and **Ani sends it**. No
+     agent contacts anyone.
 5. **Every claim has a source:** a file and line, a quote, a commit or a URL with its date. Otherwise
    label it **assumption**.
 6. **Don't invent** clinical rules, doses, thresholds, billing codes, legal requirements, statistics,
@@ -24,10 +29,15 @@ blocks your task, say so; don't work around it.
 7. **No patient identifiers in the repo, ever.** That covers names, PHNs, dates of birth, addresses,
    phone numbers, emails and pharmacy details. Write "the patient".
    - Recording frames stay in the scratchpad only.
-   - Treat staff personal details the same way.
+   - **Staff:** first names in their work role are fine, in quotes and notes (e.g. "Japneet", "Dolly").
+     Their personal details are not: contact information, health, private life, personnel matters.
 8. **Keep health information out of** marketing, ad tracking, email subject lines and SMS previews.
 9. **If you find personal data somewhere public,** stop and report it to the lead immediately.
-9a. **Keep confidential business information out of public files.** The repo is **public** on GitHub
+9a. **How to cite `private/`:** write "private strategy, 27 Sep 2026 (confidential)", and never give its
+    content. If it settles a conflict, say that it does, and leave out what it says.
+9b. **The public ceiling.** The only approved public wording of Daniel's direction is the "Direction"
+    paragraph in `00-start-here.md`. Don't go beyond it.
+9c. **Keep confidential business information out of public files.** The repo is **public** on GitHub
     Pages. Strategy, pricing, revenue shares, markets, tax, contracts and staff or personnel matters
     live only in `private/`, which is git-ignored.
     - Never copy, quote or paraphrase them into the repo, reports, marketing or the site.
@@ -38,6 +48,9 @@ blocks your task, say so; don't work around it.
     they may call the office for admin.
 11. **Time is a call window,** with a queue position and **no wait estimates**.
 12. **Tasks travel doctor → MOA only.** The MOA replies on a task and never creates one for the doctor.
+    - The **physician assistant** (Japneet) works in the doctor's portal under delegated authority.
+    - Whether she can send tasks to the MOA in her own right is **not yet decided (Needs Daniel)**.
+      Until then, treat her actions as the doctor's, under his sign-off.
 13. **The care plan and tasks stay separate,** and so does the Care Plan Tracker. Never merge them.
 14. **No scheduled deferral.** Unfinished work is carried forward and counts its days.
 15. **A specialist's recommendation keeps its stated owner.** "I have arranged the stress test" stays

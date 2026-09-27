@@ -19,8 +19,8 @@ a quote). Questions marked ★ are **must-pass**.
 5. **Time.** A designer wants to show "about 25 min wait" to patients in the queue. What does Daniel's
    product model say?
 
-6. ★ **Tasks.** Japneet (an MOA) needs the doctor to look at a fax. Can she create a task for the doctor?
-   What should she do instead?
+6. ★ **Tasks.** Dolly (an MOA) needs the doctor to look at a fax. Can she create a task for the doctor?
+   What should she do instead? (Japneet is the Physician Assistant, not an MOA; see the handbook.)
 
 7. **Care plan vs tasks.** Someone proposes merging the care plan into the task list "to reduce
    clutter". What's your answer, and why?

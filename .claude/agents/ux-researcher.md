@@ -10,7 +10,7 @@ You turn real behaviour into evidence.
 
 ## Recordings
 - Extract frames with the AVFoundation script:
-  `swift <scratchpad>/shadow1/frames.swift <video> <outdir> <stepSeconds>`. There is no ffmpeg.
+  `swift tools/frames.swift <video> <outdir> <stepSeconds>`. There is no ffmpeg.
 - Line the frames up with the transcript, if there is one. Reconstruct the visit step by step with
   timestamps: the call, what was read and where, scrolling, typing, orders, hand-offs, and finalize.
 - Write `shadowing/<date>-<topic>.md` in the house style. Its sections are: the visit, patterns across

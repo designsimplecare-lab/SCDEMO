@@ -13,9 +13,9 @@ production SimpleCare (Daysheet queue → chart modal). Patient details omitted.
 3. **Reason** — renewal of an antidepressant; the patient ran out about a week ago and
    could not see their own doctor. A one-line check: *"Everything going okay?"*
 4. **Plan** — three-month supply, 90 tablets/capsules, faxed to the pharmacy on the
-   chart header (Shoppers Drug Mart, Maple Ridge).
+   chart header.
 5. **Confirmation, explained verbally** — *"When you receive that copy, it just means
-   the fax has been successfully delivered to Shoppers."* The patient gets proof of
+   the fax has been successfully delivered to [the pharmacy]."* The patient gets proof of
    delivery; the doctor has no visible fax status.
 6. **After the call** — *"Just send along ninety… and leave it at that."* Prescribe,
    fax, minimal note, finalize. The note on screen was never updated during the call.

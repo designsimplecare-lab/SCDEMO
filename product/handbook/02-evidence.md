@@ -20,5 +20,5 @@ one quietly. `product-manager` keeps a list of known contradictions in `product/
 - **What changed and when.** `git log --oneline`.
 - **Live prototypes:** https://designsimplecare-lab.github.io/SCDEMO/ (build stamp bottom-left).
 - **Local preview:** `cd /Users/aniharutyunyan/Desktop/SCDEMO && python3 -m http.server 8765`.
-- **Recordings:** frames are extracted with `swift <scratchpad>/shadow1/frames.swift <video> <dir> <step>`.
+- **Recordings:** frames are extracted with `swift tools/frames.swift <video> <dir> <step>`.
   They stay in the scratchpad.

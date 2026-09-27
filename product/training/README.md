@@ -43,12 +43,12 @@ people, the rules and the process, and can apply them to real SimpleCare situati
 ## Roster
 | Agent | Group | Core exam | Role drill | Certified |
 |---|---|---|---|---|
-| doctor | Users | | | ☐ |
-| moa | Users | | | ☐ |
+| doctor | Users | 13/13 ✓ | task-ready ✓ | ☑ 27 Sep |
+| moa | Users | 13/13 ✓ | task-ready ✓ | ☑ 27 Sep |
 | patient | Users | | | ☐ |
-| product-manager | Product | | | ☐ |
-| ux-researcher | Product | | | ☐ |
-| market-strategist | Product | | | ☐ |
+| product-manager | Product | 13/13 ✓ | task-ready ✓ | ☑ 27 Sep |
+| ux-researcher | Product | 13/13 ✓ | task-ready ✓ | ☑ 27 Sep |
+| market-strategist | Product | 13/13 ✓ | task-ready ✓ | ☑ 27 Sep |
 | ux-designer | Design | | | ☐ |
 | content-designer | Design | | | ☐ |
 | accessibility | Design | | | ☐ |
