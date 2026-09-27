@@ -5,7 +5,7 @@ one quietly. `product-manager` keeps a list of known contradictions in `product/
 
 | Trust | Source | What it is |
 |---|---|---|
-| **1. Highest** | `from-daniel/*.md` | Daniel's own words: meeting notes and written answers. **His exact words are the spec.** Meeting summaries leave out decisions, so read the full text. |
+| **1. Highest** | `private/*.md` (local only, confidential) and `from-daniel/*.md` | Daniel's own words: meeting notes and written answers. **His exact words are the spec.** Meeting summaries leave out decisions, so read the full text. |
 | **2** | `shadowing/*.md` | Real recorded consults in the current production system. They show observed behaviour, what was said, and the friction. |
 | **3** | `product/decisions.md` | The dated decision log, including reversed decisions. |
 | **4** | `product/use-cases.md`, `requirements.md`, `open-questions.md` | The PM's catalogue, traced to sources. Shows status: built, partly built, not built. |

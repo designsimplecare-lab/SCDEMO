@@ -27,6 +27,11 @@ blocks your task, say so; don't work around it.
    - Treat staff personal details the same way.
 8. **Keep health information out of** marketing, ad tracking, email subject lines and SMS previews.
 9. **If you find personal data somewhere public,** stop and report it to the lead immediately.
+9a. **Keep confidential business information out of public files.** The repo is **public** on GitHub
+    Pages. Strategy, pricing, revenue shares, markets, tax, contracts and staff or personnel matters
+    live only in `private/`, which is git-ignored.
+    - Never copy, quote or paraphrase them into the repo, reports, marketing or the site.
+    - If a task needs them, write "see private strategy", and keep the specifics out.
 
 ## C. Product rules (from Daniel; they don't change without him)
 10. **Calls go outward only.** The doctor phones the patient. Patients never call the doctor, though
@@ -38,6 +43,9 @@ blocks your task, say so; don't work around it.
 15. **A specialist's recommendation keeps its stated owner.** "I have arranged the stress test" stays
     with the specialist; "please start bisoprolol" becomes the GP's.
 16. **Reviewed is a state; sign-off is an accountable action** (see the glossary).
+16a. **Never name competitors** (e.g. Tia, Rocket) in the product or intake. Daniel: "don't mention
+    Rocket or Tia".
+16b. **Home's attention list shows Critical and High** (Daniel, 27 Sep).
 17. **Patient tone: attention without alarm.** No red, no clinical flags and no HIGH/LOW in the
     patient portal. Name each test individually, and say who moves next.
 

@@ -22,13 +22,23 @@ Columbia**.
 - **How care happens:** the doctor **phones the patient** in the patient's chosen **call window**. The
   patient holds a **place in the queue** for that window.
 
+**Direction (Daniel, 27 Sep 2026).**
+- Growth depends on **more physicians** and a high volume of **straightforward walk-in consults**.
+  Those keep doctors busy, and busy doctors value the platform.
+- Comprehensive family practice is offered, and it matters to regulators.
+- Pharmacy partnerships are not a priority.
+- The confidential detail is in `private/daniel-strategy-2026-09-27.md`. It is local only; never quote
+  it anywhere public.
+
 ## The people
 | Who | What they do | How we represent them |
 |---|---|---|
 | **Dr. Daniel Pannozzo** | The client and lead physician. Owns clinical and business decisions. His exact words are the spec. | `doctor` agent; his words in `from-daniel/` |
 | **Ani** | Designer and product owner. Approves every deploy and every public draft. | — |
 | **Physicians** | Call patients from the queue, chart, prescribe, review results and sign off. They may work from another time zone. | `doctor` |
-| **MOAs** (e.g. Japneet, Dolly) | Handle tasks from the doctor, faxes, sending renewals when asked, billing fixes and the office line. | `moa` |
+| **MOAs** (e.g. Dolly) | Handle tasks from the doctor, faxes, billing fixes and the office line. | `moa` |
+| **Physician assistant** (Japneet) | Works in the **Physician Assistant portal**, which is identical to the physician portal. Sends renewals when the doctor delegates, under his sign-off: "Always me. I can delegate authority to Japneet, but it is my responsibility." | `moa` (for now) |
+| **Engineering** (Samin, Sai, Dev) | The real backend team. Backend documentation is on their to-do list. | — |
 | **Patients** | Walk-ins, people managing an ongoing condition, and new patients who have lost their family doctor. | `patient` |
 
 ## The product
@@ -65,6 +75,7 @@ The end-to-end journey (see `research/patient-entry-flows/README.md`):
 | **Carry forward** | Unfinished work stays on the list and counts its days. Nothing is deferred to a scheduled date. |
 | **Reviewed** | A **state**: the doctor is assessing. Nothing happens yet. |
 | **Sign off** | An **accountable action** carrying the doctor's name. Signing the chart finalizes the visit; faxing a script signs off the prescription; submitting a bill signs off the billing. Daniel: "the Doctor has approved this, meaning my a** is on the line." |
+| **Physician Assistant portal** | Japneet's portal. It is identical to the physician portal, and she acts under the doctor's delegated authority. |
 | **Renewal** | Re-prescribing an existing medication. The doctor or the MOA sends it, the doctor's choice each time. He keeps favourite scripts pre-filled. |
 | **Critical / High / Routine** | The inbox priority bands, from LifeLabs BC thresholds. Red is for critical only. |
 | **Shadowing** | Real recorded consults, analysed in `shadowing/`. |
