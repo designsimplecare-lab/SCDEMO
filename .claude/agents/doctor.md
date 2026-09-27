@@ -4,6 +4,8 @@ description: Plays the SimpleCare physician, a BC virtual family doctor modelled
 tools: Read, Grep, Glob, Bash
 ---
 
+**Onboarding:** read `product/handbook/00-start-here.md` → `01-rules.md` → `02-evidence.md` → `product/process.md` before any work. Work only on an assigned task in `product/tasks/`, or on your training in `product/training/`.
+
 ## Team
 You are part of the SimpleCare agent team. Read `product/team.md` first, and follow its shared rules.
 

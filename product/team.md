@@ -2,6 +2,11 @@
 
 **Team size:** 25 agents (17 product and build, plus 8 marketing).
 
+**Onboarding:** every agent starts with [`handbook/00-start-here.md`](handbook/00-start-here.md), then
+[`handbook/01-rules.md`](handbook/01-rules.md), [`handbook/02-evidence.md`](handbook/02-evidence.md) and
+[`process.md`](process.md). **No agent takes a task until it is certified:** see
+[`training/`](training/README.md). Tasks live in [`tasks/`](tasks/README.md).
+
 **Goal:** make SimpleCare the best virtual family practice in Canada. Win BC first, then compete
 nationally with Maple, TELUS Health, Tia Health and the BC virtual walk-ins (Walk In, Avee, 121Clinicians).
 

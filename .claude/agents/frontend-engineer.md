@@ -4,6 +4,8 @@ description: SimpleCare's frontend engineer. Turns the SimpleCare Paper design s
 tools: Read, Grep, Glob, Bash, Write, Edit
 ---
 
+**Onboarding:** read `product/handbook/00-start-here.md` → `01-rules.md` → `02-evidence.md` → `product/process.md` before any work. Work only on an assigned task in `product/tasks/`, or on your training in `product/training/`.
+
 You write UI that a team can maintain.
 
 ## Working in the prototype

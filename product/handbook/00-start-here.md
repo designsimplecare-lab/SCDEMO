@@ -1,0 +1,73 @@
+# Start here — SimpleCare agent onboarding
+
+Every agent reads this handbook before its first task, and again whenever it changes. It is short on
+purpose. The detail lives in the files it points to.
+
+**Reading order**
+1. This page: who we are, who we serve, and the words we use.
+2. [`01-rules.md`](01-rules.md): the non-negotiables for product, clinical, design, privacy and marketing.
+3. [`02-evidence.md`](02-evidence.md): where the knowledge lives, and how much to trust each source.
+4. [`../process.md`](../process.md): how a task moves from request to done.
+5. [`../team.md`](../team.md): the roster, who owns what, and the standards.
+6. Your own role file, `.claude/agents/<you>.md`.
+
+---
+
+## Who we are
+SimpleCare (https://simplecare.ca) is a **physician-led virtual family practice for British
+Columbia**.
+- **Coverage:** MSP-covered, with private pay available (e.g. no card).
+- **What we offer:** walk-in style same-day visits, ongoing care for conditions, and a family doctor
+  for people who have none. More than 120 concerns are bookable.
+- **How care happens:** the doctor **phones the patient** in the patient's chosen **call window**. The
+  patient holds a **place in the queue** for that window.
+
+## The people
+| Who | What they do | How we represent them |
+|---|---|---|
+| **Dr. Daniel Pannozzo** | The client and lead physician. Owns clinical and business decisions. His exact words are the spec. | `doctor` agent; his words in `from-daniel/` |
+| **Ani** | Designer and product owner. Approves every deploy and every public draft. | — |
+| **Physicians** | Call patients from the queue, chart, prescribe, review results and sign off. They may work from another time zone. | `doctor` |
+| **MOAs** (e.g. Japneet, Dolly) | Handle tasks from the doctor, faxes, sending renewals when asked, billing fixes and the office line. | `moa` |
+| **Patients** | Walk-ins, people managing an ongoing condition, and new patients who have lost their family doctor. | `patient` |
+
+## The product
+There are three portals over one record: **physician**, **MOA** and **patient**. The public
+**website** is the front door, with the **Simplicity** chat assistant.
+
+The end-to-end journey (see `research/patient-entry-flows/README.md`):
+1. The patient arrives at the site and talks to Simplicity, or picks a concern.
+2. Simplicity triages: a walk-in, or becoming a patient.
+3. The patient picks a doctor and window, and the window is held.
+4. The patient signs in or registers.
+5. The patient completes intake and joins the queue.
+6. **The doctor calls out.** They chart, prescribe and order, then **sign off**.
+7. Follow-up: results, readings, and returning to *their* doctor.
+
+**Prototypes**, all deployed at https://designsimplecare-lab.github.io/SCDEMO/:
+- `simplecare-physician-portal-v2.html`. This is **v2**, the active one. v1 is hidden from the demo.
+- `simplecare-moa-portal.html`
+- `simplecare-patient-portal-v2.html`
+- `simplecare-design-system.html` (SimpleCare Paper)
+
+## Glossary
+| Term | Meaning |
+|---|---|
+| **Call window** | A block of time the patient books, e.g. 8–10 AM BC time. The doctor calls within it. It is not an appointment time. |
+| **Queue / queue position** | The patient's place in line within the window. We show the position, not a wait estimate. |
+| **Walk-in** | A one-off visit for something new. |
+| **Become a patient / ongoing care** | The patient chooses a family doctor at SimpleCare and sees the same doctor every visit. |
+| **Intake** | The patient's answers before the visit: the reason, what has changed since last time, and uploads. |
+| **Chart** | The patient's record in the physician portal. |
+| **This visit** | The current visit's working area on the chart. |
+| **Care plan** | The **narrative** of what we are doing and why: Daniel's synthesis of the assessment and plan. It is **not** the task list. |
+| **Task** | A practical to-do sent **from the doctor to the MOA**, one way only. |
+| **Carry forward** | Unfinished work stays on the list and counts its days. Nothing is deferred to a scheduled date. |
+| **Reviewed** | A **state**: the doctor is assessing. Nothing happens yet. |
+| **Sign off** | An **accountable action** carrying the doctor's name. Signing the chart finalizes the visit; faxing a script signs off the prescription; submitting a bill signs off the billing. Daniel: "the Doctor has approved this, meaning my a** is on the line." |
+| **Renewal** | Re-prescribing an existing medication. The doctor or the MOA sends it, the doctor's choice each time. He keeps favourite scripts pre-filled. |
+| **Critical / High / Routine** | The inbox priority bands, from LifeLabs BC thresholds. Red is for critical only. |
+| **Shadowing** | Real recorded consults, analysed in `shadowing/`. |
+| **MSP / Teleplan** | BC's public insurance, and its billing system. |
+| **PharmaNet** | BC's medication dispensing record. |
+| **PHN** | Personal Health Number, a patient identifier. It never goes in the repo. |

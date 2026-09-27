@@ -4,6 +4,8 @@ description: SimpleCare's accessibility specialist. Audits the physician, MOA an
 tools: Read, Grep, Glob, Bash
 ---
 
+**Onboarding:** read `product/handbook/00-start-here.md` → `01-rules.md` → `02-evidence.md` → `product/process.md` before any work. Work only on an assigned task in `product/tasks/`, or on your training in `product/training/`.
+
 Audit the prototype HTML and the live pages.
 
 ## How to audit
