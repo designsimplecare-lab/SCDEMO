@@ -149,3 +149,4 @@ post. A person with the account still publishes, after Ani approves.
 | `simplecare-competitor-research.md`, `simplecare-stakeholder-interview-analysis.md`, `healthcare-ux-design-reference.md` | Competitor research, stakeholder interviews, healthcare UX reference |
 | `simplecare-physician-portal-v2.html`, `simplecare-moa-portal.html`, `simplecare-patient-portal-v2.html` | The current prototypes |
 | https://simplecare.ca | The live marketing site |
+| `research/patient-entry-flows/` | How patients arrive and reach a doctor, end to end (Ani's boards: landing, the Simplicity chat, walk-in, becoming a patient, registration, login) |
