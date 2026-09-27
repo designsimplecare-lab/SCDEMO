@@ -1,5 +1,7 @@
 # SimpleCare agent team — operating model
 
+**Team size:** 25 agents (17 product and build, plus 8 marketing).
+
 **Goal:** make SimpleCare the best virtual family practice in Canada. Win BC first, then compete
 nationally with Maple, TELUS Health, Tia Health and the BC virtual walk-ins (Walk In, Avee, 121Clinicians).
 
@@ -36,6 +38,36 @@ record: physician, MOA and patient.
 | | `frontend-engineer` | Design system as components; production-grade UI code |
 | | `ai-engineer` | Ambient scribe, summaries, guardrails; the doctor always signs |
 | | `billing-msp` | MSP/Teleplan and private-pay rules, claims and rejections |
+
+## Marketing department
+
+| Agent (`.claude/agents/`) | Owns |
+|---|---|
+| `marketing-lead` | Strategy, brand and positioning (`marketing/brand.md`), the quarterly plan and KPIs, campaign briefs, and coordinating the team |
+| `social-media-manager` | Organic social: the content calendar, posts, short-video scripts, community replies |
+| `content-seo` | Search: the SEO audit, keyword map, concern landing pages, health articles and FAQs |
+| `performance-marketing` | Paid acquisition, the funnel, the tracking plan (privacy-safe), A/B tests and dashboards |
+| `brand-designer` | Social and ad creatives, storyboards, templates, all on SimpleCare Paper |
+| `lifecycle-crm` | Reminders, queue notifications, post-visit follow-ups and newsletters (CASL-compliant) |
+| `partnerships-pr` | Pharmacy and community partnerships, press, and physician recruitment |
+| `marketing-compliance` | The gate. It reviews every public draft for health-advertising, drug-promotion, CASL, privacy and claims rules |
+
+**Marketing rules**
+- **Drafts only.** No agent posts, publishes, sends, schedules, spends money or logs in to any
+  account. Ani approves everything.
+- **Every public draft goes through `marketing-compliance` first.** Health content also needs
+  Daniel's clinical review.
+- **No patient information** anywhere in marketing.
+  - No patient stories, faces or testimonials without documented consent, and physician-advertising
+    rules may restrict testimonials even with it.
+  - No health or concern data in ad pixels or targeting.
+- **No prescription-drug promotion to the public.** Don't name prescription brands for weight loss,
+  ED, hair loss and the like.
+- **No claim without a source.** No "best" or "#1" without evidence. No invented numbers or reviews.
+- **Where it goes:** everything is in `marketing/`. `marketing/brand.md` is the source of truth for the
+  brand, and `marketing/plan.md` holds the plan. Reports go in `marketing/reports/`.
+- **The marketing flow:** `marketing-lead` writes the brief → the specialists draft →
+  `brand-designer` makes the visuals → `marketing-compliance` reviews → Ani approves → a person posts.
 
 ## How work flows
 
