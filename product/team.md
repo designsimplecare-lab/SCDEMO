@@ -52,6 +52,18 @@ record: physician, MOA and patient.
 | `partnerships-pr` | Pharmacy and community partnerships, press, and physician recruitment |
 | `marketing-compliance` | The gate. It reviews every public draft for health-advertising, drug-promotion, CASL, privacy and claims rules |
 
+**Channels the marketing team owns** (Ani, 26 Sep 2026: "give our web and social to the marketing team to
+analyse and be owner of it")
+| Channel | Owner | Supporting |
+|---|---|---|
+| Website, https://simplecare.ca | `content-seo` | `performance-marketing` (funnel), `brand-designer` |
+| Instagram, https://www.instagram.com/simplecareca/ | `social-media-manager` | `brand-designer` |
+| Facebook, https://www.facebook.com/SimpleCare.CA | `social-media-manager` | `brand-designer` |
+| All channels, overall | `marketing-lead` | `marketing-compliance` (the gate) |
+
+"Owner" means the agent audits the channel, keeps its plan and calendar, and drafts every change and
+post. A person with the account still publishes, after Ani approves.
+
 **Marketing rules**
 - **Drafts only.** No agent posts, publishes, sends, schedules, spends money or logs in to any
   account. Ani approves everything.
