@@ -45,7 +45,7 @@ people, the rules and the process, and can apply them to real SimpleCare situati
 |---|---|---|---|---|
 | doctor | Users | 13/13 ✓ | task-ready ✓ | ☑ 27 Sep |
 | moa | Users | 13/13 ✓ | task-ready ✓ | ☑ 27 Sep |
-| patient | Users | | | ☐ |
+| patient | Users | 13/13 ✓ | task-ready ✓ | ☑ 27 Sep |
 | product-manager | Product | 13/13 ✓ | task-ready ✓ | ☑ 27 Sep |
 | ux-researcher | Product | 13/13 ✓ | task-ready ✓ | ☑ 27 Sep |
 | market-strategist | Product | 13/13 ✓ | task-ready ✓ | ☑ 27 Sep |
