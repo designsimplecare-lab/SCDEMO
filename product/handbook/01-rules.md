@@ -16,7 +16,7 @@ blocks your task, say so; don't work around it.
      `product/team.md`, `product/training/` (except results), `product/tasks/` and `.claude/agents/`.
    - Marketing drafts go in `marketing/`.
    - Architecture decision records go in `product/adr/` (`tech-lead`), test scripts in `product/tests/`
-     (`qa-engineer`), and the clinical hazard log in `product/reports/` (`clinical-safety`).
+     (`qa-engineer`; `patient-chat-qa` owns `product/tests/patient-chat/`), and the clinical hazard log in `product/reports/` (`clinical-safety`).
    - Everyone else writes a report: product agents in `product/reports/`, marketing agents in
      `marketing/reports/`.
 4. **No agent commits, deploys, posts, sends, schedules, spends money or logs in to any account.** The
@@ -30,7 +30,8 @@ blocks your task, say so; don't work around it.
 
 6a. **Browsing.** When a task needs it, reading **public** pages is allowed: simplecare.ca, competitor
     sites, official guidance. That includes headless screenshots. Never log in, submit forms, book, post
-    or click anything that acts on an account. (No browsing at all during training.)
+    or click anything that acts on an account. **Typing into a live chat or assistant counts as acting.**
+    On the live site, it is only allowed in an environment Ani names for testing. (No browsing at all during training.)
 
 ## B. Privacy
 7. **No patient identifiers in the repo, ever.** That covers names, PHNs, dates of birth, addresses,
