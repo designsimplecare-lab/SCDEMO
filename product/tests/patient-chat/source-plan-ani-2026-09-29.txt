@@ -1,0 +1,346 @@
+Patient Chat QA Agent& End-to-End Testing Plan
+SimpleCare / Patient Booking Experience
+Purpose: create an AI QA agent that experiences the product like a real patient and systematically tests the complete conversational booking journey.
+Heading1: 1. Objective
+The QA agent should test the patient experience from the moment a patient lands on the homepage through finding care, selecting a doctor and appointment window, registering or signing in, and reaching a clear confirmation.
+The agent should test more than technical functionality. It should evaluate whether the experience is understandable, consistent, recoverable, and aligned with the patient's mental model.
+Heading1: 2. What the QA Agent Is Responsible For
+ListBullet: Act as a real patient rather than as a developer.
+ListBullet: Start from the actual patient entry point and use the interface naturally.
+ListBullet: Use both provided UI options and realistic free-text language.
+ListBullet: Test happy paths, alternate paths, edge cases, errors, interruptions, and changes of intent.
+ListBullet: Verify that the conversation maintains context throughout the journey.
+ListBullet: Verify that the chat and UI stay synchronized.
+ListBullet: Identify UX issues even when the system technically works.
+ListBullet: Capture reproducible evidence for every issue.
+ListBullet: Separate product/UX issues from technical defects when reporting findings.
+Heading1: 3. QA Agent Setup
+Create the QA agent with the following role definition:
+You are an autonomous patient-experience QA agent. Your job is to test this healthcare product as a real patient. Do not assume the intended workflow. Do not skip steps because you know how the product is supposed to work. Interact with the product, observe what happens, and make decisions based only on what a normal patient would reasonably understand.
+Heading2: 4. Agent Inputs / Environment
+Input
+Purpose
+Staging URL
+The environment the agent should test.
+Figma / design reference
+Used to compare implemented UI and interactions against the approved experience when available.
+Requirements / workflows
+Defines intended patient journeys and expected outcomes.
+Test accounts
+New-patient and existing-patient accounts, if required.
+Test data
+Doctors, appointment availability, patient information, and any required seeded data.
+Known limitations
+Anything intentionally unavailable in the staging environment should be documented before testing.
+Heading1: 5. Agent Rules
+ListNumber: Do not assume the user knows the correct terminology.
+ListNumber: Prefer natural patient behavior over idealized test behavior.
+ListNumber: If a button or message is unclear, treat that uncertainty as a finding if it affects task completion.
+ListNumber: Do not silently work around confusing UI. Record the confusion.
+ListNumber: When an action fails, attempt a reasonable recovery before abandoning the flow.
+ListNumber: When changing intent, behave like a real patient who changed their mind.
+ListNumber: Do not report a missing feature as a bug unless the requirement or UI indicates that it should exist.
+ListNumber: Do not invent expected behavior. Use the supplied requirements/Figma/workflow when an expected behavior is needed.
+ListNumber: Capture screenshots or other evidence at the point of failure whenever possible.
+ListNumber: Do not expose real patient data. Use approved test accounts/data only.
+Heading1: 6. Core Patient Journey
+ListNumber: Land on homepage.
+ListNumber: Understand what care options are available.
+ListNumber: Start the chat or select a primary care action.
+ListNumber: Express a healthcare need in natural language or through available options.
+ListNumber: Clarify intent when necessary.
+ListNumber: Choose family doctor, regular doctor, or quick-book path.
+ListNumber: Review doctor options.
+ListNumber: Review appointment windows.
+ListNumber: Select an appointment.
+ListNumber: Identify whether the patient is new or existing.
+ListNumber: Complete registration or authentication.
+ListNumber: Review selected doctor/date/time.
+ListNumber: Complete booking.
+ListNumber: Receive a clear confirmation and understand what happens next.
+Heading1: 7. Test Suite
+ID
+Scenario
+Goal
+UC-01
+New patient — book a doctor
+Complete a booking from homepage through confirmation.
+UC-02
+Existing patient — book
+Use an existing account without unnecessary registration.
+UC-03
+See my family doctor
+Reach the patient's family doctor booking path.
+UC-04
+No family doctor
+Recover naturally and find another appropriate doctor.
+UC-05
+Quick-book
+Find the earliest/appropriate available appointment.
+UC-06
+Specific doctor
+Find a named doctor and select an available window.
+UC-07
+Unsure which doctor
+Describe a need and receive an understandable path forward.
+UC-08
+Book today
+Find an appointment today when availability exists.
+UC-09
+Specific date/time
+Request a date/time constraint and verify results respect it.
+UC-10
+No availability
+Receive useful alternatives rather than a dead end.
+UC-11
+Change mind
+Change the intent during an active booking flow.
+UC-12
+Change doctor
+Replace the selected doctor without stale data.
+UC-13
+Change appointment
+Replace the selected time/date correctly.
+UC-14
+Back navigation
+Move backward without losing or corrupting important state.
+UC-15
+Abandon and return
+Leave and return to the journey without confusing state.
+UC-16
+Invalid/incomplete data
+Recover from invalid fields and understandable errors.
+UC-17
+Unrelated question
+Ask an unrelated question and return to booking.
+UC-18
+Natural language
+Use free-text instead of only suggested buttons.
+UC-19
+Unsupported request
+Ask for an action the system cannot perform and verify safe handling.
+UC-20
+Unexpected input
+Typos, nonsense, repeated messages, or unclear answers.
+Heading1: 8. Detailed Scenario Definitions
+Heading2: UC-01 — New patient wants to book
+Steps:
+ListNumber: Start from homepage.
+ListNumber: Tell the assistant: “I need to see a doctor.”
+ListNumber: Follow the recommended path.
+ListNumber: Select an available doctor and appointment.
+ListNumber: Indicate that you are a new patient.
+ListNumber: Complete required registration.
+ListNumber: Finish booking.
+Verify:
+ListBullet: Patient can understand the path.
+ListBullet: No unnecessary repetition of information.
+ListBullet: Selected doctor/time persist through registration.
+ListBullet: Confirmation clearly communicates what was booked and what happens next.
+Heading2: UC-02 — Existing patient wants to book
+Steps:
+ListNumber: Start from homepage.
+ListNumber: Choose booking.
+ListNumber: Indicate that you already have an account.
+ListNumber: Authenticate using the test account.
+ListNumber: Continue to appointment selection and booking.
+Verify:
+ListBullet: Existing patient is not pushed through new-patient registration.
+ListBullet: Previous context is preserved after authentication.
+ListBullet: Final booking matches the selected appointment.
+Heading2: UC-03 — See my family doctor
+Steps:
+ListNumber: Select “See my family doctor.”
+ListNumber: Review the doctor and available appointment windows.
+ListNumber: Select a time.
+ListNumber: Complete the required patient steps.
+Verify:
+ListBullet: Correct doctor is shown.
+ListBullet: The purpose of the path remains clear.
+ListBullet: The patient can distinguish family-doctor booking from general doctor search.
+Heading2: UC-04 — Patient has no family doctor
+Steps:
+ListNumber: Start with the family-doctor path.
+ListNumber: Indicate that you do not have a family doctor.
+ListNumber: Follow the alternative path.
+Verify:
+ListBullet: The patient is not trapped.
+ListBullet: The next option is clearly explained.
+ListBullet: The alternative booking path works.
+Heading2: UC-05 — Quick-book
+Steps:
+ListNumber: Choose “Quick-book a doctor.”
+ListNumber: Ask for the fastest available appointment.
+ListNumber: Compare the displayed appointment windows.
+ListNumber: Select one and continue.
+Verify:
+ListBullet: Results reflect the requested urgency.
+ListBullet: Availability is understandable.
+ListBullet: The selected time is correctly carried forward.
+Heading2: UC-06 — Specific doctor
+Steps:
+ListNumber: Ask for a specific doctor by name.
+ListNumber: Select that doctor.
+ListNumber: Review available appointment windows.
+ListNumber: Book one.
+Verify:
+ListBullet: The correct doctor is selected.
+ListBullet: No other doctor is accidentally substituted.
+ListBullet: Doctor name remains visible where needed.
+Heading2: UC-07 — Patient is unsure
+Steps:
+ListNumber: Say: “I don't know which doctor I need.”
+ListNumber: Describe a simple need such as a sore throat.
+ListNumber: Follow the assistant's clarifying questions.
+Verify:
+ListBullet: Assistant asks useful clarification.
+ListBullet: Patient is not forced to know internal product terminology.
+ListBullet: The resulting path is understandable and actionable.
+Heading2: UC-11 — Change mind
+Steps:
+ListNumber: Begin booking one doctor.
+ListNumber: Before confirmation, say: “Actually, I need someone today.”
+ListNumber: Then say: “Actually, show me my family doctor.”
+Verify:
+ListBullet: Assistant recognizes the changed intent.
+ListBullet: Old selections do not silently remain active.
+ListBullet: The patient can recover without restarting unnecessarily.
+Heading2: UC-13 — Change appointment
+Steps:
+ListNumber: Select a doctor.
+ListNumber: Select a time.
+ListNumber: Change the date/time.
+ListNumber: Continue to confirmation.
+Verify:
+ListBullet: Only the new appointment remains selected.
+ListBullet: Old appointment information is not shown in confirmation.
+ListBullet: The chat accurately reflects the current selection.
+Heading2: UC-17 — Unrelated question during booking
+Steps:
+ListNumber: Begin an appointment flow.
+ListNumber: Ask an unrelated product question such as “What are your hours?”
+ListNumber: After the answer, say: “Okay, continue booking.”
+Verify:
+ListBullet: Assistant answers appropriately.
+ListBullet: Booking context is retained.
+ListBullet: Patient does not have to repeat the entire journey.
+Heading1: 9. Natural-Language Test Library
+The agent should not rely only on predefined buttons. Test realistic patient language such as:
+ListBullet: “I need to see a doctor.”
+ListBullet: “I need a doctor today.”
+ListBullet: “Can I see someone tomorrow?”
+ListBullet: “I need my family doctor.”
+ListBullet: “I don't have a family doctor.”
+ListBullet: “I have a sore throat.”
+ListBullet: “I don't know which doctor I need.”
+ListBullet: “I need an appointment after 3.”
+ListBullet: “Can I see Dr. Patel?”
+ListBullet: “Actually, never mind. Show me the earliest appointment.”
+ListBullet: “I already have an account.”
+ListBullet: “I'm a new patient.”
+ListBullet: “Can I change the time?”
+ListBullet: “Go back.”
+ListBullet: “What happens next?”
+Heading1: 10. Edge-Case Testing
+ListBullet: No appointments available.
+ListBullet: Only distant appointments available.
+ListBullet: Doctor becomes unavailable after selection.
+ListBullet: Selected appointment expires or changes.
+ListBullet: Patient enters invalid email or phone.
+ListBullet: Patient leaves a required field empty.
+ListBullet: Patient enters unexpected text where a button choice is expected.
+ListBullet: Patient sends multiple messages quickly.
+ListBullet: Patient repeats the same request.
+ListBullet: Patient asks to cancel.
+ListBullet: Patient goes backward after selecting an appointment.
+ListBullet: Patient refreshes or returns to the page.
+ListBullet: Patient changes from new patient to existing patient or vice versa.
+ListBullet: Chat loses context between steps.
+ListBullet: Loading state takes unusually long.
+ListBullet: Error message appears.
+ListBullet: Chat gives an answer that conflicts with the visible UI.
+Heading1: 11. UX / Mental-Model QA
+The agent must evaluate whether the product makes sense to a patient, not only whether the underlying functionality works.
+ListBullet: Does the patient understand what the current step is?
+ListBullet: Does each assistant message make the next action obvious?
+ListBullet: Does terminology stay consistent?
+ListBullet: Does the experience clearly distinguish doctor selection from appointment selection?
+ListBullet: Does the patient understand why registration is required?
+ListBullet: Is it clear whether an appointment is only being viewed or has actually been booked?
+ListBullet: When the patient changes their mind, does the interface reflect the new intent?
+ListBullet: Does the interface preserve context between chat messages and cards?
+ListBullet: Are important confirmations visually and verbally clear?
+ListBullet: Could a first-time patient become stuck without knowing what to do next?
+Heading1: 12. Visual / UI QA
+ListBullet: Compare implemented screens against approved Figma when available.
+ListBullet: Check spacing, hierarchy, typography, icons, buttons, cards, and states.
+ListBullet: Check hover, selected, disabled, loading, empty, and error states.
+ListBullet: Check that appointment cards accurately communicate date, time, doctor, and availability.
+ListBullet: Check that chat messages and UI cards appear in the correct sequence.
+ListBullet: Check responsive behavior at the supported viewport sizes.
+ListBullet: Flag visual inconsistencies that materially affect comprehension or interaction.
+Heading1: 13. QA Report Format
+Every issue should be reported using the same structure:
+Field
+Example
+Issue ID
+QA-001
+Scenario
+UC-05 — Quick-book
+Severity
+Critical / High / Medium / Low
+Patient goal
+What the patient was trying to accomplish.
+Steps to reproduce
+Exact actions and messages used.
+Expected behavior
+What should happen according to the workflow/requirements.
+Actual behavior
+What actually happened.
+UX impact
+Why this could confuse, block, or mislead a patient.
+Evidence
+Screenshot/video/error text where available.
+Suggested direction
+Optional; describe the issue, not an assumed implementation.
+Heading1: 14. Severity Definitions
+Severity
+Definition
+Critical
+Patient cannot complete a core booking flow, incorrect appointment/patient outcome, or serious safety/privacy issue.
+High
+Major workflow is blocked or the patient can reasonably select/understand the wrong outcome.
+Medium
+Workflow can continue, but there is meaningful confusion, inconsistency, or repeated effort.
+Low
+Minor visual/content/interaction issue with limited impact on task completion.
+Heading1: 15. Final QA Output
+At the end of a test run, the agent should produce:
+ListBullet: Total scenarios attempted.
+ListBullet: Scenarios successfully completed.
+ListBullet: Scenarios partially completed.
+ListBullet: Scenarios blocked.
+ListBullet: List of UX issues.
+ListBullet: List of functional/technical issues.
+ListBullet: List of visual/UI inconsistencies.
+ListBullet: List of context or conversational failures.
+ListBullet: List of registration/authentication issues.
+ListBullet: Screenshots/evidence for significant findings.
+ListBullet: A concise summary of the biggest patient-experience risks.
+Heading1: 16. Master Prompt for the QA Agent
+You are a patient-experience QA agent for a healthcare booking product.Your job is to experience the product like a real patient and test whether the complete patient journey works.Do not assume the intended workflow. Do not skip steps because you know what the system is supposed to do. Use only information available to a normal patient plus the supplied requirements and Figma references.Test the homepage chat, patient intent recognition, doctor selection, appointment selection, new/existing patient paths, registration/authentication, confirmation, errors, empty states, loading states, back navigation, changes of intent, and unexpected inputs.Run all defined test scenarios. Use both UI controls and realistic free-text language.For each scenario:1. State the patient goal.2. Execute the flow.3. Record what happened.4. Identify where the patient could become confused, blocked, or misled.5. Capture evidence.6. Continue through reasonable recovery paths when something goes wrong.Pay special attention to:- unnecessary repetition of patient information- loss of conversation context- stale doctor or appointment selections- unclear transitions between chat and UI cards- unclear registration requirements- confusing terminology- inability to change one's mind- unclear confirmation- dead ends- incorrect or misleading responses- differences between approved design and implementationDo not only report technical bugs. If the product technically works but a reasonable first-time patient would not know what to do next, report it as a UX issue.Never use real patient information. Use only approved test accounts and test data.At the end, provide:A. Completed scenariosB. Failed/blocked scenariosC. UX findingsD. Functional findingsE. Visual findingsF. Conversational/context findingsG. Registration/authentication findingsH. Evidence for each significant issueI. Recommended priority for investigation based on patient impact.
+Heading1: 17. Suggested Execution Order
+ListNumber: Set up staging environment and approved test accounts.
+ListNumber: Give the QA agent the staging URL, requirements, Figma references, and test data.
+ListNumber: Run the three primary happy paths: new patient, existing patient, and quick-book.
+ListNumber: Run family-doctor and specific-doctor flows.
+ListNumber: Run natural-language and ambiguous-intent tests.
+ListNumber: Run change-of-mind and back-navigation tests.
+ListNumber: Run registration/authentication edge cases.
+ListNumber: Run no-availability and error scenarios.
+ListNumber: Run visual/UI comparison checks.
+ListNumber: Generate the consolidated QA report.
+ListNumber: Review high-impact findings with product/design/engineering.
+ListNumber: Fix and rerun the failed scenarios as regression tests.
+Heading1: 18. Regression Test Set
+After fixes are made, the agent should rerun every scenario that previously failed plus the three core booking paths. A fix should not be considered complete until the original reproduction steps pass and the surrounding journey still works.

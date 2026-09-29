@@ -1,6 +1,6 @@
 # SimpleCare agent team — operating model
 
-**Team size:** 25 agents (17 product and build, plus 8 marketing).
+**Team size:** 26 agents (18 product and build, plus 8 marketing).
 
 **Onboarding:** every agent starts with [`handbook/00-start-here.md`](handbook/00-start-here.md), then
 [`handbook/01-rules.md`](handbook/01-rules.md), [`handbook/02-evidence.md`](handbook/02-evidence.md) and
@@ -38,6 +38,7 @@ record: physician, MOA and patient.
 | Safety and trust | `clinical-safety` | Clinical risk log per feature; safe defaults; what needs Daniel |
 | | `privacy-security` | Privacy (PIPA BC / PIPEDA / PHIPA), security controls, PIA drafts |
 | | `qa-engineer` | Test scripts from use cases; design-rule and regression checks |
+| | `patient-chat-qa` | The patient booking journey, end to end, run as a real patient (PC-01…PC-26) |
 | Build | `tech-lead` | Architecture, data model (FHIR), prototype-to-production plan |
 | | `integrations-engineer` | PharmaNet, labs (PLIS/Excelleris/LifeLabs), Teleplan, eFax, registries |
 | | `frontend-engineer` | Design system as components; production-grade UI code |

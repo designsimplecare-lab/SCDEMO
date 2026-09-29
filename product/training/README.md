@@ -13,7 +13,7 @@ people, the rules and the process, and can apply them to real SimpleCare situati
      and `research/patient-entry-flows/README.md`.
    - **Design** (`ux-designer`, `content-designer`, `accessibility`, `frontend-engineer`,
      `brand-designer`): `simplecare-design-system.html`, skimmed.
-   - **Safety and trust** (`clinical-safety`, `privacy-security`, `qa-engineer`):
+   - **Safety and trust** (`clinical-safety`, `privacy-security`, `qa-engineer`, `patient-chat-qa`):
      `product/reports/clinical-safety-hazard-log.md`.
    - **Build** (`tech-lead`, `integrations-engineer`, `ai-engineer`, `billing-msp`):
      `product/reports/integrations-engineer-2026-09-26-roadmap.md`.
@@ -64,6 +64,7 @@ same time.
 | accessibility | Design | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | clinical-safety | Safety and trust | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | privacy-security | Safety and trust | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
+| patient-chat-qa | Safety and trust | | | ☐ |
 | qa-engineer | Safety and trust | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | tech-lead | Build | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | integrations-engineer | Build | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |

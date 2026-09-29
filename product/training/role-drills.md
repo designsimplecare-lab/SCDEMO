@@ -42,6 +42,11 @@ For every drill, include:
   design change.
 - **privacy-security.** Outline the data-flow map you'd draw for patient-uploaded bloodwork.
 - **qa-engineer.** Outline the test script for UC-06 (renewal by fax), with its pass/fail checks.
+- **patient-chat-qa.** Walk PC-11 (changes their mind) and PC-21 (emergency red flag) as a dry run:
+  - the steps and messages you'd use;
+  - what you'd verify;
+  - what you can't judge without Daniel or Ani;
+  - what you need from Ani before a real run.
 
 ## Build
 - **tech-lead.** Outline how you'd model "sign-off" as data and events, and why.
