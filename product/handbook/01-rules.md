@@ -74,6 +74,12 @@ blocks your task, say so; don't work around it.
     Daniel: "don't mention Rocket or Tia". Internal analysis, such as competitor research and audits,
     may name them.
 16b. **Home's attention list shows Critical and High** (Daniel, 27 Sep).
+16c. **Booking is open to every non-emergency concern** (Daniel, 29 Sep: "no doctor should block").
+    - Each concern is either **quick-book** (straightforward) or **triage-first** (complicated, AI
+      triage). Daniel decides which.
+    - Every pathway leads to the same queue: tiles, the AI chat, the phone line, and messaging (not yet
+      decided).
+    - The AI is offered, never forced. See bulletin B-001.
 17a. **Emergency redirection is the exception** ("call 911 / go to the ER") on any patient-facing
     surface: the site, the Simplicity chat or the portal. Its wording and its visual treatment, including
     whether it uses red, **need Daniel and Ani**. Don't design around it by guessing.

@@ -64,6 +64,14 @@ the doctor's queue in `simplecare-physician-portal-v2.html`.
 ## 6. About Us / Doctors ("ABOUT US", MacBook 232)
 - An "Our Doctors" grid with photos, "About Dr…" links and a "Book an appointment" hover.
 
+## Daniel's booking model (29 Sep; see bulletin B-001)
+- **Booking is open to every non-emergency concern.**
+- **Straightforward concerns** get quick-book tiles.
+- **Complicated concerns** go through AI triage first.
+- **Several pathways lead to one queue:** tiles, the Simplicity chat, the phone line, and possibly
+  WhatsApp or text.
+- **The AI is offered, never forced.**
+
 ## End to end
 The patient arrives (search, social, word of mouth or a pharmacy) → reaches the landing page and
 Simplicity → says what's wrong or picks a concern → Simplicity triages: walk-in or family doctor →

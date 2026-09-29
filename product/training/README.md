@@ -35,6 +35,16 @@ people, the rules and the process, and can apply them to real SimpleCare situati
 - **If an agent fails,** the lead records what it got wrong. The agent re-reads the relevant section
   and retakes the missed questions.
 
+## Continuous training: bulletins
+When Daniel or Ani changes our understanding, the lead writes a **bulletin**:
+`bulletins/B-NNN-<topic>.md`. It covers what changed, what it overrides, and a self-check. Agents read
+new bulletins before their next task (see `process.md` step 2a), and the handbook is updated at the
+same time.
+
+| Bulletin | Topic | Date |
+|---|---|---|
+| [B-001](bulletins/B-001-booking-pathways.md) | How patients book: open booking, quick-book vs triage-first, many pathways | 29 Sep 2026 |
+
 ## Rules during training
 - **Training is reading and writing answers only.** Do not edit prototypes, `product/` spec docs or
   marketing files, and do not browse to act on any account.

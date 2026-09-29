@@ -24,6 +24,8 @@ Requested → Triaged → Ready → In progress → In review → Approved → D
    - sets the type, priority (P1–P3) and size (S/M/L);
    - picks one **owner**, and names the contributors and the **gates** from the table in section 4;
    - checks it against the rules in `handbook/01-rules.md`.
+2a. **Bulletins.** Before starting, the owner reads every bulletin in `product/training/bulletins/`
+   dated after its certification. The task's Log records which bulletins were read.
 3. **Ready.** The acceptance criteria are written and the inputs linked. Anything blocking is
    resolved or moved to **Blocked**.
 4. **In progress.** The owner works only within the task's scope. If the scope needs to change, the
