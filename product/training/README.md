@@ -54,12 +54,12 @@ people, the rules and the process, and can apply them to real SimpleCare situati
 | accessibility | Design | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | clinical-safety | Safety and trust | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | privacy-security | Safety and trust | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
-| qa-engineer | Safety and trust | | | ☐ |
-| tech-lead | Build | | | ☐ |
-| integrations-engineer | Build | | | ☐ |
+| qa-engineer | Safety and trust | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
+| tech-lead | Build | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
+| integrations-engineer | Build | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | frontend-engineer | Build | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | ai-engineer | Build | | | ☐ |
-| billing-msp | Build | | | ☐ |
+| billing-msp | Build | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | marketing-lead | Marketing | | | ☐ |
 | social-media-manager | Marketing | | | ☐ |
 | content-seo | Marketing | | | ☐ |

@@ -11,7 +11,7 @@ The tasks below are **queued**. Each starts only when its owner is certified and
 | T-001 | Analyse recording: "Fixing Annoying Appointment Chat Flow" | Research | P1 | `ux-researcher` | — | Queued (waiting for certification) |
 | T-002 | Analyse recording: "Hair Transplant Follow-Up Prescription Help" | Research | P1 | `ux-researcher` | `clinical-safety` (read-only check) | Queued |
 | T-003 | Analyse recording: "Medication Renewal and Safe Titration Discussion" | Research | P1 | `ux-researcher` | `clinical-safety` (read-only check) | Queued |
-| T-004 | Fold Daniel's 27 Sep answers (round 2) into the product docs | Spec | P1 | `product-manager` | — | Queued |
+| T-004 | Fold Daniel's 27 Sep answers (round 2) into the product docs. This includes: OQ-61 answered (renewals are delegated to Japneet, the PA, under the doctor's sign-off), so update REQ-RX-07/10, HZ-09 and the QA harness wording | Spec | P1 | `product-manager` | — | Queued |
 | T-005 | Finish the simplecare.ca audit (the partial draft is filed) | Review | P2 | `content-seo` | `marketing-compliance` | Queued |
 | T-006 | Finish the QA baseline (the partial harness is filed) | Review | P2 | `qa-engineer` | — | Queued |
 | T-007 | Re-align market strategy and marketing to Daniel's direction (the confidential source is in `private/`) | Research | P1 | `market-strategist` | `marketing-lead` | Queued |
@@ -36,6 +36,15 @@ The tasks below are **queued**. Each starts only when its owner is certified and
   - `social/calendar-2026-10.md`
   - `reports/content-seo-2026-09-26-website-audit.md` (partial)
   - `content/concern-page-template.md`
+
+**Findings from training, for future tasks:**
+- `billing-msp`:
+  - v2 tells the doctor a rejected claim must be resubmitted "within the window", and nothing sources
+    that.
+  - v2's fee codes and amounts are unsourced (OQ-24, REQ-BIL-07).
+  - Finalize also submits the claim, and the button doesn't say so (OQ-51).
+- `content-designer`: "Approve" on suggested conditions, and a bare "Sign off" on results, don't say
+  what they do.
 
 **Superseded by Daniel's 27 Sep direction; re-check before using:**
 - The clinical-safety hazard log still says Home shows critical results only. Daniel changed that to

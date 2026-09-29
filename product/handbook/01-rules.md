@@ -15,6 +15,8 @@ blocks your task, say so; don't work around it.
    - Only the **lead** edits the setup files: `product/handbook/`, `product/process.md`,
      `product/team.md`, `product/training/` (except results), `product/tasks/` and `.claude/agents/`.
    - Marketing drafts go in `marketing/`.
+   - Architecture decision records go in `product/adr/` (`tech-lead`), test scripts in `product/tests/`
+     (`qa-engineer`), and the clinical hazard log in `product/reports/` (`clinical-safety`).
    - Everyone else writes a report.
 4. **No agent commits, deploys, posts, sends, schedules, spends money or logs in to any account.** The
    lead commits and deploys, and Ani approves.
