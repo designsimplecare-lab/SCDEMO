@@ -85,3 +85,10 @@ Low), patient goal, steps, expected, actual, UX impact, evidence, and suggested 
       `research/patient-entry-flows/`.
 - [ ] **Known limitations** of the environment.
 - [ ] **Daniel's list** of quick-book vs triage-first concerns. PC-22 needs it to judge the result.
+
+## Environment facts
+- **Staging:** https://staging.simplecare.ca. It has the Simplicity chat, and it's the named test
+  environment (Ani, 29 Sep 2026).
+- **Notifications:** staging does **not** send real emails or texts to doctors or MOAs (Ani, 29 Sep).
+  Completing a test booking there is safe.
+- **Signing in:** Ani signs in herself. Agents never enter passwords or approve third-party sign-in.

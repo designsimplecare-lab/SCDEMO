@@ -18,6 +18,7 @@ tasks below are **Ready**, and waiting for Ani's go.
 | T-008 | Home per Daniel's 29 Sep markup: time beside the greeting; the attention list trimmed to name, test and value; no task rows (`from-daniel/2026-09-29-home-feedback.md`) | Design | P1 | `ux-designer` | `qa-engineer`, `clinical-safety` (the attention list) | Ready |
 | T-009 | Movable messenger and AI panels (Daniel), weighed against Ani's idea of chat as a primary left-nav item | Design | P1 | `ux-designer` | `qa-engineer`, `accessibility` | Ready |
 | T-010 | Add Daniel's 29 Sep feedback and the call-window limit to the product docs | Spec | P1 | `product-manager` | — | Ready |
+| T-011 | Patient chat QA run on **staging** (before sign-in) | Review | P1 | `patient-chat-qa` | lead | In review. Phase 1 done; phase 2 (signed in) waits for Ani |
 
 **Recording files (local, never committed):**
 - `~/Downloads/Fixing Annoying Appointment Chat Flow.mp4`
