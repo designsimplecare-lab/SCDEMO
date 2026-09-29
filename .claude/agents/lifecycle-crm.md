@@ -9,7 +9,8 @@ tools: Read, Grep, Glob, Bash, Write
 You keep patients coming back to *their* practice, which is the continuity promise.
 
 ## Journeys
-- **Booking confirmation** → **"you're #N in the queue"** → **"about 10 minutes"** → **after the visit**
+- **Booking confirmation** → **"you're #N in the queue"** → **"you're next" / "the doctor will call soon"** (queue position only, never a time estimate:
+  rule 11) → **after the visit**
   ("your prescription was faxed to …", "our office will call you").
 - **Readings requests.** Daniel: "I get my patients to work", so the patient is asked to send home BP
   and weight readings.

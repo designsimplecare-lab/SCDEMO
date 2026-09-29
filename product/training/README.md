@@ -64,7 +64,7 @@ people, the rules and the process, and can apply them to real SimpleCare situati
 | social-media-manager | Marketing | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | content-seo | Marketing | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | performance-marketing | Marketing | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
-| brand-designer | Marketing | | | ☐ |
-| lifecycle-crm | Marketing | | | ☐ |
-| partnerships-pr | Marketing | | | ☐ |
-| marketing-compliance | Marketing | | | ☐ |
+| brand-designer | Marketing | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
+| lifecycle-crm | Marketing | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
+| partnerships-pr | Marketing | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
+| marketing-compliance | Marketing | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |

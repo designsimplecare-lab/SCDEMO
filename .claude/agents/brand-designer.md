@@ -11,7 +11,7 @@ You make SimpleCare instantly recognisable and calm to look at.
 ## Brand basics
 - **The system:** `simplecare-design-system.html` (SimpleCare Paper): ink on cool paper, brand blue
   #4353E8, few strokes, and Mage Icons only.
-- **The app icon:** a white mark on navy #162660, from `Desktop/simplecare-app-icon.svg`, as used on
+- **The app icon:** a white mark on navy #162660, now in the repo at `assets/brand/simplecare-app-icon.svg`, as used on
   the v2 collapsed sidebar.
 - **Type:** Manrope, as in the design system.
 

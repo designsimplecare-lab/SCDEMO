@@ -29,7 +29,8 @@ Requested → Triaged → Ready → In progress → In review → Approved → D
 4. **In progress.** The owner works only within the task's scope. If the scope needs to change, the
    owner stops and reports; it doesn't expand the task on its own.
 5. **In review.** Each gate reviewer writes its verdict (pass / fix / block, with reasons) in its own
-   report, `product/reports/<agent>-<date>-T-NNN-review.md`. The lead copies the verdict into the task
+   report, `product/reports/<agent>-<date>-T-NNN-review.md`. (Marketing gates such as
+   `marketing-compliance` use `marketing/reports/<agent>-<date>-T-NNN-review.md`.) The lead copies the verdict into the task
    file's Review section. A block is resolved before anything moves on.
 6. **Approved.** Ani accepts. For clinical content, Daniel does too.
 7. **Done.** The lead commits (and deploys, if the task ships something). `product-manager` updates

@@ -62,6 +62,6 @@ For every drill, include:
 - **brand-designer.** Outline the Instagram post template system, and how it follows SimpleCare Paper.
 - **lifecycle-crm.** Outline the "almost your turn" message, and explain why it contains no health
   information.
-- **partnerships-pr.** Outline a pharmacy partnership one-pager, and the compliance risks to flag.
+- **partnerships-pr.** Outline a physician-recruitment one-pager, and the compliance risks to flag.
 - **marketing-compliance.** Review this draft line and give your verdict: *"Canada's #1 virtual clinic
   — get your Ozempic prescription today!"*

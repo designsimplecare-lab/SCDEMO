@@ -88,7 +88,9 @@ blocks your task, say so; don't work around it.
 
 ## E. Design rules (the SimpleCare Paper design system)
 21. **Text is ink, and colour goes on icons.**
-    - Brand blue #4353E8 is for primary actions and the current state.
+    - Brand blue #4353E8 is for primary actions and the current state. This is **as built in v2** (the
+      colour pass Ani approved, 24 Sep). `simplecare-design-system.html` predates it and still shows ink
+      primary buttons. **v2 wins**, and the design-system page is due an update (Ani).
     - Red is critical only: a critical value is the only red text.
 22. **Sizes.**
     - Nothing a physician reads is under 14px.

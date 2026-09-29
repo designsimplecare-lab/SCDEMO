@@ -54,7 +54,7 @@ record: physician, MOA and patient.
 | `performance-marketing` | Paid acquisition, the funnel, the tracking plan (privacy-safe), A/B tests and dashboards |
 | `brand-designer` | Social and ad creatives, storyboards, templates, all on SimpleCare Paper |
 | `lifecycle-crm` | Reminders, queue notifications, post-visit follow-ups and newsletters (CASL-compliant) |
-| `partnerships-pr` | Pharmacy and community partnerships, press, and physician recruitment |
+| `partnerships-pr` | Physician recruitment (the top priority), press, and community partnerships. Pharmacy is deprioritised |
 | `marketing-compliance` | The gate. It reviews every public draft for health-advertising, drug-promotion, CASL, privacy and claims rules |
 
 **Channels the marketing team owns** (Ani, 26 Sep 2026: "give our web and social to the marketing team to
@@ -120,8 +120,8 @@ post. A person with the account still publishes, after Ani approves.
 - **Every claim has a source:** a file and line, a quote, a commit or a URL. Otherwise label it an
   assumption.
 - **Stay in your lane.** Only `ux-designer` and `frontend-engineer` edit prototype HTML, and only
-  `product-manager` edits the `product/*` spec docs. Everyone else writes their own report under
-  `product/reports/`, named `<agent>-<YYYY-MM-DD>-<topic>.md`.
+  `product-manager` edits the `product/*` spec docs. Everyone else writes their own report: product agents under `product/reports/`, marketing agents
+  under `marketing/reports/`, named `<agent>-<YYYY-MM-DD>-<topic>.md`.
 - **No agent commits or deploys.** The lead does that.
 - **Follow the design rules** in `.claude/agents/ux-designer.md` and the product rules in
   `.claude/agents/doctor.md`.

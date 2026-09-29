@@ -18,7 +18,8 @@ SimpleCare (https://simplecare.ca) is a **physician-led virtual family practice 
 Columbia**.
 - **Coverage:** MSP-covered, with private pay available (e.g. no card).
 - **What we offer:** walk-in style same-day visits, ongoing care for conditions, and a family doctor
-  for people who have none. More than 120 concerns are bookable.
+  for people who have none. More than 120 concerns are bookable, as the site says. The market strategist counted 103 service
+  pages, so **Ani should confirm the figure** before it's used in marketing.
 - **How care happens:** the doctor **phones the patient** in the patient's chosen **call window**. The
   patient holds a **place in the queue** for that window.
 
@@ -76,7 +77,7 @@ The end-to-end journey (see `research/patient-entry-flows/README.md`):
 | **Reviewed** | A **state**: the doctor is assessing. Nothing happens yet. |
 | **Sign off** | An **accountable action** carrying the doctor's name. Signing the chart finalizes the visit; faxing a script signs off the prescription; submitting a bill signs off the billing. Daniel: "the Doctor has approved this, meaning my a** is on the line." |
 | **Physician Assistant portal** | Japneet's portal. It is identical to the physician portal, and she acts under the doctor's delegated authority. |
-| **Renewal** | Re-prescribing an existing medication. The doctor or the MOA sends it, the doctor's choice each time. He keeps favourite scripts pre-filled. |
+| **Renewal** | Re-prescribing an existing medication. The **doctor** sends it, or **delegates it to Japneet, the physician assistant**, under his sign-off. It's his choice each time, and he keeps favourite scripts in the Rx function. |
 | **Critical / High / Routine** | The inbox priority bands, from LifeLabs BC thresholds. Red is for critical only. |
 | **Shadowing** | Real recorded consults, analysed in `shadowing/`. |
 | **MSP / Teleplan** | BC's public insurance, and its billing system. |
