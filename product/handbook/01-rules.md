@@ -25,14 +25,23 @@ blocks your task, say so; don't work around it.
 6. **Don't invent** clinical rules, doses, thresholds, billing codes, legal requirements, statistics,
    reviews or quotes. Mark it **Needs Daniel** or **Needs a qualified reviewer**.
 
+6a. **Browsing.** When a task needs it, reading **public** pages is allowed: simplecare.ca, competitor
+    sites, official guidance. That includes headless screenshots. Never log in, submit forms, book, post
+    or click anything that acts on an account. (No browsing at all during training.)
+
 ## B. Privacy
 7. **No patient identifiers in the repo, ever.** That covers names, PHNs, dates of birth, addresses,
    phone numbers, emails and pharmacy details. Write "the patient".
    - Recording frames stay in the scratchpad only.
-   - **Staff:** first names in their work role are fine, in quotes and notes (e.g. "Japneet", "Dolly").
+   - **Staff:** first names in their work role are fine, surnames are not, in quotes and notes (e.g. "Japneet", "Dolly").
      Their personal details are not: contact information, health, private life, personnel matters.
 8. **Keep health information out of** marketing, ad tracking, email subject lines and SMS previews.
 9. **If you find personal data somewhere public,** stop and report it to the lead immediately.
+   - **Git history counts:** a redacted detail can still be read in old commits. Report it, and don't
+     stop training for it.
+   - Rewriting history is Ani's decision.
+   - A local pre-commit guard blocks `private/` and the identifiers listed in
+     `private/denylist.txt`. Add to that list whenever a real identifier is found.
 9a. **How to cite `private/`:** write "private strategy, 27 Sep 2026 (confidential)", and never give its
     content. If it settles a conflict, say that it does, and leave out what it says.
 9b. **The public ceiling.** The only approved public wording of Daniel's direction is the "Direction"
@@ -59,6 +68,9 @@ blocks your task, say so; don't work around it.
 16a. **Never name competitors** (e.g. Tia, Rocket) in the product or intake. Daniel: "don't mention
     Rocket or Tia".
 16b. **Home's attention list shows Critical and High** (Daniel, 27 Sep).
+17a. **Emergency redirection is the exception** ("call 911 / go to the ER") on any patient-facing
+    surface: the site, the Simplicity chat or the portal. Its wording and its visual treatment, including
+    whether it uses red, **need Daniel and Ani**. Don't design around it by guessing.
 17. **Patient tone: attention without alarm.** No red, no clinical flags and no HIGH/LOW in the
     patient portal. Name each test individually, and say who moves next.
 
@@ -74,11 +86,16 @@ blocks your task, say so; don't work around it.
     - Red is critical only: a critical value is the only red text.
 22. **Sizes.**
     - Nothing a physician reads is under 14px.
+    - **Patient-facing body text: 16px minimum on phones.** This is a proposed default, pending Ani's
+      confirmation.
     - Buttons are 44px with an icon.
     - One tag spec: 15px/500, 40px tall, no stroke, barely tinted.
     - Reading text caps at 66ch.
 23. **No uppercase styling.** Sentence case everywhere.
-24. **Mage Icons only.**
+24. **Mage Icons only,** from the prototype's icon maps (`ICONS` via `data-pdic` / `paintPd()`, and
+    `PC_ICONS` via `data-pcic`).
+24a. **The build stamp.** Whoever edits a prototype updates its build stamp, `build YYYY-MM-DD HH:MM`,
+    in the same change. The lead checks that the live stamp matches after deploying.
 25. **Show by exception** (no badge on the normal case), and use **progressive disclosure** (common
     things visible, the rest one click away).
 26. **A fix on one screen goes to every screen with that pattern.**

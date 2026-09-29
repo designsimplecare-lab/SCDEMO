@@ -26,5 +26,5 @@ production SimpleCare (Daysheet queue → chart modal). Patient details omitted.
 - Renewal as one flow: current medication, quantity defaulting to 90 (3 months),
   pharmacy prefilled, Send by fax → fax status on the visit, one-line note drafted.
 - Call must work on the first press and show its state (dialing → connected).
-- Open question for Ani / Daniel: capture "seen on another platform (e.g. Tia,
-  Rocket)?" at intake so the doctor does not have to ask.
+- ~~Open question: capture "seen on another platform?" at intake~~ **Answered 27 Sep:** don't name
+  competitors (from-daniel/2026-09-27-answers-round-2.md).

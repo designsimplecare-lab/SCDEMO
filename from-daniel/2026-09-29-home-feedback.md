@@ -25,7 +25,7 @@ Ani asked: "this is maximum window ranges right? can it not be 7 to 9". Daniel r
   and the window countdown beside the greeting, e.g. "Good evening, Dr. Pannozzo · 7:50 PM Toronto
   · 10m left". The screenshot is labelled "Can we make movable" near the top-right icons.
 - **"Needs your attention," crossed off:**
-  - the whole task row ("Rebook EDS referral · 4d overdue · Referrals · Dolly Aquino");
+  - the whole task row ("Rebook EDS referral · 4d overdue · Referrals · [MOA name]");
   - on the result row, everything after the value: the reference range, the diagnosis text, and the
     source and assignee.
 - **"Needs your attention," kept:** the patient name and age/sex, the test, and the critical value with

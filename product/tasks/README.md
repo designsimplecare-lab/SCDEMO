@@ -38,5 +38,7 @@ The tasks below are **queued**. Each starts only when its owner is certified and
   - `content/concern-page-template.md`
 
 **Superseded by Daniel's 27 Sep direction; re-check before using:**
+- The clinical-safety hazard log still says Home shows critical results only. Daniel changed that to
+  Critical and High on 27 Sep. Update it when `clinical-safety` next gets a task.
 - The market strategist's bet "sell family doctor, not walk-in".
 - The partnerships agent's pharmacy channel.

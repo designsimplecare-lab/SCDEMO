@@ -34,7 +34,7 @@ For every drill, include:
 - **content-designer.** Outline a copy deck for relabelling approving actions with the sign-off
   language, across the chart, the renewal and billing.
 - **accessibility.** Outline an audit plan for the Simplicity chat on a phone.
-- **frontend-engineer.** Outline how you'd safely make a change in the 9,000-line v2 file, from
+- **frontend-engineer.** Outline how you'd safely make a change in the ~11,000-line v2 file, from
   finding the code to proving it works.
 
 ## Safety and trust

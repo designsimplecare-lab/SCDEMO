@@ -4,7 +4,8 @@ Source: Ani's design boards, 26 Sep 2026, saved in this folder:
 - `board-walkin-registration-login.webp`
 - `board-become-patient-about.webp`
 
-Ani is designing these now. They are the front half of the product: everything that happens before
+Ani is designing these now, in her design boards. **The Simplicity chat is not yet in any prototype
+file.** Ask Ani where it will be built before any task touches it. They are the front half of the product: everything that happens before
 the doctor's queue in `simplecare-physician-portal-v2.html`.
 
 ## 1. Arrival: the landing page ("MacBook Air – 223")
@@ -86,8 +87,9 @@ uploads, and a return visit is booked with *their* doctor.
 - **Choosing a doctor and window versus the queue model.** Picking a window fits Daniel's call-window
   model. The queue position in that window should be visible after booking, but with no wait estimate
   (a Daniel decision).
-- **Ask about other platforms at intake** (Tia, Rocket). Daniel asked this out loud in two recorded
-  visits.
+- ~~Ask about other platforms at intake~~ **Superseded 27 Sep.** Daniel: "don't mention Rocket or Tia".
+  He asks because many of his patients come from there, which makes it a patient-source insight, not an
+  intake question.
 - **Privacy at registration.** Keep sign-up minimal, and send consent and SSO scopes through
   privacy-security review.
 - **Accessibility on phones.** The chat must work with a screen reader and keyboard, and meet the

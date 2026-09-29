@@ -28,8 +28,9 @@ Requested → Triaged → Ready → In progress → In review → Approved → D
    resolved or moved to **Blocked**.
 4. **In progress.** The owner works only within the task's scope. If the scope needs to change, the
    owner stops and reports; it doesn't expand the task on its own.
-5. **In review.** Each gate reviewer writes a short verdict (pass / fix / block) in the task file's
-   Review section. A block is resolved before anything moves on.
+5. **In review.** Each gate reviewer writes its verdict (pass / fix / block, with reasons) in its own
+   report, `product/reports/<agent>-<date>-T-NNN-review.md`. The lead copies the verdict into the task
+   file's Review section. A block is resolved before anything moves on.
 6. **Approved.** Ani accepts. For clinical content, Daniel does too.
 7. **Done.** The lead commits (and deploys, if the task ships something). `product-manager` updates
    the use-case and requirement statuses and the decisions.
@@ -44,6 +45,7 @@ Requested → Triaged → Ready → In progress → In review → Approved → D
 | **Review / audit** | a gate agent | A findings report |
 | **Engineering plan** | `tech-lead`, `integrations-engineer`, `ai-engineer` | An ADR or brief |
 | **Marketing** | `marketing-lead` → the specialists | Drafts in `marketing/` |
+| **Bug fix** (the prototype behaves wrongly) | `frontend-engineer` (or `ux-designer` for design defects) | A fix with proof: the steps to reproduce, and the result before and after |
 | **Persona walkthrough** | `doctor`, `moa`, `patient` | A ranked asks report |
 
 ## 4. Which gates apply

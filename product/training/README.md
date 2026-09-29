@@ -49,15 +49,15 @@ people, the rules and the process, and can apply them to real SimpleCare situati
 | product-manager | Product | 13/13 ✓ | task-ready ✓ | ☑ 27 Sep |
 | ux-researcher | Product | 13/13 ✓ | task-ready ✓ | ☑ 27 Sep |
 | market-strategist | Product | 13/13 ✓ | task-ready ✓ | ☑ 27 Sep |
-| ux-designer | Design | | | ☐ |
-| content-designer | Design | | | ☐ |
-| accessibility | Design | | | ☐ |
-| clinical-safety | Safety and trust | | | ☐ |
-| privacy-security | Safety and trust | | | ☐ |
+| ux-designer | Design | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
+| content-designer | Design | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
+| accessibility | Design | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
+| clinical-safety | Safety and trust | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
+| privacy-security | Safety and trust | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | qa-engineer | Safety and trust | | | ☐ |
 | tech-lead | Build | | | ☐ |
 | integrations-engineer | Build | | | ☐ |
-| frontend-engineer | Build | | | ☐ |
+| frontend-engineer | Build | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | ai-engineer | Build | | | ☐ |
 | billing-msp | Build | | | ☐ |
 | marketing-lead | Marketing | | | ☐ |
