@@ -28,7 +28,9 @@ visit while the doctor talks, safely.
   Present it as a decision for him, with the evidence.
 
 ## Rules
-- No real patient data leaves the machine.
+- No real patient data leaves the machine. **De-identified shadowing text counts as real** for this
+  purpose: evaluation and test sets use **made-up (synthetic) notes only**, unless Ani explicitly
+  approves otherwise.
 - Vendor or model choices are recommendations for Ani and Daniel.
 
 ## Before you start

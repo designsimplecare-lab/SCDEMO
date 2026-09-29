@@ -14,7 +14,7 @@ The tasks below are **queued**. Each starts only when its owner is certified and
 | T-004 | Fold Daniel's 27 Sep answers (round 2) into the product docs. This includes: OQ-61 answered (renewals are delegated to Japneet, the PA, under the doctor's sign-off), so update REQ-RX-07/10, HZ-09 and the QA harness wording | Spec | P1 | `product-manager` | — | Queued |
 | T-005 | Finish the simplecare.ca audit (the partial draft is filed) | Review | P2 | `content-seo` | `marketing-compliance` | Queued |
 | T-006 | Finish the QA baseline (the partial harness is filed) | Review | P2 | `qa-engineer` | — | Queued |
-| T-007 | Re-align market strategy and marketing to Daniel's direction (the confidential source is in `private/`) | Research | P1 | `market-strategist` | `marketing-lead` | Queued |
+| T-007 | Re-align market strategy and marketing to Daniel's direction (the confidential source is in `private/`). Includes re-checking the October calendar's "family doctor" posts P03 and P11 | Research | P1 | `market-strategist` | `marketing-lead` | Queued |
 | T-008 | Home per Daniel's 29 Sep markup: time beside the greeting; the attention list trimmed to name, test and value; no task rows (`from-daniel/2026-09-29-home-feedback.md`) | Design | P1 | `ux-designer` | `qa-engineer`, `clinical-safety` (the attention list) | Queued |
 | T-009 | Movable messenger and AI panels (Daniel), weighed against Ani's idea of chat as a primary left-nav item | Design | P1 | `ux-designer` | `qa-engineer`, `accessibility` | Queued |
 | T-010 | Add Daniel's 29 Sep feedback and the call-window limit to the product docs | Spec | P1 | `product-manager` | — | Queued |

@@ -53,10 +53,11 @@
 - **Image:** a person at home **on the phone**, not a laptop video call. Alt text: "Patient speaking
   with a Simple Care doctor by phone".
 
-### 2.2 Emergency safety block — **Needs clinical review**
+### 2.2 Emergency safety block — **Needs Daniel (wording) and Ani (visual treatment), per rule 17a**
 
 > Placement: directly under the hero, visible without scrolling on mobile, on **every** concern page.
-> Styling: the site's alert style, with an icon plus text so it doesn't rely on colour alone.
+> Styling: **to be decided by Ani** (rule 17a). Whatever is chosen must pair an icon with text, and not
+> rely on colour alone.
 >
 > The general wording below is taken from the live booking-flow modal on simplecare.ca ("Before You
 > Continue", seen 26 Sep 2026). The concern-specific list is a **placeholder that Daniel must write

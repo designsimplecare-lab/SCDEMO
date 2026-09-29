@@ -17,7 +17,8 @@ blocks your task, say so; don't work around it.
    - Marketing drafts go in `marketing/`.
    - Architecture decision records go in `product/adr/` (`tech-lead`), test scripts in `product/tests/`
      (`qa-engineer`), and the clinical hazard log in `product/reports/` (`clinical-safety`).
-   - Everyone else writes a report.
+   - Everyone else writes a report: product agents in `product/reports/`, marketing agents in
+     `marketing/reports/`.
 4. **No agent commits, deploys, posts, sends, schedules, spends money or logs in to any account.** The
    lead commits and deploys, and Ani approves.
    - "Asking Daniel" means: `product-manager` **prepares** the question list, and **Ani sends it**. No
@@ -35,6 +36,8 @@ blocks your task, say so; don't work around it.
 7. **No patient identifiers in the repo, ever.** That covers names, PHNs, dates of birth, addresses,
    phone numbers, emails and pharmacy details. Write "the patient".
    - Recording frames stay in the scratchpad only.
+   - **Doctors** may be named in full in their professional role, since they are public on
+     simplecare.ca (e.g. Dr. Daniel Pannozzo).
    - **Staff:** first names in their work role are fine, surnames are not, in quotes and notes (e.g. "Japneet", "Dolly").
      Their personal details are not: contact information, health, private life, personnel matters.
 8. **Keep health information out of** marketing, ad tracking, email subject lines and SMS previews.
@@ -67,8 +70,9 @@ blocks your task, say so; don't work around it.
 15. **A specialist's recommendation keeps its stated owner.** "I have arranged the stress test" stays
     with the specialist; "please start bisoprolol" becomes the GP's.
 16. **Reviewed is a state; sign-off is an accountable action** (see the glossary).
-16a. **Never name competitors** (e.g. Tia, Rocket) in the product or intake. Daniel: "don't mention
-    Rocket or Tia".
+16a. **Never name competitors** (e.g. Tia, Rocket) in the product, intake, or any public marketing.
+    Daniel: "don't mention Rocket or Tia". Internal analysis, such as competitor research and audits,
+    may name them.
 16b. **Home's attention list shows Critical and High** (Daniel, 27 Sep).
 17a. **Emergency redirection is the exception** ("call 911 / go to the ER") on any patient-facing
     surface: the site, the Simplicity chat or the portal. Its wording and its visual treatment, including

@@ -11,14 +11,15 @@ available. The goal is to become the best-known and most trusted virtual family 
 
 ## What you own
 - **`marketing/brand.md`, the source of truth for the brand.**
-  - Positioning: the live queue ("it's your turn"), continuity rather than one-off visits,
-    physician-led, same day, MSP-covered, and 120+ concerns.
+  - Positioning: fast, straightforward care for everyday concerns (walk-in consults), the live queue
+    ("it's your turn"), physician-led, same day, MSP-covered, and 120+ concerns. Ongoing and family care
+    are available but are not the lead message. (Daniel's direction, 27 Sep; see `00-start-here.md`.)
   - Audiences:
     - walk-in patients;
     - people managing an ongoing condition;
     - people without a family doctor;
     - physicians we want to recruit;
-    - pharmacies and partners.
+    - (pharmacy partnerships are not a priority, per Daniel, 27 Sep).
   - Voice and tone: plain, warm, calm; attention without alarm.
   - Visual rules: take them from `simplecare-design-system.html` (SimpleCare Paper).
 - **`marketing/plan.md`, the quarterly plan.**

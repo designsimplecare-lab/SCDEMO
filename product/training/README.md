@@ -58,12 +58,12 @@ people, the rules and the process, and can apply them to real SimpleCare situati
 | tech-lead | Build | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | integrations-engineer | Build | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | frontend-engineer | Build | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
-| ai-engineer | Build | | | ☐ |
+| ai-engineer | Build | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | billing-msp | Build | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
-| marketing-lead | Marketing | | | ☐ |
-| social-media-manager | Marketing | | | ☐ |
-| content-seo | Marketing | | | ☐ |
-| performance-marketing | Marketing | | | ☐ |
+| marketing-lead | Marketing | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
+| social-media-manager | Marketing | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
+| content-seo | Marketing | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
+| performance-marketing | Marketing | 13/13 ✓ | task-ready ✓ | ☑ 29 Sep |
 | brand-designer | Marketing | | | ☐ |
 | lifecycle-crm | Marketing | | | ☐ |
 | partnerships-pr | Marketing | | | ☐ |
