@@ -4229,6 +4229,20 @@
   #pcv-c #vc-resrail .rs-rl{align-items:center;}
   #pcv-c #vc-resrail .rs-rl .rs-v{justify-content:flex-end;}
   @media (max-width:1100px){#pcv-c #vcp-results .rs-row{grid-template-columns:minmax(0,1fr) 88px;} #pcv-c #vcp-results .rs-row > .rs-v{grid-column:1;} #pcv-c #vcp-results .rs-pdf{justify-self:end;}}
+  /* Ani, 30 Sep: the time as its own pill, matching the profile pill */
+  .topbar .tb-time-pill{display:inline-flex;align-items:center;gap:10px;height:54px;box-sizing:border-box;
+    padding:6px 18px 6px 6px;border-radius:999px;background:var(--panel);box-shadow:0 1px 2px rgba(23,24,28,.05);
+    white-space:nowrap;font-variant-numeric:tabular-nums;}
+  .topbar .tb-time-pill .tbt-ic{width:42px;height:42px;border-radius:50%;background:var(--wash);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;}
+  .topbar .tb-time-pill .tbt-ic .ic,.topbar .tb-time-pill .tbt-ic svg{width:22px;height:22px;color:var(--ink);}
+  .topbar .tb-time-pill.live .tbt-ic{background:var(--brand-wash);}
+  .topbar .tb-time-pill.live .tbt-ic .ic,.topbar .tb-time-pill.live .tbt-ic svg{color:var(--brand);}
+  .topbar .tb-time-pill .tbt-txt{display:flex;flex-direction:column;line-height:1.2;}
+  .topbar .tb-time-pill b{font-size:15px;font-weight:600;color:var(--ink);}
+  .topbar .tb-time-pill .tbn-tail{font-size:14px;color:var(--ink-soft);}
+  .topbar .tb-time-pill:empty{display:none;}
+  @media (max-width:760px){.topbar .tb-time-pill .tbt-txt{display:none;} .topbar .tb-time-pill{padding:6px;}}
 </style>
 </head>
 <body>
@@ -4274,6 +4288,9 @@
     <div class="topbar">
       <div class="tb-left"><span class="tb-title" id="tb-title">Today</span><span class="tb-date" id="tb-date"></span></div>
       <div class="topbar-right">
+      <!-- Ani, 30 Sep: the time sits in its own pill, before the theme button, styled like the profile
+           pill, with a clock where the photo would be -->
+      <div class="tb-time-pill" id="tb-now" role="timer" aria-live="off"></div>
       <button class="chat-fab theme-btn" id="theme-btn" onclick="toggleTheme()" title="Switch to dark" aria-label="Switch to dark"><span class="ic" id="theme-icon"></span></button>
       <button class="chat-fab" id="chat-fab" onclick="toggleChatPanel()" title="MOA chat">
         <span class="ic" data-pcic="chatic"></span>
@@ -4287,7 +4304,6 @@
         <button class="profile-trigger" onclick="toggleProfileMenu()" aria-label="Your profile">
           <span class="pf-ph"><span class="pf-photo" id="pf-photo"><span class="pf-initials">DP</span></span>
           <span class="pf-status on" id="pf-status" title="Available"></span></span>
-          <span class="tb-now" id="tb-now"></span>
           <span class="pf-chev" data-pdic="chevrondown"></span>
         </button>
         <div class="profile-dropdown" id="profile-dropdown">
@@ -5917,7 +5933,8 @@ function renderTopClock(){
     pill.classList.toggle('live', s.live);
     var pdw = document.getElementById('pd-window');
     if(pdw) pdw.textContent = b.weekday + ' ' + b.month + ' ' + b.day + ' · ' + bcWindowState(n);
-    pill.innerHTML = '<b>' + s.head + '</b><span class="tbn-tail"><span class="ic" data-pdic="clock"></span>' + s.tail + '</span>';
+    pill.innerHTML = '<span class="tbt-ic"><span class="ic" data-pdic="clock"></span></span>' +
+      '<span class="tbt-txt"><b>' + s.head + '</b><span class="tbn-tail">' + s.tail + '</span></span>';
     if(typeof paintPd === 'function') paintPd(pill);
   }
   var el = document.getElementById('tb-clock'); if(!el) return;
@@ -10789,6 +10806,6 @@ function rsSaveExp(){
   toast('Expected result added · shows under Pending until it arrives');
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-09-26 19:16</div>
+  <div class="build-stamp">v2 · build 2026-09-30 10:33</div>
 </body>
 </html>
