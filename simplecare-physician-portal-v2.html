@@ -4331,6 +4331,16 @@
   html body button:not(#_a):not(#_b):not(#_c):not(#_d):is(.btn:not(.dark):not(.primary),.wt-new:not(.wt-dark),.al-btn,.pc-back,.day-arrow,.bill-pill,.status-pill,.q-ver,.cp-do button,button.go):is(:hover,:focus-visible) :is(span,b,i,svg,.ic,.q-caret,.nav-icon){color:var(--panel) !important;}
   html body button:not(#_a):not(#_b):not(#_c):not(#_d):is(.btn:not(.dark):not(.primary),.wt-new:not(.wt-dark),.al-btn,.pc-back,.day-arrow,.bill-pill,.status-pill,.q-ver,.cp-do button,button.go):is(:hover,:focus-visible)::after{border-color:var(--panel) !important;}
   html[data-theme="dark"] body :is(.rx-seg button.on,.rx-seg button.on *){color:#0B0E2A !important;}
+  /* queue group headings as full-width bars (same pattern as the inbox bands) */
+  html body #screen-today .q-table tr.q-sep > td{padding:20px 0 6px !important;border:0 !important;background:none !important;}
+  html body #screen-today .q-table tbody tr.q-sep:first-child > td{padding-top:6px !important;}
+  html body #screen-today .q-table tr.q-sep .q-sepin{display:flex !important;align-items:center;gap:10px;height:44px;box-sizing:border-box;
+    padding:0 12px 0 16px;border-radius:12px;background:var(--wash);font-size:16px !important;font-weight:600 !important;color:var(--ink) !important;}
+  html body #screen-today .q-table tr.q-sep.live .q-sepin{background:var(--brand-wash);}
+  html body #screen-today .q-table tr.q-sep .q-sepn{margin-left:2px;min-width:28px;height:28px;padding:0 9px;box-sizing:border-box;
+    display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:var(--panel);
+    font-size:15px !important;font-weight:600;color:var(--ink) !important;}
+  html body #screen-today .q-table tr.q-sep + tr > td{border-top:0 !important;}
 </style>
 </head>
 <body>
@@ -6109,7 +6119,9 @@ function shownWin(){
   return real;
 }
 function qSep(label, count, carry){
-  return '<tr class="q-sep'+(carry?' carry':'')+'"><td colspan="6"><span class="q-sepin">'+
+  /* Ani, 30 Sep: group headings read as bars, like the inbox bands, so they don't merge with the rows */
+  var live = /^Current window/.test(label);
+  return '<tr class="q-sep'+(carry?' carry':'')+(live?' live':'')+'"><td colspan="6"><span class="q-sepin">'+
     label+'<span class="q-sepn">'+count+'</span></span></td></tr>';
 }
 
@@ -11033,6 +11045,6 @@ window.addEventListener('resize', function(){
   updateChatBadge();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-09-30 11:04</div>
+  <div class="build-stamp">v2 · build 2026-09-30 11:10</div>
 </body>
 </html>
