@@ -92,3 +92,6 @@ Low), patient goal, steps, expected, actual, UX impact, evidence, and suggested 
 - **Notifications:** staging does **not** send real emails or texts to doctors or MOAs (Ani, 29 Sep).
   Completing a test booking there is safe.
 - **Signing in:** Ani signs in herself. Agents never enter passwords or approve third-party sign-in.
+- **Known limitation of staging:** booking by clicking a concern tile, outside the chat, isn't
+  available on staging. It is in production (Ani, 29 Sep). Tiles on staging show "No Physicians
+  Available". Don't report that as a defect. Test the tile path only where it exists.

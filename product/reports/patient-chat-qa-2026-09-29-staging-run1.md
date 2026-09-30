@@ -165,6 +165,10 @@
 - **Suggested direction:** A homepage message with an existing chat should either resume the chat visibly and send the message, or offer a new chat. Don't rewrite history.
 
 ### QA-007: Every non-AI path dead-ends with "No Physicians Available", while the chat offers same-day windows
+- **Resolved as a staging limitation (Ani, 29 Sep):** "staging does not have clicking on concerns
+  out of chat, but we do have it in production." So the non-AI tile path exists in production. This is
+  **not a product defect**, and its severity drops from High to n/a for staging. PC-10 and PC-23 need
+  re-testing where the tile path exists.
 - **Scenario:** PC-23, PC-06, PC-10 and PC-22.
 - **Severity:** High. It blocks the "AI is optional" rule in B-001 §4. It may be staging data configuration: **Needs Ani/engineering** to confirm.
 - **Patient goal:** Book without the chatbot.

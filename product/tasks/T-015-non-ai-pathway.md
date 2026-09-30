@@ -1,4 +1,4 @@
-# T-015 — Booking without the AI, and useful empty states
+# T-015 — Routing people who refuse the AI, and useful empty states
 
 | Field | Value |
 |---|---|
@@ -29,7 +29,7 @@ Evidence: QA-007 (PC-10, PC-23) in `product/reports/patient-chat-qa-2026-09-29-s
   - clinical wording or rules (Daniel's).
 
 ## Acceptance criteria
-- [ ] **A complete non-AI path:** a concern tile, then the call windows, then booking, with no chat needed (B-001: the AI is offered, never forced).
+- [ ] ~~A complete non-AI path~~: **this already exists in production** (Ani, 29 Sep). It's missing only on staging. Make sure the design **points to it clearly** from the chat.
 - [ ] **Empty state.** When no window is available, show the alternatives (other days, other doctors, the phone line), never a dead end.
 - [ ] **A patient who says "I don't want to talk to a bot"** is offered the tile path or the phone line.
 - [ ] **Triage-first concerns without the AI:** show where the non-AI triage would sit (a short form or the phone). Its content is **Needs Daniel/Ani**.
@@ -60,5 +60,6 @@ Evidence: QA-007 (PC-10, PC-23) in `product/reports/patient-chat-qa-2026-09-29-s
 - Ani: ☐  ·  Daniel (clinical): ☐ required
 
 ## Log
+- 2026-09-29: narrowed. The tile path exists in production; the remaining work is routing people who refuse the AI, and real empty states.
 - 2026-09-29: owner changed to Manoj, the newly hired designer. The `ux-designer` agent assists.
 - 2026-09-29 — created from staging QA run 1
