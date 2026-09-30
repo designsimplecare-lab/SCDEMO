@@ -3,7 +3,7 @@
 Every piece of work has a task file here: `T-NNN-<slug>.md`, made from [`TEMPLATE.md`](TEMPLATE.md).
 The process is in [`../process.md`](../process.md). The lead keeps this board current.
 
-**Status:** all 25 agents are certified as of 29 Sep 2026 (see [`../training/`](../training/README.md)). The
+**Who:** Ani manages the team and approves; Manoj owns every design task. **Status:** all 26 agents are certified as of 29 Sep 2026 (see [`../training/`](../training/README.md)). The
 tasks below are **Ready**, and waiting for Ani's go.
 
 | ID | Title | Type | Priority | Owner | Gates | Status |
@@ -15,8 +15,8 @@ tasks below are **Ready**, and waiting for Ani's go.
 | T-005 | Finish the simplecare.ca audit (the partial draft is filed) | Review | P2 | `content-seo` | `marketing-compliance` | Ready |
 | T-006 | Finish the QA baseline (the partial harness is filed) | Review | P2 | `qa-engineer` | — | Ready |
 | T-007 | Re-align market strategy and marketing to Daniel's direction (the confidential source is in `private/`). Includes re-checking the October calendar's "family doctor" posts P03 and P11 | Research | P1 | `market-strategist` | `marketing-lead` | Ready |
-| T-008 | Home per Daniel's 29 Sep markup: time beside the greeting; the attention list trimmed to name, test and value; no task rows (`from-daniel/2026-09-29-home-feedback.md`) | Design | P1 | `ux-designer` | `qa-engineer`, `clinical-safety` (the attention list) | Ready |
-| T-009 | Movable messenger and AI panels (Daniel), weighed against Ani's idea of chat as a primary left-nav item | Design | P1 | `ux-designer` | `qa-engineer`, `accessibility` | Ready |
+| T-008 | Home per Daniel's 29 Sep markup: time beside the greeting; the attention list trimmed to name, test and value; no task rows (`from-daniel/2026-09-29-home-feedback.md`) | Design | P1 | **Manoj** (+ `ux-designer`) | `qa-engineer`, `clinical-safety` (the attention list) | Ready |
+| T-009 | Movable messenger and AI panels (Daniel), weighed against Ani's idea of chat as a primary left-nav item | Design | P1 | **Manoj** (+ `ux-designer`) | `qa-engineer`, `accessibility` | Ready |
 | T-010 | Add Daniel's 29 Sep feedback and the call-window limit to the product docs | Spec | P1 | `product-manager` | — | Ready |
 | T-011 | Patient chat QA run on **staging** (before sign-in) | Review | P1 | `patient-chat-qa` | lead | In review. Phase 1 done; phase 2 (signed in) waits for Ani |
 | T-012 | Emergency screening in the Simplicity chat | Design | P1 | **Manoj** (+ `ux-designer`) | `clinical-safety`, `content-designer`, `accessibility`, `patient-chat-qa` | Ready |

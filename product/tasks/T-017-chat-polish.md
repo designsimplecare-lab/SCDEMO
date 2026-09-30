@@ -32,7 +32,7 @@ Evidence: QA-019, QA-021, QA-022, QA-023, QA-024 in `product/reports/patient-cha
 - [ ] **One time format everywhere,** and show the time zone on windows (BC time, with the patient's local time where it differs).
 - [ ] **Phone sizes:** text at least 16px (the proposed default, rule 22) and 44px targets.
 - [ ] **Keyboard:** concern tiles can be reached with the keyboard, and the mic button has a proper label.
-- [ ] **Cost notice.** When a concern isn't MSP-covered (e.g. a sick note), say so before the account step. The wording is **Needs Ani**.
+- [ ] **Cost notice.** When a concern isn't MSP-covered (e.g. a sick note), say so before the account step. The wording is drafted by `content-designer` and decided by Manoj.
 - [ ] It follows `product/handbook/01-rules.md`, bulletin B-001, and the SimpleCare Paper design rules.
 - [ ] **Evidence:** screenshots at desktop and phone width (in `product/reports/shots/`), plus a dev spec with the states, copy and behaviour: `product/specs/T-017-chat-polish.md`.
 - [ ] **Re-test:** after the gates, `patient-chat-qa` re-runs the scenarios above against the prototype.

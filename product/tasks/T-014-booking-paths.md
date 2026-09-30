@@ -43,7 +43,7 @@ Evidence: QA-011, QA-012, QA-016, QA-017, QA-018, QA-027 (PC-03, 04, 05, 06, 22)
 
 ## Needs Daniel / Ani
 - The list of which concerns are triage-first is **Needs Daniel**; use placeholders.
-- "Hold" duration: **Needs Ani/Daniel**.
+- "Hold" duration: **Needs Daniel** (Ani relays).
 
 ## Inputs
 - `product/reports/patient-chat-qa-2026-09-29-staging-run1.md` (see the issues listed above)

@@ -35,11 +35,11 @@ Columbia**.
 | Who | What they do | How we represent them |
 |---|---|---|
 | **Dr. Daniel Pannozzo** | The client and lead physician. Owns clinical and business decisions. His exact words are the spec. | `doctor` agent; his words in `from-daniel/` |
-| **Ani** | Designer and product owner. Approves every deploy and every public draft. | — |
+| **Ani** | **Manages the whole team:** sets priorities, assigns tasks, approves every deploy and every public draft. |  — |
 | **Physicians** | Call patients from the queue, chart, prescribe, review results and sign off. They may work from another time zone. | `doctor` |
 | **MOAs** (e.g. Dolly) | Handle tasks from the doctor, faxes, billing fixes and the office line. | `moa` |
 | **Physician assistant** (Japneet) | Works in the **Physician Assistant portal**, which is identical to the physician portal. Sends renewals when the doctor delegates, under his sign-off: "Always me. I can delegate authority to Japneet, but it is my responsibility." | `moa` (for now) |
-| **Manoj** | Product designer (human), hired by Ani on 29 Sep 2026. Owns the design tasks: patient chat and booking, and the portals. The `ux-designer` agent works for him: prototypes, specs, variants. | — |
+| **Manoj** | Product designer (human), hired by Ani on 29 Sep 2026. **Owns all design work and design decisions**: patient chat and booking, the portals, the design system and the visual treatment. The `ux-designer` agent works for him: prototypes, specs, variants. | — |
 | **Engineering** (Samin, Sai, Dev) | The real backend team. Backend documentation is on their to-do list. | — |
 | **Patients** | Walk-ins, people managing an ongoing condition, and new patients who have lost their family doctor. | `patient` |
 

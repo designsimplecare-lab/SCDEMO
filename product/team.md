@@ -17,9 +17,10 @@ record: physician, MOA and patient.
 
 **Humans who decide:**
 - **Dr. Daniel Pannozzo** owns clinical and business decisions. His exact words are the spec.
-- **Ani** owns design and product, and is the only one who approves a deploy.
-- **Manoj** is the product designer (human, joined 29 Sep 2026). He owns the design tasks, and
-  directs the `ux-designer` and `content-designer` agents. Ani gives the final approval.
+- **Ani manages the whole team:** priorities, assigning tasks, and the final approval of work and
+  deploys. (Ani, 29 Sep: "all tasks for me as designer should go to him … I will manage all team.")
+- **Manoj is the product designer** (human, joined 29 Sep 2026). **Every design task and design
+  decision goes to him.** He directs the `ux-designer`, `content-designer` and `brand-designer` agents.
 - **Agents draft and analyse; people sign.** Privacy officer, clinical-safety sign-off, legal and
   regulatory approval, and every clinical rule (doses, thresholds, protocols) belong to accountable
   people.

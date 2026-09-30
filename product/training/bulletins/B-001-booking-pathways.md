@@ -9,7 +9,7 @@
 1. **Nobody is blocked.** Patients can book for **any** concern that isn't an emergency. "No doctor
    should block."
    - The only hard stop is an emergency, which is sent to 911 or the ER. The wording and look need
-     Daniel and Ani (rule 17a).
+     Daniel (wording) and Manoj (look) (rule 17a).
 2. **There are two intake depths per concern.**
    - **Quick-book** is for straightforward concerns, e.g. Rx renewal, sick note, bladder infection,
      birth control refill.

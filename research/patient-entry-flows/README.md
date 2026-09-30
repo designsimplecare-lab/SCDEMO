@@ -5,7 +5,7 @@ Source: Ani's design boards, 26 Sep 2026, saved in this folder:
 - `board-become-patient-about.webp`
 
 Ani is designing these now, in her design boards. **The Simplicity chat is not yet in any prototype
-file.** Ask Ani where it will be built before any task touches it. They are the front half of the product: everything that happens before
+file.** Ask Manoj where it will be built before any task touches it. They are the front half of the product: everything that happens before
 the doctor's queue in `simplecare-physician-portal-v2.html`.
 
 ## 1. Arrival: the landing page ("MacBook Air – 223")
