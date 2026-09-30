@@ -70,6 +70,10 @@ Requested → Triaged → Ready → In progress → In review → Approved → D
 - The board is updated.
 
 ## 6. Communication formats
+- **Every report starts with a one-screen summary:** at most 5 problems, in plain words, each with its
+  severity, then "what each person needs to do". The detail comes after. A report over about 150
+  lines also gets a separate `<report>-SUMMARY.md`. (Ani, 29 Sep: "this QA doc is so big now I'm
+  confused.")
 - **Asks of Daniel.** `product-manager` batches them into one list per round, most important first,
   each with its source and what it unblocks. We never send Daniel a scattered stream.
 - **Reports to Ani.** The lead gives her: what changed, the proof, what's blocked, and the decisions
