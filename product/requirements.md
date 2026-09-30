@@ -2,8 +2,10 @@
 
 Owner: product manager agent. First written 25 Sep 2026. The source codes are the same as in
 `use-cases.md`: MTG21, S1-S5, SIA, IA, HUX, COMP, SCS, SPEC, DR, V2 (build 12:45), V2b (build 13:10,
-`d2a2823`), MOAP, PP, MEM, ANS26 (Daniel's written answers of 26 Sep 2026,
-`from-daniel/2026-09-26-answers-to-shadowing-questions.md`) and commit hashes. "Assumption" marks a
+`d2a2823`), V2c (build 2026-09-30 10:33, `b8331e5`), MOAP, PP, MEM, ANS26 (Daniel's written answers
+of 26 Sep 2026, `from-daniel/2026-09-26-answers-to-shadowing-questions.md`), ANS27 (his round-2
+answers), HOME29 (his Home markup), BOOK29 (his booking model), B-001, QA29 and commit hashes; see
+the key in `use-cases.md`. "Assumption" marks a
 claim with no source. Status: **built** (works in v2), **partly built**, **not built**. "Open" names
 the open questions that block a requirement (see `open-questions.md`). This file sets no clinical
 thresholds, doses or billing codes. Where one is needed, it points to an open question.
@@ -32,19 +34,30 @@ identity](#patient-identity-id) · [Look and feel](#look-and-feel-ui) · [MOA po
   windows (MTG21:53-54).
 - Accept: all four windows are visible at rest; the live window has a marker; picking one pins the
   queue to it, and clicking it again releases the pin (`c3c67dd`).
-- Status: built.
-- Open: OQ-34.
+- 29 Sep: *"we have limited the number of windows. What that number is, i am not sure."*
+  (HOME29:8; D-83). "Four" is the build's number, not his. The accept line holds for whatever number
+  he sets.
+- Status: built (four windows).
+- Open: OQ-66, OQ-34.
 
 **REQ-HQ-02 · The clock and the window state are on every screen.**
 - The doctor's local time and the state of the BC call day are in view on every screen.
 - Rationale: Daniel, 25 Sep: *"This is very useful info and I want it front and center... when I am
   in other time zones it orients me."* (V2:4077). His six states are listed at V2:5600-5608
   (`f308201`).
+- On Home, the time sits next to the greeting. Daniel, 29 Sep: *"Can we place the timing info next
+  to Good Evening or Good Morning or Good Afternoon whatever it might be"* (HOME29:14-15; D-84).
 - Accept: the zone of each time is named (for example PT beside local time), and the windows use BC
-  time (DR:29-36).
-- Status: partly built. The clock is in the profile pill (`9b496d2`). The zone labels are missing
-  (DR:31-33).
-- Open: OQ-34.
+  time (DR:29-36). On Home, the local time and the window state read as one line with the greeting,
+  for example "Good evening, Dr. Pannozzo · 7:50 PM Toronto · 10m left" (HOME29:24-26).
+- Status: partly built (V2c).
+  - Since 30 Sep the time has its own pill before the theme button (`b8331e5`,
+    V2c:4291-4293; D-92).
+  - The greeting is at the other end of the top bar (V2c:4289, 5547), so it is not beside the
+    greeting yet. T-008 (Manoj) is building that.
+  - The zone labels are missing (DR:31-33).
+- Priority: P1.
+- Open: OQ-71, OQ-39, OQ-66.
 
 **REQ-HQ-03 · The queue follows the clock and holds carryover.**
 - Patients unfinished from an earlier window stay in a Carryover band above the current window.
@@ -93,8 +106,9 @@ concern.**
 **REQ-HQ-09 · Queue order is first come, first served, with no pace metrics.**
 - Rationale: wait duration is a pace metric Daniel does not want (`8cd0893`, `874f906`). *"Anything
   red is at the top."* (V2:5787).
-- Accept: position numbers, not wait times. A red-flag intake sorts first.
-- Status: built.
+- Accept: position numbers, not wait times. A red-flag intake sorts first. Finalizing a visit never
+  changes the order: *"Finalizing a visit, doesn't break the queue."* (ANS27:46; D-82).
+- Status: built. That Finalize leaves the order alone was not re-tested this run.
 
 **REQ-HQ-10 · No DOB, PHN or other noisy detail on list rows.**
 - Rationale: MTG21:14, 82; `236eed3`.
@@ -102,27 +116,52 @@ concern.**
 - Status: built for DOB and PHN. "Remove noisy detail fields" is not itemised.
 - Open: OQ-03.
 
-**REQ-HQ-11 · Needs your attention appears only when populated, and says what is wrong.**
-- Rationale: MTG21:10. *"Review MRI report"* is a mystery. The AI should give under five words of
-  context: *"Don't keep it a mystery."* (MTG21:60-62).
-- Accept: the section is absent on a clean day. Each row names the finding and never a bare task
-  title. There is one row per patient (DR:46-48).
-- Status: built to the current rule (build 13:10). A patient's intake flag folds into their critical
-  result row as a second reason and a second button (`renderCriticals` V2b:6164-6172). "Review MRI
-  report" is removed from the task data (V2b:6812). The intake-flag row is still static markup
-  (V2b:4230).
-- Open: OQ-01, OQ-35.
+**REQ-HQ-11 · Needs your attention appears only when populated, and each row reads name, test and
+value, nothing more.**
+- A row shows:
+  - the patient's name, with age and sex;
+  - the test;
+  - the value, with its arrow. Red is only for a critical value.
+- A row does not show the reference range, the diagnosis or context text, the source or the
+  assignee. There are no task rows. One patient has one row.
+- Rationale:
+  - MTG21:10.
+  - Daniel, 29 Sep, on the marked-up Home: *"I eliminated the extra stuff that isn't needed -
+    crossed off"* (HOME29:17, 23-32; D-85).
+  - The earlier "Review MRI report" mystery (MTG21:60-62) was a task row, and task rows are gone.
+- Accept:
+  - The section is absent on a clean day.
+  - Each row holds exactly those three things, plus its Review action.
+  - No row is a task.
+  - There is one row per patient (DR:46-48).
+- Status: not built to the new rule (V2c).
+  - The result row still renders the reference range, the clinical concern, the intake flag text
+    and the basis (`renderCriticals` V2c:6299-6303).
+  - Task rows still render (`attnTasks` V2c:6177-6188).
+  - T-008 (Manoj) is building it.
+- Priority: P1.
+- Open: OQ-35 (confirm: no context line; what happens to the intake flag). OQ-01 is answered.
 
-**REQ-HQ-12 · The attention list is not an inbox.**
-- Only the most urgent items appear there, and routine never does. Over-tagging is guarded against.
-- Rationale: MTG21:72-74. *"If everything needs your attention, then nothing needs your attention."*
-  (`53c6597`). *"So as to not overwhelm the doctor - we are keeping it to critical values."*
-  (`392eccb`).
-- Accept: results are critical only. The threshold for tasks is set by OQ-01. Overdue is a status,
-  not a priority (SPEC:84-92).
-- Status: partly built. Results are critical-only (V2:6017). Tasks use Urgent, High or overdue
-  (V2:5922), which the spec marks as an assumption (SPEC:44-45).
-- Open: OQ-01.
+**REQ-HQ-12 · The attention list is not an inbox: Critical and High results only.**
+- Results in the Critical and High bands appear there. Routine results never do, and neither do
+  tasks. Over-tagging is guarded against.
+- Rationale:
+  - Daniel, 27 Sep: *"Critical and High belong."* (ANS27:8; D-78). This replaces the 21 Sep
+    *"we are keeping it to critical values."* (`392eccb`; D-39).
+  - The task row was crossed off on 29 Sep (HOME29:27-28; D-85).
+  - Still true: *"If everything needs your attention, then nothing needs your attention."*
+    (`53c6597`).
+- Accept:
+  - A Critical or High result that is not yet reviewed shows. A Routine one never does.
+  - The bands are the Inbox's own tiering (REQ-IN-07), with no new rule added.
+  - No task appears, whatever its priority or age.
+- Status: not built (V2c).
+  - Results are critical only (`renderCriticals` V2c:6274).
+  - Tasks still appear when Urgent, High or overdue (V2c:6188). The spec had marked that threshold
+    as an assumption (SPEC:44-45).
+  - The hazard log's HZ-16 names the missing High results. It is `clinical-safety`'s to update.
+- Priority: P1.
+- Open: none (OQ-01 answered).
 
 **REQ-HQ-13 · The navigation is collapsed by default, and remembered.**
 - Rationale: MTG21:23; V2:7950.
@@ -134,9 +173,12 @@ concern.**
 - The row opens the chart. Call is shown only on the next patient. Task MOA is revealed on hover and
   focus. On touch, the actions stay visible.
 - Rationale: SPEC:167-205 (*"mirrors a walk-in queue"*); `607bd2d`.
+- 27 Sep: he rarely works out of order, but *"I will call them immediately"* for one particular
+  patient (ANS27:46-48; D-82). So a way to call a patient who is not next is needed. Where it sits
+  (the row, or Add-On) is OQ-04.
 - Accept: as in SPEC:182-205.
 - Status: built (V2:5822-5828).
-- Open: OQ-04, OQ-05.
+- Open: OQ-04 (partly answered), OQ-05.
 
 **REQ-HQ-15 · The queue count matches the rows shown.**
 - Rationale: "Live queue 6" sits above 8 rows (DR:39-40).
@@ -349,8 +391,14 @@ patient".**
   priority on 26 Sep.
 - Accept: on a chart with no SimpleCare notes, the doctor can tell from the screen whether the
   patient was seen on another platform, without asking.
+- 27 Sep: *"No - don't mention Rocket or Tia, I ask because many of my patients come from there."*
+  (ANS27:38; D-81).
+  - Intake will not ask this question. So the other-platform half has no source of data, and it is
+    **on hold**. He asks it himself.
+  - The returning-patient half stands (REQ-ID-05).
+  - No competitor is named on the chart.
 - Status: not built.
-- Open: OQ-18.
+- Open: none (OQ-18 answered).
 
 **REQ-CH-17 · The problem list maintains itself, with the doctor approving.**
 - Suggestions carry their evidence and land nowhere until approved. Every change is logged. Review
@@ -584,7 +632,8 @@ patient".**
   `rxRenderReview` V2b:10023). Code: "A fax to a pharmacy cannot be taken back, so nothing goes
   before this check." (V2b:10013).
 - 26 Sep: *"To Fax is to 'sign off' on the script"* (ANS26:22; D-71). The press that sends is the
-  doctor's sign-off, so it reads as one (REQ-UI-06). Today it reads "Send by fax".
+  doctor's sign-off, so it reads as one (REQ-UI-06). Since `c1015e4` it reads "Sign off & fax"
+  (V2c:10166). The delegated route's "Send to Japneet" does not (REQ-RX-07).
 - Priority: P1.
 
 **REQ-RX-05 · Real fax states are shown.**
@@ -600,17 +649,33 @@ patient".**
 - Rationale: *"Is the gabapentin the only medication that you need right now?"* (S2:35-36, 59-61).
 - Status: built (build 13:10). "Also active · Renew too" (V2b:9972-9983).
 
-**REQ-RX-07 · "Ask MOA to send" is on the renewal card.**
-- It files the task with the drug filled in, and shows "Sent to <MOA> → picked up".
-- Rationale: S2:38-40, 62-63.
-- Status: built (build 13:10). "Ask MOA to send" goes through the same check step, files the task
-  with the drug and pharmacy written in (`moaTask` V2b:10102), writes the note line, and shows "Sent
-  to <MOA> · waiting", then "Picked up by <MOA>" (V2b:10055-10064). Picked up is a 7 s demo timer.
-  "Review & fax" is the primary button and "Ask MOA to send" the secondary (V2b:4601-4602).
-- 26 Sep: that order no longer matches Daniel: either can send, his call each time (ANS26:8-9;
-  D-72). See REQ-RX-10.
+**REQ-RX-07 · "Ask Japneet to send" is on the renewal card: a delegation to the physician
+assistant, under the doctor's sign-off.**
+- The doctor hands the renewal to Japneet, the physician assistant (PA). She works in a Physician
+  Assistant portal identical to his. The card shows it was sent and picked up, and the record keeps
+  the sign-off as his.
+- Rationale:
+  - S2:38-40, 62-63.
+  - Daniel, 27 Sep: *"Always me. I can delegate authority to Japneet, but it is my responsibility.
+    She uses the Physician Assistant Portal - which is identical to my portal."* (ANS27:14-15;
+    D-79). Until 30 Sep this requirement called her the MOA. She isn't one.
+- Accept:
+  - The button names the PA.
+  - The hand-off goes to the PA, not to the MOA task queue.
+  - The note line and the record carry the doctor's name as the signer, and name Japneet as the
+    person who sent it. The exact wording waits on OQ-70.
+  - The card shows "sent", then "picked up".
+- Status: partly built (V2c).
+  - The button reads "Ask Japneet to send" (V2c:10113) and goes through the same check step.
+  - Japneet is modelled as the MOA buddy (`MOA_ROSTER` V2c:6870-6871).
+  - The route files an MOA "Prescriptions" task at routine priority (`moaTask` V2c:10183).
+  - The note line reads "Sent to Japneet (MOA) to fax", with no sign-off by the doctor
+    (V2c:10187).
+  - Picked up is a 7 s demo timer.
+- Hazard: HZ-09 in the clinical-safety log (the renewal waits at routine, and the sign-off is
+  unclear). Its sign-off cause is now answered by D-79; the log is `clinical-safety`'s to update.
 - Priority: P1.
-- Open: OQ-41, OQ-61 (OQ-08 answered).
+- Open: OQ-70, OQ-41 (OQ-08 and OQ-61 answered).
 
 **REQ-RX-08 · The last-dispensed date shows on the card.**
 - Rationale: the queue's AI line already knows it (DR:84).
@@ -629,18 +694,25 @@ patient".**
 - Status: not built. The renewal card has Send, Ask MOA to send and Edit only (V2b:4601-4602).
 - Open: OQ-55.
 
-**REQ-RX-10 · "Send it myself" and "Ask the MOA to send" carry equal weight.**
+**REQ-RX-10 · "Send it myself" and "Ask Japneet to send" carry equal weight.**
 - Both routes sit side by side with the same visual weight. Neither is preselected or styled as the
-  default, and the product does not choose by drug or pharmacy.
-- Rationale: Daniel, 26 Sep: *"Either can send... So if I am f\*\*\*ing around, she sends it. If I
-  think she'll f\*\*\* it up, then i send it."* (ANS26:8-9; D-72). It is the doctor's call each
-  time (ANS26:12-13).
-- Accept: at rest, neither button is the primary style; either completes the renewal; the visit
-  record says which route was taken and by whom.
-- Status: not built. "Review & fax" is the dark primary button and "Ask MOA to send" the plain
-  secondary one (V2b:4601-4602).
+  default, and the product does not choose by drug or pharmacy. Either way, the sign-off is the
+  doctor's.
+- Rationale:
+  - Daniel, 26 Sep: *"Either can send... So if I am f\*\*\*ing around, she sends it. If I think
+    she'll f\*\*\* it up, then i send it."* (ANS26:8-9; D-72). It is the doctor's call each time
+    (ANS26:12-13).
+  - 27 Sep: "she" is Japneet, the physician assistant, and the responsibility stays his
+    (ANS27:14-15; D-79).
+- Accept:
+  - At rest, neither button is the primary style.
+  - Either completes the renewal.
+  - The visit record says which route was taken and who sent it, under the doctor's sign-off.
+- Status: built for equal weight (`c1015e4`). "Send it myself (fax)" and "Ask Japneet to send"
+  share one plain style, and neither is the default (V2c:4717-4720, 10113). The record for the
+  delegated route is REQ-RX-07's gap.
 - Priority: P1.
-- Open: OQ-61 (whose sign-off it is when the MOA sends).
+- Open: OQ-70 (OQ-61 answered).
 
 **REQ-RX-11 · The doctor's favourite prescriptions are pre-populated.**
 - A prescription or renewal can start from one of the doctor's favourites, a saved script that fills
@@ -648,12 +720,17 @@ patient".**
 - Rationale: Daniel, 26 Sep: *"I also have my favorite's pre-populated."* (ANS26:8-9; D-73). He
   describes them as something he has now, so a v2 without them would be a step back from production
   (inference from the quote; OQ-60 asks where they live).
+- 27 Sep: *"They live in the Rx function. I manage them."* (ANS27:23; D-80). Favourites belong to
+  prescribing, and the doctor adds and changes them.
 - Accept: from the renewal card, the doctor can pick a favourite and see it filled in, then edit or
-  send it. Which fields a favourite holds, and who may add, change or use one, are OQ-60.
-- Status: not built. The renewal card starts only from the patient's medication list (`RX_MEDS`
-  V2b:9894).
+  send it. Only the doctor adds, changes or removes a favourite. Which fields a favourite holds is
+  OQ-09. Whether Japneet may send from one is OQ-70.
+- Status: partly built (`c1015e4`).
+  - The renewal card has a Favourites button that fills a line, from invented demo favourites
+    (V2c:4706, 10546-10583).
+  - There is no place to add, change or remove a favourite.
 - Priority: P1.
-- Open: OQ-60, OQ-09.
+- Open: OQ-09, OQ-70 (OQ-60 answered).
 
 ---
 
@@ -851,6 +928,8 @@ dashboard.**
 - Rationale: *"Yours should stay on your dashboard"* (SIA:30-32).
 - Status: partly built. Tasks has an "Assigned to Dr. Pannozzo" filter; Home shows only urgent, high
   or overdue.
+- 29 Sep: task rows leave Needs your attention (HOME29:27-28; D-85). The row he crossed off was a
+  delegated task, so this does not settle where his own work sits. It is not in the attention list.
 - Open: OQ-22, OQ-23.
 
 **REQ-TK-08 · Task types match the chart's tools, and type is a badge, never a section.**
@@ -894,14 +973,16 @@ Inbox.**
 - Status: not built.
 - Open: OQ-40.
 
-**REQ-INT-04 · Intake asks whether the patient has been seen on another platform.**
-- For example: "Have you been seen on another virtual platform (e.g. Tia Health, Rocket Doctor)?"
-  The answer feeds REQ-CH-16.
-- Rationale: asked out loud in 2 of 5 visits, S1 and S5 (S1:10-12, 29-30; S5:26-29, 75-77,
-  153-155). Priority raised on 26 Sep: now in the first batch for Daniel (OQ-18).
-- Accept: the answer is on the chart before the call starts.
-- Status: not built.
-- Open: OQ-18.
+**REQ-INT-04 · Intake asks whether the patient has been seen on another platform. WITHDRAWN
+27 Sep 2026.**
+- Daniel: *"No - don't mention Rocket or Tia, I ask because many of my patients come from there."*
+  (ANS27:38; D-81).
+  - Intake does not ask this, and no competitor is named in intake or in the product (rule 16a).
+  - He asks it himself on the call.
+  - Kept here, so the ID isn't reused. It was raised from S1 and S5 (S1:10-12; S5:26-29), where he
+    asked it out loud.
+- Status: withdrawn. Nothing to build.
+- Open: none (OQ-18 answered).
 
 **REQ-INT-05 · The AI intake summary is marked as machine-written.**
 - Rationale: *"so nobody mistakes a machine summary for a colleague's note"* (`944d26a`).
@@ -916,6 +997,103 @@ Inbox.**
 - Accept: every intake answer is readable from the chart without a separate view, and today's note
   stays in view.
 - Status: not built. "View intake note" opens `openBrief` (V2b:4641, 6652).
+
+**Booking, from Daniel's 29 Sep booking model (INT-07 to INT-11).** These are patient-facing.
+- The v2 prototypes don't model them yet. Manoj is designing them in a new shared prototype,
+  `simplecare-patient-chat.html` (T-012 to T-015), which does not exist yet.
+- "Production" and "staging" below are the live system, as tested in QA29.
+
+**REQ-INT-07 · Booking is open to every concern that is not an emergency.**
+- No concern, doctor or pathway refuses a booking, except an emergency, which is redirected
+  (REQ-INT-11).
+- Rationale: Daniel, 29 Sep: *"I am not blocking patients anymore. They can book for every single
+  problem no matter how hard so long as it is not an Emergency."* *"Indeed, no doctor should
+  block."* (BOOK29:32-34; D-87). Hard cases are organised, not turned away: *"What we need to do is
+  organize these Patients so what is hard can become manageable."* (BOOK29:37).
+- Accept:
+  - Any non-emergency concern reaches a booked window on every pathway.
+  - No screen says a concern can't be booked.
+  - An empty day offers other days, other doctors or the phone line, never a dead end (T-015).
+- Status: open in production. Ani: *"in current state all is open."* (BOOK29:8). Not modelled in
+  the prototypes.
+- Priority: P1.
+- Open: OQ-69 (what counts as an emergency).
+
+**REQ-INT-08 · Each concern has one of two intake depths: quick-book or triage-first.**
+- Straightforward concerns get a quick-book tile. Complicated ones go through triage before a
+  window is chosen.
+- Which concern gets which depth is Daniel's list. The product never decides it.
+- Rationale: *"those can be displayed … We do that already."* *"i am not so inclined to quick book
+  a Hemorrhoid Ani … You have a Hemorrhoid, you put in some work."* *"And so preference is given to
+  the AI for more complicated concerns."* (BOOK29:11-19; D-88).
+  - His quick-book examples: Rx Renewal, Sick Note, Bladder Infection, Birth Control Refill.
+  - His triage-first examples: hemorrhoids, diarrhoea, constipation.
+- Accept:
+  - The depth is data per concern, set from Daniel's list.
+  - A triage-first concern never shows a quick-book tile.
+  - Triage finishes before a window is offered (T-014).
+  - Until the list arrives, only his named examples are classed. Every other concern is marked
+    unclassified, not guessed.
+- Status: partly built in production. Quick-book tiles exist ("We do that already"). The split is
+  not in the prototypes.
+- Priority: P1.
+- Open: OQ-67, OQ-68.
+
+**REQ-INT-09 · Many booking pathways, all into the same queue.**
+- The pathways:
+  - concern tiles ("Know what you need");
+  - the Simplicity AI chat;
+  - the clinic phone line, which may itself become AI;
+  - possibly WhatsApp or text booking, which is not decided.
+- Each ends in the same call window and queue as the others.
+- Rationale: *"these other pathways exist to give as many patients as possible as many booking
+  pathways as possible"* (BOOK29:24-25). *"we ought to even have WhatsApp? Text based booking … why
+  not."* (BOOK29:26; D-89). "Same queue" is the lead's reading (BOOK29:52-53).
+- Accept:
+  - A booking from any pathway shows in the physician queue the same way.
+  - The patient's window is held before any account step (T-014).
+  - No pathway is presented as the main one.
+- Status: partly built.
+  - Tiles and the chat exist. Both were tested on staging, and tile booking works in production
+    (QA29:13).
+  - The clinic phone line exists (BOOK29:24). How it books into the queue is not documented in
+    our sources.
+  - WhatsApp or text booking is not built and not decided.
+  - On staging the window isn't held before sign-up (QA29:16).
+- Priority: P1 (WhatsApp or text: P3, waiting on OQ-72).
+- Open: OQ-72, OQ-73.
+
+**REQ-INT-10 · The AI is offered, never forced.**
+- Every pathway, including triage for a complicated concern, works without talking to an AI.
+- A patient who says they don't want the AI is offered the tiles or the phone line.
+- Rationale: *"Some people f\*\*\*ing hate AI. So they don't want to talk to some bulls\*\*t
+  agent."* (BOOK29:23; D-90; B-001 item 4).
+- Accept:
+  - From the chat, a patient can reach a non-AI pathway in one step.
+  - A triage-first concern has a non-AI triage. Its content waits on OQ-68.
+- Status: partly built. The tile path works in production. QA-007 was a staging-only gap (QA29:13;
+  `b85fd4d`). There is no non-AI triage for triage-first concerns.
+- Priority: P1.
+- Open: OQ-68.
+
+**REQ-INT-11 · An emergency is caught first and redirected, on every patient-facing pathway.**
+- Before any pathway, doctor or window appears, and at any point in the chat, a message that
+  signals an emergency shows one emergency screen (call 911 or go to the ER). Booking does not
+  quietly resume afterwards.
+- Rationale:
+  - Booking is open *"so long as it is not an Emergency"* (BOOK29:32-33).
+  - On staging, "chest pain, can't breathe" is offered doctors and call windows (QA29:12, QA-001 to
+    QA-004).
+  - Rule 17a: the wording is Daniel's, the look is Manoj's, and Ani approves.
+- Accept:
+  - The first message is checked before anything else.
+  - The same check runs mid-chat.
+  - One emergency treatment is used in the chat, on the tiles and on the doctor pages.
+  - The red-flag list and the words come only from Daniel. Until then they are marked placeholders
+    (T-012).
+- Status: not built. It fails on staging (QA29:12).
+- Priority: P1. `clinical-safety` gates it.
+- Open: OQ-69.
 
 ---
 
@@ -1045,12 +1223,49 @@ way out.**
 - Accept: every approving button says it signs off; after it, the record reads "Signed off by
   Dr. <name> · <time>" or the same in the product's words. If one press signs off two things (the
   visit and the bill), the label says both (OQ-51). The exact copy is the designer's to draft.
-- Status: partly built. Inbox Sign off is an action with a toast "Signed off" (V2b:8093), and a
-  finalized note reads "Signed by … · read-only" (V2b:10282). The fax reads "Send by fax" with no
-  sign-off wording (V2b:10014), and the claim is submitted inside Finalize without saying so
-  (V2b:7114).
+- 27 Sep: *"Always me. I can delegate authority to Japneet, but it is my responsibility."*
+  (ANS27:14; D-79). A script Japneet sends is still his sign-off.
+- Status: partly built (V2c; `c1015e4` moved it on from build 13:10).
+  - Built:
+    - Finalize reads "Sign off & finalize visit" (V2c:4738). Its toast says "Signed off by
+      Dr. Pannozzo", and adds "claim submitted" when it bills (V2c:7237). The stamp reads "Signed
+      off by Dr. Pannozzo · today …" (V2c:10456).
+    - The self-send check step reads "Sign off & fax". The note line records "Signed off by
+      Dr. Pannozzo <time>" (V2c:10166, 10197).
+    - Billing actions read "Sign off & submit" and "Sign off & resubmit" (V2c:6580-6581).
+    - Inbox sign-off toasts "Signed off by Dr. Pannozzo" (V2c:8213).
+  - Not built: the delegated route's check step reads "Send to Japneet", and its note says "Sent to
+    Japneet (MOA)", with no sign-off by the doctor (V2c:10166, 10187). That is OQ-70.
+  - Not re-checked this run: whether Finalize's label says it also signs off the bill (OQ-51).
 - Priority: P1.
-- Open: OQ-51, OQ-61, OQ-62.
+- Open: OQ-51, OQ-62, OQ-70 (OQ-61 answered).
+
+**REQ-UI-07 · The messenger and the AI assistant are movable panels.**
+- The doctor can drag the MOA chat panel and the SimpleCare Assistant panel to where they want them
+  on the screen.
+- Rationale: Daniel, 29 Sep: *"3. I'd like the messenger function movable"* *"4. The AI function
+  movable."* (HOME29:19-21; D-86).
+- Accept:
+  - Each panel can be moved by pointer and by keyboard (accessibility gates it, T-009).
+  - A moved panel never covers the call controls or the note it is needed beside.
+  - Whether a position is remembered is a design detail for Manoj (assumption: remembered, like
+    the nav in REQ-HQ-13).
+- Status: not built. The AI panel is fixed at the bottom right (V2c:508). The chat panel is fixed
+  too (V2c:3827, 3872). T-009 (Manoj) is building it.
+- Priority: P1.
+
+**REQ-UI-08 · Chat is a primary left-nav item.**
+- The MOA chat gets its own item in the left navigation, as well as the movable panel (REQ-UI-07).
+- Rationale: Ani, 29 Sep: *"I'm thinking to make chat one big menu on the left nav so it becomes
+  more primary"* (HOME29:37). On 30 Sep she decided to build it alongside Daniel's movable panels.
+  That was relayed in the T-010 brief (D-86).
+- Accept:
+  - Chat is reachable from the nav on every screen.
+  - The nav stays collapsed by default (REQ-HQ-13).
+  - The MOA's online presence is visible from it (REQ-HQ-16).
+- Status: not built. Chat opens from a top-bar button (V2c:4295). T-008 and T-009 (Manoj) are
+  building it.
+- Priority: P1.
 
 ---
 
@@ -1183,3 +1398,24 @@ way out.**
   tree already holds uncommitted changes toward these answers ("Send it myself (fax)" no longer
   primary, a Favourites button, "Sign off & finalize visit"). Statuses stay on the committed build
   until those are committed.
+- 30 Sep 2026, fifth run (T-010, with T-004 folded in). Daniel's round-2 answers (ANS27), his Home
+  markup (HOME29) and his booking model (BOOK29), checked against the committed build V2c
+  (`b8331e5`, 2026-09-30 10:33). The working tree was being edited for T-008/T-009 during this run,
+  so no status is taken from it.
+  - 145 requirements (7 new), one of them withdrawn.
+  - New: INT-07 (open booking), INT-08 (quick-book or triage-first), INT-09 (many pathways, one
+    queue), INT-10 (the AI optional), INT-11 (emergency first), UI-07 (movable panels) and UI-08
+    (chat in the left nav).
+  - Rewritten:
+    - HQ-11: name, test and value only, and no task rows. Now not built.
+    - HQ-12: Critical and High results, and no tasks. Now not built.
+    - RX-07: "Ask Japneet to send", a delegation to the PA under his sign-off. Now partly built.
+    - RX-10: now names Japneet. Moved to built for equal weight (`c1015e4`).
+  - Updated: HQ-01 and HQ-02 (limited windows; the time beside the greeting vs its own pill), HQ-09
+    (finalizing keeps the order), HQ-14 (he sometimes calls a patient immediately), CH-16 (the
+    other-platform half on hold), RX-04 ("Sign off & fax"), RX-11 (favourites in Rx, managed by
+    him; moved to partly built), TK-07, and UI-06 (status re-read from V2c; the delegated route has
+    no sign-off).
+  - Withdrawn: INT-04. Intake does not ask about other platforms (D-81).
+  - Not re-checked this run: other requirements `c1015e4` may have moved, such as CH-31, CH-32,
+    IN-12 and IN-13. That needs a follow-up run.

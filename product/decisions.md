@@ -4,7 +4,8 @@ Owner: product manager agent. First written 25 Sep 2026. Each entry gives what w
 the quote behind it, what it replaced, and the source. The dates are the dates of the source or the
 commit. Source codes are as in `use-cases.md`. **Reversed** marks a decision that a later entry
 undid; the later entry names it. "Design" in *By* means the decision came from a design session with
-no client quote; Ani approved it by shipping it.
+no client quote; Ani approved it by shipping it. From 29 Sep 2026, design decisions are Manoj's,
+with Ani approving (D-91).
 
 ## Before August
 
@@ -75,6 +76,8 @@ no client quote; Ani approved it by shipping it.
 - **Source:** `c7456f1`.
 - **Status:** silently superseded. The four fixed BC windows are used since `f308201` and in
   SPEC:113-115. This is not reconciled; see OQ-34.
+- **Superseded (29 Sep):** Daniel confirms a limited, fixed set of windows (D-83). The number and
+  the times are OQ-66.
 
 ### D-09 · 8 Aug 2026 · Copilot leaves the nav
 - **Decided:** Copilot comes out of the sidebar and the floating assistant stays. It was renamed
@@ -252,6 +255,7 @@ no client quote; Ani approved it by shipping it.
 - **Quote:** none beyond the commit.
 - **Replaced:** the four-group nav (IA:18-42) and the Practice flyout (SCS:5).
 - **Source:** `944d26a`.
+- **Amended (30 Sep):** chat becomes a left-nav item (D-86).
 
 ### D-28 · 13-14 Sep 2026 · Health-card and billing vocabularies
 - **Decided:** Health card: Verified / Check required / Invalid card / Private pay. MSP has 5 states
@@ -285,6 +289,8 @@ no client quote; Ani approved it by shipping it.
 - **Replaced:** `f081c07`, where every open row kept Call and out-of-turn calls were confirmed.
 - **Source:** SPEC:167-181, 245-256; `607bd2d`.
 - **Open:** OQ-04.
+- **Refined (27 Sep):** Daniel rarely works out of order, but sometimes calls a particular patient
+  immediately (D-82). How he does that is still OQ-04.
 
 ### D-32 · 15 Sep 2026 · Needs your attention; the queue follows the clock; Carryover
 - **Decided:**
@@ -313,7 +319,8 @@ no client quote; Ani approved it by shipping it.
 - **Quote:** SPEC:44-45.
 - **Replaced:** results only.
 - **Source:** `0ae6630`.
-- **Open:** OQ-01.
+- **Reversed (29 Sep):** Daniel crossed the task row off Home, so the band holds results only
+  (D-85). OQ-01 is answered.
 
 ### D-35 · 18 Sep 2026 · Daniel's items 6, 7 and 8
 - **Decided:**
@@ -363,6 +370,7 @@ no client quote; Ani approved it by shipping it.
 - **Replaced:** alert-tier results on Home.
 - **Source:** `392eccb`.
 - **Conflict:** MTG21:72 on the same day says "Critical to high urgency only". See OQ-01.
+- **Reversed (27 Sep):** *"Critical and High belong."* (D-78).
 
 ### D-40 · 21 Sep 2026 · Review returns where you came from; the Inbox is external only
 - **By:** Daniel.
@@ -500,6 +508,8 @@ no client quote; Ani approved it by shipping it.
   zones it orients me."* Ani: the time lives in the profile pill.
 - **Replaced:** the date and clock under Live queue (`41205af`); a separate time pill.
 - **Source:** V2:4077-4080; `29d956d`, `9b496d2`, `bed86c4`.
+- **Reversed (placement):** on 29 Sep Daniel asked for the time next to the greeting (D-84). On
+  30 Sep Ani moved it out of the profile pill into its own pill (D-92). The content stays.
 
 ### D-59 · 25 Sep 2026 · One-press Call and renewal by fax, from shadowing 1
 - **By:** design, from S1.
@@ -516,6 +526,7 @@ no client quote; Ani approved it by shipping it.
   - Tags are medium weight with softer tints (`afd50dd`: *"these tag texts are very bold"*).
   - One tag spec (`57ee981`: *"why do these 3 have different font sizes"*).
   - The chat docks to the bottom (`afd50dd`). This replaced the top-bar dropdown from `dc4bd73`.
+    **Replaced (29-30 Sep):** the chat becomes a movable panel and a left-nav item (D-86).
   - Reading text is capped at 66ch (`affc632`).
   - The inbox source sits under the name (`535ad1a`).
 
@@ -535,6 +546,8 @@ no client quote; Ani approved it by shipping it.
 - **Quote:** *"That's one patient and one decision."* (DR ask 5, quoted at V2b:6164).
 - **Replaced:** two rows for one patient (a critical result and an intake flag).
 - **Source:** `d2a2823`; DR:218-219; V2b:6164-6172.
+- **Affected (29 Sep):** one row per patient stands. But the flag's text sits in the part of the
+  row Daniel crossed off (D-85). Whether the flag stays in another form is OQ-35.
 
 ### D-63 · 25 Sep 2026 · The renewal card is per patient, with a computed quantity and a check step
 - **Decided:**
@@ -566,7 +579,8 @@ no client quote; Ani approved it by shipping it.
 - **Replaced:** a spoken hand-off with no receipt; tasks stamped "due Sep 19" (V2b:10099-10101).
 - **Note:** "Review & fax" is primary and "Ask MOA to send" secondary (V2b:4601-4602). Picked up is
   a demo timer. Which route leads was OQ-08. **Partly replaced** by D-72 (26 Sep): neither leads;
-  the two are equal choices.
+  the two are equal choices. **Corrected** by D-79 (27 Sep): the person who sends is Japneet, the
+  physician assistant, under the doctor's sign-off. It is not an MOA.
 - **Source:** `d2a2823`; S2:38-40, 62-63.
 
 ### D-65 · 25 Sep 2026 · Finalize closes today's visit
@@ -661,7 +675,7 @@ no client quote; Ani approved it by shipping it.
   OQ-62; whose sign-off an MOA-sent script is, OQ-61.
 - **Source:** ANS26:16-34.
 
-### D-72 · 26 Sep 2026 · Either the doctor or the MOA sends a renewal, his choice each time
+### D-72 · 26 Sep 2026 · Either the doctor or Japneet (the PA) sends a renewal, his choice each time
 - **Decided:** "Send it myself" and "Ask the MOA to send" are equal choices. The doctor picks each
   time, so neither is the default.
 - **By:** Daniel.
@@ -672,6 +686,8 @@ no client quote; Ani approved it by shipping it.
   (V2b:4601-4602, D-64's note). Answers OQ-08. The two routes should now carry equal weight
   (REQ-RX-10).
 - **Source:** ANS26:7-13.
+- **Corrected (27 Sep):** "she" is Japneet, the physician assistant, not an MOA (D-79). The title
+  said "the MOA" until 30 Sep. Built as equal routes in `c1015e4` (V2c:4719-4720).
 
 ### D-73 · 26 Sep 2026 · Favourite prescriptions are pre-populated
 - **Decided:** the doctor keeps favourite prescriptions, saved scripts he reuses, pre-populated. The
@@ -681,6 +697,7 @@ no client quote; Ani approved it by shipping it.
 - **Replaced:** nothing; v2 has no favourites, and the renewal card starts only from the patient's
   medication list (`RX_MEDS` V2b:9894). Where they live and who manages them is OQ-60.
 - **Source:** ANS26:8-9, 14.
+- **Placed (27 Sep):** in the Rx function, managed by the doctor (D-80).
 
 ### D-74 · 26 Sep 2026 · The care plan and a last-note summary, both at the top of the chart
 - **Decided:** the top of the chart holds the care plan (the narrative of what we are doing) and a
@@ -725,6 +742,209 @@ no client quote; Ani approved it by shipping it.
   next steps may be related (MTG21:31, not confirmed).
 - **Source:** ANS26:54-60.
 
+### D-78 · 27 Sep 2026 · Home's attention list holds Critical and High
+- **Decided:** results in the Critical and High bands belong in Needs your attention.
+- **By:** Daniel.
+- **Quote:** *"Critical and High belong."*
+- **Replaced:** D-39 (critical values only). This settles the same-day conflict with MTG21:72 and
+  answers OQ-01.
+- **Note:**
+  - Not built. `renderCriticals` keeps critical only, and its comment still quotes the 21 Sep rule
+    (V2c:6262-6274).
+  - The Inbox's High band is its alert tier (`labTier` V2c:7990).
+  - The clinical-safety hazard log still describes critical-only (HZ-16). That is flagged on the
+    task board for `clinical-safety`.
+- **Source:** ANS27:7-11.
+
+### D-79 · 27 Sep 2026 · Sign-off is always the doctor's; he may delegate to Japneet, the PA
+- **Decided:**
+  - Every sign-off is the doctor's. He can delegate the action to Japneet, the physician
+    assistant, but not the responsibility.
+  - Japneet works in a Physician Assistant portal identical to the physician portal, not in the
+    MOA portal.
+- **By:** Daniel.
+- **Quote:** *"Always me. I can delegate authority to Japneet, but it is my responsibility. She uses
+  the Physician Assistant Portal - which is identical to my portal."*
+- **Replaced:** the docs' reading of D-64 and D-72 that the second renewal route is an MOA task.
+  Answers OQ-61. REQ-RX-07 and REQ-RX-10 are reworded.
+- **Note:**
+  - v2 still models Japneet as the MOA buddy (V2c:6870-6871). The route files an MOA task, and the
+    note reads "Sent to Japneet (MOA)" with no sign-off by the doctor (V2c:10183-10187).
+  - What the record should say is OQ-70.
+  - Whether she can send tasks to the MOA in her own right is not decided (rule 12; OQ-70).
+- **Source:** ANS27:13-20.
+
+### D-80 · 27 Sep 2026 · Favourites live in the Rx function, and the doctor manages them
+- **By:** Daniel.
+- **Quote:** *"They live in the Rx function. I manage them."*
+- **Replaced:** nothing. It places D-73 and answers OQ-60.
+- **Note:** built as a demo in `c1015e4`. The renewal card has a Favourites button, filled from
+  invented demo favourites (V2c:4706, 10546-10583).
+- **Source:** ANS27:22-25.
+
+### D-81 · 27 Sep 2026 · Never name competitors in intake or in the product
+- **Decided:** intake does not ask about other platforms, and no competitor is named anywhere in
+  the product. He asks the question himself on the call.
+- **By:** Daniel.
+- **Quote:** *"No - don't mention Rocket or Tia, I ask because many of my patients come from
+  there."*
+- **Replaced:** REQ-INT-04 (an intake question naming two platforms), now withdrawn. Answers OQ-18.
+  The same rule is in the handbook as rule 16a.
+- **Source:** ANS27:37-43.
+
+### D-82 · 27 Sep 2026 · Finalizing does not break the queue; calling out of order is rare
+- **Decided:**
+  - Finalizing a visit never changes the queue order.
+  - He rarely works out of order. When he does, it is to call one particular patient immediately.
+- **By:** Daniel.
+- **Quote:** *"Finalizing a visit, doesn't break the queue. Though, I can't remember a time where I
+  skipped ahead to finalize a visit. Sometimes when a patient ... pulls some sh\*t with me - I will
+  call them immediately"* (the ellipsis leaves out how he described the patient).
+- **Replaced:** nothing. It refines D-31 (Call only on the next patient) and partly answers OQ-04.
+  Where he presses for that call is still open.
+- **Source:** ANS27:45-53.
+
+### D-83 · 29 Sep 2026 · The number of call windows is deliberately limited
+- **By:** Daniel.
+- **Quote:** Ani: *"this is maximum window ranges right? can it not be 7 to 9"*. Daniel: *"Yes - we
+  have limited the number of windows. What that number is, i am not sure."*
+- **Replaced:** D-08's per-patient window length, which was already superseded. Partly answers
+  OQ-34.
+- **Open:** OQ-66 (the number and the times).
+- **Source:** HOME29:6-11.
+
+### D-84 · 29 Sep 2026 · Home: the time next to the greeting
+- **By:** Daniel.
+- **Quote:** *"1. Can we place the timing info next to Good Evening or Good Morning or Good Afternoon
+  whatever it might be"*
+- **Replaced:** the time inside the profile pill (D-58). His example reads "Good evening,
+  Dr. Pannozzo · 7:50 PM Toronto · 10m left" (HOME29:24-26).
+- **Note:** not yet built as asked. On 30 Sep Ani moved the time into its own pill at the top right
+  (D-92), while the greeting stays at the top left (V2c:4289, 5547). T-008 (Manoj) carries it. See
+  OQ-71.
+- **Source:** HOME29:14-15, 24-26.
+
+### D-85 · 29 Sep 2026 · The attention list is trimmed to name, test and value, with no task rows
+- **Decided:**
+  - The task row goes.
+  - On a result row, everything after the value goes: the reference range, the diagnosis text, the
+    source and the assignee.
+  - Kept: the patient's name with age and sex, the test, and the value with its arrow.
+- **By:** Daniel, on a marked-up screenshot. What was crossed off is read from the image
+  (HOME29:23).
+- **Quote:** *"2. I eliminated the extra stuff that isn't needed - crossed off"*
+- **Replaced:**
+  - D-34 (the band includes tasks): reversed.
+  - On Home only, the clinical concern leading the row (D-38) and the under-five-words context line
+    (MTG21:60-62; OQ-35).
+  - D-62's one row per patient stands, but the intake flag's text sat in the crossed part (OQ-35).
+- **Note:** not built. The task rows come from `attnTasks` (V2c:6177-6188), and the result row still
+  renders the range, the concern, the flag and the basis (V2c:6299-6303). T-008 (Manoj) is building
+  it.
+- **Source:** HOME29:13, 17, 23-32; `from-daniel/images/2026-09-29-home-markup.webp`.
+
+### D-86 · 29-30 Sep 2026 · Movable messenger and AI panels; chat also in the left nav
+- **Decided:**
+  - The messenger (MOA chat) and the AI assistant become panels the doctor can drag and place.
+  - Chat also becomes a primary left-nav item.
+- **By:** Daniel (movable panels). Ani (chat in the left nav): on 29 Sep it was her idea; on 30 Sep
+  she decided to build both. That decision was relayed by the lead in the T-010 brief and is not
+  yet in a commit.
+- **Quote:** Daniel: *"3. I'd like the messenger function movable"* *"4. The AI function
+  movable."* Ani: *"I'm thinking to make chat one big menu on the left nav so it becomes more
+  primary"*.
+- **Replaced:**
+  - D-60's chat docked to the bottom (`afd50dd`).
+  - The chat button in the top bar (V2c:4295).
+  - D-27's five nav items gain chat. The AI assistant stays out of the nav, as in D-09.
+- **Note:** not built. The AI panel is fixed at the bottom right (V2c:508), and the chat panel is
+  fixed too (V2c:3827, 3872). T-008 and T-009 (Manoj) are building it.
+- **Source:** HOME29:19-21, 33-40; T-009 on the task board.
+
+### D-87 · 29 Sep 2026 · Booking is open to every concern that is not an emergency
+- **Decided:**
+  - Patients can book for any concern, however hard.
+  - The only hard stop is an emergency, which is sent to 911 or the ER.
+  - The product's job is to organise hard cases so they become manageable, not to turn them away.
+- **By:** Daniel.
+- **Quote:** *"I am not blocking patients anymore. They can book for every single problem no matter
+  how hard so long as it is not an Emergency."* *"Indeed, no doctor should block."* *"What we need
+  to do is organize these Patients so what is hard can become manageable."*
+- **Replaced:** blocking patients by concern ("not ... anymore"). Our sources record no earlier
+  blocking rule, only his word. Ani: *"in current state all is open."*
+- **Open:** OQ-69 (the red-flag list and the emergency wording, Daniel; the look, Manoj).
+- **Source:** BOOK29:7-8, 31-42; B-001.
+
+### D-88 · 29 Sep 2026 · Two intake depths: quick-book and triage-first; Daniel decides which is which
+- **Decided:**
+  - Straightforward concerns get a quick-book tile.
+  - Complicated concerns go through triage first, done by the AI rather than a few static
+    questions.
+  - Which concern is which is Daniel's call.
+- **By:** Daniel.
+- **Quote:** *"those can be displayed … We do that already."* *"i am not so inclined to quick book a
+  Hemorrhoid Ani … You have a Hemorrhoid, you put in some work."* *"My expectation is that an AI can
+  triage in a superior manner than x 4 static questions. And so preference is given to the AI for
+  more complicated concerns."* *"Diarrhea is more complicated/Constipation is more complicated
+  etc"*
+- **His examples:**
+  - Quick-book: Rx Renewal, Sick Note, Bladder Infection, Birth Control Refill, "+6 More".
+  - Triage-first: hemorrhoids, diarrhoea, constipation.
+- **Replaced:** quick-book for every concern card, including the Gastrointestinal Symptoms card he
+  was looking at (BOOK29:14-16).
+- **Open:** OQ-67 (the full list), OQ-68 (triage without the AI).
+- **Source:** BOOK29:10-19.
+
+### D-89 · 29 Sep 2026 · Many booking pathways, all into one queue
+- **Decided:** patients choose how to book:
+  - concern tiles ("Know what you need");
+  - the Simplicity AI chat;
+  - the clinic phone line, which may become AI;
+  - possibly WhatsApp or text booking, not yet decided.
+- **By:** Daniel.
+- **Quote:** *"These pathways exist not just because we say to the patient 'Know what you need'"*
+  *"So our clinic number (which is also soon to be AI, haha) and these other pathways exist to give
+  as many patients as possible as many booking pathways as possible"* *"And indeed - we ought to
+  even have WhatsApp? Text based booking … why not."*
+- **Replaced:** the assumption that the chat is the main entry (B-001, "What this overrides").
+- **Note:** "all into the same queue" is the lead's reading (BOOK29:52-53), not Daniel's words.
+  WhatsApp is OQ-72.
+- **Source:** BOOK29:21-29, 52-53.
+
+### D-90 · 29 Sep 2026 · The AI is offered, never forced
+- **Decided:** every pathway works without talking to an AI agent.
+- **By:** Daniel.
+- **Quote:** *"Some people f\*\*\*ing hate AI. So they don't want to talk to some bulls\*\*t agent."*
+- **Replaced:** nothing written down. It confirms that the tile path is a full pathway. QA-007
+  ("without the AI, you can't book") was a staging-only gap, and tile booking works in production
+  (Ani, 29 Sep; QA29:13; `b85fd4d`).
+- **Open:** OQ-68.
+- **Source:** BOOK29:22-25, 54-55.
+
+### D-91 · 29 Sep 2026 · Ani manages the team; Manoj owns all design
+- **Decided:**
+  - Manoj, a product designer hired on 29 Sep, owns every design task and every design decision:
+    the portals, the patient chat and booking, the design system and the visual treatment.
+  - Ani manages the team: priorities, task assignment and final approval.
+- **By:** Ani.
+- **Quote:** *"all tasks for me as designer should go to him … I will manage all team."*
+  (`product/team.md`).
+- **Replaced:** Ani as designer, where design decisions were approved by her shipping them (this
+  log's header). Tasks T-008, T-009 and T-012 to T-017 moved to Manoj. The look of the emergency
+  screen is his (rule 17a).
+- **Source:** `0595005`, `a32763c`, `3e9a48f`.
+
+### D-92 · 30 Sep 2026 · The time sits in its own top-bar pill, before the theme button
+- **Decided:** the time moves out of the profile pill into a pill of its own, styled like the
+  profile pill, with a clock where the photo would be. It sits before the theme button.
+- **By:** Ani.
+- **Quote:** *"Ani, 30 Sep: the time sits in its own pill, before the theme button, styled like the
+  profile pill, with a clock where the photo would be"* (V2c:4291-4292).
+- **Replaced:** D-58's time inside the profile pill (D-58 had itself replaced a separate pill).
+- **Conflict:** Daniel asked for the time next to the greeting (D-84), which is at the other end of
+  the top bar. See OQ-71.
+- **Source:** `b8331e5`; V2c:4232-4245, 4291-4293.
+
 ## Changelog
 
 - 25 Sep 2026, first run: 60 entries from 27 Jul to 25 Sep 2026, including the reversals: D-11,
@@ -743,3 +963,18 @@ no client quote; Ani approved it by shipping it.
   either sends a renewal (D-72, which replaces D-64's primary/secondary order), favourites (D-73),
   care plan and last-note summary at the top (D-74, confirming D-66), patient-reported
   measurements (D-75), results as data (D-76) and results from the source by API (D-77).
+- 30 Sep 2026, fifth run (T-010, with T-004 folded in): 92 entries.
+  - Added D-78 to D-82 from Daniel's round-2 answers (ANS27): Critical and High on Home (D-78, which
+    reverses D-39); sign-off always his, with the action delegated to Japneet as the PA (D-79,
+    which corrects D-64 and D-72); favourites in Rx (D-80); no competitor names (D-81); and
+    finalizing does not break the queue (D-82, which refines D-31).
+  - Added D-83 to D-86 from his Home markup (HOME29): limited windows (D-83), the time beside the
+    greeting (D-84), the trimmed attention list with no task rows (D-85, which reverses D-34 and
+    affects D-62), and movable panels with chat in the left nav (D-86, which replaces D-60's docked
+    chat).
+  - Added D-87 to D-90 from his booking model (BOOK29): open booking, two intake depths, many
+    pathways, and the AI optional.
+  - Added D-91 (Manoj owns design; Ani manages) and D-92 (the time in its own pill, which reverses
+    D-58's placement and conflicts with D-84; OQ-71).
+  - D-72's title now names Japneet (PA), not the MOA.
+  - Reversal notes added to D-08, D-27, D-31, D-34, D-39, D-58, D-60, D-62, D-64, D-72 and D-73.

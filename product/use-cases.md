@@ -1,7 +1,8 @@
 # SimpleCare use cases
 
 Owner: product manager agent. First written 25 Sep 2026. Scope: the physician portal in depth. The
-MOA and patient portals are covered where the sources speak to them. No patient identifiers appear
+MOA and patient portals, the physician assistant's delegated work and the patient's booking
+pathways are covered where the sources speak to them. No patient identifiers appear
 here. Demo patients are described by their role in the demo, never by name.
 
 ## Source key
@@ -10,6 +11,11 @@ here. Demo patients are described by their role in the demo, never by name.
 |---|---|
 | MTG21 | `from-daniel/2026-09-21-meeting-notes.md` (line numbers as `MTG21:43`) |
 | ANS26 | `from-daniel/2026-09-26-answers-to-shadowing-questions.md` (Daniel's written answers, 26 Sep 2026) |
+| ANS27 | `from-daniel/2026-09-27-answers-round-2.md` (Daniel's round-2 answers, 27 Sep 2026) |
+| HOME29 | `from-daniel/2026-09-29-home-feedback.md` (Daniel's Home markup and the call-window limit, 29 Sep 2026), with `from-daniel/images/2026-09-29-home-markup.webp` |
+| BOOK29 | `from-daniel/2026-09-29-booking-pathways.md` (Daniel's booking model, 29 Sep 2026) |
+| B-001 | `product/training/bulletins/B-001-booking-pathways.md` (the team bulletin on BOOK29) |
+| QA29 | `product/reports/patient-chat-qa-2026-09-29-SUMMARY.md` (patient chat QA on staging, run 1; full report `patient-chat-qa-2026-09-29-staging-run1.md`) |
 | S1 | `shadowing/2026-09-25-rx-renewal-by-fax.md` (shadowing 1) |
 | S2 | `shadowing/2026-09-25-medication-follow-up-mri.md` (shadowing 2) |
 | S3 | `shadowing/2026-09-25-recurrent-hernia.md` (shadowing 3) |
@@ -24,6 +30,7 @@ here. Demo patients are described by their role in the demo, never by name.
 | DR | `product/doctor-review-2026-09-25.md` (the doctor agent's walk-through of v2) |
 | V2 | `simplecare-physician-portal-v2.html`, build 2026-09-25 12:45 (line numbers as `V2:5397`) |
 | V2b | the same file, build 2026-09-25 13:10, commit `d2a2823` (line numbers as `V2b:10182`) |
+| V2c | the same file, build 2026-09-30 10:33, commit `b8331e5` (line numbers as `V2c:6262`). It includes `c1015e4`, the 26 Sep build from ANS26 |
 | MOAP | `simplecare-moa-portal.html` |
 | PP | `simplecare-patient-portal-v2.html` |
 | `abc1234` | a git commit; its message quotes the decision |
@@ -44,17 +51,34 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   calls the current product "a developer tool" and wants it to answer "what's my job today, what's
   critical" (SIA:6). He is a visual thinker who loses track of time in hard consultations: *"when I
   don't know where I am, I get nervous."* (MTG21:66-71).
-- **v2 should:** open on Home with two sections only: Needs your attention, then the Live queue
-  (SPEC:34-38). The clock and the BC window state are in view on every screen (V2:3775, V2:4077).
-  The four call windows show as open segments, and the running one is marked (MTG21:13, `c3c67dd`).
-  Needs your attention shows only when something is critical (MTG21:10, MTG21:72-74).
-- **Status:** partly built. Home (`screen-today`), `renderCriticals` (V2:6017) and the profile-pill
-  clock are built. Build 13:10 fixed two gaps: a patient's intake flag folds into their critical
-  result row, so there is one row per patient (V2b:6164-6172), and the "Review MRI report" task is
-  gone (V2b:6812). Still open from DR:29-40: local time and BC windows are unlabelled; "Live
-  queue 6" sits above 8 rows.
-- **Sources:** MTG21:10-13, 64-74; SIA:6, 22; IA:44-53; SPEC:30-45; `1518976`, `392eccb`, `d2a2823`;
-  DR:27-53, 218.
+- **v2 should:**
+  - Open on Home with two sections only: Needs your attention, then the Live queue (SPEC:34-38).
+  - Put the time and the window state next to the greeting: *"Can we place the timing info next to
+    Good Evening or Good Morning or Good Afternoon whatever it might be"* (HOME29:14-15; D-84). They
+    stay in view on every screen (V2:4077).
+  - Show the call windows as open segments, with the running one marked (MTG21:13, `c3c67dd`). The
+    number of windows is limited, and Daniel will set it (HOME29:8; OQ-66).
+  - Show Needs your attention only when something is there:
+    - it holds Critical and High results: *"Critical and High belong."* (ANS27:8; D-78);
+    - each row reads the patient's name, the test and the value, nothing more;
+    - there are no task rows: *"I eliminated the extra stuff that isn't needed - crossed off"*
+      (HOME29:17, 23-32; D-85).
+  - Let the doctor move the messenger and the AI panels (HOME29:19-21), and reach chat from the
+    left nav (D-86).
+- **Status:** partly built (V2c).
+  - Built: Home (`screen-today`), the windows and the greeting (V2c:5547).
+  - Since 30 Sep the time has its own pill before the theme button (`b8331e5`; D-92). It is at
+    the other end of the top bar from the greeting, so not yet beside it (OQ-71).
+  - Not built to Daniel's new rules:
+    - the list is critical only (V2c:6274);
+    - result rows still carry the range, concern, flag and source (V2c:6299-6303);
+    - task rows still show (V2c:6177-6188);
+    - the panels are fixed (V2c:508, 3827);
+    - chat has no nav item.
+  - T-008 and T-009 (Manoj) are building these now.
+  - Still open from DR:29-40: the zones are unlabelled, and "Live queue 6" sits above 8 rows.
+- **Sources:** MTG21:10-13, 64-74; SIA:6, 22; IA:44-53; SPEC:30-45; `1518976`, `392eccb`, `d2a2823`,
+  `b8331e5`; DR:27-53, 218; ANS27:7-11; HOME29 (all).
 
 ### UC-02 Work the live queue across call windows
 
@@ -69,7 +93,9 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   band (`f081c07`, SPEC:117-127). Never switch windows mid-call or mid-chart (SPEC:129-132,
   `607bd2d`). Offer three multi-select filters (visit status, billing, health card) (`887c021`,
   `056bba3`). Visit status is a dropdown with Daniel's four statuses (V2:5397, V2:6380). Whoever is
-  next carries a Next marker (SPEC:207-215).
+  next carries a Next marker (SPEC:207-215). The set of windows is limited: *"we have limited the
+  number of windows. What that number is, i am not sure."* (HOME29:8; OQ-66). Finalizing a visit
+  never changes the order (ANS27:46; D-82).
 - **Status:** built (`renderQueue` V2:5772, `openStatusMenu` V2:6421, `QF_DEFS` V2:6152). Defects:
   "Doctor to Callback" is cut off in the column (DR:41-42). Daniel's new "doctor running late"
   status is not built, because he has not sent it yet (MTG21:27-28, 57-59).
@@ -118,9 +144,12 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
 - **v2 should:** let the doctor find callbacks with the visit-status filter (paired with In queue,
   `056bba3`). How the doctor calls them is open, because Call appears only on the Next row
   (SPEC:167-177) and a callback is out of order by definition (DR:249-250).
+  - 27 Sep: he rarely works out of order, but for one particular patient *"I will call them
+    immediately"* (ANS27:46-48; D-82). So there must be a way to call a patient who is not next.
+    Whether that is the row or Add-On, and whether callbacks work the same way, is OQ-04.
 - **Status:** partly built. The status and filter are built. The recovery flow is unspecified
   (SPEC:316-319).
-- **Sources:** MTG21:86-87; SPEC:167-177, 316-323; `f308201`, `9bcfefd`; DR:249-250.
+- **Sources:** MTG21:86-87; SPEC:167-177, 316-323; `f308201`, `9bcfefd`; DR:249-250; ANS27:45-53.
 
 ### UC-05 Read the intake before calling
 
@@ -148,8 +177,11 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   (S4:104-111). Opening the Daysheet clears an earlier patient search (S4:131-132).
 - **Status:** partly built. The one-line AI intake summary is on every row (`874f906`, `944d26a`). A
   red-flag intake is on Home, sorts to the top, and shows on the chart banner (V2:9157). The intake
-  is still a separate view ("View intake note", V2b:4641, `openBrief` V2b:6652). Request flags, the
-  other-platforms question, intake inside the chart and BMI are not built.
+  is still a separate view ("View intake note", V2b:4641, `openBrief` V2b:6652). Request flags,
+  intake inside the chart and BMI are not built.
+  - The other-platforms question is withdrawn. Daniel, 27 Sep: *"No - don't mention Rocket or Tia,
+    I ask because many of my patients come from there."* (ANS27:38; D-81). Intake does not ask it,
+    and no competitor is named in the product. He asks it himself.
 - **Sources:** S1:10-12, 29-30; S2:7-8, 26-27, 41-42, 54-58, 68-69; S4:14-23, 104-111, 131-132;
   S5:26-29, 75-77, 153-155; `1a9c71b`, `56e5f20`.
 
@@ -176,7 +208,7 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   pharmacy, sends by fax, shows the fax status on the visit, and drafts the one-line note
   (S1:24-28).
   - From Daniel, 26 Sep (ANS26):
-    - "Send it myself" and "Ask the MOA to send" are equal choices, his call each time; neither
+    - "Send it myself" and "Ask Japneet to send" are equal choices, his call each time; neither
       is the default (ANS26:8-13; D-72, REQ-RX-10).
     - A script can start from one of his pre-populated favourites (ANS26:8-9; D-73, REQ-RX-11).
     - Sending the fax is his sign-off on the script, so the press says so and the record carries
@@ -196,11 +228,19 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - "Also active · Renew too" offers the other medications (V2b:9972-9983).
   - Not built: a failed fax and retry; any supply other than 1 or 3 months. The quantity rule waits
     on OQ-09.
-  - Now out of line with Daniel (26 Sep): "Review & fax" is the primary button and "Ask MOA to
-    send" secondary (V2b:4601-4602); there are no favourites; "Send by fax" does not read as a
-    sign-off. Open: OQ-60, OQ-61.
+  - Since `c1015e4` (V2c):
+    - "Send it myself (fax)" and "Ask Japneet to send" are equal (V2c:4719-4720, 10113).
+    - A Favourites button fills a line from demo favourites (V2c:4706).
+    - The self-send check reads "Sign off & fax", and its note records his sign-off (V2c:10166,
+      10197).
+  - Still out of line with Daniel (27 Sep, D-79): the delegated route treats Japneet as the MOA.
+    It files an MOA task at routine priority and notes "Sent to Japneet (MOA)" with no sign-off
+    (V2c:6870, 10183-10187). Open: OQ-70, OQ-09.
+  - From Daniel, 27 Sep (ANS27): favourites *"live in the Rx function. I manage them."* (D-80).
+    Delegation goes to Japneet, the physician assistant, and *"it is my responsibility"* (D-79;
+    UC-30).
 - **Sources:** S1 (all); `29d956d`, `d2a2823`; V2:3751, 4424-4480, 9643-9681; V2b:9885-10095;
-  DR:55-93, 200-206; ANS26:7-34.
+  DR:55-93, 200-206; ANS26:7-34; ANS27:13-25; `c1015e4`.
 
 ### UC-07 Follow-up where the last plan sets the renewal (shadowing 2)
 
@@ -234,11 +274,13 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - Use one scroll region (S2:49-50).
   - Always say whose note is in the editor, and name what the button finalizes (S2:51-53).
   - Prefill the renewal at the current dose, with "renew too?" for the other medications (S2:59-61).
-  - Make "Ask MOA to send" a one-tap task that shows "picked up" (S2:62-63).
+  - Make "Ask Japneet to send" a one-tap hand-off that shows "picked up" (S2:62-63). Japneet is
+    the physician assistant, and the sign-off stays his (ANS27:14-15; D-79).
   - Record side effects as tick-lines (S2:64-65).
   - Tie the next step to the pending result (S2:66-67).
   - From Daniel, 26 Sep: put the care plan and a summary of the last note at the top of the chart
-    (ANS26:37; D-74, REQ-CH-31). Either he or the MOA sends the renewal, his choice (D-72).
+    (ANS26:37; D-74, REQ-CH-31). Either he or Japneet (PA) sends the renewal, his choice (D-72,
+    D-79).
 - **Status:** partly built (build 13:10). DR:97-104 had judged v2 "worse than production here".
   - "Since last visit" shows the previous visit's Plan, Ask about and Pending, and adds any unread
     result from the Inbox to Pending (`renderSinceLast` V2b:10182).
@@ -246,7 +288,7 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     V2b:10221).
   - The note box grows with its text instead of scrolling (`vcGrow` V2b:10269).
   - The button reads "Finalize today's visit" (V2b:4618).
-  - The renewal takes the plan's dose, and "Ask MOA to send" shows "Picked up by <MOA>" (UC-06,
+  - The renewal takes the plan's dose, and "Ask Japneet to send" shows "Picked up by …" (UC-06,
     UC-10).
   - Not built: side effects as tick-lines; the next step tied to the pending result; the care plan
     at the top (it sits below today's note, V2b:4624-4625).
@@ -338,17 +380,19 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   when they are sub-steps of it (SIA:48).
 - **v2 should:** create a task only when the doctor presses Task (`9b7b5f6`, V2:1656). Route it to
   the MOA on service, copy the primary MOA, and forward it to Admin (V2:6591). Prefill it with the
-  patient and context (`56e5f20`). Show that it was picked up (S2:62-63). For a renewal, "Ask the
-  MOA to send" is an equal choice to sending it himself, not a secondary one: *"Either can send"*
-  (ANS26:8-9; D-72, REQ-RX-10). Whose sign-off an MOA-sent script is, is OQ-61; what "picked up"
-  means is still OQ-41.
+  patient and context (`56e5f20`). Show that it was picked up (S2:62-63).
+  - A renewal is not an MOA task. It is delegated to Japneet, the physician assistant, who works
+    in a portal identical to his: *"Always me. I can delegate authority to Japneet, but it is my
+    responsibility."* (ANS27:14-15; D-79). See UC-30.
+  - It is an equal choice to sending it himself (ANS26:8-9; D-72, REQ-RX-10).
+  - What "picked up" means for an MOA task is still OQ-41.
 - **Status:** partly built. Task MOA from the chart banner, the row hover and review (`sendTaskMoa`
   V2b:7599). Build 13:10: one task function for the dialog and the renewal card, with due set from
   priority (`moaTask` V2b:10102). The renewal hand-off shows "Sent to <MOA> · waiting", then "Picked
   up by <MOA>" on a 7 s demo timer (V2b:10060-10064). Not built: "picked up" anywhere else (the
   Tasks screen does not show it), and scribe tasks are still stamped "Sep 19" (V2b:7475).
 - **Sources:** S2:38-40, 62-63; S3:74-77, 95-97; S4:82; S5:85-89; SIA:28-38, 48; `9b7b5f6`,
-  `afdc728`, `11b0ecb`, `d2a2823`; DR:121-128; ANS26:8-13.
+  `afdc728`, `11b0ecb`, `d2a2823`; DR:121-128; ANS26:8-13; ANS27:13-20.
 
 ### UC-11 Keep my own unfinished work on my desk
 
@@ -360,6 +404,8 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   (SIA:22, 54). Scheduled deferral was rejected: *"We wouldn't defer to next week."* (`9b7b5f6`).
 - **v2 should:** keep personal tasks separate from delegated ones, and keep them in view on Home
   (SIA:32).
+  - 29 Sep: tasks are no longer in Needs your attention (HOME29:27-28; D-85). The row he crossed
+    off was a delegated task, so where his own work sits on Home is still OQ-22.
 - **Status:** partly built. The Task dialog can keep a task as the doctor's own (`tm-keep`,
   V2:5108), and Tasks filters "Assigned to Dr. Pannozzo" (V2:7071). Home does not show personal
   tasks unless they are urgent, high or overdue (V2:5922). See the contradiction logged in
@@ -647,7 +693,7 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     return readings.
   - The patient portal's general "Add a document" saves to health records (PP:929-933,
     2279-2282). It is not linked to a request, and the physician portal shows nothing on arrival.
-  - Not built: the other-platforms question (UC-05) and any "continuing with me" mark.
+  - Not built: any "continuing with me" mark. (The other-platforms question is withdrawn, D-81.)
   - Not built: any result source integration (REQ-IN-12), a patient-supplied label (REQ-IN-13) or
     a readings trend (REQ-CH-32).
 - **Sources:** S5 (all); V2b and PP as cited; ANS26:42-60.
@@ -685,6 +731,39 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
 
 ---
 
+## Physician assistant
+
+### UC-30 Send a renewal the doctor delegated
+
+- **Actor:** Japneet, the physician assistant, acting under the doctor's delegated authority.
+- **Trigger:** on the renewal card, the doctor chooses "Ask Japneet to send" instead of sending it
+  himself.
+- **Today (evidence):**
+  - S2: the doctor hands the prescription over by voice, with no confirmation: *"Can you hear me,
+    … or am I talking to myself?"* (S2:38-40).
+  - Daniel, 26 Sep: *"Either can send - Japneet [has] prescribing experience ... So if I am
+    f\*\*\*ing around, she sends it."* (ANS26:8-9).
+  - Daniel, 27 Sep: *"Always me. I can delegate authority to Japneet, but it is my
+    responsibility. She uses the Physician Assistant Portal - which is identical to my portal."*
+    (ANS27:14-15).
+- **v2 should:**
+  - Hand the renewal to Japneet in the PA portal, which is identical to his. It is not an MOA task.
+  - Show him "sent", then "picked up".
+  - Record the sign-off as his, and name her as the person who sent it (D-79, REQ-RX-07).
+  - The record wording, whether he sees the script first, and whether she may use his favourites
+    are OQ-70.
+  - Whether she can send tasks to the MOA in her own right is not decided (rule 12).
+- **Status:** partly built (V2c).
+  - The button names her (V2c:10113).
+  - But she is modelled as the MOA buddy (V2c:6870-6871). The route files an MOA task at routine
+    priority, and the note reads "Sent to Japneet (MOA)" with no sign-off (V2c:10183-10187).
+  - The prototypes have no PA portal. The physician portal stands in for it, because Daniel says it
+    is identical.
+  - HZ-09 in the clinical-safety log covers the risk.
+- **Sources:** S2:38-40, 62-63; ANS26:8-13; ANS27:13-20; `c1015e4`; V2c as cited.
+
+---
+
 ## Patient
 
 ### UC-23 Wait in the queue for the doctor's call
@@ -710,11 +789,32 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   intake (HUX:9). S5 shows the physician side: a patient whose family doctor stopped practising
   wants ongoing care, and the doctor offers it out loud (*"I'm running this platform for
   continuity"*), but nothing on the chart records it (S5:30-32, 37-38, 90-92). See UC-27.
+- **Today, the booking model (Daniel, 29 Sep):**
+  - Every concern can be booked. Ani: *"in current state all is open."* (BOOK29:8).
+  - Straightforward concerns already have quick-book tiles: *"We do that already."* (BOOK29:11-13).
+  - On staging, a chosen window isn't held before sign-up, and "See my family doctor" traps
+    patients who have none (QA29:16).
 - **v2 should:** fork into walk-in or family practice. Keep the concern grid as the default and put
-  Family Practice above it (SCS:21, 25-27).
-- **Status:** built in PP and the landing flow (SCS:21-29). Trusted Person is parked (SCS:27). The
-  physician-side end (marking the patient as continuing with the doctor) is not built (REQ-ID-06).
-- **Sources:** SIA:12-18; HUX:7-12; SCS:19-29; S5:30-32, 90-92, 149-152.
+  Family Practice above it (SCS:21, 25-27). From 29 Sep:
+  - Never refuse a concern that isn't an emergency: *"no doctor should block."* (BOOK29:34; D-87,
+    REQ-INT-07).
+  - Give each concern one of two depths (D-88, REQ-INT-08):
+    - quick-book, for straightforward concerns;
+    - triage first, for complicated ones: *"You have a Hemorrhoid, you put in some work."*
+      (BOOK29:16). Triage finishes before a window is offered.
+    - Daniel decides which concern is which (OQ-67).
+  - Offer every pathway into the same queue (D-89, REQ-INT-09): tiles, the Simplicity chat, the
+    phone line, and possibly WhatsApp or text (OQ-72).
+  - Hold the chosen window before any account step (T-014; OQ-73).
+  - Check for an emergency first (UC-29).
+- **Status:** partly built.
+  - The fork is built in PP and the landing flow (SCS:21-29). Trusted Person is parked (SCS:27).
+  - The two depths, the pathways and the held window are not in the prototypes. Manoj is
+    designing them in T-014.
+  - The physician-side end (marking the patient as continuing with the doctor) is not built
+    (REQ-ID-06).
+- **Sources:** SIA:12-18; HUX:7-12; SCS:19-29; S5:30-32, 90-92, 149-152; BOOK29 (all); B-001;
+  QA29:12-16; T-014.
 
 ### UC-25 Follow my results and tests
 
@@ -734,6 +834,46 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   BP and weight (ANS26:43-44; REQ-CH-32). Whether they enter readings in the portal is OQ-64.
 - **Sources:** `5a4fb10`, `c503ece`; HUX:11, 18; PP:860, 929-933, 1970-1973, 2279-2282;
   S5:49-54, 60-65, 136-148; ANS26:43-60.
+
+### UC-28 Book without the AI
+
+- **Actor:** patient.
+- **Trigger:** the patient doesn't want to talk to an AI agent.
+- **Today (evidence):**
+  - *"Some people f\*\*\*ing hate AI. So they don't want to talk to some bulls\*\*t agent."*
+    (BOOK29:23).
+  - Tile booking works in production. On staging, the tiles showed "No Physicians Available", which
+    was a staging-only gap (QA29:13; `b85fd4d`).
+  - The clinic phone line is another way in, and it may itself become AI (BOOK29:24).
+  - A patient with a complicated concern who refuses the AI has no triage today (B-001
+    self-check).
+- **v2 should:**
+  - Offer the AI and never force it (D-90, REQ-INT-10).
+  - A patient who says "I don't want to talk to a bot" is offered the tiles or the phone line in one
+    step (T-015).
+  - A triage-first concern still gets triage without the AI. Its form, and who writes it, is OQ-68.
+- **Status:** partly built. The tile path is in production. There is no non-AI triage. The
+  prototypes don't model it; T-015 (Manoj) is designing it.
+- **Sources:** BOOK29:21-29, 54-55; B-001; QA29:13; T-015.
+
+### UC-29 A patient describes an emergency while booking
+
+- **Actor:** patient.
+- **Trigger:** the first message, or a later one, signals an emergency. For example, "chest pain,
+  can't breathe".
+- **Today (evidence), on staging:**
+  - The patient is offered doctors and call windows instead of "call 911".
+  - A red flag mid-chat is missed, and a confirmed emergency goes back to routine questions
+    (QA29:12, QA-001 to QA-004).
+- **v2 should:**
+  - Catch the emergency before any pathway, doctor or window, and at any point in the chat.
+  - Show one emergency treatment everywhere (REQ-INT-11; T-012). Booking is open to everything
+    *"so long as it is not an Emergency"* (BOOK29:32-33).
+  - The red-flag list and the words are Daniel's; the look, including whether it uses red, is
+    Manoj's; Ani approves (rule 17a; OQ-69).
+- **Status:** not built. It fails on staging (QA29:12). T-012 (Manoj) is designing it, gated by
+  `clinical-safety`.
+- **Sources:** BOOK29:31-34; QA29:12, 22-23; rule 17a; T-012.
 
 ---
 
@@ -807,3 +947,17 @@ cannot be judged from that recording.
   patient upload as a marked fallback, home readings) and UC-25. No status word moved, because the
   build is still 13:10; UC-06, UC-09, UC-15 and UC-16 now name where the build departs from his
   answers.
+- 30 Sep 2026, fifth run (T-010, with T-004 folded in). Added ANS27, HOME29, BOOK29, B-001, QA29 and
+  V2c (build 2026-09-30 10:33, `b8331e5`) to the source key. 30 use cases (3 new).
+  - New: UC-28 (book without the AI) and UC-29 (an emergency while booking), both patient; and
+    UC-30 (Japneet, the physician assistant, sends a delegated renewal), in a new "Physician
+    assistant" section.
+  - UC-01 rewritten for the markup: Critical and High; name, test and value only; no task rows;
+    the time beside the greeting; movable panels; chat in the nav. It stays partly built, with the
+    gaps named against V2c.
+  - UC-24 now carries the booking model: open booking, two depths and many pathways. It moved from
+    built to partly built.
+  - Updated: UC-02 (limited windows; finalizing keeps the order), UC-04 (he sometimes calls a
+    patient immediately), UC-05 (the other-platforms question withdrawn), UC-06 (status re-read
+    from `c1015e4`; the delegated route still treats Japneet as the MOA), UC-07 and UC-10 (Japneet
+    is the PA, not an MOA), UC-11 (tasks off the attention list) and UC-27.

@@ -2,43 +2,79 @@
 
 Owner: product manager agent. First written 25 Sep 2026. Every question waiting on Daniel or Ani.
 Each one gives the owner, the date raised, what it blocks and its source. Source codes are as in
-`use-cases.md`; ANS26 is Daniel's written answers of 26 Sep 2026
-(`from-daniel/2026-09-26-answers-to-shadowing-questions.md`). Daniel answers well in numbered
-batches of 5 to 8, one line each, with the work each answer unblocks (Ani's working note). **Top 8**
-marks the batch to send next. **ANSWERED** marks a question Daniel has answered: the entry keeps his
-words and the date, and whatever the answer left open moves to a new question.
+`use-cases.md`: ANS26 is Daniel's written answers of 26 Sep 2026
+(`from-daniel/2026-09-26-answers-to-shadowing-questions.md`), ANS27 his round-2 answers of 27 Sep
+(`from-daniel/2026-09-27-answers-round-2.md`), HOME29 his 29 Sep Home markup
+(`from-daniel/2026-09-29-home-feedback.md`) and BOOK29 his 29 Sep booking model
+(`from-daniel/2026-09-29-booking-pathways.md`). Daniel answers well in numbered batches of 5 to 8,
+one line each, with the work each answer unblocks (Ani's working note). **Top 8** marks the batch to
+send next. **ANSWERED** marks a question Daniel has answered: the entry keeps his words and the
+date, and whatever the answer left open moves to a new question. Ani sends the batch; no agent
+contacts Daniel (rule 4).
 
-## Top 8 for Daniel
+## Top 8 for Daniel (round 3, prepared 30 Sep 2026)
 
-Answered on 26 Sep 2026 (ANS26), so no longer in this list: OQ-08, OQ-10, OQ-37, OQ-47, OQ-48 and
-OQ-53. Everything below is still unanswered.
+**Round 2 came back on 27 Sep (ANS27).**
+- Answered: OQ-01 (Critical and High on Home), OQ-61 (sign-off is always his), OQ-60 (favourites
+  live in Rx) and OQ-18 (don't name other platforms).
+- Partly answered: OQ-04 (he calls a patient immediately, rarely).
+- He asked us to rephrase two: OQ-65 (labs) and OQ-64 (readings). Both are reworded below.
+- The batch Ani sent differed from our list. Its item 8 was backend documentation (ANS27:55-59),
+  not OQ-09, so OQ-09 has never been asked.
 
-1. **OQ-01**: does High urgency belong on Home, or critical only?
-2. **OQ-61**: when the MOA sends a renewal, whose sign-off is it, and does the doctor check it
-   first? Opened by his answers on who sends and on sign-off (ANS26:8-9, 22-25).
-3. **OQ-60**: where do your favourite prescriptions live, and who can add, change or use them?
-   (ANS26:8-9).
-4. **OQ-09**: how is a renewal's quantity set? Does a favourite carry it?
-5. **OQ-65**: which lab or result source should be connected first? Is the Accelerus API access in
-   your 21 Sep next steps that route? (ANS26:56; MTG21:31).
-6. **OQ-64**: does the patient enter their own BP and weight in the portal, or do you enter what
-   they tell you on the call, or both? (ANS26:43-44).
-7. **OQ-18**: should intake ask whether the patient was seen on another platform? He asked it out
-   loud in 2 of 5 visits (S1:10-12; S5:26-29).
-8. **OQ-04**: how does the doctor call a Doctor to Callback or urgent patient, when Call shows only
-   on the next patient?
+**This round, most important first.**
+1. **OQ-69: which messages count as an emergency, and what do we say?**
+   - Why first: on staging, "chest pain, can't breathe" is offered doctors and call windows
+     (QA29:12).
+   - Unblocks: REQ-INT-11 and T-012.
+2. **OQ-67: which concerns can be booked straight away, and which need triage first?**
+   - Unblocks: REQ-INT-08 and T-014 (BOOK29:10-19).
+3. **OQ-68: how does a patient who won't use the AI get triaged for a complicated concern?**
+   - Unblocks: REQ-INT-10 and T-015 (BOOK29:23; B-001 self-check).
+4. **OQ-66: how many call windows are there, and at what times?** "What that number is, i am not
+   sure" (HOME29:8).
+   - Unblocks: REQ-HQ-01, REQ-HQ-02 and OQ-34.
+5. **OQ-04 (what is left): when you call a patient immediately, where do you press?** Is it the
+   queue row, or Add-On? And do Doctor to Callback patients work the same way?
+   - Unblocks: REQ-HQ-14 and UC-04 (ANS27:45-53).
+6. **OQ-70: when Japneet sends a script for you, what does the record say, and do you see it
+   first?**
+   - Unblocks: REQ-RX-07, REQ-UI-06 and hazard HZ-09 (ANS27:13-20).
+7. **OQ-65, reworded (labs): which lab sends you the most results today?** We would show that
+   lab's results as numbers first. And is Accelerus, from your 21 Sep next steps, the company that
+   would send them?
+   - Unblocks: REQ-IN-12 and REQ-CH-22.
+8. **OQ-64, reworded (readings): how does a patient's home blood pressure or weight reach you
+   today?** Do they type it into the SimpleCare app, or tell you on the call so you type it, or
+   send a photo? Which do you want?
+   - Unblocks: REQ-CH-32 and REQ-PT-10.
 
-Next batch: OQ-62 (one press to sign off a routine result), OQ-51 (the bill's sign-off at
-Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
+**Next batch:**
+- OQ-09: how a renewal's quantity is set (never asked).
+- OQ-35: confirm that a Home row shows nothing beyond name, test and value.
+- OQ-73: how long a chosen window is held.
+- OQ-72: WhatsApp or text booking.
+- OQ-62, OQ-51 and OQ-63.
+
+**For Ani and Manoj, not Daniel:** OQ-71 (where the time sits: beside the greeting, or in its own
+pill).
 
 ---
 
 ## Home and queue
 
-### OQ-01 · Does High belong in Needs your attention? · Top 8
-- **Owner:** Daniel. **Raised:** 21 Sep 2026 (a conflict within the same day). **Blocks:**
+### OQ-01 · Does High belong in Needs your attention? · ANSWERED 27 Sep 2026
+- **Answer (Daniel, 27 Sep 2026):** *"Critical and High belong."* (ANS27:8).
+- **Means:** Home's attention list shows the Critical and High bands. That settles the same-day
+  conflict below in favour of MTG21:72. Recorded as D-78, REQ-HQ-11 and REQ-HQ-12.
+- **The task half, answered on 29 Sep:** his Home markup crossed off the whole task row
+  (HOME29:27-28). So tasks do not appear in the list at all (D-85). The Urgent, High or overdue
+  rule for tasks (SPEC:44-45) goes.
+- **Not answered:** whether "in today's queue" changes anything. Nothing he said suggests it does,
+  so it is not carried forward. What a trimmed row keeps is confirmed in OQ-35.
+- **Owner:** Daniel. **Raised:** 21 Sep 2026 (a conflict within the same day). **Blocked:**
   REQ-HQ-11, REQ-HQ-12.
-- **The conflict:**
+- **The conflict (as asked):**
   - MTG21:72 says "Critical to high urgency only".
   - The code quotes Daniel: *"So as to not overwhelm the doctor - we are keeping it to critical
     values."* (`392eccb`).
@@ -58,8 +94,21 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
   REQ-HQ-10.
 - **Why:** the aligned decision "Remove noisy detail fields" (MTG21:14) names no fields. Only DOB
   and PHN are named (MTG21:82).
+- **Now (29 Sep):** the Home markup does name the noise, but only on the attention list: the
+  reference range, the diagnosis text, the source and the assignee (HOME29:27-30; D-85). Whether
+  queue rows lose anything is still open.
 
-### OQ-04 · Calling out of order: callbacks and urgent patients · Top 8
+### OQ-04 · Calling out of order: callbacks and urgent patients · PARTLY ANSWERED 27 Sep · Top 8
+- **Answer (Daniel, 27 Sep 2026):** *"Finalizing a visit, doesn't break the queue. Though, I can't
+  remember a time where I skipped ahead to finalize a visit. Sometimes when a patient ... pulls some
+  sh\*t with me - I will call them immediately"* (ANS27:46-48; the ellipsis leaves out how he
+  described the patient).
+- **Means:** finalizing never changes the queue order. He rarely works out of order, but he does
+  sometimes call one particular patient straight away (ANS27:51-53). Recorded as D-82.
+- **Still open, and in this round's batch:**
+  - where he presses to call that patient: the row itself (Call shows only on the next patient,
+    D-31) or Add-On;
+  - whether Doctor to Callback patients are called the same way. His answer doesn't mention them.
 - **Owner:** Daniel. **Raised:** 15 Sep 2026 (SPEC:322-323); again 25 Sep (DR:249-250). **Blocks:**
   REQ-HQ-14; UC-04.
 - **Why:** Call renders only on the next patient (*"mirrors a walk-in queue"*, SPEC:167-177), and
@@ -79,7 +128,12 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
 - **Owner:** Daniel. **Raised:** 15 Sep 2026. **Blocks:** REQ-HQ-03.
 - **Why:** SPEC:125-127 assumes one Carryover band with an age indicator.
 
-### OQ-34 · Window lengths and window times
+### OQ-34 · Window lengths and window times · PARTLY ANSWERED 29 Sep 2026
+- **Answer (Daniel, 29 Sep 2026):** Ani asked, *"this is maximum window ranges right? can it not be
+  7 to 9"*. Daniel: *"Yes - we have limited the number of windows. What that number is, i am not
+  sure."* (HOME29:7-8).
+- **Means:** there is a fixed, deliberately limited set of windows. D-08's per-patient length is
+  not current (D-83). The number and the times are still open, and they move to OQ-66.
 - **Owner:** Daniel. **Raised:** 25 Sep 2026 (found in this review). **Blocks:** REQ-HQ-01,
   REQ-HQ-02.
 - **Why:**
@@ -95,6 +149,36 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
   as three hours late (DR:31-36). Daniel gave the wording *"7:21 AM Toronto · 3h 39m until window"*
   (V2:4077).
 - **Ask:** "PT", "BC time", or the city name?
+- **Now (29 Sep):** Daniel's markup reads the pill as *"7:50 PM Toronto · 10m left"*
+  (HOME29:24-26). He moved it but did not change the wording, so the city name may be enough.
+  Still to confirm; whether the windows need "BC time" is still open.
+
+### OQ-66 · How many call windows, and at what times?
+- **Owner:** Daniel. **Raised:** 30 Sep 2026 (opened by the answer to OQ-34). **Blocks:**
+  REQ-HQ-01, REQ-HQ-02; UC-02, UC-23.
+- **Why:** *"we have limited the number of windows. What that number is, i am not sure."*
+  (HOME29:8). v2 shows four fixed BC windows, 8-10, 10-2, 2-5 and 5-7 (`f308201`, SPEC:113-115).
+  Daniel's own examples use 3-5, 6-8 and 7-9 PM (V2:5600-5608). Ani asked whether a window can be
+  7 to 9 (HOME29:7).
+- **Ask:** how many windows are there in a day, and what are their start and end times (BC time)?
+  Are they the same every day and for every doctor? Who can change them: the practice, or each
+  doctor? No number is assumed here.
+- **Source:** HOME29:6-11; OQ-34.
+
+### OQ-71 · Where does the time sit: beside the greeting, or in its own pill?
+- **Owner:** Manoj (design), with Ani. **Raised:** 30 Sep 2026 (a conflict between sources).
+  **Blocks:** REQ-HQ-02; T-008.
+- **The conflict:**
+  - Daniel, 29 Sep: *"Can we place the timing info next to Good Evening or Good Morning or Good
+    Afternoon whatever it might be"* (HOME29:14-15). His arrow runs from the greeting to the pill
+    (HOME29:24-25).
+  - Ani, 30 Sep: the time moved into its own pill, before the theme button (`b8331e5`;
+    V2c:4291-4293).
+  - The greeting stays at the top left (V2c:4289, 5547), and the pill is at the top right. So the
+    time is still not next to the greeting.
+- **Ask:** is the 30 Sep pill a step toward Daniel's placement, or where it ends up? T-008 names
+  "time beside the greeting". Daniel's words are the spec, so any other placement goes back to him.
+- **Source:** HOME29:14-15, 24-26; `b8331e5`; T-008 on the task board.
 
 ### OQ-35 · The AI line in Needs your attention
 - **Owner:** Daniel. **Raised:** 21 Sep 2026. **Blocks:** REQ-HQ-11.
@@ -102,6 +186,16 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
   a similar generated care-plan summary on a safety question: is the text verbatim or generated, and
   what is the review path? (SPEC:264-272).
 - **Ask:** is a generated five-word line acceptable, and must it quote the report?
+- **Now (29 Sep), probably settled; confirm:**
+  - His markup crossed off the diagnosis text on the result row, which is where a context line
+    would sit (HOME29:29-30).
+  - It kept the name, age/sex, test and value (HOME29:31-32).
+  - Two things to confirm, in the next batch:
+    - Is there no context line on a Home row at all?
+    - Does a patient's intake flag still show on the row? Since D-62 its text sits in the crossed
+      part (V2c:6301-6303), and there is a "Review intake" button (V2c:6307).
+  - The markup is read from an image, and HOME29:23 asks to confirm with Daniel where unsure.
+- **Source:** MTG21:60-62; HOME29:23-32; D-62, D-85.
 
 ---
 
@@ -193,9 +287,20 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
   tracks it (S5:78-82). For a patient-uploaded result, see OQ-52 and OQ-54.
 - **Source:** S3:54-57, 116-117; S5:49-54, 78-82.
 
-### OQ-18 · Continuity on other platforms · Top 8
+### OQ-18 · Continuity on other platforms · ANSWERED 27 Sep 2026
+- **Answer (Daniel, 27 Sep 2026):** *"No - don't mention Rocket or Tia, I ask because many of my
+  patients come from there."* (ANS27:38).
+- **Means:**
+  - Intake does not ask the question, and no competitor is named in intake or anywhere in the
+    product (D-81; rule 16a).
+  - He asks it himself on the call, because many of his patients come from those platforms
+    (ANS27:41-43).
+  - REQ-INT-04 is withdrawn. The other-platform half of REQ-CH-16 now has no source of data and is
+    on hold.
+- **Not carried forward:** a neutral question with no names. His "No" reads as no question at all.
+  If one is ever wanted, the wording is his.
 - **Owner:** Daniel (the question and its wording), then Ani (where the answer shows). **Raised:**
-  25 Sep 2026 (S1); again 26 Sep 2026 (S5). **Blocks:** REQ-CH-16, REQ-INT-04.
+  25 Sep 2026 (S1); again 26 Sep 2026 (S5). **Blocked:** REQ-CH-16, REQ-INT-04.
 - **Why it moved up:** the doctor asked it out loud in 2 of 5 visits, both times in front of a
   chart that said "no previous notes": *"Tia or Rocket"* (S1:10-12), and *"Have we spoken before
   at either Tia Health or Rocket, or is this the first time?"* (S5:26-29). The chart cannot answer
@@ -266,9 +371,13 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
   history? Should a patient-reported weight and a measured one look different?
 - **Source:** S4:19-22, 143-144.
 
-### OQ-64 · Patient-reported vitals: who enters them, and where
+### OQ-64 · Patient-reported vitals: who enters them, and where · Top 8 (reworded)
 - **Owner:** Daniel; Ani (what production stores today). **Raised:** 26 Sep 2026 (opened by the
   answer to OQ-47). **Blocks:** REQ-CH-32, REQ-CH-21, REQ-PT-10.
+- **27 Sep:** Daniel replied *"Can clarify patient readings?"* (ANS27:33). The question was unclear.
+  **Reworded for round 3:** "When a patient does home blood pressure or weight, how does the number
+  reach you today? Do they type it into the SimpleCare app, tell you on the call so you type it, or
+  send a photo? Which do you want?"
 - **Why:** *"I get them to do their blood pressures, their weights etc."* (ANS26:43-44). The answer
   file reads this as "portal or on the call" (ANS26:46-47); Daniel did not say which. v2's "Last
   vitals" shows one static set, including heart rate and temperature, with no source
@@ -334,9 +443,13 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
   upload the plan?
 - **Source:** S5:52-54, 160-161.
 
-### OQ-65 · Which result source is connected first?
+### OQ-65 · Which result source is connected first? · Top 8 (reworded)
 - **Owner:** Daniel (the source and the access); Ani (what the demo shows). **Raised:** 26 Sep 2026
   (opened by the answers to OQ-48 and OQ-53). **Blocks:** REQ-IN-12, REQ-CH-22, REQ-CH-29.
+- **27 Sep:** Daniel replied *"Can you clarify your question surrounding labs?"* (ANS27:28). The
+  question was unclear. **Reworded for round 3:** "Which lab sends you the most results today? We
+  would show that lab's results as numbers first. And is Accelerus, from your 21 Sep next steps,
+  the company that would send them?"
 - **Why:** *"We need API access so that we get the results from the source."* (ANS26:56). The only
   lab named in the sources is LifeLabs, whose BC critical list sets the Inbox tiers (MTG21:75;
   REQ-IN-07). His 21 Sep next steps include "Contact Accelerus to finalise onboarding and secure API
@@ -395,8 +508,10 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
   (V2b:4601-4602, D-64). The designer raised it again on that build.
 - **Asked:** which should be primary, or should it follow the pharmacy or the drug?
 
-### OQ-09 · Renewal quantity rules · Top 8
+### OQ-09 · Renewal quantity rules · next batch
 - **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-RX-02, REQ-RX-03.
+- **Not yet asked:** it was on our round-2 list, but the batch Ani sent had backend documentation as
+  its item 8 instead (ANS27:55-59). It goes in the next batch.
 - **Why:** v2 ties "3 months" to 90 tablets whatever the directions. A twice-daily drug is sent
   short, and the note records it (DR:75-77).
 - **Ask:**
@@ -427,8 +542,16 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
   how many days before? No number is set here.
 - **Source:** S5:55-59, 118-121.
 
-### OQ-60 · Favourite prescriptions: where they live and who manages them
-- **Owner:** Daniel. **Raised:** 26 Sep 2026 (opened by the answer to OQ-08). **Blocks:**
+### OQ-60 · Favourite prescriptions: where they live and who manages them · ANSWERED 27 Sep 2026
+- **Answer (Daniel, 27 Sep 2026):** *"They live in the Rx function. I manage them."* (ANS27:23).
+- **Means:** favourites belong to the prescribing (Rx) function, and the doctor adds and changes
+  them (ANS27:25). Recorded as D-80 and REQ-RX-11.
+- **Not answered, and moved:**
+  - what a favourite holds, and whether it carries the quantity: OQ-09;
+  - whether Japneet may send from one: OQ-70;
+  - whether favourites are shared with other doctors. His "I manage them" suggests they are his
+    own (inference). Ask only if it matters.
+- **Owner:** Daniel. **Raised:** 26 Sep 2026 (opened by the answer to OQ-08). **Blocked:**
   REQ-RX-11, REQ-RX-02.
 - **Why:** *"I also have my favorite's pre-populated."* (ANS26:8-9). v2 has no favourites; the
   renewal card starts from the patient's medication list only (`RX_MEDS` V2b:9894).
@@ -437,9 +560,26 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
   other doctors? Who may add or change one: only him, or the MOA too? Can the MOA send from one?
 - **Source:** ANS26:8-14.
 
-### OQ-61 · When the MOA sends a renewal, whose sign-off is it?
+### OQ-61 · When the MOA sends a renewal, whose sign-off is it? · ANSWERED 27 Sep 2026
+- **Answer (Daniel, 27 Sep 2026):** *"Always me. I can delegate authority to Japneet, but it is my
+  responsibility. She uses the Physician Assistant Portal - which is identical to my portal."*
+  (ANS27:14-15).
+- **Means:**
+  - The sign-off is always the doctor's. He delegates the action, never the responsibility.
+  - The person who sends is **Japneet, the physician assistant**, not an MOA. She works in a
+    Physician Assistant portal identical to his (ANS27:18-20).
+  - So the second route on the renewal card is a delegation to the PA, under his sign-off. It is
+    not an MOA task. Recorded as D-79; REQ-RX-07 and REQ-RX-10 are reworded.
+- **What the build does now (V2c):**
+  - The button reads "Ask Japneet to send" (V2c:10113).
+  - But she is modelled as the MOA buddy (V2c:6870-6871).
+  - The route files an MOA task at routine priority (V2c:10183).
+  - The note line reads "Sent to Japneet (MOA) to fax", with no sign-off by the doctor
+    (V2c:10187).
+- **Not answered, and moved to OQ-70:** what the record says, whether he sees the script first,
+  and whether Japneet may send from his favourites.
 - **Owner:** Daniel. **Raised:** 26 Sep 2026 (opened by the answers to OQ-08 and OQ-10).
-  **Blocks:** REQ-RX-10, REQ-RX-07, REQ-UI-06.
+  **Blocked:** REQ-RX-10, REQ-RX-07, REQ-UI-06.
 - **Why:** either can send (ANS26:8-9), but *"To Fax is to 'sign off' on the script"* and *"The
   Doctor has approved this, meaning my a\*\* is on the line."* (ANS26:22-25). When the MOA sends,
   it is not clear who has signed off. Build 13:10 puts "Ask MOA to send" through the doctor's own
@@ -447,7 +587,27 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
 - **Ask:** when he asks the MOA to send, has he signed off at that moment, or does the MOA's send
   carry his name? Does he see the script before it goes, or only after? Should the visit's record
   say "sent by <MOA> for Dr. <name>"? No prescribing rule is assumed here.
-- **Source:** ANS26:8-9, 17-34; V2b:10014, 10055-10064.
+- **Source:** ANS26:8-9, 17-34; V2b:10014, 10055-10064; ANS27:13-20.
+
+### OQ-70 · A script Japneet sends for the doctor: the record, and what she may use · Top 8
+- **Owner:** Daniel. **Raised:** 30 Sep 2026 (opened by the answer to OQ-61). **Blocks:**
+  REQ-RX-07, REQ-UI-06, REQ-RX-11; UC-30. Hazard HZ-09 in the clinical-safety log.
+- **Why:**
+  - *"Always me. I can delegate authority to Japneet, but it is my responsibility."* (ANS27:14).
+  - The build's note line says "Sent to Japneet (MOA)" and carries no sign-off by the doctor
+    (V2c:10187).
+  - The build files the task at routine priority, and HZ-09 names the gap that opens: S1's patient
+    had already run out a week earlier (`product/reports/clinical-safety-hazard-log.md`, HZ-09).
+- **Ask:**
+  - When Japneet faxes a script for you, should the record read "sent by Japneet (PA) for
+    Dr. <name>", with your sign-off time?
+  - Do you sign off when you hand it to her, or when she sends it?
+  - Do you see the script before it goes, or only after?
+  - May she start from your favourites?
+  - Can she send tasks to the MOA in her own right? The team rules mark this as not yet decided
+    (rule 12).
+  - No prescribing rule is assumed here.
+- **Source:** ANS27:13-20; V2c:6870-6871, 10183-10187; `product/handbook/01-rules.md` rule 12.
 
 ---
 
@@ -545,6 +705,9 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
   REQ-TK-07.
 - **Why:** *"Yours should stay on your dashboard"* (SIA:30) conflicts with `8e14497`, which moved it
   off Home. v2 shows only urgent, high or overdue tasks on Home.
+- **Now (29 Sep):** Daniel crossed off the task row in Needs your attention (HOME29:27-28; D-85).
+  The row he crossed was a task delegated to an MOA, not one of his own. So it is still open
+  whether his own unfinished work belongs somewhere on Home. It is not in the attention list.
 
 ### OQ-23 · Names for self-carry and Carry Forward
 - **Owner:** Daniel. **Raised:** before 27 Jul 2026. **Blocks:** REQ-TK-07.
@@ -567,6 +730,77 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
   as continuing with him do: a header label, booking follow-ups with him, anything formal? No
   attachment rule is assumed here.
 - **Source:** S5:30-32, 90-92, 149-152, 169-170; SIA:16.
+
+### OQ-67 · Which concerns are quick-book, and which are triage-first? · Top 8
+- **Owner:** Daniel. **Raised:** 29 Sep 2026. **Blocks:** REQ-INT-08; T-014; UC-24.
+- **Why:**
+  - Straightforward concerns get a quick-book tile: *"those can be displayed … We do that
+    already."* His example card holds Rx Renewal, Sick Note, Bladder Infection, Birth Control Refill
+    and "+6 More" (BOOK29:11-13).
+  - Complicated ones go through triage first: *"Diarrhea is more complicated/Constipation is more
+    complicated etc"*, and hemorrhoids (BOOK29:14-19).
+  - Acid reflux sat on the same gastrointestinal card, and he didn't classify it.
+  - Which group a concern is in is his call (B-001). No concern is classified here beyond his own
+    examples.
+- **Ask:**
+  - Please send the list of every bookable concern, each marked quick-book or triage-first.
+  - What are the "+6 More"?
+  - Does a concern's group ever change, for example with age or a repeat visit? No rule is assumed.
+- **Source:** BOOK29:10-19, 47-51; B-001 item 2.
+
+### OQ-68 · Triage for a patient who won't use the AI · Top 8
+- **Owner:** Daniel (the questions), Ani and Manoj (where it sits). **Raised:** 29 Sep 2026.
+  **Blocks:** REQ-INT-10; T-015; UC-28.
+- **Why:**
+  - *"Some people f\*\*\*ing hate AI."* (BOOK29:23), so every pathway must work without the AI
+    (D-90).
+  - But a complicated concern is triaged by the AI, which *"can triage in a superior manner than
+    x 4 static questions"* (BOOK29:17-18).
+  - So a patient who refuses the AI and has a triage-first concern has no triage today. B-001's
+    self-check marks this Needs Daniel/Ani.
+- **Ask:**
+  - For those patients, is triage a short form, the clinic phone line, or both?
+  - Who writes the questions?
+  - If the phone line itself becomes AI (BOOK29:24), what does a patient who refuses AI get on the
+    phone?
+- **Source:** BOOK29:17-18, 22-26, 54-55; B-001; T-015 on the task board.
+
+### OQ-69 · The red-flag list and the emergency wording · Top 8
+- **Owner:** Daniel (the list and the words); Manoj (the look, including whether it uses red), with
+  Ani approving (rule 17a). **Raised:** 29 Sep 2026. **Blocks:** REQ-INT-07, REQ-INT-11; T-012;
+  UC-29.
+- **Why:**
+  - Booking is open *"so long as it is not an Emergency"* (BOOK29:32-33). The emergency is the
+    only hard stop.
+  - On staging, "chest pain, can't breathe" gets doctors and call windows instead of "call 911". A
+    red flag mid-chat is missed, and a confirmed emergency goes back to routine questions (QA29:12,
+    QA-001 to QA-004).
+- **Ask:**
+  - Which symptoms or phrases count as an emergency?
+  - Is the same list used in the chat, on the tiles and on the phone line?
+  - What exactly does the patient read: 911, the ER, or both? Anything for a mental-health crisis?
+  - What happens when the patient says "it's not an emergency"?
+  - No clinical list or wording is invented here. The designer uses marked placeholders (T-012).
+- **Source:** BOOK29:31-34, 45-46; QA29:12, 22-23; rule 17a; T-012.
+
+### OQ-72 · WhatsApp or text booking
+- **Owner:** Daniel (whether and when); `privacy-security` must review before any design.
+  **Raised:** 29 Sep 2026. **Blocks:** REQ-INT-09 (the messaging pathway only).
+- **Why:** *"And indeed - we ought to even have WhatsApp? Text based booking … why not."*
+  (BOOK29:26). It is a pathway, but not a decision: the booking file marks it "not yet decided"
+  (BOOK29:52-53). Health information in a messaging app raises privacy questions (rule 8; the
+  standards in `product/team.md`). No channel is assumed here.
+- **Ask:** is WhatsApp or text booking wanted, and in which phase? Should it only book, or also
+  triage?
+- **Source:** BOOK29:26, 52-53.
+
+### OQ-73 · How long is a chosen window held before sign-up?
+- **Owner:** Daniel (Ani relays). **Raised:** 29 Sep 2026 (T-014). **Blocks:** REQ-INT-09; T-014.
+- **Why:** on staging the patient's window isn't held before the account step (QA29:16). T-014 asks
+  for a visible hold ("Holding 6–8 PM with Dr. X for 10 min") and lists its length as Needs Daniel.
+  The "10 min" is T-014's example, not a rule.
+- **Ask:** how long is the hold, and what happens when it runs out?
+- **Source:** T-014; QA29:16.
 
 ---
 
@@ -641,6 +875,8 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
   - overdue tasks (`0ae6630`);
   - the intake flag on the chart banner;
   - an overdue care-plan item (DR:152-153).
+- **Now (29 Sep):** the patient-facing emergency screen may be one more case. Whether it uses red
+  is Manoj's call, and Ani approves (rule 17a; OQ-69).
 
 ---
 
@@ -652,6 +888,9 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
   onboarding and API access; UI for AI interaction including voice (MTG21:25-32).
 - **Now (26 Sep):** *"We need API access so that we get the results from the source."* (ANS26:56).
   Whether the Accelerus API access is that route is asked in OQ-65.
+- **Now (27 Sep), backend documentation:** *"This is on our to do list - Samin is to help organize
+  Sai and Dev on the backend to document it."* (ANS27:56). Tracking only. Until it exists, there is
+  no backend source for the docs, and production behaviour comes from shadowing.
 
 ## Changelog
 
@@ -679,3 +918,18 @@ Finalize), OQ-63 (who writes the last-note summary), OQ-11 and OQ-16.
   OQ-63 (who writes the last-note summary), OQ-64 (who enters vitals) and OQ-65 (which source
   first). Notes added to OQ-09, OQ-17, OQ-36, OQ-41 (not answered, though the heading names it),
   OQ-51, OQ-52, OQ-54 and OQ-56. The first batch is now Top 8 and holds only unanswered questions.
+- 30 Sep 2026, fifth run (T-010, with T-004 folded in). Daniel's round-2 answers (ANS27), his
+  Home markup (HOME29) and his booking model (BOOK29). 73 questions, 63 open.
+  - ANSWERED (4), each with his words and the date: OQ-01 (Critical and High on Home; tasks off
+    Home per HOME29), OQ-18 (don't name other platforms), OQ-60 (favourites live in Rx) and OQ-61
+    (sign-off is always his; Japneet is the PA).
+  - PARTLY ANSWERED (2): OQ-04 (he calls a patient immediately, rarely) and OQ-34 (the number of
+    windows is limited).
+  - Reworded at his request (2): OQ-64 and OQ-65.
+  - New (8): OQ-66 (the number of windows), OQ-67 (quick-book vs triage-first), OQ-68 (triage
+    without the AI), OQ-69 (red flags and emergency wording), OQ-70 (a script Japneet sends),
+    OQ-71 (where the time sits; Manoj and Ani), OQ-72 (WhatsApp or text booking) and OQ-73 (how
+    long a window is held).
+  - Notes added: OQ-03, OQ-09 (never sent), OQ-22, OQ-30, OQ-35 (probably settled by the markup)
+    and OQ-36 (backend documentation).
+  - A new Top 8 for round 3.
