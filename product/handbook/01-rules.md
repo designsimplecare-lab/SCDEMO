@@ -23,6 +23,8 @@ blocks your task, say so; don't work around it.
    lead commits and deploys, and Ani approves.
    - "Asking Daniel" means: `product-manager` **prepares** the question list, and **Ani sends it**. No
      agent contacts anyone.
+4a. **Evidence screenshots** for reports go in `product/reports/shots/`, which is git-ignored and
+    local only. Link them from the report as `shots/<file>.png`. They must show no real personal data.
 5. **Every claim has a source:** a file and line, a quote, a commit or a URL with its date. Otherwise
    label it **assumption**.
 6. **Don't invent** clinical rules, doses, thresholds, billing codes, legal requirements, statistics,

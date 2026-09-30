@@ -1,5 +1,8 @@
 # Patient chat QA: staging, run 1 (before sign-in)
 
+> **Evidence:** the screenshots are in `product/reports/shots/`. They are local only, git-ignored and
+> not published, because they show the unreleased staging UI. The links work on Ani's machine.
+
 | Field | Value |
 |---|---|
 | Task | T-011 |
