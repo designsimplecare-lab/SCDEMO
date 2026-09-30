@@ -29,6 +29,10 @@ Scan computed styles for:
 - stroked tags;
 - lines longer than 66ch in reading text.
 
+## Tools
+- `tools/hover-contrast-scan.mjs` forces :hover on every button and flags contrast under 4.5:1. Run
+  it in light mode and in dark mode (DARK=1) after any change to colours or buttons.
+
 ## Output
 - A pass/fail report with evidence (screenshot paths, measured values) in `product/reports/`.
 - Regressions go at the top.

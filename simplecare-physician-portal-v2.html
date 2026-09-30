@@ -4011,7 +4011,7 @@
   html body .pd-divider{border-top:1px solid var(--line);margin:6px 4px;}
   .profile-trigger:focus:not(:focus-visible){outline:none;}
   .profile-trigger:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
-  :root[data-theme="dark"] html body .pd-item:hover{background:var(--wash);}
+  html[data-theme="dark"] body .pd-item:hover{background:var(--wash);}
   /* Ani, 25 Sep: a strict line-length rule. Reading text caps at 66 characters (the 45-75ch
      readability band; 66 is the classic measure) and wraps to the next line instead of running across */
   :root{--measure:66ch;}
@@ -4305,6 +4305,32 @@
   html body #screen-today .q-table tbody tr:last-child > td,
   html body #screen-tasks .tk-row:last-child,
   html body .chat-thread-row:last-child{border-bottom:0 !important;box-shadow:none;}
+  /* Ani, 30 Sep: hover must stay readable. Tag-style controls (billing, visit status, health card) fill
+     with ink on hover or focus, with white text, icon and caret, matching the outline buttons. */
+  html body #screen-today .q-table td.q-bill button.bill-pill:is(:hover,:focus-visible),
+  html body #screen-today .q-table td button.status-pill:is(:hover,:focus-visible),
+  html body #screen-today .q-table td.q-card button.q-ver:is(:hover,:focus-visible),
+  html body .q-table td.q-bill button.bill-pill:is(:hover,:focus-visible),
+  html body .q-table td button.status-pill:is(:hover,:focus-visible),
+  html body .q-table td.q-card button.q-ver:is(:hover,:focus-visible){
+    background:var(--ink) !important;color:#fff !important;}
+  html body .q-table td :is(button.bill-pill,button.status-pill,button.q-ver):is(:hover,:focus-visible) :is(span,svg,.ic,.q-caret){color:#fff !important;}
+  html body .q-table td :is(button.bill-pill,button.status-pill,button.q-ver):is(:hover,:focus-visible) svg *{stroke:currentColor;}
+  html[data-theme="dark"] body .q-table td :is(button.bill-pill,button.status-pill,button.q-ver):is(:hover,:focus-visible){background:#fff !important;color:#000 !important;}
+  html[data-theme="dark"] body .q-table td :is(button.bill-pill,button.status-pill,button.q-ver):is(:hover,:focus-visible) :is(span,svg,.ic,.q-caret){color:#000 !important;}
+  /* accessibility, dark mode: white text on brand blue #7C89FF is 3.05:1 (it fails AA). Primary buttons use
+     dark ink text there instead (about 7:1). */
+  html[data-theme="dark"] body :is(.btn.dark,.wt-new.wt-dark,.btn.primary,button.primary),
+  html[data-theme="dark"] body :is(.btn.dark,.wt-new.wt-dark,.btn.primary,button.primary) :is(span,svg,.ic){color:#0B0E2A !important;}
+  html[data-theme="dark"] body .qwin button.on,html[data-theme="dark"] body .qwin button.on *{color:#0B0E2A !important;}
+  /* Hover accessibility, one rule for every theme (Ani, 30 Sep: "make sure colour accessibility on hover").
+     Outline buttons and tag controls fill with the theme ink, and their text and icons take the panel
+     colour: #17181C with white text in light, white with #1C1C1E text in dark, both above 15:1.
+     The :not(#_x) chain raises specificity above older per-screen rules. */
+  html body button:not(#_a):not(#_b):not(#_c):not(#_d):is(.btn:not(.dark):not(.primary),.wt-new:not(.wt-dark),.al-btn,.pc-back,.day-arrow,.bill-pill,.status-pill,.q-ver,.cp-do button,button.go):is(:hover,:focus-visible){background:var(--ink) !important;color:var(--panel) !important;border-color:var(--ink) !important;}
+  html body button:not(#_a):not(#_b):not(#_c):not(#_d):is(.btn:not(.dark):not(.primary),.wt-new:not(.wt-dark),.al-btn,.pc-back,.day-arrow,.bill-pill,.status-pill,.q-ver,.cp-do button,button.go):is(:hover,:focus-visible) :is(span,b,i,svg,.ic,.q-caret,.nav-icon){color:var(--panel) !important;}
+  html body button:not(#_a):not(#_b):not(#_c):not(#_d):is(.btn:not(.dark):not(.primary),.wt-new:not(.wt-dark),.al-btn,.pc-back,.day-arrow,.bill-pill,.status-pill,.q-ver,.cp-do button,button.go):is(:hover,:focus-visible)::after{border-color:var(--panel) !important;}
+  html[data-theme="dark"] body :is(.rx-seg button.on,.rx-seg button.on *){color:#0B0E2A !important;}
 </style>
 </head>
 <body>
@@ -11007,6 +11033,6 @@ window.addEventListener('resize', function(){
   updateChatBadge();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-09-30 10:57</div>
+  <div class="build-stamp">v2 · build 2026-09-30 11:04</div>
 </body>
 </html>
