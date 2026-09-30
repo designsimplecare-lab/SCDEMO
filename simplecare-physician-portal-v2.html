@@ -4341,6 +4341,24 @@
     display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:var(--panel);
     font-size:15px !important;font-weight:600;color:var(--ink) !important;}
   html body #screen-today .q-table tr.q-sep + tr > td{border-top:0 !important;}
+  /* one conversation with the paired MOA, plus quick-question chips (Ani, 30 Sep) */
+  #chat-panel .chat-thread-list{display:none !important;}
+  #chat-panel .chat-back{display:none !important;}
+  #chat-panel .chat-suggest{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px 0;border-top:1px solid var(--line);}
+  #chat-panel .chat-suggest:empty{display:none;}
+  #chat-panel .cs-lbl{display:flex;align-items:center;gap:6px;width:100%;font-size:14px;color:var(--ink-soft);}
+  #chat-panel .cs-lbl .ic,#chat-panel .cs-lbl svg{width:16px;height:16px;color:var(--brand);}
+  #chat-panel .cs-chip{min-height:40px;padding:8px 14px;border:0;border-radius:999px;background:var(--wash);
+    font:inherit;font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;text-align:left;line-height:1.3;}
+  #chat-panel .cs-chip:is(:hover,:focus-visible){background:var(--ink);color:var(--panel);outline:none;}
+  #chat-panel .chat-input-row{border-top:0;}
+  /* the suggestions sit in one scrollable row, so the conversation keeps its height */
+  #chat-panel .chat-suggest{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:10px 12px 2px;align-items:center;}
+  #chat-panel .chat-suggest::-webkit-scrollbar{display:none;}
+  #chat-panel .cs-lbl{width:auto;flex:0 0 auto;margin-right:2px;}
+  #chat-panel .cs-lbl{font-size:0;gap:0;}
+  #chat-panel .cs-lbl .ic,#chat-panel .cs-lbl svg{width:18px;height:18px;}
+  #chat-panel .cs-chip{flex:0 0 auto;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -5469,6 +5487,8 @@
   </div>
   <div class="chat-thread-list" id="chat-thread-list"></div>
   <div class="chat-messages" id="chat-messages" style="display:none;"></div>
+  <!-- Ani, 30 Sep: quick questions, suggested from what the doctor is looking at -->
+  <div class="chat-suggest" id="chat-suggest" aria-label="Suggested messages"></div>
   <div class="chat-input-row" id="chat-input-row" style="display:none;">
     <input type="text" id="chat-input" placeholder="Message" aria-label="Message" onkeydown="if(event.key==='Enter') sendChatMessage()">
     <button onclick="sendChatMessage()" aria-label="Send"><span class="ic" data-pdic="arrowup"></span></button>
@@ -8413,17 +8433,14 @@ function switchToPatientView(){
 }
 
 /* ===== floating MOA chat — separate from Task MOA ===== */
+/* Ani, 30 Sep (bulletin B-002): the doctor chats 1:1 with the MOA paired to them for this window.
+   One conversation, not a list. Daniel: "on our system it shows to the Docs 1:1 pairing." */
 var MOA_THREADS = [
-  { id:'priya', name:'Priya M.', role:'MOA — mornings', unread:2, online:true, messages:[
+  { id:'moa', name:'Dolly', role:'Your MOA this window', unread:2, online:true, messages:[
     { from:'them', text:'Referral fax to Dr. Singh confirmed sent.', time:'9:12 AM' },
     { from:'me', text:'Great, thanks', time:'9:14 AM' },
-    { from:'them', text:'Gloria Mcdonald asked to move her follow-up to next week — ok to rebook?', time:'10:02 AM' }
-  ]},
-  { id:'jordan', name:'Jordan T.', role:'MOA — afternoons', unread:0, online:false, messages:[
-    { from:'them', text:'Covering for Priya after 2pm today.', time:'8:00 AM' }
-  ]},
-  { id:'admin', name:'Office Admin', role:'Overwatch / liaison', unread:1, online:true, messages:[
-    { from:'them', text:'Reminder: fee schedule update goes live Monday.', time:'Yesterday' }
+    { from:'them', text:'Reminder: the fee schedule update goes live Monday.', time:'9:40 AM' },
+    { from:'them', text:'Gloria Mcdonald asked to move her follow-up to next week. OK to rebook?', time:'10:02 AM' }
   ]}
 ];
 function renderMoaOnlineStrip(){
@@ -8449,7 +8466,7 @@ function toggleChatPanel(){
   var panel = document.getElementById('chat-panel');
   var opening = !panel.classList.contains('show');
   panel.classList.toggle('show');
-  if(opening){ renderThreadList(); if(typeof paintPd === 'function') paintPd(panel); }
+  if(opening){ openThread(MOA_THREADS[0].id); if(typeof paintPd === 'function') paintPd(panel); }
   /* T-009: the nav item shows the open state; the panel returns to where this doctor left it */
   var nb = document.getElementById('nav-messages');
   if(nb){ nb.classList.toggle('is-open', opening); nb.setAttribute('aria-expanded', opening ? 'true' : 'false'); }
@@ -8490,15 +8507,8 @@ function openThread(id){
   document.getElementById('chat-input-row').style.display = 'flex';
   var head = document.getElementById('chat-head');
   document.getElementById('chat-head-title').innerHTML = t.name + '<span class="chat-head-role">' + t.role.replace(' — ',' · ') + (t.online ? ' · online' : '') + '</span>';
-  if(!document.querySelector('.chat-back')){
-    var back = document.createElement('button');
-    back.className = 'chat-back';
-    back.setAttribute('aria-label','Back to chats');
-    back.innerHTML = '<span class="ic" data-pdic="chevl"></span>';
-    back.onclick = renderThreadList;
-    head.insertBefore(back, head.firstChild);
-  }
   renderMessages();
+  renderChatSuggest();
   if(typeof paintPd === 'function') paintPd(head);
 }
 function renderMessages(){
@@ -8510,6 +8520,34 @@ function renderMessages(){
   }).join('');
   box.scrollTop = box.scrollHeight;
 }
+/* Smart suggestions: a reply to the MOA's last question, then quick asks that fit the screen the
+   doctor is on (the open chart's patient, or the queue). A tap fills the box, and the doctor edits
+   or sends. Nothing sends by itself. */
+function chatSuggestions(){
+  var t = MOA_THREADS[0], last = t.messages[t.messages.length-1], out = [];
+  if(last && last.from === 'them' && /\?\s*$/.test(last.text)){
+    out.push('Yes, go ahead', 'Not yet');
+  }
+  var chartOpen = document.querySelector('#screen-patientchart.active') && typeof PC_CURRENT === 'string' && PC_CURRENT;
+  if(chartOpen){
+    var row = (typeof QUEUE_DATA !== 'undefined') ? QUEUE_DATA.find(function(r){ return r.name === PC_CURRENT; }) : null;
+    var first = row && row.pref ? row.pref : String(PC_CURRENT).split(' ')[0];
+    out.push('Call ' + first + ' to rebook', 'Did ' + first + '\u2019s fax go through?', 'Send ' + first + ' the lab req');
+  } else {
+    out.push('Running 10 min late', 'Who\u2019s next?', 'Anything urgent?');
+  }
+  return out.slice(0, 4);
+}
+function renderChatSuggest(){
+  var box = document.getElementById('chat-suggest'); if(!box) return;
+  box.innerHTML = '<span class="cs-lbl" title="Suggested" aria-label="Suggested"><span class="ic" data-pdic="copilot"></span>Suggested</span>' +
+    chatSuggestions().map(function(q){ return '<button type="button" class="cs-chip" onclick="chatUseSuggest(this)">' + q + '</button>'; }).join('');
+  if(typeof paintPd === 'function') paintPd(box);
+}
+function chatUseSuggest(btn){
+  var input = document.getElementById('chat-input');
+  input.value = btn.textContent; input.focus();
+}
 function sendChatMessage(){
   var input = document.getElementById('chat-input');
   var text = input.value.trim();
@@ -8519,6 +8557,7 @@ function sendChatMessage(){
   t.messages.push({ from:'me', text:text, time: now.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}) });
   input.value = '';
   renderMessages();
+  renderChatSuggest();
 }
 updateChatBadge();
 renderMoaOnlineStrip();
@@ -11045,6 +11084,6 @@ window.addEventListener('resize', function(){
   updateChatBadge();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-09-30 11:10</div>
+  <div class="build-stamp">v2 · build 2026-09-30 13:20</div>
 </body>
 </html>

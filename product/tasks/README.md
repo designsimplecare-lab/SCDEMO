@@ -26,7 +26,7 @@ tasks below are **Ready**, and waiting for Ani's go.
 | T-016 | Privacy on shared devices | Design | P1 | **Manoj** (+ `ux-designer`) | `privacy-security`, `content-designer`, `accessibility` | Ready |
 | T-017 | Chat polish: scrolling, time formats, phone sizes, keyboard, cost notice | Design | P2 | **Manoj** (+ `ux-designer`) | `accessibility`, `content-designer` | Ready |
 | T-018 | Whistler bus ad, 11×20 interior card, with a QR to booking | Marketing / design | P1 | **Manoj** (+ `brand-designer`, `marketing-lead`) | `marketing-compliance`, `accessibility` | Ready |
-| T-019 | Chat as 1:1 with the paired MOA (B-002). Ani is redesigning; the prototype follows her design | Design | P1 | **Ani** (designing) → `ux-designer` builds | `qa-engineer`, `moa` walkthrough | Waiting for Ani's design |
+| T-019 | Chat as 1:1 with the paired MOA (B-002): the floating chat, one conversation, smart quick-question suggestions | Design | P1 | **Ani** (direction), built by the lead | `qa-engineer`, `moa` walkthrough | Built 30 Sep; the MOA-portal side (up to 5 doctors) is still to do |
 
 **Recording files (local, never committed):**
 - `~/Downloads/Fixing Annoying Appointment Chat Flow.mp4`

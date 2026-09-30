@@ -8,7 +8,9 @@
 ## What changed
 - **The doctor's chat is with one person:** the MOA paired with them for the current call window.
   "On our system it shows to the Docs 1:1 pairing."
-- **An MOA may support up to about 5 doctors.** The doctor doesn't see that.
+- **It's one-way round:** an MOA can have up to 5 doctors, but a doctor has just **one** MOA (Ani, 30 Sep).
+  - **Doctor's side (physician portal):** one conversation, with their MOA only.
+  - **MOA's side (MOA portal):** a conversation for each of their doctors, up to 5.
 - **The pairing can change between call windows.**
 - **There is no ticket queue.** A doctor never submits a request into a queue.
 
@@ -17,6 +19,14 @@
   conversation with the paired MOA, named, with presence showing.
 - Any design where the doctor picks a recipient for chat, or where requests pool in a shared queue.
 - **Tasks are unchanged:** they still travel doctor → MOA (rule 12). Chat and tasks stay separate.
+
+## Built in v2 (30 Sep)
+- **The floating chat** opens straight into the one conversation with the paired MOA (demo: Dolly, "Your MOA
+  this window"). There's no thread list and no back button.
+- **Smart suggestions** appear as quick-question chips above the message box. When the MOA's last message
+  is a question, they offer a reply ("Yes, go ahead", "Not yet"). Otherwise they fit the screen: on a
+  chart, "Call Gloria to rebook" or "Did Gloria's fax go through?"; on Home, "Running 10 min late" or
+  "Who's next?". A tap fills the box. Nothing sends by itself.
 
 ## Self-check
 - *The doctor's paired MOA changes at 2 PM. What does the chat show?*
