@@ -41,5 +41,8 @@ design option to weigh against Daniel's "movable" request.
 
 ## Decided 30 Sep (Ani)
 - The time is in its own pill, before the theme button.
-- The chat stays in the top bar, next to the profile, as a movable panel. The left-nav idea was tried
-  and reverted.
+- The chat was first put back in the top bar, then (later on 30 Sep) **swapped**: the **SimpleCare
+  Assistant** is in the top bar, and the **MOA chat is the floating button** (the doctor's one MOA, with
+  her picture and status). It opens a movable panel with one conversation and smart suggestions.
+- The **sidebar is open by default**. This replaces Daniel's 21 Sep collapsed default, and a doctor's own
+  choice is still remembered.
