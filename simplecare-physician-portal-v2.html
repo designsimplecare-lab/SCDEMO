@@ -4332,7 +4332,6 @@
       <!-- Ani, 29 Sep: chat as a primary left-nav item. It opens and closes the movable chat panel
            (Daniel, 29 Sep: "I'd like the messenger function movable"). Not a screen, so no data-screen.
            The unread count sits outside the label so it stays on the icon when the rail is collapsed. -->
-      <button type="button" class="nav-btn nav-msgs" id="nav-messages" onclick="toggleChatPanel()" aria-controls="chat-panel" aria-expanded="false"><span class="nav-icon" data-pdic="chat"></span><span class="nav-label">Messages</span><span class="nav-flag nav-msg-count" id="chat-badge" style="display:none;">0</span></button>
       <span class="nav-sep"></span>
       <button class="nav-btn" data-screen="support" onclick="showScreen('support')"><span class="nav-icon">&#9432;</span><span class="nav-label">Technical Support</span></button>
     </div>
@@ -4358,8 +4357,11 @@
            pill, with a clock where the photo would be -->
       <div class="tb-time-pill" id="tb-now" role="timer" aria-live="off"></div>
       <button class="chat-fab theme-btn" id="theme-btn" onclick="toggleTheme()" title="Switch to dark" aria-label="Switch to dark"><span class="ic" id="theme-icon"></span></button>
-      <!-- Ani, 29 Sep: "make chat one big menu on the left nav so it becomes more primary". The chat
-           button and its count moved to Messages in the sidebar, so it isn't in two places. -->
+      <!-- Ani, 30 Sep: chat back in the top bar, next to the profile (the left-nav Messages item was removed) -->
+      <button class="chat-fab" id="chat-fab" onclick="toggleChatPanel()" title="MOA chat" aria-label="MOA chat">
+        <span class="ic" data-pcic="chatic"></span>
+        <span class="chat-badge" id="chat-badge" style="display:none;">0</span>
+      </button>
       <div class="profile-wrap">
           <!-- Daniel, 25 Sep: "This is very useful info and I want it front and center...
            when I am in other time zones it orients me." His wording, verbatim:
@@ -11005,6 +11007,6 @@ window.addEventListener('resize', function(){
   updateChatBadge();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-09-30 10:56</div>
+  <div class="build-stamp">v2 · build 2026-09-30 10:57</div>
 </body>
 </html>
