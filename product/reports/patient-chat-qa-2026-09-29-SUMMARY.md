@@ -20,9 +20,8 @@ keyboard access to the tiles, and similar (QA-019 to QA-027).
 
 ## What each person needs to do
 - **Daniel:** say how emergencies should be caught and worded, and which concerns need triage first.
-- **Ani:**
-  - Pick one emergency style.
-  - Sign in on staging, for the second half of testing.
+- **Manoj:** pick one emergency style (in T-012).
+- **Ani:** sign in on staging, for the second half of testing.
 - **Dev team** (once decided):
   - check the first message for emergencies **before** showing doctors;
   - clear the chat between visitors;
