@@ -8,7 +8,7 @@ its review gates and Ani approves.
 |---|---|---|
 | **Requester** | Ani, Daniel (through Ani), or the lead on Ani's behalf | Asks for something |
 | **Lead** | The main Claude session | Writes the task, assigns it, runs the agents, checks results, commits and deploys |
-| **Owner** | One agent per task | Does the work and delivers the output |
+| **Owner** | One agent per task, or **Manoj** for design tasks | Does the work and delivers the output. When Manoj owns a task, the agents named as contributors do the drafting for him |
 | **Contributors** | Other agents named on the task | Give input the owner asked for |
 | **Reviewers (gates)** | `qa-engineer`, `clinical-safety`, `privacy-security`, `accessibility`, `marketing-compliance`, `tech-lead` | Pass, fix or block, with reasons |
 | **Approver** | Ani (and Daniel for clinical content) | Accepts, or sends back |

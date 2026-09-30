@@ -8,8 +8,8 @@
 | Size | L |
 | Requested by | Ani |
 | Date | 2026-09-29 |
-| Owner | `ux-designer` |
-| Contributors | `content-designer` (words) |
+| Owner | **Manoj** (product designer) |
+| Contributors | `ux-designer` (prototype and spec drafts, for Manoj), `content-designer` (words) |
 | Gates | `content-designer`, `ai-engineer`, `accessibility`, `patient-chat-qa` |
 
 ## Request
@@ -64,4 +64,5 @@ Evidence: QA-006, QA-008, QA-009, QA-010, QA-013, QA-014, QA-015 (PC-07, 09, 11,
 - Ani: ☐  ·  Daniel (clinical): ☐ n/a
 
 ## Log
+- 2026-09-29: owner changed to Manoj, the newly hired designer. The `ux-designer` agent assists.
 - 2026-09-29 — created from staging QA run 1

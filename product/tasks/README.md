@@ -19,12 +19,12 @@ tasks below are **Ready**, and waiting for Ani's go.
 | T-009 | Movable messenger and AI panels (Daniel), weighed against Ani's idea of chat as a primary left-nav item | Design | P1 | `ux-designer` | `qa-engineer`, `accessibility` | Ready |
 | T-010 | Add Daniel's 29 Sep feedback and the call-window limit to the product docs | Spec | P1 | `product-manager` | — | Ready |
 | T-011 | Patient chat QA run on **staging** (before sign-in) | Review | P1 | `patient-chat-qa` | lead | In review. Phase 1 done; phase 2 (signed in) waits for Ani |
-| T-012 | Emergency screening in the Simplicity chat | Design | P1 | `ux-designer` | `clinical-safety`, `content-designer`, `accessibility`, `patient-chat-qa` | Ready |
-| T-013 | A chat that listens to what the patient says | Design | P1 | `ux-designer` | `content-designer`, `ai-engineer`, `accessibility`, `patient-chat-qa` | Ready |
-| T-014 | Clear booking paths: family doctor, walk-in, named doctor, holding the window | Design | P1 | `ux-designer` | `content-designer`, `patient`, `patient-chat-qa` | Ready |
-| T-015 | Booking without the AI, and useful empty states | Design | P1 | `ux-designer` | `content-designer`, `patient`, `accessibility` | Ready |
-| T-016 | Privacy on shared devices, and a safe "Clear conversation" | Design | P1 | `ux-designer` | `privacy-security`, `content-designer`, `accessibility` | Ready |
-| T-017 | Chat polish: scrolling, time formats, phone sizes, keyboard, cost notice | Design | P2 | `ux-designer` | `accessibility`, `content-designer` | Ready |
+| T-012 | Emergency screening in the Simplicity chat | Design | P1 | **Manoj** (+ `ux-designer`) | `clinical-safety`, `content-designer`, `accessibility`, `patient-chat-qa` | Ready |
+| T-013 | A chat that listens to what the patient says | Design | P1 | **Manoj** (+ `ux-designer`) | `content-designer`, `ai-engineer`, `accessibility`, `patient-chat-qa` | Ready |
+| T-014 | Clear booking paths: family doctor, walk-in, named doctor, holding the window | Design | P1 | **Manoj** (+ `ux-designer`) | `content-designer`, `patient`, `patient-chat-qa` | Ready |
+| T-015 | Booking without the AI, and useful empty states | Design | P1 | **Manoj** (+ `ux-designer`) | `content-designer`, `patient`, `accessibility` | Ready |
+| T-016 | Privacy on shared devices, and a safe "Clear conversation" | Design | P1 | **Manoj** (+ `ux-designer`) | `privacy-security`, `content-designer`, `accessibility` | Ready |
+| T-017 | Chat polish: scrolling, time formats, phone sizes, keyboard, cost notice | Design | P2 | **Manoj** (+ `ux-designer`) | `accessibility`, `content-designer` | Ready |
 
 **Recording files (local, never committed):**
 - `~/Downloads/Fixing Annoying Appointment Chat Flow.mp4`
