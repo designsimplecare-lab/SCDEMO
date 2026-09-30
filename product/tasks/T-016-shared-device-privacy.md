@@ -1,4 +1,4 @@
-# T-016 — Privacy on shared devices, and a safe "Clear conversation"
+# T-016 — Privacy on shared devices
 
 | Field | Value |
 |---|---|
@@ -30,7 +30,6 @@ Evidence: QA-005, QA-020, QA-025 (PC-15, PC-24) in `product/reports/patient-chat
 
 ## Acceptance criteria
 - [ ] **Decide what is kept on the device, for how long, and when it's cleared.** For example: cleared when the tab closes, or "Resume your chat?" with a clear "Not me" option. Choose with `privacy-security`.
-- [ ] **"Clear conversation"** becomes a neutral secondary action, and asks for confirmation.
 - [ ] **A restored chat keeps its order and its real timestamps.**
 - [ ] It follows `product/handbook/01-rules.md`, bulletin B-001, and the SimpleCare Paper design rules.
 - [ ] **Evidence:** screenshots at desktop and phone width (in `product/reports/shots/`), plus a dev spec with the states, copy and behaviour: `product/specs/T-016-shared-device-privacy.md`.
@@ -59,5 +58,6 @@ Evidence: QA-005, QA-020, QA-025 (PC-15, PC-24) in `product/reports/patient-chat
 - Ani: ☐  ·  Daniel (clinical): ☐ n/a
 
 ## Log
+- 2026-09-29: "Clear conversation" removed from scope. It's a demo-only control (Ani).
 - 2026-09-29: owner changed to Manoj, the newly hired designer. The `ux-designer` agent assists.
 - 2026-09-29 — created from staging QA run 1

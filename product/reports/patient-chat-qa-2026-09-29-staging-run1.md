@@ -396,6 +396,7 @@
 - **Suggested direction:** Ani decides whether cost is disclosed before the account step.
 
 ### QA-020: "Clear conversation" is red and wipes the chat with no confirmation
+- **Resolved as demo-only (Ani, 29 Sep):** the "Clear conversation" button exists only for the demo, so it's **not a product issue**.
 - **Scenario:** PC-25 and PC-04.
 - **Severity:** Medium.
 - **Patient goal:** Not applicable; a tone and safety-of-action check.

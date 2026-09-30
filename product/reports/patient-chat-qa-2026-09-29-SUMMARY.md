@@ -15,7 +15,7 @@ The run covered 26 scenarios: 13 done, of which 10 failed; 7 partly done; 2 bloc
 | 4 | **Privacy on shared devices.** Someone's symptoms reappear for the next person who opens the site. | 🟠 High | QA-005 |
 | 5 | **The paths are confusing.** "See my family doctor" traps people without one. Your window isn't held before sign-up. A named doctor can't be booked. "Become a regular patient" asks you to choose for life, with no information. | 🟡 Medium | QA-011, 012, 016, 017, 018 |
 
-**The rest is polish** (🟡/⚪): the red "Clear conversation" button, time formats, small text on phones,
+**The rest is polish** (🟡/⚪): time formats, small text on phones,
 keyboard access to the tiles, and similar (QA-019 to QA-027).
 
 ## What each person needs to do

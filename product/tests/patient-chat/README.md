@@ -95,3 +95,5 @@ Low), patient goal, steps, expected, actual, UX impact, evidence, and suggested 
 - **Known limitation of staging:** booking by clicking a concern tile, outside the chat, isn't
   available on staging. It is in production (Ani, 29 Sep). Tiles on staging show "No Physicians
   Available". Don't report that as a defect. Test the tile path only where it exists.
+- **Demo-only controls:** the "Clear conversation" button is there only for the demo (Ani, 29 Sep).
+  Don't report on it.

@@ -23,7 +23,7 @@ tasks below are **Ready**, and waiting for Ani's go.
 | T-013 | A chat that listens to what the patient says | Design | P1 | **Manoj** (+ `ux-designer`) | `content-designer`, `ai-engineer`, `accessibility`, `patient-chat-qa` | Ready |
 | T-014 | Clear booking paths: family doctor, walk-in, named doctor, holding the window | Design | P1 | **Manoj** (+ `ux-designer`) | `content-designer`, `patient`, `patient-chat-qa` | Ready |
 | T-015 | Routing people who refuse the AI, and useful empty states (the tile path exists in production) | Design | P1 | **Manoj** (+ `ux-designer`) | `content-designer`, `patient`, `accessibility` | Ready |
-| T-016 | Privacy on shared devices, and a safe "Clear conversation" | Design | P1 | **Manoj** (+ `ux-designer`) | `privacy-security`, `content-designer`, `accessibility` | Ready |
+| T-016 | Privacy on shared devices | Design | P1 | **Manoj** (+ `ux-designer`) | `privacy-security`, `content-designer`, `accessibility` | Ready |
 | T-017 | Chat polish: scrolling, time formats, phone sizes, keyboard, cost notice | Design | P2 | **Manoj** (+ `ux-designer`) | `accessibility`, `content-designer` | Ready |
 
 **Recording files (local, never committed):**
