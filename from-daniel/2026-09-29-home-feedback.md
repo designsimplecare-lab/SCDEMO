@@ -38,3 +38,8 @@ Ani asked: "this is maximum window ranges right? can it not be 7 to 9". Daniel r
 
 This means making chat a primary left-navigation destination rather than a floating panel. It is a
 design option to weigh against Daniel's "movable" request.
+
+## Decided 30 Sep (Ani)
+- The time is in its own pill, before the theme button.
+- The chat stays in the top bar, next to the profile, as a movable panel. The left-nav idea was tried
+  and reverted.
