@@ -4300,6 +4300,11 @@
   /* primary stays primary (Ani, 30 Sep): an older dark-mode rule turned the blue Task MOA pale grey
      on hover and lost its white icon. It stays brand blue, a touch brighter. */
   :root[data-theme="dark"] #screen-today .work-tabs .wt-dark:hover{background:var(--brand);border-color:var(--brand);color:#fff;filter:brightness(1.12);}
+  /* Ani, 30 Sep: no divider under the last row of a list; the card edge already ends it */
+  html body #crit-list > .al-row:last-child,
+  html body #screen-today .q-table tbody tr:last-child > td,
+  html body #screen-tasks .tk-row:last-child,
+  html body .chat-thread-row:last-child{border-bottom:0 !important;box-shadow:none;}
 </style>
 </head>
 <body>
@@ -11000,6 +11005,6 @@ window.addEventListener('resize', function(){
   updateChatBadge();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-09-30 10:45</div>
+  <div class="build-stamp">v2 · build 2026-09-30 10:56</div>
 </body>
 </html>
