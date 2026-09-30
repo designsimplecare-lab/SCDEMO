@@ -4388,6 +4388,14 @@
     background:var(--brand);color:#fff;font-size:13px;font-weight:600;display:none;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--paper);}
   body:has(#chat-panel.show) .chat-launcher{opacity:0;pointer-events:none;}
   @media (max-width:760px){.chat-launcher .cl-txt{display:none;} .chat-launcher{padding:6px;}}
+  #chat-fab.chat-launcher{touch-action:none;}
+  #chat-fab.chat-launcher.pd-dragging{cursor:grabbing;box-shadow:0 18px 40px rgba(23,24,28,.26);transition:none;}
+  /* Ani, 30 Sep: the Assistant button wears the AI gradient (the same stops as the AI mark), with a white icon */
+  html body .topbar .ai-fab{background:linear-gradient(135deg,#5FDDFF 0%,#4F8CFF 50%,#4353E8 100%) !important;
+    box-shadow:0 4px 14px rgba(67,83,232,.28);}
+  html body .topbar .ai-fab:hover{box-shadow:0 6px 18px rgba(67,83,232,.38);filter:saturate(1.08);}
+  html body .topbar .ai-fab .ic,html body .topbar .ai-fab svg{color:#fff !important;}
+  html body .topbar .ai-fab:focus-visible{outline:2px solid var(--brand);outline-offset:3px;}
 </style>
 </head>
 <body>
@@ -11105,12 +11113,14 @@ function pdMovable(el, handle, opt){
 }
 /* a drag on the launcher must not also open the assistant */
 window.addEventListener('click', function(e){
-  var l = document.getElementById('ai-launcher');
-  if(l && l._pdNoClick && l.contains(e.target)){ e.stopPropagation(); e.preventDefault(); l._pdNoClick = false; }
+  ['ai-launcher','chat-fab'].forEach(function(id){
+    var l = document.getElementById(id);
+    if(l && l._pdNoClick && l.contains(e.target)){ e.stopPropagation(); e.preventDefault(); l._pdNoClick = false; }
+  });
 }, true);
 /* a smaller window never strands a panel off-screen */
 window.addEventListener('resize', function(){
-  ['chat-panel','ai-panel','ai-launcher'].forEach(function(id){
+  ['chat-panel','ai-panel','ai-launcher','chat-fab'].forEach(function(id){
     var el = document.getElementById(id);
     if(el && el.classList.contains('pd-moved') && pdVisible(el)) pdPlace(el, parseFloat(el.style.left)||0, parseFloat(el.style.top)||0);
   });
@@ -11119,13 +11129,17 @@ window.addEventListener('resize', function(){
   pdMovable(document.getElementById('chat-panel'), document.getElementById('chat-head'));
   pdMovable(document.getElementById('ai-panel'), document.querySelector('#ai-panel .ai-head'), {alsoReset:['ai-launcher']});
   pdMovable(document.getElementById('ai-launcher'), document.getElementById('ai-launcher'), {self:true});
+  /* Ani, 30 Sep: the floating MOA chat button can be dragged anywhere, and remembers its spot */
+  pdMovable(document.getElementById('chat-fab'), document.getElementById('chat-fab'), {self:true});
+  document.getElementById('chat-fab').addEventListener('dblclick', function(){ pdReset(this); });
   paintPd(document.getElementById('chat-head'));
   paintPd(document.querySelector('#ai-panel .ai-head'));
   paintPd(document.getElementById('sidebar'));
   pdApplySaved(document.getElementById('ai-launcher'));
+  pdApplySaved(document.getElementById('chat-fab'));
   updateChatBadge();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-09-30 13:37</div>
+  <div class="build-stamp">v2 · build 2026-09-30 13:43</div>
 </body>
 </html>
