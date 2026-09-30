@@ -68,6 +68,8 @@ blocks your task, say so; don't work around it.
     - The **physician assistant** (Japneet) works in the doctor's portal under delegated authority.
     - Whether she can send tasks to the MOA in her own right is **not yet decided (Needs Daniel)**.
       Until then, treat her actions as the doctor's, under his sign-off.
+12a. **Chat is 1:1 with the MOA paired to the doctor for the call window.** It's never a ticket queue.
+    See bulletin B-002.
 13. **The care plan and tasks stay separate,** and so does the Care Plan Tracker. Never merge them.
 14. **No scheduled deferral.** Unfinished work is carried forward and counts its days.
 15. **A specialist's recommendation keeps its stated owner.** "I have arranged the stress test" stays

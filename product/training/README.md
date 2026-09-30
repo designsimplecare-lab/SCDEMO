@@ -44,6 +44,7 @@ same time.
 | Bulletin | Topic | Date |
 |---|---|---|
 | [B-001](bulletins/B-001-booking-pathways.md) | How patients book: open booking, quick-book vs triage-first, many pathways | 29 Sep 2026 |
+| [B-002](bulletins/B-002-moa-pairing-chat.md) | Chat is 1:1 with the paired MOA, and never a ticket queue | 30 Sep 2026 |
 
 ## Rules during training
 - **Training is reading and writing answers only.** Do not edit prototypes, `product/` spec docs or

@@ -25,6 +25,8 @@ tasks below are **Ready**, and waiting for Ani's go.
 | T-015 | Routing people who refuse the AI, and useful empty states (the tile path exists in production) | Design | P1 | **Manoj** (+ `ux-designer`) | `content-designer`, `patient`, `accessibility` | Ready |
 | T-016 | Privacy on shared devices | Design | P1 | **Manoj** (+ `ux-designer`) | `privacy-security`, `content-designer`, `accessibility` | Ready |
 | T-017 | Chat polish: scrolling, time formats, phone sizes, keyboard, cost notice | Design | P2 | **Manoj** (+ `ux-designer`) | `accessibility`, `content-designer` | Ready |
+| T-018 | Whistler bus ad, 11×20 interior card, with a QR to booking | Marketing / design | P1 | **Manoj** (+ `brand-designer`, `marketing-lead`) | `marketing-compliance`, `accessibility` | Ready |
+| T-019 | Chat as 1:1 with the paired MOA (B-002). Ani is redesigning; the prototype follows her design | Design | P1 | **Ani** (designing) → `ux-designer` builds | `qa-engineer`, `moa` walkthrough | Waiting for Ani's design |
 
 **Recording files (local, never committed):**
 - `~/Downloads/Fixing Annoying Appointment Chat Flow.mp4`
