@@ -4243,6 +4243,63 @@
   .topbar .tb-time-pill .tbn-tail{font-size:14px;color:var(--ink-soft);}
   .topbar .tb-time-pill:empty{display:none;}
   @media (max-width:760px){.topbar .tb-time-pill .tbt-txt{display:none;} .topbar .tb-time-pill{padding:6px;}}
+  /* ===== T-008 (Daniel, 29 Sep markup): the attention row is icon, patient, test, value =====
+     "I eliminated the extra stuff that isn't needed - crossed off". Three columns, aligned down
+     the band; the hover actions still float over the right. */
+  #screen-today #alerts-box .al-row{grid-template-columns:minmax(0,300px) minmax(0,240px) minmax(0,1fr);}
+  #screen-today #alerts-box .al-ref,#screen-today #alerts-box .al-src{display:none;}
+  /* High (Daniel, 27 Sep: "Critical and High belong"): words stay ink, the amber is on the icons */
+  #screen-today #alerts-box .al-row.tier-alert .al-val{color:var(--ink);}
+  #screen-today #alerts-box .al-row.tier-alert .al-dir{color:var(--warn);}
+
+  /* ===== T-009 (Ani, 29 Sep): Messages is a primary left-nav item =====
+     "make chat one big menu on the left nav so it becomes more primary". Counts are brand blue,
+     because red means critical (Ani, 25 Sep), and 14px, because nothing a physician reads is smaller. */
+  #sidebar #nav-messages .nav-msg-count{background:var(--brand);color:#fff;font-size:14px;font-weight:600;
+    min-width:24px;height:24px;padding:0 7px;border-radius:999px;box-sizing:border-box;box-shadow:none;margin-left:auto;}
+  #sidebar.collapsed #nav-messages .nav-msg-count{position:absolute;top:-6px;right:-8px;margin:0;box-shadow:0 0 0 2px var(--paper);}
+  #sidebar #nav-messages.is-open .nav-icon{color:var(--brand);}
+  #sidebar #nav-messages.is-open:hover .nav-icon{color:#fff;}
+  #sidebar.collapsed #nav-messages.is-open{border-color:var(--brand);}
+
+  /* ===== T-009 (Daniel, 29 Sep): movable messenger and assistant =====
+     "I'd like the messenger function movable" / "The AI function movable." The header is the
+     handle (cursor:move, and a Mage grip), and a moved panel floats as a card, not a dock. */
+  #chat-panel .chat-head,#ai-panel .ai-head{cursor:move;touch-action:none;user-select:none;-webkit-user-select:none;}
+  #chat-panel .chat-head button,#ai-panel .ai-head button{cursor:pointer;}
+  #chat-panel .chat-head .pd-grip,#ai-panel .ai-head .pd-grip{margin-left:auto;width:44px;height:44px;flex:0 0 44px;border:0;
+    border-radius:999px;background:none;padding:0;display:inline-flex;align-items:center;justify-content:center;cursor:move;touch-action:none;}
+  #chat-panel .chat-head .pd-grip svg,#ai-panel .ai-head .pd-grip svg{width:22px;height:22px;}
+  #chat-panel .chat-head .pd-grip{color:var(--ink-faint);}
+  #chat-panel .chat-head .pd-grip:hover{background:var(--wash);color:var(--ink);}
+  #chat-panel .chat-head .chat-close{margin-left:0;}
+  #ai-panel .ai-head .pd-grip{color:rgba(255,255,255,.8);}
+  #ai-panel .ai-head .pd-grip:hover{background:rgba(255,255,255,.16);color:#fff;}
+  #ai-panel .ai-head .close{margin-left:0;width:44px;height:44px;flex:0 0 44px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;}
+  #chat-panel .pd-grip:focus-visible,#ai-panel .pd-grip:focus-visible{outline:2px solid var(--brand);outline-offset:0;}
+  #ai-panel .pd-grip:focus-visible{outline-color:#fff;}
+  #chat-panel.pd-moved{border-radius:20px;box-shadow:0 16px 48px rgba(23,24,28,.16),0 2px 6px rgba(23,24,28,.06);}
+  #chat-panel.pd-front,#ai-panel.pd-front{z-index:212;}
+  #chat-panel.pd-dragging,#ai-panel.pd-dragging,#ai-launcher.pd-dragging{transition:none;animation:none;cursor:grabbing;}
+  #ai-launcher{touch-action:none;}
+  #ai-launcher.pd-dragging,#ai-launcher.pd-dragging:hover{transform:none;}
+  /* the launcher only hides under the chat when both sit in their docks */
+  html body:has(#chat-panel.show.pd-moved) #ai-launcher,html body:has(#chat-panel.show) #ai-launcher.pd-moved{opacity:1;pointer-events:auto;}
+  /* ===== Ani, 30 Sep: "on hover, buttons turn black" (her example: the outlined Task MOA) =====
+     Every secondary/outline button, on every screen (the consistency rule): on hover and on
+     keyboard focus it fills with ink, and its words and icon turn white. Primary blue (.btn.dark,
+     .wt-dark) is unchanged. !important on the colours only: the per-screen rules these buttons
+     carry are up to three ids deep, and one root rule has to win on all of them. */
+  html body :is(.btn:not(.dark),.wt-new:not(.wt-dark),.al-btn:not(.primary),.pc-back,.day-arrow):not(:disabled):is(:hover,:focus-visible){
+    background:var(--ink) !important;border-color:var(--ink) !important;color:#fff !important;opacity:1;}
+  html body :is(.btn:not(.dark),.wt-new:not(.wt-dark),.al-btn:not(.primary),.pc-back,.day-arrow):not(:disabled):is(:hover,:focus-visible) :is(.ic,svg,span,b){color:#fff !important;}
+  html body :is(.btn:not(.dark),.wt-new:not(.wt-dark),.al-btn:not(.primary),.pc-back,.day-arrow):not(:disabled):focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+  /* dark mode: ink is white there, so the fill is white and the words go black */
+  :root[data-theme="dark"] body :is(.btn:not(.dark),.wt-new:not(.wt-dark),.al-btn:not(.primary),.pc-back,.day-arrow):not(:disabled):is(:hover,:focus-visible),
+  :root[data-theme="dark"] body :is(.btn:not(.dark),.wt-new:not(.wt-dark),.al-btn:not(.primary),.pc-back,.day-arrow):not(:disabled):is(:hover,:focus-visible) :is(.ic,svg,span,b){color:var(--paper) !important;}
+  /* primary stays primary (Ani, 30 Sep): an older dark-mode rule turned the blue Task MOA pale grey
+     on hover and lost its white icon. It stays brand blue, a touch brighter. */
+  :root[data-theme="dark"] #screen-today .work-tabs .wt-dark:hover{background:var(--brand);border-color:var(--brand);color:#fff;filter:brightness(1.12);}
 </style>
 </head>
 <body>
@@ -4267,6 +4324,10 @@
       <button class="nav-btn" data-screen="inbox" onclick="showScreen('inbox')"><span class="nav-icon">&#9993;</span><span class="nav-label">Inbox<span class="nav-flag" id="inbox-nav-flag" style="display:none;"></span></span></button>
       <button class="nav-btn" data-screen="claims" onclick="showScreen('claims')"><span class="nav-icon">$</span><span class="nav-label">Claims<span class="nav-flag mut" id="wt-claims-count" style="display:none;"></span></span></button>
       <button class="nav-btn nav-tasks" data-screen="tasks" onclick="showScreen('tasks')"><span class="nav-icon">&#10003;</span><span class="nav-label">Tasks<span class="nav-flag" id="task-nav-flag" style="display:none;"></span></span></button>
+      <!-- Ani, 29 Sep: chat as a primary left-nav item. It opens and closes the movable chat panel
+           (Daniel, 29 Sep: "I'd like the messenger function movable"). Not a screen, so no data-screen.
+           The unread count sits outside the label so it stays on the icon when the rail is collapsed. -->
+      <button type="button" class="nav-btn nav-msgs" id="nav-messages" onclick="toggleChatPanel()" aria-controls="chat-panel" aria-expanded="false"><span class="nav-icon" data-pdic="chat"></span><span class="nav-label">Messages</span><span class="nav-flag nav-msg-count" id="chat-badge" style="display:none;">0</span></button>
       <span class="nav-sep"></span>
       <button class="nav-btn" data-screen="support" onclick="showScreen('support')"><span class="nav-icon">&#9432;</span><span class="nav-label">Technical Support</span></button>
     </div>
@@ -4292,10 +4353,8 @@
            pill, with a clock where the photo would be -->
       <div class="tb-time-pill" id="tb-now" role="timer" aria-live="off"></div>
       <button class="chat-fab theme-btn" id="theme-btn" onclick="toggleTheme()" title="Switch to dark" aria-label="Switch to dark"><span class="ic" id="theme-icon"></span></button>
-      <button class="chat-fab" id="chat-fab" onclick="toggleChatPanel()" title="MOA chat">
-        <span class="ic" data-pcic="chatic"></span>
-        <span class="chat-badge" id="chat-badge" style="display:none;">0</span>
-      </button>
+      <!-- Ani, 29 Sep: "make chat one big menu on the left nav so it becomes more primary". The chat
+           button and its count moved to Messages in the sidebar, so it isn't in two places. -->
       <div class="profile-wrap">
           <!-- Daniel, 25 Sep: "This is very useful info and I want it front and center...
            when I am in other time zones it orients me." His wording, verbatim:
@@ -4337,8 +4396,8 @@
           <span class="al-who"><span class="ic al-tone warn" role="img" aria-label="flagged" data-pdic="alert"></span><b>Gloria Mcdonald</b><i>74F</i></span>
           <span class="al-test">Intake flag</span>
           <span class="al-val flagtext">&ldquo;Chest pressure&rdquo;</span>
-          <span class="al-ref">&nbsp;</span>
-          <span class="al-src">Pre-visit intake &middot; review before calling</span>
+          <!-- Daniel, 29 Sep markup: everything after the value is crossed off ("I eliminated the extra
+               stuff that isn't needed"). The action stays on hover. -->
           <span class="al-acts">
             <button type="button" class="al-btn" onclick="openBrief('Gloria Mcdonald')"><span class="ic" data-pdic="eye"></span>Review intake</button>
           </span>
@@ -5361,6 +5420,8 @@
 <div class="chat-panel" id="chat-panel">
   <div class="chat-head" id="chat-head">
     <span id="chat-head-title">MOA chat</span>
+    <!-- Daniel, 29 Sep: "I'd like the messenger function movable". Drag the header; double-click resets. -->
+    <button type="button" class="pd-grip" data-pdic="grip" aria-label="Move chat. Arrow keys move it, Home puts it back" title="Drag to move. Double-click to put it back"></button>
     <button class="chat-close" onclick="toggleChatPanel()" aria-label="Close chat">&times;</button>
   </div>
   <div class="chat-thread-list" id="chat-thread-list"></div>
@@ -5417,7 +5478,9 @@
   <div class="ai-head">
     <span class="spark">&#10022;</span>
     <span><b>SimpleCare Assistant</b><span class="subh">Queue &middot; briefs &middot; claims &middot; schedule</span></span>
-    <button class="close" onclick="closeAI()">&times;</button>
+    <!-- Daniel, 29 Sep: "The AI function movable." Drag the header; double-click resets. -->
+    <button type="button" class="pd-grip" data-pdic="grip" aria-label="Move assistant. Arrow keys move it, Home puts it back" title="Drag to move. Double-click to put it back"></button>
+    <button class="close" onclick="closeAI()" aria-label="Close assistant">&times;</button>
   </div>
   <div class="ai-body" id="ai-body">
     <div class="ai-msg bot">Hi Dr. Pannozzo. I can pull up who&#39;s next, summarize a patient&#39;s intake, check your claims or schedule, or draft a visit note. What do you need?</div>
@@ -6238,6 +6301,12 @@ function syncAttnFold(){
 
 function renderAttnTasks(){
   var host = document.getElementById('attn-tasks'); if(!host) return;
+  /* Daniel, 29 Sep markup: the whole task row ("Rebook EDS referral · 4d overdue · Referrals ·
+     ...") is crossed off. Tasks live on the Tasks screen, not on Home. The builder below is kept
+     so the band can take tasks back if he asks; it is not called. */
+  host.innerHTML = '';
+  syncAttnFold();
+  return;
   host.innerHTML = attnTasks().map(function(t){
     var overdue = t.dueIn < 0;
     var when = overdue ? (Math.abs(t.dueIn) + 'd overdue')
@@ -6270,9 +6339,12 @@ function renderCriticals(){
      top of Home. The way an alert reaches this band is through the
      SimpleCare escalation table, which is deliberate rather than automatic:
      troponin and lactate are there because he put them there. */
+  /* Daniel, 27 Sep: "Critical and High belong." (from-daniel/2026-09-27-answers-round-2.md,
+     rule 16b.) This supersedes the critical-only quote above. Critical sorts first. */
   var open = INBOX_ITEMS.filter(function(it){
-    return labTier(it) === 'critical' && it.status === 'received';
-  });
+    var tr = labTier(it);
+    return (tr === 'critical' || tr === 'alert') && it.status === 'received';
+  }).sort(function(a,b){ return (labTier(a)==='critical'?0:1) - (labTier(b)==='critical'?0:1); });
   /* doctor review ask 5: "Gloria takes two rows. That's one patient and one decision."
      The intake flag folds into her result row, as a second reason and a second button. */
   var intakeRows = [].slice.call(document.querySelectorAll('#attn-clip .al-row[data-intake]'));
@@ -6296,12 +6368,9 @@ function renderCriticals(){
       '<span class="al-test">'+cx.n+'</span>'+
       '<span class="al-val '+tier+'"><b>'+cx.v+'</b> <u>'+cx.u+'</u>'+
         '<span class="ic al-dir" role="img" aria-label="'+(up?'high':'low')+'" data-pdic="'+(up?'arrowup':'arrowdown')+'"></span></span>'+
-      '<span class="al-ref">ref '+cx.ref+'</span>'+
-      '<span class="al-src">'+
-        (cx.concern ? '<b class="al-concern">'+cx.concern+'</b> \u00b7 ' : '')+
-        /* the second reason goes before the basis, which is what the ellipsis may cut */
-        (flag ? 'Intake flag ' + flag + ' \u00b7 ' : '')+
-        (cx.basis || (c.panel + ' \u00b7 ' + c.received))+'</span>'+
+      /* Daniel, 29 Sep markup: the reference range, the diagnosis text and the source are crossed
+         off. The row is the icon, the patient, the test and the value with its arrow. The range,
+         the basis and the intake flag are one click away, on the review (and "Review intake"). */
       '<span class="al-acts">'+
         '<button type="button" class="al-btn" onclick="event.stopPropagation();openReview('+idx+')"><span class="ic" data-pdic="eye"></span>Review result</button>'+
         (flag ? '<button type="button" class="al-btn" onclick="event.stopPropagation();openBrief(\''+c.patient.replace(/'/g,'')+'\')"><span class="ic" data-pdic="eye"></span>Review intake</button>' : '')+
@@ -8327,13 +8396,19 @@ function updateChatBadge(){
   var total = chatUnreadTotal();
   var badge = document.getElementById('chat-badge');
   badge.textContent = total;
-  badge.style.display = total > 0 ? 'flex' : 'none';
+  badge.style.display = total > 0 ? 'inline-flex' : 'none';
+  var nb = document.getElementById('nav-messages');
+  if(nb) nb.setAttribute('aria-label', 'Messages' + (total ? ', ' + total + ' unread' : ''));
 }
 function toggleChatPanel(){
   var panel = document.getElementById('chat-panel');
   var opening = !panel.classList.contains('show');
   panel.classList.toggle('show');
   if(opening){ renderThreadList(); if(typeof paintPd === 'function') paintPd(panel); }
+  /* T-009: the nav item shows the open state; the panel returns to where this doctor left it */
+  var nb = document.getElementById('nav-messages');
+  if(nb){ nb.classList.toggle('is-open', opening); nb.setAttribute('aria-expanded', opening ? 'true' : 'false'); }
+  if(opening && typeof pdApplySaved === 'function') pdApplySaved(panel);
 }
 function renderThreadList(){
   activeChatThread = null;
@@ -8451,11 +8526,13 @@ document.addEventListener('click', function(e){
 function openAI(){
   document.getElementById('ai-panel').classList.add('open');
   document.getElementById('ai-launcher').style.display='none';
+  if(typeof pdApplySaved === 'function') pdApplySaved(document.getElementById('ai-panel'));
   var inp=document.getElementById('ai-input'); if(inp) inp.focus();
 }
 function closeAI(){
   document.getElementById('ai-panel').classList.remove('open');
   document.getElementById('ai-launcher').style.display='flex';
+  if(typeof pdApplySaved === 'function') pdApplySaved(document.getElementById('ai-launcher'));
 }
 function aiScroll(){ var b=document.getElementById('ai-body'); b.scrollTop=b.scrollHeight; }
 function aiAppend(html,cls){
@@ -10805,7 +10882,124 @@ function rsSaveExp(){
   RS_ADD = false; renderResults(PC_CURRENT); renderSinceLast(PC_CURRENT);
   toast('Expected result added · shows under Pending until it arrives');
 }
+
+/* ===== T-009: movable messenger and assistant =====
+   Daniel, 29 Sep: "I'd like the messenger function movable" and "The AI function movable."
+   The chat panel and the assistant panel drag by their header, the assistant's launcher drags
+   by itself. Pointer events, so mouse, pen and touch all work. Each stays inside the viewport,
+   its place is remembered per viewer, and a double-click on the header puts it back in its dock.
+   Keyboard: the grip button moves it with the arrow keys (Shift for bigger steps); Home resets. */
+Object.assign(ICONS, {
+/* Mage Icons "dots-menu" (api.iconify.design/mage/dots-menu.svg), used as the drag grip */
+"grip": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M12 6.826A.913.913 0 1 0 12 5a.913.913 0 0 0 0 1.826m6.088 0a.913.913 0 1 0 0-1.826a.913.913 0 0 0 0 1.826m-12.176 0a.913.913 0 1 0 0-1.826a.913.913 0 0 0 0 1.826M12 12.913a.913.913 0 1 0 0-1.826a.913.913 0 0 0 0 1.826m6.088 0a.913.913 0 1 0 0-1.826a.913.913 0 0 0 0 1.826m-12.176 0a.913.913 0 1 0 0-1.826a.913.913 0 0 0 0 1.826M12 19a.913.913 0 1 0 0-1.826A.913.913 0 0 0 12 19m6.088 0a.913.913 0 1 0 0-1.826a.913.913 0 0 0 0 1.826M5.912 19a.913.913 0 1 0 0-1.826a.913.913 0 0 0 0 1.826\"/></svg>"
+});
+/* Demo: one signed-in physician. Production keys this by the signed-in user's id. */
+var PD_VIEWER = 'dr-pannozzo';
+var PD_POS_KEY = 'simplecare.v2.panelpos.' + PD_VIEWER;
+function pdPosLoad(){ try{ return JSON.parse(localStorage.getItem(PD_POS_KEY) || '{}') || {}; }catch(e){ return {}; } }
+function pdPosSave(all){ try{ localStorage.setItem(PD_POS_KEY, JSON.stringify(all)); }catch(e){} }
+function pdVisible(el){ return !!(el && el.offsetWidth && el.offsetHeight); }
+function pdPlace(el, x, y){
+  var vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
+  var w = el.offsetWidth, h = el.offsetHeight;
+  x = Math.max(0, Math.min(x, vw - w)); y = Math.max(0, Math.min(y, vh - h));
+  el.style.left = Math.round(x) + 'px'; el.style.top = Math.round(y) + 'px';
+  el.style.right = 'auto'; el.style.bottom = 'auto';
+  el.classList.add('pd-moved');
+  return {x:Math.round(x), y:Math.round(y)};
+}
+function pdUnplace(el){
+  ['left','top','right','bottom'].forEach(function(p){ el.style.removeProperty(p); });
+  el.classList.remove('pd-moved');
+}
+function pdApplySaved(el){
+  if(!el) return;
+  var p = pdPosLoad()[el.id];
+  if(!p){ pdUnplace(el); return; }
+  if(pdVisible(el)) pdPlace(el, p.x, p.y);
+}
+function pdStore(el){
+  var r = el.getBoundingClientRect(), all = pdPosLoad();
+  all[el.id] = {x:Math.round(r.left), y:Math.round(r.top)}; pdPosSave(all);
+}
+function pdReset(el){ var all = pdPosLoad(); delete all[el.id]; pdPosSave(all); pdUnplace(el); }
+/* the one being handled comes to the front of the two */
+function pdRaise(el){
+  ['chat-panel','ai-panel'].forEach(function(id){ var o = document.getElementById(id); if(o) o.classList.toggle('pd-front', o === el); });
+}
+function pdMovable(el, handle, opt){
+  if(!el || !handle) return;
+  opt = opt || {};
+  var st = null;
+  handle.addEventListener('pointerdown', function(e){
+    if(e.pointerType === 'mouse' && e.button !== 0) return;
+    /* buttons in the header (back, close) keep working; the grip itself drags */
+    if(!opt.self && e.target.closest('button,input,a') && !e.target.closest('.pd-grip')) return;
+    var r = el.getBoundingClientRect();
+    st = {px:e.clientX, py:e.clientY, x:r.left, y:r.top, id:e.pointerId, moved:false};
+    /* capture now, so a quick drag that leaves the header still tracks */
+    try{ handle.setPointerCapture(e.pointerId); }catch(_){}
+    pdRaise(el);
+  });
+  handle.addEventListener('pointermove', function(e){
+    if(!st || e.pointerId !== st.id) return;
+    var dx = e.clientX - st.px, dy = e.clientY - st.py;
+    if(!st.moved){
+      if(Math.abs(dx) + Math.abs(dy) < 5) return;   /* a click is not a drag */
+      st.moved = true; el.classList.add('pd-dragging');
+    }
+    pdPlace(el, st.x + dx, st.y + dy);
+    e.preventDefault();
+  });
+  function end(e){
+    if(!st || (e && e.pointerId !== st.id)) return;
+    if(st.moved){
+      pdStore(el); el.classList.remove('pd-dragging');
+      if(opt.self){ el._pdNoClick = true; setTimeout(function(){ el._pdNoClick = false; }, 350); }
+    }
+    st = null;
+  }
+  handle.addEventListener('pointerup', end);
+  handle.addEventListener('pointercancel', end);
+  if(!opt.self){
+    handle.addEventListener('dblclick', function(e){
+      if(e.target.closest('button,input,a') && !e.target.closest('.pd-grip')) return;
+      pdReset(el); (opt.alsoReset || []).forEach(function(o){ var x = document.getElementById(o); if(x) pdReset(x); });
+    });
+    var grip = handle.querySelector('.pd-grip');
+    if(grip) grip.addEventListener('keydown', function(e){
+      var step = e.shiftKey ? 64 : 16, r = el.getBoundingClientRect(), d = null;
+      if(e.key === 'ArrowLeft') d = [-step,0]; else if(e.key === 'ArrowRight') d = [step,0];
+      else if(e.key === 'ArrowUp') d = [0,-step]; else if(e.key === 'ArrowDown') d = [0,step];
+      else if(e.key === 'Home'){ e.preventDefault(); pdReset(el); return; }
+      if(!d) return;
+      e.preventDefault(); pdPlace(el, r.left + d[0], r.top + d[1]); pdStore(el);
+    });
+  }
+}
+/* a drag on the launcher must not also open the assistant */
+window.addEventListener('click', function(e){
+  var l = document.getElementById('ai-launcher');
+  if(l && l._pdNoClick && l.contains(e.target)){ e.stopPropagation(); e.preventDefault(); l._pdNoClick = false; }
+}, true);
+/* a smaller window never strands a panel off-screen */
+window.addEventListener('resize', function(){
+  ['chat-panel','ai-panel','ai-launcher'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el && el.classList.contains('pd-moved') && pdVisible(el)) pdPlace(el, parseFloat(el.style.left)||0, parseFloat(el.style.top)||0);
+  });
+});
+(function pdInit(){
+  pdMovable(document.getElementById('chat-panel'), document.getElementById('chat-head'));
+  pdMovable(document.getElementById('ai-panel'), document.querySelector('#ai-panel .ai-head'), {alsoReset:['ai-launcher']});
+  pdMovable(document.getElementById('ai-launcher'), document.getElementById('ai-launcher'), {self:true});
+  paintPd(document.getElementById('chat-head'));
+  paintPd(document.querySelector('#ai-panel .ai-head'));
+  paintPd(document.getElementById('sidebar'));
+  pdApplySaved(document.getElementById('ai-launcher'));
+  updateChatBadge();
+})();
 </script>
-  <div class="build-stamp">v2 · build 2026-09-30 10:33</div>
+  <div class="build-stamp">v2 · build 2026-09-30 10:45</div>
 </body>
 </html>
