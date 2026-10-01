@@ -28,6 +28,7 @@ tasks below are **Ready**, and waiting for Ani's go.
 | T-018 | Whistler bus ad, 11×20 interior card, with a QR to booking | Marketing / design | P1 | **Manoj** (+ `brand-designer`, `marketing-lead`) | `marketing-compliance`, `accessibility` | Ready |
 | T-019 | Chat as 1:1 with the paired MOA (B-002): the floating chat, one conversation, smart quick-question suggestions | Design | P1 | **Ani** (direction), built by the lead | `qa-engineer`, `moa` walkthrough | Built 30 Sep; the MOA-portal side (up to 5 doctors) is still to do |
 | T-020 | Redesign Home with the design system ([Figma brief](https://www.figma.com/design/CvL4YxfOIyIrh51dobPWxf)) | Design | P1 | **Manoj** (+ `ux-designer`) | `qa-engineer`, `accessibility`, `clinical-safety` | Ready |
+| T-021 | The chart: an AI workflow that gets the note done (Daniel, 30 Sep) | Design | P1 | **Manoj** (+ `ux-designer`) | `clinical-safety`, `qa-engineer`, `accessibility` | Blocked: waiting for Daniel's chart requirements document |
 
 **Recording files (local, never committed):**
 - `~/Downloads/Fixing Annoying Appointment Chat Flow.mp4`
