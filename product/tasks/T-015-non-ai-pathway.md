@@ -45,6 +45,7 @@ Evidence: QA-007 (PC-10, PC-23) in `product/reports/patient-chat-qa-2026-09-29-s
 - `product/tests/patient-chat/README.md`
 - `research/patient-entry-flows/` (Ani's boards)
 - `product/training/bulletins/B-001-booking-pathways.md`
+- `product/training/bulletins/B-003-requirements-intake-emergency-documents.md` (full text in `private/requirements/`)
 - Staging, for reference only: https://staging.simplecare.ca
 
 ## Output
