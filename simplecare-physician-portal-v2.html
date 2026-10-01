@@ -4396,6 +4396,16 @@
   html body .topbar .ai-fab:hover{box-shadow:0 6px 18px rgba(67,83,232,.38);filter:saturate(1.08);}
   html body .topbar .ai-fab .ic,html body .topbar .ai-fab svg{color:#fff !important;}
   html body .topbar .ai-fab:focus-visible{outline:2px solid var(--brand);outline-offset:3px;}
+
+  /* Daniel, 30 Sep: abnormal (not critical, not high) is a yellow card; critical and high carry an exclamation mark */
+  #pcv-c #vc-alerts .vca-row.abn .vca-ic{color:var(--warn);}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-flag{display:inline-flex;align-items:center;gap:3px;}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-ex,#pcv-c :is(#vcp-results,#vc-resrail) .rs-ex svg{width:16px;height:16px;}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-flag.crit .rs-ex{color:var(--crit);}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-flag.alert .rs-ex{color:var(--warn);}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-clr{font-size:14px;color:var(--ink-soft);}
+  #pcv-c :is(#vcp-results,#vc-resrail) button.rs-clr{padding:0;min-height:0;font-weight:600;color:var(--ink);text-decoration:underline;}
+  #pcv-c :is(#vcp-results,#vc-resrail) .rs-clr.ok{color:var(--good);font-weight:600;}
 </style>
 </head>
 <body>
@@ -8168,6 +8178,17 @@ function inboxIsAlert(item){
 function labTier(item){
   return inboxIsCritical(item) ? 'critical' : (inboxIsAlert(item) ? 'alert' : null);
 }
+/* Daniel, 30 Sep (ECG recording): "I would just say abnormal ECG, right? Because you wouldn't want
+   to bias the doctor." The ECG machine's reading stays on the tracing, the source document;
+   nothing else repeats it. ("That's the source document, right? It's on there. But that's not
+   something that we should tell the doctor. We just have to flag it as abnormal.") */
+function traceFlag(it){ return it.abnormalTrace ? 'Abnormal ECG' : 'ECG'; }
+/* Daniel, 30 Sep: anything abnormal that isn't critical or high is "just a yellow flag ... all it
+   means is that the doctor has to look at it and clear it." Cleared = signed off. */
+function resultIsAbnormal(it){
+  return !!(it.abnormalTrace || it.abnormal || (it.kind === 'screening' && it.outcomeOk === false) ||
+    (it.kind === 'culture' && (it.sens||[]).some(function(x){ return x.r !== 'S'; })));
+}
 
 function inboxIsCritical(item){ return (item.tests||[]).some(function(t){ return t.f && t.f.indexOf('crit')===0; }); }
 function inboxRowHtml(item, i){
@@ -8209,7 +8230,7 @@ function inboxRowHtml(item, i){
         /* the exceptions carry the weight: resistant and intermediate, not susceptible */
         .map(function(p){ return '<span>'+(p[1]==='S' ? '<span class="ix-sl">'+p[0]+'</span>' : '<b class="ix-sl">'+p[0]+'</b>')+'<span>'+grp(p[1])+'</span></span>'; }).join('')+'</span></div>';
   } else if(item.kind==='trace'){
-    findings = '<div class="ix-find'+(item.abnormalTrace?' abn':'')+'">'+item.interp+'</div>';
+    findings = '<div class="ix-find'+(item.abnormalTrace?' abn':'')+'">'+traceFlag(item)+'</div>';
   } else if(item.kind==='screening'){
     findings = '<div class="ix-find'+(item.outcomeOk?'':' abn')+'"><span class="ix-out">'+item.outcome+'</span>'+
       (item.recall ? '<span class="ix-recall">'+item.recall+'</span>' : '')+'</div>';
@@ -9062,7 +9083,7 @@ function openReview(i){
       : (tier === 'alert'
           ? 'A laboratory alert value is present: '+leadTxt+'. No critical values.'
           : (narrAbn
-              ? 'An abnormal finding is reported: '+(it.interp||it.impression||it.outcome||((it.organism||'')+', resistant to '+(it.sens||[]).filter(function(x){return x.r==='R';}).map(function(x){return x.ab;}).join(', ')))+'. Verify against the source report before acting.'
+              ? 'An abnormal finding is reported: '+((it.kind==='trace' ? traceFlag(it) : '')||it.impression||it.outcome||((it.organism||'')+', resistant to '+(it.sens||[]).filter(function(x){return x.r==='R';}).map(function(x){return x.ab;}).join(', ')))+'. Verify against the source report before acting.'
               : (outN ? 'No critical or alert values. '+outN+' outside the reference range.' : 'All values are within the reference range.'))))+
     ' <em>Assistive only — the source report remains authoritative.</em></p>';
 
@@ -9104,7 +9125,7 @@ function openReview(i){
               '<span class="rv-v">'+({S:'Susceptible', I:'Intermediate', R:'Resistant'})[x.r]+'</span>'+
               '<span class="rv-ref"></span><span class="rv-prior"></span></div>';
           }).join('')
-        : '<p class="rv-narr">'+(it.impression||it.interp||it.outcome||'See source report.')+'</p>');
+        : '<p class="rv-narr">'+(it.kind==='trace' ? traceFlag(it)+'. Read the tracing below.' : (it.impression||it.outcome||'See source report.'))+'</p>');
 
   document.getElementById('rv-unmapped').innerHTML = '';
   renderSourceDoc(it);
@@ -10534,7 +10555,7 @@ function renderSinceLast(name){
   var hasAlerts = chartAlertsFor(name).length > 0;
   var fromInbox = inboxFor(name).filter(function(it){
     /* today's untiered results already sit in the "Also in today" line under a critical/high row */
-    return it.status === 'received' && !labTier(it) && !(hasAlerts && /^Today/.test(it.received));
+    return it.status === 'received' && !labTier(it) && !resultIsAbnormal(it) && !(hasAlerts && /^Today/.test(it.received));
   }).map(function(it){
     return {what: it.panel, when: 'received ' + it.received, state: 'not reviewed', rv: INBOX_ITEMS.indexOf(it)};
   });
@@ -10617,15 +10638,34 @@ function slvToggle(b){
 function chartAlertsFor(name){
   return inboxFor(name).filter(function(it){ return it.status !== 'signed-off' && labTier(it); });
 }
+function chartAbnFor(name){
+  return inboxFor(name).filter(function(it){ return it.status !== 'signed-off' && !labTier(it) && resultIsAbnormal(it); });
+}
 function chartCritical(name){
   return chartAlertsFor(name).filter(function(it){ return labTier(it) === 'critical'; })[0] || null;
 }
 function renderChartAlerts(name){
   var el = document.getElementById('vc-alerts'); if(!el) return;
-  var list = chartAlertsFor(name);
-  if(!list.length){ el.hidden = true; el.innerHTML = ''; return; }
+  var list = chartAlertsFor(name), abn = chartAbnFor(name);
+  if(!list.length && !abn.length){ el.hidden = true; el.innerHTML = ''; return; }
   var base = String(name).split(',')[0].trim();
-  var today = inboxFor(name).filter(function(it){ return /^Today/.test(it.received) && list.indexOf(it) === -1 && it.status !== 'signed-off'; });
+  var today = inboxFor(name).filter(function(it){ return /^Today/.test(it.received) && list.indexOf(it) === -1 && abn.indexOf(it) === -1 && it.status !== 'signed-off'; });
+  /* Daniel, 30 Sep: the abnormal ECG is "a card that is equivalent to this card", right under the
+     critical one ("boom and then boom"), in yellow: "yellow is fine as abnormal, like unless it's critical." */
+  var abnHtml = abn.map(function(it){
+    var ecg = it.kind === 'trace';
+    var detail = ecg ? '' : (it.impression || it.outcome || '');
+    var state = it.status === 'reviewed' ? 'Reviewed, not cleared' : 'Not cleared';
+    return '<div class="vca-row abn">' +
+      '<span class="ic vca-ic" role="img" aria-label="abnormal" data-pdic="alert"></span>' +
+      '<div class="vca-main">' +
+        '<p class="vca-t"><b>' + (ecg ? traceFlag(it) : 'Abnormal') + '</b>' + (ecg ? '' : ' &middot; ' + it.panel) + '</p>' +
+        (detail ? '<p class="vca-s">' + detail + '</p>' : '') +
+        '<p class="vca-s">' + (ecg ? it.panel + ' &middot; ' : '') + it.lab + ' &middot; received ' + it.received + ' &middot; ' + state + '</p>' +
+      '</div>' +
+      '<button type="button" class="btn" onclick="openReview(' + INBOX_ITEMS.indexOf(it) + ')"><span class="ic" data-pdic="eye"></span>Review result</button>' +
+    '</div>';
+  }).join('');
   el.innerHTML = list.map(function(it){
     var tier = labTier(it), crit = tier === 'critical';
     var pick = crit ? 'crit' : 'alert';
@@ -10643,8 +10683,8 @@ function renderChartAlerts(name){
       '</div>' +
       '<button type="button" class="btn" onclick="openReview(' + INBOX_ITEMS.indexOf(it) + ')"><span class="ic" data-pdic="eye"></span>Review result</button>' +
     '</div>';
-  }).join('') + (today.length ? '<p class="vca-also"><b>Also in today for ' + base.split(' ')[0] + ':</b> ' + today.map(function(it){
-      return it.panel + (it.interp ? ' &mdash; ' + it.interp : (it.impression ? ' &mdash; ' + it.impression : ''));
+  }).join('') + abnHtml + (today.length ? '<p class="vca-also"><b>Also in today for ' + base.split(' ')[0] + ':</b> ' + today.map(function(it){
+      return it.panel + (it.kind === 'trace' ? ' &mdash; ' + traceFlag(it) : (it.impression ? ' &mdash; ' + it.impression : ''));
     }).join('; ') + '</p>' : '');
   el.hidden = false;
   paintPd(el);
@@ -10949,12 +10989,25 @@ function rsSrc(src, date){
     ? '<span class="rs-src pt"><span class="ic" data-pdic="upload"></span>' + date + ' &middot; Uploaded by patient &middot; patient-supplied</span>'
     : '<span class="rs-src"><span class="ic" data-pdic="link"></span>' + date + ' &middot; From ' + src + ' (direct)</span>';
 }
+/* Daniel, 30 Sep: critical and high "should be with an exclamation mark at least, even if you
+   didn't want to call it critical." Outside the range stays a yellow arrow. */
 function rsVal(p, t, withRef){
-  var f = p[2] || '', crit = f.indexOf('crit') === 0, up = /high/.test(f);
+  var f = p[2] || '', crit = f.indexOf('crit') === 0, alrt = f.indexOf('alert') === 0, up = /high/.test(f);
   return '<span class="rs-v"><b class="' + (crit ? 'crit' : '') + '">' + p[1] + '</b> ' + t.u +
     (f ? '<span class="ic rs-dir' + (crit ? ' crit' : '') + '" role="img" aria-label="' + (up ? 'high' : 'low') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span>' +
-         '<span class="rs-flag">' + (crit ? 'Critical' : (up ? 'High' : 'Low')) + '</span>' : '') +
+         '<span class="rs-flag' + (crit ? ' crit' : (alrt ? ' alert' : '')) + '">' +
+           (crit || alrt ? '<span class="ic rs-ex" aria-hidden="true" data-pdic="' + (crit ? 'crit' : 'alert') + '"></span>' : '') +
+           (crit ? 'Critical' : (up ? 'High' : 'Low')) + '</span>' : '') +
     (withRef ? '<i class="rs-ref">ref ' + t.ref + '</i>' : '') + '</span>';
+}
+/* Daniel, 30 Sep, pointing at CK's yellow flag: "did the doctor like clear this or what do we do?"
+   A flagged value shows whether it is cleared (its result signed off), and opens the result. */
+function rsClear(name, t, p){
+  if(!p[2]) return '';
+  var it = inboxFor(name).filter(function(x){ return (x.tests||[]).some(function(y){ return y.n === t.n; }); })[0];
+  if(!it) return '';
+  return it.status === 'signed-off' ? ' &middot; <span class="rs-clr ok">Cleared</span>'
+    : ' &middot; <button type="button" class="vc-more rs-clr" onclick="openReview(' + INBOX_ITEMS.indexOf(it) + ')">Not cleared</button>';
 }
 function renderResults(name){
   var pane = document.getElementById('vcp-results'), rail = document.getElementById('vc-resrail');
@@ -10973,7 +11026,7 @@ function renderResults(name){
       var nums = t.pts.map(function(q){ return parseFloat(q[1]); });
       var trend = t.pts.length > 1 && nums.every(function(v){ return !isNaN(v); }) ? prSpark([nums], 88, 32) : '';
       return '<div class="rs-row">' +
-        '<div class="rs-main"><b class="rs-n">' + t.n + '</b>' + rsSrc(p[3], p[0]) +
+        '<div class="rs-main"><b class="rs-n">' + t.n + '</b>' + rsSrc(p[3], p[0]) + (rsClear(name, t, p) ? '<span class="rs-hist">' + rsClear(name, t, p).replace(/^ &middot; /, '') + '</span>' : '') +
           (prev.length ? '<span class="rs-hist">Before: ' + prev.slice().reverse().map(function(q){
               return q[1] + ' on ' + q[0] + (q[3] === 'patient' ? ' (uploaded by patient)' : '');
             }).join(' &middot; ') + '</span>' : '') + '</div>' +
@@ -10999,7 +11052,7 @@ function renderResults(name){
       (list.length ? list.slice(0, 3).map(function(o){
         var t = o.t, p = rsLast(t);
         return '<div class="vc-line rs-rl"><span><span class="l">' + t.n + '</span><div class="vc-sub2">' + p[0] + ' &middot; ' +
-          (p[3] === 'patient' ? 'uploaded by patient' : p[3] + ', direct') + '</div></span>' + rsVal(p, t, false) + '</div>';
+          (p[3] === 'patient' ? 'uploaded by patient' : p[3] + ', direct') + rsClear(name, t, p) + '</div></span>' + rsVal(p, t, false) + '</div>';
       }).join('') : '<p class="pc-empty">No results on file.</p>');
     paintPd(rail);
   }
@@ -11142,6 +11195,6 @@ window.addEventListener('resize', function(){
   updateChatBadge();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-09-30 13:51</div>
+  <div class="build-stamp">v2 · build 2026-09-30 20:05</div>
 </body>
 </html>
