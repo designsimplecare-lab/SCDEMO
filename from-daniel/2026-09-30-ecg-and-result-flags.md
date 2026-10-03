@@ -70,3 +70,6 @@ perfect."
 - `product-manager`: add the decisions and the two open questions to the spec documents.
 - **Manoj (T-020):** the Home redesign keeps Critical and High in "Needs your attention". Yellow
   results belong on the chart and in the inbox, not on Home.
+
+## Follow-up, 3 Oct 2026
+The written **ECG Critical Result Requirements v2.0** arrived (bulletin B-006). It answers the first "Needs Daniel" item. There is one priority, CRITICAL ECG, triggered only by specific printed findings or a source critical flag, and the matched phrase is shown verbatim. "Abnormal ECG" alone, and plain AF without a critical flag, are **not** critical. So the demo ECG stays a yellow "Abnormal ECG" card, as built. Physician Chart View v2.5 groups related items (the ECG and CK) under the critical troponin, with Critical, To do and Info tiers. That reshaping belongs to T-021.

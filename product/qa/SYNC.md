@@ -8,6 +8,14 @@ the start of every task, and adds its own entries under "From QA".
 Newest first. Each entry: the date, what changed, where the source is, and what QA should do.
 
 ## From the lead
+- **3 Oct 2026: ECG Critical v2.0 and Chart View v2.5 arrived** (B-006).
+  - **ECG:** there is one priority, CRITICAL ECG, triggered only by the dictionary phrases or a
+    source critical flag, and the source phrase is shown verbatim. "Abnormal ECG" alone, and plain
+    AF, are not critical. The v2 demo ECG (AF) correctly stays a yellow "Abnormal ECG".
+  - **Chart:** the note sits beside the context; a this-visit strip blocks Finalize until complete;
+    the PHN is masked; Needs Attention has Critical, To do and Info tiers. T-021 is unblocked, but no
+    v2 change has been made yet.
+  - **For QA:** v2.5's section 9 task targets are the future acceptance test for the chart.
 - **3 Oct 2026: Simple Billing PRD v1.5 arrived** (Daniel, 1 Oct).
   - **Summary:** B-005. The full text is in `private/requirements/`. Its commercial and
     organisational sections are confidential: never quote them.

@@ -48,6 +48,7 @@ same time.
 | [B-003](bulletins/B-003-requirements-intake-emergency-documents.md) | Three requirement documents: intake and booking v7, emergency safeguards v3, document routing v2.1 | 30 Sep 2026 |
 | [B-004](bulletins/B-004-simplicity-intake-v2-3.md) | Simplicity AI Intake & Booking v2.3 (2 Oct): emergency acknowledgement first, concern before care intent, slots and stop rule, physician order | 3 Oct 2026 |
 | [B-005](bulletins/B-005-simple-billing-prd-v1-5.md) | Simple Billing PRD v1.5 (Daniel, 1 Oct): batch attestation, claim states, eligibility, AI review flags; confidential parts stay in private/ | 3 Oct 2026 |
+| [B-006](bulletins/B-006-ecg-critical-and-chart-view.md) | ECG Critical v2.0 (one priority, verbatim source phrase) and Physician Chart View v2.5 (Daniel's chart document; T-021 unblocked) | 3 Oct 2026 |
 
 ## Rules during training
 - **Training is reading and writing answers only.** Do not edit prototypes, `product/` spec docs or

@@ -57,3 +57,6 @@ His meaning isn't clear (surprised or bothered). **Ask him.**
 - Task T-021 (the chart's AI charting workflow) is **Blocked** until his document arrives.
 - When it arrives: `product-manager` turns it into requirements; `ai-engineer` and `clinical-safety`
   review the AI drafting (the doctor always signs, and nothing auto-files); Manoj designs.
+
+## Follow-up, 3 Oct 2026
+Daniel's chart document arrived: **Physician Chart View Requirements v2.5** (bulletin B-006). It puts the note and its actions beside the clinical context at ≥1440 px, and orders the chart: patient snapshot → Needs Attention → Today → relevant context → since you last saw → threads → full chart. T-021 is unblocked.

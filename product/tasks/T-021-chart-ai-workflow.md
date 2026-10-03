@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Blocked: waiting for Daniel's chart requirements document |
+| Status | Ready: Daniel's chart document arrived (Chart View v2.5, B-006) |
 | Type | Design |
 | Priority | P1 |
 | Size | L |
@@ -27,14 +27,21 @@ below the visit summary. See `from-daniel/2026-09-30-chart-workflow.md`.
 - Out until Daniel says otherwise: the comprehensive care plan ("don't worry about that just yet").
 
 ## Acceptance criteria
-- [ ] Written once Daniel's document arrives.
+- [ ] Design follows Chart View v2.5 (B-006). Start with its first delivery step, the core
+      encounter shell: the patient snapshot with the this-visit strip, Today, Needs Attention, the
+      note and actions beside the context at ≥1440 px, and simplified full-chart navigation.
+- [ ] Built from SC – Design System (as in T-020).
+- [ ] The "Where v2 differs today" list in B-006 is resolved or explicitly deferred.
+- [ ] Checked against v2.5's task targets with the `doctor` agent before Ani's review.
 - [ ] The doctor always signs, and AI drafts never auto-file (rule 18).
 - [ ] Follows `product/handbook/01-rules.md`.
 
 ## Inputs
 - `from-daniel/2026-09-30-chart-workflow.md`
-- Daniel's chart requirements document (awaited)
+- `product/training/bulletins/B-006-ecg-critical-and-chart-view.md`, with the full text of Chart View v2.5 in `private/requirements/`
+- ECG Critical Result Requirements v2.0 (same bulletin) for how a CRITICAL ECG shows in Needs Attention
 - The current v2 chart: https://designsimplecare-lab.github.io/SCDEMO/simplecare-physician-portal-v2.html
 
 ## Log
 - 2026-09-30 — created, blocked on Daniel's document
+- 2026-10-03 — Chart View v2.5 arrived; unblocked
