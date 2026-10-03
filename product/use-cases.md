@@ -25,6 +25,12 @@ here. Demo patients are described by their role in the demo, never by name.
 | DOC21 | Clinical Document Ingestion, Labelling, Filing & Physician Routing v2.1 (dated 1 Oct 2026), cited by section |
 | IN23 | Simplicity AI Intake & Booking Requirements v2.3 (2 Oct 2026), cited by section or its own IDs (AI-nn, ENG-nn, QS-nn, AC-nn). It wins over IB7 for the chat (D-102) |
 | | IB7, ES3, DOC21 and IN23 are in `private/requirements/` (git-ignored). The repo is public, so they are summarised, never pasted |
+| B-005, B-006 | `product/training/bulletins/`: B-005 the billing PRD; B-006 ECG Critical v2.0 and Chart View v2.5 |
+| BIL15 | Simple Billing PRD v1.5 (Daniel, 1 Oct 2026), cited only by its requirement IDs (CNF-nn, COD-nn, CLM-nn, ELT-nn, ELG-nn, ROLE-R7, CTL-nn, ESC-nn, SCR-nn, APL-nn, REC-nn, RPT-nn) or section. Its commercial and organisational sections are confidential and never recorded |
+| ECG20 | ECG Critical Result Requirements v2.0 (single-priority model), cited by section |
+| CV25 | Physician Chart View Requirements v2.5 (October 2026), Daniel's chart document, cited by section |
+| | BIL15, ECG20 and CV25 are also in `private/requirements/` (git-ignored) |
+| private strategy | "private strategy, 3 Oct 2026 (confidential)": cited by name only, for three product facts about the MOA (D-103). Its content is never repeated |
 | SCDS | "SC – Design System" in Figma, https://www.figma.com/design/XoYpGAbbNZUHkKwWDT56g3/SC---Design-System (Ani, 30 Sep 2026; handbook rule E) |
 | S1 | `shadowing/2026-09-25-rx-renewal-by-fax.md` (shadowing 1) |
 | S2 | `shadowing/2026-09-25-medication-follow-up-mri.md` (shadowing 2) |
@@ -383,6 +389,14 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   (CHART30:14-15). What he wants is *"an AI workflow"*: while he talks to the patient the note forms,
   and *"At the end of it, the chart's done."* (CHART30:26-31; D-99, REQ-CH-33). He is writing a
   requirements document; until then the chart is not redesigned (OQ-82; T-021 Blocked).
+- **3 Oct, the document arrived (CV25; D-106):**
+  - The note and its actions sit beside the context at 1440 px or one tab away, and the draft
+    survives navigation and dropped calls (REQ-CH-33). T-021 is unblocked.
+  - Finalize is blocked until the this-visit strip is complete: location, identity verified,
+    consent, others present, video or phone, callback (REQ-CH-36).
+  - The chart reads in one order: snapshot, Needs Attention, Today, Relevant to [concern], Since
+    you last saw, Clinical threads (REQ-CH-34 to REQ-CH-40).
+  - Whether Finalize still submits the claim is OQ-87.
 - **Sources:** S2:21-26, 51-53; S3:63-66, 104-108; S4:66-67; S5:37-46, 66-68, 71-74; SIA:40;
   `632998a`, `d2a2823`; DR:87-93, 213-217; ANS26:17-25; CHART30.
 
@@ -461,6 +475,9 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   Absolutely, it is perfect."* (ECG30:48-49). High now carries an exclamation mark as well
   (REQ-IN-14). An abnormal result that is neither gets its own yellow card underneath (UC-32).
   Which ECG findings are critical is his to define (OQ-74).
+- **3 Oct:** ECG Critical v2.0 answers it: one CRITICAL ECG priority from the printed report, with
+  the matched phrases verbatim in Needs Attention until a physician documents the review
+  (REQ-IN-23; D-105). On the chart, related items group under the critical one (REQ-CH-37).
 - **Sources:** `2094417`, `aa1e8b8`, `392eccb`, `e270f7c`, `f241a4b`, `d2a2823`; DR:138-153,
   195-199; ECG30.
 
@@ -532,8 +549,10 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   does not open a billing review (DR:87-88). Fee codes and amounts in the demo are placeholders
   (V2:6246-6254), not rules. Build 13:10 renamed the button "Finalize today's visit" and submits
   the claim inside it with no sign-off wording (V2b:4618, 7114; D-65, OQ-51).
+- **3 Oct:** Daniel's billing PRD adds attestation, AI review flags, eligibility results and
+  billing questions; see UC-34 and REQ-BIL-08 to REQ-BIL-15.
 - **Sources:** `27c18b3`, `3c5f4fe`, `c0cae95`, `944d26a`, `2983802`, `5d36fa1`, `9b496d2`;
-  SPEC:297-300; ANS26:23.
+  SPEC:297-300; ANS26:23; B-005.
 
 ### UC-17 Confirm who the patient is, and how they pay
 
@@ -747,6 +766,8 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - Never offer a recipient picker or a queue. Tasks stay separate and one-way (REQ-TK-01).
   - On the MOA's side: one conversation per paired doctor, up to 5 (REQ-MP-05).
   - When the pairing changes between windows, name the new MOA. What carries over is OQ-83.
+  - 3 Oct: each doctor has one primary MOA, the same one every time (private strategy, 3 Oct 2026
+    (confidential); D-103). Who covers when she is away is OQ-83.
 - **Status:** partly built.
   - Physician side built (`fcdb13d`, `c070791`, `41ed729`, `3f11454`): the floating chat button
     with the MOA's picture and status (V2d:5577-5581), one conversation (V2d:8502-8510) and
@@ -773,9 +794,42 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - Mark every flagged value "Not cleared" or "Cleared" (D-98; REQ-IN-16).
   - Keep it off Home (ECG30:71-72).
   - Turn a critical ECG red, naming the finding, once Daniel's list exists (OQ-74).
+  - 3 Oct: the list exists (ECG20; D-105). Plain AF with no source critical flag is not critical,
+    so the demo's AF stays a yellow "Abnormal ECG". Chart View v2.5 would group it under the
+    critical troponin rather than as a separate card (REQ-CH-37; B-006:106-107), and asks that
+    "abnormal" not be mistaken for "actionable" (CV25 §7).
 - **Status:** built as a demo (`cf6207c`; V2d:8181-8191, 10653-10668, 10992-11010). "Cleared"
   means signed off in the demo, which is not settled (OQ-75). `clinical-safety` reviews the change.
 - **Sources:** ECG30 (all); `cf6207c`.
+
+### UC-34 Attest my claims and answer billing questions
+
+- **Actor:** physician (the MOA fixes demographic and clerical fields).
+- **Trigger:** claims are ready for submission, an AI review has flagged one, or billing has a
+  question for the doctor.
+- **Today (evidence):**
+  - *"Claims are so important that i want that front and center"*; *"Leave no claim behind."*
+    (`27c18b3`, `11b0ecb`).
+  - *"To submit a bill is to 'sign off' on your billing."* (ANS26:23).
+  - v2 submits the claim inside Finalize (D-65) and tells the doctor to "resubmit within the
+    window" with no rule behind it (V2d:5807).
+- **v2 should (Simple Billing PRD v1.5, by ID; D-104):**
+  - Let the doctor attest clean claims together, and decide each flagged claim on its own, with the
+    AI's reason and confidence beside it; the AI never edits a claim (CNF-09, COD-01 to COD-06;
+    REQ-BIL-08, REQ-BIL-09).
+  - Give every completed visit one disposition (CLM-01 to CLM-06; REQ-BIL-10).
+  - Show eligibility results with their next action (ELT-01; REQ-BIL-11).
+  - Keep clinical billing fields the physician's; the MOA corrects demographics only (ROLE-R7,
+    CTL-03; REQ-BIL-12).
+  - Ask him billing questions with one-tap answers, in one daily digest (ESC-09, CNF-02;
+    REQ-BIL-13).
+  - Alert at day 30, 60 and 75 against the MSP deadline (SCR-06 to SCR-10; REQ-BIL-14), and treat a
+    correctly billed refusal as a potential dispute (APL-01; REQ-BIL-15).
+- **Status:** partly built. Billing status on queue rows, Claims, and "Sign off & submit" per claim
+  are built (UC-16; REQ-UI-06). Batch attestation, AI flags, dispositions, the new eligibility
+  results, L3 questions, the digest and deadline rules are not. Open: OQ-87 (Finalize vs batch
+  attestation), OQ-88 (status words), OQ-89 (health-card results), OQ-90 (a digest).
+- **Sources:** B-005; BIL15 as cited; ANS26:23; `27c18b3`, `11b0ecb`; D-65; V2d:5807.
 
 ---
 
@@ -792,7 +846,12 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   task to the doctor (MOAP:258). The doctor sees when the task is picked up (S2:62-63).
 - **Status:** partly built. MOAP has Tasks with Open / In progress / Completed and Reply
   (MOAP:255-270, 450). Nothing sends a "picked up" signal back to the physician portal.
-- **Sources:** SIA:28-34; MOAP:255-270, 424-451; `9b7b5f6`; S2:38-40, 62-63.
+- **3 Oct:** MOAs also do billing work and CRM, and the MOA portal must make one MOA effective
+  across several doctors with AI help (private strategy, 3 Oct 2026 (confidential); D-103;
+  REQ-MP-07). What "CRM" means is OQ-93. Her billing edits are limited to demographic and clerical
+  fields (ROLE-R7, CTL-03; REQ-BIL-12).
+- **Sources:** SIA:28-34; MOAP:255-270, 424-451; `9b7b5f6`; S2:38-40, 62-63; private strategy,
+  3 Oct 2026 (confidential); BIL15 ROLE-R7.
 
 ### UC-22 Chase referrals, records and faxes
 
@@ -1106,3 +1165,10 @@ cannot be judged from that recording.
     exception queue), UC-24 (IB7 and IN23: acknowledgement, cards, sign-in timing, minimal intake,
     relationships, excluded medicines, the 2 Oct staging failures), UC-28 (AI-21) and UC-29 (the
     hard stop from ES3; OQ-79).
+- 3 Oct 2026, seventh run (B-005, B-006 and the 3 Oct MOA model). Added B-005, B-006, BIL15,
+  ECG20, CV25 and the private strategy citation to the source key. 34 use cases (1 new).
+  - New: UC-34 (attest my claims and answer billing questions; partly built).
+  - Updated: UC-09 (Chart View v2.5 arrived; the note beside the context; the this-visit strip
+    blocks Finalize), UC-12 (CRITICAL ECG), UC-16 (the billing PRD), UC-21 (MOAs also do billing
+    and CRM), UC-31 (one primary MOA, the same every time) and UC-32 (plain AF not critical;
+    grouping on the chart).

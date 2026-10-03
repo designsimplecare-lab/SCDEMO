@@ -8,14 +8,19 @@ Each one gives the owner, the date raised, what it blocks and its source. Source
 (`from-daniel/2026-09-29-home-feedback.md`) and BOOK29 his 29 Sep booking model
 (`from-daniel/2026-09-29-booking-pathways.md`). From 30 Sep: MOA30, ECG30 and CHART30 (Daniel's
 MOA pairing, ECG and chart notes), B-002 to B-004, the requirement documents IB7, ES3, DOC21 and
-IN23 (git-ignored; cited by section or ID), and V2d (build 2026-09-30 20:05, `cf6207c`); see the
-key in `use-cases.md`. Daniel answers well in numbered batches of 5 to 8,
+IN23 (git-ignored; cited by section or ID), and V2d (build 2026-09-30 20:05, `cf6207c`). From
+3 Oct: B-005 and BIL15 (Simple Billing PRD v1.5, cited by its IDs; its commercial and
+organisational sections are confidential and never recorded), B-006, ECG20 and CV25, and "private
+strategy, 3 Oct 2026 (confidential)", cited by name only; see the key in `use-cases.md`. Daniel answers well in numbered batches of 5 to 8,
 one line each, with the work each answer unblocks (Ani's working note). **Top 8** marks the batch to
 send next. **ANSWERED** marks a question Daniel has answered: the entry keeps his words and the
 date, and whatever the answer left open moves to a new question. Ani sends the batch; no agent
 contacts Daniel (rule 4).
 
-## Top 8 for Daniel (round 3, updated 3 Oct 2026)
+## Top 8 for Daniel (round 3, updated 3 Oct 2026, second pass)
+
+**Answered since the first pass (3 Oct):** OQ-74 (ECG Critical v2.0) and OQ-82 (Chart View v2.5).
+Their places go to OQ-87 and OQ-91, and OQ-92 joins OQ-76.
 
 **Round 3 (prepared 30 Sep) has no recorded answer.** If it has not gone yet, send this version: it
 adds what 30 Sep to 2 Oct brought (ECG30, CHART30, B-003, B-004). Five round-3 items move to the next
@@ -27,17 +32,19 @@ batch; they are unchanged.
    asks at most one, reactively. Who is the Clinical Director?
    - Why first: on staging, "chest pain, can't breathe" is offered doctors and windows (QA29:12).
    - Unblocks: REQ-INT-11, REQ-INT-16, REQ-INT-17; T-012.
-2. **OQ-74: which ECG findings make an ECG critical?** You said you'd define them (ECG30:29-30).
-   - Unblocks: REQ-IN-15, the critical ECG card, and the hazard log.
+2. **OQ-76 with OQ-92: one priority vocabulary, and does Home follow the chart?** Four versions
+   now exist: Critical / High / yellow (yours), HIGH / URGENT (routing), CRITICAL ECG (ECG v2.0),
+   and Critical / To do / Info (Chart View v2.5).
+   - Unblocks: REQ-IN-14, REQ-IN-18, REQ-IN-23, REQ-CH-37, REQ-HQ-12; T-020, T-021.
 3. **OQ-75: when you "clear" a yellow result, is that your sign-off, or a lighter "seen"?** And does
    clearing a Home card leave the Inbox report open (DOC21 §9)?
    - Unblocks: REQ-IN-16, REQ-IN-19.
-4. **OQ-76: Critical / High, or HIGH / URGENT?** The routing document uses HIGH / URGENT; you and
-   v2 use Critical / High.
-   - Unblocks: REQ-IN-18 and the words on Home and in the Inbox.
-5. **OQ-82: when will the chart requirements document come, and will it cover the scribe, the note
-   and sign-off together?** Also OQ-81, one line: was "Chase their office" wrong, or unexpected?
-   - Unblocks: REQ-CH-33 and T-021 (Blocked).
+4. **OQ-87: does Finalize still submit the claim, or do claims wait for your batch attestation?**
+   (Billing PRD CNF-09.) This replaces OQ-51.
+   - Unblocks: REQ-BIL-05, REQ-BIL-08, REQ-UI-06.
+5. **OQ-91: please send Chart View v2.1, and say when the four companion specs come.** Also OQ-81,
+   one line: was "Chase their office" wrong, or unexpected?
+   - Unblocks: REQ-CH-36, REQ-CH-37 and the AI part of REQ-CH-33 (T-021).
 6. **OQ-67: which concerns are quick-book, and which triage-first?** IN23 puts each pathway in a
    registry the Clinical Director edits.
    - Unblocks: REQ-INT-08, T-014.
@@ -54,8 +61,10 @@ calls against his earlier words (OQ-71).
 **Next batch:**
 - From round 3: OQ-68 (triage without the AI), OQ-04 (where he presses to call a patient now),
   OQ-70 (a script Japneet sends), OQ-65 (labs) and OQ-64 (readings).
-- New: OQ-78 (two companion documents), OQ-83 (chat when the MOA changes), OQ-84 (cross-coverage
-  timeframes), OQ-85 (document time limits) and what is left of OQ-77.
+- New: OQ-78 (two companion documents), OQ-83 (who covers when the MOA is away), OQ-84
+  (cross-coverage timeframes), OQ-85 (document time limits) and what is left of OQ-77.
+- From the billing PRD: OQ-88 (claim status words), OQ-89 (health-card results) and OQ-90 (a
+  daily billing digest). From the MOA model: OQ-93 (what "CRM" means).
 - Earlier: OQ-09, OQ-35, OQ-73, OQ-72, OQ-62, OQ-51 and OQ-63.
 
 **For Ani and Manoj, not Daniel:** OQ-80 (the "Hello" menu: confirm IN23's cards) and OQ-77 (that
@@ -203,6 +212,17 @@ calls against his earlier words (OQ-71).
   - The markup is read from an image, and HOME29:23 asks to confirm with Daniel where unsure.
 - **Source:** MTG21:60-62; HOME29:23-32; D-62, D-85.
 
+### OQ-92 · Does Home follow the chart's Needs Attention tiers? · Top 8
+- **Owner:** Daniel. **Raised:** 3 Oct 2026 (a conflict between sources). **Blocks:** REQ-HQ-12,
+  REQ-CH-37; T-020.
+- **The conflict:** Home's list holds Critical and High results (rule 16b; ANS27:8; D-78).
+  Chart View v2.5 defines Needs Attention on the chart with tiers Critical, To do and Info, and
+  "abnormal ≠ actionable" (CV25 §3, §7). ECG Critical v2.0 puts a CRITICAL ECG in Needs Attention
+  (ECG20 §4).
+- **Ask:** does Home's "Needs your attention" use the chart's tiers, and which of them (Critical
+  only, or Critical and To do)? Does a CRITICAL ECG show on Home?
+- **Source:** ANS27:7-11; CV25 §3, §7; ECG20 §4; B-006:120-121.
+
 ---
 
 ## Call
@@ -342,7 +362,12 @@ calls against his earlier words (OQ-71).
   say instead, if anything?
 - **Source:** CHART30:21-24, 52.
 
-### OQ-82 · Daniel's chart requirements document · Top 8
+### OQ-82 · Daniel's chart requirements document · ANSWERED 3 Oct 2026
+- **Answer (3 Oct 2026):** it arrived as Physician Chart View Requirements v2.5 (B-006:6-7). It
+  answers "where am I charting?": the note sits beside the context at 1440 px or one tab away
+  (CV25 §3). T-021 is unblocked. Recorded as D-106 and REQ-CH-33 to REQ-CH-42.
+- **Not answered:** the scribe and AI governance are left to a companion spec still marked TBD, and
+  until then Chart View v2.1 applies, which we don't have (CV25 §1). That moves to OQ-91.
 - **Owner:** Daniel. **Raised:** 30 Sep 2026. **Blocks:** REQ-CH-33; T-021 (Blocked); UC-09,
   UC-19.
 - **Why:** *"So, I'll give a requirements document on the chart itself."* *"I'm going to zero in on
@@ -350,6 +375,17 @@ calls against his earlier words (OQ-71).
 - **Ask:** when can we expect it? Should it cover the ambient scribe, the note's structure and
   sign-off together?
 - **Source:** CHART30:33-38, 46-49, 53-54; T-021.
+
+### OQ-91 · Chart View v2.1 and its four companion specs are missing · Top 8
+- **Owner:** Daniel (or whoever authors them). **Raised:** 3 Oct 2026. **Blocks:** REQ-CH-36,
+  REQ-CH-37, REQ-CH-33 (the AI part), REQ-RX (PharmaNet); T-021.
+- **Why:** Chart View v2.5 leaves four areas to companion specs marked TBD: Critical Results &
+  Escalation; Prescribing & PharmaNet Access; AI Governance & Scribe; Virtual Care Compliance.
+  Until each is published, the matching sections of Chart View v2.1 apply (CV25 §1), and we don't
+  have v2.1. The AI part of the chart waits for the AI Governance companion (CV25 §10).
+- **Ask:** please send Chart View v2.1, and say when each companion spec is expected and who
+  writes it.
+- **Source:** CV25 §1, §10; B-006:97-99, 122.
 
 ### OQ-42 · Document viewer: share and PDF
 - **Owner:** Ani. **Raised:** before 27 Jul 2026. **Blocks:** REQ-CH-18.
@@ -718,7 +754,18 @@ calls against his earlier words (OQ-71).
   which ordered tests have not returned. That is a source for the shape; where it shows is still
   Ani's.
 
-### OQ-74 · Which ECG findings count as critical? · Top 8
+### OQ-74 · Which ECG findings count as critical? · ANSWERED 3 Oct 2026
+- **Answer (ECG Critical Result Requirements v2.0, forwarded 3 Oct 2026):** one priority only,
+  CRITICAL ECG. An ECG gets it when its printed interpretation holds a phrase from the trigger
+  dictionary, or the source explicitly marks it critical or urgent (ECG20 §3-§4). The matched
+  phrases show verbatim (ECG20 §5). "Abnormal ECG" alone is not a trigger, and plain atrial
+  fibrillation without a source critical flag is not critical (ECG20 §2-§3; B-006:17-19, 35-39).
+- **Means:** the demo's AF ECG rightly stays a yellow "Abnormal ECG" (D-97). A CRITICAL ECG goes
+  to Needs Attention with its printed phrases, the source of the interpretation, times,
+  measurements and the original one click away, until a physician documents the review (D-105,
+  REQ-IN-23). The dictionary itself lives in ECG20 §3 and is not copied here.
+- **Not answered:** the card's exact words beyond "CRITICAL ECG" plus the verbatim phrase; that is
+  copy for Manoj. Which tier name the chart uses is OQ-76.
 - **Owner:** Daniel (he is writing the protocol). **Raised:** 30 Sep 2026. **Blocks:** REQ-IN-15,
   REQ-IN-14; HZ log (three flag levels); UC-32.
 - **Why:** *"We'll have our own protocols. Like, if the ECG is saying, you know, STEMI or AFib, or
@@ -742,7 +789,7 @@ calls against his earlier words (OQ-71).
   does clearing a card on Home leave the Inbox report open until you sign it off?
 - **Source:** ECG30:39-46, 64-65; DOC21 §9; B-003 conflicts; D-71, D-98.
 
-### OQ-76 · Priority names: Critical / High, or HIGH / URGENT? · Top 8
+### OQ-76 · Priority names: four vocabularies, one answer needed · Top 8
 - **Owner:** Daniel, or Ani. **Raised:** 30 Sep 2026 (a conflict between sources). **Blocks:**
   REQ-IN-18, REQ-HQ-12, REQ-IN-03.
 - **The conflict:** DOC21 names the elevated levels HIGH and URGENT (§4, §9, §14). Daniel's words
@@ -751,6 +798,16 @@ calls against his earlier words (OQ-71).
 - **Ask:** which words does the product use? If URGENT is DOC21's name for Critical, say so, and
   the documents can be aligned.
 - **Source:** DOC21 §4, §9, §14; ANS27:7-11; ECG30:32-42; B-003 conflicts.
+- **Now (3 Oct), four versions:**
+  - Daniel, 27 and 30 Sep, and v2: Critical, High, then yellow abnormal (ANS27:8; ECG30:32-42).
+  - Document Routing v2.1: HIGH / URGENT (DOC21 §4, §9).
+  - ECG Critical v2.0: one priority, CRITICAL ECG (ECG20 §4).
+  - Chart View v2.5: Critical, To do, Info, for Needs Attention on the chart (CV25 §3). It defers
+    classification to a Critical Results & Escalation spec that is not written (CV25 §1; OQ-91).
+  - **Ask, reworded:** which one vocabulary do Home, the Inbox and the chart use? Is CRITICAL ECG a
+    kind of Critical? Is "High" the chart's "To do"? Whether Home follows the chart's tiers is
+    OQ-92.
+  - **Blocks also:** REQ-CH-37, REQ-IN-23.
 
 ### OQ-78 · Two companion documents for document routing are missing
 - **Owner:** Daniel (or whoever authors them). **Raised:** 30 Sep 2026. **Blocks:** REQ-IN-18,
@@ -824,6 +881,18 @@ calls against his earlier words (OQ-71).
 - **Ask:** when the doctor's MOA changes at a window boundary, does the new MOA see the earlier
   conversation, and does the doctor? Who answers chat between windows?
 - **Source:** MOA30:7-21; B-002.
+- **Now (3 Oct), mostly answered:** each doctor has one primary MOA, the same one every time
+  (private strategy, 3 Oct 2026 (confidential); D-103). So the MOA doesn't normally change by
+  window. **Still open:** who answers the chat, and sees its history, when the primary MOA is away?
+
+### OQ-93 · What does "CRM" mean for the MOA?
+- **Owner:** Daniel. **Raised:** 3 Oct 2026. **Blocks:** REQ-MP-07; UC-21.
+- **Why:** MOAs also do billing work and CRM, and the MOA portal must make one MOA effective
+  across several doctors with AI help (private strategy, 3 Oct 2026 (confidential); D-103). "CRM"
+  is not defined.
+- **Ask:** does CRM mean keeping in touch with physicians, reaching out to patients (reminders,
+  recalls, follow-ups), or both? What should the MOA portal give her for it?
+- **Source:** private strategy, 3 Oct 2026 (confidential).
 
 ---
 
@@ -986,11 +1055,18 @@ calls against his earlier words (OQ-71).
   **Blocks:** REQ-BIL-07.
 - **Why:** v2 shows fee codes and dollar amounts (V2:6246-6254) and "Refusals expire" (V2:5381). No
   source supports them.
+- **Now (3 Oct):** the billing PRD gives the claim deadline behaviour: alerts at day 30, 60 and 75
+  against the MSP submission deadline, with over-age and resubmission pathways checked first
+  (SCR-06 to SCR-10; REQ-BIL-14). It does not supply fee codes or amounts, which stay unsourced
+  (B-005:67-68).
 
 ### OQ-25 · Is private pay fully automated?
 - **Owner:** Daniel. **Raised:** 14 Sep 2026. **Blocks:** REQ-BIL-02.
 - **Why:** private pay came off the dashboard because it "may be fully automated" (`944d26a`), and
   was restored the same day (`c0cae95`).
+- **Now (3 Oct):** the billing PRD leaves private-pay patient invoicing out of its scope (B-005:53-54),
+  so it does not answer this. v2's private-pay states stay as they are. A digest (OQ-90) would be
+  the place to surface private-pay exceptions if they aren't automated.
 
 ### OQ-51 · Should Finalize open a billing review?
 - **Owner:** Daniel. **Raised:** 25 Sep 2026. **Blocks:** REQ-BIL-04, REQ-BIL-05, REQ-UI-06.
@@ -1003,6 +1079,49 @@ calls against his earlier words (OQ-71).
   the claim is his sign-off, an accountable action (D-71). Build 13:10 submits it as a side effect
   of Finalize, and the button does not say so. So the question is now: one press that says it signs
   off both the visit and the bill, or two sign-offs?
+- **Now (3 Oct):** the billing PRD's model is batch attestation: clean claims attested together,
+  flagged claims one by one, by the physician personally with MFA (CNF-09, CNF-10). That reframes
+  this question as OQ-87.
+
+### OQ-87 · Sign off the visit = submit the claim, or the PRD's batch attestation? · Top 8
+- **Owner:** Daniel. **Raised:** 3 Oct 2026 (B-005). **Blocks:** REQ-BIL-05, REQ-BIL-08,
+  REQ-UI-06; OQ-51; UC-16, UC-34.
+- **Why:** v2 submits the claim when the doctor finalizes the visit (REQ-BIL-05; D-65). The PRD
+  has the physician attest claims in a batch, clean ones together and flagged ones one by one, and
+  AI review findings appear at attestation (CNF-09, CNF-10, COD-03). It also allows a configurable
+  standing attestation for clean, unchanged claims (CNF-11).
+- **Ask:** for SimpleCare's own visits, does Finalize still submit the claim, or do claims wait for
+  a batch attestation? If Finalize submits, does it count as the attestation, and what happens to
+  an AI flag?
+- **Source:** B-005 questions 1; BIL15 CNF-09 to CNF-12, COD-03; REQ-BIL-05; OQ-51.
+
+### OQ-88 · Claim status words: the PRD's claim states, or v2's simpler labels?
+- **Owner:** Daniel. **Raised:** 3 Oct 2026 (B-005). **Blocks:** REQ-BIL-02; UC-16.
+- **Why:** v2's MSP statuses are Submit claim, Claim submitted, Review claim, Claim rejected and
+  Claim paid (REQ-BIL-02, his own words, `3c5f4fe`). The PRD has a longer lifecycle, from Ingested
+  to Closed, with side states such as Returned to physician (BIL15 §6). Nothing is renamed without
+  him.
+- **Ask:** should the queue and Claims show the PRD's states, v2's labels, or v2's labels mapped
+  onto the PRD's states behind the scenes?
+- **Source:** B-005 questions 2; BIL15 §6; REQ-BIL-02.
+
+### OQ-89 · Should the health-card column add "coverage ended" and "demographic mismatch"?
+- **Owner:** Daniel. **Raised:** 3 Oct 2026 (B-005). **Blocks:** REQ-BIL-02, REQ-BIL-11,
+  REQ-ID-04.
+- **Why:** v2's health-card labels are Verified, Check required, Invalid card and Private pay
+  (REQ-BIL-02). The PRD's eligibility results are eligible, not eligible, coverage ended (with the
+  date) and demographic mismatch, each with the next action (ELT-01). The last two have no v2 label.
+- **Ask:** add them, map them onto "Check required" and "Invalid card", or keep v2's four?
+- **Source:** B-005 questions 3; BIL15 ELT-01, ELT-08, ELG-03; REQ-BIL-02.
+
+### OQ-90 · A daily billing digest for the doctor in the physician portal?
+- **Owner:** Daniel. **Raised:** 3 Oct 2026 (B-005). **Blocks:** REQ-BIL-13; OQ-25 (related).
+- **Why:** the PRD sends physicians one consolidated daily digest, not claim-by-claim reminders,
+  and its L3 questions carry context and one-tap answers (CNF-02, ESC-09). v2 has no digest; billing
+  shows on queue rows and in Claims (REQ-BIL-01, REQ-BIL-03).
+- **Ask:** should the physician portal show a daily billing digest (attestations due, L3
+  questions, deadline risks)? Where: Home, Claims, or a message?
+- **Source:** B-005 questions 4; BIL15 CNF-02, ESC-09, ESC-10.
 
 ---
 
@@ -1124,3 +1243,15 @@ calls against his earlier words (OQ-71).
     (ES3 is a draft source; the ask is now approval), OQ-71 (Ani decided the pill).
   - Top 8 rebuilt for round 3 (updated 3 Oct). OQ-04, OQ-64, OQ-65, OQ-68 and OQ-70 move to the
     next batch unchanged.
+- 3 Oct 2026, seventh run (B-005, B-006 and the 3 Oct MOA model). 93 questions.
+  - ANSWERED (2): OQ-74 (ECG Critical v2.0: one CRITICAL ECG priority; plain AF is not critical)
+    and OQ-82 (Chart View v2.5 is the chart document; T-021 unblocked).
+  - Mostly answered: OQ-83 (the doctor's MOA is the same every time; cover when she is away is
+    open).
+  - Extended: OQ-76 now lists four priority vocabularies.
+  - New (7): OQ-87 to OQ-90 (B-005's four billing questions: attestation vs Finalize, claim status
+    words, health-card results, a daily digest), OQ-91 (Chart View v2.1 and four companion specs),
+    OQ-92 (Home vs chart tiers) and OQ-93 (what "CRM" means for the MOA).
+  - Notes added: OQ-24 (deadlines now sourced; fee codes still not), OQ-25 (private pay outside the
+    PRD), OQ-51 (reframed as OQ-87).
+  - Top 8, second pass: OQ-87 and OQ-91 replace the answered OQ-74 and OQ-82; OQ-92 joins OQ-76.

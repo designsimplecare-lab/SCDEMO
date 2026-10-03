@@ -596,6 +596,9 @@ with Ani approving (D-91).
 - **Replaced:** "Finalize & review billing", which showed a toast and opened no billing review
   (DR:87-91). REQ-BIL-04 is superseded; OQ-51 asks whether a billing review is wanted.
 - **Source:** `d2a2823`; V2b:4618-4620, 7091-7120, 10276-10306.
+- **Questioned (3 Oct):** the billing PRD's model is batch attestation, with clean claims together
+  and flagged claims one by one (CNF-09; D-104). Whether Finalize keeps submitting the claim is
+  OQ-87. Chart View v2.5 also blocks Finalize until the this-visit strip is complete (D-106).
 
 ### D-66 · 25 Sep 2026 · "Since last visit", from the previous visit's plan
 - **Decided:** a block at the top of a follow-up with the previous visit's Plan, Ask about and
@@ -971,6 +974,7 @@ with Ani approving (D-91).
   and never send by themselves (V2d:8599-8622; B-002:26-29). The MOA portal side (a conversation
   per doctor, up to 5) is not built.
 - **Open:** OQ-83 (what carries over when the pairing changes).
+- **Sharpened (3 Oct):** the doctor's MOA is the same one every time (D-103).
 - **Source:** MOA30:7-21; B-002; `27fec4b`, `fcdb13d`. The bus-ad part of MOA30 holds no product
   decision, and its contract terms are confidential (rule 9c).
 
@@ -1018,6 +1022,8 @@ with Ani approving (D-91).
   perfect."* (ECG30:48-49). Yellow results stay off Home (ECG30:71-72; D-78).
 - **Built:** `cf6207c`; `rsVal` V2d:10992-11001; `resultIsAbnormal` V2d:8186-8191.
 - **Source:** ECG30:32-49.
+- **3 Oct:** Chart View v2.5 names the chart's tiers Critical, To do and Info (D-106). Which words
+  win is OQ-76.
 
 ### D-97 · 30 Sep 2026 · An abnormal ECG gets its own card that says only "Abnormal ECG"
 - **Decided:**
@@ -1036,6 +1042,8 @@ with Ani approving (D-91).
   Inbox row (V2d:8233), the review (V2d:9086, 9128) and "Also in today" (V2d:10687).
 - **Open:** OQ-74 (which ECG findings are critical). Partly answers OQ-12.
 - **Source:** ECG30:10-30, 51-63.
+- **Refined (3 Oct):** ECG Critical v2.0 defines the critical case: one CRITICAL ECG priority, with
+  the printed phrases shown verbatim (D-105). This entry still governs a non-critical abnormal ECG.
 
 ### D-98 · 30 Sep 2026 · Every flagged result shows whether it is cleared
 - **Decided:** a flagged value shows "Not cleared" (opening the result) or "Cleared".
@@ -1065,6 +1073,7 @@ with Ani approving (D-91).
   The doctor always signs (rule 18).
 - **Open:** OQ-81 ("Chase their office"), OQ-82 (the requirements document), OQ-31.
 - **Source:** CHART30 (all); T-021 (Blocked).
+- **3 Oct:** the document arrived as Physician Chart View v2.5 (D-106). T-021 is unblocked.
 
 ### D-100 · 30 Sep 2026 · The design system is "SC – Design System" in Figma
 - **Decided:** new design work uses only that library: its components, Mapped variables (Light and
@@ -1122,6 +1131,87 @@ with Ani approving (D-91).
 - **Conflict:** safety-screening depth against ES3 (OQ-79).
 - **Source:** B-004; IN23 as cited.
 
+### D-103 · 3 Oct 2026 · Each doctor has one primary MOA, the same one every time
+- **Decided:**
+  - Each doctor has one primary MOA, and it is the same MOA every time.
+  - MOAs also do billing work and CRM.
+  - The MOA portal must make one MOA effective across several doctors, with AI help.
+- **By:** Daniel.
+- **Quote:** none in a public file. The source is confidential and is cited only by name.
+- **Replaced:** it sharpens D-93. B-002 said the pairing "can change between call windows"
+  (B-002:14), from *"During any particular call window, we will see what we can [staff] them out
+  to."* (MOA30:12). The doctor's MOA is now stable. Who covers when she is away is still OQ-83.
+- **Open:** OQ-83 (cover and history), OQ-93 (what "CRM" means for the MOA).
+- **Source:** private strategy, 3 Oct 2026 (confidential).
+
+### D-104 · 1 Oct 2026 · Simple Billing PRD v1.5 sets the billing behaviour the portals show
+- **Decided (portal-facing behaviour only):**
+  - The physician's coding is the source. An AI review flags likely errors, unsupported codes and
+    missed codes, with a confidence score, and never changes a claim (COD-01 to COD-06).
+  - Submitting is the physician's own attestation, with MFA. Clean claims are attested together;
+    a flagged claim needs its own decision; staff actions never count; a proposed change to a
+    clinical field returns the claim to the physician (CNF-09, CNF-10, CNF-12).
+  - Every completed billable encounter gets exactly one disposition (CLM-01 to CLM-06).
+  - Eligibility results name the next action (ELT-01 to ELT-10, ELG-01 to ELG-04).
+  - MOAs correct demographic and clerical fields only (ROLE-R7, CTL-03).
+  - Physician questions (L3) come with context and one-tap answers, in one daily digest (§8,
+    ESC-09, CNF-02); deadline alerts at day 30, 60 and 75 (SCR-06 to SCR-10); a refusal that looks
+    correctly billed is a potential dispute, not a change (APL-01 to APL-09).
+- **By:** Daniel (the author, 1 Oct 2026; forwarded by Ani, B-005).
+- **Quote:** B-005:24 ties attestation to his 26 Sep words: *"To submit a bill is to 'sign off' on
+  your billing"* (ANS26:23; D-71).
+- **Replaced:** nothing yet. It gives v2's unsourced "resubmit within the window" a source (SCR-06
+  to SCR-10). Fee codes and amounts are still unsourced (OQ-24). How it fits D-65 (Finalize submits
+  the claim) is OQ-87. The PRD's commercial and organisational sections are confidential and are
+  not recorded here.
+- **Open:** OQ-87 to OQ-90.
+- **Source:** B-005; Simple Billing PRD v1.5 (BIL15) by ID.
+
+### D-105 · 3 Oct 2026 · ECG: one CRITICAL ECG priority, from the printed report, shown verbatim
+- **Decided:**
+  - One priority only, CRITICAL ECG. An ECG gets it when its printed interpretation holds a phrase
+    from the trigger dictionary, or the source explicitly marks it critical or urgent (ECG20 §3,
+    §4).
+  - SimpleCare never interprets the waveform; it reads what the report already says (ECG20 §2).
+  - "Abnormal ECG" alone is not a trigger, and neither is plain atrial fibrillation without a
+    source critical flag (ECG20 §2-§3; B-006:17-19).
+  - A CRITICAL ECG shows in Needs Attention with the matched phrases verbatim, the source of the
+    interpretation, the times, the printed measurements, the original one click away, and who
+    acknowledged it. It stays until a physician documents the review (ECG20 §5, §8).
+  - Fail safe: an unknown phrase the source calls critical still routes, several triggers make one
+    alert, and nothing is downgraded by a reassuring line elsewhere (ECG20 §6).
+  - Every ECG still needs physician review.
+- **By:** SimpleCare's ECG Critical Result Requirements v2.0, forwarded by Ani (B-006). It answers
+  the protocol Daniel promised on 30 Sep (ECG30:29-30).
+- **Replaced:** Daniel's 30 Sep example *"STEMI or AFib"* (ECG30:25). The written spec is newer:
+  AF counts only when the source flags it, for example with a rapid ventricular response
+  (B-006:35-39). D-97 stands for a non-critical abnormal ECG. Answers OQ-74.
+- **Source:** B-006 §1; ECG20 §2-§8.
+
+### D-106 · 3 Oct 2026 · Physician Chart View v2.5 is Daniel's chart requirements document
+- **Decided:**
+  - The chart is an encounter workspace with a fixed scan order: patient snapshot, Needs Attention,
+    Today, Relevant to [concern], Since you last saw, Clinical threads, full chart (CV25 §2-§3).
+  - The note and its actions sit beside the context at 1440 px or wider, or one tab away, and the
+    draft survives navigation and dropped calls (CV25 §3). This answers "where am I charting?".
+  - A this-visit strip (location, identity verified, consent, others present, video or phone,
+    callback) must be complete before Finalize (CV25 §3).
+  - The snapshot shows a masked PHN and allergies in three states (CV25 §3).
+  - Needs Attention on the chart has tiers Critical, To do and Info, groups related items, and
+    keeps "abnormal" apart from "actionable" (CV25 §3, §7).
+  - Typography before containers; red only for critical; every colour also has a word or symbol;
+    AI text stays distinct until accepted; the chart works without AI (CV25 §7).
+  - Acceptance is by physician task performance, with at least 15 physicians (CV25 §9).
+- **By:** Daniel (B-006:6-7: "the 'requirements document on the chart' that Daniel promised").
+- **Quote:** the document's own design test: "If the screen looks busy when nothing is wrong, the
+  design has failed." (CV25 §10).
+- **Replaced:** v2's chart layout as the target: the note low on the page, the full PHN in the
+  header, no this-visit strip, many cards, and the abnormal ECG as a separate card rather than
+  grouped (B-006:101-110). T-021 is unblocked. Answers OQ-82.
+- **Open:** OQ-76 (four tier vocabularies), OQ-91 (Chart View v2.1 and four companion specs),
+  OQ-92 (Home vs chart tiers).
+- **Source:** B-006 §2; CV25 §1-§10.
+
 ## Changelog
 
 - 25 Sep 2026, first run: 60 entries from 27 Jul to 25 Sep 2026, including the reversals: D-11,
@@ -1166,3 +1256,10 @@ with Ani approving (D-91).
     (Intake v2.3 wins for the chat, B-004).
   - Reversal notes: D-49 (collapsed nav, reversed by D-95), D-60 and D-86 (chat in the left nav,
     reversed by D-94). D-92 now cites Ani's written decision (HOME29:43).
+- 3 Oct 2026, seventh run (B-005, B-006 and the 3 Oct MOA model): 106 entries.
+  - Added D-103 (one primary MOA, the same every time; billing work and CRM; the MOA portal makes
+    one MOA effective across doctors), D-104 (Simple Billing PRD v1.5, portal-facing behaviour
+    only), D-105 (ECG Critical v2.0: one CRITICAL ECG priority) and D-106 (Physician Chart View
+    v2.5, Daniel's chart document; T-021 unblocked).
+  - Notes added: D-65 (batch attestation, the this-visit strip), D-93 (sharpened by D-103), D-96
+    (chart tiers), D-97 (refined by D-105) and D-99 (the document arrived).

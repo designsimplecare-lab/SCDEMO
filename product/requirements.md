@@ -9,7 +9,10 @@ the key in `use-cases.md`. From 30 Sep: MOA30, ECG30, CHART30, B-002 to B-004, V
 2026-09-30 20:05, `cf6207c`), and four SimpleCare requirement documents, git-ignored and cited by
 section or by their own IDs, never quoted at length: IB7 (Intake & Booking v7.0), ES3 (Emergency
 Safeguards v3.0, draft), DOC21 (Document Routing v2.1) and IN23 (Simplicity Intake v2.3, which wins
-over IB7 for the chat, D-102). A requirement **superseded** by a later one keeps its ID and says
+over IB7 for the chat, D-102). From 3 Oct: BIL15 (Simple Billing PRD v1.5, cited only by its IDs
+for what the portals show; its commercial and organisational sections are confidential), ECG20
+(ECG Critical v2.0), CV25 (Physician Chart View v2.5), and "private strategy, 3 Oct 2026
+(confidential)", cited by name only. A requirement **superseded** by a later one keeps its ID and says
 which one replaced it. "Assumption" marks a
 claim with no source. Status: **built** (works in v2), **partly built**, **not built**. "Open" names
 the open questions that block a requirement (see `open-questions.md`). This file sets no clinical
@@ -169,6 +172,8 @@ value, nothing more.**
   still describes the old gap; it is `clinical-safety`'s to update.
 - Priority: P1 (built; keep).
 - The names of the bands are open: DOC21 says HIGH / URGENT (OQ-76).
+- 3 Oct: Chart View v2.5 defines tiers Critical, To do and Info for the chart's Needs Attention
+  (CV25 §3). Whether Home follows them is OQ-92.
 - Open: none (OQ-01 answered).
 
 **REQ-HQ-13 · The navigation is collapsed by default, and remembered. SUPERSEDED 30 Sep 2026 by
@@ -635,13 +640,147 @@ is where he expects it.**
   (CHART30:11-12, 27-31; D-99). In the frames, the note box sat below "Since last visit", the
   "Read the Jun 25 note" button and the scribe bar, and he scrolled past it (CHART30:14-15). Five of
   five shadowed visits had no note written during the call (use cases, patterns table).
-- Accept: to be written from Daniel's chart requirements document (OQ-82). Until then: the doctor
-  can find where to chart without searching, and no AI text enters the signed note without his
-  press.
-- Status: not built. v2 is mostly the display mode, with the note box low on the page; it is left
-  unchanged on purpose until his document arrives (CHART30:39-49). T-021 is Blocked.
+- Accept (from CV25, 3 Oct): the note and its actions (Prescribe, Order, Refer, Task, Message,
+  Finalize) sit beside the context at 1440 px or wider, or one tab away. The draft survives
+  navigation, interruption and a dropped call. Opening labs or the full chart never loses the note
+  (CV25 §3, §7). AI text stays visually distinct until accepted, and scribe-proposed medications,
+  allergies, problems and plan items are accepted, edited or rejected one by one (CV25 §7). A
+  physician catches an AI negation error before signing at least 90% of the time (CV25 §9).
+- 3 Oct: the document arrived as Physician Chart View v2.5 (D-106). Its delivery order puts the
+  core encounter shell first and context-aware AI only after the AI Governance companion spec,
+  which is not written (CV25 §10; OQ-91). The layout is REQ-CH-34 to REQ-CH-42.
+- Status: not built. The note box is low on the page in v2 (CHART30:14-15; B-006:102). T-021 is
+  unblocked.
 - Priority: P1. `clinical-safety` and `ai-engineer` gate the AI drafting.
-- Open: OQ-82, OQ-31.
+- Open: OQ-91 (the AI Governance companion), OQ-31. OQ-82 is answered.
+
+**From Physician Chart View v2.5 (CH-34 to CH-42).** Daniel's chart document, forwarded 3 Oct
+(D-106). Each requirement names the CV25 section, and its gap against V2d (B-006, "Where v2 differs
+today").
+
+**REQ-CH-34 · The chart is an encounter workspace with one scan order.**
+- Patient snapshot, Needs Attention, Today, Relevant to [concern], Since you last saw, Clinical
+  threads, then the full chart one step away. Identity, allergies, the this-visit strip, the reason
+  for the visit and unresolved critical items stay in view while scrolling.
+- Rationale: CV25 §2-§3. Its product definition: reduce the work of finding, assembling and
+  interpreting the record; cut clicks and duplication, not clinically relevant data.
+- Accept: the doctor states the reason for the visit in a median of 5 seconds or less (CV25 §9).
+  The full chart opens without losing the encounter, one action back (CV25 §3).
+- Status: not built. v2's chart is "This visit" with "Since last visit", the note and the care plan
+  stacked as cards (REQ-CH-31; B-006:108-110).
+- Priority: P1 (T-021).
+
+**REQ-CH-35 · The patient snapshot shows a masked PHN and allergies in three states, and no
+clinical counts.**
+- Name, date of birth or age, gender as recorded, a masked PHN, the dated photo from intake, the
+  family doctor, and allergies as a named list, "No known drug allergies", or "Not recorded" in
+  amber. No diagnosis badges or clinical counts.
+- Rationale: CV25 §3. It refines REQ-CH-12 (the banner) and REQ-ID-02 (identifiers on the chart,
+  not on list rows).
+- Accept: no full PHN on the chart's face (assumption: shown in full one action away, for claims and
+  faxes; CV25 doesn't say). "Not recorded" never looks like "none".
+- Status: not built. **Gap:** v2's chart header shows the full PHN (V2d:4809). Allergy status is
+  always shown (REQ-CH-12), but not in CV25's three states.
+- Priority: P1.
+
+**REQ-CH-36 · A this-visit strip must be complete before Finalize.**
+- The patient's current location, identity verified (method and date), consent, others present,
+  video or phone, and the callback number. Incomplete items are flagged. Once complete it may
+  collapse, with location and callback one action away; it re-expands on a dropped call or a
+  location change. A patient outside BC gets a notice that can't be dismissed.
+- Rationale: CV25 §3. ES3 §8 also makes the patient's current location part of emergency safety.
+- Accept: Finalize is blocked until the strip is complete. After a dropped call, the doctor finds
+  the location and callback number 100% of the time (CV25 §9).
+- Status: not built. **Gap:** v2 has no strip, and Finalize doesn't depend on one (B-006:104-105;
+  `finalizeVisit` asks only about an empty note, REQ-CH-07). What it must record comes from the
+  Virtual Care Compliance companion, not yet written (OQ-91).
+- Priority: P1. `clinical-safety` and `privacy-security` review it.
+- Open: OQ-91.
+
+**REQ-CH-37 · Needs Attention on the chart is one place, with related items grouped and abnormal
+kept apart from actionable.**
+- Directly under the banner. Only unresolved items that need review or action. Each shows its
+  name, value, units and range, source, received time, responsible doctor and stage (reviewed,
+  patient told, follow-up due, closed), with a direct action. Related items are grouped under the
+  lead one (for example an ECG and CK under a troponin). Tiers: Critical, To do, Info. Critical
+  items can never be hidden or re-ranked here. When empty, one quiet line: "Nothing requiring
+  attention".
+- Rationale: CV25 §3, §7. The classification comes from the Critical Results & Escalation
+  companion, not yet written (CV25 §1).
+- Accept: with an unrelated abnormal result on screen, the doctor finds the highest-priority action
+  in 10 seconds or less, every time (CV25 §9). The same fact never appears twice as competing
+  alerts (CV25 §7).
+- Status: partly built. v2 shows unsigned Critical and High results at the top of the chart
+  (REQ-CH-13). **Gaps:** the abnormal ECG is a separate yellow card rather than grouped under the
+  critical one (V2d:10653-10668; B-006:106-107); "Also in today" is a separate line; there are no
+  stages, responsible doctor or To do / Info tiers.
+- Priority: P1.
+- Open: OQ-76 (tier names), OQ-92 (Home vs chart), OQ-91 (the escalation companion).
+
+**REQ-CH-38 · Today and "Relevant to [concern]" put the visit's reason first and gather context in
+five fixed categories.**
+- Today: the reason in the patient's words, a concise intake summary (REQ-INT-20), and intake red
+  flags in the patient's exact words.
+- Relevant to [concern]: history, medications (each with its source and date, for example
+  PharmaNet or the SimpleCare record), investigations, prior related care, and pending. Selection is
+  rules-first; AI may rank or add items marked "suggested" but never silently drops chart content.
+  Every item opens its source. The doctor can mark an item Relevant, Not relevant, Missing or
+  Incorrect; "Incorrect" goes to chart-correction review and never edits the record.
+- Rationale: CV25 §3-§5. It takes over REQ-CH-20 ("Since last visit" fits today's reason) and
+  REQ-INT-06 (the full intake inside the chart).
+- Accept: the source of a summarised item opens in 3 clicks or fewer; a non-PharmaNet medication
+  list is recognised at least 90% of the time (CV25 §9).
+- Status: not built. v2's intake is a separate view (REQ-INT-06), and "Since last visit" is drawn
+  from the last plan, not from the concern (REQ-CH-01).
+- Priority: P1.
+
+**REQ-CH-39 · "Since you last saw" lists what is new, changed, pending and resolved, and pending
+loops stay visible.**
+- From the treating physician's last relevant visit (with a labelled clinic fallback): 3-6 items by
+  default, critical always shown, then "+N more". Unfinished care is visible: ordered not done,
+  resulted not reviewed, patient not yet told, referred not seen, report missing, follow-up due.
+  "Acknowledged is not closed."
+- Rationale: CV25 §3, §6.
+- Accept: the doctor states what changed since the relevant prior visit at least 90% right within
+  30 seconds (CV25 §9).
+- Status: partly built. v2's "Since last visit" has Plan / Ask about / Pending lines (REQ-CH-01,
+  `renderSinceLast`). **Gap:** it needs reshaping into NEW / CHANGED / PENDING / RESOLVED
+  (B-006:108-109).
+- Priority: P1. Relates to REQ-CH-29 and REQ-IN-22 (pending and overdue results).
+
+**REQ-CH-40 · Clinical threads replace a flat problem list, and a stale thread says so.**
+- One row per curated active problem: status, treatment, monitoring, last decision and next step,
+  with the date of the last meaningful review. Suggestions never add a thread by themselves.
+  Trends show the latest value, units, normal range and flag beside them.
+- Rationale: CV25 §3, §6. Its stale default for a chronic problem is "more than 12 months,
+  configurable"; that is the document's default, not ours. It extends REQ-CH-17 (the problem list
+  with the doctor approving) and sits alongside the care plan (REQ-CH-11, REQ-CH-31).
+- Accept: stale or conflicting information is recognised at least 90% of the time (CV25 §9).
+- Status: not built. v2 has a conditions panel and a care plan (UC-15).
+- Priority: P2 (CV25's third delivery step, §10).
+- Open: OQ-81.
+
+**REQ-CH-41 · The chart follows CV25's visual rules.**
+- No duplicate primary display. Typography before containers: hierarchy, spacing and subtle
+  separators, no wall of cards. Red only for critical or destructive states; amber for to do,
+  overdue, stale and conflicts; every colour state also has a word or symbol. Opening any part of
+  the chart keeps the note, scroll position and visit state. The chart works without AI. No new
+  dashboard, alert taxonomy or permanent chrome. WCAG 2.2 AA; the banner, Needs Attention and the
+  reason load within 1 second.
+- Rationale: CV25 §7. It matches handbook rule 21 and REQ-UI-01 (red for critical only).
+- Accept: the chart is usable with AI off 100% of the time (CV25 §9).
+- Status: partly built. Red is mostly reserved (REQ-UI-01). **Gap:** v2's chart is many cards
+  (B-006:110).
+- Priority: P1.
+
+**REQ-CH-42 · The chart is accepted by physician task performance, not by looks.**
+- A final test with at least 15 physicians on realistic cases with interruptions and competing
+  abnormal results, against the targets in CV25 §9, including zero wrong-patient errors and a SUS
+  score of at least 68 (target 80).
+- Rationale: CV25 §9.
+- Accept: as CV25 §9. `ux-researcher` plans the test; Ani and Daniel approve.
+- Status: not built (process).
+- Priority: P2.
 
 ---
 
@@ -911,6 +1050,8 @@ off together.**
   yellow card under the critical one (V2d:10653-10668). Not re-checked in the Inbox rows.
 - Priority: P1. `clinical-safety` reviews it (ECG30:68-69).
 - Open: OQ-75, OQ-76.
+- 3 Oct: Chart View v2.5 uses Critical, To do and Info on the chart, and "abnormal ≠ actionable"
+  (CV25 §3, §7; REQ-CH-37). Whether a yellow result is "To do", "Info" or neither is OQ-76.
 
 **REQ-IN-15 · An abnormal ECG says only "Abnormal ECG"; the machine's reading stays on the
 tracing.**
@@ -925,7 +1066,9 @@ tracing.**
 - Status: built (`traceFlag` V2d:8181-8185; used at V2d:8233, 9086, 9128, 10662, 10687). The
   critical-ECG case is not built, by design, until the list arrives.
 - Priority: P1.
-- Open: OQ-74.
+- Open: none (OQ-74 answered 3 Oct). The critical case is REQ-IN-23: ECG Critical v2.0 shows a
+  CRITICAL ECG's printed phrases verbatim, so the "machine reading stays on the tracing" rule here
+  holds for a non-critical abnormal ECG only (D-105).
 
 **REQ-IN-16 · Every flagged result shows whether it has been cleared.**
 - A flagged value says "Not cleared", which opens the result, or "Cleared".
@@ -1016,6 +1159,25 @@ Overdue list.**
 - Priority: P2.
 - Open: OQ-86, OQ-85. Relates to REQ-CH-29 (orders made outside SimpleCare).
 
+**REQ-IN-23 · A CRITICAL ECG is one priority, taken from the printed report and shown verbatim.**
+- An ECG becomes CRITICAL ECG when its printed interpretation holds a phrase from the trigger
+  dictionary, or the source explicitly marks it critical or urgent. SimpleCare reads the report and
+  never interprets the waveform. "Abnormal ECG" alone, or plain atrial fibrillation with no source
+  critical flag, is not a trigger.
+- In Needs Attention it shows: CRITICAL ECG, the matched phrases verbatim, the source of the
+  interpretation (machine, preliminary, cardiologist-confirmed or clinician), the ECG and report
+  times, the printed measurements, the original one click away, and the acknowledgement status and
+  reviewer. It stays until a physician documents the review.
+- Several triggers make one priority and one alert. An unknown phrase the source calls critical
+  still routes, and is logged. Nothing is downgraded by a reassuring line elsewhere.
+- Rationale: ECG20 §2-§8 (the dictionary is §3 and is not copied here). It answers Daniel's
+  *"We'll have our own protocols"* (ECG30:25; OQ-74; D-105).
+- Accept: as ECG20 §8. Every ECG still needs physician review.
+- Status: not built. The demo's only ECG is plain AF without a source flag, which ECG20 says is not
+  critical, so v2's yellow "Abnormal ECG" is right (B-006:35-39).
+- Priority: P1. `clinical-safety` gates it.
+- Open: OQ-76 (is CRITICAL ECG a kind of Critical?), OQ-92 (does it show on Home?).
+
 ---
 
 ## Review (RV)
@@ -1075,6 +1237,9 @@ Overdue list.**
 forwarded to Admin.**
 - Rationale: V2:6591-6600; `9b7b5f6`.
 - Status: built.
+- 3 Oct: each doctor has one primary MOA, the same one every time (private strategy, 3 Oct 2026
+  (confidential); D-103). So "the MOA on service" and "the primary MOA" are normally the same
+  person; who stands in when she is away is OQ-83.
 
 **REQ-TK-03 · The doctor sees that the task was received and picked up.**
 - Rationale: *"Can you hear me, … or am I talking to myself?"* (S2:38-40, 62-63).
@@ -1142,6 +1307,8 @@ Inbox.**
 - Status: built on the physician side (`fcdb13d`; `MOA_THREADS` holds one conversation and
   `toggleChatPanel` opens it directly, V2d:8502-8510, 8531-8539). Carry-over between windows is
   OQ-83.
+- 3 Oct: the doctor's MOA is the same one every time (D-103), so the label "Your MOA this window"
+  may become "Your MOA" (copy for Manoj).
 - Priority: P1.
 - Open: OQ-83.
 
@@ -1477,7 +1644,10 @@ no booking for it.**
   pay.
 - Rationale: `3c5f4fe`, `c0cae95`.
 - Status: built.
-- Open: OQ-25.
+- Open: OQ-25, OQ-88, OQ-89.
+- 3 Oct: the billing PRD has a longer claim lifecycle (BIL15 §6) and four eligibility results
+  (ELT-01). Map v2's words onto them; rename nothing without Daniel (B-005:60-65). Private-pay
+  invoicing is outside the PRD, so v2's private states stay (B-005:53-54).
 
 **REQ-BIL-03 · Claims is a top-level destination with a neutral count.**
 - Rationale: *"Claims are so important that i want that front and center"* (`27c18b3`); `74660d7`.
@@ -1495,7 +1665,9 @@ no booking for it.**
 - Status: partly built (only when the demo bill state is pending or none, V2b:7114). The claim is
   submitted inside Finalize, and nothing on the button says the bill is being signed off.
 - Priority: P1.
-- Open: OQ-51.
+- Open: OQ-51, OQ-87.
+- 3 Oct: the billing PRD's model is batch attestation (REQ-BIL-08) and one disposition per visit
+  (REQ-BIL-10). Whether Finalize keeps submitting is OQ-87.
 
 **REQ-BIL-06 · Add-On encounters reach Claims.**
 - Rationale: SCS:49.
@@ -1507,6 +1679,102 @@ no booking for it.**
   have no source. Claims optimisation "needs scoping" (SPEC:297-300).
 - Status: not specified.
 - Open: OQ-24.
+- 3 Oct: the billing PRD gives deadline behaviour (REQ-BIL-14) but no fee codes or amounts, which
+  stay unsourced (B-005:67-68).
+
+**From Simple Billing PRD v1.5 (BIL-08 to BIL-15).** Daniel's billing requirements of 1 Oct,
+forwarded 3 Oct (B-005; D-104). Only the behaviour the portals show is recorded here, cited by
+PRD ID. The PRD's commercial and organisational sections are confidential and stay out of the repo.
+
+**REQ-BIL-08 · Submitting a claim is the physician's personal attestation.**
+- Clean claims can be attested together in one action; a flagged claim needs a decision on that
+  claim. The physician attests personally, with MFA. Staff uploads and billing-staff actions never
+  count as attestation. A proposed change to a clinical field sends the claim back to the
+  physician.
+- Rationale: BIL15 CNF-09, CNF-10, CNF-12, COD-04. It is Daniel's *"To submit a bill is to 'sign
+  off' on your billing."* (ANS26:23; D-71; REQ-UI-06).
+- Accept: no claim is submitted without the physician's own attestation; the record shows who
+  attested and when.
+- Status: partly built. v2's billing actions read "Sign off & submit" per claim (REQ-UI-06), and
+  Finalize submits the claim (REQ-BIL-05). There is no batch attestation and no MFA step.
+- Priority: P1.
+- Open: OQ-87 (Finalize vs batch attestation), OQ-51.
+
+**REQ-BIL-09 · The AI review flags likely errors and missed codes, with a reason and confidence,
+and never changes a claim.**
+- Rationale: BIL15 COD-01 to COD-06. Flags above a configurable confidence threshold appear at
+  attestation (COD-03). The physician decides.
+- Accept: every flag shows its reason; accepting or rejecting it is the physician's press; the claim
+  is unchanged until he acts. Rule 18 applies.
+- Status: not built.
+- Priority: P2. `clinical-safety` and `ai-engineer` review it.
+
+**REQ-BIL-10 · Every completed billable visit ends with exactly one disposition.**
+- A submitted claim, intentionally not billed (with a reason), alternate payer, private pay,
+  bundled or non-billable, or a documented exception. A visit with no disposition creates an
+  exception.
+- Rationale: BIL15 CLM-01 to CLM-06. It sharpens "Leave no claim behind" (REQ-BIL-05; `11b0ecb`).
+- Accept: no completed visit is left with no disposition; the doctor can mark one "not billed"
+  with a reason at attestation (CLM-06).
+- Status: partly built. Finalize submits a pending claim (REQ-BIL-05); the other dispositions are
+  not modelled.
+- Priority: P2.
+
+**REQ-BIL-11 · An eligibility check returns a result with its next action.**
+- Eligible, not eligible, coverage ended (with the date) or demographic mismatch, each with what to
+  do next. It runs at the point of care, overnight against the next day's bookings, and when a
+  claim comes in. Out-of-province cards follow the reciprocal-billing workflow. An ineligible
+  result offers PHN correction, reciprocal billing, alternate payer or private pay.
+- Rationale: BIL15 ELT-01 to ELT-10, ELG-01 to ELG-04. The 5-second response is ELT-01's.
+- Accept: as ELT-01 and ELT-08. The result is stored with the visit and any claim (ELT-05).
+- Status: partly built. v2's health-card column has Verified, Check required, Invalid card and
+  Private pay, and a non-verified state opens its cause (REQ-BIL-02, REQ-ID-04). "Coverage ended"
+  and "demographic mismatch" are missing (B-005:63-65).
+- Priority: P2.
+- Open: OQ-89.
+
+**REQ-BIL-12 · The MOA may correct demographic and clerical fields only; clinical billing fields
+are the physician's.**
+- The MOA may correct the PHN, name, date of birth, sex and clerical fields. Only the physician
+  changes the fee item, diagnosis code, units, time, a fee-changing service location, or the
+  referring practitioner.
+- Rationale: BIL15 ROLE-R7, CTL-03, CNF-12.
+- Accept: in the MOA portal those clinical fields are read-only; a proposed change goes to the
+  physician as a question (REQ-BIL-13).
+- Status: not modelled (MOAP has no claim editing).
+- Priority: P2.
+
+**REQ-BIL-13 · A billing question for the physician (L3) comes with its context and one-tap
+answers, in one daily digest.**
+- Rationale: BIL15 §8, ESC-09, ESC-10, CNF-02. L3 items are due in 1 business day and escalate
+  if unanswered (B-005:42-44).
+- Accept: the question names the claim, the exact question and, where possible, one-tap answers.
+  Reminders are one digest a day, never one per claim.
+- Status: not built.
+- Priority: P2.
+- Open: OQ-90 (a digest in the physician portal).
+
+**REQ-BIL-14 · An unresolved claim raises deadline alerts at day 30, 60 and 75.**
+- Against the MSP submission deadline. Over-age and resubmission pathways are checked before a
+  claim counts as lost. Deadline rules are versioned.
+- Rationale: BIL15 SCR-06 to SCR-10. It gives a source to v2's unsourced "resubmit within the
+  window" (team board, training finding; B-005:67-68).
+- Accept: a rejected claim says how many days remain and which pathway is open, from the rule, not
+  invented text.
+- Status: partly built. v2 tells the doctor to "resubmit within the window" with no rule behind
+  it (V2d:5807). Fee codes and amounts stay unsourced (REQ-BIL-07).
+- Priority: P2.
+
+**REQ-BIL-15 · A refusal that looks correctly billed is flagged as a potential dispute, not
+changed; expected and estimated payments are labelled apart.**
+- The physician authorises substantive disputes. A claim under appeal can't be written off until
+  it is resolved or withdrawn. Expected and estimated payments are never shown as the same thing.
+  The physician's monthly statement shows billed, accepted, paid, adjusted, outstanding, refused,
+  under appeal and written off, each with reasons.
+- Rationale: BIL15 APL-01, APL-05, APL-07, REC-09, RPT-02.
+- Accept: a refused claim that matches the rules shows "Potential dispute" and is not edited.
+- Status: not built. v2's Claims has "Claim rejected" with resubmit actions (REQ-BIL-02).
+- Priority: P3.
 
 ---
 
@@ -1521,6 +1789,7 @@ no booking for it.**
 **REQ-ID-02 · DOB and PHN are on the chart and the source document, not on list rows.**
 - Rationale: MTG21:82; `236eed3`; V2:8445-8449.
 - Status: built.
+- 3 Oct: on the chart itself the PHN is masked (CV25 §3; REQ-CH-35).
 
 **REQ-ID-03 · Identity is the same on the queue, the chart and the documents.**
 - Rationale: DR:59-63.
@@ -1698,6 +1967,21 @@ draggable button showing the doctor's MOA.**
 - Priority: P2.
 - Open: OQ-83.
 
+**REQ-MP-07 · The MOA portal makes one MOA effective across several doctors, with AI help, for
+tasks, billing work and CRM.**
+- Each doctor has one primary MOA, the same one every time. Besides tasks and faxes, MOAs do billing
+  work and CRM. The MOA portal has to let one MOA carry several doctors' work well, with AI help.
+- Rationale: private strategy, 3 Oct 2026 (confidential); D-103. The billing work she may do is
+  bounded by REQ-BIL-12 (demographic and clerical fields only). AI help never acts for her or for a
+  doctor without a person's press (rule 18).
+- Accept: to be written when "CRM" is defined (OQ-93) and the MOA's day is walked through
+  (`moa` persona). From one screen she can see each paired doctor's open tasks, chat, document
+  exceptions (REQ-MP-06) and billing items.
+- Status: partly built. MOAP has tasks, referrals, callbacks, a fax inbox and a specialist
+  directory as a demo (REQ-MP-02). No per-doctor view, billing work, CRM or AI help.
+- Priority: P2.
+- Open: OQ-93, OQ-83.
+
 **REQ-MP-06 · The MOA's document queue holds exceptions only, critical signals first.**
 - The MOA handles what automation can't: confirming the patient, splitting a fax, fixing a label or
   the routing, a processing failure, and a misdirected fax (which starts the privacy protocol). It
@@ -1857,3 +2141,18 @@ draggable button showing the doctor's MOA.**
   - Updated: HQ-02 (Ani decided the pill), CH-13 (the yellow card), CH-23 (DOC21 labels), CH-29
     (OQ-86), CH-31 (care plan not the focus yet; OQ-81), IN-10, INT-01, INT-08 (the pathway
     registry), INT-10 (AI-21), INT-11 (ES3 screening; OQ-79) and MP-02.
+- 3 Oct 2026, seventh run (B-005, B-006 and the 3 Oct MOA model).
+  - 191 requirements (19 new); two superseded, one withdrawn.
+  - New: CH-34 to CH-42 (Chart View v2.5: the scan order, the snapshot with a masked PHN, the
+    this-visit strip before Finalize, Needs Attention with grouping and tiers, Today and Relevant
+    context, Since you last saw, Clinical threads, the visual rules, task-based acceptance);
+    IN-23 (CRITICAL ECG, ECG Critical v2.0); BIL-08 to BIL-15 (Simple Billing PRD v1.5, by ID:
+    attestation, AI review flags, one disposition, eligibility results, MOA field permissions, L3
+    questions and the digest, deadlines, disputes and payment labels); MP-07 (one MOA across
+    several doctors, with AI help, for tasks, billing and CRM).
+  - CH-33 is unblocked: its accept line is now written from CV25 (OQ-82 answered).
+  - Gaps against V2d named in CH-35 (full PHN, V2d:4809), CH-36 (no this-visit strip), CH-37 (the
+    separate yellow card; no stages or tiers), CH-38, CH-39 and CH-41 (many cards).
+  - Updated: HQ-12 (OQ-92), IN-14 (chart tiers), IN-15 (OQ-74 answered; the rule holds for
+    non-critical ECGs), TK-02 and TK-12 (one primary MOA), ID-02 (masked on the chart), BIL-02
+    (OQ-88, OQ-89), BIL-05 (OQ-87), BIL-07 (still no fee codes).
