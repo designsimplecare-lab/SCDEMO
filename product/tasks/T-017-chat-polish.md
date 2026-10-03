@@ -42,6 +42,7 @@ Evidence: QA-019, QA-021, QA-022, QA-023, QA-024 in `product/reports/patient-cha
 - `product/tests/patient-chat/README.md`
 - `research/patient-entry-flows/` (Ani's boards)
 - `product/training/bulletins/B-001-booking-pathways.md`
+- `product/training/bulletins/B-004-simplicity-intake-v2-3.md` (Intake v2.3; full text in `private/requirements/`)
 - Staging, for reference only: https://staging.simplecare.ca
 
 ## Output

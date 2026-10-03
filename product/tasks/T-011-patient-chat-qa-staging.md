@@ -49,3 +49,4 @@ Ani named staging as the test environment.
 - 2026-09-29: phase 1 done. 26 scenarios: 13 done (10 failed), 7 partly done, 2 blocked, 4 not run.
   Report: `product/reports/patient-chat-qa-2026-09-29-staging-run1.md`. The lead checked QA-001
   (emergency) against the screenshots, and it's confirmed.
+- 2026-10-03 — Intake v2.3 (B-004) arrived: map the PC suite to its AC-01–AC-33 and add a test case for each of its 8 Appendix A staging findings before phase 2.
