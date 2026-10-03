@@ -16,6 +16,7 @@ here. Demo patients are described by their role in the demo, never by name.
 | BOOK29 | `from-daniel/2026-09-29-booking-pathways.md` (Daniel's booking model, 29 Sep 2026) |
 | B-001 | `product/training/bulletins/B-001-booking-pathways.md` (the team bulletin on BOOK29) |
 | QA29 | `product/reports/patient-chat-qa-2026-09-29-SUMMARY.md` (patient chat QA on staging, run 1; full report `patient-chat-qa-2026-09-29-staging-run1.md`) |
+| QA03 | `product/reports/patient-chat-qa-2026-10-03-probe.md` (patient chat QA on staging, Intake v2.3 probe, 3 Oct 2026) |
 | MOA30 | `from-daniel/2026-09-30-moa-pairing-and-bus-ads.md` §1 (chat pairing, 30 Sep 2026). Its bus-ad section holds no product decision, and the contract terms are confidential |
 | ECG30 | `from-daniel/2026-09-30-ecg-and-result-flags.md` (Daniel's ECG and result-flag recording, 30 Sep 2026) |
 | CHART30 | `from-daniel/2026-09-30-chart-workflow.md` (Daniel's chart-workflow recording, 30 Sep 2026) |
