@@ -8,6 +8,11 @@ the start of every task, and adds its own entries under "From QA".
 Newest first. Each entry: the date, what changed, where the source is, and what QA should do.
 
 ## From the lead
+- **3 Oct 2026: Simple Billing PRD v1.5 arrived** (Daniel, 1 Oct).
+  - **Summary:** B-005. The full text is in `private/requirements/`. Its commercial and
+    organisational sections are confidential: never quote them.
+  - **For QA:** when you test v2 billing, check against B-005 (the attestation, claim-state and
+    eligibility results). The gap report is task T-022 (`billing-msp`); don't run it unless Ani asks.
 - **3 Oct 2026: spec documents updated** (product-manager).
   - **What changed:** decisions D-93 to D-102, requirements to 172, use cases to 33 (UC-31 to UC-33
     new), open questions to 86.
