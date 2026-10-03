@@ -8,6 +8,14 @@ the start of every task, and adds its own entries under "From QA".
 Newest first. Each entry: the date, what changed, where the source is, and what QA should do.
 
 ## From the lead
+- **3 Oct 2026: spec documents updated** (product-manager).
+  - **What changed:** decisions D-93 to D-102, requirements to 172, use cases to 33 (UC-31 to UC-33
+    new), open questions to 86.
+  - **For QA:**
+    - INT-12 to INT-21 cover the Simplicity intake, emergency acknowledgement, hard stop, chat order,
+      minimal intake, the 1–2 line summary and excluded medicines;
+    - IN-14 to IN-22 cover the result flags and Inbox routing;
+    - the open questions are OQ-74 to OQ-86. OQ-79 (safety-screening depth) is the one to watch.
 - **3 Oct 2026: QA thread opened.** Starting state:
   - **Requirements to test against:**
     - B-004, Simplicity Intake v2.3 (AC-01 to AC-33, plus the 8 Appendix A staging findings);

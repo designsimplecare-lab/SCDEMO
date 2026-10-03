@@ -16,6 +16,16 @@ here. Demo patients are described by their role in the demo, never by name.
 | BOOK29 | `from-daniel/2026-09-29-booking-pathways.md` (Daniel's booking model, 29 Sep 2026) |
 | B-001 | `product/training/bulletins/B-001-booking-pathways.md` (the team bulletin on BOOK29) |
 | QA29 | `product/reports/patient-chat-qa-2026-09-29-SUMMARY.md` (patient chat QA on staging, run 1; full report `patient-chat-qa-2026-09-29-staging-run1.md`) |
+| MOA30 | `from-daniel/2026-09-30-moa-pairing-and-bus-ads.md` §1 (chat pairing, 30 Sep 2026). Its bus-ad section holds no product decision, and the contract terms are confidential |
+| ECG30 | `from-daniel/2026-09-30-ecg-and-result-flags.md` (Daniel's ECG and result-flag recording, 30 Sep 2026) |
+| CHART30 | `from-daniel/2026-09-30-chart-workflow.md` (Daniel's chart-workflow recording, 30 Sep 2026) |
+| B-002, B-003, B-004 | `product/training/bulletins/`: B-002 chat 1:1 with the paired MOA; B-003 the three requirement documents; B-004 Intake v2.3 |
+| IB7 | AI Clinical Intake & Booking Requirements v7.0 (plain language), cited by section (`IB7 §10`) |
+| ES3 | AI Emergency Safeguards Framework v3.0, a draft awaiting physician approval, cited by section |
+| DOC21 | Clinical Document Ingestion, Labelling, Filing & Physician Routing v2.1 (dated 1 Oct 2026), cited by section |
+| IN23 | Simplicity AI Intake & Booking Requirements v2.3 (2 Oct 2026), cited by section or its own IDs (AI-nn, ENG-nn, QS-nn, AC-nn). It wins over IB7 for the chat (D-102) |
+| | IB7, ES3, DOC21 and IN23 are in `private/requirements/` (git-ignored). The repo is public, so they are summarised, never pasted |
+| SCDS | "SC – Design System" in Figma, https://www.figma.com/design/XoYpGAbbNZUHkKwWDT56g3/SC---Design-System (Ani, 30 Sep 2026; handbook rule E) |
 | S1 | `shadowing/2026-09-25-rx-renewal-by-fax.md` (shadowing 1) |
 | S2 | `shadowing/2026-09-25-medication-follow-up-mri.md` (shadowing 2) |
 | S3 | `shadowing/2026-09-25-recurrent-hernia.md` (shadowing 3) |
@@ -31,6 +41,7 @@ here. Demo patients are described by their role in the demo, never by name.
 | V2 | `simplecare-physician-portal-v2.html`, build 2026-09-25 12:45 (line numbers as `V2:5397`) |
 | V2b | the same file, build 2026-09-25 13:10, commit `d2a2823` (line numbers as `V2b:10182`) |
 | V2c | the same file, build 2026-09-30 10:33, commit `b8331e5` (line numbers as `V2c:6262`). It includes `c1015e4`, the 26 Sep build from ANS26 |
+| V2d | the same file, build 2026-09-30 20:05, commit `cf6207c` (line numbers as `V2d:8181`) |
 | MOAP | `simplecare-moa-portal.html` |
 | PP | `simplecare-patient-portal-v2.html` |
 | `abc1234` | a git commit; its message quotes the decision |
@@ -63,22 +74,26 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     - each row reads the patient's name, the test and the value, nothing more;
     - there are no task rows: *"I eliminated the extra stuff that isn't needed - crossed off"*
       (HOME29:17, 23-32; D-85).
-  - Let the doctor move the messenger and the AI panels (HOME29:19-21), and reach chat from the
-    left nav (D-86).
-- **Status:** partly built (V2c).
-  - Built: Home (`screen-today`), the windows and the greeting (V2c:5547).
-  - Since 30 Sep the time has its own pill before the theme button (`b8331e5`; D-92). It is at
-    the other end of the top bar from the greeting, so not yet beside it (OQ-71).
-  - Not built to Daniel's new rules:
-    - the list is critical only (V2c:6274);
-    - result rows still carry the range, concern, flag and source (V2c:6299-6303);
-    - task rows still show (V2c:6177-6188);
-    - the panels are fixed (V2c:508, 3827);
-    - chat has no nav item.
-  - T-008 and T-009 (Manoj) are building these now.
-  - Still open from DR:29-40: the zones are unlabelled, and "Live queue 6" sits above 8 rows.
+  - Let the doctor move the messenger and the AI panels (HOME29:19-21).
+  - From Ani, 30 Sep: the SimpleCare Assistant opens from the top bar, and the MOA chat is a
+    floating, draggable button showing the doctor's one MOA (HOME29:44-46; D-94). This replaces
+    chat in the left nav (D-86). The sidebar is open by default (HOME29:47-48; D-95).
+  - Keep yellow (abnormal) results off Home; they belong on the chart and in the Inbox
+    (ECG30:71-72).
+  - The Home redesign on SC – Design System is T-020 (Manoj; D-100).
+- **Status:** partly built (V2d).
+  - Built: Home (`screen-today`), the windows and the greeting.
+  - Built on 30 Sep (`2a96f07`): Critical and High only; rows of name, test and value
+    (`renderCriticals` V2d:6450-6500); no task rows (V2d:6420-6428); movable panels
+    (`pdMovable` V2d:11119).
+  - Built on 30 Sep (`c070791`, `41ed729`): the Assistant in the top bar (V2d:4461-4462), the
+    floating MOA chat (V2d:5577-5581, 11187-11188) and the open sidebar (V2d:8433-8439).
+  - The time has its own pill before the theme button (`b8331e5`; D-92), which Ani recorded as
+    decided (HOME29:43). It is not beside the greeting, so Daniel should be told (OQ-71).
+  - Still open from DR:29-40: the zones are unlabelled, and "Live queue 6" sits above 8 rows. T-020
+    found the floating chat covering the last visible row.
 - **Sources:** MTG21:10-13, 64-74; SIA:6, 22; IA:44-53; SPEC:30-45; `1518976`, `392eccb`, `d2a2823`,
-  `b8331e5`; DR:27-53, 218; ANS27:7-11; HOME29 (all).
+  `b8331e5`, `2a96f07`, `c070791`; DR:27-53, 218; ANS27:7-11; HOME29 (all); ECG30:71-72; T-020.
 
 ### UC-02 Work the live queue across call windows
 
@@ -362,8 +377,14 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   "Finalize today's visit" (V2b:4618), so it no longer promises a billing review. See D-65. Still
   missing against D-71: the claim is submitted inside Finalize and the button does not say it signs
   off the bill (V2b:7114).
+- **30 Sep, in v2 itself (CHART30):** reviewing the v2 chart, Daniel couldn't find the note box:
+  *"So, where's where's my note? So, I'm um, I'm confused."* *"where am I charting?"*
+  (CHART30:11-12). It sat below "Since last visit", the last-note button and the scribe bar
+  (CHART30:14-15). What he wants is *"an AI workflow"*: while he talks to the patient the note forms,
+  and *"At the end of it, the chart's done."* (CHART30:26-31; D-99, REQ-CH-33). He is writing a
+  requirements document; until then the chart is not redesigned (OQ-82; T-021 Blocked).
 - **Sources:** S2:21-26, 51-53; S3:63-66, 104-108; S4:66-67; S5:37-46, 66-68, 71-74; SIA:40;
-  `632998a`, `d2a2823`; DR:87-93, 213-217; ANS26:17-25.
+  `632998a`, `d2a2823`; DR:87-93, 213-217; ANS26:17-25; CHART30.
 
 ### UC-10 Hand work to the MOA and know it was picked up
 
@@ -386,6 +407,8 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     responsibility."* (ANS27:14-15; D-79). See UC-30.
   - It is an equal choice to sending it himself (ANS26:8-9; D-72, REQ-RX-10).
   - What "picked up" means for an MOA task is still OQ-41.
+  - Quick questions go by chat, which is separate from tasks: one conversation with his paired MOA
+    (UC-31; D-93).
 - **Status:** partly built. Task MOA from the chart banner, the row hover and review (`sendTaskMoa`
   V2b:7599). Build 13:10: one task function for the dialog and the renewal card, with due set from
   priority (`moaTask` V2b:10102). The renewal hand-off shows "Sent to <MOA> · waiting", then "Picked
@@ -434,8 +457,12 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   Accept & assign; which is primary is OQ-11. A critical or high result not yet signed off sits at
   the top of that patient's chart, with "Review result" and "Also in today" (`renderChartAlerts`
   V2b:10237). This closes the gap DR:147-151 called "the biggest risk I found".
+- **30 Sep:** Daniel confirmed the critical troponin card: *"this is a critical result.
+  Absolutely, it is perfect."* (ECG30:48-49). High now carries an exclamation mark as well
+  (REQ-IN-14). An abnormal result that is neither gets its own yellow card underneath (UC-32).
+  Which ECG findings are critical is his to define (OQ-74).
 - **Sources:** `2094417`, `aa1e8b8`, `392eccb`, `e270f7c`, `f241a4b`, `d2a2823`; DR:138-153,
-  195-199.
+  195-199; ECG30.
 
 ### UC-13 Clear routine results and sign off
 
@@ -549,7 +576,10 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   moment it came from (`1b201eb`, V2:1656, V2:7157).
 - **Status:** built as a demo inside "This visit" (`1b201eb`). DR:148-151: for the demo's
   critical-troponin patient, the scribe drafts "stable angina" because the chart lacks the result.
-- **Sources:** SIA:40, 62; `1b201eb`; DR:147-151; S5:37-46.
+- **30 Sep:** Daniel wants the AI to take him through the chart during the call (CHART30:26-31;
+  D-99). That makes the scribe part of the chart's workflow rather than an add-on; how is in his
+  requirements document (OQ-82, OQ-31; REQ-CH-33).
+- **Sources:** SIA:40, 62; `1b201eb`; DR:147-151; S5:37-46; CHART30:26-38.
 
 ### UC-20 Go off service
 
@@ -698,6 +728,55 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     a readings trend (REQ-CH-32).
 - **Sources:** S5 (all); V2b and PP as cited; ANS26:42-60.
 
+### UC-31 Message my MOA during the call window
+
+- **Actor:** physician (and the paired MOA).
+- **Trigger:** the doctor needs a quick word with the MOA: is a fax through, can a patient be
+  rebooked, he is running late.
+- **Today (evidence):**
+  - Daniel doesn't use in-app MOA chat; he uses Google Meet, because "70% of the time"
+    coordination is complicated (SIA:38).
+  - v2 had a list of threads with several MOAs and Office Admin (B-002:18-19).
+  - Daniel, 30 Sep: *"1 MOA, with the proper tools, can be paired with x 5 docs."* *"on our system -
+    it shows to the Docs 1:1 pairing."* *"What we don't want is what [a competitor] does - Doctor
+    submits a ticket in a queue"* (MOA30:10-13).
+- **v2 should:**
+  - Open straight into one conversation with the MOA paired with him for this window, named, with
+    her picture and status (D-93, D-94; REQ-TK-12, REQ-UI-09).
+  - Offer quick-message chips that fill the box and never send by themselves (REQ-TK-13).
+  - Never offer a recipient picker or a queue. Tasks stay separate and one-way (REQ-TK-01).
+  - On the MOA's side: one conversation per paired doctor, up to 5 (REQ-MP-05).
+  - When the pairing changes between windows, name the new MOA. What carries over is OQ-83.
+- **Status:** partly built.
+  - Physician side built (`fcdb13d`, `c070791`, `41ed729`, `3f11454`): the floating chat button
+    with the MOA's picture and status (V2d:5577-5581), one conversation (V2d:8502-8510) and
+    suggestions (V2d:8599-8623). Presence is demo data.
+  - MOA side not built: MOAP's Chatbox button only shows a toast (MOAP:270, 454).
+- **Sources:** SIA:38; MOA30:7-21; B-002; HOME29:44-46; `fcdb13d`, `c070791`; T-019.
+
+### UC-32 Look at an abnormal result and clear it
+
+- **Actor:** physician.
+- **Trigger:** a result is abnormal but neither Critical nor High: a value outside its range, or an
+  ECG the machine reads as abnormal.
+- **Today (evidence), in v2 (ECG30):**
+  - The abnormal ECG was folded into an "Also in today" line that repeated the machine's reading.
+    Daniel: *"this should be like boom and then boom"*, a card *"equivalent to this card"*
+    (ECG30:5-6, 11-13).
+  - *"I would just say abnormal ECG, right? Because you wouldn't want to bias the doctor."*
+    (ECG30:18).
+  - On CK's yellow "High": *"did the doctor like clear this or what do we do?"* (ECG30:44-46).
+- **v2 should:**
+  - Show the abnormal result as its own yellow card under any critical one, with "Review result"
+    (D-96; REQ-IN-14).
+  - Say only "Abnormal ECG" outside the tracing (D-97; REQ-IN-15).
+  - Mark every flagged value "Not cleared" or "Cleared" (D-98; REQ-IN-16).
+  - Keep it off Home (ECG30:71-72).
+  - Turn a critical ECG red, naming the finding, once Daniel's list exists (OQ-74).
+- **Status:** built as a demo (`cf6207c`; V2d:8181-8191, 10653-10668, 10992-11010). "Cleared"
+  means signed off in the demo, which is not settled (OQ-75). `clinical-safety` reviews the change.
+- **Sources:** ECG30 (all); `cf6207c`.
+
 ---
 
 ## MOA
@@ -727,7 +806,34 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   inbox (S3:93-97).
 - **Status:** partly built. MOAP has a referral pipeline, imaging, callbacks, a fax inbox and a
   specialist directory (`a0d31ca`, MOAP:214, 463). Linking an email to a plan item is not built.
-- **Sources:** SIA:34; S3:54-57, 78-80, 93-97; `a0d31ca`.
+- **30 Sep:** for faxes, DOC21 narrows her queue to exceptions: confirming the patient, splitting,
+  labels, routing and misdirected faxes, with critical signals first (DOC21 §10; REQ-MP-06; UC-33).
+- **Sources:** SIA:34; S3:54-57, 78-80, 93-97; `a0d31ca`; DOC21 §10.
+
+### UC-33 An outside document arrives by fax and reaches the right chart and doctor
+
+- **Actor:** the system first; then the MOA for exceptions, and the physician who reviews.
+- **Trigger:** a lab, imaging, consult or hospital report is faxed to a doctor's number or the
+  clinic's.
+- **Today (evidence):**
+  - Daniel: *"it is madness that I am opening up raw pdf's to find out what the f\*\*\* is going
+    on."* (ANS26:50). S4 shows PDFs opened one at a time with generic names (S4:40-56).
+  - The MOA portal has a fax inbox for unmatched documents (MOAP; REQ-MP-02).
+- **v2 should (DOC21, 30 Sep):**
+  - Turn each fax into identified, labelled documents filed in the right chart section, with the
+    original kept (DOC21 §2-§5).
+  - Match the patient and route to the doctor as separate decisions; never attach on an identity
+    conflict; the receiving number is a routing signal, not an identity (DOC21 §7, §8).
+  - Give the doctor a chart-linked Inbox item, never a raw fax (REQ-IN-17).
+  - Let the attention protocol, not routing, decide what reaches Home; hand on a critical signal
+    before the match finishes (REQ-IN-18).
+  - Reopen an updated lab or imaging report as "Updated" (REQ-IN-21); escalate an item past its
+    review time limit (REQ-IN-20); list overdue orders (REQ-IN-22).
+  - Send only exceptions to the MOA, critical first (REQ-MP-06).
+- **Status:** not built. v2's Inbox items are demo results already matched to a patient. Open:
+  OQ-76 (level names), OQ-78 (companion documents), OQ-85 (time limits), OQ-86 (automatic MOA
+  task).
+- **Sources:** DOC21 §1-§16; B-003 §3; ANS26:50; S4:40-56; MOAP.
 
 ---
 
@@ -807,6 +913,20 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     phone line, and possibly WhatsApp or text (OQ-72).
   - Hold the chosen window before any account step (T-014; OQ-73).
   - Check for an emergency first (UC-29).
+- **From SimpleCare's own specs (IB7, 30 Sep; IN23, 2 Oct, which wins for the chat):**
+  - The chat opens with the emergency acknowledgement, once (IN23 §5, AC-24; REQ-INT-16).
+  - Concern first, by free text or a Fast-Track card, never both; a card goes straight to booking
+    (IB7 §10; IN23 AI-22; REQ-INT-12).
+  - Care intent is inferred, with Quick Care / Family Doctor cards only when unclear (IN23 §7;
+    REQ-INT-18). The "Hello" menu is OQ-80.
+  - Sign-in is invited after that and before the scheduler; skipping costs nothing (IN23 §6).
+  - A few pathway questions, then the scheduler (IN23 AI-04, §18; REQ-INT-19).
+  - The Family Doctor is the default; doctors seen before are marked "Seen before"; cover never
+    changes attachment (IB7 §5-§9; IN23 AI-20; REQ-INT-13, REQ-INT-14).
+  - A request for a medicine on the excluded list is declined, with no booking for it (IN23 §17;
+    REQ-INT-21).
+  - On staging (2 Oct), eight failures against these rules: a generic script instead of Rx
+    Renewal, the scheduler before intake, sign-in after the window, and others (B-004 Appendix A).
 - **Status:** partly built.
   - The fork is built in PP and the landing flow (SCS:21-29). Trusted Person is parked (SCS:27).
   - The two depths, the pathways and the held window are not in the prototypes. Manoj is
@@ -814,7 +934,7 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - The physician-side end (marking the patient as continuing with the doctor) is not built
     (REQ-ID-06).
 - **Sources:** SIA:12-18; HUX:7-12; SCS:19-29; S5:30-32, 90-92, 149-152; BOOK29 (all); B-001;
-  QA29:12-16; T-014.
+  QA29:12-16; T-014; B-003; B-004; IB7 §2-§20; IN23 as cited.
 
 ### UC-25 Follow my results and tests
 
@@ -854,7 +974,9 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - A triage-first concern still gets triage without the AI. Its form, and who writes it, is OQ-68.
 - **Status:** partly built. The tile path is in production. There is no non-AI triage. The
   prototypes don't model it; T-015 (Manoj) is designing it.
-- **Sources:** BOOK29:21-29, 54-55; B-001; QA29:13; T-015.
+- **2 Oct:** if the AI is down, the service cards and a non-AI direct-booking path stay available
+  (IN23 AI-21, AC-27). A card never routes through the AI chat (IB7 §10).
+- **Sources:** BOOK29:21-29, 54-55; B-001; QA29:13; T-015; IN23 AI-21; IB7 §10.
 
 ### UC-29 A patient describes an emergency while booking
 
@@ -873,7 +995,16 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     Manoj's; Ani approves (rule 17a; OQ-69).
 - **Status:** not built. It fails on staging (QA29:12). T-012 (Manoj) is designing it, gated by
   `clinical-safety`.
-- **Sources:** BOOK29:31-34; QA29:12, 22-23; rule 17a; T-012.
+- **From ES3 (draft, 30 Sep) and IN23 (2 Oct):**
+  - Before anything, the patient accepts that Simplicity is not for emergencies (IN23 §5;
+    REQ-INT-16).
+  - On a hard stop: intake stops; no doctors or windows; the approved message for that domain
+    first, with the number for where the patient is now; the state persists, and "I'd rather not go"
+    never lowers it (ES3 §7, §10; REQ-INT-17). A staffed clinic is alerted (ES3 §14).
+  - ES3 screens every message and asks up to about three safety questions; IN23 is reactive, with
+    one at most. Which governs is OQ-79. ES3's list and messages still need physician approval
+    (OQ-69).
+- **Sources:** BOOK29:31-34; QA29:12, 22-23; rule 17a; T-012; ES3 §3-§16; IN23 §5, §17.
 
 ---
 
@@ -961,3 +1092,17 @@ cannot be judged from that recording.
     patient immediately), UC-05 (the other-platforms question withdrawn), UC-06 (status re-read
     from `c1015e4`; the delegated route still treats Japneet as the MOA), UC-07 and UC-10 (Japneet
     is the PA, not an MOA), UC-11 (tasks off the attention list) and UC-27.
+- 3 Oct 2026, sixth run (the 30 Sep inputs, plus Intake v2.3 of 2 Oct). Added MOA30, ECG30,
+  CHART30, B-002 to B-004, IB7, ES3, DOC21, IN23, SCDS and V2d (build 2026-09-30 20:05, `cf6207c`)
+  to the source key. 33 use cases (3 new).
+  - New: UC-31 (message my MOA: one conversation with the paired MOA; physician side built),
+    UC-32 (look at an abnormal result and clear it; built as a demo) and UC-33 (an outside document
+    arrives by fax; not built), in the MOA section.
+  - UC-01 re-read against V2d: the trimmed attention list, movable panels, the Assistant in the top
+    bar, the floating MOA chat and the open sidebar are built. Chat in the left nav is superseded
+    (D-94). It stays partly built (the time is not beside the greeting; zone labels; the count).
+  - Updated: UC-09 and UC-19 ("where am I charting?"; the AI workflow; T-021 blocked), UC-10 (chat
+    is separate from tasks), UC-12 (the critical card confirmed; flag levels), UC-22 (DOC21's
+    exception queue), UC-24 (IB7 and IN23: acknowledgement, cards, sign-in timing, minimal intake,
+    relationships, excluded medicines, the 2 Oct staging failures), UC-28 (AI-21) and UC-29 (the
+    hard stop from ES3; OQ-79).

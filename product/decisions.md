@@ -441,6 +441,8 @@ with Ani approving (D-91).
 - **Quote:** "Set default view — navigation menu collapsed by default."
 - **Replaced:** the sidebar expanded by default (`7591b2d`, 3 Aug).
 - **Source:** MTG21:23; `8546d30`.
+- **Reversed (30 Sep):** Ani set the sidebar open by default; a doctor's own choice is still
+  remembered (D-95).
 
 ### D-50 · 22 Sep 2026 · One colour per status; greens quieter
 - **By:** Daniel.
@@ -526,7 +528,8 @@ with Ani approving (D-91).
   - Tags are medium weight with softer tints (`afd50dd`: *"these tag texts are very bold"*).
   - One tag spec (`57ee981`: *"why do these 3 have different font sizes"*).
   - The chat docks to the bottom (`afd50dd`). This replaced the top-bar dropdown from `dc4bd73`.
-    **Replaced (29-30 Sep):** the chat becomes a movable panel and a left-nav item (D-86).
+    **Replaced (29-30 Sep):** the chat becomes a movable panel and a left-nav item (D-86), then
+    a floating, draggable button for the doctor's one MOA (D-94).
   - Reading text is capped at 66ch (`affc632`).
   - The inbox source sits under the name (`535ad1a`).
 
@@ -860,6 +863,11 @@ with Ani approving (D-91).
 - **Note:** not built. The AI panel is fixed at the bottom right (V2c:508), and the chat panel is
   fixed too (V2c:3827, 3872). T-008 and T-009 (Manoj) are building it.
 - **Source:** HOME29:19-21, 33-40; T-009 on the task board.
+- **Reversed in part (30 Sep):**
+  - The movable panels stand. They were built in `2a96f07` (`pdMovable` V2d:11119).
+  - Chat in the left nav was built at 10:50 (`2a96f07`) and removed at 10:58, when chat went back
+    to the top bar (`6553b88`; HOME29:44). At 13:37 Ani swapped them: the Assistant is in the top
+    bar and the MOA chat is the floating button (`c070791`; D-94).
 
 ### D-87 · 29 Sep 2026 · Booking is open to every concern that is not an emergency
 - **Decided:**
@@ -943,7 +951,176 @@ with Ani approving (D-91).
 - **Replaced:** D-58's time inside the profile pill (D-58 had itself replaced a separate pill).
 - **Conflict:** Daniel asked for the time next to the greeting (D-84), which is at the other end of
   the top bar. See OQ-71.
-- **Source:** `b8331e5`; V2c:4232-4245, 4291-4293.
+- **Source:** `b8331e5`; V2c:4232-4245, 4291-4293. Ani recorded it as decided in HOME29:43
+  ("The time is in its own pill, before the theme button"; `077a066`).
+
+### D-93 · 30 Sep 2026 · Chat is 1:1 with the doctor's paired MOA, never a ticket queue
+- **Decided:**
+  - The doctor chats with one named person: the MOA paired with them for this call window.
+  - One MOA can support up to 5 doctors; a doctor has one MOA. The doctor sees only their person.
+  - The pairing can change between call windows.
+  - A doctor never files a request into a shared queue. Tasks are unchanged (doctor → MOA, D-21).
+- **By:** Daniel (the pairing). Ani (one-way round: "a doctor has just one MOA", B-002:11).
+- **Quote:** *"1 MOA, with the proper tools, can be paired with x 5 docs."* *"that said - on our
+  system - it shows to the Docs 1:1 pairing."* *"What we don't want is what [a competitor] does -
+  Doctor submits a ticket in a queue"*.
+- **Replaced:** the v2 chat panel's list of threads (several MOAs plus Office Admin), and any
+  design where the doctor picks a recipient (B-002:17-21). Rule 12a in the handbook.
+- **Built (physician side):** the floating chat opens straight into one conversation, "Your MOA
+  this window", with no thread list (`fcdb13d`; V2d:8502-8510). Quick-question chips fill the box
+  and never send by themselves (V2d:8599-8622; B-002:26-29). The MOA portal side (a conversation
+  per doctor, up to 5) is not built.
+- **Open:** OQ-83 (what carries over when the pairing changes).
+- **Source:** MOA30:7-21; B-002; `27fec4b`, `fcdb13d`. The bus-ad part of MOA30 holds no product
+  decision, and its contract terms are confidential (rule 9c).
+
+### D-94 · 30 Sep 2026 · The Assistant in the top bar; the MOA chat a floating, draggable button
+- **Decided:**
+  - The SimpleCare Assistant opens from a top-bar button.
+  - The MOA chat is the floating button: the doctor's one MOA, with her picture and status. It opens
+    a movable panel with one conversation and suggestions.
+  - The button can be dragged anywhere and remembers its spot; a double-click resets it, and a drag
+    never opens it (`41ed729`).
+- **By:** Ani.
+- **Quote:** *"the **SimpleCare Assistant** is in the top bar, and the **MOA chat is the floating
+  button** (the doctor's one MOA, with her picture and status)"* (HOME29:44-46).
+- **Replaced:**
+  - D-86's chat in the left nav, and REQ-UI-08 (superseded).
+  - Chat back in the top bar, earlier the same day (`6553b88`).
+  - The floating Assistant launcher, now retired (V2d:4370-4371). D-09's "floating assistant stays"
+    no longer holds; the Assistant is still not a nav item.
+- **Built:** `c070791`, `41ed729`, `c3ca401`, `3f11454`; V2d:4461-4462, 5577-5581, 11187-11188.
+- **Source:** HOME29:42-46; `0749c33`.
+
+### D-95 · 30 Sep 2026 · The sidebar is open by default
+- **Decided:** the navigation is open on a first visit. A doctor who closes it finds it closed next
+  time.
+- **By:** Ani.
+- **Quote:** *"The **sidebar is open by default**. This replaces Daniel's 21 Sep collapsed default,
+  and a doctor's own choice is still remembered."* (HOME29:47-48).
+- **Replaced:** D-49 (collapsed by default) and REQ-HQ-13 (superseded by REQ-HQ-18). Daniel's
+  21 Sep words were the spec, so he should hear of the change (OQ-71 batch note).
+- **Built:** `c070791`; `initSidebarCollapse` V2d:8433-8439.
+- **Source:** HOME29:47-48; `0749c33`.
+
+### D-96 · 30 Sep 2026 · Three flag levels: Critical, High, and a yellow abnormal the doctor clears
+- **Decided:**
+  - Critical is red: *"this is very wrong … You've got to do something."*
+  - High carries an exclamation mark too, as almost the same category.
+  - Anything else outside the reference range is yellow, and the doctor has to look at it and clear
+    it.
+- **By:** Daniel.
+- **Quote:** *"critical and high, I would even argue, is like almost the same category … both of
+  them should be with an exclamation mark at least"*; *"yellow is fine as abnormal, like unless it's
+  critical."*; *"all it means is that the doctor has to look at it and clear it."* (ECG30:32-42).
+- **Replaced:** nothing reversed. It adds the exclamation mark to High (REQ-IN-10 had colour only)
+  and gives yellow results a clear step. He confirmed the critical troponin card as built: *"it is
+  perfect."* (ECG30:48-49). Yellow results stay off Home (ECG30:71-72; D-78).
+- **Built:** `cf6207c`; `rsVal` V2d:10992-11001; `resultIsAbnormal` V2d:8186-8191.
+- **Source:** ECG30:32-49.
+
+### D-97 · 30 Sep 2026 · An abnormal ECG gets its own card that says only "Abnormal ECG"
+- **Decided:**
+  - An abnormal ECG is a card of its own, like the critical card, right under it.
+  - Everywhere except the tracing it reads "Abnormal ECG". The ECG machine's reading stays on the
+    source document and is not repeated, so it doesn't bias the doctor.
+  - SimpleCare will have its own protocol for which ECG findings are critical. Until it exists, an
+    abnormal ECG shows as yellow.
+- **By:** Daniel.
+- **Quote:** *"But that would be a card that is equivalent to this card, right?"* *"I would just say
+  abnormal ECG, right? Because you wouldn't want to bias the doctor."* *"I know I haven't clarified
+  what constitutes critical as far as ECG. Are concerned. … I'll get that done."* (ECG30:11-30).
+- **Replaced:** the chart's "Also in today" line, which carried the machine's interpretation
+  (ECG30:5-6, 52-54).
+- **Built:** `cf6207c`; `traceFlag` V2d:8181-8185, used on the chart card (V2d:10653-10668), the
+  Inbox row (V2d:8233), the review (V2d:9086, 9128) and "Also in today" (V2d:10687).
+- **Open:** OQ-74 (which ECG findings are critical). Partly answers OQ-12.
+- **Source:** ECG30:10-30, 51-63.
+
+### D-98 · 30 Sep 2026 · Every flagged result shows whether it is cleared
+- **Decided:** a flagged value shows "Not cleared" (opening the result) or "Cleared".
+- **By:** Daniel asked; the demo meaning ("cleared" = its result is signed off) is the build's,
+  not his.
+- **Quote:** *"See the little yellow s\*\*\* here you got going on? That's good. But, you know, did
+  the doctor like clear this or what do we do?"* (ECG30:44-46).
+- **Replaced:** nothing.
+- **Built:** `cf6207c`; `rsClear` V2d:11003-11010.
+- **Open:** OQ-75 (is clearing the same act as signing off?).
+- **Source:** ECG30:44-46, 57-58, 64-65.
+
+### D-99 · 30 Sep 2026 · The chart needs an AI workflow that gets it done during the call
+- **Decided:**
+  - The goal is a workflow, not a nicer layout: while he talks to the patient, the AI turns the
+    conversation into the note step by step, and at the end the chart is done.
+  - How the completed chart displays comes after.
+  - The full care plan is comprehensive care and not the focus yet.
+  - Daniel will send a requirements document for the chart. The chart is not redesigned until it
+    arrives; v2 is the base to branch from.
+- **By:** Daniel.
+- **Quote:** *"where am I charting?"* *"I'm more interested in an AI workflow, which is to say, how
+  do I get through the chart, right?"* *"At the end of it, the chart's done."* *"I'll give a
+  requirements document on the chart itself."* *"this is more comprehensive care, so don't worry
+  about that just yet."* (CHART30:11-38).
+- **Replaced:** nothing. It frames D-22 (the scribe proposes and never files), which still holds.
+  The doctor always signs (rule 18).
+- **Open:** OQ-81 ("Chase their office"), OQ-82 (the requirements document), OQ-31.
+- **Source:** CHART30 (all); T-021 (Blocked).
+
+### D-100 · 30 Sep 2026 · The design system is "SC – Design System" in Figma
+- **Decided:** new design work uses only that library: its components, Mapped variables (Light and
+  Dark), Lato text styles and Elevation styles. v2 moves to it after the Home redesign (T-020).
+- **By:** Ani.
+- **Quote:** handbook rule E: *"Ani, 30 Sep 2026: new design work uses only its components, Mapped
+  variables (Light and Dark), Lato text styles and Elevation styles."*
+  (https://www.figma.com/design/XoYpGAbbNZUHkKwWDT56g3/SC---Design-System).
+- **Replaced:** `simplecare-design-system.html` (SimpleCare Paper) as the reference, and v2's
+  bright blue #4353E8 and system font as the target. The primary colour becomes navy #2C438A.
+  The rules in handbook section E still apply on top.
+- **Source:** `813fd68`; `product/handbook/01-rules.md` §E; T-020.
+
+### D-101 · 30 Sep 2026 · Three SimpleCare requirement documents become sources
+- **Decided:** three documents are sources for the spec. The full text is git-ignored; they are
+  cited by title, version and section:
+  - AI Clinical Intake & Booking Requirements v7.0 (IB7).
+  - AI Emergency Safeguards Framework v3.0, a draft awaiting approval by a designated SimpleCare
+    physician (ES3).
+  - Clinical Document Ingestion, Labelling, Filing & Physician Routing v2.1 (DOC21). The document
+    itself is dated 1 Oct 2026.
+- **What they settle for the prototypes:**
+  - Fast-Track cards go straight to booking; AI navigation and clinical intake are separate (IB7
+    §2, §10).
+  - The assigned Family Doctor is the default; "Seen before" marks a doctor seen before;
+    cross-coverage never changes attachment (IB7 §5-§9).
+  - An emergency hard stop ends intake and shows the approved message first (ES3 §3, §7, §10, §12).
+  - The physician gets a 1-2 line intake summary (IB7 §16).
+  - The Inbox opens chart-linked documents, never a raw fax; attention protocols own priority;
+    review time limits; "Updated" versions; an Overdue list (DOC21 §1, §6, §9).
+- **By:** Ani (forwarded, B-003).
+- **Replaced:** T-012's placeholder "the red-flag list and wording are Daniel's" now has a draft
+  source (ES3), still needing approval (OQ-69).
+- **Conflicts raised, not resolved:** OQ-75 (what "clear" means), OQ-76 (HIGH/URGENT vs Critical
+  and High), OQ-77 (scheduler vs call windows), OQ-78 (two missing companion documents) and
+  OQ-86 (an automatic MOA task for overdue results vs rule 12).
+- **Source:** B-003; `40c58c6`.
+
+### D-102 · 2 Oct 2026 · Simplicity Intake v2.3 governs the chat where it differs from v7
+- **Decided:** Simplicity AI Intake & Booking Requirements v2.3 (IN23) is the newest spec for the
+  chat, and wins over IB7 where they differ. In summary:
+  - the emergency acknowledgement comes first, once per chat, with no way round it (§5, AC-24);
+  - concern first, by free text or a service card, never both (AI-01, AI-22);
+  - care intent is inferred, with cards only when it is unclear (§7, AI-13, AI-23);
+  - sign-in is invited after the concern and intent, before the scheduler (§6, AC-08, AC-31);
+  - minimal intake of 2-3 questions, at most 4, filling the pathway's slots (AI-04, ENG-01 to
+    ENG-07);
+  - the scheduler comes after intake on the free-text path (§18, AC-23);
+  - a fixed physician order (AI-20); a 1-2 line summary from the slots (§19, ENG-08);
+  - reactive safety, and a Clinical Director's excluded-medicines list (§17, AC-32).
+- **By:** Ani (forwarded): *"Where it is more specific than Intake & Booking v7 (B-003), **v2.3
+  wins for the Simplicity chat**."* (B-004:7-8).
+- **Replaced:** IB7 §3's three-choice "Hello" menu, pending Ani's confirmation (OQ-80). It partly
+  answers OQ-77: doctors are ordered by bookings "in the selected call window" (AI-20).
+- **Conflict:** safety-screening depth against ES3 (OQ-79).
+- **Source:** B-004; IN23 as cited.
 
 ## Changelog
 
@@ -978,3 +1155,14 @@ with Ani approving (D-91).
     D-58's placement and conflicts with D-84; OQ-71).
   - D-72's title now names Japneet (PA), not the MOA.
   - Reversal notes added to D-08, D-27, D-31, D-34, D-39, D-58, D-60, D-62, D-64, D-72 and D-73.
+- 3 Oct 2026, sixth run (the 30 Sep inputs, plus Intake v2.3 of 2 Oct): 102 entries.
+  - Added D-93 to D-95 from Ani's 30 Sep layout calls and Daniel's MOA pairing (MOA30, B-002,
+    HOME29:42-48): chat 1:1 with the paired MOA (D-93); the Assistant in the top bar and the MOA
+    chat as a floating, draggable button (D-94); the sidebar open by default (D-95).
+  - Added D-96 to D-98 from Daniel's ECG recording (ECG30): three flag levels, "Abnormal ECG"
+    only, and Not cleared / Cleared.
+  - Added D-99 (the chart's AI workflow; Daniel's requirements document awaited), D-100 (SC –
+    Design System in Figma), D-101 (three requirement documents as sources, B-003) and D-102
+    (Intake v2.3 wins for the chat, B-004).
+  - Reversal notes: D-49 (collapsed nav, reversed by D-95), D-60 and D-86 (chat in the left nav,
+    reversed by D-94). D-92 now cites Ani's written decision (HOME29:43).

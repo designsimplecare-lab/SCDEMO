@@ -5,7 +5,12 @@ Owner: product manager agent. First written 25 Sep 2026. The source codes are th
 `d2a2823`), V2c (build 2026-09-30 10:33, `b8331e5`), MOAP, PP, MEM, ANS26 (Daniel's written answers
 of 26 Sep 2026, `from-daniel/2026-09-26-answers-to-shadowing-questions.md`), ANS27 (his round-2
 answers), HOME29 (his Home markup), BOOK29 (his booking model), B-001, QA29 and commit hashes; see
-the key in `use-cases.md`. "Assumption" marks a
+the key in `use-cases.md`. From 30 Sep: MOA30, ECG30, CHART30, B-002 to B-004, V2d (build
+2026-09-30 20:05, `cf6207c`), and four SimpleCare requirement documents, git-ignored and cited by
+section or by their own IDs, never quoted at length: IB7 (Intake & Booking v7.0), ES3 (Emergency
+Safeguards v3.0, draft), DOC21 (Document Routing v2.1) and IN23 (Simplicity Intake v2.3, which wins
+over IB7 for the chat, D-102). A requirement **superseded** by a later one keeps its ID and says
+which one replaced it. "Assumption" marks a
 claim with no source. Status: **built** (works in v2), **partly built**, **not built**. "Open" names
 the open questions that block a requirement (see `open-questions.md`). This file sets no clinical
 thresholds, doses or billing codes. Where one is needed, it points to an open question.
@@ -55,6 +60,9 @@ identity](#patient-identity-id) · [Look and feel](#look-and-feel-ui) · [MOA po
     V2c:4291-4293; D-92).
   - The greeting is at the other end of the top bar (V2c:4289, 5547), so it is not beside the
     greeting yet. T-008 (Manoj) is building that.
+  - 30 Sep: Ani recorded the pill as decided: *"The time is in its own pill, before the theme
+    button."* (HOME29:43; D-92). Daniel still needs to hear that it isn't beside the greeting
+    (OQ-71).
   - The zone labels are missing (DR:31-33).
 - Priority: P1.
 - Open: OQ-71, OQ-39, OQ-66.
@@ -134,13 +142,14 @@ value, nothing more.**
   - Each row holds exactly those three things, plus its Review action.
   - No row is a task.
   - There is one row per patient (DR:46-48).
-- Status: not built to the new rule (V2c).
-  - The result row still renders the reference range, the clinical concern, the intake flag text
-    and the basis (`renderCriticals` V2c:6299-6303).
-  - Task rows still render (`attnTasks` V2c:6177-6188).
-  - T-008 (Manoj) is building it.
-- Priority: P1.
+- Status: built (`2a96f07`, V2d). A row is the icon, the patient with age, the test and the value
+  with its arrow; the range, basis and intake flag are one click away (`renderCriticals`
+  V2d:6450-6500). Task rows no longer render (`renderAttnTasks` returns early, V2d:6420-6428). A
+  patient with an intake flag gets a second "Review intake" button, which OQ-35 should confirm.
+- Priority: P1 (built; keep).
 - Open: OQ-35 (confirm: no context line; what happens to the intake flag). OQ-01 is answered.
+- 30 Sep: yellow (abnormal, not Critical or High) results stay off Home; they belong on the chart
+  and in the Inbox (ECG30:71-72; D-96).
 
 **REQ-HQ-12 · The attention list is not an inbox: Critical and High results only.**
 - Results in the Critical and High bands appear there. Routine results never do, and neither do
@@ -155,19 +164,20 @@ value, nothing more.**
   - A Critical or High result that is not yet reviewed shows. A Routine one never does.
   - The bands are the Inbox's own tiering (REQ-IN-07), with no new rule added.
   - No task appears, whatever its priority or age.
-- Status: not built (V2c).
-  - Results are critical only (`renderCriticals` V2c:6274).
-  - Tasks still appear when Urgent, High or overdue (V2c:6188). The spec had marked that threshold
-    as an assumption (SPEC:44-45).
-  - The hazard log's HZ-16 names the missing High results. It is `clinical-safety`'s to update.
-- Priority: P1.
+- Status: built (`2a96f07`, V2d). Critical and alert-tier results not yet reviewed show, Critical
+  first (`renderCriticals` V2d:6463-6466); no task shows (V2d:6420-6428). The hazard log's HZ-16
+  still describes the old gap; it is `clinical-safety`'s to update.
+- Priority: P1 (built; keep).
+- The names of the bands are open: DOC21 says HIGH / URGENT (OQ-76).
 - Open: none (OQ-01 answered).
 
-**REQ-HQ-13 · The navigation is collapsed by default, and remembered.**
+**REQ-HQ-13 · The navigation is collapsed by default, and remembered. SUPERSEDED 30 Sep 2026 by
+REQ-HQ-18.**
 - Rationale: MTG21:23; V2:7950.
 - Accept: the first visit shows the icon rail; if the doctor opens it, it stays open on the next
   visit.
-- Status: built.
+- Status: superseded. Ani set the sidebar open by default (HOME29:47-48; D-95). Kept so the ID
+  isn't reused; "remembered" carries over to REQ-HQ-18.
 
 **REQ-HQ-14 · Row behaviour.**
 - The row opens the chart. Call is shown only on the next patient. Task MOA is revealed on hover and
@@ -188,8 +198,10 @@ value, nothing more.**
 **REQ-HQ-16 · The doctor can see whether the MOA is online.**
 - Rationale: *"He does want to see whether his MOA is currently online"* (SIA:22, 38).
 - Accept: presence is visible without opening chat.
-- Status: partly built. The MOA roll-up is in the chat tooltip. The dot on the avatar is the
-  doctor's own status (`f047109`).
+- Status: built (demo, 30 Sep). The floating chat button shows the doctor's one MOA with her
+  picture, name and "Your MOA · Online" (`c070791`, `3f11454`; V2d:5577-5581). The presence is
+  demo data; no real signal exists. The dot on the doctor's avatar is the doctor's own status
+  (`f047109`).
 
 **REQ-HQ-17 · Opening the queue never carries a search over from the last patient.**
 - The search clears when the Daysheet opens, or shows as a filter chip with a clear button.
@@ -199,6 +211,15 @@ value, nothing more.**
   what is filtering it.
 - Status: partly built. v2's queue search has a clear button (`clearQueueSearch` V2b:4265, 6236),
   but nothing clears it when the doctor comes back from a chart (no other caller found).
+
+**REQ-HQ-18 · The navigation is open by default, and the doctor's own choice is remembered.**
+- Replaces REQ-HQ-13.
+- Rationale: Ani, 30 Sep: *"The **sidebar is open by default**. This replaces Daniel's 21 Sep
+  collapsed default, and a doctor's own choice is still remembered."* (HOME29:47-48; D-95).
+- Accept: a first visit shows the full navigation. A doctor who collapses it finds it collapsed on
+  the next visit, and the other way round.
+- Status: built (`c070791`; `initSidebarCollapse` V2d:8433-8439).
+- Priority: P2. Daniel's 21 Sep word was the opposite, so he should be told (OQ-71 batch note).
 
 ---
 
@@ -369,6 +390,9 @@ patient".**
   today" for the patient's other results (`renderChartAlerts` V2b:10237). It uses the Inbox's own
   tiering: "labTier decides, nothing new is inferred" (V2b:10230). Whether the scribe now reads it
   was not checked.
+- 30 Sep: an abnormal result that is neither Critical nor High (the demo's abnormal ECG) gets its own
+  yellow card right under the critical one, "Not cleared", with "Review result"; the "Also in today"
+  line no longer carries it (ECG30:52-54; V2d:10653-10668; REQ-IN-14, REQ-IN-15).
 
 **REQ-CH-14 · The "Where this came from" recall shows whatever door the doctor came in by.**
 - Rationale: `632998a`; DR:113-115.
@@ -472,8 +496,12 @@ patient".**
 - 26 Sep: results should come from the source as data (D-76, D-77), so this now serves only what
   still arrives as a file: a patient upload or a fax. A patient upload is also marked
   patient-supplied (REQ-IN-13).
+- 30 Sep: DOC21 §5 gives every faxed document a fixed label pattern and chart section (Labs,
+  Imaging, Pathology, Consult Reports and so on), with dates as YYYY.MM.DD and "- Patient Provided"
+  on what the patient sent. That covers the naming half of this requirement for faxes. The full
+  pattern lives in a Labelling Standard we don't have yet (OQ-78).
 - Priority: P3.
-- Open: none (OQ-48 answered).
+- Open: OQ-78 (OQ-48 answered).
 
 **REQ-CH-24 · The document list keeps its place, and its actions are safe.**
 - Closing the viewer returns to the same scroll position with that row highlighted. View is always
@@ -545,8 +573,10 @@ patient".**
   demo data can already say "waiting on the patient" (V2b:10163).
 - 26 Sep: the patient upload is a fallback: *"I am relying on patients to help me."* The goal is the
   result from the source (ANS26:56; D-77, REQ-IN-12). The pending item stays, and closes on either.
+- 30 Sep: DOC21 §6 tracks SimpleCare's own orders the same way (REQ-IN-22), but creates the MOA
+  task by itself. That conflicts with "nothing becomes a task on its own" (OQ-86).
 - Priority: P2.
-- Open: OQ-52, OQ-54, OQ-65 (OQ-53 answered).
+- Open: OQ-52, OQ-54, OQ-65, OQ-86 (OQ-53 answered).
 
 **REQ-CH-30 · Standard patient education is sent with one press after the visit.**
 - Patient instructions get a small library of standard handouts. The doctor picks one during or
@@ -573,7 +603,11 @@ patient".**
   `renderSinceLast` V2b:10182). The care plan sits below today's note and Finalize
   (`care-plan-mount` V2b:4624-4625).
 - Priority: P1.
-- Open: OQ-63.
+- Open: OQ-63, OQ-81.
+- 30 Sep: on the full care plan, *"this is more comprehensive care, so don't worry about that just
+  yet."* (CHART30:17-18). T-021 leaves it out of scope. He reacted to "Chase their office" on a
+  specialist's item (CHART30:21-22); what he meant is OQ-81. The priority stays until his chart
+  document says otherwise (OQ-82).
 
 **REQ-CH-32 · Patient-reported measurements are entered once and read as a trend.**
 - Blood pressure and weight (and whatever else "etc." covers) are the patient's readings. Each is
@@ -589,6 +623,25 @@ patient".**
   found by search).
 - Priority: P2.
 - Open: OQ-64, OQ-56.
+
+**REQ-CH-33 · During the call, an AI workflow takes the doctor to a complete chart, and the note
+is where he expects it.**
+- While the doctor talks to the patient, the AI drafts the note step by step, so the chart is done
+  when the call ends. How the completed chart then displays comes second. The doctor reviews and
+  signs; nothing files itself (rule 18; D-22).
+- Rationale: Daniel, 30 Sep: *"where am I charting?"* *"I'm more interested in an AI workflow, which
+  is to say, how do I get through the chart, right? How do I complete that f\*\*\*\*\*? And then
+  when it's complete, it's how it's displayed."* *"At the end of it, the chart's done."*
+  (CHART30:11-12, 27-31; D-99). In the frames, the note box sat below "Since last visit", the
+  "Read the Jun 25 note" button and the scribe bar, and he scrolled past it (CHART30:14-15). Five of
+  five shadowed visits had no note written during the call (use cases, patterns table).
+- Accept: to be written from Daniel's chart requirements document (OQ-82). Until then: the doctor
+  can find where to chart without searching, and no AI text enters the signed note without his
+  press.
+- Status: not built. v2 is mostly the display mode, with the note box low on the page; it is left
+  unchanged on purpose until his document arrives (CHART30:39-49). T-021 is Blocked.
+- Priority: P1. `clinical-safety` and `ai-engineer` gate the AI drafting.
+- Open: OQ-82, OQ-31.
 
 ---
 
@@ -798,6 +851,8 @@ cleared.**
 - Red ink only on a critical value, amber for high. No filled rows.
 - Rationale: MTG21:83; `8444fe4`, `625cfe7`.
 - Status: built.
+- 30 Sep: High also carries an exclamation mark, and other abnormal values are yellow (REQ-IN-14;
+  D-96).
 
 **REQ-IN-11 · A routine "No follow-up" moves to the next result, and reviewed items can be signed
 off together.**
@@ -838,6 +893,128 @@ off together.**
   physician portal shows nothing on arrival (S5:112-114).
 - Priority: P2.
 - Open: OQ-54, OQ-52.
+
+**REQ-IN-14 · Three flag levels: Critical (red), High (with an exclamation mark), and Abnormal
+(yellow, which the doctor clears).**
+- Critical is the only red. High carries an exclamation mark as well as its colour. A result that
+  is outside its range, or abnormal, but neither Critical nor High is yellow, and the doctor looks
+  at it and clears it.
+- Rationale: Daniel, 30 Sep: *"critical and high, I would even argue, is like almost the same
+  category … both of them should be with an exclamation mark at least"*; *"yellow is fine as
+  abnormal, like unless it's critical."*; *"all it means is that the doctor has to look at it and
+  clear it."* (ECG30:32-42; D-96).
+- Accept: on the chart, in Recent results and in the Inbox, a Critical value reads red with an
+  exclamation mark, a High value has an exclamation mark, and an abnormal one is yellow. Yellow
+  results never show on Home (ECG30:71-72). No new thresholds: the bands are REQ-IN-07's.
+- Status: built on the chart (`cf6207c`, V2d). Recent results mark Critical and High with an
+  exclamation mark (`rsVal` V2d:10992-11001). An abnormal result that is neither gets its own
+  yellow card under the critical one (V2d:10653-10668). Not re-checked in the Inbox rows.
+- Priority: P1. `clinical-safety` reviews it (ECG30:68-69).
+- Open: OQ-75, OQ-76.
+
+**REQ-IN-15 · An abnormal ECG says only "Abnormal ECG"; the machine's reading stays on the
+tracing.**
+- Wherever an abnormal ECG appears (the chart card, the Inbox row, the review, the AI summary), it
+  reads "Abnormal ECG". The ECG machine's interpretation is never repeated outside the tracing.
+- Rationale: *"I would just say abnormal ECG, right? Because you wouldn't want to bias the doctor."*
+  *"that's the source document, right? It's on there. But that's not something that we should tell
+  the doctor. We just have to flag it as abnormal."* (ECG30:15-22; D-97).
+- Accept: searching every surface for the machine's wording finds it only on the tracing. When
+  Daniel's critical-ECG list exists, an ECG on it becomes a red card that names the finding
+  (ECG30:61-63). Until then every abnormal ECG is yellow.
+- Status: built (`traceFlag` V2d:8181-8185; used at V2d:8233, 9086, 9128, 10662, 10687). The
+  critical-ECG case is not built, by design, until the list arrives.
+- Priority: P1.
+- Open: OQ-74.
+
+**REQ-IN-16 · Every flagged result shows whether it has been cleared.**
+- A flagged value says "Not cleared", which opens the result, or "Cleared".
+- Rationale: Daniel, 30 Sep, at a yellow flag: *"did the doctor like clear this or what do we do?"*
+  (ECG30:44-46; D-98).
+- Accept: the doctor can tell from the results list alone which flagged values still need him.
+- Status: built (`rsClear` V2d:11003-11010). In the demo, "Cleared" means the result is signed off
+  (ECG30:57-58). That meaning is not Daniel's yet (OQ-75).
+- Priority: P1.
+- Open: OQ-75.
+
+**REQ-IN-17 · The Inbox opens chart-linked documents, never a raw fax.**
+- Every faxed document becomes an identified, labelled document filed in the right chart section,
+  then routed to the responsible physician. An Inbox item opens that filed document in the chart.
+- Rationale: DOC21's core principle, §1, §9 and §16 (fax is only a way in; physicians receive
+  chart-linked documents). Matching the patient and routing to a doctor are separate decisions, and
+  the receiving fax number is a routing signal, never an identity signal (DOC21 §7, §8). Each
+  physician gets a dedicated fax number (Ani's routing note, B-003:92-93). Daniel: *"it is madness
+  that I am opening up raw pdf's"* (ANS26:50).
+- Accept: no physician screen lists faxes. A document with an identity conflict is never attached
+  automatically; it waits for the MOA (REQ-MP-06). The original file stays viewable from the item
+  (REQ-RV-05).
+- Status: partly built (demo). Inbox items are results already tied to a patient, and open the
+  review with the source document (REQ-RV-05). There is no ingestion, matching or routing.
+- Priority: P2 (an engineering pipeline; the physician-side shape is built). `integrations-engineer`
+  and `privacy-security` own the feasibility.
+- Open: OQ-78.
+
+**REQ-IN-18 · Attention protocols own priority; routing never sets or lowers it.**
+- What goes to Needs your attention, and at what level, is decided by the attention protocol for
+  that document type, not by the routing step. A critical signal found while reading a document is
+  handed on at once, before the patient match finishes, and never held back. All reports stay in
+  the Inbox; Home is an escalation layer only.
+- Rationale: DOC21 §2 (stage 10), §4 (critical-signal early handoff) and §9 (one source of truth for
+  priority). It agrees with REQ-IN-07: tiering is deterministic and AI never sets a tier. B-003:101-102.
+- Accept: no routing rule changes a tier. A critical result in a document still awaiting identity
+  confirmation alerts the intended physician before it is attached (DOC21 §14).
+- Status: built in principle for labs (the Inbox's `labTier` decides; Home reads it). Not built for
+  documents or the early handoff.
+- Priority: P2.
+- Open: OQ-76 (the level names), OQ-78 (the Review Labwork Attention Protocol).
+
+**REQ-IN-19 · Clearing a card on Home never closes the Inbox report unless the review is done.**
+- Rationale: DOC21 §9: clearing an attention card must not close the underlying Inbox report unless
+  the physician completes the review.
+- Accept: after the doctor deals with a Home card, the report is still in the Inbox until he signs
+  it off (REQ-IN-01).
+- Status: built in effect (demo). A Home row leaves once the result is no longer "received"
+  (`renderCriticals` V2d:6463-6466); the Inbox item stays until it is signed off.
+- Priority: P2.
+- Open: OQ-75 (what "clear" means).
+
+**REQ-IN-20 · Every Inbox item has a review time limit by document type, and escalates when it
+passes.**
+- The limits are a safety net, not a priority model: a protocol may shorten one, never lengthen it.
+  When one passes, the responsible physician is reminded, then the covering physician, then the
+  clinical director.
+- Rationale: DOC21 §9. Its proposed defaults run from 1 business day (hospital/ED) to 5 (consults,
+  forms and the rest), "clinic-configurable". They are quoted as proposals only.
+- Accept: an unreviewed item past its limit escalates (DOC21 §14). The limits are set by Daniel
+  (OQ-85), not by the product.
+- Status: not built.
+- Priority: P2.
+- Open: OQ-85, OQ-78.
+
+**REQ-IN-21 · Lab and imaging reports update in versions; a new version reopens the item as
+"Updated".**
+- One order gives one evolving report. A newer version replaces what the doctor sees, the older
+  ones stay in the history, and a version arriving after he acknowledged one reopens the item as
+  "Updated" with what changed. Each version is checked again for attention. Pathology reports stay
+  separate documents.
+- Rationale: DOC21 §6 and §14.
+- Accept: a cumulative report adds no duplicate row; an added critical value can raise attention
+  even if the first version didn't.
+- Status: not built.
+- Priority: P2.
+- Relates to REQ-IN-09 (pending results stay visible): DOC21's "Remaining Results" is that list.
+
+**REQ-IN-22 · An order with no result inside its expected window goes on the ordering physician's
+Overdue list.**
+- Rationale: DOC21 §6 and §14. The doctor can close an overdue order with a reason (received another
+  way, not done, declined, cancelled), and the closure is recorded. Its expected windows are
+  proposed defaults (OQ-85).
+- Accept: an order past its window appears on the list without anyone looking for it.
+- DOC21 also creates an MOA follow-up task automatically. That conflicts with rule 12 and
+  REQ-TK-01, so it is not adopted until Daniel answers OQ-86.
+- Status: not built.
+- Priority: P2.
+- Open: OQ-86, OQ-85. Relates to REQ-CH-29 (orders made outside SimpleCare).
 
 ---
 
@@ -952,6 +1129,33 @@ Inbox.**
 - Rationale: *"doctor to doctor even"* (`11b0ecb`).
 - Status: built.
 
+**REQ-TK-12 · The doctor's chat is one conversation with the MOA paired for this call window.**
+- The doctor chats with one named person, the MOA paired with them now, with her presence showing.
+  There is no list of threads, no picking a recipient, and no ticket queue. Chat and tasks stay
+  separate: a task still travels doctor → MOA (REQ-TK-01).
+- Rationale: Daniel, 30 Sep: *"1 MOA, with the proper tools, can be paired with x 5 docs."* *"on our
+  system - it shows to the Docs 1:1 pairing."* *"What we don't want is what [a competitor] does -
+  Doctor submits a ticket in a queue"* (MOA30:10-13). Ani: a doctor has just one MOA (B-002:11;
+  D-93). Rule 12a.
+- Accept: opening chat lands in the one conversation, which names the MOA and says she is "your MOA
+  this window". When the pairing changes, the new MOA is named (B-002:32-33).
+- Status: built on the physician side (`fcdb13d`; `MOA_THREADS` holds one conversation and
+  `toggleChatPanel` opens it directly, V2d:8502-8510, 8531-8539). Carry-over between windows is
+  OQ-83.
+- Priority: P1.
+- Open: OQ-83.
+
+**REQ-TK-13 · Chat suggests quick messages, and nothing sends by itself.**
+- Above the message box, chips offer replies when the MOA's last message is a question ("Yes, go
+  ahead", "Not yet"), or asks that fit the screen (on a chart, about that patient; on Home, about the
+  day). A tap fills the box; the doctor sends.
+- Rationale: Ani, 30 Sep (B-002:26-29; `fcdb13d`). Daniel wants the doctor spared needless clicks
+  (*"I don't want the doctor clicking a bunch of stupid buttons."*, `2094417`); rule 18 keeps the
+  send with the doctor.
+- Accept: no chip sends a message. Chips never name another patient than the one on screen.
+- Status: built (`chatSuggestions`, `renderChatSuggest`, `chatUseSuggest` V2d:8599-8623).
+- Priority: P2.
+
 ---
 
 ## Intake (INT)
@@ -961,6 +1165,8 @@ Inbox.**
 - Rationale: S2:26-27, 54-58. S4 repeats the detour: intake modal, close, then chart (S4:18-23).
 - Status: partly built. There is an AI line on the row, and "View intake note" still opens a
   separate view (V2b:4641, `openBrief` V2b:6652).
+- 30 Sep: the line is the physician summary of REQ-INT-20 (B-003:101). The patient's original
+  message stays viewable (IN23 §19).
 
 **REQ-INT-02 · A red-flag intake explains itself.**
 - It sorts to the top and shows on the chart banner ("read it before calling").
@@ -1036,6 +1242,9 @@ Inbox.**
     unclassified, not guessed.
 - Status: partly built in production. Quick-book tiles exist ("We do that already"). The split is
   not in the prototypes.
+- 2 Oct: IN23 keeps each pathway (its questions, slots, safety triggers, stop rule and care types)
+  in a versioned registry the Clinical Director edits without a code change (ENG-10, §11, AC-28).
+  A routine pathway is written to finish in 2-3 questions, never more than 4 (AI-19).
 - Priority: P1.
 - Open: OQ-67, OQ-68.
 
@@ -1073,6 +1282,8 @@ Inbox.**
   - A triage-first concern has a non-AI triage. Its content waits on OQ-68.
 - Status: partly built. The tile path works in production. QA-007 was a staging-only gap (QA29:13;
   `b85fd4d`). There is no non-AI triage for triage-first concerns.
+- 2 Oct: if the AI service is down, the service cards and a non-AI direct-booking path stay
+  available, and an outside evidence service failing never blocks booking (IN23 AI-21, AC-27).
 - Priority: P1.
 - Open: OQ-68.
 
@@ -1091,9 +1302,164 @@ Inbox.**
   - One emergency treatment is used in the chat, on the tiles and on the doctor pages.
   - The red-flag list and the words come only from Daniel. Until then they are marked placeholders
     (T-012).
+- 30 Sep: ES3 (draft) gives the screening a source: every patient input on every surface where a
+  patient types (chat, reason for visit, forms, messages) is screened before the next routine reply,
+  across the whole conversation (ES3 §1, §3, §16). Its hard-stop domains are §4. What happens on a
+  hard stop is REQ-INT-17. The draft still needs a designated physician's approval (ES3 document
+  control), so ES3 replaces "placeholders" with "draft, not yet approved".
+- 2 Oct: IN23 calls safety "primarily reactive", with at most one safety question per pathway
+  (§17). How deep the screening goes is OQ-79.
 - Status: not built. It fails on staging (QA29:12).
 - Priority: P1. `clinical-safety` gates it.
-- Open: OQ-69.
+- Open: OQ-69, OQ-79.
+
+**From SimpleCare's requirement documents (INT-12 to INT-21).** IB7 (30 Sep) and IN23 (2 Oct) are
+SimpleCare's own specs for booking and the Simplicity chat; IN23 wins for the chat where they
+differ (D-102). ES3 is a draft awaiting physician approval. These are patient-facing, so the same
+note applies as for INT-07 to INT-11: the prototypes don't model them yet (T-012 to T-015).
+
+**REQ-INT-12 · A Fast-Track service card goes straight to booking, not through the AI chat;
+clinical intake still runs.**
+- A card sets the concern's pathway directly. Free text is the other way in; the patient is never
+  made to do both. Skipping AI navigation never skips clinical intake.
+- Rationale: IB7 §2, §10, §20; IN23 AI-22. B-003 self-check 1.
+- Accept: from a card, the next screen is booking or the pathway's intake, never the navigation
+  chat. A card never leads to the Quick Care / Family Doctor choice (IN23 AC-30).
+- Status: partly built in production (tiles book; QA29:13). Not modelled in the prototypes.
+- Priority: P1.
+
+**REQ-INT-13 · Booking follows the patient's relationship: the Family Doctor first, then a doctor
+seen before, in a fixed order.**
+- A formally assigned Family Doctor is the default for routine and ongoing care, labelled "Your
+  Family Doctor". "Your Family Doctor" appears only for a formal attachment.
+- An unattached patient sees the doctors they have seen before at the top, each with a small "Seen
+  before" badge, and can still pick anyone.
+- The order is fixed for the same inputs: assigned Family Doctor, a doctor seen before, then the
+  least-booked eligible doctor in the selected call window, then the rest (IN23 AI-20, AC-26).
+- Rationale: IB7 §5-§7, §19-§20; IN23 §6, §8, AI-14, AI-15, AI-20. Daniel already offers continuity
+  out loud (S5:30-32; REQ-ID-06).
+- Accept: an unattached patient who saw Dr. A once sees "Seen before" by Dr. A, never "Your Family
+  Doctor" (B-003 self-check 2). Signing in mid-chat with an assigned doctor and a follow-up or
+  chronic-medication concern offers "See My Family Doctor" first (IN23 AC-31).
+- Status: not built.
+- Priority: P1.
+- Open: OQ-77 (that "availability" means a call window), OQ-58.
+
+**REQ-INT-14 · Cross-coverage never changes the patient's attachment, and no doctor is swapped in
+silently.**
+- Another doctor is offered when the Family Doctor can't see the patient within a clinically
+  appropriate timeframe for the concern. The patient stays attached; the covering doctor charts in
+  the shared record and hands ongoing care back. The screen says the Family Doctor is unavailable
+  and shows their next availability alongside any permitted alternative.
+- Rationale: IB7 §7-§9 (the timeframe depends on the concern, not a fixed rule); IN23 §8.
+- Accept: after a covered visit, the patient's Family Doctor is unchanged. No timeframe is coded
+  until Daniel sets who decides it (OQ-84). An emergency or in-person concern is never "solved" by
+  offering another virtual doctor (IB7 §9).
+- Status: not built.
+- Priority: P2.
+- Open: OQ-84, OQ-77.
+
+**REQ-INT-15 · Doctors opt into episodic and comprehensive care separately.**
+- Quick Care shows only doctors taking episodic visits; finding a Family Doctor shows only doctors
+  accepting new comprehensive patients. A doctor can take either, both or neither.
+- Rationale: IN23 §8, AI-16, AC-10, AC-11; IB7 §15.
+- Accept: a doctor not accepting new comprehensive patients never appears in the Family Doctor path.
+- Status: not built.
+- Priority: P2.
+
+**REQ-INT-16 · Simplicity opens with the emergency acknowledgement, once, before anything else.**
+- The patient must accept that Simplicity is not for emergencies before typing, picking a card,
+  signing in or booking through the chat. There is no "decline and continue". It is shown once per
+  chat and is not a clinical question. A concern typed before it (for example on the landing page)
+  is kept and handled afterwards; the patient never retypes it.
+- Rationale: IN23 §5, AC-24, AC-33; ES3 §11 (the "not an emergency service" disclosure).
+- Accept: as IN23 AC-24 and AC-33. The wording is IN23's recommended text until Daniel approves the
+  final words (rule 17a; OQ-69). The look is Manoj's.
+- Status: not built in the prototypes. Staging not checked against it.
+- Priority: P1. `clinical-safety` and `accessibility` gate it.
+- Open: OQ-69, OQ-79.
+
+**REQ-INT-17 · An emergency hard stop ends booking for that concern and shows the approved message
+first.**
+- When a hard stop fires: intake stops; no scheduler and no doctor availability appear; the
+  approved message for that domain shows first, with the emergency number for where the patient is
+  now; and the state persists. The patient preferring otherwise never lowers it; only a clear
+  data-entry mistake can be corrected, once.
+- Readings the patient enters can only raise concern, never reassure. Current location is asked
+  early ("Are you in BC right now?"), but an emergency message never waits for it.
+- Two detection layers run, either one enough; the hard stop is held outside the chat model; if
+  screening fails, intake pauses (fail safe, not fail open). A staffed clinic sees a real-time alert
+  for an identified patient.
+- Rationale: ES3 §3, §6, §7, §8, §10, §12, §14, §16. IN23 §17 agrees on the outcome: a 911 or ED
+  message and no virtual booking for that concern. Booking is open *"so long as it is not an
+  Emergency"* (BOOK29:32-33).
+- Accept: as ES3 §16. Messages come only from ES3's approved table once a physician approves it
+  (ES3 §7, §15); nothing is reworded in the product. ES3's release gate (no missed hard-stop case
+  in at least 20 per domain, §15) is `patient-chat-qa`'s and `clinical-safety`'s to apply.
+- Status: not built. It fails on staging (QA29:12).
+- Priority: P1. `clinical-safety` gates it.
+- Open: OQ-69, OQ-79.
+
+**REQ-INT-18 · The chat goes in order: concern, care intent, sign-in, minimal intake, then the
+scheduler.**
+- Understand the concern first (AI-01). Infer Quick Care or Family Doctor when it is clear, and
+  show the care-intent cards only when it isn't, with a small "Not sure?" (AI-13, AI-17, AI-23).
+- Invite sign-in after the concern and intent are known and before the scheduler; "Continue without
+  signing in" costs nothing, and a second invitation comes only before holding a window (§6,
+  AC-08).
+- On the free-text path the scheduler comes after minimal intake. A doctor or window chosen earlier
+  is kept, and the patient never describes the concern twice (§18, AC-05, AC-23).
+- A normal booking creates no admin task; people handle exceptions only (IB7 §17).
+- Rationale: IN23 §3, §4, §6, §7, §18. B-004 Appendix A: on staging (2 Oct) the scheduler came
+  before intake and sign-in came after the window was chosen.
+- Accept: IN23 AC-05, AC-08, AC-09, AC-12, AC-23, AC-29, AC-30, AC-31.
+- Status: not built. Fails on staging (B-004 Appendix A; QA29:16).
+- Priority: P1.
+- Open: OQ-80 (the "Hello" menu), OQ-73 (how long a window is held).
+
+**REQ-INT-19 · Intake asks only what the pathway needs, and stops when it has it.**
+- Free text is classified to a specific pathway (for example Rx Renewal), with one discriminator
+  question or General/Other Concern when unsure (ENG-01, AI-08).
+- Questions come from that pathway only; symptom questions (onset, progression, regular
+  medications) are for symptom pathways and the Family Doctor pathway (ENG-02, QS-01 to QS-06).
+- Each pathway has slots; anything the patient already said, in any message, fills them, and only
+  empty slots are asked about (ENG-03, ENG-04, AI-05). Default 2-3 clinical questions, at most 4
+  (AI-04).
+- Intake stops when the slots are filled or declined, never on turn count (ENG-05, AI-09).
+- Every reply is classified before use: confusion gets one plainer rephrase, never a word-for-word
+  repeat; an objection drops the question; navigation and complaints stay out of the summary
+  (IN23 §12, ENG-07, AI-11).
+- Rationale: IN23 §9, §10, §12, §16, §20. B-004 Appendix A lists eight staging failures of exactly
+  these rules (2 Oct).
+- Accept: IN23 AC-01 to AC-04, AC-16 to AC-22 and AC-25. `patient-chat-qa` maps its PC-01 to PC-26
+  suite to AC-01 to AC-33 (B-004).
+- Status: not built. Fails on staging (B-004 Appendix A).
+- Priority: P1.
+
+**REQ-INT-20 · The physician gets a one- or two-line intake summary, built from the answers.**
+- The reason for the visit and the few answers that matter, from the filled slots, not a condensed
+  transcript. Anything the patient didn't confirm is marked "unconfirmed". A safety event goes at the
+  top. The patient's original message is viewable. No formal CC/HPI, no separate red-flag section,
+  no long note, and no navigation chatter.
+- Rationale: IB7 §16; IN23 §19, ENG-08, AC-06, AC-21. It matches v2's clinical-concern line on the
+  queue row (B-003:101; REQ-INT-01, REQ-INT-05).
+- Accept: as IN23 AC-06 and AC-21. A red-flag intake still sorts first on Home and explains itself
+  (REQ-INT-02), now as the summary's top line.
+- Status: partly built. v2 shows a one-line, machine-marked intake summary on every queue row
+  (`874f906`, `944d26a`). "Unconfirmed" marks and the original message are not built.
+- Priority: P1.
+
+**REQ-INT-21 · A request for a medicine on the Clinical Director's excluded list is declined, with
+no booking for it.**
+- The list (stronger opioids, matched by generic, brand and combination name, tolerant of
+  misspellings) belongs to the Clinical Director and lives in the pathway registry. Other controlled
+  medicines named in IN23 §17 go to the physician as normal. No general warning about "controlled
+  medications". Booking for other concerns stays open.
+- Rationale: IN23 §17, AC-32; B-004 self-check 4. The product never decides what to prescribe
+  (rule 18); this list is SimpleCare's own clinical rule, not ours.
+- Accept: as IN23 AC-32. The wording is IN23's recommended text until Daniel approves it.
+- Status: not built.
+- Priority: P1. `clinical-safety` gates it.
 
 ---
 
@@ -1250,11 +1616,13 @@ way out.**
   - A moved panel never covers the call controls or the note it is needed beside.
   - Whether a position is remembered is a design detail for Manoj (assumption: remembered, like
     the nav in REQ-HQ-13).
-- Status: not built. The AI panel is fixed at the bottom right (V2c:508). The chat panel is fixed
-  too (V2c:3827, 3872). T-009 (Manoj) is building it.
-- Priority: P1.
+- Status: built (`2a96f07`, `41ed729`). Both panels drag by their header and move by arrow keys on
+  the grip, with Home to reset (`pdMovable` V2d:11119-11160). Positions are remembered
+  (`pdApplySaved` V2d:11104). The floating MOA chat button drags too, and a double-click resets it
+  (V2d:11187-11188).
+- Priority: P1 (built; keep).
 
-**REQ-UI-08 · Chat is a primary left-nav item.**
+**REQ-UI-08 · Chat is a primary left-nav item. SUPERSEDED 30 Sep 2026 by REQ-UI-09.**
 - The MOA chat gets its own item in the left navigation, as well as the movable panel (REQ-UI-07).
 - Rationale: Ani, 29 Sep: *"I'm thinking to make chat one big menu on the left nav so it becomes
   more primary"* (HOME29:37). On 30 Sep she decided to build it alongside Daniel's movable panels.
@@ -1263,9 +1631,36 @@ way out.**
   - Chat is reachable from the nav on every screen.
   - The nav stays collapsed by default (REQ-HQ-13).
   - The MOA's online presence is visible from it (REQ-HQ-16).
-- Status: not built. Chat opens from a top-bar button (V2c:4295). T-008 and T-009 (Manoj) are
-  building it.
+- Status: superseded. It was built at 10:50 on 30 Sep (`2a96f07`) and removed at 10:58 when chat
+  went back to the top bar (`6553b88`). At 13:37 Ani made the MOA chat a floating button instead
+  (HOME29:44-46; D-94). Kept so the ID isn't reused.
+
+**REQ-UI-09 · The SimpleCare Assistant opens from the top bar; the MOA chat is a floating,
+draggable button showing the doctor's MOA.**
+- The Assistant has a top-bar button. The chat button floats at the bottom right with the MOA's
+  picture, name and status, can be dragged anywhere, and remembers its spot. A drag never opens it.
+- Rationale: Ani, 30 Sep: *"the **SimpleCare Assistant** is in the top bar, and the **MOA chat is the
+  floating button** (the doctor's one MOA, with her picture and status). It opens a movable panel
+  with one conversation and smart suggestions."* (HOME29:44-46; D-94). Daniel asked for both to be
+  movable (HOME29:19-21).
+- Accept: the button never covers the call controls or the last queue row it would hide (T-020
+  found it covering the last visible row). Both are reachable by keyboard.
+- Status: built (`c070791`, `41ed729`, `c3ca401`, `3f11454`; V2d:4461-4462, 5577-5581,
+  11187-11188). The old floating Assistant launcher is hidden (V2d:4370-4371). Covering the last row
+  is open in T-020.
 - Priority: P1.
+
+**REQ-UI-10 · New design work uses "SC – Design System" in Figma.**
+- Its components, Mapped variables (Light and Dark), Lato text styles and Elevation styles. The
+  rules in handbook section E still apply on top (red for critical only, sizes, sentence case, Mage
+  icons).
+- Rationale: Ani, 30 Sep (handbook rule E; `813fd68`; D-100;
+  https://www.figma.com/design/XoYpGAbbNZUHkKwWDT56g3/SC---Design-System).
+- Accept: a design for review names the library components and variables it uses. The primary is
+  navy #2C438A in the library.
+- Status: not built in v2. v2 (bright blue #4353E8, system font) and `simplecare-design-system.html`
+  predate the library; v2 moves to it after the Home redesign (T-020).
+- Priority: P1 (T-020).
 
 ---
 
@@ -1281,6 +1676,7 @@ way out.**
   a fax inbox for unmatched documents, and a specialist directory.
 - Rationale: `a0d31ca` ("built from Daniel's description of MOA responsibilities").
 - Status: built as a demo.
+- 30 Sep: DOC21 §10 narrows the fax inbox to document exceptions only (REQ-MP-06).
 
 **REQ-MP-03 · Picking up a task is visible to the physician.**
 - Rationale: see REQ-TK-03.
@@ -1291,6 +1687,29 @@ way out.**
 - Rationale: S3:93-97.
 - Status: not built.
 - Open: OQ-19.
+
+**REQ-MP-05 · The MOA has one conversation for each doctor paired with her, up to 5.**
+- Rationale: *"1 MOA, with the proper tools, can be paired with x 5 docs."* (MOA30:10). B-002:13:
+  "MOA's side (MOA portal): a conversation for each of their doctors, up to 5." (D-93).
+- Accept: the MOA sees each paired doctor's conversation, named, and can tell which need a reply.
+  Five is Daniel's figure for one MOA ("x 5"); the portal does not cap it below that.
+- Status: not built. MOAP's "Chatbox" button only shows a toast, "Chatbox opened with Dr. Pannozzo"
+  (MOAP:270, 454). T-019 lists the MOA side as still to do.
+- Priority: P2.
+- Open: OQ-83.
+
+**REQ-MP-06 · The MOA's document queue holds exceptions only, critical signals first.**
+- The MOA handles what automation can't: confirming the patient, splitting a fax, fixing a label or
+  the routing, a processing failure, and a misdirected fax (which starts the privacy protocol). It
+  is not a second clinical inbox. Critical-signal items sort first, then oldest first; every
+  correction is recorded without erasing the machine's decision.
+- Rationale: DOC21 §10 and §11 (the misdirected-fax protocol). Its proposed queue limits are 1
+  business hour for a critical signal and 1 business day otherwise (OQ-85).
+- Accept: a document with an identity conflict reaches the MOA, never a chart (DOC21 §7, §16).
+- Status: partly built. MOAP has a fax inbox for unmatched documents (REQ-MP-02); no critical-first
+  order, limits or audit.
+- Priority: P2. `privacy-security` reviews the misdirected-fax path.
+- Open: OQ-85.
 
 ---
 
@@ -1419,3 +1838,22 @@ way out.**
   - Withdrawn: INT-04. Intake does not ask about other platforms (D-81).
   - Not re-checked this run: other requirements `c1015e4` may have moved, such as CH-31, CH-32,
     IN-12 and IN-13. That needs a follow-up run.
+- 3 Oct 2026, sixth run (the 30 Sep inputs, plus Intake v2.3 of 2 Oct). Statuses checked against
+  V2d (build 2026-09-30 20:05, `cf6207c`). The four requirement documents are cited by section or
+  by their own IDs (AI-, ENG-, QS-, AC-), never pasted.
+  - 172 requirements (27 new); two superseded, one withdrawn.
+  - New: HQ-18 (nav open by default); CH-33 (the chart's AI workflow; blocked on Daniel's
+    document); IN-14 to IN-16 (three flag levels, "Abnormal ECG" only, Not cleared / Cleared);
+    IN-17 to IN-22 (document routing: chart-linked Inbox, protocols own priority, clearing a card,
+    review time limits, "Updated" versions, the Overdue list); TK-12 and TK-13 (chat 1:1 with the
+    paired MOA; suggestions); MP-05 and MP-06 (the MOA's conversations; document exceptions);
+    UI-09 (Assistant in the top bar, MOA chat floating) and UI-10 (SC – Design System);
+    INT-12 to INT-21 (Fast-Track cards, relationship routing and "Seen before", cross-coverage,
+    physician pools, the emergency acknowledgement, the hard stop, the chat order, minimal intake,
+    the physician summary, excluded medicines).
+  - Superseded: HQ-13 (by HQ-18) and UI-08 (by UI-09).
+  - Moved to built: HQ-11, HQ-12 (`2a96f07`), HQ-16 (demo presence) and UI-07 (`2a96f07`,
+    `41ed729`).
+  - Updated: HQ-02 (Ani decided the pill), CH-13 (the yellow card), CH-23 (DOC21 labels), CH-29
+    (OQ-86), CH-31 (care plan not the focus yet; OQ-81), IN-10, INT-01, INT-08 (the pathway
+    registry), INT-10 (AI-21), INT-11 (ES3 screening; OQ-79) and MP-02.

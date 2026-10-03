@@ -6,58 +6,60 @@ Each one gives the owner, the date raised, what it blocks and its source. Source
 (`from-daniel/2026-09-26-answers-to-shadowing-questions.md`), ANS27 his round-2 answers of 27 Sep
 (`from-daniel/2026-09-27-answers-round-2.md`), HOME29 his 29 Sep Home markup
 (`from-daniel/2026-09-29-home-feedback.md`) and BOOK29 his 29 Sep booking model
-(`from-daniel/2026-09-29-booking-pathways.md`). Daniel answers well in numbered batches of 5 to 8,
+(`from-daniel/2026-09-29-booking-pathways.md`). From 30 Sep: MOA30, ECG30 and CHART30 (Daniel's
+MOA pairing, ECG and chart notes), B-002 to B-004, the requirement documents IB7, ES3, DOC21 and
+IN23 (git-ignored; cited by section or ID), and V2d (build 2026-09-30 20:05, `cf6207c`); see the
+key in `use-cases.md`. Daniel answers well in numbered batches of 5 to 8,
 one line each, with the work each answer unblocks (Ani's working note). **Top 8** marks the batch to
 send next. **ANSWERED** marks a question Daniel has answered: the entry keeps his words and the
 date, and whatever the answer left open moves to a new question. Ani sends the batch; no agent
 contacts Daniel (rule 4).
 
-## Top 8 for Daniel (round 3, prepared 30 Sep 2026)
+## Top 8 for Daniel (round 3, updated 3 Oct 2026)
 
-**Round 2 came back on 27 Sep (ANS27).**
-- Answered: OQ-01 (Critical and High on Home), OQ-61 (sign-off is always his), OQ-60 (favourites
-  live in Rx) and OQ-18 (don't name other platforms).
-- Partly answered: OQ-04 (he calls a patient immediately, rarely).
-- He asked us to rephrase two: OQ-65 (labs) and OQ-64 (readings). Both are reworded below.
-- The batch Ani sent differed from our list. Its item 8 was backend documentation (ANS27:55-59),
-  not OQ-09, so OQ-09 has never been asked.
+**Round 3 (prepared 30 Sep) has no recorded answer.** If it has not gone yet, send this version: it
+adds what 30 Sep to 2 Oct brought (ECG30, CHART30, B-003, B-004). Five round-3 items move to the next
+batch; they are unchanged.
 
 **This round, most important first.**
-1. **OQ-69: which messages count as an emergency, and what do we say?**
-   - Why first: on staging, "chest pain, can't breathe" is offered doctors and call windows
-     (QA29:12).
-   - Unblocks: REQ-INT-11 and T-012.
-2. **OQ-67: which concerns can be booked straight away, and which need triage first?**
-   - Unblocks: REQ-INT-08 and T-014 (BOOK29:10-19).
-3. **OQ-68: how does a patient who won't use the AI get triaged for a complicated concern?**
-   - Unblocks: REQ-INT-10 and T-015 (BOOK29:23; B-001 self-check).
-4. **OQ-66: how many call windows are there, and at what times?** "What that number is, i am not
-   sure" (HOME29:8).
-   - Unblocks: REQ-HQ-01, REQ-HQ-02 and OQ-34.
-5. **OQ-04 (what is left): when you call a patient immediately, where do you press?** Is it the
-   queue row, or Add-On? And do Doctor to Callback patients work the same way?
-   - Unblocks: REQ-HQ-14 and UC-04 (ANS27:45-53).
-6. **OQ-70: when Japneet sends a script for you, what does the record say, and do you see it
-   first?**
-   - Unblocks: REQ-RX-07, REQ-UI-06 and hazard HZ-09 (ANS27:13-20).
-7. **OQ-65, reworded (labs): which lab sends you the most results today?** We would show that
-   lab's results as numbers first. And is Accelerus, from your 21 Sep next steps, the company that
-   would send them?
-   - Unblocks: REQ-IN-12 and REQ-CH-22.
-8. **OQ-64, reworded (readings): how does a patient's home blood pressure or weight reach you
-   today?** Do they type it into the SimpleCare app, or tell you on the call so you type it, or
-   send a photo? Which do you want?
-   - Unblocks: REQ-CH-32 and REQ-PT-10.
+1. **OQ-79 with OQ-69: how deep does emergency screening go, and do you approve the draft list and
+   messages?** ES3 (draft) screens every message and asks up to about three safety questions; IN23
+   asks at most one, reactively. Who is the Clinical Director?
+   - Why first: on staging, "chest pain, can't breathe" is offered doctors and windows (QA29:12).
+   - Unblocks: REQ-INT-11, REQ-INT-16, REQ-INT-17; T-012.
+2. **OQ-74: which ECG findings make an ECG critical?** You said you'd define them (ECG30:29-30).
+   - Unblocks: REQ-IN-15, the critical ECG card, and the hazard log.
+3. **OQ-75: when you "clear" a yellow result, is that your sign-off, or a lighter "seen"?** And does
+   clearing a Home card leave the Inbox report open (DOC21 §9)?
+   - Unblocks: REQ-IN-16, REQ-IN-19.
+4. **OQ-76: Critical / High, or HIGH / URGENT?** The routing document uses HIGH / URGENT; you and
+   v2 use Critical / High.
+   - Unblocks: REQ-IN-18 and the words on Home and in the Inbox.
+5. **OQ-82: when will the chart requirements document come, and will it cover the scribe, the note
+   and sign-off together?** Also OQ-81, one line: was "Chase their office" wrong, or unexpected?
+   - Unblocks: REQ-CH-33 and T-021 (Blocked).
+6. **OQ-67: which concerns are quick-book, and which triage-first?** IN23 puts each pathway in a
+   registry the Clinical Director edits.
+   - Unblocks: REQ-INT-08, T-014.
+7. **OQ-66: how many call windows, and at what times?** (round 3, unchanged).
+   - Unblocks: REQ-HQ-01, REQ-HQ-02.
+8. **OQ-86: may the system create an MOA task by itself for an overdue result?** The routing
+   document says yes; our rule is that tasks exist only when you press Task.
+   - Unblocks: REQ-IN-22, REQ-CH-29.
+
+**For information in the same message (not questions):** the time now sits in its own pill rather
+than beside the greeting (D-92), and the sidebar is open by default (D-95). Both are Ani's 30 Sep
+calls against his earlier words (OQ-71).
 
 **Next batch:**
-- OQ-09: how a renewal's quantity is set (never asked).
-- OQ-35: confirm that a Home row shows nothing beyond name, test and value.
-- OQ-73: how long a chosen window is held.
-- OQ-72: WhatsApp or text booking.
-- OQ-62, OQ-51 and OQ-63.
+- From round 3: OQ-68 (triage without the AI), OQ-04 (where he presses to call a patient now),
+  OQ-70 (a script Japneet sends), OQ-65 (labs) and OQ-64 (readings).
+- New: OQ-78 (two companion documents), OQ-83 (chat when the MOA changes), OQ-84 (cross-coverage
+  timeframes), OQ-85 (document time limits) and what is left of OQ-77.
+- Earlier: OQ-09, OQ-35, OQ-73, OQ-72, OQ-62, OQ-51 and OQ-63.
 
-**For Ani and Manoj, not Daniel:** OQ-71 (where the time sits: beside the greeting, or in its own
-pill).
+**For Ani and Manoj, not Daniel:** OQ-80 (the "Hello" menu: confirm IN23's cards) and OQ-77 (that
+"availability" always means a call window).
 
 ---
 
@@ -98,7 +100,7 @@ pill).
   reference range, the diagnosis text, the source and the assignee (HOME29:27-30; D-85). Whether
   queue rows lose anything is still open.
 
-### OQ-04 · Calling out of order: callbacks and urgent patients · PARTLY ANSWERED 27 Sep · Top 8
+### OQ-04 · Calling out of order: callbacks and urgent patients · PARTLY ANSWERED 27 Sep
 - **Answer (Daniel, 27 Sep 2026):** *"Finalizing a visit, doesn't break the queue. Though, I can't
   remember a time where I skipped ahead to finalize a visit. Sometimes when a patient ... pulls some
   sh\*t with me - I will call them immediately"* (ANS27:46-48; the ellipsis leaves out how he
@@ -153,7 +155,7 @@ pill).
   (HOME29:24-26). He moved it but did not change the wording, so the city name may be enough.
   Still to confirm; whether the windows need "BC time" is still open.
 
-### OQ-66 · How many call windows, and at what times?
+### OQ-66 · How many call windows, and at what times? · Top 8
 - **Owner:** Daniel. **Raised:** 30 Sep 2026 (opened by the answer to OQ-34). **Blocks:**
   REQ-HQ-01, REQ-HQ-02; UC-02, UC-23.
 - **Why:** *"we have limited the number of windows. What that number is, i am not sure."*
@@ -178,6 +180,10 @@ pill).
     time is still not next to the greeting.
 - **Ask:** is the 30 Sep pill a step toward Daniel's placement, or where it ends up? T-008 names
   "time beside the greeting". Daniel's words are the spec, so any other placement goes back to him.
+- **Now (30 Sep):** Ani wrote it down as decided: *"The time is in its own pill, before the theme
+  button."* (HOME29:43; D-92). Left for Daniel: tell him it is not beside the greeting, and do the
+  same for the sidebar, now open by default against his 21 Sep word (D-95). Both go in his next
+  batch as information, not as questions.
 - **Source:** HOME29:14-15, 24-26; `b8331e5`; T-008 on the task board.
 
 ### OQ-35 · The AI line in Needs your attention
@@ -286,6 +292,9 @@ pill).
 - **Now:** S5 is the second visit where the doctor asks the patient to send something and nothing
   tracks it (S5:78-82). For a patient-uploaded result, see OQ-52 and OQ-54.
 - **Source:** S3:54-57, 116-117; S5:49-54, 78-82.
+- **Now (30 Sep), for faxed documents:** DOC21 files each faxed document in a chart section and
+  routes it to the responsible physician; patient-provided documents keep "- Patient Provided" in
+  the label (§5, §8). Records a patient emails are not covered.
 
 ### OQ-18 · Continuity on other platforms · ANSWERED 27 Sep 2026
 - **Answer (Daniel, 27 Sep 2026):** *"No - don't mention Rocket or Tia, I ask because many of my
@@ -319,6 +328,28 @@ pill).
 - **Ask:** is it in the demo scope?
 - **Now:** S5 is the strongest case for capture during the call: a full history said aloud and
   none of it written (S5:37-46, 71-74). REQ-CH-28 depends on this answer.
+- **Now (30 Sep), probably now:** Daniel wants *"an AI workflow"* in which, while he talks to the
+  patient, *"there's my note"*, and *"At the end of it, the chart's done."* (CHART30:26-31; D-99).
+  That reads as in scope now. Confirm with his chart requirements document (OQ-82).
+
+### OQ-81 · "Chase their office": what did it make you think?
+- **Owner:** Daniel. **Raised:** 30 Sep 2026. **Blocks:** REQ-CH-31 (the wording of
+  specialist-owned items); D-18.
+- **Why:** on a specialist's care-plan item he said *"Whoa, Chase their office. The f\*\*\*? I'm
+  gonna have to review this."* (CHART30:21-22). It is unclear whether he was surprised or bothered
+  (CHART30:24).
+- **Ask:** is "Chase their office" wrong, or just unexpected? What should a specialist-owned item
+  say instead, if anything?
+- **Source:** CHART30:21-24, 52.
+
+### OQ-82 · Daniel's chart requirements document · Top 8
+- **Owner:** Daniel. **Raised:** 30 Sep 2026. **Blocks:** REQ-CH-33; T-021 (Blocked); UC-09,
+  UC-19.
+- **Why:** *"So, I'll give a requirements document on the chart itself."* *"I'm going to zero in on
+  this tonight"* (CHART30:34-37). The chart is not redesigned until it arrives (CHART30:46-49).
+- **Ask:** when can we expect it? Should it cover the ambient scribe, the note's structure and
+  sign-off together?
+- **Source:** CHART30:33-38, 46-49, 53-54; T-021.
 
 ### OQ-42 · Document viewer: share and PDF
 - **Owner:** Ani. **Raised:** before 27 Jul 2026. **Blocks:** REQ-CH-18.
@@ -371,7 +402,7 @@ pill).
   history? Should a patient-reported weight and a measured one look different?
 - **Source:** S4:19-22, 143-144.
 
-### OQ-64 · Patient-reported vitals: who enters them, and where · Top 8 (reworded)
+### OQ-64 · Patient-reported vitals: who enters them, and where · reworded
 - **Owner:** Daniel; Ani (what production stores today). **Raised:** 26 Sep 2026 (opened by the
   answer to OQ-47). **Blocks:** REQ-CH-32, REQ-CH-21, REQ-PT-10.
 - **27 Sep:** Daniel replied *"Can clarify patient readings?"* (ANS27:33). The question was unclear.
@@ -443,7 +474,7 @@ pill).
   upload the plan?
 - **Source:** S5:52-54, 160-161.
 
-### OQ-65 · Which result source is connected first? · Top 8 (reworded)
+### OQ-65 · Which result source is connected first? · reworded
 - **Owner:** Daniel (the source and the access); Ani (what the demo shows). **Raised:** 26 Sep 2026
   (opened by the answers to OQ-48 and OQ-53). **Blocks:** REQ-IN-12, REQ-CH-22, REQ-CH-29.
 - **27 Sep:** Daniel replied *"Can you clarify your question surrounding labs?"* (ANS27:28). The
@@ -589,7 +620,7 @@ pill).
   say "sent by <MOA> for Dr. <name>"? No prescribing rule is assumed here.
 - **Source:** ANS26:8-9, 17-34; V2b:10014, 10055-10064; ANS27:13-20.
 
-### OQ-70 · A script Japneet sends for the doctor: the record, and what she may use · Top 8
+### OQ-70 · A script Japneet sends for the doctor: the record, and what she may use
 - **Owner:** Daniel. **Raised:** 30 Sep 2026 (opened by the answer to OQ-61). **Blocks:**
   REQ-RX-07, REQ-UI-06, REQ-RX-11; UC-30. Hazard HZ-09 in the clinical-safety log.
 - **Why:**
@@ -662,6 +693,10 @@ pill).
   patient. Should a related result inherit urgency, or be grouped with it? Is haemoglobin 71 g/L
   routine under his mapping? No threshold is set here.
 - **Source:** DR:161-163, 236-239.
+- **Partly answered (30 Sep):** the abnormal ECG gets its own yellow card under the critical one
+  (*"boom and then boom"*), not a Routine row (ECG30:11-13; D-97). He calls AFib *"important"* and
+  will define critical ECG findings (OQ-74). Still open: haemoglobin 71 g/L, and whether a related
+  lab result inherits urgency.
 
 ### OQ-13 · Digoxin
 - **Owner:** Daniel. **Raised:** 18 Sep 2026. **Blocks:** REQ-IN-07.
@@ -679,6 +714,73 @@ pill).
 - **Owner:** Ani. **Raised:** 15 Sep 2026. **Blocks:** REQ-IN-09.
 - **Why:** SPEC:234-241 (the STI-panel case). The global strip was removed (V2:4846) and nothing has
   replaced it.
+- **Now (30 Sep):** DOC21 §6 tracks "Remaining Results" on a linked order, so the physician sees
+  which ordered tests have not returned. That is a source for the shape; where it shows is still
+  Ani's.
+
+### OQ-74 · Which ECG findings count as critical? · Top 8
+- **Owner:** Daniel (he is writing the protocol). **Raised:** 30 Sep 2026. **Blocks:** REQ-IN-15,
+  REQ-IN-14; HZ log (three flag levels); UC-32.
+- **Why:** *"We'll have our own protocols. Like, if the ECG is saying, you know, STEMI or AFib, or
+  then we'll note that."* *"I know I haven't clarified what constitutes critical as far as ECG. Are
+  concerned. … I'll get that done."* (ECG30:25-30). Until the list exists, the demo ECG shows as a
+  yellow "Abnormal ECG" (ECG30:61-63). He named examples; no list is assumed here.
+- **Ask:** please send the list of ECG findings that make an ECG critical. When one is critical,
+  the card turns red and names the finding: what exactly should it say?
+- **Source:** ECG30:24-30, 60-63; D-97.
+
+### OQ-75 · What does "clear" mean: the same as signing off, or lighter? · Top 8
+- **Owner:** Daniel. **Raised:** 30 Sep 2026 (ECG30, and a conflict with DOC21). **Blocks:**
+  REQ-IN-16, REQ-IN-19, REQ-IN-01; UC-32.
+- **The two sides:**
+  - Daniel, 30 Sep, on a yellow flag: *"did the doctor like clear this or what do we do?"*
+    (ECG30:44-46). v2 treats "cleared" as "its result is signed off" (ECG30:57-58; V2d:11003-11010).
+  - DOC21 §9: clearing an attention card must not close the Inbox report unless the physician
+    completes the review. So clearing and completing the review are two acts there.
+  - Reviewed is a state and sign-off an accountable action (D-71). "Clear" is a third word.
+- **Ask:** when you clear a yellow result, is that your sign-off on it, or a lighter "seen"? And
+  does clearing a card on Home leave the Inbox report open until you sign it off?
+- **Source:** ECG30:39-46, 64-65; DOC21 §9; B-003 conflicts; D-71, D-98.
+
+### OQ-76 · Priority names: Critical / High, or HIGH / URGENT? · Top 8
+- **Owner:** Daniel, or Ani. **Raised:** 30 Sep 2026 (a conflict between sources). **Blocks:**
+  REQ-IN-18, REQ-HQ-12, REQ-IN-03.
+- **The conflict:** DOC21 names the elevated levels HIGH and URGENT (§4, §9, §14). Daniel's words
+  and v2 use Critical and High (ANS27:8; ECG30:33-38; `labTier` V2d:8178). Rule 16b says "Critical
+  and High". Not resolved here.
+- **Ask:** which words does the product use? If URGENT is DOC21's name for Critical, say so, and
+  the documents can be aligned.
+- **Source:** DOC21 §4, §9, §14; ANS27:7-11; ECG30:32-42; B-003 conflicts.
+
+### OQ-78 · Two companion documents for document routing are missing
+- **Owner:** Daniel (or whoever authors them). **Raised:** 30 Sep 2026. **Blocks:** REQ-IN-18,
+  REQ-IN-20, REQ-CH-23; UC-33.
+- **Why:** DOC21 says engineering must receive with it the **Simple Clinical Document Labelling
+  Standard** and the **Review Labwork Attention Protocol**. It also says attention protocols for
+  imaging, pathology and hospital/ED documents are still to be written (DOC21 header, §9). Until
+  then those documents are protected only by review time limits and the critical-signal handoff.
+- **Ask:** when can we have the two documents? Who writes the imaging, pathology and hospital/ED
+  protocols?
+- **Source:** DOC21 header, §5, §9; B-003 conflicts.
+
+### OQ-85 · Confirm document routing's proposed time limits and return windows
+- **Owner:** Daniel. **Raised:** 3 Oct 2026. **Blocks:** REQ-IN-20, REQ-IN-22.
+- **Why:** DOC21 gives review time limits by document type (§9) and expected-return windows by
+  order type (§6), each marked "proposed default, clinic-configurable". They are clinical safety
+  values, so the docs quote them as proposals only.
+- **Ask:** are DOC21's defaults the ones to build with? Who can change them later?
+- **Source:** DOC21 §6, §9.
+
+### OQ-86 · Overdue results: an automatic MOA task, or the doctor presses Task? · Top 8
+- **Owner:** Daniel. **Raised:** 3 Oct 2026 (a conflict between sources). **Blocks:** REQ-IN-22,
+  REQ-CH-29, REQ-TK-01.
+- **The conflict:** DOC21 §6 says an order past its expected window goes on the ordering
+  physician's Overdue list "and an MOA follow-up task is created". Our rule is that a task exists
+  only when the doctor presses Task (rule 12; REQ-TK-01: *"no automatic tasks"*; REQ-CH-29: "the
+  doctor … decides whether to task the MOA").
+- **Ask:** may the system create the MOA follow-up task by itself for an overdue result, or does
+  the overdue item wait for you to press Task?
+- **Source:** DOC21 §6; `9b7b5f6`; REQ-TK-01, REQ-CH-29.
 
 ---
 
@@ -714,6 +816,15 @@ pill).
 - **Why:** he floated "remind me later" and did not settle it (SIA:54). He dislikes "tickle"
   (SIA:22).
 
+### OQ-83 · When the paired MOA changes between windows, what does the chat show?
+- **Owner:** Daniel. **Raised:** 30 Sep 2026. **Blocks:** REQ-TK-12, REQ-MP-05; UC-31.
+- **Why:** the pairing can change by call window: *"During any particular call window, we will see
+  what we can [staff] them out to."* (MOA30:12). The new MOA is named (B-002:32-33). How the
+  earlier conversation carries over is marked Needs Daniel (B-002:34).
+- **Ask:** when the doctor's MOA changes at a window boundary, does the new MOA see the earlier
+  conversation, and does the doctor? Who answers chat between windows?
+- **Source:** MOA30:7-21; B-002.
+
 ---
 
 ## Intake
@@ -730,6 +841,10 @@ pill).
   as continuing with him do: a header label, booking follow-ups with him, anything formal? No
   attachment rule is assumed here.
 - **Source:** S5:30-32, 90-92, 149-152, 169-170; SIA:16.
+- **Now (30 Sep and 2 Oct), partly sourced:** IB7 §15 makes ongoing care an explicit patient
+  choice through a Family Doctor pathway, with physicians accepting new patients, and never an
+  automatic attachment from episodic visits. IN23 adds separate physician pools for episodic and
+  comprehensive care (§8, AI-16). Still open: how the doctor marks the attachment on the chart.
 
 ### OQ-67 · Which concerns are quick-book, and which are triage-first? · Top 8
 - **Owner:** Daniel. **Raised:** 29 Sep 2026. **Blocks:** REQ-INT-08; T-014; UC-24.
@@ -747,8 +862,10 @@ pill).
   - What are the "+6 More"?
   - Does a concern's group ever change, for example with age or a repeat visit? No rule is assumed.
 - **Source:** BOOK29:10-19, 47-51; B-001 item 2.
+- **Now (2 Oct):** IN23 keeps each pathway's questions, slots and stop rule in a versioned registry
+  that the Clinical Director edits (ENG-10, §11, AC-28). That is where the list would live.
 
-### OQ-68 · Triage for a patient who won't use the AI · Top 8
+### OQ-68 · Triage for a patient who won't use the AI
 - **Owner:** Daniel (the questions), Ani and Manoj (where it sits). **Raised:** 29 Sep 2026.
   **Blocks:** REQ-INT-10; T-015; UC-28.
 - **Why:**
@@ -764,6 +881,8 @@ pill).
   - If the phone line itself becomes AI (BOOK29:24), what does a patient who refuses AI get on the
     phone?
 - **Source:** BOOK29:17-18, 22-26, 54-55; B-001; T-015 on the task board.
+- **Now (2 Oct):** IN23 keeps the service cards and a non-AI direct-booking path working when the
+  AI is down (AI-21, AC-27). It does not say how a triage-first concern is triaged without the AI.
 
 ### OQ-69 · The red-flag list and the emergency wording · Top 8
 - **Owner:** Daniel (the list and the words); Manoj (the look, including whether it uses red), with
@@ -782,6 +901,11 @@ pill).
   - What happens when the patient says "it's not an emergency"?
   - No clinical list or wording is invented here. The designer uses marked placeholders (T-012).
 - **Source:** BOOK29:31-34, 45-46; QA29:12, 22-23; rule 17a; T-012.
+- **Now (30 Sep), a draft source:** ES3 sets out hard-stop domains (§4), triage-first safety
+  questions (§5), what happens on a hard stop (§7) and default BC messages per domain (§7), with
+  "Final wording requires physician approval". IN23 adds a first-prompt acknowledgement with
+  recommended wording (§5). So the ask becomes: **approve ES3's domains and messages**, and settle
+  OQ-79 (how deep the screening goes). The look is still Manoj's.
 
 ### OQ-72 · WhatsApp or text booking
 - **Owner:** Daniel (whether and when); `privacy-security` must review before any design.
@@ -801,6 +925,57 @@ pill).
   The "10 min" is T-014's example, not a rule.
 - **Ask:** how long is the hold, and what happens when it runs out?
 - **Source:** T-014; QA29:16.
+
+### OQ-77 · A physician scheduler, or call windows? · PARTLY ANSWERED 2 Oct 2026
+- **Answer (IN23, 2 Oct 2026):** AI-20 orders doctors by the fewest bookings "in the selected call
+  window". So the scheduler is a doctor plus a call window, not a clock-time appointment.
+- **Still open:**
+  - IB7 speaks of "appointments", "earliest available appointment" and "the physician schedule"
+    (§6, §17), and IN23 of "earliest appropriate availability" (AI-20). Our model is call windows
+    with a queue position and no wait estimates (rule 11; D-05).
+  - Should a patient ever see a time inside a window? (This touches OQ-26.)
+- **Owner:** Ani, then Daniel. **Raised:** 30 Sep 2026 (B-003 conflict 3). **Blocks:**
+  REQ-INT-13, REQ-INT-14; T-014.
+- **Ask:** confirm that "availability" and "appointment" in IB7 and IN23 always mean a call window
+  with a queue position, and that the patient never sees a call time.
+- **Source:** IB7 §6, §7, §17; IN23 AI-20, AC-26; B-003, B-004 conflicts; rule 11.
+
+### OQ-79 · Safety screening: about three questions on every input, or one, reactively? · Top 8
+- **Owner:** Daniel, as the Clinical Director (or whoever holds that role). **Raised:** 3 Oct 2026
+  (a conflict between sources). **Blocks:** REQ-INT-11, REQ-INT-16, REQ-INT-17, REQ-INT-18;
+  T-012, T-013; UC-29.
+- **The conflict:**
+  - ES3 (draft): every patient input on every surface is screened before the next routine reply
+    (§3, §16), and triage-first presentations ask up to about three safety questions (§3, §5).
+  - IN23: safety handling is "primarily reactive", with no universal red-flag screen, and a pathway
+    may ask at most one safety discriminator, counted in the 4-question maximum (§17, AI-04).
+  - Both send an emergency to 911 or the ED and stop booking for it. They differ on how hard the
+    product looks.
+- **Ask:** which governs the chat? If both, is ES3's screening a background check on every message
+  while IN23 limits only the questions asked? Who is the Clinical Director that owns the trigger
+  list (ES3 document control; IN23 §17)?
+- **Source:** ES3 §3, §5, §12, §16; IN23 §17, AI-04, AI-12; B-004 conflicts.
+
+### OQ-80 · An empty "Hello": three choices, or the care-intent cards?
+- **Owner:** Ani (confirm), then Manoj (design). **Raised:** 3 Oct 2026 (a conflict between
+  sources). **Blocks:** REQ-INT-18; T-014.
+- **The conflict:** IB7 §3 offers three choices to a patient who says only "Hello": "See my Family
+  Doctor", "Find a Family Doctor", "Get Care Today". IN23 §7 uses two cards, Quick Care and Family
+  Doctor (or "See My Family Doctor" when an assigned doctor is known), shown only when care intent
+  is unclear after the concern (AI-13, AI-17, AI-23). B-004 says to use v2.3 for the chat and
+  confirm with Ani.
+- **Ask:** confirm IN23's cards replace IB7's three-choice menu. Does an empty "Hello" first get
+  "what do you need help with?" (concern first, AI-01), before any card?
+- **Source:** IB7 §3; IN23 §7, AI-01, AI-13, AI-17, AI-23; B-004.
+
+### OQ-84 · Who sets the "clinically appropriate timeframe" for cross-coverage?
+- **Owner:** Daniel. **Raised:** 3 Oct 2026. **Blocks:** REQ-INT-14.
+- **Why:** IB7 §9 says another doctor is offered when the Family Doctor isn't available within a
+  clinically appropriate timeframe, which depends on the concern, not a fixed rule. It says
+  Simplicity "may help determine" same day, a day or two, or routine. No timeframe is set here.
+- **Ask:** who decides each concern's timeframe: the pathway registry (IN23 ENG-10), the AI, or
+  you? And what do the clinic's "alternate-physician/LFP rules" (IN23 §8) say?
+- **Source:** IB7 §8, §9; IN23 §8, ENG-10.
 
 ---
 
@@ -891,6 +1066,8 @@ pill).
 - **Now (27 Sep), backend documentation:** *"This is on our to do list - Samin is to help organize
   Sai and Dev on the backend to document it."* (ANS27:56). Tracking only. Until it exists, there is
   no backend source for the docs, and production behaviour comes from shadowing.
+- **Now (30 Sep):** he will write the chart requirements document (CHART30:34-37; OQ-82) and the
+  critical-ECG protocol (ECG30:29-30; OQ-74).
 
 ## Changelog
 
@@ -933,3 +1110,17 @@ pill).
   - Notes added: OQ-03, OQ-09 (never sent), OQ-22, OQ-30, OQ-35 (probably settled by the markup)
     and OQ-36 (backend documentation).
   - A new Top 8 for round 3.
+- 3 Oct 2026, sixth run (the 30 Sep inputs, plus Intake v2.3 of 2 Oct). 86 questions.
+  - New (13): OQ-74 (critical ECG findings), OQ-75 (what "clear" means; ECG30 vs DOC21 §9), OQ-76
+    (Critical / High vs HIGH / URGENT), OQ-77 (scheduler vs call windows; partly answered by IN23
+    AI-20), OQ-78 (two missing companion documents), OQ-79 (safety-screening depth, ES3 vs IN23),
+    OQ-80 (the "Hello" menu, IB7 vs IN23), OQ-81 ("Chase their office"), OQ-82 (the chart
+    requirements document), OQ-83 (chat when the paired MOA changes), OQ-84 (cross-coverage
+    timeframes), OQ-85 (document time limits and return windows) and OQ-86 (an automatic MOA task
+    for overdue results vs rule 12).
+  - Partly answered: OQ-12 (the abnormal ECG has its own card).
+  - Notes added: OQ-19 and OQ-38 (DOC21), OQ-31 (the AI workflow reads as now), OQ-36 (his two
+    documents), OQ-58 (IB7 §15, IN23 pools), OQ-67 (the pathway registry), OQ-68 (AI-21), OQ-69
+    (ES3 is a draft source; the ask is now approval), OQ-71 (Ani decided the pill).
+  - Top 8 rebuilt for round 3 (updated 3 Oct). OQ-04, OQ-64, OQ-65, OQ-68 and OQ-70 move to the
+    next batch unchanged.
