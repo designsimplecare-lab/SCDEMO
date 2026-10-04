@@ -1,5 +1,8 @@
 # SC – Design System: tokens for building in code
 
+> **Not in use yet.** Ani, 3 Oct 2026: build in the demo's own design system for now, and move to
+> this library later, as a separate task. Keep this file for that migration.
+
 The source of truth is the Figma library "SC – Design System"
 (https://www.figma.com/design/XoYpGAbbNZUHkKwWDT56g3/SC---Design-System). The lead read these values
 from its variables on 3 Oct 2026, for agents that can't open Figma. If a value here and Figma

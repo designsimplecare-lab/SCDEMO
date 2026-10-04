@@ -30,7 +30,7 @@ below the visit summary. See `from-daniel/2026-09-30-chart-workflow.md`.
 - [ ] Design follows Chart View v2.5 (B-006). Start with its first delivery step, the core
       encounter shell: the patient snapshot with the this-visit strip, Today, Needs Attention, the
       note and actions beside the context at ≥1440 px, and simplified full-chart navigation.
-- [ ] Built from SC – Design System (as in T-020).
+- [ ] Built in the demo's existing design system (the portal's own CSS variables, components and icons). The Figma migration comes later.
 - [ ] The "Where v2 differs today" list in B-006 is resolved or explicitly deferred.
 - [ ] Checked against v2.5's task targets with the `doctor` agent before Ani's review.
 - [ ] The doctor always signs, and AI drafts never auto-file (rule 18).
@@ -50,3 +50,4 @@ below the visit summary. See `from-daniel/2026-09-30-chart-workflow.md`.
 - 2026-10-03 — Chart View v2.5 arrived; unblocked
 - 2026-10-03 — owner changed; Ani approves the design.
 - 2026-10-03 — Ani: the physician portal file is the main version; build the chart into it, with no v3 file
+- 2026-10-03 — Ani: use the demo's existing design system; the Figma library comes later

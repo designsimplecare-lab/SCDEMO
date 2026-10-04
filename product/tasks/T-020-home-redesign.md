@@ -63,3 +63,4 @@ change by change. Evidence from the screenshots (in the Figma file):
 - 2026-09-30 — created, with the Figma brief
 - 2026-09-30 — Ani named SC – Design System as the library to use; the brief's design-system section rewritten
 - 2026-10-03 — owner changed; Ani approves the design.
+- 2026-10-03 — Ani: for now, build in the demo's existing design system. The Figma brief and the SC – Design System migration come later.

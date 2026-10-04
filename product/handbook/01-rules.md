@@ -98,8 +98,13 @@ blocks your task, say so; don't work around it.
 20. **Anything that touches clinical risk goes through `clinical-safety`** before it ships.
 
 ## E. Design rules
-**The design system is "SC – Design System" in Figma**
-(https://www.figma.com/design/XoYpGAbbNZUHkKwWDT56g3/SC---Design-System). Ani, 30 Sep 2026: new design
+**For now, build in the demo's own design system** (Ani, 3 Oct 2026: "use the design system we already
+have in our demo, do not use Figma yet, we will do it later when we are done"). That means the CSS
+variables, font, components, icons and dark theme already in `simplecare-physician-portal-v2.html`. The
+move to the Figma library described below happens **later**, as its own task.
+
+**The target design system is "SC – Design System" in Figma**
+(https://www.figma.com/design/XoYpGAbbNZUHkKwWDT56g3/SC---Design-System). Ani, 30 Sep 2026: once the migration starts, design
 work uses only its components, Mapped variables (Light and Dark), Lato text styles and Elevation
 styles. The v2 prototype (bright blue #4353E8, warm greys, system font) and
 `simplecare-design-system.html` predate it, and v2 moves to it after the Home redesign (T-020). The
