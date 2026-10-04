@@ -8,8 +8,8 @@
 | Size | M |
 | Requested by | Ani |
 | Date | 2026-09-29 |
-| Owner | **Manoj** (product designer) |
-| Contributors | `ux-designer` (prototype and spec drafts, for Manoj), `content-designer` (words) |
+| Owner | `ux-designer` (Ani approves) |
+| Contributors | `content-designer` (words) |
 | Gates | `content-designer`, `patient`, `patient-chat-qa` |
 
 ## Request
@@ -69,3 +69,4 @@ Evidence: QA-011, QA-012, QA-016, QA-017, QA-018, QA-027 (PC-03, 04, 05, 06, 22)
 ## Log
 - 2026-09-29: owner changed to Manoj, the newly hired designer. The `ux-designer` agent assists.
 - 2026-09-29 — created from staging QA run 1
+- 2026-10-03: owner changed to `ux-designer`; Ani approves the design.

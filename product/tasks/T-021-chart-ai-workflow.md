@@ -8,7 +8,7 @@
 | Size | L |
 | Requested by | Daniel (via Ani) |
 | Date | 2026-09-30 |
-| Owner | **Manoj** (+ `ux-designer`) |
+| Owner | `ux-designer` (Ani approves) |
 | Contributors | `product-manager`, `ai-engineer`, `doctor` |
 | Gates | `clinical-safety`, `qa-engineer`, `accessibility` |
 
@@ -45,3 +45,4 @@ below the visit summary. See `from-daniel/2026-09-30-chart-workflow.md`.
 ## Log
 - 2026-09-30 — created, blocked on Daniel's document
 - 2026-10-03 — Chart View v2.5 arrived; unblocked
+- 2026-10-03 — owner changed; Ani approves the design.

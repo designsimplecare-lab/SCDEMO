@@ -8,8 +8,8 @@
 | Size | M |
 | Requested by | Ani |
 | Date | 2026-09-29 |
-| Owner | **Manoj** (product designer) |
-| Contributors | `ux-designer` (prototype and spec drafts, for Manoj), `content-designer` (words) |
+| Owner | `ux-designer` (Ani approves) |
+| Contributors | `content-designer` (words) |
 | Gates | `clinical-safety`, `content-designer`, `accessibility`, `patient-chat-qa` |
 
 ## Request
@@ -39,7 +39,7 @@ Evidence: QA-001, QA-002, QA-003, QA-004 (PC-21) in `product/reports/patient-cha
 - [ ] **Re-test:** after the gates, `patient-chat-qa` re-runs the scenarios above against the prototype.
 
 ## Needs Daniel / Ani
-- The emergency wording, the red-flag list and whether the screen uses red are **Needs Daniel (wording) and Manoj (look)** (rule 17a). Design with clearly marked placeholders.
+- The emergency wording, the red-flag list and whether the screen uses red are **Needs Daniel (wording) and Ani's approval of the look** (rule 17a). Design with clearly marked placeholders.
 
 ## Inputs
 - `product/reports/patient-chat-qa-2026-09-29-staging-run1.md` (see the issues listed above)
@@ -65,3 +65,4 @@ Evidence: QA-001, QA-002, QA-003, QA-004 (PC-21) in `product/reports/patient-cha
 ## Log
 - 2026-09-29: owner changed to Manoj, the newly hired designer. The `ux-designer` agent assists.
 - 2026-09-29 — created from staging QA run 1
+- 2026-10-03: owner changed to `ux-designer`; Ani approves the design.

@@ -53,10 +53,10 @@
 - **Image:** a person at home **on the phone**, not a laptop video call. Alt text: "Patient speaking
   with a Simple Care doctor by phone".
 
-### 2.2 Emergency safety block — **Needs Daniel (wording) and Manoj (visual treatment), per rule 17a**
+### 2.2 Emergency safety block — **Needs Daniel (wording) and Ani (visual treatment, proposed by `ux-designer`), per rule 17a**
 
 > Placement: directly under the hero, visible without scrolling on mobile, on **every** concern page.
-> Styling: **to be decided by Manoj** (rule 17a). Whatever is chosen must pair an icon with text, and not
+> Styling: **to be proposed by `ux-designer` and approved by Ani** (rule 17a). Whatever is chosen must pair an icon with text, and not
 > rely on colour alone.
 >
 > The general wording below is taken from the live booking-flow modal on simplecare.ca ("Before You

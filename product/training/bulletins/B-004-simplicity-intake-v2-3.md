@@ -109,7 +109,7 @@ These match and extend our own staging run (`product/reports/patient-chat-qa-202
   "in the selected call window", so the scheduler is doctor plus call window.
 
 ## Who this affects
-- **Manoj, T-012 to T-017 (the chat):**
+- **`ux-designer`, T-012 to T-017 (the chat):**
   - T-012: the acknowledgement first, plus reactive safety.
   - T-013: slots, reply handling and the stop rule.
   - T-014: care intent, sign-in timing, scheduler after intake, physician order.

@@ -87,7 +87,7 @@ blocks your task, say so; don't work around it.
     - The AI is offered, never forced. See bulletin B-001.
 17a. **Emergency redirection is the exception** ("call 911 / go to the ER") on any patient-facing
     surface: the site, the Simplicity chat or the portal. Its wording needs **Daniel**. Its visual treatment, including whether it
-    uses red, needs **Manoj**, and Ani approves. Don't design around it by guessing.
+    uses red, is proposed by `ux-designer`, and Ani approves. Don't design around it by guessing.
 17. **Patient tone: attention without alarm.** No red, no clinical flags and no HIGH/LOW in the
     patient portal. Name each test individually, and say who moves next.
 
@@ -110,8 +110,8 @@ rules below still apply on top of the library.
     - Red is critical only: a critical value is the only red text.
 22. **Sizes.**
     - Nothing a physician reads is under 14px.
-    - **Patient-facing body text: 16px minimum on phones.** This is a proposed default, pending Manoj's
-      confirmation.
+    - **Patient-facing body text: 16px minimum on phones.** This is a proposed default, pending
+      Ani's confirmation.
     - Buttons are 44px with an icon.
     - One tag spec: 15px/500, 40px tall, no stroke, barely tinted.
     - Reading text caps at 66ch.

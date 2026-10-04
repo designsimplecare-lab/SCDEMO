@@ -8,7 +8,7 @@
 | Size | M |
 | Requested by | Daniel (by email, with the team copied), via Ani |
 | Date | 2026-09-30 |
-| Owner | **Manoj** (design) |
+| Owner | `brand-designer` (Ani approves) |
 | Contributors | `marketing-lead` (brief and message), `brand-designer` (layout drafts), `content-seo` (the QR landing and tracking), `performance-marketing` (privacy-safe QR attribution) |
 | Gates | `marketing-compliance` (required), `accessibility` (legibility at distance) |
 
@@ -52,3 +52,4 @@ specs are in `from-daniel/2026-09-30-moa-pairing-and-bus-ads.md` §2.
 
 ## Log
 - 2026-09-30: created.
+- 2026-10-03 — owner changed; Ani approves the design.

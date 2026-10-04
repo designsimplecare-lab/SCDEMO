@@ -8,6 +8,9 @@ the start of every task, and adds its own entries under "From QA".
 Newest first. Each entry: the date, what changed, where the source is, and what QA should do.
 
 ## From the lead
+- **3 Oct 2026: design ownership changed.** The `ux-designer` agent now owns all design tasks
+  (T-012 to T-017, T-020, T-021), and Ani approves every design. Where QA reports say "Needs Manoj",
+  read "needs `ux-designer` and Ani's approval".
 - **3 Oct 2026: ECG Critical v2.0 and Chart View v2.5 arrived** (B-006).
   - **ECG:** there is one priority, CRITICAL ECG, triggered only by the dictionary phrases or a
     source critical flag, and the source phrase is shown verbatim. "Abnormal ECG" alone, and plain

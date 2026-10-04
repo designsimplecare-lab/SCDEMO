@@ -2,14 +2,14 @@
 
 | Field | Value |
 |---|---|
-| Status | Ready |
+| Status | In progress |
 | Type | Review |
 | Priority | P2 |
 | Size | M |
 | Requested by | lead (from Daniel's PRD, forwarded by Ani) |
 | Date | 2026-10-03 |
 | Owner | `billing-msp` |
-| Contributors | `moa`, `doctor`, `product-manager` (spec docs), then **Manoj** for any design change |
+| Contributors | `moa`, `doctor`, `product-manager` (spec docs), then `ux-designer` for any design change |
 | Gates | `clinical-safety` (attestation and sign-off), `qa-engineer` |
 
 ## Request
@@ -34,7 +34,7 @@ was built before this PRD. We need a gap list before anything is redesigned.
 ## Acceptance criteria
 - [ ] A report in `product/reports/` with a one-screen summary first. For each gap: the PRD ID, what
       v2 does (file and line), and the proposed change. Each one is marked **Needs Daniel** or
-      **design (Manoj)**.
+      **design (`ux-designer`)**.
 - [ ] No confidential PRD content in the report: cite IDs only.
 - [ ] Follows `product/handbook/01-rules.md`.
 
@@ -47,3 +47,4 @@ was built before this PRD. We need a gap list before anything is redesigned.
 
 ## Log
 - 2026-10-03 — created, waiting for Ani's go
+- 2026-10-03 — Ani: "let start to work on billing requrements"; billing-msp started

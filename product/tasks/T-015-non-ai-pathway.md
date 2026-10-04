@@ -8,8 +8,8 @@
 | Size | S |
 | Requested by | Ani |
 | Date | 2026-09-29 |
-| Owner | **Manoj** (product designer) |
-| Contributors | `ux-designer` (prototype and spec drafts, for Manoj), `content-designer` (words) |
+| Owner | `ux-designer` (Ani approves) |
+| Contributors | `content-designer` (words) |
 | Gates | `content-designer`, `patient`, `accessibility` |
 
 ## Request
@@ -65,3 +65,4 @@ Evidence: QA-007 (PC-10, PC-23) in `product/reports/patient-chat-qa-2026-09-29-s
 - 2026-09-29: narrowed. The tile path exists in production; the remaining work is routing people who refuse the AI, and real empty states.
 - 2026-09-29: owner changed to Manoj, the newly hired designer. The `ux-designer` agent assists.
 - 2026-09-29 — created from staging QA run 1
+- 2026-10-03: owner changed to `ux-designer`; Ani approves the design.
