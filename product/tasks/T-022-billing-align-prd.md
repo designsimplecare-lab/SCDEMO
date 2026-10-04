@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | In progress |
+| Status | In review |
 | Type | Review |
 | Priority | P2 |
 | Size | M |
@@ -48,3 +48,4 @@ was built before this PRD. We need a gap list before anything is redesigned.
 ## Log
 - 2026-10-03 — created, waiting for Ani's go
 - 2026-10-03 — Ani: "let start to work on billing requrements"; billing-msp started
+- 2026-10-03 — report delivered: `product/reports/billing-msp-2026-10-03-prd-gap.md` (G1–G17, six new asks for Daniel N1–N6); waiting for Daniel on OQ-87
