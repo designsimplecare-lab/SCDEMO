@@ -4406,6 +4406,255 @@
   #pcv-c :is(#vcp-results,#vc-resrail) .rs-clr{font-size:14px;color:var(--ink-soft);}
   #pcv-c :is(#vcp-results,#vc-resrail) button.rs-clr{padding:0;min-height:0;font-weight:600;color:var(--ink);text-decoration:underline;}
   #pcv-c :is(#vcp-results,#vc-resrail) .rs-clr.ok{color:var(--good);font-weight:600;}
+
+  /* ===== T-021 chart shell (Physician Chart View v2.5, delivery step 1) =====
+     Ani, 3 Oct: v2's own design system (its variables, buttons, tags, icons, dark theme); the Figma
+     migration comes later. v2.5 §7: typography before containers, so three surfaces only: what needs
+     attention, the context, and the note. Red only on the critical value; amber with a word for to do. */
+  #screen-patientchart #pcv-c .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  #screen-patientchart #pcv-c :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #screen-patientchart #pcv-c .cs-cap{font-size:14px;line-height:20px;color:var(--ink-soft);margin:0;}
+  #screen-patientchart #pcv-c .cs-k{font-size:14px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-h3{font-size:17px;line-height:24px;font-weight:700;color:var(--ink);margin:0 0 10px;}
+  #screen-patientchart #pcv-c .cs-hd{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin:0 0 10px;}
+  #screen-patientchart #pcv-c .cs-hd .cs-h3{margin:0;}
+  /* one tag spec: 15px/500, 40px tall, no stroke, barely tinted; the colour sits on the icon */
+  #screen-patientchart #pcv-c .cs-tag{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 12px;border:0;border-radius:10px;
+    background:var(--tag-info);color:var(--ink);font:inherit;font-size:15px;font-weight:500;line-height:18px;white-space:nowrap;}
+  #screen-patientchart #pcv-c .cs-tag .ic,#screen-patientchart #pcv-c .cs-tag svg{width:18px;height:18px;flex:none;}
+  #screen-patientchart #pcv-c .cs-tag.warn{background:var(--tag-warn);}
+  #screen-patientchart #pcv-c .cs-tag.warn .ic{color:var(--tag-warn-ic);}
+  #screen-patientchart #pcv-c button.cs-tag{cursor:pointer;}
+  #screen-patientchart #pcv-c button.cs-tag:hover{box-shadow:inset 0 0 0 1px var(--tag-warn-ic);}
+  /* inside a 22px reading line the tag sits at 32px so the lines don't jump (Needs Ani: second tag height) */
+  #screen-patientchart #pcv-c .cs-tag.cs-inl{height:32px;padding:0 10px;margin-left:8px;vertical-align:middle;}
+
+  /* ---- persistent banner: snapshot + this-visit strip ---- */
+  #screen-patientchart #pcv-c .cs-banner{display:block;position:sticky;top:var(--cs-top,0px);z-index:40;padding:0;margin:0 0 14px;flex-wrap:nowrap;}
+  #screen-patientchart #pcv-c .cs-snap{display:flex;align-items:center;gap:20px;padding:14px 20px;}
+  #screen-patientchart #pcv-c .cs-photo{width:46px;height:46px;border:0;}
+  #screen-patientchart #pcv-c .cs-photo .ic,#screen-patientchart #pcv-c .cs-photo svg{width:24px;height:24px;}
+  #screen-patientchart #pcv-c .cs-who{min-width:0;}
+  #screen-patientchart #pcv-c .cs-who .vc-nm{margin:0;line-height:28px;}
+  #screen-patientchart #pcv-c .cs-who .vc-sub b{color:var(--ink);font-weight:600;}
+  #screen-patientchart #pcv-c .cs-facts{display:flex;flex-direction:column;gap:4px;}
+  #screen-patientchart #pcv-c .cs-fact{display:flex;align-items:center;gap:8px;margin:0;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-fact > .ic,#screen-patientchart #pcv-c .cs-fact > .ic svg{width:18px;height:18px;color:var(--ink-faint);flex:none;}
+  #screen-patientchart #pcv-c .cs-fact.cs-al-nkda > .ic{color:var(--good);}
+  #screen-patientchart #pcv-c .cs-fact.cs-al-named > .ic{color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-fact.cs-al-named b{font-weight:700;}
+  #screen-patientchart #pcv-c .cs-fact.cs-al-none .cs-tag{height:36px;}
+  #screen-patientchart #pcv-c .cs-fd b{font-weight:600;}
+  #screen-patientchart #pcv-c .cs-snap .vc-acts{margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+
+  #screen-patientchart #pcv-c .cs-strip{display:flex;align-items:flex-start;gap:16px;padding:10px 20px 12px;border-top:1px solid var(--line);}
+  #screen-patientchart #pcv-c .cs-strip h3{margin:0;padding-top:10px;min-width:76px;font-size:15px;font-weight:700;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-items{display:flex;flex-wrap:wrap;gap:8px 28px;flex:1;margin:0;padding:0;list-style:none;}
+  #screen-patientchart #pcv-c .cs-items li{position:relative;display:flex;gap:8px;align-items:flex-start;min-height:44px;}
+  #screen-patientchart #pcv-c .cs-items li > .ic,#screen-patientchart #pcv-c .cs-items li > .ic svg{width:18px;height:18px;margin-top:1px;color:var(--ink-faint);flex:none;}
+  #screen-patientchart #pcv-c .cs-items .cs-k{display:block;line-height:20px;}
+  #screen-patientchart #pcv-c .cs-items .cs-v{display:block;font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-items li.todo .cs-k{color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-items li.todo .cs-tag{margin-top:2px;}
+  #screen-patientchart #pcv-c .cs-compact{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;flex:1;min-height:44px;font-size:15px;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-compact b{font-weight:600;}
+  #screen-patientchart #pcv-c .cs-done{display:inline-flex;align-items:center;gap:6px;font-weight:600;}
+  #screen-patientchart #pcv-c .cs-done .ic,#screen-patientchart #pcv-c .cs-done svg{width:18px;height:18px;color:var(--good);}
+  #screen-patientchart #pcv-c .cs-dot{color:var(--ink-faint);}
+  #screen-patientchart #pcv-c .cs-strip .cs-more{margin-left:auto;}
+  #screen-patientchart #pcv-c .cs-pop{position:absolute;top:100%;left:0;z-index:50;margin-top:8px;width:340px;display:grid;gap:12px;padding:16px;
+    background:var(--panel);border-radius:16px;box-shadow:0 16px 48px rgba(23,24,28,.16),0 2px 6px rgba(23,24,28,.06);}
+  #screen-patientchart #pcv-c .cs-pop p{margin:0;font-size:15px;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-pop fieldset{border:0;margin:0;padding:0;display:grid;gap:4px;}
+  #screen-patientchart #pcv-c .cs-pop legend{font-size:14px;color:var(--ink-soft);margin:0 0 6px;padding:0;}
+  #screen-patientchart #pcv-c .cs-pl{display:grid;gap:6px;font-size:14px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-pl[hidden]{display:none;}
+  #screen-patientchart #pcv-c .cs-pop input[type=text]{height:44px;padding:0 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--panel);color:var(--ink);font:inherit;font-size:16px;}
+  #screen-patientchart #pcv-c .cs-opt{display:flex;align-items:center;gap:10px;min-height:44px;font-size:15px;color:var(--ink);cursor:pointer;}
+  #screen-patientchart #pcv-c .cs-opt input{width:20px;height:20px;accent-color:var(--accent);margin:0;}
+  #screen-patientchart #pcv-c .cs-pacts{display:flex;gap:8px;flex-wrap:wrap;}
+
+  #screen-patientchart #pcv-c .cs-notices{display:grid;gap:8px;padding:0 20px 12px;}
+  #screen-patientchart #pcv-c .cs-notices[hidden]{display:none;}
+  #screen-patientchart #pcv-c .cs-notice{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:var(--tag-warn);}
+  #screen-patientchart #pcv-c .cs-notice > .ic,#screen-patientchart #pcv-c .cs-notice > .ic svg{width:22px;height:22px;color:var(--tag-warn-ic);flex:none;}
+  #screen-patientchart #pcv-c .cs-notice p{margin:0;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-grow{flex:1;min-width:0;}
+  #screen-patientchart #pcv-c .cs-cond{display:flex;align-items:center;flex-wrap:wrap;gap:6px 16px;padding:8px 20px;border-top:1px solid var(--line);font-size:15px;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-cond[hidden]{display:none;}
+  #screen-patientchart #pcv-c .cs-crit{display:inline-flex;align-items:center;gap:6px;}
+  #screen-patientchart #pcv-c .cs-crit .ic,#screen-patientchart #pcv-c .cs-crit svg{width:18px;height:18px;color:var(--crit);}
+  #screen-patientchart #pcv-c .cs-val{color:var(--crit-text);font-weight:700;}
+  #screen-patientchart #pcv-c .cs-cond .vc-more{min-height:32px;}
+  #screen-patientchart #pcv-c .cs-viewtabs{display:none;gap:8px;padding:0 20px 12px;}
+
+  /* ---- workspace: context beside the note ---- */
+  #screen-patientchart #pcv-c .cs-work{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:16px;align-items:start;}
+  #screen-patientchart #pcv-c.cs-fc-open .cs-work{grid-template-columns:minmax(0,1fr) 420px;}
+  #screen-patientchart #pcv-c .cs-ctx{min-width:0;}
+  #screen-patientchart #pcv-c .cs-ctx[hidden],#screen-patientchart #pcv-c .cs-fc[hidden]{display:none;}
+
+  /* Needs attention: one grouped surface, the inbox's row language, tier as word + symbol + colour */
+  #screen-patientchart #pcv-c #vc-alerts{gap:0;margin:0 0 14px;}
+  #screen-patientchart #pcv-c #vc-alerts .cs-h3{margin:0 0 10px 2px;}
+  #screen-patientchart #pcv-c .cs-group{background:var(--panel);border-radius:16px;box-shadow:var(--shadow-card);overflow:hidden;}
+  #screen-patientchart #pcv-c .cs-group + .cs-group{margin-top:10px;}
+  #screen-patientchart #pcv-c .cs-group .vca-row{background:transparent;box-shadow:none;border-radius:0;padding:16px 20px;}
+  #screen-patientchart #pcv-c .cs-group .vca-row.cs-rel{padding-left:62px;border-top:1px solid var(--line);}
+  #screen-patientchart #pcv-c .cs-relh{margin:0;padding:10px 20px 0 62px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-relh + .vca-row.cs-rel{border-top:0;padding-top:8px;}
+  #screen-patientchart #pcv-c #vc-alerts .vca-row.cs-crit .vca-ic,#screen-patientchart #pcv-c #vc-alerts .vca-row.cs-crit .vca-dir{color:var(--crit);}
+  #screen-patientchart #pcv-c #vc-alerts .vca-row.cs-crit .vca-v{color:var(--crit-text);}
+  #screen-patientchart #pcv-c #vc-alerts .vca-row.cs-todo .vca-ic,#screen-patientchart #pcv-c #vc-alerts .vca-row.cs-todo .vca-dir{color:var(--warn);}
+  #screen-patientchart #pcv-c #vc-alerts .vca-row.cs-info .vca-ic,#screen-patientchart #pcv-c #vc-alerts .vca-row.cs-info .vca-dir{color:var(--tag-info-ic);}
+  #screen-patientchart #pcv-c #vc-alerts .vca-row.cs-info .vca-v,#screen-patientchart #pcv-c #vc-alerts .vca-row.cs-todo .vca-v{color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-side{display:grid;justify-items:end;gap:6px;}
+  #screen-patientchart #pcv-c .cs-stage{display:inline-flex;align-items:center;gap:6px;margin:0;font-size:14px;line-height:20px;color:var(--ink-soft);white-space:nowrap;}
+  #screen-patientchart #pcv-c .cs-stage .ic,#screen-patientchart #pcv-c .cs-stage svg{width:16px;height:16px;color:var(--ink-faint);}
+  #screen-patientchart #pcv-c .cs-na-empty{display:flex;align-items:center;gap:8px;margin:0 0 4px 2px;font-size:15px;line-height:22px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-na-empty .ic,#screen-patientchart #pcv-c .cs-na-empty svg{width:18px;height:18px;color:var(--ink-faint);}
+
+  /* the context: Today, Relevant to [concern], Since you last saw, as typography on one surface */
+  #screen-patientchart #pcv-c .cs-context{padding:20px 24px;margin:0;}
+  #screen-patientchart #pcv-c .cs-sec{margin:0;}
+  #screen-patientchart #pcv-c .cs-sec + .cs-sec{border-top:1px solid var(--line);margin-top:20px;padding-top:20px;}
+  #screen-patientchart #pcv-c .cs-sec[hidden]{display:none;}
+  #screen-patientchart #pcv-c .cs-reason{margin:0 0 12px;font-size:24px;line-height:32px;font-weight:700;color:var(--ink);max-width:36ch;}
+  #screen-patientchart #pcv-c .cs-kv{display:grid;grid-template-columns:150px minmax(0,1fr);gap:8px 16px;margin:0;}
+  #screen-patientchart #pcv-c .cs-kv dt{font-size:14px;line-height:22px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-kv dd{margin:0;font-size:15px;line-height:22px;color:var(--ink);max-width:var(--measure);}
+  #screen-patientchart #pcv-c .cs-flagline{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;}
+  #screen-patientchart #pcv-c .cs-flagline .vc-more{min-height:32px;}
+  #screen-patientchart #pcv-c .cs-relkv{row-gap:14px;}
+  #screen-patientchart #pcv-c .cs-relkv dt{font-size:15px;font-weight:600;color:var(--ink);padding-top:5px;}
+  #screen-patientchart #pcv-c .cs-src{display:block;width:calc(100% + 16px);max-width:calc(var(--measure) + 16px);margin:0 -8px;padding:5px 8px;border:0;border-radius:8px;
+    background:none;text-align:left;font:inherit;font-size:15px;line-height:22px;color:var(--ink);cursor:pointer;}
+  #screen-patientchart #pcv-c .cs-src:hover{background:var(--wash);}
+  #screen-patientchart #pcv-c .cs-src b{font-weight:600;}
+  #screen-patientchart #pcv-c .cs-when{color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-go{width:16px;height:16px;margin-left:6px;vertical-align:-3px;color:var(--ink-faint);opacity:0;}
+  #screen-patientchart #pcv-c .cs-src:hover .cs-go,#screen-patientchart #pcv-c .cs-src:focus-visible .cs-go{opacity:1;}
+  #screen-patientchart #pcv-c .cs-trend{display:inline-flex;vertical-align:middle;color:var(--ink);margin:0 4px;}
+  #screen-patientchart #pcv-c .cs-note2{margin:2px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-note2 b{color:var(--ink);font-weight:600;}
+  #screen-patientchart #pcv-c .cs-exp{display:inline-flex;align-items:center;gap:6px;min-height:36px;margin:0 0 0 -8px;padding:0 8px;border:0;border-radius:8px;
+    background:none;font:inherit;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;}
+  #screen-patientchart #pcv-c .cs-exp:hover{background:var(--wash);}
+  #screen-patientchart #pcv-c .cs-exp .ic,#screen-patientchart #pcv-c .cs-exp svg{width:16px;height:16px;transition:transform .15s;}
+  #screen-patientchart #pcv-c .cs-exp[aria-expanded="true"] .ic{transform:rotate(180deg);}
+  #screen-patientchart #pcv-c .cs-quote{margin:4px 0 8px;padding:0 0 0 14px;border-left:2px solid var(--line);font-size:15px;line-height:22px;color:var(--ink-soft);max-width:var(--measure);}
+  #screen-patientchart #pcv-c .cs-quote p{margin:0;}
+  #screen-patientchart #pcv-c .cs-quote p + p{margin-top:6px;}
+  #screen-patientchart #pcv-c .cs-quote[hidden]{display:none;}
+  #screen-patientchart #pcv-c .cs-since{margin:0;padding:0;list-style:none;}
+  #screen-patientchart #pcv-c .cs-since li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:14px;padding:8px 0;}
+  #screen-patientchart #pcv-c .cs-since li + li{border-top:1px solid var(--line);}
+  #screen-patientchart #pcv-c .cs-kind{display:inline-flex;align-items:center;gap:6px;font-size:14px;line-height:22px;font-weight:600;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-kind .ic,#screen-patientchart #pcv-c .cs-kind svg{width:16px;height:16px;color:var(--ink-faint);}
+  #screen-patientchart #pcv-c .cs-txt{font-size:15px;line-height:22px;color:var(--ink);max-width:var(--measure);}
+  #screen-patientchart #pcv-c #slv > .vc-more{display:inline-flex;align-items:center;margin-top:4px;}
+  #screen-patientchart #pcv-c mark{background:var(--tag-warn);color:inherit;border-radius:2px;}
+
+  /* ---- the note column, beside the context and sticky under the banner ---- */
+  #screen-patientchart #pcv-c .cs-note{position:sticky;top:calc(var(--cs-top,0px) + var(--cs-bh,0px) + 12px);margin:0;
+    max-height:calc(100vh - var(--cs-top,0px) - var(--cs-bh,0px) - 24px);overflow:auto;overscroll-behavior:contain;}
+  #screen-patientchart #pcv-c .cs-note .vc-h h3{margin:0;font-size:17px;font-weight:700;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-saved{font-size:14px;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;}
+  #screen-patientchart #pcv-c .cs-saved .ic,#screen-patientchart #pcv-c .cs-saved svg{width:16px;height:16px;color:var(--good);}
+  #screen-patientchart #pcv-c .cs-note .sc-block{margin:0 0 12px;}
+  #screen-patientchart #pcv-c .cs-note .sc-hd{flex-wrap:wrap;}
+  #screen-patientchart #pcv-c .cs-note .sc-sub{flex-basis:100%;order:3;}
+  /* AI text: brand wash, its own mark and label, the source under it, until accepted */
+  #screen-patientchart #pcv-c .cs-ai{display:grid;gap:6px;margin:0 0 12px;padding:12px 14px;border-radius:12px;background:var(--brand-wash);}
+  :root[data-theme="dark"] #screen-patientchart #pcv-c .cs-ai{background:var(--accent-wash);}
+  #screen-patientchart #pcv-c .cs-ai-k{display:flex;align-items:center;gap:8px;margin:0;font-size:14px;line-height:20px;font-weight:600;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-ai-ic{display:inline-flex;width:18px;height:18px;color:var(--brand);}
+  :root[data-theme="dark"] #screen-patientchart #pcv-c .cs-ai-ic{color:var(--accent);}
+  #screen-patientchart #pcv-c .cs-ai-ic svg{width:100%;height:100%;}
+  #screen-patientchart #pcv-c .cs-ai-t{margin:0;font-size:15px;line-height:22px;font-style:italic;color:var(--ink);white-space:pre-wrap;}
+  #screen-patientchart #pcv-c .cs-ai-a{display:flex;gap:8px;flex-wrap:wrap;}
+  #screen-patientchart #pcv-c .cs-ai-done{display:flex;align-items:center;gap:6px;margin:0 0 10px;font-size:14px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-ai-done .ic,#screen-patientchart #pcv-c .cs-ai-done svg{width:16px;height:16px;}
+  #screen-patientchart #pcv-c .cs-note .vc-note{min-height:140px;margin:0 0 10px;}
+  #screen-patientchart #pcv-c .cs-note .vc-chips{margin:0 0 12px;}
+  #screen-patientchart #pcv-c .cs-acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 14px;}
+  #screen-patientchart #pcv-c .cs-acts[hidden]{display:none;}
+  #screen-patientchart #pcv-c .cs-acts .btn{justify-content:center;padding:0 10px;}
+  #screen-patientchart #pcv-c .cs-finwhy{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;margin:0 0 8px;font-size:14px;line-height:20px;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-finwhy[hidden]{display:none;}
+  #screen-patientchart #pcv-c .cs-finwhy > .ic,#screen-patientchart #pcv-c .cs-finwhy > .ic svg{width:18px;height:18px;color:var(--warn);}
+  #screen-patientchart #pcv-c .cs-finwhy .vc-more{min-height:32px;font-size:14px;}
+  #screen-patientchart #pcv-c #vc-finalize[aria-disabled="true"]{background:var(--wash);border-color:var(--wash);color:var(--ink-soft);cursor:not-allowed;box-shadow:none;}
+  #screen-patientchart #pcv-c #vc-finalize[aria-disabled="true"] .ic{color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-note .vc-finrow{display:flex;flex-wrap:wrap;gap:8px;}
+
+  /* ---- full chart: takes the context column's place; the note stays ---- */
+  #screen-patientchart #pcv-c .cs-fc{display:grid;gap:14px;min-width:0;}
+  #screen-patientchart #pcv-c .cs-fc-hd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  #screen-patientchart #pcv-c .cs-fc-hd h3{margin:0;font-size:20px;line-height:28px;font-weight:700;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-search{display:flex;align-items:center;gap:8px;margin-left:auto;height:44px;padding:0 14px;border:1px solid var(--line-strong);border-radius:999px;background:var(--panel);}
+  #screen-patientchart #pcv-c .cs-search .ic,#screen-patientchart #pcv-c .cs-search svg{width:18px;height:18px;color:var(--ink-faint);}
+  #screen-patientchart #pcv-c .cs-search input{width:200px;border:0;background:none;font:inherit;font-size:15px;color:var(--ink);outline:none;}
+  #screen-patientchart #pcv-c .cs-search:focus-within{outline:2px solid var(--accent);outline-offset:2px;}
+  #screen-patientchart #pcv-c .cs-tabs{display:flex;flex-wrap:wrap;gap:2px;border-bottom:1px solid var(--line);}
+  #screen-patientchart #pcv-c .cs-tabs [role=tab]{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin-bottom:-1px;padding:0 10px;border:0;border-bottom:3px solid transparent;
+    border-radius:10px 10px 0 0;background:none;font:inherit;font-size:15px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
+  #screen-patientchart #pcv-c .cs-tabs [role=tab]:hover{background:var(--wash);color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-tabs [role=tab][aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brand);}
+  #screen-patientchart #pcv-c .cs-tabs .ic,#screen-patientchart #pcv-c .cs-tabs svg{width:16px;height:16px;}
+  #screen-patientchart #pcv-c .cs-pane{display:grid;gap:12px;}
+  #screen-patientchart #pcv-c .cs-pane[hidden]{display:none;}
+  #screen-patientchart #pcv-c .cs-pane > #vcp-results,#screen-patientchart #pcv-c .cs-pane > .lab-orders-mount,#screen-patientchart #pcv-c .cs-pane > .care-tl-mount{
+    background:var(--panel);border-radius:16px;box-shadow:var(--shadow-card);padding:16px 18px;}
+  #screen-patientchart #pcv-c .cs-pane .vc-block{margin:0;}
+  #screen-patientchart #pcv-c .cs-h4{margin:8px 0 0;font-size:17px;font-weight:700;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-list{margin:0;padding:0;list-style:none;}
+  #screen-patientchart #pcv-c .cs-list li{padding:10px 0;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-list li + li{border-top:1px solid var(--line);}
+  #screen-patientchart #pcv-c .cs-doc .cs-kv{margin-top:8px;}
+
+  /* ---- narrower than the two columns need: the note is one tab away (v2.5 §3) ---- */
+  #screen-patientchart #pcv-c.cs-narrow .cs-viewtabs{display:flex;}
+  #screen-patientchart #pcv-c.cs-narrow .cs-work{grid-template-columns:minmax(0,1fr);}
+  #screen-patientchart #pcv-c.cs-narrow .cs-note{position:static;max-height:none;display:none;}
+  #screen-patientchart #pcv-c.cs-narrow.cs-show-note .cs-note{display:block;}
+  #screen-patientchart #pcv-c.cs-narrow.cs-show-note .cs-ctx,#screen-patientchart #pcv-c.cs-narrow.cs-show-note .cs-fc{display:none;}
+  #screen-patientchart #pcv-c.cs-narrow .cs-snap{flex-wrap:wrap;}
+  #screen-patientchart #pcv-c .cs-viewtabs [role=tab][aria-selected="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-viewtabs [role=tab][aria-selected="true"] .ic{color:var(--panel);}
+
+  /* T-021 fixes after the first headless look: one-line strip at 1440, top-aligned tier icons, no phantom line
+     from the hidden source chevron, Since-you-last-saw as typography (not v2's grey .slv panel), and room under
+     the note column for the floating MOA chat so Finalize is never covered */
+  #screen-patientchart #pcv-c .cs-items{gap:8px 20px;}
+  #screen-patientchart #pcv-c .cs-strip h3{min-width:64px;}
+  #screen-patientchart #pcv-c .cs-items li{gap:6px;}
+  #screen-patientchart #pcv-c .cs-items li > .ic,#screen-patientchart #pcv-c .cs-items li > .ic svg{width:16px;height:16px;margin-top:2px;}
+  #screen-patientchart #pcv-c .cs-group .vca-row{align-items:start;}
+  #screen-patientchart #pcv-c .cs-group .vca-ic{align-self:start;margin-top:2px;}
+  #screen-patientchart #pcv-c .cs-src{position:relative;padding-right:30px;}
+  #screen-patientchart #pcv-c .cs-go{position:absolute;right:8px;top:8px;margin:0;}
+  #screen-patientchart #pcv-c #slv{background:none;border:0;border-radius:0;box-shadow:none;padding:20px 0 0;margin:20px 0 0;}
+  #screen-patientchart #pcv-c #slv > .vc-more{margin-left:16px;}
+  #screen-patientchart #pcv-c .cs-note{max-height:calc(100vh - var(--cs-top,0px) - var(--cs-bh,0px) - 104px);}
+
+  /* pinned footer of the note column: actions and Finalize never scroll out of view */
+  #screen-patientchart #pcv-c .cs-note{padding-bottom:0;}
+  #screen-patientchart #pcv-c .cs-foot{position:sticky;bottom:0;margin:0 -24px;padding:12px 24px 16px;background:var(--panel);border-top:1px solid var(--line);}
+  #screen-patientchart #pcv-c .cs-foot .cs-acts{margin-bottom:10px;}
+  #screen-patientchart #pcv-c .cs-foot .vc-finrow{margin:0;}
+
+  /* second pass: only Finalize is pinned; actions sit under the note; scribe is one line when off */
+  #screen-patientchart #pcv-c .cs-foot .cs-acts{margin:0;}
+  #screen-patientchart #pcv-c .cs-note .cs-acts{margin:0 0 14px;}
+  #screen-patientchart #pcv-c .cs-note .sc-block:not(.live):not(.review) .sc-sub{display:none;}
+  #screen-patientchart #pcv-c .cs-note .sc-block:not(.live):not(.review) .sc-hd{flex-wrap:nowrap;}
+  #screen-patientchart #pcv-c .cs-note .sc-block:not(.live):not(.review) .sc-hd .right{margin-left:auto;}
+  #screen-patientchart #pcv-c .cs-tabs [role=tab]{padding:0 8px;}
+  #screen-patientchart #pcv-c .cs-finwhy{flex-wrap:nowrap;white-space:nowrap;}
+
+  #screen-patientchart #pcv-c.cs-dropped #pc-callsum{display:none;}
+  #screen-patientchart #pcv-c .cs-note #cs-ai:empty{display:none;}
 </style>
 </head>
 <body>
@@ -4799,64 +5048,127 @@
       </div>
 
       <!-- ============ VERSION C - Focused ============ -->
-      <div class="pcv active" id="pcv-c">
-        <!-- persistent patient banner: identity + safety info always visible -->
-        <div class="vc-banner">
-          <div class="vc-id">
-            <span class="vc-av" data-f="initials">--</span>
-            <span>
-              <p class="vc-nm" data-f="name">--</p>
-              <p class="vc-sub"><span data-f="demo">--</span> &middot; PHN <span class="pc-mono" data-f="phn">--</span></p>
-              <!-- the pharmacy is part of who this patient is for any prescription:
-                   in the shadowed renewal it was the one thing read off the chart -->
-              <p class="vc-pharm"><span class="ic" data-pdic="chartnote"></span><span id="vc-pharm-name">Lincoln Pharmacy, Coquitlam</span><span class="vc-pharm-fax">fax on file</span></p>
-            </span>
+      <!-- T-021 (Ani, 3 Oct: "ux designer should start work"; Daniel, 30 Sep: "where am I charting?"):
+           the core encounter shell from Physician Chart View Requirements v2.5, delivery step 1.
+           Scan order: patient snapshot + this-visit strip (persistent) -> Needs attention -> Today ->
+           Relevant to [concern] -> Since you last saw. The note and its actions sit beside the context;
+           the full chart is one step away and never discards the note. Ani, 3 Oct: built in v2's own
+           design system; the Figma migration comes later. Rendered by the chart-shell script (csRender). -->
+      <div class="pcv active cs" id="pcv-c">
+        <!-- v2.5 §3 Patient snapshot (persistent): name, age, gender as recorded, masked PHN, photo,
+             allergies in three states, family doctor. No clinical counts or diagnosis badges. -->
+        <header class="vc-banner cs-banner" id="cs-banner" aria-label="Patient and this visit">
+          <div class="cs-snap">
+            <span class="vc-av cs-photo" role="img" aria-label="Photo placeholder. The dated photo the patient supplies at intake shows here."><span class="ic" data-pdic="user"></span></span>
+            <div class="cs-who">
+              <h2 class="vc-nm" data-f="name">--</h2>
+              <p class="vc-sub" id="cs-sub"></p>
+            </div>
+            <div class="cs-facts">
+              <p class="cs-fact" id="cs-allergy"></p>
+              <p class="cs-fact cs-fd" id="cs-fd"></p>
+            </div>
+            <div class="vc-acts">
+              <button class="btn dark" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call</button>
+              <span class="pc-callstrip" id="pc-callstrip-c"><span class="dot"></span> <span id="pc-timer-c">00:00</span> <button class="hang" onclick="pcEndCall()">End</button></span>
+              <!-- shadowing 3: "the timer restarts from 0:00, so the screen no longer shows how long he has been with the patient" -->
+              <span class="pc-callsum" id="pc-callsum" hidden></span>
+              <button class="btn" id="cs-fc-btn" onclick="csOpenFull()" aria-controls="cs-fc"><span class="ic" data-pdic="file"></span>Full chart</button>
+            </div>
           </div>
-          <div class="vc-safety">
-            <!-- allergy status is always shown, because "none" is itself a safety
-                 fact; alerts and conditions show only when there are some -->
-            <span class="vc-allergy"><span class="ic" data-pdic="complete"></span>No known drug allergies</span>
-            <span class="vc-sf" data-f="bannerflag" hidden></span>
-            <button class="vc-sf cond-chip" id="cond-chip" onclick="openConditions()">&mdash;</button>
+          <!-- v2.5 §3 This-visit strip: location, ID verified, consent, others present, video or phone,
+               callback. Incomplete items flagged with a word; Finalize waits for it; re-expands on a dropped call. -->
+          <section class="cs-strip" id="cs-strip" aria-labelledby="cs-strip-h"></section>
+          <div class="cs-notices" id="cs-notices"></div>
+          <div class="cs-cond" id="cs-cond" hidden></div>
+          <div class="cs-viewtabs" id="cs-viewtabs" role="tablist" aria-label="Chart or note">
+            <button class="btn" role="tab" id="cs-vt-chart" aria-selected="true" onclick="csView('chart')"><span class="ic" data-pdic="file"></span>Chart</button>
+            <button class="btn" role="tab" id="cs-vt-note" aria-selected="false" onclick="csView('note')"><span class="ic" data-pdic="edit"></span>Note</button>
           </div>
-          <div class="vc-acts">
-            <button class="btn dark" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call</button>
-            <button class="btn" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pcic="task"></span> Task MOA</button>
-            <span class="pc-callstrip" id="pc-callstrip-c"><span class="dot"></span> <span id="pc-timer-c">00:00</span> <button class="hang" onclick="pcEndCall()">End</button></span>
-            <!-- shadowing 3: "the timer restarts from 0:00, so the screen no longer shows how long he has been with the patient" -->
-            <span class="pc-callsum" id="pc-callsum" hidden></span>
-          </div>
-        </div>
+        </header>
 
-        <!-- Doctor review 25 Sep, ask 1: "I opened Gloria's chart from the queue, and the troponin isn't
-             on it." An unsigned critical or high result for this patient sits here, above the fold,
-             in the inbox's own language: grey surface, tone on the icon, the critical value in red. -->
-        <div class="vc-alerts" id="vc-alerts" hidden></div>
-
-        <div class="vc-cols">
-          <!-- LEFT: this visit -->
-          <div>
+        <div class="cs-work" id="cs-work">
+          <!-- context: what matters now, what changed, what needs action -->
+          <div class="cs-ctx" id="cs-ctx">
             <div class="recall" id="recall"></div>
+            <!-- v2.5 §3 Needs attention: one place, directly under the banner. Doctor review 25 Sep, ask 1:
+                 the unsigned critical result for this patient is on the chart, in the inbox's language. -->
+            <section class="cs-na" id="vc-alerts" aria-labelledby="cs-na-h"></section>
+            <div class="vc-block cs-context">
+              <section class="cs-sec" id="cs-today" aria-labelledby="cs-today-h"></section>
+              <section class="cs-sec" id="cs-rel" aria-labelledby="cs-rel-h"></section>
+              <!-- Doctor review ask 3 / shadowing 2: what changed since the last visit, in short lines -->
+              <section class="cs-sec slv" id="slv" aria-labelledby="cs-since-h"></section>
+            </div>
+          </div>
 
-            <!-- one card for the visit, in the order it happens: the reason, the
-                 scribe (a tool for writing the note, so it lives with the note),
-                 the note, then finalize -->
-            <div class="vc-block vc-visit">
-              <div class="vc-h"><span class="ic" data-pcic="edit"></span><h4>This visit</h4>
-                <span class="right"><span class="vc-count" data-f="concern">--</span></span></div>
-              <!-- Doctor review ask 3 / shadowing 2: "The whole call (about 2.5 min) was spent reading the
-                   previous visit's note." The last plan in short lines, what to ask, what is pending.
-                   Hidden when there is no previous visit. -->
-              <div class="slv" id="slv" hidden></div>
-              <div class="sc-block" id="sc-block">
-                <div class="sc-hd">
-                  <span class="sc-dot"></span>
-                  <h4>Ambient scribe</h4>
-                  <p class="sc-sub" id="sc-sub">Drafts the note and proposes orders while you talk. It files nothing on its own.</p>
-                  <span class="right" id="sc-actions"></span>
-                </div>
-                <div id="sc-body"></div>
+          <!-- v2.5 §3 Full chart: Timeline, Results, Medications, Problems, Consults, Documents, Messages,
+               Search, plus the care plan (Daniel, 30 Sep: "this is more comprehensive care"). It takes the
+               context column's place; the note column stays where it is. One action back. -->
+          <section class="cs-fc" id="cs-fc" aria-labelledby="cs-fc-h" hidden>
+            <div class="cs-fc-hd">
+              <h3 id="cs-fc-h" tabindex="-1">Full chart</h3>
+              <label class="cs-search"><span class="ic" data-pdic="search"></span><span class="vh">Search the whole chart</span>
+                <input type="search" id="cs-q" placeholder="Search the chart" autocomplete="off" oninput="csSearch()" onkeydown="if(event.key==='Enter'){event.preventDefault();csTab('search');}"></label>
+              <button class="btn" onclick="csCloseFull()"><span class="ic" data-pdic="collapse"></span>Back to the visit</button>
+            </div>
+            <div class="cs-tabs" role="tablist" aria-label="Full chart sections" id="cs-tabs"></div>
+            <div class="cs-pane" id="csp-timeline" role="tabpanel" aria-labelledby="cst-timeline" tabindex="-1" hidden><div class="care-tl-mount"></div></div>
+            <div class="cs-pane" id="csp-results" role="tabpanel" aria-labelledby="cst-results" tabindex="-1" hidden>
+              <!-- Daniel, 26 Sep: "it is madness that I am opening up raw pdf's". Tests with values and a trend. -->
+              <div id="vcp-results"></div>
+              <div class="vc-block" id="vc-resrail" hidden></div>
+              <!-- Daniel, 26 Sep: "I get my patient's to work." Hidden when the patient has reported nothing. -->
+              <div class="vc-block" id="vc-pr" hidden></div>
+              <h4 class="cs-h4">Orders</h4>
+              <p class="lo-legend">What was ordered and where each test stands.</p>
+              <div class="lab-orders-mount"></div>
+            </div>
+            <div class="cs-pane" id="csp-medications" role="tabpanel" aria-labelledby="cst-medications" tabindex="-1" hidden>
+              <div class="vc-block" id="vc-medrail"></div>
+            </div>
+            <div class="cs-pane" id="csp-problems" role="tabpanel" aria-labelledby="cst-problems" tabindex="-1" hidden>
+              <div class="vc-block vc-condcard">
+                <div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Ongoing conditions</h4>
+                  <span class="right"><button class="vc-more" onclick="openConditions()">Open list</button></span></div>
+                <div id="cond-rail"></div>
               </div>
+              <p class="cs-cap">Clinical threads (status, treatment, monitoring, last decision, next step) come in delivery step 3.</p>
+            </div>
+            <div class="cs-pane" id="csp-careplan" role="tabpanel" aria-labelledby="cst-careplan" tabindex="-1" hidden>
+              <div class="vc-block cp-block care-plan-mount"></div>
+            </div>
+            <div class="cs-pane" id="csp-consults" role="tabpanel" aria-labelledby="cst-consults" tabindex="-1" hidden><div id="cs-consults"></div></div>
+            <div class="cs-pane" id="csp-documents" role="tabpanel" aria-labelledby="cst-documents" tabindex="-1" hidden><div id="cs-docs"></div></div>
+            <div class="cs-pane" id="csp-messages" role="tabpanel" aria-labelledby="cst-messages" tabindex="-1" hidden><div id="cs-msgs"></div></div>
+            <div class="cs-pane" id="csp-search" role="tabpanel" aria-labelledby="cst-search" tabindex="-1" hidden><div id="cs-sres" aria-live="polite"></div></div>
+          </section>
+
+          <!-- v2.5 §3 Note + actions, visible beside the context at 1440 px (Daniel, 30 Sep: "where am I
+               charting?"). One card in the order the work happens: scribe, AI suggestion, note, actions, finalize. -->
+          <section class="vc-block vc-visit cs-note" id="cs-note" aria-labelledby="cs-note-h">
+            <div class="vc-h"><span class="ic" data-pcic="edit"></span><h3 id="cs-note-h" tabindex="-1">Today&rsquo;s note</h3>
+              <span class="right cs-saved" id="cs-saved" aria-live="polite"></span></div>
+            <!-- v2.5 §7: AI text is visually distinct from chart facts until accepted -->
+            <div id="cs-ai"></div>
+            <div class="sc-block" id="sc-block">
+              <div class="sc-hd">
+                <span class="sc-dot"></span>
+                <h4>Ambient scribe</h4>
+                <p class="sc-sub" id="sc-sub">Drafts the note and proposes orders while you talk. It files nothing on its own.</p>
+                <span class="right" id="sc-actions"></span>
+              </div>
+              <div id="sc-body"></div>
+            </div>
+            <label class="vh" for="vc-note-input">Today&rsquo;s note</label>
+            <textarea class="vc-note" id="vc-note-input" placeholder="Document the visit..." oninput="vcGrow();csDraft()"></textarea>
+            <p class="vc-signed" id="vc-signed" hidden></p>
+            <div class="vc-chips" id="vc-chips"><span class="vc-chips-l">Insert</span>
+              <button class="vc-chip" onclick="vcInsert('Follow-up template')">+ Follow-up template</button>
+              <button class="vc-chip" onclick="vcInsert('Normal exam')">+ Normal exam</button>
+              <button class="vc-chip" onclick="prOpenForm()">+ Reading from patient</button>
+              <button class="vc-chip" onclick="toast('Diagnosis picker')">+ Diagnosis</button>
+            </div>
               <!-- Renewal in one flow, from the shadowed visit: "send along a
                    three-month supply, 90 tablets, directly to Shoppers... when you
                    receive that copy it means the fax has been delivered." -->
@@ -4885,108 +5197,28 @@
                 </div>
                 <div class="rx-status" id="rx-status" hidden></div>
               </div>
-              <textarea class="vc-note" id="vc-note-input" placeholder="Document the visit..." oninput="vcGrow()"></textarea>
-              <p class="vc-signed" id="vc-signed" hidden></p>
-              <div class="vc-chips" id="vc-chips"><span class="vc-chips-l">Insert</span>
-                <button class="vc-chip" onclick="vcInsert('Follow-up template')">+ Follow-up template</button>
-                <button class="vc-chip" onclick="vcInsert('Normal exam')">+ Normal exam</button>
-                <button class="vc-chip" onclick="rxOpen()">+ Renew prescription</button>
-                <button class="vc-chip" onclick="prOpenForm()">+ Reading from patient</button>
-                <button class="vc-chip" onclick="toast('Diagnosis picker')">+ Diagnosis</button>
-              </div>
-              <!-- Doctor review ask 4 / shadowing 2: "The big 'Finalize Visit' button beneath does not say which
-                   visit it finalizes." It names today's visit, asks first on an empty note, and closes the visit. -->
-              <div class="vc-finwarn" id="vc-finwarn" hidden></div>
-              <div class="vc-finrow" id="vc-finrow">
-                <!-- Daniel, 26 Sep: "I 'sign off' on the chart ... It means that i've finalized the visit." -->
-                <button class="btn dark" id="vc-finalize" onclick="finalizeVisit()"><span class="ic" data-pdic="complete"></span>Sign off &amp; finalize visit</button>
-                <button class="btn" id="vc-savedraft" onclick="toast('Draft saved')"><span class="ic" data-pdic="edit"></span>Save draft</button>
-                <button class="btn dark" id="vc-nextpt" hidden><span class="ic" data-pdic="chevr"></span><span></span></button>
-              </div>
+            <!-- the actions and Finalize are pinned to the bottom of the note column, so they are always in view (Daniel: "where am I charting?") -->
+            <!-- v2.5 §3: Prescribe, Order, Refer, Task, Message, Finalize -->
+            <div class="cs-acts" id="cs-acts" role="group" aria-label="Actions">
+              <button class="btn" onclick="rxOpen()"><span class="ic" data-pdic="chartnote"></span>Prescribe</button>
+              <button class="btn" onclick="toast('Lab requisition started (demo)')"><span class="ic" data-pdic="addon"></span>Order</button>
+              <button class="btn" onclick="toast('Referral started (demo)')"><span class="ic" data-pdic="practice"></span>Refer</button>
+              <button class="btn" onclick="openTaskMoa(PC_CURRENT)" aria-label="Task the MOA"><span class="ic" data-pcic="task"></span>Task</button>
+              <button class="btn" onclick="toast('Message to the patient portal (demo)')"><span class="ic" data-pdic="chat"></span>Message</button>
             </div>
-
-            <!-- Care plan sits on the chart itself, not behind a tab -->
-            <div class="vc-block cp-block care-plan-mount"></div>
-
-            <div class="vc-block">
-              <div class="vc-tabsrow">
-                <button class="active" data-vcp="summary" onclick="vcPane('summary')">Summary</button>
-                <button data-vcp="timeline" onclick="vcPane('timeline')">Timeline</button>
-                <button data-vcp="orders" onclick="vcPane('orders')">Orders</button>
-                <button data-vcp="results" onclick="vcPane('results')">Results</button>
-                <button data-vcp="meds" onclick="vcPane('meds')">Medications</button>
-                <button data-vcp="imaging" onclick="vcPane('imaging')">Imaging</button>
-                <button data-vcp="refs" onclick="vcPane('refs')">Referrals</button>
-                <button data-vcp="docs" onclick="vcPane('docs')">Documents</button>
-              </div>
-
-              <div class="vc-pane active" id="vcp-summary">
-                <div class="vc-h"><span class="ic" data-pcic="consult"></span><h4>Reason for visit</h4>
-                  <span class="right"><button class="vc-more" onclick="openBrief(PC_CURRENT)">View intake note</button></span></div>
-                <p class="prose" data-f="reason" style="margin-bottom:16px;">--</p>
-                <!-- the static "Last vitals" (the same for every patient) is replaced by the patient-reported
-                     readings in the rail. Daniel, 26 Sep: "The weights come from me asking the patient." -->
-              </div>
-
-              <div class="vc-pane" id="vcp-timeline"><div class="care-tl-mount"></div></div>
-
-              <div class="vc-pane" id="vcp-orders">
-                <p class="lo-legend">What was ordered and where each test stands. A requisition that failed says so; one whose receipt was never confirmed says that; a collection not yet due says that rather than implying a result is on its way.</p>
-                <div class="lab-orders-mount"></div>
-              </div>
-              <!-- Daniel, 26 Sep: "it is madness that I am opening up raw pdf's to find out what the f*** is going on."
-                   Tests with values and a trend; the PDF is a secondary link. Rendered by renderResults(). -->
-              <div class="vc-pane" id="vcp-results"></div>
-
-              <div class="vc-pane" id="vcp-meds">
-                <div class="vc-line"><span><span class="l">Metformin 500 mg</span><div class="vc-sub2">Twice daily with meals</div></span><span class="r">Ongoing</span></div>
-                <div class="vc-line"><span><span class="l">Amlodipine 5 mg</span><div class="vc-sub2">Once daily</div></span><span class="r">Ongoing</span></div>
-                <div class="vc-line"><span><span class="l">Ibuprofen 400 mg</span><div class="vc-sub2">PRN &middot; completed May 2026</div></span><span class="r">Past</span></div>
-              </div>
-              <div class="vc-pane" id="vcp-imaging"><p class="pc-empty">No imaging on file.</p></div>
-              <div class="vc-pane" id="vcp-refs"><p class="pc-empty">No active referrals.</p></div>
-              <div class="vc-pane" id="vcp-docs"><p class="pc-empty">No documents released for this visit yet.</p></div>
+            <div class="cs-foot">
+            <!-- Doctor review ask 4 / shadowing 2: the button says which visit it finalizes and asks first on an
+                 empty note. v2.5 §3: Finalize waits until this visit's strip is complete (csFinState). -->
+            <div class="vc-finwarn" id="vc-finwarn" hidden></div>
+            <p class="cs-finwhy" id="cs-finwhy" hidden></p>
+            <div class="vc-finrow" id="vc-finrow">
+              <!-- Daniel, 26 Sep: "I 'sign off' on the chart ... It means that i've finalized the visit." -->
+              <button class="btn dark" id="vc-finalize" onclick="finalizeVisit()"><span class="ic" data-pdic="complete"></span>Sign off &amp; finalize visit</button>
+              <button class="btn" id="vc-savedraft" onclick="csDraft();toast('Draft saved')"><span class="ic" data-pdic="edit"></span>Save draft</button>
+              <button class="btn dark" id="vc-nextpt" hidden><span class="ic" data-pdic="chevr"></span><span></span></button>
             </div>
-          </div>
-
-          <!-- RIGHT: reference data, boxed by type -->
-          <!-- the rail answers "what do I need to know before I phone?": results
-               that are off, then what they take, then their conditions. History,
-               pharmacy and the rarer actions sit under More, one click away. -->
-          <aside class="side">
-            <div class="vc-block" id="vc-resrail" style="margin-bottom:0;"></div>
-
-            <!-- Daniel, 26 Sep: "I get my patient's to work. It means I get them to do their blood pressures,
-                 their weights etc." Hidden when the patient has reported nothing. -->
-            <div class="vc-block" id="vc-pr" style="margin-bottom:0;" hidden></div>
-
-            <div class="vc-block" id="vc-medrail" style="margin-bottom:0;">
-              <div class="vc-h"><span class="ic" data-pcic="meds"></span><h4>Medications <span class="vc-n">2</span></h4></div>
-              <div class="vc-line"><span><span class="l">Metformin 500 mg</span><div class="vc-sub2">Twice daily</div></span></div>
-              <div class="vc-line"><span><span class="l">Amlodipine 5 mg</span><div class="vc-sub2">Once daily</div></span></div>
             </div>
-
-            <div class="vc-block vc-condcard" style="margin-bottom:0;">
-              <div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Ongoing conditions</h4>
-                <span class="right"><button class="vc-more" onclick="openConditions()">Open list</button></span></div>
-              <div id="cond-rail"></div>
-            </div>
-
-            <details class="vc-block vc-morebox" style="margin-bottom:0;">
-              <summary><span class="ic" data-pdic="chevr"></span>More <span class="vc-n">Care history, orders and referrals</span></summary>
-              <div class="vc-h"><span class="ic" data-pcic="chart"></span><h4>Care history</h4></div>
-              <div class="vc-line"><span><span class="l">Last visit</span><div class="vc-sub2">Dr. Pannozzo</div></span><span class="r" id="vc-lastvisit">Jun 25, 2026</span></div>
-              <div class="vc-line"><span><span class="l">Visits, 12 mo</span></span><span class="r">3</span></div>
-
-              <div class="vc-h vc-h2"><span class="ic" data-pcic="task"></span><h4>Actions</h4></div>
-              <div class="vc-qa">
-                <button class="btn xs" onclick="toast('Transferred to Dolly (demo)')"><span class="ic" data-pcic="transfer"></span> Transfer to Dolly</button>
-                <button class="btn xs" onclick="toast('Lab requisition started (demo)')"><span class="ic" data-pcic="labs"></span> Order labs</button>
-                <button class="btn xs" onclick="toast('Prescription started (demo)')"><span class="ic" data-pcic="meds"></span> Write prescription</button>
-                <button class="btn xs" onclick="toast('Referral started (demo)')"><span class="ic" data-pcic="referrals"></span> Create referral</button>
-              </div>
-            </details>
-          </aside>
+          </section>
         </div>
       </div>
 
@@ -5636,6 +5868,16 @@
   <div class="dsw-sec">
     <p>Simulate</p>
     <div class="dsw-grid"><button onclick="pcDropCall()" style="width:100%;">Drop the current call</button></div>
+  </div>
+  <!-- T-021: chart-shell states for the demo (v2.5 §3: empty Needs attention, patient outside BC, the three allergy states, a complete strip) -->
+  <div class="dsw-sec">
+    <p>Chart states</p>
+    <div class="dsw-grid">
+      <button id="dsw-cs-empty" aria-pressed="false" onclick="csDemo('empty')">Nothing needs attention</button>
+      <button id="dsw-cs-out" aria-pressed="false" onclick="csDemo('outside')">Patient outside BC</button>
+      <button onclick="csDemo('allergy')">Next allergy state</button>
+      <button id="dsw-cs-strip" aria-pressed="false" onclick="csDemo('strip')">Complete this visit</button>
+    </div>
   </div>
   <div class="dsw-sec">
     <div class="dsw-row"><span>Show design notes</span><button class="dsw-tog" id="dsw-notes" onclick="dswNotes()"></button></div>
@@ -11195,6 +11437,784 @@ window.addEventListener('resize', function(){
   updateChatBadge();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-03 22:00</div>
+<script>
+/* ============================================================
+   CHART SHELL (T-021) — Physician Chart View Requirements v2.5, delivery step 1
+   Daniel, 30 Sep: "where's my note? ... where am I charting?" and "how do I get through the chart?"
+   Ani, 3 Oct: build it into v2, in v2's own design system.
+   Everything here reads the same demo data as the rest of the portal. Nothing clinical is inferred:
+   tiers come from labTier (LifeLabs BC limits + SimpleCare escalation), ECG wording from Daniel 30 Sep
+   and ECG Critical v2.0 ("Abnormal ECG" alone is not CRITICAL ECG). Existing functions are wrapped,
+   not rewritten, so call, Task MOA, prescribing, finalize and claim, the care plan and the scribe keep working.
+   ============================================================ */
+var CS = {empty:false, allergy:{}, visit:{}, ai:{}, draft:{}, stripOpen:{}, pop:null, sinceOpen:{}, relOpen:{},
+          fcTab:null, fcReturn:null, ctxScroll:0, view:'chart', dropped:{}};
+try { CS.draft = JSON.parse(sessionStorage.getItem('sc-cs-draft') || '{}') || {}; } catch(e){ CS.draft = {}; }
+
+function csEsc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function csIc(k, cls){ return '<span class="ic' + (cls ? ' ' + cls : '') + '" data-pdic="' + k + '"></span>'; }
+function csRow(){ return QUEUE_DATA.filter(function(x){ return x.name === PC_CURRENT; })[0] || null; }
+function csBase(n){ return String(n || '').split(',')[0].trim(); }
+function csPref(r){ return (r && (r.pref || csBase(r.name).split(' ')[0])) || 'the patient'; }
+function csShort(d){ return String(d || '').replace(/, \d{4}$/, ''); }
+function csNow(){ return new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
+function csSay(msg){ if(typeof toast === 'function') toast(msg); }
+function csOnChart(){ var s = document.getElementById('screen-patientchart'); return !!(s && s.classList.contains('active')); }
+
+/* ---------- this-visit state, per patient ----------
+   DEMO VALUES: v2 has no location, ID, consent or callback data, so these are invented for the demo.
+   Last known place follows the patient's pharmacy town; 555-01xx is a fictional number range. */
+function csVisit(name){
+  if(CS.visit[name]) return CS.visit[name];
+  var i = Math.max(0, QUEUE_DATA.map(function(x){ return x.name; }).indexOf(name));
+  var town = (ptChart(name).pharm || '').split(', ')[1] || '';
+  var L = PT_LAST[name];
+  return (CS.visit[name] = {
+    location:false, others:false, othersText:'', outside:false,
+    place: town ? town + ', BC' : '', placeOut:'Calgary, AB',
+    lastPlace: town ? town + ', BC' + (L ? ' on ' + csShort(L.date) : '') : '',
+    id: L ? 'BC Services Card, ' + csShort(L.date) : '',
+    consent: L ? 'On file, ' + csShort(L.date) : '',
+    mode:'Phone', callback:'604-555-01' + String(10 + i)
+  });
+}
+function csStripDone(name){ var v = csVisit(name); return v.location && v.others && !!v.id && !!v.consent; }
+function csMissing(name){
+  var v = csVisit(name), m = [];
+  if(!v.location) m.push(['loc','location']);
+  if(!v.id) m.push(['id','ID verified']);
+  if(!v.consent) m.push(['con','consent']);
+  if(!v.others) m.push(['oth','others present']);
+  return m;
+}
+function csPlace(name){ var v = csVisit(name); return v.outside ? v.placeOut : v.place; }
+
+/* ================= patient snapshot ================= */
+function csRenderSnap(name){
+  var r = csRow(); if(!r) return;
+  var phn = ptChart(name).phn || '';
+  var age = r.age ? r.age.replace(/Y$/,'') : '';
+  /* B-006: v2 showed the full PHN here; v2.5 asks for a masked PHN */
+  var masked = phn && phn !== '—' ? '&bull;&bull;&bull;&bull; &bull;&bull;&bull; ' + phn.slice(-3) : 'Not recorded';
+  var sub = document.getElementById('cs-sub');
+  if(sub) sub.innerHTML = ((r.legal && r.pref && r.legal.split(' ')[0] !== r.pref) ? 'Goes by <b>' + csEsc(r.pref) + '</b> &middot; ' : '') +
+    (age ? age + ' &middot; ' : '') + csEsc(r.sex || 'Not recorded') + ' &middot; PHN <span class="pc-mono" aria-label="PHN ending ' + csEsc(phn.slice(-3)) + '">' + masked + '</span>';
+  /* v2.5 §3: allergies in three distinct states. Named is ink with a symbol (an allergy is not a critical
+     result, so not red); "Not recorded" is amber with its word. The named example is v2.5 §8's, demo only. */
+  var a = CS.allergy[name] || 'nkda', el = document.getElementById('cs-allergy');
+  if(el){
+    el.className = 'cs-fact cs-al-' + a;
+    el.innerHTML = a === 'nkda' ? csIc('complete') + '<span>No known drug allergies</span>'
+      : a === 'named' ? csIc('alert') + '<span><span class="cs-k">Allergy</span> <b>Penicillin &mdash; anaphylaxis</b></span>'
+      : '<span class="cs-tag warn">' + csIc('alert') + 'Allergies not recorded</span>';
+  }
+  var fd = document.getElementById('cs-fd');
+  if(fd) fd.innerHTML = csIc('usercheck') + '<span><span class="cs-k">Family doctor</span> ' + (PT_LAST[name] ? '<b>Dr. D. Pannozzo</b>' : 'Not recorded') + '</span>';
+  paintPd(document.getElementById('cs-banner'));
+}
+
+/* ================= this-visit strip ================= */
+function csRenderStrip(name){
+  var host = document.getElementById('cs-strip'); if(!host) return;
+  var v = csVisit(name), done = csStripDone(name), r = csRow();
+  var signed = !!(r && r.signed);
+  var open = !done || CS.stripOpen[name] || CS.dropped[name];
+  var h = '<h3 id="cs-strip-h">This visit</h3>';
+  if(!open){
+    /* v2.5 §3: once complete it may collapse; location and callback stay in view */
+    h += '<div class="cs-compact"><span class="cs-done">' + csIc('complete') + (signed ? 'Complete &middot; signed off' : 'Complete') + '</span>' +
+      '<span class="cs-dot" aria-hidden="true">&middot;</span><span><span class="cs-k">Location</span> <b>' + csEsc(csPlace(name)) + '</b></span>' +
+      '<span class="cs-dot" aria-hidden="true">&middot;</span><span>' + v.mode + '</span>' +
+      '<span class="cs-dot" aria-hidden="true">&middot;</span><span><span class="cs-k">Callback</span> <b class="pc-mono">' + v.callback + '</b></span>' +
+      '<button type="button" class="vc-more cs-more" aria-expanded="false" onclick="CS.stripOpen[PC_CURRENT]=true;csRenderStrip(PC_CURRENT);csFocus(\'#cs-strip .cs-more\')">Show details</button></div>';
+  } else {
+    var items = [];
+    items.push(v.location ? csLi('flag','Location', csEsc(csPlace(name))) : csTodo('flag','Location','Not confirmed','loc'));
+    items.push(v.id ? csLi('usercheck','ID verified', csEsc(v.id)) : csTodo('usercheck','ID verified','Not verified','id'));
+    items.push(v.consent ? csLi('cardok','Consent', csEsc(v.consent)) : csTodo('cardok','Consent','Not recorded','con'));
+    items.push(v.others ? csLi('user','Others present', csEsc(v.othersText || 'None, patient alone')) : csTodo('user','Others present','Not asked','oth'));
+    items.push(csLi('phone','Video or phone', v.mode));
+    items.push(csLi('patientview','Callback', '<span class="pc-mono">' + v.callback + '</span>'));
+    h += '<ul class="cs-items">' + items.join('') + '</ul>' +
+      (done ? '<button type="button" class="vc-more cs-more" aria-expanded="true" onclick="CS.stripOpen[PC_CURRENT]=false;csRenderStrip(PC_CURRENT);csFocus(\'#cs-strip .cs-more\')">Hide details</button>' : '');
+  }
+  host.innerHTML = h; paintPd(host); csMeasure();
+}
+function csLi(icon, k, v){ return '<li>' + csIc(icon) + '<span><span class="cs-k">' + k + '</span><span class="cs-v">' + v + '</span></span></li>'; }
+function csTodo(icon, k, word, key){
+  /* incomplete is amber with a word, and the tag is the button that completes it */
+  return '<li class="todo" id="cs-todo-' + key + '">' + csIc(icon) + '<span><span class="cs-k">' + k + '</span>' +
+    '<button type="button" class="cs-tag warn" aria-haspopup="dialog" aria-expanded="' + (CS.pop === key) + '" aria-label="' + k + ': ' + word + '. Complete it" onclick="csPop(\'' + key + '\')">' +
+    csIc('alert') + word + '</button></span>' + (CS.pop === key ? csPopHtml(key) : '') + '</li>';
+}
+function csPopHtml(key){
+  var v = csVisit(PC_CURRENT);
+  var acts = function(label){ return '<div class="cs-pacts"><button type="button" class="btn dark" onclick="csConfirm(\'' + key + '\')"><span class="ic" data-pdic="complete"></span>' + label + '</button>' +
+    '<button type="button" class="btn" onclick="csPop(null)"><span class="ic" data-pdic="chevl"></span>Cancel</button></div>'; };
+  if(key === 'loc') return '<div class="cs-pop" role="dialog" aria-label="Confirm location">' +
+    '<label class="cs-pl">Where is the patient right now?<input type="text" id="cs-p-loc" autocomplete="off" value="' + csEsc(csPlace(PC_CURRENT)) + '"></label>' +
+    '<p class="cs-cap">' + (v.lastPlace ? 'Last known: ' + csEsc(v.lastPlace) + '. ' : '') + 'Ask on every call.</p>' + acts('Confirm location') + '</div>';
+  if(key === 'oth') return '<div class="cs-pop" role="dialog" aria-label="Others present"><fieldset><legend>Is anyone else on the call?</legend>' +
+    '<label class="cs-opt"><input type="radio" name="cs-oth" value="alone" checked> No, the patient is alone</label>' +
+    '<label class="cs-opt"><input type="radio" name="cs-oth" value="someone"> Yes, someone is with them</label>' +
+    '<label class="cs-pl" id="cs-p-who-l" hidden>Who, and their relationship<input type="text" id="cs-p-who" autocomplete="off"></label></fieldset>' + acts('Confirm') + '</div>';
+  if(key === 'id') return '<div class="cs-pop" role="dialog" aria-label="Verify identity"><fieldset><legend>How did you verify identity?</legend>' +
+    ['BC Services Card','Driver&rsquo;s licence','Name, date of birth and PHN confirmed'].map(function(m, i){
+      return '<label class="cs-opt"><input type="radio" name="cs-id" value="' + m + '"' + (i ? '' : ' checked') + '> ' + m + '</label>'; }).join('') +
+    '</fieldset>' + acts('Record') + '</div>';
+  return '<div class="cs-pop" role="dialog" aria-label="Record consent"><p>The patient agrees to a virtual visit today.</p>' + acts('Record verbal consent') + '</div>';
+}
+function csPop(key){
+  var prev = CS.pop; CS.pop = key; csRenderStrip(PC_CURRENT);
+  if(!key){ csFocus('#cs-todo-' + prev + ' button'); return; }
+  var p = document.querySelector('#cs-strip .cs-pop'); if(!p) return;
+  var f = p.querySelector('input[type=text]') || p.querySelector('input') || p.querySelector('button');
+  if(f){ f.focus(); if(f.select) f.select(); }
+  p.querySelectorAll('input[name=cs-oth]').forEach(function(rb){ rb.addEventListener('change', function(){ document.getElementById('cs-p-who-l').hidden = !(rb.value === 'someone' && rb.checked); }); });
+  p.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ e.stopPropagation(); csPop(null); }
+    if(e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.type === 'text'){ e.preventDefault(); csConfirm(key); }
+  });
+}
+function csConfirm(key){
+  var v = csVisit(PC_CURRENT), msg = '';
+  if(key === 'loc'){
+    var i = document.getElementById('cs-p-loc'), t = (i.value || '').trim(); if(!t){ i.focus(); return; }
+    /* a place outside BC raises the notice that can't be dismissed */
+    if(/\bBC\b|British Columbia/i.test(t)){ v.place = t; v.outside = false; } else { v.placeOut = t; v.outside = true; }
+    v.location = true; msg = 'Location confirmed: ' + t;
+  } else if(key === 'oth'){
+    var rb = document.querySelector('input[name=cs-oth]:checked'), who = 'None, patient alone';
+    if(rb && rb.value === 'someone'){ var w = document.getElementById('cs-p-who'); who = (w.value || '').trim(); if(!who){ w.focus(); return; } }
+    v.others = true; v.othersText = who; msg = 'Others present: ' + who;
+  } else if(key === 'id'){
+    var m = document.querySelector('input[name=cs-id]:checked'); v.id = (m ? m.value.replace('&rsquo;','’') : 'Verified') + ', today ' + csNow(); msg = 'Identity verified';
+  } else { v.consent = 'Verbal, today ' + csNow(); msg = 'Consent recorded'; }
+  CS.pop = null;
+  csAfterStrip();
+  csSay(msg + (csStripDone(PC_CURRENT) ? '. This visit is complete.' : '.'));
+  var next = document.querySelector('#cs-strip li.todo button') || document.getElementById('vc-finalize');
+  if(next && !next.hidden) next.focus();
+}
+function csAfterStrip(){ csRenderStrip(PC_CURRENT); csRenderNotices(PC_CURRENT); csFinState(); }
+
+/* ---------- notices: outside BC (can't be dismissed) and a dropped call ---------- */
+function csRenderNotices(name){
+  var host = document.getElementById('cs-notices'); if(!host) return;
+  var v = csVisit(name), h = '', c = PC_CALL[name];
+  if(CS.dropped[name] && !PC_ON_CALL){
+    /* v2.5 §3: the strip re-expands on a dropped call; the callback is one action away, the draft is kept.
+       Calls go outward only: the doctor phones the patient back. */
+    h += '<div class="cs-notice" role="alert">' + csIc('phone') + '<div class="cs-grow"><p><b>Call dropped' + (c ? ' at ' + pcFmt(c.secs) : '') + '.</b> Your note is kept.</p>' +
+      '<p class="cs-cap">' + csEsc(csPlace(name) || 'Location not confirmed') + ' &middot; callback <b class="pc-mono">' + v.callback + '</b></p></div>' +
+      '<button type="button" class="btn dark" id="cs-redial" onclick="pcStartCall()"><span class="ic" data-pdic="patientview"></span>Call back ' + v.callback + '</button></div>';
+  }
+  if(v.outside){
+    /* v2.5 §3: a patient outside BC gets a notice that can't be dismissed. No close button, by design.
+       Its wording, and whether it blocks Finalize, is Needs Daniel (Virtual Care Compliance companion, TBD). */
+    h += '<div class="cs-notice" id="cs-outside">' + csIc('alert') + '<div class="cs-grow"><p><b>The patient is outside BC: ' + csEsc(v.placeOut) + '.</b></p>' +
+      '<p class="cs-cap">Confirm you can provide care where the patient is before you go on. This stays while they are outside BC.</p></div></div>';
+  }
+  host.innerHTML = h; host.hidden = !h; paintPd(host);
+  /* one display of the dropped call: the notice replaces v2's "Call dropped at" text (v2.5 §7 no duplicate display) */
+  var root = document.getElementById('pcv-c'); if(root) root.classList.toggle('cs-dropped', !!(CS.dropped[name] && !PC_ON_CALL));
+  csMeasure();
+}
+
+/* ---------- condensed persistent line: reason for visit and the unresolved critical ----------
+   v2.5 §3 keeps both persistent. They show here only once the originals have scrolled under the banner,
+   so the same fact never shows twice at once (v2.5 §7). */
+function csCondensed(show){
+  var c = document.getElementById('cs-cond'); if(!c) return;
+  var r = csRow();
+  if(!show || !r){ if(!c.hidden){ c.hidden = true; csMeasure(); } return; }
+  var crit = !CS.empty ? chartCritical(PC_CURRENT) : null, t = null;
+  if(crit) t = (crit.tests || []).filter(function(x){ return x.f && x.f.indexOf('crit') === 0; })[0];
+  var html = '<span><span class="cs-k">Today</span> <b>' + csEsc(r.concern) + '</b></span>' +
+    (t ? '<span class="cs-crit">' + csIc('crit') + '<b>Critical</b> &middot; ' + t.n + ' <span class="cs-val">' + t.v + ' ' + (t.u || '') + '</span></span>' +
+      '<button type="button" class="vc-more" onclick="csGoNA()">Go to needs attention</button>' : '');
+  if(c.getAttribute('data-h') !== html){ c.innerHTML = html; c.setAttribute('data-h', html); paintPd(c); }
+  if(c.hidden){ c.hidden = false; csMeasure(); }
+}
+function csGoNA(){
+  csCloseFull(true);
+  var a = document.getElementById('vc-alerts'); if(!a) return;
+  a.scrollIntoView({block:'start'});
+  var b = a.querySelector('button'); if(b) b.focus({preventScroll:true});
+}
+
+/* ================= Needs attention =================
+   v2.5 §3: one place, directly under the banner. Each item: value, units, range, source, time,
+   responsible doctor, stage and a direct action. Related items grouped under the critical one.
+   Tiers Critical / To do / Info, each a word + symbol + colour. Classification is labTier's, unchanged. */
+var CS_TIER = {crit:{w:'Critical', ic:'crit'}, todo:{w:'To do', ic:'alert'}, info:{w:'Info', ic:'cardinfo'}};
+function csNAItems(name){
+  var alerts = chartAlertsFor(name), abn = chartAbnFor(name), out = [];
+  alerts.forEach(function(it){
+    var crit = labTier(it) === 'critical', pick = crit ? 'crit' : 'alert', idx = INBOX_ITEMS.indexOf(it);
+    var lead = (it.tests || []).filter(function(x){ return x.f && x.f.indexOf(pick) === 0; })[0]; if(!lead) return;
+    var rev = it.status === 'reviewed';
+    out.push({tier: crit ? 'crit' : 'todo', it:it, idx:idx, test:lead, today:/^Today/.test(it.received),
+      /* Daniel 27 and 30 Sep call this band "High"; v2.5 has no High tier, so it is To do with the word kept (OQ-76) */
+      label: crit ? null : 'High',
+      stage: rev ? 'Reviewed, not signed off' : 'Not reviewed', action:'Review result'});
+    /* the rest of the same panel: out of range is identified, not given strong salience (v2.5 §7 "abnormal ≠ actionable") */
+    (it.tests || []).forEach(function(x){
+      if(x === lead || !x.f) return;
+      out.push({tier:'info', it:it, idx:idx, test:x, today:/^Today/.test(it.received), panelOf:lead.n,
+        stage: rev ? 'Reviewed' : 'Not reviewed', action:'Open result'});
+    });
+  });
+  abn.forEach(function(it){
+    var ecg = it.kind === 'trace';
+    /* Daniel, 30 Sep: say only "Abnormal ECG"; the machine reading stays on the tracing. ECG Critical v2.0:
+       "ABNORMAL ECG" alone is not CRITICAL ECG, and every ECG still needs physician review -> To do. */
+    out.push({tier:'todo', it:it, idx:INBOX_ITEMS.indexOf(it), today:/^Today/.test(it.received), abn:true, ecg:ecg,
+      stage: it.status === 'reviewed' ? 'Reviewed, not cleared' : 'Not cleared', action: ecg ? 'Review ECG' : 'Review result'});
+  });
+  return out;
+}
+function csNARow(x, related){
+  var T = CS_TIER[x.tier], it = x.it, t = x.test;
+  var title;
+  if(x.abn){
+    title = '<b>' + T.w + '</b> &middot; ' + (x.ecg ? '<b>' + traceFlag(it) + '</b>' : '<b>Abnormal</b> &middot; ' + csEsc(it.panel));
+  } else {
+    var up = (t.f || '').indexOf('high') > -1, low = (t.f || '').indexOf('low') > -1;
+    title = '<b>' + T.w + '</b> &middot; ' + t.n + ' <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span>' +
+      (up || low ? '<span class="ic vca-dir" role="img" aria-label="' + (up ? 'high' : 'low') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span>' : '') +
+      ' <span class="vca-ref">ref ' + csEsc(t.ref) + (x.tier === 'info' ? (up ? ' &middot; above range' : ' &middot; below range') : (x.label ? ' &middot; ' + x.label.toLowerCase() : '')) + '</span>';
+  }
+  var why = (!x.abn && x.tier !== 'info' && (t.concern || t.basis)) ? '<p class="vca-s">' + (t.concern ? '<b>' + t.concern + '</b>' : '') + (t.concern && t.basis ? ' &middot; ' : '') + (t.basis || '') + '</p>' : '';
+  var meta = x.tier === 'info'
+    ? 'Same panel as ' + csEsc(x.panelOf) + ', reviewed with it &middot; ' + csEsc(it.lab) + ' &middot; received ' + csEsc(it.received)
+    : (x.abn && x.ecg ? csEsc(it.panel) + ' &middot; ' : (x.abn ? '' : csEsc(it.panel) + ' &middot; ')) + csEsc(it.lab) + ' &middot; received ' + csEsc(it.received) + ' &middot; Dr. D. Pannozzo';
+  return '<div class="vca-row cs-' + x.tier + (related ? ' cs-rel' : '') + '">' +
+    '<span class="ic vca-ic" role="img" aria-label="' + T.w + '" data-pdic="' + T.ic + '"></span>' +
+    '<div class="vca-main"><p class="vca-t">' + title + '</p>' + why + '<p class="vca-s">' + meta + '</p></div>' +
+    '<div class="cs-side"><p class="cs-stage">' + csIc('clock') + '<span><span class="vh">Stage: </span>' + csEsc(x.stage) + '</span></p>' +
+      '<button type="button" class="btn" onclick="openReview(' + x.idx + ')"><span class="ic" data-pdic="eye"></span>' + x.action + '</button></div>' +
+  '</div>';
+}
+function renderChartAlerts(name){
+  var el = document.getElementById('vc-alerts'); if(!el) return;
+  el.hidden = false;
+  var items = CS.empty ? [] : csNAItems(name);
+  if(!items.length){
+    /* v2.5 §3: when empty, one quiet line, no empty card */
+    el.innerHTML = '<h3 class="vh" id="cs-na-h">Needs attention</h3><p class="cs-na-empty">' + csIc('complete') + 'Nothing requiring attention</p>';
+    paintPd(el); return;
+  }
+  var lead = items.filter(function(x){ return x.tier === 'crit'; })[0];
+  var groups = [];
+  if(lead){
+    /* v2.5 §3: related items grouped under the critical one (e.g. the ECG and CK under the troponin).
+       Related = the rest of its panel, and anything else unresolved that arrived the same day. */
+    var rel = items.filter(function(x){ return x !== lead && (x.it === lead.it || (x.today && lead.today && x.tier !== 'crit')); });
+    rel.sort(function(a, b){ return (a.tier === 'info') - (b.tier === 'info'); });
+    groups.push('<div class="cs-group" role="group" aria-label="' + lead.test.n + ' and related">' + csNARow(lead, false) +
+      (rel.length ? '<p class="cs-relh">Related</p>' + rel.map(function(x){ return csNARow(x, true); }).join('') : '') + '</div>');
+    items = items.filter(function(x){ return x !== lead && rel.indexOf(x) === -1; });
+  }
+  items.forEach(function(x){ groups.push('<div class="cs-group">' + csNARow(x, false) + '</div>'); });
+  el.innerHTML = '<h3 class="cs-h3" id="cs-na-h">Needs attention</h3>' + groups.join('');
+  paintPd(el);
+}
+
+/* ================= Today ================= */
+function csIntakeFlag(r){
+  /* intake red flag in the patient's exact words, from the intake brief (BRIEFS); only when intake flagged one */
+  if(!r || !r.redflag) return null;
+  var b = BRIEFS[csBase(r.name)]; if(!b || !b.flag) return {words:null, when:''};
+  var parts = b.flag.split(' — ');
+  return {words: parts[0], when: parts[1] || ''};
+}
+function csIntakeSummary(name){
+  /* the first sentence of the intake summary only: for the demo patient the second sentence ("no prior
+     cardiac workup") contradicts the chart (cardiology saw her Jul 28), so it is not shown. Logged in the spec. */
+  var s = AI_SUMMARY[name] || ''; var m = s.match(/^.*?[.!?](\s|$)/);
+  return (m ? m[0] : s).trim().replace(/ x(\d)/, ' for $1');
+}
+function csRenderToday(name){
+  var el = document.getElementById('cs-today'); if(!el) return;
+  var r = csRow(); if(!r) return;
+  var f = csIntakeFlag(r), sum = csIntakeSummary(name);
+  el.innerHTML = '<h3 class="cs-h3" id="cs-today-h">Today</h3>' +
+    '<p class="cs-reason">' + csEsc(r.concern) + '</p>' +
+    '<dl class="cs-kv"><dt>Reason</dt><dd class="cs-cap">In the patient&rsquo;s words, from booking</dd>' +
+    (sum ? '<dt>Intake summary</dt><dd>' + csEsc(sum) + '</dd>' : '') +
+    (f ? '<dt>Intake red flag</dt><dd class="cs-flagline"><span class="cs-tag warn">' + csIc('alert') + 'Flagged at intake</span>' +
+      (f.words ? '<b>&ldquo;' + csEsc(f.words) + '&rdquo;</b><span class="cs-cap">patient&rsquo;s words' + (f.when ? ' &middot; ' + csEsc(f.when) : '') + '</span>' : '') +
+      '<button type="button" class="vc-more" onclick="openBrief(PC_CURRENT)">Open intake</button></dd>' : '') +
+    '</dl>';
+  paintPd(el);
+}
+
+/* ================= Relevant to [concern] =================
+   v2.5 §5: always the same five categories. Delivery step 2 selects them by deterministic rules; until then
+   the demo patient's chest-pain context is curated from v2's own data (sources beside each line), and other
+   patients get the same five categories from their structured data, labelled "From the chart". */
+var CS_REL = {
+  'Gloria Mcdonald, 74F': {concern:'chest pain', rows:[
+    /* CONDITIONS (active), PT_LAST Jun 25. v2 holds no smoking status, so it says so. */
+    ['History', [
+      ['Hypertension', 'since 2019', 'problems'],
+      ['Type 2 diabetes', 'since 2021', 'problems'],
+      ['Exertional chest pressure', 'first noted Jun 25, cause not yet established', 'documents']],
+      'Smoking status: <b>not recorded</b>'],
+    /* RX_MEDS (last renewed Aug 30); CARE_PLAN g3. v2.5 §4: always say where the list came from and when. */
+    ['Medications', [
+      ['Amlodipine 5 mg', 'once daily', 'medications'],
+      ['Metformin 500 mg', 'twice daily', 'medications'],
+      ['Bisoprolol 2.5 mg daily', 'recommended by cardiology Jul 28, not started', 'careplan']],
+      'Source: <b>Simple Care record</b> &middot; last renewed Aug 30 &middot; not checked against PharmaNet'],
+    /* PT_READINGS (home cuff, patient-reported), PT_RESULTS. Today's results are pointed to, not repeated. */
+    ['Investigations', [
+      ['@na', 'Troponin I, CK and 12-lead ECG today', 'in Needs attention above'],
+      ['@bp', 'Home BP', 'results'],
+      ['HbA1c <b>7.1 %</b>', 'Mar 12 &middot; high, ref &lt;7.0 &middot; LifeLabs', 'results']],
+      'No lipid panel and no prior ECG on file.'],
+    /* PT_LAST, CARE_PLAN (cardiology Jul 28), CP_PENDING (internal medicine Aug 26) */
+    ['Prior related care', [
+      ['Jun 25 &middot; you', 'exertional chest pressure; referred to cardiology; safety netting given', 'documents'],
+      ['Jul 28 &middot; Cardiology, Dr. M. Ferreira', 'stress test arranged; asks you to start bisoprolol; wants lipids and HbA1c first', 'consults', 'cardio'],
+      ['Aug 26 &middot; Internal medicine, Dr. A. Whyte', 'ordered a 48-hour Holter; 3 recommendations not yet in your plan', 'consults']]],
+    /* CARE_PLAN g1, g2, g4 (overdue); CP_PENDING Holter */
+    ['Pending', [
+      ['Exercise stress test, Sep 12', 'arranged by cardiology &middot; report not back', 'careplan'],
+      ['Lipid panel and HbA1c', 'due Aug 20 &middot; not drawn', 'careplan', null, 'Overdue'],
+      ['48-hour Holter', 'ordered by internal medicine Aug 26 &middot; result not on file', 'consults'],
+      ['Cardiology review after the stress test', 'their office books it', 'careplan']]]
+  ]}
+};
+var CS_QUOTES = {cardio:['I have arranged an exercise stress test for September 12 and will forward the report to you.',
+  'I would ask the family physician to start bisoprolol 2.5 mg daily and titrate to heart rate.',
+  'Please have a current lipid profile and HbA1c available for the September visit.']};
+function csSrc(label, sub, tab, extraTag){
+  return '<button type="button" class="cs-src" onclick="csOpenFull(\'' + tab + '\',this)">' + label +
+    (sub ? ' <span class="cs-when">&middot; ' + sub + '</span>' : '') + (extraTag ? '<span class="cs-tag warn cs-inl">' + csIc('clock') + extraTag + '</span>' : '') +
+    '<span class="vh"> &mdash; open the source</span>' + csIc('chevr', 'cs-go') + '</button>';
+}
+function csBP(name){
+  var bp = (PT_READINGS[name] || {}).bp || []; if(!bp.length) return '';
+  var last = bp[bp.length - 1];
+  var spark = bp.length > 1 ? '<span class="cs-trend">' + prSpark([bp.map(function(x){ return +x[1].split('/')[0]; }), bp.map(function(x){ return +x[1].split('/')[1]; })], 64, 28) + '</span>' : '';
+  return csSrc('Home BP ' + spark + ' <b>' + last[1] + ' mmHg</b>', last[0] + ' &middot; ' + bp.length + ' readings since ' + bp[0][0] + ' &middot; patient-reported, home cuff', 'results');
+}
+function csRelGeneric(name){
+  var rows = [];
+  var cond = condActive(name).filter(function(c){ return c.name !== 'Preventive care'; });
+  if(cond.length) rows.push(['History', cond.map(function(c){ return [c.name, 'since ' + c.since, 'problems']; })]);
+  var meds = rxMeds(name);
+  if(meds.length) rows.push(['Medications', meds.map(function(m){ return [m.drug + ' ' + m.dose, m.freq, 'medications']; }),
+    'Source: <b>Simple Care record</b>' + (meds[0].last ? ' &middot; last renewed ' + meds[0].last : '') + ' &middot; not checked against PharmaNet']);
+  var res = (PT_RESULTS[name] || []).slice(0, 4);
+  if(res.length) rows.push(['Investigations', res.map(function(t){ var p = rsLast(t);
+    return [t.n + ' <b>' + p[1] + ' ' + t.u + '</b>', p[0] + (p[2] ? ' &middot; ' + (p[2].indexOf('crit') === 0 ? 'critical' : p[2]) : '') + ' &middot; ref ' + t.ref, 'results']; })]);
+  var L = PT_LAST[name];
+  if(L) rows.push(['Prior related care', [[csShort(L.date) + ' &middot; you', csEsc(L.why) + '; ' + csEsc(L.plan[0] || ''), 'documents']]]);
+  var pend = (L ? L.pending : []).concat(expFor(name).map(function(x){ return {what:x.what, when:x.when, state:'ordered ' + x.by}; }));
+  if(pend.length) rows.push(['Pending', pend.map(function(p){ return [csEsc(p.what), csEsc(p.when + ' · ' + p.state), 'careplan']; })]);
+  return rows;
+}
+function csRenderRel(name){
+  var el = document.getElementById('cs-rel'); if(!el) return;
+  var cur = CS_REL[name], rows = cur ? cur.rows : csRelGeneric(name);
+  if(!rows.length){ el.innerHTML = ''; el.hidden = true; return; }
+  el.hidden = false;
+  var h = '<div class="cs-hd"><h3 class="cs-h3" id="cs-rel-h">' + (cur ? 'Relevant to ' + cur.concern : 'From the chart') + '</h3><p class="cs-cap">Each line opens its source</p></div><dl class="cs-kv cs-relkv">';
+  rows.forEach(function(row){
+    h += '<dt>' + row[0] + '</dt><dd>' + row[1].map(function(x){
+      if(x[0] === '@na') return CS.empty ? '' : '<button type="button" class="cs-src" onclick="csGoNA()">' + x[1] + ' <span class="cs-when">&middot; ' + x[2] + '</span>' + csIc('chevr', 'cs-go') + '</button>';
+      if(x[0] === '@bp') return csBP(name);
+      var line = csSrc(x[0], x[1], x[2], x[4]);
+      if(x[3] && CS_QUOTES[x[3]]){
+        var k = x[3], open = !!CS.relOpen[k];
+        line += '<button type="button" class="cs-exp" aria-expanded="' + open + '" aria-controls="cs-q-' + k + '" onclick="CS.relOpen[\'' + k + '\']=!CS.relOpen[\'' + k + '\'];csRenderRel(PC_CURRENT);csFocus(\'[aria-controls=cs-q-' + k + ']\')">' +
+          csIc('chevdown') + (open ? 'Hide' : 'Show') + ' what they wrote</button>' +
+          '<div class="cs-quote" id="cs-q-' + k + '"' + (open ? '' : ' hidden') + '>' + CS_QUOTES[k].map(function(q){ return '<p>&ldquo;' + q + '&rdquo;</p>'; }).join('') + '</div>';
+      }
+      return line;
+    }).join('') + (row[2] ? '<p class="cs-note2">' + row[2] + '</p>' : '') + '</dd>';
+  });
+  el.innerHTML = h + '</dl>';
+  paintPd(el);
+}
+
+/* ================= Since you last saw =================
+   v2.5 §3/§6: New, Changed, Pending, Resolved since the treating doctor's last encounter; 3–6 items,
+   critical always shown, then "+N more". Sentence case labels (no uppercase styling, rule 23). */
+var CS_SINCE = {
+  'Gloria Mcdonald, 74F': [
+    {k:'New', ic:'plus', t:function(){ return CS.empty ? 'Cardiac markers and 12-lead ECG today <span class="cs-cap">&middot; reviewed</span>'
+      : 'Cardiac markers and 12-lead ECG today, including a critical troponin <span class="cs-cap">&middot; in Needs attention</span>'; }},
+    {k:'New', ic:'plus', t:'Cardiology consult, Jul 28 <span class="cs-cap">&middot; stress test arranged; asks you to start bisoprolol</span>'},
+    {k:'New', ic:'plus', t:'Internal medicine consult, Aug 26 <span class="cs-cap">&middot; 3 recommendations not yet in your plan</span>'},
+    {k:'Pending', ic:'clock', t:'Lipid panel and HbA1c <span class="cs-cap">&middot; due Aug 20, not drawn</span><span class="cs-tag warn cs-inl"><span class="ic" data-pdic="clock"></span>Overdue</span>'},
+    {k:'Resolved', ic:'complete', t:'Cardiology referral <span class="cs-cap">&middot; seen Jul 28</span>'},
+    {k:'Changed', ic:'carryforward', t:'Home BP <span class="cs-cap">&middot; 4 readings since Jun 25, from 122/78 to 126/79 &middot; patient-reported</span>'},
+    {k:'Pending', ic:'clock', t:'Repeat iron studies <span class="cs-cap">&middot; due Sep 25, awaiting</span>'}
+  ]
+};
+function csSinceGeneric(name){
+  var L = PT_LAST[name]; if(!L) return [];
+  var out = [];
+  inboxFor(name).filter(function(it){ return it.status !== 'signed-off'; }).forEach(function(it){
+    out.push({k:'New', ic:'plus', t: csEsc(it.panel) + ' <span class="cs-cap">&middot; received ' + csEsc(it.received) + '</span>'});
+  });
+  L.pending.forEach(function(p){ out.push({k:'Pending', ic:'clock', t: csEsc(p.what) + ' <span class="cs-cap">&middot; ' + csEsc(p.when) + ', ' + csEsc(p.state) + '</span>'}); });
+  (CARE_PLAN[name] || []).filter(function(x){ return x.status === 'Completed'; }).forEach(function(x){
+    out.push({k:'Resolved', ic:'complete', t: csEsc(x.action) + ' <span class="cs-cap">&middot; ' + csEsc(x.due) + '</span>'}); });
+  return out;
+}
+var CS_SINCE_SHOW = 5;
+function renderSinceLast(name){
+  var el = document.getElementById('slv'); if(!el) return;
+  var L = PT_LAST[name], r = csRow();
+  var list = CS_SINCE[name] || csSinceGeneric(name);
+  el.hidden = false;
+  if(!L){
+    el.innerHTML = '<h3 class="cs-h3" id="cs-since-h">Since you last saw ' + csEsc(csPref(r)) + '</h3><p class="cs-cap">No previous visit with you on file.</p>';
+    return;
+  }
+  var open = !!CS.sinceOpen[name], shown = open ? list : list.slice(0, CS_SINCE_SHOW), extra = list.length - CS_SINCE_SHOW;
+  el.innerHTML = '<div class="cs-hd"><h3 class="cs-h3" id="cs-since-h">Since you last saw ' + csEsc(csPref(r)) + '</h3>' +
+      '<p class="cs-cap">Your visit, ' + csShort(L.date) + ' &middot; ' + csEsc(L.why) + '</p></div>' +
+    (list.length ? '<ul class="cs-since" id="cs-since-list">' + shown.map(function(x){
+      return '<li><span class="cs-kind">' + csIc(x.ic) + x.k + '</span><span class="cs-txt">' + (typeof x.t === 'function' ? x.t() : x.t) + '</span></li>';
+    }).join('') + '</ul>' : '<p class="cs-cap">Nothing has changed since then.</p>') +
+    (extra > 0 ? '<button type="button" class="cs-exp" id="cs-since-btn" aria-expanded="' + open + '" aria-controls="cs-since-list" onclick="CS.sinceOpen[PC_CURRENT]=!CS.sinceOpen[PC_CURRENT];renderSinceLast(PC_CURRENT);csFocus(\'#cs-since-btn\')">' +
+      csIc('chevdown') + (open ? 'Show fewer' : '+' + extra + ' more') + '</button>' : '') +
+    /* Daniel, 26 Sep: "even the last note summary is good too" -- one step away, read-only */
+    '<button type="button" class="vc-more" onclick="csOpenFull(\'documents\',this)">Read the ' + csShort(L.date) + ' note</button>';
+  el.setAttribute('data-for', name);
+  paintPd(el);
+}
+/* the care plan now lives behind Full chart */
+function slvToCarePlan(){ csOpenFull('careplan'); }
+
+/* ================= AI suggestion in the note =================
+   v2.5 §7: AI text is visually distinct from chart facts until accepted; accepted text becomes the doctor's.
+   Rule 18: nothing AI-drafted is filed without the doctor. Before the call, the suggestion is the intake
+   summary; once the scribe runs, its draft lands here instead of straight into the note. */
+function csAI(name){
+  if(CS.ai[name]) return CS.ai[name];
+  var s = csIntakeSummary(name);
+  return (CS.ai[name] = s ? {mode:'intake', text:s, src:'From today&rsquo;s intake: an AI summary of the patient&rsquo;s answers', state:'pending'} : {state:'none'});
+}
+function csRenderAI(){
+  var el = document.getElementById('cs-ai'); if(!el || !PC_CURRENT) return;
+  var a = csAI(PC_CURRENT), r = csRow();
+  if(r && r.signed){ el.innerHTML = ''; return; }
+  if(a.state === 'pending' && a.text){
+    var live = a.mode === 'scribe' && scState === 'live';
+    el.innerHTML = '<div class="cs-ai" role="group" aria-labelledby="cs-ai-k">' +
+      '<p class="cs-ai-k" id="cs-ai-k"><span class="cs-ai-ic">' + AI_MARK.replace('url(#aiGrad)','currentColor') + '</span>' +
+        (a.mode === 'scribe' ? 'AI draft from the call' : 'AI suggestion') + ' &middot; not in your note until you accept</p>' +
+      '<p class="cs-ai-t">' + csEsc(a.text) + '</p><p class="cs-cap">' + a.src + '</p>' +
+      (live ? '<p class="cs-cap">Drafting while you talk&hellip;</p>' :
+      '<div class="cs-ai-a"><button type="button" class="btn" onclick="csAIAccept()"><span class="ic" data-pdic="complete"></span>Accept</button>' +
+      '<button type="button" class="btn" onclick="csAIReject()"><span class="ic" data-pdic="reopen"></span>Reject</button></div>') + '</div>';
+  } else if(a.state === 'accepted'){
+    el.innerHTML = '<p class="cs-ai-done">' + csIc('complete') + 'You accepted the AI text. It is now part of your note.</p>';
+  } else if(a.state === 'rejected'){
+    el.innerHTML = '<p class="cs-ai-done">' + csIc('reopen') + 'You rejected the AI text. Nothing was added.</p>';
+  } else el.innerHTML = '';
+  paintPd(el);
+}
+function csAIAccept(){
+  var a = csAI(PC_CURRENT), n = document.getElementById('vc-note-input'); if(!n || n.readOnly) return;
+  n.value = (n.value.trim() ? n.value.replace(/\s+$/,'') + (a.mode === 'scribe' ? '\n\n' : ' ') : '') + a.text;
+  a.state = 'accepted'; vcGrow(); csDraft(); csRenderAI();
+  csSay('Added to your note. It is now your text.'); n.focus();
+}
+function csAIReject(){ csAI(PC_CURRENT).state = 'rejected'; csRenderAI(); csSay('Rejected. Nothing was added.'); var n = document.getElementById('vc-note-input'); if(n) n.focus(); }
+
+/* the scribe drafts into the AI block, not straight into the doctor's note (was: n.value += ...) */
+scStart = function(){
+  scState = 'live'; scIdx = 0; scSeen = []; scDone = {};
+  CS.ai[PC_CURRENT] = {mode:'scribe', text:'', src:'Drafted by the ambient scribe from today&rsquo;s call, with consent', state:'pending'};
+  renderScribe(); csRenderAI();
+  clearInterval(scTimer);
+  scTimer = setInterval(scTick, 1100);
+  toast('Recording. ' + csPref(csRow()) + ' consented at the start of the call.');
+};
+scStep = function(){
+  SC_PROPOSALS.forEach(function(p){
+    if(p.after === scIdx && scSeen.indexOf(p.id) === -1 && !scHeld(p)) scSeen.push(p.id);
+  });
+  var a = csAI(PC_CURRENT);
+  SC_NOTE.forEach(function(nb){
+    if(nb.after !== scIdx) return;
+    /* doctor review ask 1: with an unsigned critical result, the assessment and plan are held back */
+    if(scHeld(nb)){ if(a.text.indexOf('ASSESSMENT AND PLAN') === -1) a.text += scCritLine(); }
+    else a.text += nb.text.replace(/&rsquo;/g,'’').replace(/&mdash;/g,'—');
+  });
+  a.text = a.text.replace(/^\n+/, '');
+  csRenderAI();
+};
+var csRenderScribe0 = renderScribe;
+renderScribe = function(){
+  csRenderScribe0();
+  var sub = document.getElementById('sc-sub');
+  if(sub && scState === 'live') sub.textContent = 'Recording with consent. The draft appears under the scribe, marked as AI, until you accept it.';
+  csRenderAI();
+};
+
+/* ================= note draft survives navigation (v2.5 §3, §7) ================= */
+function csDraft(){
+  var n = document.getElementById('vc-note-input'); if(!n || !PC_CURRENT || n.readOnly) return;
+  CS.draft[PC_CURRENT] = n.value;
+  try { sessionStorage.setItem('sc-cs-draft', JSON.stringify(CS.draft)); } catch(e){}
+  var s = document.getElementById('cs-saved'); if(s){ s.innerHTML = csIc('complete') + 'Draft saved &middot; ' + csNow(); paintPd(s); }
+}
+
+/* ================= Finalize waits for the this-visit strip ================= */
+function csFinState(){
+  var b = document.getElementById('vc-finalize'), why = document.getElementById('cs-finwhy'), r = csRow();
+  if(!b || !why) return;
+  var signed = !!(r && r.signed), miss = csMissing(PC_CURRENT);
+  var acts = document.getElementById('cs-acts'); if(acts) acts.hidden = signed;
+  if(signed || !miss.length){ b.removeAttribute('aria-disabled'); b.removeAttribute('aria-describedby'); why.hidden = true; why.innerHTML = ''; return; }
+  /* aria-disabled, not disabled: it stays focusable and explains itself */
+  b.setAttribute('aria-disabled','true'); b.setAttribute('aria-describedby','cs-finwhy');
+  why.innerHTML = csIc('alert') + '<span>To finalize, complete:</span> ' + miss.map(function(m){
+    return '<button type="button" class="vc-more" onclick="csGoStrip(\'' + m[0] + '\')">' + m[1] + '</button>'; }).join('<span aria-hidden="true">&middot;</span>');
+  why.hidden = false; paintPd(why);
+}
+function csGoStrip(key){
+  window.scrollTo({top: Math.max(0, document.getElementById('pcv-c').getBoundingClientRect().top + window.scrollY - 120)});
+  csPop(key);
+}
+var csFinalize0 = finalizeVisit;
+finalizeVisit = function(force){
+  if(PC_CURRENT && !csStripDone(PC_CURRENT)){
+    var m = csMissing(PC_CURRENT);
+    toast('Complete this visit first: ' + m.map(function(x){ return x[1]; }).join(', '));
+    csGoStrip(m[0][0]);
+    return;
+  }
+  var a = PC_CURRENT ? csAI(PC_CURRENT) : null;
+  if(!force && a && a.state === 'pending' && a.text && !(csRow() || {}).signed){
+    vcFinWarn('The AI ' + (a.mode === 'scribe' ? 'draft' : 'suggestion') + ' you haven&rsquo;t accepted will not be filed. Sign off and finalize anyway?');
+    return;
+  }
+  return csFinalize0(force);
+};
+var csNoteState0 = vcNoteState;
+vcNoteState = function(row){ csNoteState0(row); csFinState(); csRenderAI(); if(row && row.signed){ delete CS.draft[PC_CURRENT]; } if(PC_CURRENT) csRenderStrip(PC_CURRENT); };
+
+/* ================= calls: a dropped call re-expands the strip ================= */
+var csEndCall0 = pcEndCall;
+pcEndCall = function(){
+  csEndCall0();
+  var c = PC_CALL[PC_CURRENT];
+  if(PC_CURRENT && c && c.dropped){ CS.dropped[PC_CURRENT] = true; CS.stripOpen[PC_CURRENT] = true; csRenderStrip(PC_CURRENT); csRenderNotices(PC_CURRENT);
+    var b = document.getElementById('cs-redial'); if(b) b.focus(); }
+};
+var csStartCall0 = pcStartCall;
+pcStartCall = function(){
+  csStartCall0();
+  if(PC_CURRENT){ CS.dropped[PC_CURRENT] = false; csRenderNotices(PC_CURRENT); csRenderStrip(PC_CURRENT); }
+};
+
+/* ================= full chart, one step away ================= */
+var CS_TABS = [['timeline','Timeline','calendar'],['results','Results','chartup'],['medications','Medications','encounterlog'],['problems','Problems','tasks'],
+  ['careplan','Care plan','today'],['consults','Consults','registerpatient'],['documents','Documents','file'],['messages','Messages','chat'],['search','Search','search']];
+function csOpenFull(tab, from){
+  var fc = document.getElementById('cs-fc'), ctx = document.getElementById('cs-ctx'); if(!fc) return;
+  if(fc.hidden){ CS.ctxScroll = window.scrollY; CS.fcReturn = from || document.activeElement; }
+  if(CS.view === 'note') csView('chart');
+  ctx.hidden = true; fc.hidden = false;
+  document.getElementById('pcv-c').classList.add('cs-fc-open');
+  var b = document.getElementById('cs-fc-btn'); if(b) b.setAttribute('aria-expanded','true');
+  csCondensed(false);
+  csTab(tab || CS.fcTab || 'timeline', true);
+  var top = document.getElementById('pcv-c').getBoundingClientRect().top + window.scrollY - csTopbarH();
+  if(window.scrollY > top) window.scrollTo({top: Math.max(0, top)});
+  document.getElementById('cs-fc-h').focus({preventScroll:true});
+}
+function csCloseFull(silent){
+  var fc = document.getElementById('cs-fc'), ctx = document.getElementById('cs-ctx'); if(!fc || fc.hidden) return;
+  /* v2.5 §7: one action back; the note, scroll position and visit state are untouched */
+  fc.hidden = true; ctx.hidden = false;
+  document.getElementById('pcv-c').classList.remove('cs-fc-open');
+  var b = document.getElementById('cs-fc-btn'); if(b) b.setAttribute('aria-expanded','false');
+  if(silent) return;
+  window.scrollTo({top: CS.ctxScroll});
+  var back = CS.fcReturn && document.contains(CS.fcReturn) && CS.fcReturn.offsetParent ? CS.fcReturn : b;
+  if(back) back.focus({preventScroll:true});
+}
+function csTab(tab, noFocus){
+  CS.fcTab = tab;
+  var tabs = document.getElementById('cs-tabs');
+  tabs.innerHTML = CS_TABS.map(function(t){
+    var on = t[0] === tab;
+    return '<button type="button" role="tab" id="cst-' + t[0] + '" aria-controls="csp-' + t[0] + '" aria-selected="' + on + '" tabindex="' + (on ? 0 : -1) + '" onclick="csTab(\'' + t[0] + '\')">' + csIc(t[2]) + t[1] + '</button>';
+  }).join('');
+  CS_TABS.forEach(function(t){ var p = document.getElementById('csp-' + t[0]); if(p) p.hidden = t[0] !== tab; });
+  if(tab === 'consults') csRenderConsults(PC_CURRENT);
+  if(tab === 'documents') csRenderDocs(PC_CURRENT);
+  if(tab === 'messages') csRenderMsgs(PC_CURRENT);
+  if(tab === 'search') csSearch();
+  paintPd(document.getElementById('cs-fc'));
+  if(!noFocus){ var f = document.getElementById('cst-' + tab); if(f) f.focus(); }
+}
+document.addEventListener('keydown', function(e){
+  var t = e.target;
+  if(t && t.getAttribute && t.getAttribute('role') === 'tab' && t.closest && t.closest('#cs-tabs') && /^(ArrowRight|ArrowLeft|Home|End)$/.test(e.key)){
+    var ids = CS_TABS.map(function(x){ return x[0]; }), i = ids.indexOf(CS.fcTab);
+    i = e.key === 'Home' ? 0 : e.key === 'End' ? ids.length - 1 : (i + (e.key === 'ArrowRight' ? 1 : -1) + ids.length) % ids.length;
+    csTab(ids[i]); e.preventDefault();
+  }
+  if(e.key === 'Escape' && csOnChart()){
+    if(CS.pop){ csPop(null); return; }
+    var fc = document.getElementById('cs-fc');
+    if(fc && !fc.hidden && !document.querySelector('.cd-panel.show, .tm-overlay.show, #copilot-overlay.show')) csCloseFull();
+  }
+});
+function csRenderConsults(name){
+  var el = document.getElementById('cs-consults'); if(!el) return;
+  var by = {};
+  (CARE_PLAN[name] || []).filter(function(x){ return x.specialty !== 'Family practice'; }).forEach(function(x){
+    var k = x.service + '|' + x.src; (by[k] = by[k] || {service:x.service, src:x.src, items:[]}).items.push(x);
+  });
+  var h = Object.keys(by).map(function(k){ var g = by[k];
+    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pcic="consult"></span><h4>' + g.src + '</h4></div><p class="cs-cap">' + g.service + '</p>' +
+      '<ul class="cs-list">' + g.items.map(function(x){ return '<li><b>' + x.action + '</b> <span class="cs-cap">&middot; ' + x.status + ' &middot; owner: ' + (x.owner === 'GP' ? 'you' : 'specialist') + '</span>' +
+        (x.quote ? '<p class="cs-quote">' + x.quote + '</p>' : '') + '</li>'; }).join('') + '</ul></div>';
+  }).join('');
+  var P2 = CP_PENDING[name];
+  if(P2) h += '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pcic="consult"></span><h4>' + P2.src + '</h4></div>' +
+    '<p class="cs-cap">' + P2.recs.length + ' recommendations not yet in your plan &middot; <button type="button" class="vc-more" onclick="csTab(\'careplan\')">Review them in the care plan</button></p>' +
+    '<ul class="cs-list">' + P2.recs.map(function(x){ return '<li><b>' + x.action + '</b><p class="cs-quote">' + x.quote + '</p></li>'; }).join('') + '</ul></div>';
+  el.innerHTML = h || '<p class="pc-empty">No consults on file.</p>';
+  paintPd(el);
+}
+function csRenderDocs(name){
+  var el = document.getElementById('cs-docs'); if(!el) return;
+  var r = csRow(), L = PT_LAST[name], f = csIntakeFlag(r), h = '';
+  h += '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>Intake &middot; today</h4></div><dl class="cs-kv">' +
+    '<dt>Reason</dt><dd>' + csEsc(r ? r.concern : '') + '</dd>' +
+    (AI_SUMMARY[name] ? '<dt>Summary</dt><dd>' + csEsc(csIntakeSummary(name)) + '</dd>' : '') +
+    (f && f.words ? '<dt>Flagged</dt><dd>&ldquo;' + csEsc(f.words) + '&rdquo;' + (f.when ? ' &middot; ' + csEsc(f.when) : '') + '</dd>' : '') + '</dl></div>';
+  if(L) h += '<div class="vc-block cs-doc" id="cs-doc-last"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>Visit note &middot; ' + csShort(L.date) + '</h4></div>' +
+    '<p class="slv-ro"><span class="ic" data-pdic="complete"></span>Signed off by Dr. Pannozzo &middot; read-only</p><dl class="cs-kv">' +
+    ['S','O','A','P'].map(function(k){ return '<dt>' + {S:'Subjective',O:'Objective',A:'Assessment',P:'Plan'}[k] + '</dt><dd>' + L.note[k] + '</dd>'; }).join('') + '</dl></div>';
+  else h += '<p class="pc-empty">No earlier notes on file.</p>';
+  el.innerHTML = h; paintPd(el);
+}
+function csRenderMsgs(name){
+  var el = document.getElementById('cs-msgs'); if(!el) return;
+  var base = csBase(name).toLowerCase();
+  var hits = [];
+  (typeof MOA_THREADS !== 'undefined' ? MOA_THREADS : []).forEach(function(th){ th.messages.forEach(function(m){ if(m.text.toLowerCase().indexOf(base) > -1) hits.push({who:th.name, m:m}); }); });
+  el.innerHTML = hits.length ? '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="chat"></span><h4>Your MOA this window</h4></div><ul class="cs-list">' +
+    hits.map(function(x){ return '<li>&ldquo;' + csEsc(x.m.text) + '&rdquo; <span class="cs-cap">&middot; ' + csEsc(x.who) + ', ' + x.m.time + '</span></li>'; }).join('') + '</ul></div>'
+    : '<p class="pc-empty">No messages about this patient.</p>';
+}
+/* v2.5 §7 search everything: here, the text of every full-chart section */
+function csSearch(){
+  var q = ((document.getElementById('cs-q') || {}).value || '').trim().toLowerCase(), out = document.getElementById('cs-sres'); if(!out) return;
+  if(q.length < 2){ out.innerHTML = '<p class="cs-cap">Type at least two letters in the search box above.</p>'; if(CS.fcTab !== 'search' && q.length) csTab('search', true); return; }
+  if(CS.fcTab !== 'search'){ csTab('search', true); return; }
+  csRenderConsults(PC_CURRENT); csRenderDocs(PC_CURRENT); csRenderMsgs(PC_CURRENT);
+  var hits = [];
+  CS_TABS.slice(0, 8).forEach(function(t){
+    var p = document.getElementById('csp-' + t[0]); if(!p) return;
+    p.querySelectorAll('p, li, dd, .vc-line, .rs-row, .cp-item, .ctl-item, .cd-rail-row').forEach(function(n){
+      if(n.querySelector('p, li, dd, .vc-line, .rs-row, .cp-item')) return;
+      var tx = n.textContent.replace(/\s+/g,' ').trim();
+      if(tx && tx.length < 320 && tx.toLowerCase().indexOf(q) > -1) hits.push([t[0], t[1], tx]);
+    });
+  });
+  var seen = {}; hits = hits.filter(function(x){ var k = x[0] + x[2]; if(seen[k]) return false; seen[k] = 1; return true; });
+  var re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')','ig');
+  out.innerHTML = '<p class="cs-cap">' + hits.length + ' result' + (hits.length === 1 ? '' : 's') + ' for &ldquo;' + csEsc(q) + '&rdquo;</p><ul class="cs-since">' + hits.slice(0, 40).map(function(x){
+    return '<li><span class="cs-kind">' + x[1] + '</span><span class="cs-txt"><button type="button" class="cs-src" onclick="csTab(\'' + x[0] + '\')">' + csEsc(x[2]).replace(re,'<mark>$1</mark>') + '</button></span></li>';
+  }).join('') + '</ul>';
+}
+
+/* ================= narrow widths: the note is one tab away (v2.5 §3) ================= */
+function csView(v){
+  CS.view = v;
+  var root = document.getElementById('pcv-c'); if(!root) return;
+  root.classList.toggle('cs-show-note', v === 'note');
+  ['chart','note'].forEach(function(k){ var b = document.getElementById('cs-vt-' + k); if(b) b.setAttribute('aria-selected', String(k === v)); });
+}
+
+/* ================= layout: sticky offsets, focus never hidden under the banner ================= */
+function csTopbarH(){ var t = document.querySelector('.topbar'); return t ? Math.max(0, t.getBoundingClientRect().height - 20) : 0; }
+function csMeasure(){
+  var root = document.getElementById('pcv-c'), b = document.getElementById('cs-banner'); if(!root || !b) return;
+  var top = csTopbarH(), bh = b.getBoundingClientRect().height;
+  root.style.setProperty('--cs-top', Math.round(top) + 'px');
+  root.style.setProperty('--cs-bh', Math.round(bh) + 'px');
+  /* WCAG 2.2 focus not obscured: keyboard scrolling leaves room for the topbar and the banner */
+  if(csOnChart()) document.documentElement.style.scrollPaddingTop = Math.round(top + bh + 16) + 'px';
+  var w = document.getElementById('cs-work');
+  if(w) root.classList.toggle('cs-narrow', w.getBoundingClientRect().width > 0 && w.getBoundingClientRect().width < 1000);
+}
+window.addEventListener('resize', csMeasure);
+window.addEventListener('scroll', function(){
+  if(!csOnChart()) return;
+  var fc = document.getElementById('cs-fc'); if(fc && !fc.hidden){ csCondensed(false); return; }
+  var t = document.getElementById('cs-today'), b = document.getElementById('cs-banner'); if(!t || !b) return;
+  csCondensed(t.getBoundingClientRect().bottom < b.getBoundingClientRect().bottom + 8);
+}, {passive:true});
+var csShowScreen0 = showScreen;
+showScreen = function(name){
+  csShowScreen0(name);
+  if(name !== 'patientchart') document.documentElement.style.scrollPaddingTop = '';
+  else setTimeout(csMeasure, 0);
+};
+/* Review opened from the chart returns to the chart, and the chart reflects what was just reviewed */
+var csRvBack0 = rvBack;
+rvBack = function(){ csRvBack0(); if(csOnChart() && PC_CURRENT) csRefresh(); };
+var csRvSetReturn0 = rvSetReturn;
+rvSetReturn = function(){ csRvSetReturn0(); var l = document.getElementById('rv-backlbl'); if(l && RV_RETURN === 'patientchart') l.textContent = 'Back to the chart'; };
+
+function csRefresh(){
+  var n = PC_CURRENT; if(!n) return;
+  csRenderSnap(n); csRenderStrip(n); csRenderNotices(n); renderChartAlerts(n); csRenderToday(n); csRenderRel(n); renderSinceLast(n); csRenderAI(); csFinState();
+  csMeasure();
+}
+
+/* openChart builds the shell after the existing chart work, and puts back a draft the doctor left */
+var csOpenChart0 = openChart;
+openChart = function(name){
+  CS.pop = null;
+  csOpenChart0(name);
+  if(PC_CURRENT !== name) return;
+  csCloseFull(true); csView('chart');
+  var r = csRow(), n = document.getElementById('vc-note-input');
+  if(n && r && !r.signed && CS.draft[name] !== undefined){ n.value = CS.draft[name]; vcGrow(); }
+  var s = document.getElementById('cs-saved'); if(s) s.innerHTML = '';
+  csRefresh();
+  window.scrollTo({top:0});
+};
+
+/* ================= demo switcher: chart states ================= */
+function csDemo(k){
+  if(!PC_CURRENT){ toast('Open a chart first'); return; }
+  var v = csVisit(PC_CURRENT);
+  if(k === 'empty') CS.empty = !CS.empty;
+  if(k === 'outside'){ v.outside = !v.outside; if(v.outside) v.location = true; }
+  if(k === 'allergy'){ var o = ['nkda','named','none'], a = CS.allergy[PC_CURRENT] || 'nkda'; CS.allergy[PC_CURRENT] = o[(o.indexOf(a) + 1) % 3]; }
+  if(k === 'strip'){
+    var done = csStripDone(PC_CURRENT);
+    if(done){ v.location = false; v.others = false; }
+    else { v.location = true; v.others = true; v.othersText = v.othersText || 'None, patient alone'; if(!v.id) v.id = 'BC Services Card, today'; if(!v.consent) v.consent = 'Verbal, today'; }
+    CS.stripOpen[PC_CURRENT] = false;
+  }
+  csRefresh(); csDemoSync();
+}
+function csDemoSync(){
+  var v = PC_CURRENT ? csVisit(PC_CURRENT) : {};
+  var set = function(id, on){ var b = document.getElementById(id); if(b){ b.classList.toggle('on', !!on); b.setAttribute('aria-pressed', String(!!on)); } };
+  set('dsw-cs-empty', CS.empty); set('dsw-cs-out', v.outside); set('dsw-cs-strip', PC_CURRENT && csStripDone(PC_CURRENT));
+}
+</script>
+  <div class="build-stamp">v2 · build 2026-10-04 11:22</div>
 </body>
 </html>

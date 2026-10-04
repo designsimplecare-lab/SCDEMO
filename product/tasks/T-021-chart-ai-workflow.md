@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Ready: Daniel's chart document arrived (Chart View v2.5, B-006) |
+| Status | In review: built in the main portal (build 2026-10-04 11:22); not deployed yet |
 | Type | Design |
 | Priority | P1 |
 | Size | L |
@@ -52,3 +52,4 @@ below the visit summary. See `from-daniel/2026-09-30-chart-workflow.md`.
 - 2026-10-03 — Ani: the physician portal file is the main version; build the chart into it, with no v3 file
 - 2026-10-03 — Ani: use the demo's existing design system; the Figma library comes later
 - 2026-10-04 — Ani: no dark-mode work for now; light only
+- 2026-10-04 — core encounter shell built into `simplecare-physician-portal-v2.html`; spec `product/specs/chart-shell.md`. Not yet checked with the `doctor` agent or the `accessibility` gate. Waiting for Ani's review before deploy.

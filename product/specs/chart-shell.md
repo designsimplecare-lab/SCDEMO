@@ -1,0 +1,135 @@
+# Chart shell: the core encounter view (T-021)
+
+Owner: `ux-designer` · Ani approves · Built into `simplecare-physician-portal-v2.html` (the chart, `#pcv-c`) · Build 2026-10-04 11:22
+Source: Physician Chart View Requirements v2.5 (B-006), delivery step 1 · ECG Critical Result Requirements v2.0 · Daniel, 30 Sep (`from-daniel/2026-09-30-chart-workflow.md`, `2026-09-30-ecg-and-result-flags.md`).
+Scope: light theme, 1440 px, the demo patient. Dark theme not checked (Ani, 4 Oct). The Figma "SC – Design System" is not used yet (Ani, 3 Oct); the chart uses v2's own variables, buttons, tags and Mage icons.
+
+## One-screen summary
+
+**What it is.** Opening a chart now shows, top to bottom: the persistent banner (patient snapshot, then the this-visit strip), Needs attention, Today, Relevant to chest pain, Since you last saw. The note and its actions sit **beside** that context at 1440 px, so the doctor sees where to chart straight away (Daniel: "where am I charting?"). The full chart is one click away and takes the context's place; the note stays.
+
+**What changed from v2.**
+1. Note column beside the context, with Prescribe, Order, Refer, Task, Message under it and Sign off pinned at the bottom (v2: note low on the page).
+2. New this-visit strip. Sign off is disabled until it is complete (v2: none).
+3. Masked PHN, no clinical counts or conditions chip in the banner (v2: full PHN, conditions chip).
+4. One Needs attention group: the critical troponin, with the abnormal ECG (To do) and CK (Info) grouped under it (v2: separate cards plus an "Also in today" line).
+5. Today, Relevant to chest pain and Since you last saw replace "This visit", the care-plan block, the right rail and the tab row. The care plan, results, medications and conditions moved behind **Full chart**.
+6. AI text (the scribe draft and an intake-based suggestion) is marked and kept out of the note until the doctor accepts it (v2: the scribe wrote straight into the note).
+
+**Kept from v2, unchanged.** Call, Task MOA, prescribing card, scribe and its proposals, sign-off and claim, care plan, results, the review screen, the MOA chat, the Assistant, Daniel's "Abnormal ECG" wording, and the held assessment and plan while a critical result is unsigned.
+
+**Proof.** Light screenshots in `product/reports/shots/t021-*.png`. All three inline scripts pass `node --check`. The console was clean in every run (chart, finalize block, strip, full chart and back, scribe, dropped call, sign-off, Home, Inbox, Claims, Tasks, MOA chat, Assistant, review and back, and every other queue patient's chart).
+
+**Needs Daniel (top):** which tier the CK sits in; whether a non-BC patient blocks Sign off; the strip's data source and wording; High vs To do. See the end.
+
+## Anatomy
+
+```
+Banner (sticky):  photo · name · age · gender · masked PHN · allergies · family doctor · Call · Full chart
+                  This visit: location · ID verified · consent · others present · video/phone · callback
+                  [notices: dropped call; patient outside BC]   [one line: reason + critical, only once scrolled]
+Context column                                        Note column (sticky, beside)
+  Needs attention (grouped)                             Today's note + "draft saved"
+  Today  (one surface, divided by hairlines)            AI suggestion (marked)
+  Relevant to chest pain                                Ambient scribe (v2)
+  Since you last saw                                    Note, Insert chips, Actions
+                                                        Sign off (pinned) · Save draft
+Full chart replaces the context column: Timeline · Results · Medications · Problems · Care plan · Consults · Documents · Messages · Search
+```
+
+## Per part
+
+### 1. Patient snapshot (v2.5 §3)
+- **Shows:** name (legal name; "Goes by Gloria" only when it differs), age, gender as recorded, PHN masked to its last three digits, a photo placeholder, allergies, family doctor. No counts, no badges.
+- **States:** allergies in three: named (ink, with a symbol; not red), "No known drug allergies" (green tick), "Allergies not recorded" (amber tag with the word).
+- **Words:** "Family doctor". Nothing is uppercase.
+- **Behaviour:** sticky while scrolling. Demo switcher "Next allergy state" cycles the three.
+- **Accessibility:** the masked PHN has an aria-label naming its last digits; the photo placeholder has a text alternative.
+- **Changed from v2 and why:** v2 showed the full PHN and a conditions chip ("HTN, T2DM, BP above target +11"). v2.5 §3 asks for a masked PHN and no counts or diagnosis badges.
+- **Open:** the photo is a placeholder. v2.5 wants the patient's dated intake photo (needs intake data).
+
+### 2. This-visit strip (v2.5 §3)
+- **Shows:** location, ID verified (method, date), consent, others present, video or phone, callback number.
+- **States:** incomplete items are an amber tag with a word ("Not confirmed", "Not asked", "Not verified", "Not recorded"). Each tag is the button that opens a small form to complete it. Complete: collapses to one line ("Complete · Location · Phone · Callback"), with "Show details". Outside BC: a notice with no close button. Dropped call: the strip re-expands and a notice offers "Call back [number]".
+- **Behaviour:** Sign off & finalize is `aria-disabled` (still focusable) until it is complete, and the line beside it names what is missing, with links to each. Pressing it anyway explains and moves to the first missing item. The note is never lost (draft saved on every keystroke).
+- **Accessibility:** forms are dialogs; Escape closes and returns focus; Enter confirms; the tag's label says what it does.
+- **Changed from v2 and why:** v2 had no strip, and Finalize did not depend on it.
+- **Open (Needs Daniel):** the Virtual Care Compliance spec is TBD. The location, ID, consent and callback values are **invented demo data** (v2 has none; 555-01xx is a fictional number range). Wording of the outside-BC notice, whether it blocks Sign off, and whether location is asked on every call are his.
+
+### 3. Needs attention (v2.5 §3, §7; ECG v2.0; Daniel 30 Sep)
+- **Shows:** one group directly under the banner. The critical troponin first (value in red, the only red text, with its concern "Acute myocardial injury"). Under "Related": **Abnormal ECG** (To do) and **CK 210 U/L above range** (Info). Each item has its source, time, the responsible doctor, its stage ("Not reviewed", "Not cleared", "Reviewed, not signed off") and a direct action ("Review result", "Review ECG", "Open result").
+- **Tiers:** Critical (red symbol and word), To do (amber symbol and word), Info (blue symbol and word). Every tier has a word and a symbol as well as colour.
+- **ECG:** says only "Abnormal ECG". The machine reading stays on the tracing (Daniel, 30 Sep). It is **not** critical: ECG v2.0 makes "ABNORMAL ECG" alone, and plain AF without a source critical flag, non-triggers; every ECG still needs physician review, so it is To do. A real CRITICAL ECG would show verbatim source phrases (not built; see open points).
+- **Empty:** one quiet line, "Nothing requiring attention", no empty card (demo switcher "Nothing needs attention").
+- **Behaviour:** the data and tiering come from v2's existing `labTier` rules (LifeLabs limits plus SimpleCare's troponin escalation); nothing new is classified. Reviewing the ECG or the result updates the list.
+- **Changed from v2 and why:** v2 had a critical card, a separate yellow ECG card and an "Also in today" line. v2.5 groups related items under the critical one.
+- **Open (Needs Daniel):** CK is shown as Info because it is above range but not actionable alone (v2.5 §7 "abnormal ≠ actionable"). Daniel said on 30 Sep that a yellow result is something "the doctor has to look at it and clear". Is CK To do or Info? Also: a LifeLabs "alert" (High) result is shown as To do with the word "high" kept; Daniel's own bands are Critical, High, yellow, and v2.5's are Critical, To do, Info (OQ-76).
+
+### 4. Today (v2.5 §3)
+- **Shows:** the reason in the patient's words ("Follow up — chest pressure noted", 24 px), the intake summary, and the intake red flag in exact words ("Chest pressure", with a "Flagged at intake" tag and "Open intake").
+- **Behaviour:** the red flag row appears only when intake flagged something (display by exception).
+- **Data note:** v2's AI intake summary says "no prior cardiac workup", which contradicts the chart (cardiology saw her Jul 28). The shell shows only its first sentence. Needs the AI engineer to fix the source text.
+
+### 5. Relevant to chest pain (v2.5 §4, §5)
+- **Shows:** the five categories, always in the same order: History, Medications (with source and date: "Simple Care record · last renewed Aug 30 · not checked against PharmaNet"), Investigations, Prior related care, Pending. Every line is a button that opens its source in the full chart. "Show what they wrote" expands the cardiology quotes in place.
+- **Data:** the demo patient's list is curated from v2's data (conditions, medications, care plan, readings, results, consults). Other patients get the same five categories built from their own data and labelled "From the chart". Nothing is invented; "Smoking status: not recorded" says so.
+- **Not duplicated:** today's troponin, CK and ECG are pointed to ("in Needs attention above"), not repeated (v2.5 §7).
+- **Open:** v2.5 §4 wants deterministic, clinician-reviewed selection rules and a Relevant / Not relevant / Missing / Incorrect feedback control. Both belong to delivery step 2 (not built).
+
+### 6. Since you last saw (v2.5 §3, §6)
+- **Shows:** New, Changed, Pending, Resolved as a word with a symbol, five items, then "+2 more". "Read the Jun 25 note" opens it read-only. Labels are sentence case, not the spec's capitals (rule 23).
+- **Open:** v2.5 says critical items are always shown; today's critical is item 1. The "relevant prior visit" is the doctor's own Jun 25 visit; a clinic fallback is not built.
+
+### 7. Note and actions (v2.5 §3; Daniel 30 Sep)
+- **Shows:** at 1440 px the note column is beside the context and stays in view while the context scrolls. Under the note: Prescribe, Order, Refer, Task (the MOA; tasks go doctor to MOA only), Message. Sign off & finalize and Save draft are pinned at the bottom. The note saves a draft on every keystroke ("Draft saved · time").
+- **Reuses v2:** the prescribing card (Prescribe opens it), the scribe, Insert chips, the empty-note and template-text warnings, sign-off and claim submission.
+- **Below 1440 px:** "Chart" and "Note" tabs: the note is one tab away.
+- **Changed from v2 and why:** the note was below the visit summary and the care plan; Daniel could not find it.
+- **Open:** Order, Refer and Message are still the v2 demo toasts, not flows. Message goes to the patient portal (not decided).
+
+### 8. Full chart (v2.5 §3, §7)
+- **Shows:** a "Full chart" button in the banner opens, in place of the context column, nine tabs: Timeline, Results, Medications, Problems, Care plan, Consults, Documents, Messages, Search. A search box searches all of them. "Back to the visit" (or Escape) returns.
+- **Preserved:** the note text, the draft, the scroll position and the visit state. Focus returns to the control that opened it. Every "source" line in Relevant context and every Needs attention action opens the right tab.
+- **Care plan:** it lives here, still separate from the task list (rule 13). Daniel, 30 Sep: "this is more comprehensive care, so don't worry about that just yet."
+- **Open:** Clinical threads (v2.5 §6) are not built; Problems shows v2's conditions list. Consults and Documents are built from v2's care plan and last note, not real documents.
+
+### 9. AI text (v2.5 §7)
+- **Shows:** a tinted block with an AI mark, a label ("AI suggestion · not in your note until you accept"), its source line, and Accept and Reject. Before the call it is the first sentence of the intake summary. Once the scribe runs, the scribe's draft goes in this block instead of straight into the note.
+- **Behaviour:** accepting adds the text to the note as the doctor's own; rejecting adds nothing. Signing with an undecided suggestion asks first and says it will not be filed (rule 18). The scribe's proposals (tasks, orders) are unchanged and still need a button press each.
+- **Works without AI:** if there is no suggestion the block is absent and the chart is unchanged.
+- **Open:** v2.5 §9 tests catching an AI negation error before signing. The block shows its source line, but there is no negation-check design yet (needs `ai-engineer`).
+
+## Accessibility and measures (light, 1440 × 1000)
+- Text 14 px or larger; buttons 44 px with an icon; tags 15 px/500, 40 px (32 px inline in a reading line: Needs Ani); no uppercase styling; reading text capped at 66 ch.
+- Focus: a visible 2 px ring; the page leaves room for the topbar and banner (`scroll-padding-top` set from their measured height) so a focused item is never hidden; full keyboard (tabs with arrow keys, Escape to close, Enter to confirm).
+- Colour: red only on the critical value and its symbol; amber for incomplete and To do; every state has a word.
+- Banner height 162 px with an incomplete strip (the strip is one line at 1440).
+- Not done: a contrast check with a tool, screen-reader testing, and the dark theme. The `accessibility` gate needs to run.
+
+## Not done, and what it needs
+| Item | Needs |
+|---|---|
+| CRITICAL ECG display (verbatim phrases, source, measurements, acknowledgement) | Daniel's go-ahead on the display; a data feed for the printed text. Only the demo's non-critical ECG exists |
+| Critical item closure ("patient told", "follow-up due", "closed" stages) | Critical Results & Escalation spec (TBD) |
+| Clinical threads, trends, pending loops, preventive care | Delivery steps 2 and 3 |
+| Relevant / Not relevant / Missing / Incorrect feedback | Delivery step 2 |
+| Real location, ID, consent and callback data; dated intake photo | Intake and Virtual Care Compliance data |
+| Re-expanding the strip on a location change | A location source |
+| Task targets with 15 physicians; check with the `doctor` agent | Prototype review (the brief asks for it before Ani sees it) |
+| Gates: `clinical-safety`, `qa-engineer`, `accessibility` | The lead |
+| Dark theme, Figma "SC – Design System" | Ani, later |
+
+## Needs Daniel
+1. CK above range alongside a critical troponin: Info, or To do? (and High vs To do naming, OQ-76).
+2. Patient outside BC: the exact notice wording, and whether it blocks Sign off.
+3. The this-visit strip: what counts as "complete", how location, ID and consent are captured, and whether location is re-asked every call.
+4. Is a CRITICAL ECG shown in the same group as the troponin, or separately? (ECG v2.0 says it stays in Needs attention until a physician documents review.)
+5. Chart View v2.1 and the four companion specs, which v2.5 defers to, are not in the repo.
+
+## Needs Ani
+1. Approve the layout: one group for Needs attention, and Today, Relevant and Since you last saw on one surface rather than separate cards.
+2. A second tag height (32 px) inside reading lines, or keep 40 px everywhere?
+3. "Care plan" sits behind Full chart, not on the first screen. OK?
+4. The floating MOA chat sits over the bottom of the note column at 1440 × 1000; the note card is shortened to clear it. Move the chat, or accept?
+5. New demo-switcher rows ("Chart states") in the portal: keep or remove before deploy?
+6. Dark theme and the Figma migration: when?
