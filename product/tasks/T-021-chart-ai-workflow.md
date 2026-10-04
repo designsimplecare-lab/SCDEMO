@@ -42,7 +42,11 @@ below the visit summary. See `from-daniel/2026-09-30-chart-workflow.md`.
 - ECG Critical Result Requirements v2.0 (same bulletin) for how a CRITICAL ECG shows in Needs Attention
 - The current v2 chart: https://designsimplecare-lab.github.io/SCDEMO/simplecare-physician-portal-v2.html
 
+## Output
+- Built directly into `simplecare-physician-portal-v2.html`, the one main version (Ani, 3 Oct: no separate v3 file). Spec: `product/specs/chart-shell.md`.
+
 ## Log
 - 2026-09-30 — created, blocked on Daniel's document
 - 2026-10-03 — Chart View v2.5 arrived; unblocked
 - 2026-10-03 — owner changed; Ani approves the design.
+- 2026-10-03 — Ani: the physician portal file is the main version; build the chart into it, with no v3 file
