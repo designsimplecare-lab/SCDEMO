@@ -8,6 +8,13 @@ the start of every task, and adds its own entries under "From QA".
 Newest first. Each entry: the date, what changed, where the source is, and what QA should do.
 
 ## From the lead
+- **3 Oct 2026: billing follows Daniel's PRD (Ani's decision).**
+  - **Decision:** the doctor attests claims in a batch, and Finalize no longer submits on its own.
+  - **Work:** T-023 has `billing-msp` writing `product/specs/billing-redesign.md`. `ux-designer`
+    builds it into the physician portal after the chart (T-021).
+  - **One main version:** `simplecare-physician-portal-v2.html` is the only version; there are no
+    "v3" files.
+  - **For QA:** when the build lands, test it against the T-023 spec and B-005.
 - **3 Oct 2026: design ownership changed.** The `ux-designer` agent now owns all design tasks
   (T-012 to T-017, T-020, T-021), and Ani approves every design. Where QA reports say "Needs Manoj",
   read "needs `ux-designer` and Ani's approval".
