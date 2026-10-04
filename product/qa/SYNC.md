@@ -8,6 +8,13 @@ the start of every task, and adds its own entries under "From QA".
 Newest first. Each entry: the date, what changed, where the source is, and what QA should do.
 
 ## From the lead
+- **4 Oct 2026: chart redesign is LIVE** (T-021, build 2026-10-04 11:22; spec `product/specs/chart-shell.md`).
+  - **What's new:** the this-visit strip blocks Finalize until complete; Needs attention is grouped
+    (critical troponin, with the abnormal ECG as "To do" and CK as "Info" under it); the note is
+    beside the context; Full chart keeps the note.
+  - **For QA:** judge it against Chart View v2.5 section 9 (light only). It hasn't been through the
+    `doctor` agent or the accessibility gate yet.
+  - **Billing build** (T-023) has started; its spec is `product/specs/billing-redesign.md`.
 - **4 Oct 2026: no dark-mode testing for now** (Ani). Test in light mode only. Usage is limited, so run only priority tasks Ani names.
 - **3 Oct 2026: design system for now = the demo's own** (the portal's CSS variables and components), not the Figma library, which comes later. Judge new screens against the portal's existing look.
 - **3 Oct 2026: billing follows Daniel's PRD (Ani's decision).**

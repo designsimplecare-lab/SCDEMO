@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Spec in progress (`billing-msp`); the build is queued after T-021, because the same file is being edited |
+| Status | In progress: spec approved by Ani (4 Oct); `ux-designer` is building |
 | Type | Design + build |
 | Priority | P1 |
 | Size | L |
@@ -66,3 +66,4 @@ unchanged, health-card results are missing, and the MOA has no billing screen.
   writes the spec while `ux-designer` finishes T-021.
 - 2026-10-03 — Ani: use the demo's existing design system; the Figma library comes later
 - 2026-10-04 — Ani: no dark-mode work for now; light only
+- 2026-10-04 — Ani approved the spec ("start build billing"); `ux-designer` started the build. T-021 (chart) is live as of build 2026-10-04 11:22.

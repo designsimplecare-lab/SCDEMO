@@ -28,9 +28,9 @@ tasks below are **Ready**, and waiting for Ani's go.
 | T-018 | Whistler bus ad, 11×20 interior card, with a QR to booking | Marketing / design | P1 | `brand-designer` (+ `marketing-lead`) | `marketing-compliance`, `accessibility` | Ready |
 | T-019 | Chat as 1:1 with the paired MOA (B-002): the floating chat, one conversation, smart quick-question suggestions | Design | P1 | **Ani** (direction), built by the lead | `qa-engineer`, `moa` walkthrough | Built 30 Sep; the MOA-portal side (up to 5 doctors) is still to do |
 | T-020 | Redesign Home with the design system ([Figma brief](https://www.figma.com/design/CvL4YxfOIyIrh51dobPWxf)) | Design | P1 | `ux-designer` | `qa-engineer`, `accessibility`, `clinical-safety` | Ready |
-| T-021 | The chart: an AI workflow that gets the note done (Daniel, 30 Sep) | Design | P1 | `ux-designer` | `clinical-safety`, `qa-engineer`, `accessibility` | In review: built, not deployed (Ani to review) |
+| T-021 | The chart: an AI workflow that gets the note done (Daniel, 30 Sep) | Design | P1 | `ux-designer` | `clinical-safety`, `qa-engineer`, `accessibility` | Deployed 4 Oct (build 11:22); doctor-agent and accessibility checks still to run |
 | T-022 | Align v2 billing with the Simple Billing PRD v1.5 (gap report) | Review | P2 | `billing-msp` | `clinical-safety`, `qa-engineer` | In review: report delivered; waiting on Daniel (OQ-87) |
-| T-023 | Rebuild billing the PRD way (batch attestation, claim detail, refusals, health card, MOA billing queue) | Design + build | P1 | `ux-designer` (+ `billing-msp` spec) | `clinical-safety`, `qa-engineer`, `accessibility` | Spec in progress; build queued after T-021 |
+| T-023 | Rebuild billing the PRD way (batch attestation, claim detail, refusals, health card, MOA billing queue) | Design + build | P1 | `ux-designer` (+ `billing-msp` spec) | `clinical-safety`, `qa-engineer`, `accessibility` | In progress: spec approved 4 Oct; being built |
 
 **Recording files (local, never committed):**
 - `~/Downloads/Fixing Annoying Appointment Chat Flow.mp4`
