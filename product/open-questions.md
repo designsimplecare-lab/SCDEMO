@@ -72,7 +72,7 @@ calls against his earlier words (OQ-71).
 presentations (QA03). OQ-94 rides with it: is "chest cold" acceptable to say, and is QA-030 a hard
 stop?
 
-**For Ani and Manoj, not Daniel:** OQ-80 (the "Hello" menu: confirm IN23's cards) and OQ-77 (that
+**For Ani (Ani decides, with ux-designer), not Daniel:** OQ-80 (the "Hello" menu: confirm IN23's cards) and OQ-77 (that
 "availability" always means a call window).
 
 ---
@@ -182,7 +182,7 @@ stop?
 - **Source:** HOME29:6-11; OQ-34.
 
 ### OQ-71 · Where does the time sit: beside the greeting, or in its own pill?
-- **Owner:** Manoj (design), with Ani. **Raised:** 30 Sep 2026 (a conflict between sources).
+- **Owner:** Ani decides (design drafted by ux-designer). **Raised:** 30 Sep 2026 (a conflict between sources).
   **Blocks:** REQ-HQ-02; T-008.
 - **The conflict:**
   - Daniel, 29 Sep: *"Can we place the timing info next to Good Evening or Good Morning or Good
@@ -770,7 +770,7 @@ stop?
   measurements and the original one click away, until a physician documents the review (D-105,
   REQ-IN-23). The dictionary itself lives in ECG20 §3 and is not copied here.
 - **Not answered:** the card's exact words beyond "CRITICAL ECG" plus the verbatim phrase; that is
-  copy for Manoj. Which tier name the chart uses is OQ-76.
+  copy that needs ux-designer + Ani's approval. Which tier name the chart uses is OQ-76.
 - **Owner:** Daniel (he is writing the protocol). **Raised:** 30 Sep 2026. **Blocks:** REQ-IN-15,
   REQ-IN-14; HZ log (three flag levels); UC-32.
 - **Why:** *"We'll have our own protocols. Like, if the ECG is saying, you know, STEMI or AFib, or
@@ -940,7 +940,7 @@ stop?
   that the Clinical Director edits (ENG-10, §11, AC-28). That is where the list would live.
 
 ### OQ-68 · Triage for a patient who won't use the AI
-- **Owner:** Daniel (the questions), Ani and Manoj (where it sits). **Raised:** 29 Sep 2026.
+- **Owner:** Daniel (the questions); Ani decides where it sits (ux-designer drafts). **Raised:** 29 Sep 2026.
   **Blocks:** REQ-INT-10; T-015; UC-28.
 - **Why:**
   - *"Some people f\*\*\*ing hate AI."* (BOOK29:23), so every pathway must work without the AI
@@ -959,8 +959,8 @@ stop?
   AI is down (AI-21, AC-27). It does not say how a triage-first concern is triaged without the AI.
 
 ### OQ-69 · The red-flag list and the emergency wording · Top 8
-- **Owner:** Daniel (the list and the words); Manoj (the look, including whether it uses red), with
-  Ani approving (rule 17a). **Raised:** 29 Sep 2026. **Blocks:** REQ-INT-07, REQ-INT-11; T-012;
+- **Owner:** Daniel (the list and the words); the look, including whether it uses red, needs
+  ux-designer + Ani's approval (rule 17a). **Raised:** 29 Sep 2026. **Blocks:** REQ-INT-07, REQ-INT-11; T-012;
   UC-29.
 - **Why:**
   - Booking is open *"so long as it is not an Emergency"* (BOOK29:32-33). The emergency is the
@@ -979,7 +979,7 @@ stop?
   questions (§5), what happens on a hard stop (§7) and default BC messages per domain (§7), with
   "Final wording requires physician approval". IN23 adds a first-prompt acknowledgement with
   recommended wording (§5). So the ask becomes: **approve ES3's domains and messages**, and settle
-  OQ-79 (how deep the screening goes). The look is still Manoj's.
+  OQ-79 (how deep the screening goes). The look needs ux-designer + Ani's approval.
 
 ### OQ-72 · WhatsApp or text booking
 - **Owner:** Daniel (whether and when); `privacy-security` must review before any design.
@@ -1045,7 +1045,7 @@ stop?
     Whether QA-030 is a hard stop is OQ-94.
 
 ### OQ-94 · Is naming a pathway like "chest cold" to a patient acceptable, and is QA-030 a hard stop?
-- **Owner:** Daniel (both); Manoj (the wording, with him). **Raised:** 3 Oct 2026 (QA03).
+- **Owner:** Daniel (both); the wording, with him, needs ux-designer + Ani's approval. **Raised:** 3 Oct 2026 (QA03).
   **Blocks:** REQ-INT-17, REQ-INT-19; T-012, T-013; UC-29.
 - **Why:**
   - On staging, Simplicity told a patient with chest pain "I can help with chest cold" (QA-028,
@@ -1062,7 +1062,7 @@ stop?
 - **Source:** QA03:20-32, 82-96, 127-128; IN23 AC-07; IB7 §19; ES3 §4, §5.
 
 ### OQ-80 · An empty "Hello": three choices, or the care-intent cards?
-- **Owner:** Ani (confirm), then Manoj (design). **Raised:** 3 Oct 2026 (a conflict between
+- **Owner:** Ani decides (confirm); ux-designer designs, with Ani's approval. **Raised:** 3 Oct 2026 (a conflict between
   sources). **Blocks:** REQ-INT-18; T-014.
 - **The conflict:** IB7 §3 offers three choices to a patient who says only "Hello": "See my Family
   Doctor", "Find a Family Doctor", "Get Care Today". IN23 §7 uses two cards, Quick Care and Family
@@ -1206,7 +1206,7 @@ stop?
   - the intake flag on the chart banner;
   - an overdue care-plan item (DR:152-153).
 - **Now (29 Sep):** the patient-facing emergency screen may be one more case. Whether it uses red
-  is Manoj's call, and Ani approves (rule 17a; OQ-69).
+  needs ux-designer + Ani's approval (rule 17a; OQ-69).
 
 ---
 

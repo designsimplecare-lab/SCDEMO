@@ -4,8 +4,8 @@ Owner: product manager agent. First written 25 Sep 2026. Each entry gives what w
 the quote behind it, what it replaced, and the source. The dates are the dates of the source or the
 commit. Source codes are as in `use-cases.md`. **Reversed** marks a decision that a later entry
 undid; the later entry names it. "Design" in *By* means the decision came from a design session with
-no client quote; Ani approved it by shipping it. From 29 Sep 2026, design decisions are Manoj's,
-with Ani approving (D-91).
+no client quote; Ani approved it by shipping it. From 29 Sep 2026, design decisions were Manoj's,
+with Ani approving (D-91). From 3 Oct 2026, design needs the ux-designer agent + Ani's approval.
 
 ## Before August
 
@@ -883,7 +883,8 @@ with Ani approving (D-91).
   to do is organize these Patients so what is hard can become manageable."*
 - **Replaced:** blocking patients by concern ("not ... anymore"). Our sources record no earlier
   blocking rule, only his word. Ani: *"in current state all is open."*
-- **Open:** OQ-69 (the red-flag list and the emergency wording, Daniel; the look, Manoj).
+- **Open:** OQ-69 (the red-flag list and the emergency wording, Daniel; the look needs
+  ux-designer + Ani's approval).
 - **Source:** BOOK29:7-8, 31-42; B-001.
 
 ### D-88 · 29 Sep 2026 · Two intake depths: quick-book and triage-first; Daniel decides which is which

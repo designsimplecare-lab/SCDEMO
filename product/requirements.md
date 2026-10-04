@@ -62,7 +62,7 @@ identity](#patient-identity-id) · [Look and feel](#look-and-feel-ui) · [MOA po
   - Since 30 Sep the time has its own pill before the theme button (`b8331e5`,
     V2c:4291-4293; D-92).
   - The greeting is at the other end of the top bar (V2c:4289, 5547), so it is not beside the
-    greeting yet. T-008 (Manoj) is building that.
+    greeting yet. T-008 carries that (needs ux-designer + Ani's approval).
   - 30 Sep: Ani recorded the pill as decided: *"The time is in its own pill, before the theme
     button."* (HOME29:43; D-92). Daniel still needs to hear that it isn't beside the greeting
     (OQ-71).
@@ -1308,7 +1308,7 @@ Inbox.**
   `toggleChatPanel` opens it directly, V2d:8502-8510, 8531-8539). Carry-over between windows is
   OQ-83.
 - 3 Oct: the doctor's MOA is the same one every time (D-103), so the label "Your MOA this window"
-  may become "Your MOA" (copy for Manoj).
+  may become "Your MOA" (copy: needs ux-designer + Ani's approval).
 - Priority: P1.
 - Open: OQ-83.
 
@@ -1372,7 +1372,8 @@ Inbox.**
 - Status: not built. "View intake note" opens `openBrief` (V2b:4641, 6652).
 
 **Booking, from Daniel's 29 Sep booking model (INT-07 to INT-11).** These are patient-facing.
-- The v2 prototypes don't model them yet. Manoj is designing them in a new shared prototype,
+- The v2 prototypes don't model them yet. The ux-designer is designing them, with Ani's approval,
+  in a new shared prototype,
   `simplecare-patient-chat.html` (T-012 to T-015), which does not exist yet.
 - "Production" and "staging" below are the live system, as tested in QA29.
 
@@ -1462,7 +1463,7 @@ Inbox.**
   - Booking is open *"so long as it is not an Emergency"* (BOOK29:32-33).
   - On staging, "chest pain, can't breathe" is offered doctors and call windows (QA29:12, QA-001 to
     QA-004).
-  - Rule 17a: the wording is Daniel's, the look is Manoj's, and Ani approves.
+  - Rule 17a: the wording is Daniel's; the look needs ux-designer + Ani's approval.
 - Accept:
   - The first message is checked before anything else.
   - The same check runs mid-chat.
@@ -1541,7 +1542,7 @@ silently.**
   is kept and handled afterwards; the patient never retypes it.
 - Rationale: IN23 §5, AC-24, AC-33; ES3 §11 (the "not an emergency service" disclosure).
 - Accept: as IN23 AC-24 and AC-33. The wording is IN23's recommended text until Daniel approves the
-  final words (rule 17a; OQ-69). The look is Manoj's.
+  final words (rule 17a; OQ-69). The look needs ux-designer + Ani's approval.
 - Status: not built in the prototypes. Staging not checked against it.
 - Priority: P1. `clinical-safety` and `accessibility` gate it.
 - Open: OQ-69, OQ-79.
@@ -1883,7 +1884,7 @@ way out.**
 - Accept:
   - Each panel can be moved by pointer and by keyboard (accessibility gates it, T-009).
   - A moved panel never covers the call controls or the note it is needed beside.
-  - Whether a position is remembered is a design detail for Manoj (assumption: remembered, like
+  - Whether a position is remembered is a design detail Ani decides (assumption: remembered, like
     the nav in REQ-HQ-13).
 - Status: built (`2a96f07`, `41ed729`). Both panels drag by their header and move by arrow keys on
   the grip, with Home to reset (`pdMovable` V2d:11119-11160). Positions are remembered

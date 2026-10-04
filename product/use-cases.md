@@ -87,7 +87,7 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     chat in the left nav (D-86). The sidebar is open by default (HOME29:47-48; D-95).
   - Keep yellow (abnormal) results off Home; they belong on the chart and in the Inbox
     (ECG30:71-72).
-  - The Home redesign on SC – Design System is T-020 (Manoj; D-100).
+  - The Home redesign on SC – Design System is T-020 (ux-designer + Ani's approval; D-100).
 - **Status:** partly built (V2d).
   - Built: Home (`screen-today`), the windows and the greeting.
   - Built on 30 Sep (`2a96f07`): Critical and High only; rows of name, test and value
@@ -989,8 +989,8 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     Renewal, the scheduler before intake, sign-in after the window, and others (B-004 Appendix A).
 - **Status:** partly built.
   - The fork is built in PP and the landing flow (SCS:21-29). Trusted Person is parked (SCS:27).
-  - The two depths, the pathways and the held window are not in the prototypes. Manoj is
-    designing them in T-014.
+  - The two depths, the pathways and the held window are not in the prototypes. The ux-designer
+    is designing them in T-014, with Ani's approval.
   - The physician-side end (marking the patient as continuing with the doctor) is not built
     (REQ-ID-06).
 - **Sources:** SIA:12-18; HUX:7-12; SCS:19-29; S5:30-32, 90-92, 149-152; BOOK29 (all); B-001;
@@ -1033,7 +1033,7 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
     step (T-015).
   - A triage-first concern still gets triage without the AI. Its form, and who writes it, is OQ-68.
 - **Status:** partly built. The tile path is in production. There is no non-AI triage. The
-  prototypes don't model it; T-015 (Manoj) is designing it.
+  prototypes don't model it; T-015 is designing it (ux-designer + Ani's approval).
 - **2 Oct:** if the AI is down, the service cards and a non-AI direct-booking path stay available
   (IN23 AI-21, AC-27). A card never routes through the AI chat (IB7 §10).
 - **Sources:** BOOK29:21-29, 54-55; B-001; QA29:13; T-015; IN23 AI-21; IB7 §10.
@@ -1051,9 +1051,9 @@ live SimpleCare (Daysheet queue, then a chart modal), as seen in the shadowing r
   - Catch the emergency before any pathway, doctor or window, and at any point in the chat.
   - Show one emergency treatment everywhere (REQ-INT-11; T-012). Booking is open to everything
     *"so long as it is not an Emergency"* (BOOK29:32-33).
-  - The red-flag list and the words are Daniel's; the look, including whether it uses red, is
-    Manoj's; Ani approves (rule 17a; OQ-69).
-- **Status:** not built. It fails on staging (QA29:12). T-012 (Manoj) is designing it, gated by
+  - The red-flag list and the words are Daniel's; the look, including whether it uses red, needs
+    ux-designer + Ani's approval (rule 17a; OQ-69).
+- **Status:** not built. It fails on staging (QA29:12). T-012 (ux-designer, Ani approves) is designing it, gated by
   `clinical-safety`.
 - **From ES3 (draft, 30 Sep) and IN23 (2 Oct):**
   - Before anything, the patient accepts that Simplicity is not for emergencies (IN23 §5;
