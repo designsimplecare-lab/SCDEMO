@@ -98,6 +98,9 @@ blocks your task, say so; don't work around it.
 20. **Anything that touches clinical risk goes through `clinical-safety`** before it ships.
 
 ## E. Design rules
+**No dark-mode work for now** (Ani, 4 Oct 2026): design and verify in light mode only. Leave the existing
+dark theme as it is; don't extend or test it. Dark mode comes back later.
+
 **For now, build in the demo's own design system** (Ani, 3 Oct 2026: "use the design system we already
 have in our demo, do not use Figma yet, we will do it later when we are done"). That means the CSS
 variables, font, components, icons and dark theme already in `simplecare-physician-portal-v2.html`. The

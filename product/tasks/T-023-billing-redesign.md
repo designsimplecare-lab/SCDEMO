@@ -49,7 +49,7 @@ unchanged, health-card results are missing, and the MOA has no billing screen.
 - [ ] The spec `product/specs/billing-redesign.md` (from `billing-msp`) is approved by Ani before the
       build starts.
 - [ ] Built into `simplecare-physician-portal-v2.html` (the one main version) and
-      `simplecare-moa-portal.html`, in light and dark, built in the demo's existing design system (not Figma yet).
+      `simplecare-moa-portal.html`, in light mode only (no dark-mode work for now, Ani 4 Oct), built in the demo's existing design system (not Figma yet).
 - [ ] Daniel's status words are kept where they still fit (REQ-BIL-02). Any new state is flagged.
 - [ ] Fee codes and amounts stay **visibly marked as demo values** until Daniel supplies real ones
       (REQ-BIL-07, OQ-24). Nothing is invented as if it were real.
@@ -65,3 +65,4 @@ unchanged, health-card results are missing, and the MOA has no billing screen.
 - 2026-10-03 — created. Ani decided billing follows the PRD (batch attestation). `billing-msp`
   writes the spec while `ux-designer` finishes T-021.
 - 2026-10-03 — Ani: use the demo's existing design system; the Figma library comes later
+- 2026-10-04 — Ani: no dark-mode work for now; light only

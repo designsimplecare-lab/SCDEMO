@@ -51,3 +51,4 @@ below the visit summary. See `from-daniel/2026-09-30-chart-workflow.md`.
 - 2026-10-03 — owner changed; Ani approves the design.
 - 2026-10-03 — Ani: the physician portal file is the main version; build the chart into it, with no v3 file
 - 2026-10-03 — Ani: use the demo's existing design system; the Figma library comes later
+- 2026-10-04 — Ani: no dark-mode work for now; light only

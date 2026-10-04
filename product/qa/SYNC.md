@@ -8,6 +8,7 @@ the start of every task, and adds its own entries under "From QA".
 Newest first. Each entry: the date, what changed, where the source is, and what QA should do.
 
 ## From the lead
+- **4 Oct 2026: no dark-mode testing for now** (Ani). Test in light mode only. Usage is limited, so run only priority tasks Ani names.
 - **3 Oct 2026: design system for now = the demo's own** (the portal's CSS variables and components), not the Figma library, which comes later. Judge new screens against the portal's existing look.
 - **3 Oct 2026: billing follows Daniel's PRD (Ani's decision).**
   - **Decision:** the doctor attests claims in a batch, and Finalize no longer submits on its own.
