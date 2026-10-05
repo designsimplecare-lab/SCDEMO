@@ -4655,6 +4655,134 @@
 
   #screen-patientchart #pcv-c.cs-dropped #pc-callsum{display:none;}
   #screen-patientchart #pcv-c .cs-note #cs-ai:empty{display:none;}
+  /* ================= T-023 billing (spec product/specs/billing-redesign.md; Ani approved 4 Oct) =================
+     Built in the portal's own system: --ink*, --wash, --line, --accent, --tag-* tones. No red anywhere in
+     billing (rule 21); 14 px minimum (rule 22); sentence case (rule 23). Light mode only (Ani, 4 Oct). */
+  .t23-demo{display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 9px;border-radius:999px;background:var(--wash);
+    color:var(--ink-soft);font-size:14px;font-weight:500;line-height:1;white-space:nowrap;vertical-align:middle;margin-left:6px;}
+  .t23-demo .ic,.t23-demo svg{width:14px;height:14px;color:var(--ink-faint);}
+  .t23-ph{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;border:1px dashed var(--line-strong);
+    color:var(--ink-faint);font-size:14px;font-weight:500;white-space:nowrap;margin-left:6px;}
+  #screen-claims .t23-demoline{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-soft);margin:-4px 0 12px;}
+  #screen-claims .t23-demoline .ic,#screen-claims .t23-demoline svg{width:18px;height:18px;color:var(--ink-faint);}
+  #screen-claims .t23-viewer{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 16px;font-size:14px;color:var(--ink-soft);}
+  #screen-claims .t23-viewer .cpt-filters{margin:0;}
+  #screen-claims .cpt-filters button,#t23-pick .cpt-filters button{font-size:14px;min-height:36px;}
+  #screen-claims .t23-grp{font-size:14px;font-weight:700;color:var(--ink-soft);margin:0 0 8px;}
+  #screen-claims .cl-stats{margin-bottom:14px;}
+  #screen-claims .cl-stat .k{text-transform:none;letter-spacing:0;font-size:14px;font-weight:600;}
+  #screen-claims .cl-stat .s{font-size:14px;}
+  #screen-claims .cl-stat .v.warn{color:var(--ink);}
+  #screen-claims .box-title,#t23-digest .box-title{text-transform:none;letter-spacing:0;font-size:16px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+  #screen-claims .t23-sum{font-size:14px;color:var(--ink-soft);margin:0 0 6px;display:flex;align-items:center;flex-wrap:wrap;}
+  #screen-claims .cl-row{gap:14px;align-items:center;}
+  #screen-claims .cl-who span,#screen-claims .cl-fee span{font-size:14px;color:var(--ink-soft);}
+  #screen-claims .cl-who .so-stamp{display:flex;font-size:14px;margin-top:2px;}
+  #screen-claims .cl-fee b{font-variant-numeric:normal;}
+  #screen-claims .cl-amt{width:110px;}
+  #screen-claims .cl-amt span{display:block;font-size:14px;font-weight:400;color:var(--ink-soft);}
+  #screen-claims .t23-time{width:64px;flex-shrink:0;font-size:14px;color:var(--ink-soft);}
+  #screen-claims .t23-payer{flex-shrink:0;font-size:14px;color:var(--ink-soft);}
+  #screen-claims .t23-inc{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--ink-soft);flex-shrink:0;cursor:pointer;}
+  #screen-claims .t23-inc input{width:18px;height:18px;accent-color:var(--accent);}
+  #screen-claims .t23-row.t23-hl,#screen-claims .t23-card.t23-hl{outline:2px solid var(--accent);outline-offset:4px;border-radius:12px;}
+  #screen-claims .t23-stmt{font-size:14px;line-height:1.55;color:var(--ink-soft);max-width:66ch;margin:14px 0 10px;}
+  #screen-claims .t23-go{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  #screen-claims .t23-help{font-size:14px;color:var(--ink-soft);}
+  :is(#screen-claims,#bill-overlay,#t23-mfa,#t23-pick,#t23-digest,#pcv-c) .btn:not(.xs){min-height:44px;display:inline-flex;align-items:center;gap:6px;font-size:14px;}
+  :is(#screen-claims,#bill-overlay,#t23-pick,#pcv-c) .btn.xs{min-height:36px;font-size:14px;display:inline-flex;align-items:center;gap:5px;}
+  :is(#screen-claims,#bill-overlay,#t23-mfa,#t23-pick,#t23-digest,#pcv-c) .btn .ic,:is(#screen-claims,#bill-overlay,#t23-mfa,#t23-pick,#t23-digest) .btn svg{width:18px;height:18px;}
+  :is(#screen-claims,#bill-overlay,#t23-pick) .btn[disabled],:is(#screen-claims,#bill-overlay) .btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed;}
+  /* the state chip: one tag spec (15/500, 40 px), barely tinted, no stroke, never red */
+  :is(#screen-claims,#bill-overlay) .bill-pill{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:999px;
+    font-size:15px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--ink);background:var(--wash);border:none;white-space:nowrap;}
+  :is(#screen-claims,#bill-overlay) .bill-pill.warn{background:var(--tag-warn);}
+  :is(#screen-claims,#bill-overlay) .bill-pill.info{background:var(--tag-info);}
+  :is(#screen-claims,#bill-overlay) .bill-pill.ok{background:var(--good-wash);}
+  :is(#screen-claims,#bill-overlay) .bill-pill .ic,:is(#screen-claims,#bill-overlay) .bill-pill svg{width:16px;height:16px;}
+  :is(#screen-claims,#bill-overlay) .bill-pill.warn .ic{color:var(--tag-warn-ic);} :is(#screen-claims,#bill-overlay) .bill-pill.info .ic{color:var(--tag-info-ic);}
+  :is(#screen-claims,#bill-overlay) .bill-pill.ok .ic{color:var(--good);}
+  .t23-days{display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 11px;border-radius:999px;background:var(--wash);color:var(--ink);
+    font-size:14px;font-weight:500;white-space:nowrap;}
+  .t23-days .ic,.t23-days svg{width:16px;height:16px;color:var(--ink-faint);}
+  .t23-days.warn{background:var(--tag-warn);} .t23-days.warn .ic{color:var(--tag-warn-ic);}
+  .t23-days.late{font-weight:700;}
+  .t23-sub{display:block;font-size:14px;color:var(--ink-soft);margin-top:2px;}
+  /* Needs your decision: one card per claim, a flag row per issue */
+  #screen-claims .t23-card{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:10px 0 0;background:var(--panel);}
+  #screen-claims .t23-chead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+  #screen-claims .t23-chead b{font-size:15px;}
+  #screen-claims .t23-chead .t23-meta{font-size:14px;color:var(--ink-soft);}
+  .t23-flag{display:grid;grid-template-columns:22px 1fr;gap:4px 10px;padding:10px 0;border-top:1px solid var(--wash);}
+  .t23-flag > .ic,.t23-flag > .ic svg,.t23-flag > .t23-aim svg{width:20px;height:20px;color:var(--tag-warn-ic);}
+  .t23-flag .t23-aim{width:20px;height:20px;display:inline-block;}
+  .t23-flag .t23-kind{font-size:14px;font-weight:600;color:var(--ink-soft);margin:0;}
+  .t23-flag .t23-find{font-size:14.5px;font-weight:700;color:var(--ink);margin:2px 0 0;max-width:66ch;}
+  .t23-flag .t23-why{font-size:14px;color:var(--ink-soft);margin:2px 0 0;max-width:66ch;line-height:1.5;}
+  .t23-flag .t23-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+  .t23-flag .t23-done{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--ink);margin-top:6px;}
+  .t23-flag .t23-done .ic,.t23-flag .t23-done svg{width:16px;height:16px;color:var(--good);}
+  .t23-flag .t23-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center;}
+  .t23-chip{border:1px solid var(--line-strong);background:var(--panel);border-radius:999px;min-height:36px;padding:0 13px;font:inherit;font-size:14px;color:var(--ink);cursor:pointer;}
+  .t23-chip.on{background:var(--ink-dark);border-color:var(--ink-dark);color:#fff;}
+  #screen-claims .t23-cfoot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:12px;border-top:1px solid var(--wash);}
+  .t23-pa{display:flex;gap:10px;align-items:flex-start;background:var(--tag-info);border-radius:10px;padding:12px 14px;margin-top:12px;max-width:66ch;}
+  .t23-pa .ic,.t23-pa svg{width:20px;height:20px;color:var(--tag-info-ic);flex-shrink:0;}
+  .t23-pa p{margin:0;font-size:14px;line-height:1.5;color:var(--ink);} .t23-pa b{display:block;}
+  .t23-reason{font-size:14px;color:var(--ink);margin-top:2px;display:flex;align-items:center;flex-wrap:wrap;}
+  #screen-claims .t23-nsdash{border:1px dashed var(--line-strong);border-radius:14px;padding:14px 16px;font-size:14px;color:var(--ink-faint);margin-top:12px;}
+  #screen-claims .t23-moa{font-size:14px;color:var(--ink-soft);}
+  /* claim detail (reuses #bill-overlay, widened, scrolling body) */
+  #bill-overlay #bl-card.t23-wide{width:560px !important;max-height:calc(100vh - 48px);overflow:auto;}
+  #bill-overlay .bl-eyebrow,#t23-mfa .bl-eyebrow,#t23-pick .bl-eyebrow{text-transform:none;letter-spacing:0;font-size:14px;font-weight:600;}
+  #bill-overlay .bl-k,#t23-pick .bl-k{text-transform:none;letter-spacing:0;font-size:14px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px;}
+  #bill-overlay .bl-k .t23-aim svg{width:18px;height:18px;}
+  #bill-overlay .bl-who{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  #bill-overlay .bl-v{font-size:14.5px;}
+  .t23-line{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--line);font-size:14.5px;}
+  .t23-line:first-of-type{border-top:none;}
+  .t23-line .t23-lk{width:150px;flex-shrink:0;color:var(--ink-soft);font-size:14px;}
+  .t23-line .t23-lv{flex:1;min-width:0;display:flex;align-items:center;flex-wrap:wrap;}
+  .t23-line.ro .t23-lv{color:var(--ink-soft);}
+  .t23-hist{margin:0;padding:0;list-style:none;font-size:14px;color:var(--ink);} .t23-hist li{padding:3px 0;}
+  .t23-more{background:none;border:none;padding:0;font:inherit;font-size:14px;color:var(--accent-ink);text-decoration:underline;cursor:pointer;min-height:32px;}
+  #bill-overlay details summary{cursor:pointer;font-size:14px;color:var(--accent-ink);margin-top:6px;}
+  #bill-overlay details p{font-size:14px;color:var(--ink-soft);margin:6px 0 0;max-width:66ch;}
+  /* code check */
+  #t23-mfa .t23-code{display:block;width:100%;box-sizing:border-box;height:48px;margin:14px 0 6px;border:1px solid var(--line-strong);border-radius:10px;
+    font:inherit;font-size:22px;letter-spacing:.3em;text-align:center;font-variant-numeric:tabular-nums;color:var(--ink);background:var(--panel);}
+  #t23-mfa .t23-code:focus{outline:2px solid var(--accent);outline-offset:1px;}
+  .t23-err{font-size:14px;color:var(--ink);background:var(--tag-warn);border-radius:8px;padding:8px 10px;margin:4px 0;}
+  /* picker */
+  #t23-pick #t23-pick-card{max-height:calc(100vh - 48px);overflow:auto;}
+  #t23-pick .t23-opt{display:flex;align-items:center;gap:8px;min-height:40px;font-size:14.5px;color:var(--ink);cursor:pointer;}
+  #t23-pick .t23-opt input{width:18px;height:18px;accent-color:var(--accent);}
+  #t23-pick .t23-in{height:40px;border:1px solid var(--line-strong);border-radius:8px;padding:0 10px;font:inherit;font-size:14.5px;color:var(--ink);background:var(--panel);box-sizing:border-box;}
+  #t23-pick .t23-in.wide{width:100%;}
+  #t23-pick .t23-dxlist{max-height:180px;overflow:auto;margin-top:6px;}
+  #t23-pick .t23-ai{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--ink);background:var(--tag-info);border-radius:8px;padding:6px 10px;margin:4px 0 6px;}
+  #t23-pick .t23-ai svg{width:18px;height:18px;}
+  #t23-pick .t23-sub2{margin:4px 0 4px 26px;}
+  #t23-pick .t23-row2{display:flex;gap:14px;flex-wrap:wrap;}
+  #t23-pick .t23-row2 label{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--ink-soft);}
+  /* chart: one billing line above Finalize, and the helper under it */
+  #pcv-c .t23-billrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px;font-size:14px;color:var(--ink);}
+  #pcv-c .t23-billrow[hidden],#pcv-c .t23-finhelp[hidden]{display:none;}
+  #pcv-c .t23-billrow > .ic,#pcv-c .t23-billrow > .ic svg{width:18px;height:18px;color:var(--ink-faint);}
+  #pcv-c .t23-billrow .t23-bsep{color:var(--ink-faint);}
+  #pcv-c .t23-finhelp{font-size:14px;color:var(--ink-soft);margin:8px 0 0;}
+  /* queue: no claim yet, and the no-show placeholder */
+  html body .q-table td.q-bill .t23-none{font-size:15px;color:var(--ink-faint);}
+  html body .q-table td.q-bill span.bill-pill.t23-quiet{background:var(--wash) !important;color:var(--ink) !important;padding:0 14px !important;height:36px;display:inline-flex;align-items:center;border-radius:999px;font-weight:500;}
+  html body .q-table td.q-bill span.t23-ns{display:inline-flex;align-items:center;height:36px;padding:0 12px;border:1px dashed var(--line-strong);border-radius:999px;color:var(--ink-faint);font-size:14px;white-space:nowrap;}
+  /* digest */
+  #t23-digest .t23-dl{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:none;border-top:1px solid var(--wash);padding:10px 0;font:inherit;font-size:14.5px;color:var(--ink);cursor:pointer;min-height:44px;}
+  #t23-digest .t23-dl:first-of-type{border-top:none;}
+  #t23-digest .t23-dl:hover span.t23-dt{text-decoration:underline;}
+  #t23-digest .t23-dl .ic,#t23-digest .t23-dl svg{width:18px;height:18px;color:var(--ink-faint);flex-shrink:0;}
+  #t23-digest .t23-dl .ic.warn,#t23-digest .t23-dl .ic.warn svg{color:var(--tag-warn-ic);}
+  #t23-digest .t23-dfoot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px;}
+  #t23-digest .t23-cap{font-size:14px;color:var(--ink-faint);}
 </style>
 </head>
 <body>
@@ -4760,6 +4888,9 @@
         </div>
         <button class="attn-handle" id="attn-handle" onclick="attnToggle()" hidden></button>
       </div>
+
+      <!-- T-023 (spec 8a): one daily billing digest; placement on Home is OQ-90, Needs Daniel -->
+      <div class="box t23-digest" id="t23-digest" hidden></div>
 
       <!-- Live queue + Inbox in one card, switched by tabs -->
       <div class="work-tabs">
@@ -5167,7 +5298,7 @@
               <button class="vc-chip" onclick="vcInsert('Follow-up template')">+ Follow-up template</button>
               <button class="vc-chip" onclick="vcInsert('Normal exam')">+ Normal exam</button>
               <button class="vc-chip" onclick="prOpenForm()">+ Reading from patient</button>
-              <button class="vc-chip" onclick="toast('Diagnosis picker')">+ Diagnosis</button>
+              <button class="vc-chip" onclick="t23OpenPick({visit:PC_CURRENT, focus:'dx'})">+ Diagnosis</button>
             </div>
               <!-- Renewal in one flow, from the shadowed visit: "send along a
                    three-month supply, 90 tablets, directly to Shoppers... when you
@@ -5211,12 +5342,15 @@
                  empty note. v2.5 §3: Finalize waits until this visit's strip is complete (csFinState). -->
             <div class="vc-finwarn" id="vc-finwarn" hidden></div>
             <p class="cs-finwhy" id="cs-finwhy" hidden></p>
+            <!-- T-023 (spec part 5): one billing line above Finalize; the doctor codes while the visit is fresh (N1, proposal) -->
+            <div class="t23-billrow" id="t23-billrow" hidden></div>
             <div class="vc-finrow" id="vc-finrow">
               <!-- Daniel, 26 Sep: "I 'sign off' on the chart ... It means that i've finalized the visit." -->
               <button class="btn dark" id="vc-finalize" onclick="finalizeVisit()"><span class="ic" data-pdic="complete"></span>Sign off &amp; finalize visit</button>
               <button class="btn" id="vc-savedraft" onclick="csDraft();toast('Draft saved')"><span class="ic" data-pdic="edit"></span>Save draft</button>
               <button class="btn dark" id="vc-nextpt" hidden><span class="ic" data-pdic="chevr"></span><span></span></button>
             </div>
+            <p class="t23-finhelp" id="t23-finhelp" hidden>Your claim goes to Claims for sign-off. Nothing is sent to MSP yet.</p>
             </div>
           </section>
         </div>
@@ -5618,21 +5752,22 @@
     </div>
 
     <!-- ===================== PRACTICE ADMIN stubs ===================== -->
+    <!-- T-023 (spec part 2): Claims is the one place the doctor signs off his claims. PRD CNF-09, CNF-10, TAIL-04. -->
     <div class="screen" id="screen-claims">
       <h1>Claims</h1>
-      <p class="sub">Every encounter, billed and accounted for.</p>
+      <p class="sub">Every completed visit, billed and accounted for.</p>
+      <p class="t23-demoline"><span class="ic" data-pdic="demo"></span>Fee items, amounts and explanatory codes here are demo values, not real MSP data.</p>
+      <div class="t23-viewer" id="t23-viewer"></div>
 
-      <div class="cl-stats" id="cl-stats"></div>
+      <div id="cl-stats"></div>
 
-      <div class="box">
-        <div class="cpt-filters" id="cl-filters"></div>
-        <div id="cl-list"></div>
-      </div>
+      <div class="cpt-filters" id="cl-filters"></div>
+      <div id="cl-list"></div>
     </div>
     <div class="screen" id="screen-feesettings">
       <h1>Fee Settings</h1>
       <p class="sub">What you bill for each kind of visit.</p>
-      <div class="box"><div class="sched-row"><span>Private Visit Fee</span><span>$100 CAD</span></div></div>
+      <div class="box"><div class="sched-row"><span>Private Visit Fee</span><span>$100 CAD <span class="t23-demo"><span class="ic" data-pdic="demo"></span>Demo value</span></span></div></div>
     </div>
     <div class="screen" id="screen-tasks">
       <div class="cpt-head">
@@ -5913,7 +6048,7 @@
 </div>
 
 <div class="defer-overlay" id="bill-overlay" onclick="if(event.target===this) closeBilling()">
-  <div class="defer-card" style="width:460px;">
+  <div class="defer-card" id="bl-card" role="dialog" aria-modal="true" aria-labelledby="bl-title" style="width:460px;">
     <p class="bl-eyebrow" id="bl-eyebrow">Billing</p>
     <p class="defer-ttl" id="bl-title">—</p>
     <p class="bl-who" id="bl-who">—</p>
@@ -5930,6 +6065,26 @@
       <button class="btn dark" id="bl-do" onclick="billingAct()">—</button>
     </div>
   </div>
+</div>
+
+<!-- T-023 (spec 2c): simulated code check before any sign-off (CNF-10, SEC-02) -->
+<div class="defer-overlay" id="t23-mfa" onclick="if(event.target===this) t23MfaClose()">
+  <div class="defer-card" role="dialog" aria-modal="true" aria-labelledby="t23-mfa-ttl" style="width:460px;">
+    <p class="bl-eyebrow">Sign-off</p>
+    <p class="defer-ttl" id="t23-mfa-ttl">Confirm it&rsquo;s you</p>
+    <p class="bl-v" id="t23-mfa-body">Enter the 6-digit code from your authenticator app.</p>
+    <input id="t23-mfa-in" class="t23-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="6-digit code" oninput="t23MfaInput()" onkeydown="if(event.key==='Enter')t23MfaGo()">
+    <p class="t23-err" id="t23-mfa-err" role="alert" hidden>That code didn&rsquo;t work. Check your app and try again.</p>
+    <p class="pc-empty">Demo: any 6 digits work.</p>
+    <div class="defer-acts">
+      <button class="btn" onclick="t23MfaClose()">Cancel</button>
+      <button class="btn dark" id="t23-mfa-go" onclick="t23MfaGo()" disabled><span class="ic" data-pdic="complete"></span>Confirm and sign off</button>
+    </div>
+  </div>
+</div>
+<!-- T-023 (spec parts 3, 5, 6): the coding and disposition picker -->
+<div class="defer-overlay" id="t23-pick" onclick="if(event.target===this) t23PickClose()">
+  <div class="defer-card" id="t23-pick-card" role="dialog" aria-modal="true" aria-labelledby="t23-pick-ttl" style="width:560px;"></div>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
@@ -6524,14 +6679,15 @@ function renderQueue(){
        is carried by an icon as well as the colour — a shape reads before a
        hue does, and it survives being printed or projected. */
     var CARD_ICON = {verified:'cardok', check:'cardwarn', invalid:'carderr', private:'cardinfo'};
-    var cardCell = (r.card==='verified'
+    var cardCell = (typeof t23CardCell === 'function') ? t23CardCell(r) : (r.card==='verified'
       ? '<span class="q-ver ok" title="Health card checked against MSP today"><span class="ic" data-pdic="cardok"></span>Verified</span>'
       : '<button class="q-ver '+CARD_STATUS[r.card].tone+' go" onclick="event.stopPropagation();openCard(\''+r.name+'\')">'+
           '<span class="ic" data-pdic="'+(CARD_ICON[r.card]||'cardwarn')+'"></span>'+CARD_STATUS[r.card].label+'</button>')
       + (r.planNote ? ' <i>'+r.planNote+'</i>' : '');
 
+    /* T-023 (spec part 1): the billing cell is built by t23BillCell once the billing script has loaded */
     var bs = BILL_STATUS[r.bill] || BILL_STATUS['msp-submit'];
-    var billCell = bs.open
+    var billCell = (typeof t23BillCell === 'function') ? t23BillCell(r) : bs.open
       ? '<button class="bill-pill '+bs.tone+' go" aria-haspopup="menu" onclick="event.stopPropagation();openBillMenu(this,\''+r.name+'\')"><span>'+bs.label+'</span><span class="q-caret" data-pdic="chevdown" aria-hidden="true"></span></button>'
       : '<span class="bill-pill '+bs.tone+'">'+bs.label+'</span>';
 
@@ -7657,14 +7813,14 @@ function finalizeVisit(force){
   /* shadowing 2: "The patient leaves the queue at once." */
   r.status = 'done'; r.wait = '\u2014';
   r.signed = {at: new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}), note: txt};
-  var billed = false;
-  if(r.bill==='pending' || r.bill==='none'){ r.bill = 'submitted'; billed = true; }
+  /* T-023 (spec part 5): Finalize closes the visit only. It sets the disposition and puts the claim in
+     Claims for sign-off; nothing goes to MSP here (Ani, 3 Oct: billing follows the PRD; CNF-09). */
+  var billNote = (typeof t23OnFinalize === 'function') ? t23OnFinalize(r) : '';
   if(typeof renderQueue==='function') renderQueue();
-  if(billed && typeof updateClaimCount==='function'){ updateClaimCount(); renderClaims(); }
   if(typeof updateWorkCounts==='function') updateWorkCounts();
   pcFill({visitline: 'Visit completed \u00b7 today \u00b7 signed off ' + r.signed.at, statuslbl: STATUS_LABEL[r.status]});
   vcNoteState(r);
-  toast('Signed off by Dr. Pannozzo \u00b7 ' + (r.pref || r.name.split(',')[0]) + ' moved to Completed' + (billed ? ' \u00b7 claim submitted' : ''));
+  toast('Signed off by Dr. Pannozzo \u00b7 ' + (r.pref || r.name.split(',')[0]) + ' moved to Completed' + billNote);
 }
 function condApprove(id){
   var name = PC_CURRENT;
@@ -12215,6 +12371,737 @@ function csDemoSync(){
   set('dsw-cs-empty', CS.empty); set('dsw-cs-out', v.outside); set('dsw-cs-strip', PC_CURRENT && csStripDone(PC_CURRENT));
 }
 </script>
-  <div class="build-stamp">v2 · build 2026-10-04 11:22</div>
+<script>
+/* =====================================================================================================
+   T-023 billing redesign. Spec: product/specs/billing-redesign.md (billing-msp, 3 Oct; Ani approved
+   4 Oct: "start build billing"). Ani, 3 Oct: "Daniel changed the billing so we should change our billing
+   how he did, new way." PRD refs (IDs only): CNF-09/10, COD-01..07, TAIL-04, CLM-01..06, ELT-01..09.
+   The doctor signs off claims in a batch in Claims; Finalize closes the visit only. Every code and
+   amount here is a demo value (REQ-BIL-07, OQ-24). No red anywhere in billing (rule 21).
+   ===================================================================================================== */
+var T23_TODAY = new Date(2026, 9, 3);   /* the spec's demo "today": Sat 3 Oct 2026, so its day counts hold */
+var T23_MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function t23D(iso){ var p = String(iso).split('-'); return new Date(+p[0], +p[1]-1, +p[2]); }
+function t23FD(d){ return d.getDate() + ' ' + T23_MON[d.getMonth()]; }
+function t23F(iso){ return t23FD(t23D(iso)); }
+function t23Diff(a, b){ return Math.round((b - a) / 86400000); }
+function t23Plus(iso, n){ var d = t23D(iso); d.setDate(d.getDate() + n); return d; }
+function t23Ic(n, cls){ return '<span class="ic' + (cls ? ' ' + cls : '') + '" data-pdic="' + n + '" aria-hidden="true"></span>'; }
+function t23E(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+var T23_DEMO = '<span class="t23-demo">' + '<span class="ic" data-pdic="demo" aria-hidden="true"></span>Demo value</span>';
+function t23Ph(t){ return '<span class="t23-ph">' + t23Ic('demo') + t + '</span>'; }
+function t23Money(n){ return '$' + n.toFixed(2); }
+function t23Now(){ return new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'}); }
+function t23Stamp(){ return '3 Oct ' + t23Now(); }
+
+/* Spec part 0: values that can't be mistaken for real MSP ones. The real list Needs Daniel (N1, OQ-24). */
+var T23_FEES = {
+  'DEMO-A': {name:'Visit', amt:30},
+  'DEMO-B': {name:'Brief follow-up', amt:20},
+  'DEMO-C': {name:'Extended visit', amt:40}
+};
+var T23_DX = [
+  ['DX-D1','Chest pressure'], ['DX-D2','Follow-up'], ['DX-D3','Yeast infection'], ['DX-D4','Iron deficiency'],
+  ['DX-D5','Back pain'], ['DX-D6','Lab review'], ['DX-D7','Prescription renewal'], ['DX-D8','Blood pressure check'], ['DX-D9','Rash']
+];
+function t23DxName(code){ var x = T23_DX.filter(function(d){ return d[0] === code; })[0]; return x ? x[1] : ''; }
+var T23_EX = {
+  'EX-D1':'Fee item not payable with this diagnosis',
+  'EX-D2':'Name on the claim doesn’t match MSP’s record for this card',
+  'EX-D3':'Paid at a lower amount than billed',
+  'EX-D4':'Diagnosis code problem',
+  'EX-D5':'MSP is holding this claim'
+};
+var T23_PRIVATE_FEE = 100;  /* the private visit fee (V2 Fee Settings); unsourced, so a demo value (N17) */
+
+/* One vocabulary everywhere (rule 26): queue, Claims, claim detail, digest and the MOA portal. */
+var T23_ST = {
+  submit:     {label:'Submit claim',      tone:'warn', icon:'complete'},
+  review:     {label:'Review claim',      tone:'warn', icon:'alert'},
+  submitted:  {label:'Claim submitted',   tone:'info', icon:'arrowup'},
+  held:       {label:'Claim submitted',   tone:'info', icon:'clock'},
+  rejmoa:     {label:'Claim rejected',    tone:'warn', icon:'alert'},
+  rejected:   {label:'Claim rejected',    tone:'warn', icon:'alert'},
+  dispute:    {label:'Potential dispute', tone:'warn', icon:'reopen'},     /* new, N3 */
+  appeal:     {label:'Under appeal',      tone:'info', icon:'clock'},      /* new, N3 */
+  adjusted:   {label:'Paid, adjusted',    tone:'warn', icon:'alert'},      /* new, N3 */
+  paid:       {label:'Claim paid',        tone:'ok',   icon:'complete'},
+  notbilled:  {label:'Not billed',        tone:'',     icon:''},           /* new, N4 */
+  altpayer:   {label:'Alternate payer',   tone:'',     icon:''},           /* new, N4 */
+  writtenoff: {label:'Written off',       tone:'',     icon:''},           /* new; second signer Needs Daniel (N8) */
+  'pri-due':  {label:'Payment due',       tone:'warn', icon:'clock'},
+  'pri-review':{label:'Review payment',   tone:'warn', icon:'alert'},
+  'pri-paid': {label:'Payment paid',      tone:'ok',   icon:'complete'}
+};
+
+/* Spec "Demo data, all in one place". Existing demo names only; no PHN or DOB anywhere. */
+function t23Hist(c){
+  return [[t23F(c.date) + ' ' + (c.at || '9:24 AM'), 'Dr. Pannozzo', 'Visit signed off; claim created']];
+}
+var CLAIMS = [
+  {id:'c1', who:'Behdis Maleki', date:'2026-10-02', win:'10-2', fee:'DEMO-A', dx:'DX-D2', mins:14, st:'submit'},
+  {id:'c2', who:'Andrey Abushakhmanov', date:'2026-10-02', win:'8-10', fee:'DEMO-A', dx:'DX-D2', mins:11, st:'submit', payer:'recip', prov:'Alberta'},
+  {id:'c3', who:'Grace Lin', date:'2026-10-01', win:'10-2', fee:'DEMO-B', dx:'DX-D6', mins:8, st:'submit'},
+  {id:'c4', who:'Owen Brady', date:'2026-10-01', win:'8-10', fee:'DEMO-A', dx:'DX-D5', mins:13, st:'submit'},
+  {id:'c5', who:'Carol-Anne Feldman', date:'2026-10-02', win:'8-10', fee:'DEMO-A', dx:'DX-D3', mins:12, span:'9:12–9:24 AM', st:'review',
+   card:{res:'name', at:'2 Oct, 7:40 AM', when:'at check-in'},
+   flags:[
+     {k:'ai', field:'fee', to:'DEMO-B', conf:86, find:'Fee item may not match the visit.', why:'The note reads as a brief follow-up; the claim uses DEMO-A.'},
+     {k:'card', res:'name'}
+   ],
+   hist:[['2 Oct 9:24 AM','Dr. Pannozzo','Visit signed off; claim created'],
+         ['2 Oct 9:24 AM','System','Health card checked: name doesn’t match MSP'],
+         ['2 Oct 9:25 AM','AI review','1 finding (86%)']]},
+  {id:'c6', who:'Nadia Hassan', date:'2026-07-15', win:'2-5', fee:'DEMO-A', dx:'DX-D7', mins:9, st:'review',
+   flags:[{k:'q', from:'Dolly', ex:'EX-D4', ask:'Can you check the diagnosis on this claim?', due:'Tue 6 Oct'}],
+   hist:[['15 Jul 2:41 PM','Dr. Pannozzo','Visit signed off; claim created'],
+         ['16 Jul 7:02 PM','Dr. Pannozzo','Signed off and submitted'],
+         ['2 Oct 9:10 AM','Teleplan','Returned: EX-D4 (demo)'],
+         ['2 Oct 9:31 AM','Dolly','Question: Can you check the diagnosis on this claim?']]},
+  {id:'c7', who:'K Arli Eyre', date:'2026-09-30', win:'2-5', fee:'DEMO-A', dx:'DX-D2', mins:10, st:'review',
+   card:{res:'ended', at:'30 Sep, 7:42 AM', when:'at check-in'}, flags:[{k:'card', res:'ended'}]},
+  {id:'c8', who:'Grace Lin', date:'2026-10-01', win:'10-2', fee:'DEMO-B', dx:'DX-D6', mins:6, st:'review',
+   flags:[{k:'dup', find:'Another claim has the same patient, date and fee item (1 Oct).'}]},
+  {id:'c9', who:'Behdis Maleki', date:'2026-09-12', win:'10-2', fee:'DEMO-A', dx:'DX-D4', mins:12, st:'rejected',
+   msp:{on:'2026-09-26', ex:'EX-D1'}, deadline:'2026-12-25'},
+  {id:'c10', who:'Andrey Abushakhmanov', date:'2026-09-05', win:'8-10', fee:'DEMO-A', dx:'DX-D2', mins:10, st:'dispute',
+   msp:{on:'2026-09-19', ex:'EX-D2', reason:'Refused as billed; the claim looks correctly billed'}, deadline:'2026-12-18'},
+  {id:'c11', who:'Grace Lin', date:'2026-09-10', win:'10-2', fee:'DEMO-A', dx:'DX-D6', mins:11, st:'adjusted', paid:25, msp:{on:'2026-09-24', ex:'EX-D3'}},
+  {id:'c12', who:'Andrey Abushakhmanov', date:'2026-09-28', win:'8-10', fee:'DEMO-A', dx:'DX-D2', mins:10, st:'submitted', sub:'Acknowledged by MSP'},
+  {id:'c13', who:'Owen Brady', date:'2026-08-25', win:'8-10', fee:'DEMO-A', dx:'DX-D5', mins:12, st:'held', msp:{ex:'EX-D5'}},
+  {id:'c14', who:'Carol-Anne Feldman', date:'2026-09-29', win:'10-2', fee:'DEMO-A', dx:'DX-D3', mins:10, st:'rejmoa', msp:{on:'2026-10-01', ex:'EX-D2', src:'Teleplan'}},
+  {id:'c15', who:'Nadia Hassan', date:'2026-08-20', win:'2-5', fee:'DEMO-A', dx:'DX-D7', mins:9, st:'appeal', sub:'Reassessment requested 15 Sep'},
+  {id:'c16', who:'Behdis Maleki', date:'2026-09-02', win:'10-2', fee:'DEMO-A', dx:'DX-D4', mins:12, st:'paid', paid:30, sub:'Paid 16 Sep'},
+  {id:'c17', who:'Gloria McDonald', date:'2026-09-24', win:'8-10', st:'notbilled', reason:'Doctor’s choice'},
+  {id:'c18', who:'Frank D.', date:'2026-07-02', win:'2-5', fee:'DEMO-A', dx:'DX-D8', mins:8, st:'writtenoff',
+   sub:'Past the deadline, no pathway · proposed by Dolly · approved by a second signer'},
+  {id:'c19', who:'Greg', date:'2026-09-30', win:'2-5', st:'pri-due', payer:'private'},
+  {id:'c20', who:'Manjit', date:'2026-10-03', win:'5-7', st:'pri-paid', payer:'private', queue:'Manjit'}
+];
+CLAIMS.forEach(function(c){ if(!c.hist) c.hist = t23Hist(c); c.flags = c.flags || []; });
+function t23C(id){ return CLAIMS.filter(function(c){ return c.id === id; })[0]; }
+
+/* Spec 2a, 2b, 3: whose turn it is. The physician assistant sees everything and decides nothing (CNF-10; N6). */
+var T23 = {viewer:'doc', untick:{}, batch:null, mfaOk:false, pend:null, dismiss:{}, histAll:{}, pick:null, hl:null};
+function t23PA(){ return T23.viewer === 'pa'; }
+var T23_PA_LINE = 'Only Dr. Pannozzo can sign off his claims.';
+function t23Dis(){ return t23PA() ? ' disabled aria-disabled="true" title="' + T23_PA_LINE + '"' : ''; }
+
+/* ----- amounts: always with a basis word, never MSP + private together (spec part 9) ----- */
+function t23Amt(c){ return c.payer === 'private' ? T23_PRIVATE_FEE : (T23_FEES[c.fee] ? T23_FEES[c.fee].amt : 0); }
+function t23Basis(c){
+  switch(c.st){
+    case 'submit': return [t23Amt(c), 'expected'];
+    case 'submitted': case 'held': return [t23Amt(c), 'expected'];
+    case 'rejected': case 'rejmoa': case 'dispute': case 'appeal': return [t23Amt(c), 'billed, not paid'];
+    case 'adjusted': case 'paid': return [c.paid, 'paid'];
+    case 'pri-due': case 'pri-review': return [T23_PRIVATE_FEE, 'due'];
+    case 'pri-paid': return [T23_PRIVATE_FEE, 'paid'];
+  }
+  return null;   /* review (after your decision), not billed, alternate payer, written off: no dollar figure */
+}
+
+/* ----- days left (spec part 4): 90 days from the service date, or the code X window for a refusal ----- */
+var T23_DAYS_ON = ['submit','review','rejected','rejmoa','held','dispute'];
+function t23Left(c){ var dl = c.deadline ? t23D(c.deadline) : t23Plus(c.date, 90); return {day:t23Diff(t23D(c.date), T23_TODAY), left:t23Diff(T23_TODAY, dl), dl:dl}; }
+function t23DaysChip(c){
+  if(T23_DAYS_ON.indexOf(c.st) < 0 || c.payer === 'private') return '';
+  var x = t23Left(c);
+  if(x.day < 30) return '';                                      /* show by exception (rule 25) */
+  if(x.left < 0) return '<span class="t23-days warn late">' + t23Ic('alert') + 'Past the deadline</span>';
+  var words = 'Day ' + x.day + ' · ' + x.left + ' days left';
+  if(x.day >= 75) return '<span class="t23-days warn late">' + t23Ic('alert') + words + '</span>';
+  if(x.day >= 60) return '<span class="t23-days warn">' + t23Ic('clock') + words + '</span>';
+  return '<span class="t23-days">' + t23Ic('clock') + words + '</span>';
+}
+
+function t23Pill(c, btn){
+  var s = T23_ST[c.st] || {label:c.st, tone:''};
+  var ic = s.icon ? t23Ic(s.icon) : '';
+  if(btn) return '<button type="button" class="bill-pill ' + s.tone + ' go" onclick="t23Open(\'' + c.id + '\')">' + ic + s.label + '</button>';
+  return '<span class="bill-pill ' + s.tone + '">' + ic + s.label + '</span>';
+}
+function t23FeeHtml(c){
+  if(c.payer === 'private') return '<b>Private visit fee</b>' + T23_DEMO;
+  if(!c.fee) return '<b>No fee item</b>';
+  return '<b>' + c.fee + ' · ' + T23_FEES[c.fee].name + T23_DEMO + '</b>' +
+         '<span>' + (c.dx ? c.dx + ' · ' + t23DxName(c.dx) : 'Diagnosis not set') + '</span>';
+}
+function t23AmtHtml(c){
+  var b = t23Basis(c); if(!b) return '<div class="cl-amt"><span>No amount</span></div>';
+  return '<div class="cl-amt">' + t23Money(b[0]) + '<span>' + b[1] + '</span></div>';
+}
+function t23SubLine(c){
+  if(c.st === 'held') return 'Held by MSP · ' + c.msp.ex;
+  if(c.st === 'rejmoa') return 'Dolly is fixing the patient’s details. Nothing for you.';
+  if(c.st === 'review'){
+    var open = c.flags.filter(function(f){ return !f.done; });
+    if(!open.length) return 'Flags decided · ready for your sign-off';
+    return open.map(t23FlagKind).join(' · ');
+  }
+  if(c.st === 'notbilled') return c.reason ? 'Reason: ' + c.reason : '';
+  if(c.st === 'altpayer') return c.reason || '';
+  return c.sub || '';
+}
+function t23FlagKind(f){
+  return ({ai:'AI review', card:'Health card', dup:'Duplicate check', q:'Question from ' + (f.from || 'Dolly'), dx:'Diagnosis needed'})[f.k] || 'Flag';
+}
+
+/* ================= Claims screen ================= */
+var CL_FILTERS = ['Needs attention','Submitted','Paid','All'];
+var CL_ON = 'Needs attention';
+function clSet(f){ CL_ON = f; renderClaims(); }
+function t23Sort(a, b){ var x = t23Left(a), y = t23Left(b); return (x.left - y.left) || (t23D(a.date) - t23D(b.date)); }
+function t23Ready(){ return CLAIMS.filter(function(c){ return c.st === 'submit'; }).sort(t23Sort); }
+function t23Decide(){ return CLAIMS.filter(function(c){ return c.st === 'review'; }).sort(t23Sort); }
+function t23RejDoc(){ return CLAIMS.filter(function(c){ return ['rejected','dispute','adjusted'].indexOf(c.st) > -1; }).sort(t23Sort); }
+function t23Subm(){ return CLAIMS.filter(function(c){ return ['submitted','held','rejmoa','appeal'].indexOf(c.st) > -1; }).sort(t23Sort); }
+function t23Paid(){ return CLAIMS.filter(function(c){ return ['paid','adjusted'].indexOf(c.st) > -1; }); }
+function t23Priv(){ return CLAIMS.filter(function(c){ return c.payer === 'private'; }); }
+function t23Attn(){ return t23Ready().length + t23Decide().length + t23RejDoc().length; }
+
+function t23Viewer(){
+  var w = document.getElementById('t23-viewer'); if(!w) return;
+  w.innerHTML = '<span>Viewing as:</span><div class="cpt-filters" role="group" aria-label="Viewing as">' +
+    '<button type="button" class="' + (t23PA() ? '' : 'on') + '" aria-pressed="' + !t23PA() + '" onclick="t23SetViewer(\'doc\')">Dr. Pannozzo</button>' +
+    '<button type="button" class="' + (t23PA() ? 'on' : '') + '" aria-pressed="' + t23PA() + '" onclick="t23SetViewer(\'pa\')">Japneet (physician assistant)</button></div>' +
+    t23Ph('Demo');
+  paintPd(w);
+}
+function t23SetViewer(v){ T23.viewer = v; renderClaims(); if(typeof t23RenderDigest === 'function') t23RenderDigest(); }
+
+function t23Stats(){
+  var sw = document.getElementById('cl-stats'); if(!sw) return;
+  var sum = function(a){ return a.reduce(function(t, c){ return t + t23Amt(c); }, 0); };
+  var ready = t23Ready(), dec = t23Decide();
+  var withMsp = CLAIMS.filter(function(c){ return ['submitted','held','appeal'].indexOf(c.st) > -1; });
+  var appeal = withMsp.filter(function(c){ return c.st === 'appeal'; });
+  var rej = CLAIMS.filter(function(c){ return ['rejected','rejmoa','dispute'].indexOf(c.st) > -1; });
+  var paid = t23Paid(), adj = paid.filter(function(c){ return c.st === 'adjusted'; });
+  var paidSum = paid.reduce(function(t, c){ return t + (c.paid || 0); }, 0);
+  var adjLess = adj.reduce(function(t, c){ return t + (t23Amt(c) - c.paid); }, 0);
+  var pDue = CLAIMS.filter(function(c){ return c.st === 'pri-due' || c.st === 'pri-review'; }), pPaid = CLAIMS.filter(function(c){ return c.st === 'pri-paid'; });
+  var st = function(k, v, s){ return '<div class="cl-stat"><p class="k">' + k + '</p><p class="v">' + v + '</p><p class="s">' + s + '</p></div>'; };
+  sw.innerHTML =
+    '<p class="t23-grp">MSP</p><div class="cl-stats">' +
+      st('Ready to sign off', ready.length, t23Money(sum(ready)) + ' expected' + T23_DEMO) +
+      st('Needs your decision', dec.length, 'Amounts after your decision') +
+      st('With MSP', withMsp.length, t23Money(sum(withMsp.filter(function(c){ return c.st !== 'appeal'; }))) + ' expected' + (appeal.length ? ' · ' + appeal.length + ' under appeal' : '') + T23_DEMO) +
+      st('Rejected', rej.length, t23Money(sum(rej)) + ' billed, not paid' + T23_DEMO) +
+      st('Paid this cycle', paid.length, t23Money(paidSum) + ' paid' + (adj.length ? ' · ' + adj.length + ' adjusted, ' + t23Money(adjLess) + ' less than expected' : '') + T23_DEMO) +
+    '</div><p class="t23-grp">Private pay</p><div class="cl-stats">' +
+      st('Payment due', pDue.length, t23Money(pDue.length * T23_PRIVATE_FEE) + ' due' + T23_DEMO) +
+      st('Payment paid', pPaid.length, t23Money(pPaid.length * T23_PRIVATE_FEE) + ' paid' + T23_DEMO) +
+    '</div>';
+}
+
+function t23Row(c, opts){
+  opts = opts || {};
+  var x = (T23_ST[c.st] || {});
+  return '<div class="cl-row t23-row" id="t23-c-' + c.id + '">' +
+    (opts.tick ? '<label class="t23-inc"><input type="checkbox"' + (T23.untick[c.id] ? '' : ' checked') + ' onchange="t23Tick(\'' + c.id + '\',this.checked)" aria-label="Include ' + t23E(c.who) + ', ' + t23F(c.date) + '">Include</label>' : '') +
+    '<div class="cl-who"><b>' + t23E(c.who) + '</b><span>' + t23F(c.date) + ' · ' + winLabel(c.win) + '</span>' +
+      (opts.pill && t23SubLine(c) ? '<span class="t23-sub">' + t23SubLine(c) + '</span>' : '') +
+      (c.signed && opts.pill ? soStamp(c.signed) : '') + '</div>' +
+    '<div class="cl-fee">' + t23FeeHtml(c) + '</div>' +
+    (opts.tick ? '<div class="t23-time">' + (c.mins ? c.mins + ' min' : '') + '</div>' : '') +
+    t23AmtHtml(c) +
+    (c.payer === 'recip' ? '<span class="t23-payer">Reciprocal · ' + c.prov + '</span>' : '') +
+    (opts.pill ? t23DaysChip(c) + t23Pill(c, false) : '') +
+    '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button>' +
+  '</div>';
+}
+function t23Tick(id, on){ if(on) delete T23.untick[id]; else T23.untick[id] = true; t23RenderReady(); }
+
+function t23ReadyHtml(){
+  var list = t23Ready();
+  var h = '<p class="box-title">Ready to sign off</p>';
+  if(T23.batch) h += '<p class="t23-sum">' + soStamp(T23.batch.at) + '&nbsp;· ' + T23.batch.n + ' claim' + (T23.batch.n === 1 ? '' : 's') + ' signed off and queued for MSP</p>';
+  if(!list.length) return h + (T23.batch ? '' : '<p class="pc-empty">Nothing to sign off. Claims from finalized visits land here.</p>');
+  var tot = list.reduce(function(t, c){ return t + t23Amt(c); }, 0);
+  h += '<p class="t23-sum">' + list.length + ' clean claim' + (list.length === 1 ? '' : 's') + ' · ' + t23Money(tot) + ' expected' + T23_DEMO + '</p>';
+  h += list.map(function(c){ return t23Row(c, {tick:!t23PA()}); }).join('');
+  if(t23PA()){
+    h += '<div class="t23-pa">' + t23Ic('user') + '<p><b>' + T23_PA_LINE + '</b>You can review claims and their flags. Signing off is his attestation, and it can’t be delegated.</p></div>';
+    return h;
+  }
+  var n = list.filter(function(c){ return !T23.untick[c.id]; }).length;
+  h += '<p class="t23-stmt">Signing off is your attestation. You confirm these claims are for services you provided, and that the fee item, diagnosis, units and time are documented in your notes.' + t23Ph('Draft wording · Needs Daniel') + '</p>';
+  h += '<div class="t23-go"><button type="button" class="btn dark" onclick="t23SignBatch()"' + (n ? '' : ' disabled') + '>' + t23Ic('complete') +
+       'Sign off &amp; submit ' + n + ' claim' + (n === 1 ? '' : 's') + '</button>' +
+       (n ? '' : '<span class="t23-help">Tick at least one claim to sign off.</span>') + '</div>';
+  return h;
+}
+function t23RenderReady(){ var b = document.getElementById('t23-ready'); if(b){ b.innerHTML = t23ReadyHtml(); paintPd(b); } }
+
+/* ----- 2b: flagged claims, one by one ----- */
+function t23FlagHtml(c, f, i){
+  var pa = t23PA(), dis = t23Dis(), id = c.id;
+  var btn = function(label, fn, icon){ return '<button type="button" class="btn xs" onclick="' + fn + '"' + dis + '>' + (icon ? t23Ic(icon) : '') + label + '</button>'; };
+  var head = '', body = '', acts = '';
+  if(f.k === 'ai'){
+    head = '<span class="t23-aim">' + AI_MARK + '</span><div><p class="t23-kind">AI review</p>';
+    body = '<p class="t23-find">' + f.find + '</p><p class="t23-why">' + f.why + ' Confidence ' + f.conf + '%</p>';
+    if(!f.done){
+      if(T23.dismiss[id + i]){
+        acts = '<div class="t23-chips" role="group" aria-label="Reason for dismissing (optional)">' +
+          ['Coded correctly','Documented in the note','Other'].map(function(r){ return '<button type="button" class="t23-chip" onclick="t23Dismiss(\'' + id + '\',' + i + ',\'' + r + '\')">' + r + '</button>'; }).join('') +
+          '<button type="button" class="t23-more" onclick="t23Dismiss(\'' + id + '\',' + i + ',\'\')">Dismiss without a reason</button></div>';
+      } else acts = '<div class="t23-acts">' + btn('Accept', 't23AiAccept(\'' + id + '\',' + i + ')', 'complete') + btn('Dismiss', 'T23.dismiss[\'' + id + i + '\']=1;renderClaims()') + '</div>';
+    }
+  } else if(f.k === 'card'){
+    var cw = T23_CARD_WORDS[f.res] || T23_CARD_WORDS.name;
+    head = t23Ic(f.res === 'name' ? 'cardwarn' : 'carderr') + '<div><p class="t23-kind">Health card</p>';
+    body = '<p class="t23-find">' + cw.find + '</p>' + (c.card ? '<p class="t23-why">Checked ' + c.card.at + ' · ' + c.card.when + '</p>' : '');
+    if(!f.done){
+      acts = '<div class="t23-acts">' + btn('Re-check with MSP', 't23Recheck(\'' + id + '\',' + i + ',this)', 'reopen') + btn('Task the MOA', 't23TaskMoa(\'' + id + '\',' + i + ')', 'taskmoa') +
+        (f.res === 'ended' ? btn('Switch to private pay', 't23ToPrivate(\'' + id + '\',' + i + ')') + btn('Alternate payer', 't23OpenPick({claim:\'' + id + '\',focus:\'disp\',disp:\'alt\',flag:' + i + '})') : '') + '</div>';
+    }
+  } else if(f.k === 'dup'){
+    head = t23Ic('alert') + '<div><p class="t23-kind">Duplicate check</p>';
+    body = '<p class="t23-find">' + f.find + '</p>';
+    if(!f.done) acts = '<div class="t23-acts">' + btn('Not a duplicate', 't23Decided(\'' + id + '\',' + i + ',\'Kept by you\')') + btn('Mark not billed (duplicate)', 't23NotBilledDup(\'' + id + '\')') + '</div>';
+  } else if(f.k === 'q'){
+    head = t23Ic('chat') + '<div><p class="t23-kind">Returned to you · Question from ' + f.from + '</p>';
+    body = '<p class="t23-why">' + t23F(c.date) + ' visit · ' + c.fee + ' · ' + c.dx + T23_DEMO + ' Teleplan returned the claim because of the diagnosis code (' + f.ex + ', demo).</p>' +
+           '<p class="t23-find">“' + f.ask + '”</p>' +
+           (f.done ? '' : (f.overdue ? '<p class="t23-why"><span class="t23-days warn">' + t23Ic('alert') + 'Overdue since ' + f.due + '</span></p>' : '<p class="t23-why">Answer by ' + f.due + '</p>'));
+    if(!f.done) acts = '<div class="t23-acts">' + btn('Fix it now', 't23OpenPick({claim:\'' + id + '\',focus:\'dx\',flag:' + i + '})', 'edit') +
+      btn('The diagnosis is right · resubmit as is', 't23Answer(\'' + id + '\',' + i + ')') + '</div>';
+  } else if(f.k === 'dx'){
+    head = t23Ic('edit') + '<div><p class="t23-kind">Diagnosis needed</p>';
+    body = '<p class="t23-find">No diagnosis on this claim.</p>';
+    if(!f.done) acts = '<div class="t23-acts">' + btn('Add diagnosis', 't23OpenPick({claim:\'' + id + '\',focus:\'dx\',flag:' + i + '})', 'edit') + '</div>';
+  }
+  var done = f.done ? '<p class="t23-done">' + t23Ic('complete') + f.done + '</p>' : '';
+  return '<div class="t23-flag">' + head + body + done + acts + '</div></div>';
+}
+function t23CardHtml(c){
+  var open = c.flags.filter(function(f){ return !f.done; }).length;
+  var h = '<div class="t23-card" id="t23-c-' + c.id + '"><div class="t23-chead"><b>' + t23E(c.who) + '</b><span class="t23-meta">' + t23F(c.date) + ' · ' +
+    (c.fee ? c.fee + ' · ' + T23_FEES[c.fee].name : 'No fee item') + '</span>' + (c.fee ? T23_DEMO : '') + t23Pill(c) + t23DaysChip(c) + '</div>';
+  h += c.flags.map(function(f, i){ return t23FlagHtml(c, f, i); }).join('');
+  if(!t23PA()){
+    h += '<div class="t23-cfoot"><button type="button" class="btn dark" onclick="t23SignOne(\'' + c.id + '\')"' + (open ? ' disabled' : '') + '>' + t23Ic('complete') + 'Sign off &amp; submit this claim</button>' +
+      '<button type="button" class="btn" onclick="t23OpenPick({claim:\'' + c.id + '\',focus:\'disp\',disp:\'notbilled\'})">Not billed…</button>' +
+      '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button>' +
+      (open ? '<span class="t23-help">Decide each flag first.</span>' : '') + '</div>';
+  } else {
+    h += '<div class="t23-cfoot"><button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button></div>';
+  }
+  return h + '</div>';
+}
+
+/* ----- 2d: rejected by MSP (only what the doctor must act on) ----- */
+function t23RejHtml(c){
+  var dis = t23Dis(), p = '', s = '';
+  if(c.st === 'rejected'){ p = ['Correct', 't23Correct(\'' + c.id + '\')', 'edit']; s = ['Dispute instead', 't23SetSt(\'' + c.id + '\',\'dispute\',\'Marked as a potential dispute\')']; }
+  if(c.st === 'dispute'){ p = ['Sign off &amp; ask MSP to reassess', 't23Reassess(\'' + c.id + '\')', 'complete']; s = ['Correct instead', 't23Correct(\'' + c.id + '\')']; }
+  if(c.st === 'adjusted'){ p = ['Accept', 't23SetSt(\'' + c.id + '\',\'paid\',\'Adjustment accepted\')', 'complete']; s = ['Dispute', 't23SetSt(\'' + c.id + '\',\'dispute\',\'Marked as a potential dispute\')']; }
+  var reason = c.st === 'adjusted'
+    ? t23Money(t23Amt(c) - c.paid) + ' less than expected · ' + c.msp.ex + T23_DEMO
+    : c.msp.ex + ' · ' + (c.msp.reason || T23_EX[c.msp.ex]) + T23_DEMO;
+  return '<div class="t23-card" id="t23-c-' + c.id + '"><div class="t23-chead"><b>' + t23E(c.who) + '</b><span class="t23-meta">' + t23F(c.date) + ' · ' + c.fee + ' · ' + T23_FEES[c.fee].name + '</span>' + T23_DEMO + t23Pill(c) + t23DaysChip(c) + '</div>' +
+    '<p class="t23-reason">' + reason + '</p>' +
+    '<div class="t23-cfoot">' + (t23PA() ? '' : '<button type="button" class="btn dark" onclick="' + p[1] + '">' + t23Ic(p[2]) + p[0] + '</button><button type="button" class="btn" onclick="' + s[1] + '">' + s[0] + '</button>') +
+    '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button></div></div>';
+}
+
+function renderClaims(){
+  var fw = document.getElementById('cl-filters'), lw = document.getElementById('cl-list');
+  if(!fw || !lw) return;
+  t23Viewer(); t23Stats();
+  var counts = {'Needs attention':t23Attn(), 'Submitted':t23Subm().length, 'Paid':t23Paid().length, 'All':CLAIMS.length};
+  fw.innerHTML = CL_FILTERS.map(function(f){
+    return '<button type="button" class="' + (f === CL_ON ? 'on' : '') + '" aria-pressed="' + (f === CL_ON) + '" onclick="clSet(&#39;' + f + '&#39;)">' + f + ' &middot; ' + counts[f] + '</button>';
+  }).join('');
+  var h = '';
+  if(CL_ON === 'Needs attention'){
+    var dec = t23Decide(), rej = t23RejDoc();
+    h += '<div class="box t23-sec" id="t23-ready">' + t23ReadyHtml() + '</div>';
+    h += '<div class="box t23-sec" id="t23-decide"><p class="box-title">Needs your decision</p>' +
+         (dec.length ? dec.map(t23CardHtml).join('') : '<p class="pc-empty">No claims need a decision.</p>') + '</div>';
+    h += '<div class="box t23-sec" id="t23-rej"><p class="box-title">Rejected by MSP</p>' +
+         (rej.length ? rej.map(t23RejHtml).join('') : '<p class="pc-empty">Nothing rejected that needs you.</p>') + '</div>';
+    var pv = t23Priv();
+    h += '<div class="box t23-sec" id="t23-priv"><p class="box-title">Private pay</p>' +
+         (pv.length ? pv.map(function(c){ return t23Row(c, {pill:true}); }).join('') : '<p class="pc-empty">No private-pay visits.</p>') + '</div>';
+  } else {
+    var rows = CL_ON === 'Submitted' ? t23Subm() : CL_ON === 'Paid' ? t23Paid() : CLAIMS.slice().sort(function(a, b){ return t23D(b.date) - t23D(a.date); });
+    h += '<div class="box">' + (rows.length ? rows.map(function(c){ return t23Row(c, {pill:true}); }).join('') : '<p class="pc-empty">Nothing in this view.</p>');
+    if(CL_ON === 'All') h += '<div class="t23-nsdash">' + t23Ph('Needs Daniel') + ' Korynn, no-show today. Whether a no-show is billed, and how, isn’t decided yet.</div>';
+    h += '</div>';
+  }
+  lw.innerHTML = h;
+  paintPd(lw); paintPd(document.getElementById('cl-stats'));
+  if(typeof updateClaimCount === 'function') updateClaimCount();
+}
+function updateClaimCount(){
+  var n = t23Attn(), el = document.getElementById('wt-claims-count');
+  if(el){ el.textContent = n; el.style.display = n ? 'inline-flex' : 'none'; }
+}
+
+/* ----- decisions (COD-06: every decision is logged on the claim) ----- */
+function t23Log(c, who, what){ c.hist.push([t23Stamp(), who, what]); }
+function t23Decided(id, i, words){
+  var c = t23C(id), f = c.flags[i]; if(!c || !f || t23PA()) return;
+  f.done = words + ' · ' + t23Now();
+  t23Log(c, 'Dr. Pannozzo', t23FlagKind(f) + ': ' + words);
+  t23Refresh(); toast(words);
+}
+function t23Dismiss(id, i, reason){
+  delete T23.dismiss[id + i];
+  t23Decided(id, i, 'Dismissed by you' + (reason ? ' · ' + reason : ''));
+}
+function t23AiAccept(id, i){
+  var c = t23C(id), f = c.flags[i];
+  /* COD-01, rule 18: Accept opens the field with the AI's suggestion beside it; nothing changes until Save change */
+  t23OpenPick({claim:id, focus:f.field === 'fee' ? 'fee' : 'dx', flag:i, ai:f});
+}
+function t23Answer(id, i){
+  var c = t23C(id), f = c.flags[i]; if(!c || t23PA()) return;
+  var ans = 'The diagnosis is right · resubmit as is';
+  f.done = 'Answered by Dr. Pannozzo · 3 Oct, ' + t23Now() + ' · ‘' + ans + '’';
+  t23Log(c, 'Dr. Pannozzo', 'Answered Dolly: ' + ans + ' (his confirmation, QUE-08)');
+  /* Dolly resubmits it as is, so it leaves his list (spec 8b) */
+  c.st = 'submitted'; c.sub = 'Resubmitted by Dolly · your answer logged';
+  t23Refresh(); toast('Answered · Dolly resubmits it as is');
+}
+function t23NotBilledDup(id){
+  var c = t23C(id); if(!c || t23PA()) return;
+  c.st = 'notbilled'; c.reason = 'Duplicate'; c.flags.forEach(function(f){ if(!f.done) f.done = 'Not billed · duplicate'; });
+  t23Log(c, 'Dr. Pannozzo', 'Disposition: Not billed (duplicate)');
+  t23Refresh(); toast('Not billed · duplicate');
+}
+function t23SetSt(id, st, words){
+  var c = t23C(id); if(!c || t23PA()) return;
+  c.st = st; t23Log(c, 'Dr. Pannozzo', words);
+  t23Refresh(); toast(words);
+}
+function t23Correct(id){ t23OpenPick({claim:id, focus:'fee', correct:true}); }
+function t23Reassess(id){
+  t23Signoff([id], 'reassess', function(at){
+    var c = t23C(id);
+    c.st = 'appeal'; c.sub = 'Reassessment requested 3 Oct'; c.signed = at;
+    t23Log(c, 'Dr. Pannozzo', 'Signed off; asked MSP to reassess. Dolly prepares the note record.');
+    toast('Signed off by Dr. Pannozzo · Dolly prepares the reassessment');
+  });
+}
+function t23ToPrivate(id, i){
+  var c = t23C(id); if(!c || t23PA()) return;
+  c.flags[i].done = 'Private pay chosen by you · ' + t23Now();
+  c.payer = 'private'; c.st = 'pri-due'; c.fee = null; c.dx = null;
+  t23Log(c, 'Dr. Pannozzo', 'Disposition: MSP claim → Private pay');
+  t23Refresh(); toast('Private pay chosen');
+}
+function t23TaskMoa(id, i){
+  var c = t23C(id); if(!c || t23PA()) return;
+  /* rule 12: doctor -> MOA is the allowed direction; it arrives in Dolly's Tasks as a Billing task (spec part 10) */
+  c.flags[i].done = 'Task sent to Dolly · ' + t23Now() + ' · the result comes back here';
+  t23Log(c, 'Dr. Pannozzo', 'Tasked Dolly: health card');
+  t23Refresh();
+  if(typeof openTaskMoa === 'function'){ var q = (QUEUE_DATA.filter(function(r){ return firstLast(r.name) === c.who || r.legal === c.who; })[0]); openTaskMoa(q ? q.name : ''); }
+}
+function t23Recheck(id, i, btn){
+  var c = t23C(id); if(!c || t23PA()) return;
+  if(btn){ btn.disabled = true; btn.textContent = 'Checking…'; }
+  setTimeout(function(){
+    /* spec part 7: a re-check never flips silently to Verified; in the demo it returns the same result, newly timed */
+    var res = (c.card && c.card.res) || c.flags[i].res;
+    c.card = {res:res, at:'3 Oct, ' + t23Now(), when:'re-checked by you', prev:c.card};
+    var w = T23_CARD_WORDS[res];
+    c.flags[i].done = 'Re-checked 3 Oct, ' + t23Now() + ' · still: ' + w.still;
+    t23Log(c, 'System', 'Health card re-checked: ' + w.still);
+    t23Refresh(); toast('Re-checked · still: ' + w.still);
+  }, 1200);
+}
+var T23_CARD_WORDS = {
+  name:  {find:'MSP has a different name for this card number.', still:'name doesn’t match MSP'},
+  dob:   {find:'MSP has a different date of birth for this card number.', still:'date of birth doesn’t match MSP'},
+  ended: {find:'MSP coverage ended 31 Aug 2026.', still:'coverage ended 31 Aug 2026'},
+  invalid:{find:'MSP says this card isn’t valid for the visit date.', still:'card not valid'}
+};
+
+/* ----- sign-off with the code check (2c). Asked once per sign-off session (N14). ----- */
+function t23Signoff(ids, kind, done){
+  if(t23PA()){ toast(T23_PA_LINE); return; }
+  T23.pend = {ids:ids, kind:kind, done:done};
+  if(T23.mfaOk){ t23DoSign(); return; }
+  var n = ids.length;
+  document.getElementById('t23-mfa-body').textContent = kind === 'reassess'
+    ? 'Enter the 6-digit code from your authenticator app to sign off and ask MSP to reassess.'
+    : 'Enter the 6-digit code from your authenticator app to sign off ' + n + ' claim' + (n === 1 ? '' : 's') + '.';
+  var inp = document.getElementById('t23-mfa-in'); inp.value = '';
+  document.getElementById('t23-mfa-err').hidden = true;
+  document.getElementById('t23-mfa-go').disabled = true;
+  document.getElementById('t23-mfa').classList.add('show');
+  paintPd(document.getElementById('t23-mfa'));
+  setTimeout(function(){ inp.focus(); }, 30);
+}
+function t23MfaInput(){
+  var inp = document.getElementById('t23-mfa-in');
+  inp.value = inp.value.replace(/\D/g, '').slice(0, 6);
+  document.getElementById('t23-mfa-go').disabled = inp.value.length !== 6;
+  document.getElementById('t23-mfa-err').hidden = true;
+}
+function t23MfaGo(){
+  var v = document.getElementById('t23-mfa-in').value;
+  if(v.length !== 6) return;
+  if(v === '000000'){ document.getElementById('t23-mfa-err').hidden = false; return; }   /* demo trigger for a wrong code */
+  T23.mfaOk = true; t23MfaClose(); t23DoSign();
+}
+function t23MfaClose(){ document.getElementById('t23-mfa').classList.remove('show'); }
+function t23DoSign(){
+  var p = T23.pend; if(!p) return; T23.pend = null;
+  var at = t23Now();
+  if(p.done){ p.done(at); t23Refresh(); return; }
+  p.ids.forEach(function(id){
+    var c = t23C(id); if(!c) return;
+    c.st = 'submitted'; c.signed = at; c.sub = 'Signed off ' + at; delete T23.untick[id];
+    t23Log(c, 'Dr. Pannozzo', 'Signed off (attestation); queued for MSP');
+  });
+  if(p.kind === 'batch') T23.batch = {at:at, n:p.ids.length};
+  t23Refresh();
+  toast('Signed off by Dr. Pannozzo · ' + p.ids.length + ' claim' + (p.ids.length === 1 ? '' : 's') + ' queued for MSP');
+}
+function t23SignBatch(){
+  var ids = t23Ready().filter(function(c){ return !T23.untick[c.id]; }).map(function(c){ return c.id; });
+  if(!ids.length) return;
+  t23Signoff(ids, 'batch');
+}
+function t23SignOne(id){
+  var c = t23C(id); if(!c) return;
+  if(c.flags.some(function(f){ return !f.done; })){ toast('Decide each flag first.'); return; }
+  closeBilling(); t23Signoff([id], 'one');
+}
+
+function t23Refresh(){
+  renderClaims();
+  if(typeof t23SyncQueue === 'function') t23SyncQueue();
+  if(typeof t23RenderDigest === 'function') t23RenderDigest();
+  var ov = document.getElementById('bill-overlay');
+  if(ov && ov.classList.contains('show') && BL_KIND === 'claim' && T23.open) t23Open(T23.open);
+}
+
+/* ================= Claim detail (spec part 3; reuses #bill-overlay) ================= */
+function t23Payer(c){ return c.payer === 'private' ? 'Private pay' : c.payer === 'recip' ? 'Reciprocal claim · ' + c.prov : 'MSP claim'; }
+function t23CanChange(c){ return !t23PA() && ['submit','review','rejected'].indexOf(c.st) > -1; }
+function t23Open(id){
+  var c = t23C(id); if(!c) return;
+  T23.open = id; BL_KIND = 'claim'; BL_FOR = null;
+  var card = document.getElementById('bl-card'); card.classList.add('t23-wide');
+  var ch = t23CanChange(c);
+  var line = function(k, v, focus, ro){
+    return '<div class="t23-line' + (ro ? ' ro' : '') + '"><span class="t23-lk">' + k + '</span><span class="t23-lv">' + v + '</span>' +
+      (ch && focus ? '<button type="button" class="btn xs" onclick="t23OpenPick({claim:\'' + id + '\',focus:\'' + focus + '\'})">' + t23Ic('edit') + 'Change</button>' : '') + '</div>';
+  };
+  var h = '<p class="bl-eyebrow" id="bl-eyebrow">' + t23Payer(c) + '</p>' +
+    '<p class="defer-ttl" id="bl-title">' + (T23_ST[c.st] || {label:c.st}).label + '</p>' +
+    '<p class="bl-who" id="bl-who"><span><b>' + t23E(c.who) + '</b> · ' + t23F(c.date) + ' · ' + winLabel(c.win) + '</span>' + t23DaysChip(c) + '</p>';
+  if(c.signed) h += '<p class="bl-v" style="margin:-8px 0 12px">' + soStamp(c.signed) + '</p>';
+  if(c.payer !== 'private' && c.fee){
+    var b = t23Basis(c);
+    h += '<div class="bl-block"><p class="bl-k">Your coding</p>' +
+      line('Fee item', c.fee + ' · ' + T23_FEES[c.fee].name + T23_DEMO, 'fee') +
+      line('Diagnosis (ICD-9)', c.dx ? c.dx + ' · ' + t23DxName(c.dx) + T23_DEMO : 'Diagnosis not set', 'dx') +
+      line('Units', String(c.units || 1), 'units') +
+      line('Time', (c.span ? c.span + ' · ' : '') + (c.mins || '—') + ' min · from the call log', 'time') +
+      line('Service location', c.loc || 'Virtual (phone)', 'loc') +
+      line('Referring practitioner', c.ref || 'None', 'ref') +
+      line('Amount', b ? t23Money(b[0]) + ' ' + b[1] + T23_DEMO : 'After your decision', null, true) + '</div>';
+  } else if(c.payer === 'private'){
+    h += '<div class="bl-block"><p class="bl-k">Private pay</p>' + line('Fee', 'Private visit fee · ' + t23Money(T23_PRIVATE_FEE) + ' ' + (c.st === 'pri-paid' ? 'paid' : 'due') + T23_DEMO, null, true) + '</div>';
+  }
+  if(c.payer !== 'private' && c.fee){
+    var ai = c.flags.map(function(f, i){ return [f, i]; }).filter(function(x){ return x[0].k === 'ai'; });
+    h += '<div class="bl-block"><p class="bl-k"><span class="t23-aim">' + AI_MARK + '</span>AI review</p>' +
+      (ai.length ? ai.map(function(x){ var f = x[0], i = x[1];
+        return '<p class="bl-v"><b>' + f.find + '</b> ' + f.why + ' Confidence ' + f.conf + '%</p>' +
+          (f.done ? '<p class="bl-v">' + f.done + '</p>' : (t23PA() ? '' : '<div class="defer-acts" style="justify-content:flex-start;margin-top:8px"><button type="button" class="btn xs" onclick="t23AiAccept(\'' + id + '\',' + i + ')">' + t23Ic('complete') + 'Accept</button><button type="button" class="btn xs" onclick="closeBilling();T23.dismiss[\'' + id + i + '\']=1;CL_ON=\'Needs attention\';showScreen(\'claims\');renderClaims();t23Focus(\'' + id + '\')">Dismiss</button></div>'));
+      }).join('') : '<p class="bl-v">No AI findings on this claim.</p>') +
+      '<p class="bl-v" style="color:var(--ink-soft);margin-top:6px">The AI only flags. It never changes a claim.</p></div>';
+  }
+  h += t23CardBlock(c);
+  if(c.msp && c.st !== 'held'){
+    var L = t23Left(c);
+    var refused = c.st === 'adjusted' ? 'Paid, adjusted ' + t23F(c.msp.on) + ' · ' + c.msp.ex + ' · ' + t23Money(c.paid) + ' paid, ' + t23Money(t23Amt(c) - c.paid) + ' less than expected'
+      : (c.msp.src === 'Teleplan' ? 'Rejected by Teleplan ' : 'Refused ') + (c.msp.on ? t23F(c.msp.on) + ' · ' : '') + c.msp.ex + ' · ' + (c.msp.reason || T23_EX[c.msp.ex]);
+    h += '<div class="bl-block"><p class="bl-k">MSP response</p><p class="bl-v">' + refused + T23_DEMO + '</p>' +
+      (c.st !== 'adjusted' ? '<p class="bl-v">' + L.left + ' days left · to ' + t23FD(L.dl) + '</p>' : '') +
+      '<details><summary>How we count this</summary><p>MSP takes claims within 90 days of the service date, and a refused claim can be resubmitted (code X) within 90 days of the original claim’s remittance date. Source: gov.bc.ca, Billing and payments, checked 3 Oct 2026. Edge cases: verify with MSP (N12).</p></details></div>';
+  } else if(c.st === 'held'){
+    h += '<div class="bl-block"><p class="bl-k">MSP response</p><p class="bl-v">Held by MSP · ' + c.msp.ex + ' · ' + T23_EX[c.msp.ex] + T23_DEMO + '</p><p class="bl-v">Dolly is following it up. Nothing for you.</p></div>';
+  }
+  if(c.st === 'appeal') h += '<div class="bl-block"><p class="bl-k">Reassessment</p><p class="bl-v">' + (c.sub || '') + ' · Possible recovery ' + t23Money(t23Amt(c)) + ' estimated' + T23_DEMO + '</p><p class="bl-v" style="color:var(--ink-soft)">It can’t be written off while under appeal.</p></div>';
+  var disp = c.payer === 'private' ? 'Private pay' : c.st === 'notbilled' ? 'Not billed · ' + (c.reason || '') : c.st === 'altpayer' ? 'Alternate payer · ' + (c.reason || '') : t23Payer(c);
+  h += '<div class="bl-block"><p class="bl-k">Disposition</p>' + line('', disp, ch ? 'disp' : null).replace('<span class="t23-lk"></span>', '') + '</div>';
+  h += '<div class="bl-block"><p class="bl-k">Visit</p><p class="bl-v"><button type="button" class="t23-more" onclick="t23Note(\'' + id + '\')">Open the ' + t23F(c.date) + ' note</button> (read-only)</p></div>';
+  var all = T23.histAll[id], hist = c.hist.slice().reverse(), shown = all ? hist : hist.slice(0, 2);
+  h += '<div class="bl-block"><p class="bl-k">History</p><ul class="t23-hist">' + shown.map(function(e){ return '<li>' + e[0] + ' · ' + e[1] + ' · ' + t23E(e[2]) + '</li>'; }).join('') + '</ul>' +
+    (hist.length > 2 ? '<button type="button" class="t23-more" onclick="T23.histAll[\'' + id + '\']=' + (all ? 'false' : 'true') + ';t23Open(\'' + id + '\')">' + (all ? 'Show fewer' : 'Show all ' + hist.length) + '</button>' : '') + '</div>';
+  h += '<div class="defer-acts"><button type="button" class="btn" onclick="closeBilling()">Close</button>' + t23PrimaryBtn(c) + '</div>';
+  card.innerHTML = h;
+  paintPd(card);
+  document.getElementById('bill-overlay').classList.add('show');
+}
+function t23PrimaryBtn(c){
+  if(t23PA()) return '';
+  var b = function(label, fn, icon, dis){ return '<button type="button" class="btn dark" onclick="' + fn + '"' + (dis ? ' disabled title="Decide each flag first."' : '') + '>' + t23Ic(icon || 'complete') + label + '</button>'; };
+  var id = c.id;
+  switch(c.st){
+    case 'submit': return b('Sign off &amp; submit this claim', 't23SignOne(\'' + id + '\')');
+    case 'review': return b('Sign off &amp; submit this claim', 't23SignOne(\'' + id + '\')', 'complete', c.flags.some(function(f){ return !f.done; }));
+    case 'rejected': return b('Correct', 't23Correct(\'' + id + '\')', 'edit');
+    case 'dispute': return b('Sign off &amp; ask MSP to reassess', 'closeBilling();t23Reassess(\'' + id + '\')');
+    case 'adjusted': return b('Accept', 't23SetSt(\'' + id + '\',\'paid\',\'Adjustment accepted\')');
+    case 'pri-due': case 'pri-review': return b(c.st === 'pri-due' ? 'Mark as paid' : 'Clear the payment', 't23SetSt(\'' + id + '\',\'pri-paid\',\'' + (c.st === 'pri-due' ? 'Payment marked received' : 'Payment reviewed and cleared') + '\')', 'reopen');
+  }
+  return '';
+}
+function t23Note(id){
+  var c = t23C(id);
+  var q = QUEUE_DATA.filter(function(r){ return firstLast(r.name) === c.who || r.legal === c.who || (r.legal || '').indexOf(c.who) > -1; })[0];
+  closeBilling();
+  if(q && typeof openChart === 'function') openChart(q.name); else toast('The ' + t23F(c.date) + ' note opens read-only (demo)');
+}
+function t23CardBlock(c){
+  if(c.payer === 'private') return '<div class="bl-block"><p class="bl-k">Health card</p><p class="bl-v">Paying privately. There’s no MSP card to check.</p></div>';
+  if(c.payer === 'recip') return '<div class="bl-block"><p class="bl-k">Health card</p><p class="bl-v">Out of province · ' + c.prov + '. MSP can’t check it here; it’s billed as a reciprocal claim.</p></div>';
+  var k = c.card;
+  var res = k ? ({name:'Check required · name doesn’t match MSP', dob:'Check required · date of birth doesn’t match MSP', ended:'Coverage ended · 31 Aug 2026', invalid:'Invalid card'})[k.res] : 'Verified';
+  var at = k ? k.at : t23F(c.date) + ', 7:42 AM', when = k ? k.when : 'at check-in';
+  var h = '<div class="bl-block"><p class="bl-k">Health card</p><p class="bl-v">' + res + '</p><p class="bl-v" style="color:var(--ink-soft)">Checked ' + at + ' · for a ' + t23F(c.date) + ' visit · ' + when + '</p>';
+  var p = k && k.prev; while(p){ h += '<p class="bl-v" style="color:var(--ink-faint)">Earlier: checked ' + p.at + ' · ' + p.when + '</p>'; p = p.prev; }
+  return h + '</div>';
+}
+function t23Focus(id){
+  setTimeout(function(){
+    var el = document.getElementById('t23-c-' + id); if(!el) return;
+    el.scrollIntoView({block:'center'}); el.classList.add('t23-hl');
+    setTimeout(function(){ el.classList.remove('t23-hl'); }, 2000);
+  }, 60);
+}
+var t23CloseBilling0 = closeBilling;
+closeBilling = function(){ t23CloseBilling0(); T23.open = null; var c = document.getElementById('bl-card'); if(c) c.classList.remove('t23-wide'); };
+
+/* ================= Coding and disposition picker (spec parts 3, 5, 6) ================= */
+function t23VisitCode(name){
+  T23.visit = T23.visit || {};
+  if(T23.visit[name]) return T23.visit[name];
+  var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0] || {};
+  var dxBy = {'Follow up — chest pressure noted':'DX-D1', 'Follow up appointment':'DX-D2', 'Yeast infection':'DX-D3', 'Rx renewal':'DX-D7', 'Lab follow-up':'DX-D6'};
+  var disp = (r.card === 'private' || r.card === 'oop-qc' || r.plan === 'Private') ? 'private' : r.card === 'oop' ? 'recip' : 'msp';
+  var v = {fee:'DEMO-A', dx:dxBy[r.concern] || null, units:1, mins:12, loc:'Virtual (phone)', ref:'None', disp:disp, reason:'', alt:''};
+  T23.visit[name] = v; return v;
+}
+function t23OpenPick(o){
+  if(t23PA()){ toast(T23_PA_LINE); return; }
+  var src;
+  if(o.claim){ var c = t23C(o.claim); if(!c) return;
+    src = {fee:c.fee || 'DEMO-A', dx:c.dx, units:c.units || 1, mins:c.mins || 10, loc:c.loc || 'Virtual (phone)', ref:c.ref || 'None',
+           disp:c.payer === 'private' ? 'private' : c.st === 'notbilled' ? 'notbilled' : c.st === 'altpayer' ? 'alt' : c.payer === 'recip' ? 'recip' : 'msp', reason:c.reason || '', alt:''};
+  } else { if(!o.visit) { toast('Open a chart first'); return; } src = t23VisitCode(o.visit); }
+  T23.pick = {o:o, v:JSON.parse(JSON.stringify(src)), q:'', err:''};
+  if(o.disp) T23.pick.v.disp = o.disp;
+  t23RenderPick();
+  document.getElementById('t23-pick').classList.add('show');
+  setTimeout(function(){ var f = document.querySelector('#t23-pick [data-focus="' + (o.focus || 'fee') + '"]'); if(f){ f.scrollIntoView({block:'nearest'}); f.focus(); } }, 40);
+}
+function t23RenderPick(){
+  var P = T23.pick, v = P.v, o = P.o, card = document.getElementById('t23-pick-card');
+  var c = o.claim ? t23C(o.claim) : null;
+  var who = c ? c.who + ' · ' + t23F(c.date) : (o.visit ? firstLast(o.visit) + ' · today’s visit' : '');
+  var radio = function(name, val, label, cur, extra){ return '<label class="t23-opt"><input type="radio" name="' + name + '" value="' + val + '"' + (cur === val ? ' checked' : '') + ' onchange="T23.pick.v.' + name + '=this.value;' + (extra || '') + 't23RenderPick()"' + (name === 'fee' && val === 'DEMO-A' ? ' data-focus="fee"' : '') + (name === 'disp' && val === 'msp' ? ' data-focus="disp"' : '') + '>' + label + '</label>'; };
+  var h = '<p class="bl-eyebrow">' + (c ? t23Payer(c) : 'Billing for this visit') + '</p><p class="defer-ttl" id="t23-pick-ttl">Your coding</p><p class="bl-who">' + t23E(who) + '</p>';
+  var coded = v.disp === 'msp' || v.disp === 'recip';
+  if(coded){
+    h += '<div class="bl-block"><p class="bl-k">Fee item</p>';
+    if(o.ai && o.ai.field === 'fee') h += '<p class="t23-ai">' + AI_MARK + 'AI suggests ' + o.ai.to + ' · ' + T23_FEES[o.ai.to].name + ' (confidence ' + o.ai.conf + '%). Current: ' + (c ? c.fee : v.fee) + '. Nothing changes until you save.</p>';
+    h += Object.keys(T23_FEES).map(function(k){ return radio('fee', k, k + ' · ' + T23_FEES[k].name + ' · ' + t23Money(T23_FEES[k].amt) + ' expected' + T23_DEMO, v.fee); }).join('') +
+      '<p class="bl-v" style="color:var(--ink-soft);margin-top:4px">The amount comes from the fee item; it can’t be typed. The real fee list Needs Daniel (N1).</p></div>';
+    var q = P.q.toLowerCase();
+    var dx = T23_DX.filter(function(d){ return !q || (d[0] + ' ' + d[1]).toLowerCase().indexOf(q) > -1; });
+    h += '<div class="bl-block"><p class="bl-k">Diagnosis (ICD-9)</p>' +
+      '<input class="t23-in wide" type="search" data-focus="dx" placeholder="Search by words, e.g. back pain" value="' + t23E(P.q) + '" oninput="T23.pick.q=this.value;t23RenderPick();var e=document.querySelector(\'#t23-pick [data-focus=dx]\');e.focus();e.setSelectionRange(e.value.length,e.value.length)" aria-label="Search diagnoses">' +
+      '<div class="t23-dxlist">' + (dx.length ? dx.map(function(d){ return radio('dx', d[0], d[0] + ' · ' + d[1] + T23_DEMO, v.dx); }).join('') : '<p class="pc-empty">No match.</p>') + '</div></div>';
+    h += '<div class="bl-block"><div class="t23-row2">' +
+      '<label>Units<input class="t23-in" style="width:80px" type="number" min="1" max="9" data-focus="units" value="' + v.units + '" onchange="T23.pick.v.units=Math.max(1,+this.value||1)"></label>' +
+      '<label>Time (minutes)<input class="t23-in" style="width:120px" type="number" min="1" data-focus="time" value="' + v.mins + '" onchange="T23.pick.v.mins=Math.max(1,+this.value||1)"></label>' +
+      '<label>Service location<select class="t23-in" data-focus="loc" onchange="T23.pick.v.loc=this.value">' + ['Virtual (phone)','Virtual (video)'].map(function(x){ return '<option' + (v.loc === x ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select></label>' +
+      '<label>Referring practitioner<select class="t23-in" data-focus="ref" onchange="T23.pick.v.ref=this.value"><option>None</option></select></label>' +
+      '</div><p class="bl-v" style="color:var(--ink-soft);margin-top:6px">Time is filled in from the call log; you can change it.</p></div>';
+  }
+  /* part 6: exactly one disposition per completed visit */
+  var reasons = ['Doctor’s choice','Duplicate','Other'];
+  h += '<div class="bl-block"><p class="bl-k">Disposition ' + t23Ph('Reasons and payers Needs Daniel (N4)') + '</p>' +
+    radio('disp', 'msp', 'MSP claim', v.disp) +
+    ((c && c.payer === 'recip') || (!c && v.disp === 'recip') ? radio('disp', 'recip', 'Reciprocal claim', v.disp) : '') +
+    radio('disp', 'notbilled', 'Not billed', v.disp) +
+    (v.disp === 'notbilled' ? '<div class="t23-sub2"><div class="t23-chips">' + reasons.map(function(r){ return '<button type="button" class="t23-chip' + (v.reason === r ? ' on' : '') + '" onclick="T23.pick.v.reason=\'' + r.replace(/'/g, "\\'") + '\';T23.pick.err=\'\';t23RenderPick()">' + r + '</button>'; }).join('') + '</div>' +
+      '<input class="t23-in wide" style="margin-top:6px" type="text" placeholder="Or write the reason" value="' + (reasons.indexOf(v.reason) > -1 ? '' : t23E(v.reason)) + '" oninput="T23.pick.v.reason=this.value;T23.pick.err=\'\'" aria-label="Reason not billed"></div>' : '') +
+    radio('disp', 'bundled', 'Bundled or not billable', v.disp) +
+    radio('disp', 'alt', 'Alternate payer', v.disp) +
+    (v.disp === 'alt' ? '<div class="t23-sub2 t23-chips">' + ['WorkSafeBC','ICBC','Other'].map(function(r){ return '<button type="button" class="t23-chip' + (v.alt === r ? ' on' : '') + '" onclick="T23.pick.v.alt=\'' + r + '\';T23.pick.err=\'\';t23RenderPick()">' + r + '</button>'; }).join('') + '</div>' : '') +
+    radio('disp', 'private', 'Private pay', v.disp) + '</div>';
+  if(P.err) h += '<p class="t23-err" role="alert">' + P.err + '</p>';
+  h += '<div class="defer-acts"><button type="button" class="btn" onclick="t23PickClose()">Cancel</button><button type="button" class="btn dark" onclick="t23PickSave()">' + t23Ic('complete') + 'Save change</button></div>';
+  card.innerHTML = h; paintPd(card);
+}
+function t23PickClose(){ document.getElementById('t23-pick').classList.remove('show'); T23.pick = null; }
+function t23PickSave(){
+  var P = T23.pick; if(!P) return; var v = P.v, o = P.o;
+  if(v.disp === 'notbilled' && !String(v.reason).trim()){ P.err = 'Add a reason to save.'; t23RenderPick(); return; }
+  if(v.disp === 'alt' && !v.alt){ P.err = 'Choose the payer to save.'; t23RenderPick(); return; }
+  if(o.claim){
+    var c = t23C(o.claim), ch = [];
+    var dName = {msp:'MSP claim', recip:'Reciprocal claim', notbilled:'Not billed', bundled:'Bundled or not billable', alt:'Alternate payer', private:'Private pay'};
+    var oldDisp = c.payer === 'private' ? 'private' : c.st === 'notbilled' ? 'notbilled' : c.st === 'altpayer' ? 'alt' : c.payer === 'recip' ? 'recip' : 'msp';
+    if(v.disp === 'msp' || v.disp === 'recip'){
+      if(c.fee !== v.fee) ch.push('fee item ' + (c.fee || '—') + ' → ' + v.fee);
+      if(c.dx !== v.dx) ch.push('diagnosis ' + (c.dx || '—') + ' → ' + (v.dx || '—'));
+      if((c.units || 1) !== v.units) ch.push('units ' + (c.units || 1) + ' → ' + v.units);
+      if(c.mins !== v.mins) ch.push('time ' + c.mins + ' → ' + v.mins + ' min');
+      if((c.loc || 'Virtual (phone)') !== v.loc) ch.push('location → ' + v.loc);
+      c.fee = v.fee; c.dx = v.dx; c.units = v.units; c.mins = v.mins; c.loc = v.loc; c.ref = v.ref;
+    }
+    if(oldDisp !== v.disp) ch.push('disposition ' + dName[oldDisp] + ' → ' + dName[v.disp]);
+    if(!ch.length && !o.correct){ t23PickClose(); toast('Nothing changed'); return; }
+    t23Log(c, 'Dr. Pannozzo', 'Changed ' + (ch.join('; ') || 'nothing'));    /* AUD-02: before and after */
+    if(o.flag != null && c.flags[o.flag]){
+      var f = c.flags[o.flag];
+      f.done = f.k === 'ai' ? 'Accepted by you · ' + t23Now() + ' · ' + (ch[0] || 'no change') :
+               f.k === 'q' ? 'Answered by Dr. Pannozzo · 3 Oct, ' + t23Now() + ' · fixed: ' + (ch[0] || 'checked') :
+               f.k === 'card' ? 'Alternate payer chosen by you' : 'Diagnosis set · ' + (v.dx || '');
+    }
+    if(c.flags.some(function(f){ return f.k === 'dx' && !f.done; }) && v.dx) c.flags.forEach(function(f){ if(f.k === 'dx') f.done = 'Diagnosis set · ' + v.dx; });
+    if(v.disp === 'notbilled' || v.disp === 'bundled'){ c.st = 'notbilled'; c.reason = v.disp === 'bundled' ? 'Bundled' : v.reason; c.payer = c.payer === 'private' ? null : c.payer; }
+    else if(v.disp === 'alt'){ c.st = 'altpayer'; c.reason = v.alt; }
+    else if(v.disp === 'private'){ c.payer = 'private'; c.st = 'pri-due'; }
+    else if(o.correct || c.st === 'rejected'){ c.st = 'submit'; c.msp = null; c.deadline = c.deadline; c.sub = 'Corrected by you'; }
+    t23PickClose(); t23Refresh();
+    toast(o.correct || c.st === 'submit' ? 'Saved · back in Ready to sign off' : 'Saved');
+  } else {
+    T23.visit[o.visit] = v;
+    t23PickClose();
+    if(typeof t23RenderBillRow === 'function') t23RenderBillRow();
+    toast('Billing saved for this visit');
+  }
+}
+
+/* leave Claims and the next sign-off asks for the code again (session length is N14) */
+var t23ShowScreen0 = showScreen;
+showScreen = function(name){ if(name !== 'claims') T23.mfaOk = false; t23ShowScreen0(name); if(name === 'claims') renderClaims(); };
+
+/* Escape closes the T-023 dialogs */
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  if(document.getElementById('t23-pick').classList.contains('show')) t23PickClose();
+  else if(document.getElementById('t23-mfa').classList.contains('show')) t23MfaClose();
+});
+
+renderClaims();
+/* T23-PART-B */
+</script>
+  <div class="build-stamp">v2 · build 2026-10-05 10:30</div>
 </body>
 </html>
