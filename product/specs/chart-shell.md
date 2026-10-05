@@ -1,6 +1,6 @@
 # Chart shell: the core encounter view (T-021)
 
-Owner: `ux-designer` · Ani approves · Built into `simplecare-physician-portal-v2.html` (the chart, `#pcv-c`) · Build 2026-10-04 11:22
+Owner: `ux-designer` · Ani approves · Built into `simplecare-physician-portal-v2.html` (the chart, `#pcv-c`) · Build 2026-10-05 19:58 (declutter, see the end)
 Source: Physician Chart View Requirements v2.5 (B-006), delivery step 1 · ECG Critical Result Requirements v2.0 · Daniel, 30 Sep (`from-daniel/2026-09-30-chart-workflow.md`, `2026-09-30-ecg-and-result-flags.md`).
 Scope: light theme, 1440 px, the demo patient. Dark theme not checked (Ani, 4 Oct). The Figma "SC – Design System" is not used yet (Ani, 3 Oct); the chart uses v2's own variables, buttons, tags and Mage icons.
 
@@ -133,3 +133,30 @@ Full chart replaces the context column: Timeline · Results · Medications · Pr
 4. The floating MOA chat sits over the bottom of the note column at 1440 × 1000; the note card is shortened to clear it. Move the chat, or accept?
 5. New demo-switcher rows ("Chart states") in the portal: keep or remove before deploy?
 6. Dark theme and the Figma migration: when?
+
+## Declutter, 5 Oct
+
+Ani, 5 Oct: the chart was "overwhelming, too much text and noise". The lead reviewed all eight queue charts at 1440 px. Same clinical content and the same gates; the presentation changed. Light mode only. Screenshots: `product/reports/shots/chart-declutter-before-*.png` and `chart-declutter-after-*.png` (local only).
+
+**Rules now in force**
+1. **One name.** The patient card carries the name. The top bar says "Patient chart". Back and the visit status are one small line ("Home · Open visit · today · In queue"). No previous visit with this doctor: a small "New patient" tag by the name.
+2. **Visit checks shown once.** The banner has one quiet line: mode, callback, location once confirmed, and "N checks before finalize" (a link that opens the first missing check). The checklist itself lives only by Finalize ("To finalize:" plus an amber tag per missing item; each tag opens its form). Done items are not pills; once all are done the footer says "Visit checks complete" with Details. Finalize stays `aria-disabled` until every check is done, and pressing it opens the first missing check (unchanged gate).
+3. **Today** is the reason as the headline, then one line: the patient's own words from booking when captured (`words` on the queue row; none in the demo data yet), otherwise the intake summary. The empty "Reason" row is gone (it was showing its own label as the value). The intake red flag row is unchanged.
+4. **Needs attention** is hidden when empty (was "Nothing requiring attention"). One card per result: the value that set the tier is the headline, the same panel's other out-of-range values are one line in that card ("Also out of range: Creatinine 104 µmol/L ↑ · eGFR 54 mL/min ↓ · Urea 9.1 mmol/L ↑"), and there is one action. Other same-day unresolved items stay grouped under a critical one as "Related", each with its own action. Critical red, To do amber, words and symbols: unchanged. Every row is the same full-width grid, so stages and actions line up.
+5. **Each fact once.** "From the chart → Investigations" leaves out today's values that are in Needs attention and shows one pointer ("Renal function panel, today · see Needs attention"). "Since you last saw" leaves out results already in Needs attention and items already under Pending; for the demo patient it also drops the consults, lipid panel and home BP shown under Relevant. The section is hidden when nothing is left or there is no previous visit.
+6. **Less micro text.** No "Each line opens its source" caption; the chevron on each source line is always visible instead. The medications source line ("Simple Care record · last renewed … · not checked against PharmaNet") sits behind one small info button per section (click or keyboard, not hover only).
+7. **The note leads the right column.** Header: Today's note, draft status, a small "Scribe" toggle and "Save draft". The scribe panel appears only once the scribe is in use (consent, live, review). The AI suggestion is a slim banner above the note with the same label ("AI suggestion · not in your note until you accept"), its source, and Accept and Reject; undecided AI text still triggers the warning at sign-off and is never filed. One compact toolbar sits directly above the note: Insert (one small menu: follow-up template, normal exam, reading from patient, diagnosis), then Prescribe, Order, Refer, Task, Message. The note opens empty with a placeholder (it used to open with "Patient presents for …"). The note column is 500 px.
+8. **Footer:** the checklist, the one billing line (T-023, unchanged logic; its demo marker is an icon with its words on hover and for screen readers), then one full-width primary "Sign off & finalize visit". The column now ends above the floating MOA chat at any scroll position, so nothing is under it.
+9. **No-show state.** A row with status "missed" (Doctor to Callback) or "noshow" shows one "No-show" banner at the top of the context: what is known (no answer or marked, the call window, the queue status, and calls made from this chart today), "Call again" (primary; calls go outward only) and "Mark no-show" (sets the queue status). The chart context stays below. Hidden while in this state: the AI suggestion, scribe, toolbar, checklist, Finalize, the banner's own Call button (one primary). The note stays for an optional attempt note. A no-show shows the existing billing placeholder ("No-show billing: not decided", Needs Daniel). "Call again" brings the full visit back, with a one-line reminder and "Mark no-show".
+10. **Hierarchy.** One primary per area (Call in the banner, Finalize in the note column, Call again in the no-show banner, the critical result's Review keeps its outline). Other secondary actions are tonal (grey fill, no stroke) or text links. Tighter spacing; nothing under 14 px.
+
+**Also fixed:** `csFocus` was called by Show details, Show what they wrote, +N more and closing a check, but was never defined, so those controls threw.
+
+**Deviations to confirm (Needs Ani)**
+- Toolbar, header and footer text buttons are 36 px tall, not 44 px, because the lead asked for a compact toolbar. Hit areas are still 36 px or more.
+- The no-show banner's Mark no-show uses the flag icon (the Mage set in the portal has no "x" icon).
+- The finalize helper line under the button ("Your claim goes to Claims for sign-off …", T-023) is kept, at two lines at most.
+
+**Not changed, and why**
+- Andrey's ALT 88 and AST 65 (above range today) are not in Needs attention. That is the data and the existing rules, not a bug: their flags are `high` (above the reference range), not LifeLabs `alert` or `crit`, and the item has no `abnormal` mark, so `labTier` and `resultIsAbnormal` return nothing. They now show under "From the chart → Investigations" and as "New · Liver function" in Since you last saw. Whether above-range results like these are To do (Daniel, 30 Sep: a yellow result is one "the doctor has to look at and clear") is **Needs Daniel**.
+- Sign-off for the demo patient still stops first at the suggested problem-list updates (existing v2 gate).

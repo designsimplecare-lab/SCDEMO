@@ -11794,6 +11794,9 @@ function csPref(r){ return (r && (r.pref || csBase(r.name).split(' ')[0])) || 't
 function csShort(d){ return String(d || '').replace(/, \d{4}$/, ''); }
 function csNow(){ return new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
 function csSay(msg){ if(typeof toast === 'function') toast(msg); }
+/* csFocus was called (Show details, Show what they wrote, +N more, closing a check) but never defined, so those
+   controls threw. Found during the 5 Oct declutter; it moves focus to the re-rendered control. */
+function csFocus(sel){ var e = document.querySelector(sel); if(e && e.focus) e.focus({preventScroll:true}); }
 function csOnChart(){ var s = document.getElementById('screen-patientchart'); return !!(s && s.classList.contains('active')); }
 
 /* ---------- this-visit state, per patient ----------
@@ -13643,6 +13646,6 @@ t23SyncQueue();
 t23RenderDigest();
 /* T23-PART-E */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-05 17:05</div>
+  <div class="build-stamp">v2 · build 2026-10-05 19:58</div>
 </body>
 </html>
