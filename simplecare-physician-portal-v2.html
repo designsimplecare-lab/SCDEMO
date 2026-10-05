@@ -4903,6 +4903,47 @@
   #screen-patientchart #pcv-c .cs-work,#screen-patientchart #pcv-c.cs-fc-open .cs-work{grid-template-columns:minmax(0,1fr) 500px;}
   #screen-patientchart #pcv-c .cs-acts.cs-tbar{margin:0 -8px 8px;}
   #screen-patientchart #pcv-c .cs-tbar .cs-tb{padding:0 6px;font-weight:500;}
+  /* ---- no-show state ---- */
+  #screen-patientchart #pcv-c .cs-ns{margin:0 0 14px;}
+  #screen-patientchart #pcv-c .cs-ns[hidden]{display:none;}
+  #screen-patientchart #pcv-c .cs-ns-box{display:flex;gap:14px;align-items:flex-start;padding:16px 20px;border-radius:16px;background:var(--panel);box-shadow:var(--shadow-card);}
+  #screen-patientchart #pcv-c .cs-ns-box > .ic,#screen-patientchart #pcv-c .cs-ns-box > .ic svg{width:22px;height:22px;margin-top:2px;color:var(--ink-soft);flex:none;}
+  #screen-patientchart #pcv-c .cs-ns-box .cs-h3{margin:0 0 4px;}
+  #screen-patientchart #pcv-c .cs-ns-box p{margin:0;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-ns-box .cs-cap{font-size:14px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-ns-acts{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;}
+  #screen-patientchart #pcv-c .cs-ns-acts .cs-done{display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:500;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-ns-acts .cs-done .ic,#screen-patientchart #pcv-c .cs-ns-acts .cs-done svg{width:18px;height:18px;color:var(--good);}
+  #screen-patientchart #pcv-c .cs-ns-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0;padding:10px 16px;border-radius:12px;background:var(--wash);font-size:14px;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-ns-line > .ic,#screen-patientchart #pcv-c .cs-ns-line > .ic svg{width:16px;height:16px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-ns-on :is(#cs-ai,#cs-acts,#sc-block,#cs-scribe-btn,#vc-finrow,#t23-finhelp,#cs-finwhy,#t23-billrow,#vc-finwarn){display:none !important;}
+  #screen-patientchart #pcv-c.cs-ns-on .cs-note .vc-note{min-height:140px;}
+  #screen-patientchart #pcv-c.cs-ns-on .cs-foot:not(:has(#cs-ns-bill:not([hidden]))){display:none;}
+  #screen-patientchart #pcv-c .cs-ns-bill{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0;font-size:14px;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-ns-bill[hidden]{display:none;}
+  #screen-patientchart #pcv-c .cs-ns-bill > .ic,#screen-patientchart #pcv-c .cs-ns-bill > .ic svg{width:18px;height:18px;color:var(--ink-faint);}
+  #screen-patientchart #pcv-c .cs-ns-bill .t23-ns{display:inline-flex;align-items:center;height:32px;padding:0 12px;border:1px dashed var(--line-strong);border-radius:999px;color:var(--ink-faint);font-size:14px;white-space:nowrap;}
+  /* ---- hierarchy: one primary per area; secondary actions are tonal (no stroke) or text ---- */
+  #screen-patientchart #pcv-c .btn.cs-ton,#screen-patientchart #pcv-c #cs-fc-btn,#screen-patientchart #pcv-c .cs-ai-b .btn,
+  #screen-patientchart #pcv-c #vc-alerts .vca-row:not(.cs-crit) .cs-side .btn{border-color:transparent;background:var(--wash);box-shadow:none;}
+  #screen-patientchart #pcv-c .cs-ai-b .btn{background:var(--panel);}
+  #screen-patientchart #pcv-c .cs-context{padding:18px 22px;}
+  #screen-patientchart #pcv-c .cs-sec + .cs-sec{margin-top:16px;padding-top:16px;}
+  #screen-patientchart #pcv-c #slv{margin-top:16px;padding-top:16px;}
+  #screen-patientchart #pcv-c .cs-group .vca-row{padding:14px 18px;}
+  #screen-patientchart #pcv-c .cs-group .vca-row.cs-rel{padding-left:58px;}
+  #screen-patientchart #pcv-c .cs-relh{padding-left:58px;}
+  #screen-patientchart #pcv-c #vc-alerts .cs-h3{font-size:16px;margin:0 0 8px 2px;}
+  #screen-patientchart #pcv-c .cs-h3{font-size:16px;}
+  #screen-patientchart #pcv-c .cs-relkv{row-gap:10px;}
+  #screen-patientchart #pcv-c .cs-banner{margin-bottom:12px;}
+  /* Ani, 5 Oct (live preview): the critical row picked up the condensed line's ".cs-crit{display:inline-flex}" and shrank
+     to its content, so its stage and action sat left of the related row's. Every Needs attention row is the same full-width grid. */
+  #screen-patientchart #pcv-c #vc-alerts .vca-row.cs-crit{display:grid;width:auto;gap:14px;align-items:start;}
+  #screen-patientchart #pcv-c #vc-alerts .vca-row{width:auto;}
+  #screen-patientchart #pcv-c .cs-also > .ic{display:none;}
+  /* one primary per area: in the no-show state "Call again" is the call action, so the banner's Call steps back */
+  #screen-patientchart #pcv-c.cs-ns-on .cs-snap .vc-acts > .btn.dark{display:none;}
 </style>
 </head>
 <body>
@@ -5343,6 +5384,8 @@
         <div class="cs-work" id="cs-work">
           <!-- context: what matters now, what changed, what needs action -->
           <div class="cs-ctx" id="cs-ctx">
+            <!-- Ani, 5 Oct (chart declutter): a missed call or no-show gets a simple state, not the full visit workflow -->
+            <section class="cs-ns" id="cs-ns" aria-labelledby="cs-ns-h" hidden></section>
             <div class="recall" id="recall"></div>
             <!-- v2.5 §3 Needs attention: one place, directly under the banner. Doctor review 25 Sep, ask 1:
                  the unsigned critical result for this patient is on the chart, in the inbox's language. -->
@@ -5476,6 +5519,7 @@
             <div class="cs-finwhy" id="cs-finwhy" hidden></div>
             <!-- T-023 (spec part 5): one billing line above Finalize; the doctor codes while the visit is fresh (N1, proposal) -->
             <div class="t23-billrow" id="t23-billrow" hidden></div>
+            <p class="cs-ns-bill" id="cs-ns-bill" hidden></p>
             <div class="vc-finrow" id="vc-finrow">
               <!-- Daniel, 26 Sep: "I 'sign off' on the chart ... It means that i've finalized the visit." -->
               <button class="btn dark" id="vc-finalize" onclick="finalizeVisit()"><span class="ic" data-pdic="complete"></span>Sign off &amp; finalize visit</button>
@@ -12004,7 +12048,7 @@ function csNARow(x, related, also){
     : (x.abn && x.ecg ? csEsc(it.panel) + ' &middot; ' : (x.abn ? '' : csEsc(it.panel) + ' &middot; ')) + csEsc(it.lab) + ' &middot; received ' + csEsc(it.received) + ' &middot; Dr. D. Pannozzo';
   /* Ani, 5 Oct (declutter): the rest of the same panel is one compact line inside its card, not a card each
      with its own "Open result" (Behdis had 3 of them). Still tier Info: word, symbol, value, direction. */
-  var alsoH = (also && also.length) ? '<p class="cs-also">' + csIc('cardinfo') + '<span><span class="cs-k">Info &middot; also out of range in this panel:</span> ' + also.map(function(a){
+  var alsoH = (also && also.length) ? '<p class="cs-also">' + csIc('cardinfo') + '<span><span class="vh">Info: </span><span class="cs-k">Also out of range:</span> ' + also.map(function(a){
       var at = a.test, up = (at.f || '').indexOf('high') > -1;
       return '<span class="cs-also-v">' + at.n + ' <b>' + at.v + ' ' + (at.u || '') + '</b><span class="ic vca-dir" role="img" aria-label="' + (up ? 'above range' : 'below range') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span></span>';
     }).join('<span class="cs-dot" aria-hidden="true">&middot;</span>') + '</span></p>' : '';
@@ -12538,8 +12582,62 @@ rvBack = function(){ csRvBack0(); if(csOnChart() && PC_CURRENT) csRefresh(); };
 var csRvSetReturn0 = rvSetReturn;
 rvSetReturn = function(){ csRvSetReturn0(); var l = document.getElementById('rv-backlbl'); if(l && RV_RETURN === 'patientchart') l.textContent = 'Back to the chart'; };
 
+/* ================= no-show state (Ani, 5 Oct) =================
+   A missed call ("Doctor to Callback") or a no-show shows one clear banner with what is known about the attempt,
+   and two actions: Call again (the doctor phones out; calls go outward only) and Mark no-show. The chart context
+   stays below. The note toolbar, AI suggestion, scribe, visit checks and Finalize are hidden: they do not apply
+   until the patient is reached. Calling again brings the normal visit back. Billing keeps the existing no-show
+   placeholder ("not decided", Needs Daniel). Nothing here invents a time or a count the data does not hold. */
+function csRenderNoShow(name){
+  var el = document.getElementById('cs-ns'), root = document.getElementById('pcv-c'), bill = document.getElementById('cs-ns-bill');
+  if(!el || !root) return;
+  var r = csRow(), on = csNoShow(name), c = PC_CALL[name];
+  var resumed = !!(r && !r.signed && (r.status === 'missed' || r.status === 'noshow') && CS.nsResumed[name]);
+  root.classList.toggle('cs-ns-on', on);
+  var n = document.getElementById('vc-note-input');
+  if(n && !n.readOnly) n.placeholder = on ? 'Note the attempt (optional).' : 'Start the note here. Insert adds a template, an exam, a reading or a diagnosis.';
+  if(bill){
+    bill.hidden = !(on && r.status === 'noshow');
+    bill.innerHTML = bill.hidden ? '' : csIc('claims') + '<span>Billing</span><span class="cs-dot" aria-hidden="true">&middot;</span><span class="t23-ns" title="Whether a no-show is billed, and how, isn&rsquo;t decided yet (Needs Daniel)">No-show billing: not decided</span>';
+    paintPd(bill);
+  }
+  if(!on && !resumed){ el.hidden = true; el.innerHTML = ''; return; }
+  var win = (typeof WIN_TEXT !== 'undefined' && WIN_TEXT[r.win]) || r.win;
+  var tries = c && c.calls ? 'You called ' + (c.calls === 1 ? 'once' : c.calls + ' times') + ' from this chart today.' : '';
+  if(resumed){
+    el.innerHTML = '<h3 class="vh" id="cs-ns-h">Calling again</h3><p class="cs-ns-line">' + csIc('phone') + '<span>Calling again after ' + (r.status === 'noshow' ? 'a no-show' : 'no answer') + '.' + (tries ? ' ' + tries : '') + '</span>' +
+      (r.status === 'noshow' ? '' : '<button type="button" class="cs-link" onclick="csNsMark()">Mark no-show</button>') + '</p>';
+  } else {
+    var marked = r.status === 'noshow';
+    el.innerHTML = '<div class="cs-ns-box">' + csIc('phone') + '<div class="cs-grow"><h3 class="cs-h3" id="cs-ns-h">No-show</h3>' +
+      '<p>' + (marked ? 'Marked as a no-show.' : 'No answer.') + ' Call window ' + csEsc(win) + '.' + (tries ? ' ' + tries : '') + '</p>' +
+      '<p class="cs-cap">Queue status: ' + csEsc(STATUS_LABEL[r.status] || r.status) + '</p>' +
+      '<div class="cs-ns-acts"><button type="button" class="btn dark" onclick="csNsCall()"><span class="ic" data-pdic="phone"></span>Call again</button>' +
+      (marked ? '<span class="cs-done">' + csIc('complete') + 'Marked no-show</span>'
+              : '<button type="button" class="btn cs-ton" onclick="csNsMark()"><span class="ic" data-pdic="flag"></span>Mark no-show</button>') + '</div></div></div>';
+  }
+  el.hidden = false; paintPd(el);
+}
+function csNsCall(){
+  var n = PC_CURRENT; if(!n) return;
+  CS.nsResumed[n] = true;
+  pcStartCall(); csRefresh();
+  var t = document.getElementById('vc-note-input'); if(t) t.focus({preventScroll:true});
+}
+function csNsMark(){
+  var n = PC_CURRENT, r = csRow(); if(!n || !r) return;
+  if(PC_ON_CALL) pcEndCall();
+  r.status = 'noshow'; CS.nsResumed[n] = false;
+  document.querySelectorAll('[data-f="visitline"]').forEach(function(e){ e.textContent = 'Open visit \u00b7 today \u00b7 ' + (STATUS_LABEL.noshow || 'No-show'); });
+  if(typeof t23SyncQueue === 'function') t23SyncQueue(); else if(typeof renderQueue === 'function') renderQueue();
+  csRefresh();
+  csSay('Marked as a no-show. Billing for no-shows is not decided yet.');
+  var b = document.querySelector('#cs-ns .btn.dark'); if(b) b.focus();
+}
+
 function csRefresh(){
   var n = PC_CURRENT; if(!n) return;
+  csRenderNoShow(n);
   csRenderSnap(n); csRenderStrip(n); csRenderNotices(n); renderChartAlerts(n); csRenderToday(n); csRenderRel(n); renderSinceLast(n); csRenderAI(); csFinState();
   csMeasure();
 }
