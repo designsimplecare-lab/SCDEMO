@@ -9131,8 +9131,10 @@ function aiReply(text){
       } else { aiAppend('Which patient would you like me to summarize?','bot'); }
     }
     else if(/(claim|unsubmit|billing|dx|diagnos|missing)/.test(t)){
-      aiAppend('<b>7 claims</b> are missing a diagnosis code and can&#39;t be submitted yet. Everything else for today is clean.','bot');
-      aiActionBtn('&#36;','Resolve claims','7 missing Dx',function(){aiDo(function(){showScreen('claims');});});
+      /* T-023: the Assistant reads the same counts as the billing digest, and it never signs off */
+      var t23n = (typeof t23Ready === 'function') ? [t23Ready().length, t23Decide().length] : [0, 0];
+      aiAppend('<b>' + t23n[0] + ' clean claims</b> are ready for your sign-off and <b>' + t23n[1] + '</b> need your decision. Signing off happens in Claims.','bot');
+      aiActionBtn('&#36;','Open Claims', t23n[1] + ' to decide',function(){aiDo(function(){showScreen('claims');});});
     }
     else if(/(schedule|calendar|next week|tomorrow|booked)/.test(t)){
       aiAppend('Next week&#39;s schedule is unlocked and editable, and you have 3 patients booked for tomorrow.','bot');
@@ -13281,7 +13283,42 @@ function t23CardRecheck(name){
 }
 billingAct = function(){ closeBilling(); };   /* the old one-tap path is gone (spec part 1) */
 t23SyncQueue();
-/* T23-PART-D */
+
+/* ================= Daily billing digest (spec 8a): one card a day, never one reminder per claim (CNF-02) ================= */
+/* No patient names on the card (APP-03). Placement on Home is OQ-90, Needs Daniel. */
+function t23DigestLines(){
+  var out = [];
+  var risk = CLAIMS.filter(function(c){ return ['submit','review','rejected'].indexOf(c.st) > -1 && t23Left(c).day >= 75; });
+  if(risk.length){ var m = Math.min.apply(null, risk.map(function(c){ return t23Left(c).left; }));
+    out.push(['alert', risk.length + ' claim' + (risk.length === 1 ? ' has ' : 's have ') + m + ' days left to submit', 't23-decide', 'warn']); }
+  var rd = t23Ready(); if(rd.length) out.push(['complete', rd.length + ' clean claim' + (rd.length === 1 ? '' : 's') + ' ready to sign off · ' + t23Money(rd.reduce(function(t, c){ return t + t23Amt(c); }, 0)) + ' expected' + T23_DEMO, 't23-ready']);
+  var dc = t23Decide(); if(dc.length) out.push(['edit', dc.length + ' claim' + (dc.length === 1 ? ' needs' : 's need') + ' your decision', 't23-decide']);
+  var qs = []; CLAIMS.forEach(function(c){ if(c.st === 'review') c.flags.forEach(function(f){ if(f.k === 'q' && !f.done) qs.push(f); }); });
+  if(qs.length) out.push(['chat', qs.length + ' question' + (qs.length === 1 ? '' : 's') + ' from Dolly · answer by ' + qs[0].due, 't23-decide']);
+  var rj = CLAIMS.filter(function(c){ return c.st === 'rejected' || c.st === 'dispute'; });
+  if(rj.length) out.push(['reopen', rj.length + ' claim' + (rj.length === 1 ? '' : 's') + ' rejected by MSP', 't23-rej']);
+  return out.slice(0, 5);
+}
+function t23RenderDigest(){
+  var el = document.getElementById('t23-digest'); if(!el) return;
+  var L = t23DigestLines();
+  var h = '<p class="box-title">Billing today</p>';
+  h += L.length ? L.map(function(l){ return '<button type="button" class="t23-dl" onclick="t23GoSec(\'' + l[2] + '\')">' + t23Ic(l[0], l[3] || '') + '<span class="t23-dt">' + l[1] + '</span></button>'; }).join('')
+               : '<p class="pc-empty">Billing is up to date.</p>';
+  if(t23PA()) h += '<p class="pc-empty">Dr. Pannozzo signs these off.</p>';
+  h += '<div class="t23-dfoot"><button type="button" class="btn dark" onclick="CL_ON=\'Needs attention\';showScreen(\'claims\')">' + t23Ic('claims') + 'Open Claims</button>' +
+       '<span class="t23-cap">Updated today, 7:00 AM</span>' + t23Ph('Demo time · Needs Daniel') + '</div>';
+  el.innerHTML = h; el.hidden = false; paintPd(el);
+}
+function t23GoSec(sec){
+  CL_ON = 'Needs attention'; showScreen('claims');
+  setTimeout(function(){ var e = document.getElementById(sec); if(e) e.scrollIntoView({block:'start'}); }, 60);
+}
+/* demo switch for the question's overdue state (spec 8b) */
+function t23QOverdue(on){ var c = t23C('c6'); if(c && c.flags[0]){ c.flags[0].overdue = on; t23Refresh(); } }
+t23SyncQueue();
+t23RenderDigest();
+/* T23-PART-E */
 </script>
   <div class="build-stamp">v2 · build 2026-10-05 10:30</div>
 </body>
