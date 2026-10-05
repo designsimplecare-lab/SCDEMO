@@ -4676,13 +4676,14 @@
   #screen-claims .box-title,#t23-digest .box-title{text-transform:none;letter-spacing:0;font-size:16px;font-weight:700;color:var(--ink);margin-bottom:6px;}
   #screen-claims .t23-sum{font-size:14px;color:var(--ink-soft);margin:0 0 6px;display:flex;align-items:center;flex-wrap:wrap;}
   #screen-claims .cl-row{gap:14px;align-items:center;}
+  #screen-claims{padding-bottom:96px;}
   #screen-claims .cl-who span,#screen-claims .cl-fee span{font-size:14px;color:var(--ink-soft);}
   #screen-claims .cl-who .so-stamp{display:flex;font-size:14px;margin-top:2px;}
   #screen-claims .cl-fee b{font-variant-numeric:normal;}
   #screen-claims .cl-amt{width:110px;}
   #screen-claims .cl-amt span{display:block;font-size:14px;font-weight:400;color:var(--ink-soft);}
   #screen-claims .t23-time{width:64px;flex-shrink:0;font-size:14px;color:var(--ink-soft);}
-  #screen-claims .t23-payer{flex-shrink:0;font-size:14px;color:var(--ink-soft);}
+  #screen-claims .t23-payer{display:block;font-size:14px;color:var(--ink-soft);}
   #screen-claims .t23-inc{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--ink-soft);flex-shrink:0;cursor:pointer;}
   #screen-claims .t23-inc input{width:18px;height:18px;accent-color:var(--accent);}
   #screen-claims .t23-row.t23-hl,#screen-claims .t23-card.t23-hl{outline:2px solid var(--accent);outline-offset:4px;border-radius:12px;}
@@ -12605,10 +12606,9 @@ function t23Row(c, opts){
     '<div class="cl-who"><b>' + t23E(c.who) + '</b><span>' + t23F(c.date) + ' · ' + winLabel(c.win) + '</span>' +
       (opts.pill && t23SubLine(c) ? '<span class="t23-sub">' + t23SubLine(c) + '</span>' : '') +
       (c.signed && opts.pill ? soStamp(c.signed) : '') + '</div>' +
-    '<div class="cl-fee">' + t23FeeHtml(c) + '</div>' +
+    '<div class="cl-fee">' + t23FeeHtml(c) + (c.payer === 'recip' ? '<span class="t23-payer">Reciprocal · ' + c.prov + '</span>' : '') + '</div>' +
     (opts.tick ? '<div class="t23-time">' + (c.mins ? c.mins + ' min' : '') + '</div>' : '') +
     t23AmtHtml(c) +
-    (c.payer === 'recip' ? '<span class="t23-payer">Reciprocal · ' + c.prov + '</span>' : '') +
     (opts.pill ? t23DaysChip(c) + t23Pill(c, false) : '') +
     '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button>' +
   '</div>';
@@ -13320,6 +13320,6 @@ t23SyncQueue();
 t23RenderDigest();
 /* T23-PART-E */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-05 10:30</div>
+  <div class="build-stamp">v2 · build 2026-10-05 12:18</div>
 </body>
 </html>

@@ -373,6 +373,7 @@
 
 <script>
 var ICONS = {
+"chat": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\"><path d=\"M12.686 18.222q.603.117 1.218.123a7.3 7.3 0 0 0 2.992-.64l3.095.455a1.03 1.03 0 0 0 1.032-1.135l-.372-3.126a7.2 7.2 0 0 0 .599-2.9a7.304 7.304 0 0 0-7.336-7.284a7.295 7.295 0 0 0-7.109 5.654\"/><path d=\"M13.904 14.745a5.66 5.66 0 0 1-1.218 3.477a5.61 5.61 0 0 1-4.375 2.063a5.7 5.7 0 0 1-2.29-.495l-2.311.413a.754.754 0 0 1-.826-.877l.32-2.363a5.5 5.5 0 0 1-.454-2.219A5.58 5.58 0 0 1 6.805 9.37a5.2 5.2 0 0 1 1.517-.217a5.59 5.59 0 0 1 5.582 5.593\"/></g></svg>",
 "today": "<svg viewBox=\"0 0 14 14\" fill=\"none\" class=\"ic\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0.5 7L7 0.5L13.5 7\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M2.5 8.5V13.5H11.5V8.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
 "inbox": "<svg viewBox=\"0 0 14 14\" fill=\"none\" class=\"ic\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M13.5 9.54004C13.5 9.27482 13.3946 9.02047 13.2071 8.83293C13.0196 8.6454 12.7652 8.54004 12.5 8.54004H9.5V9.54004H4.5V8.54004H1.5C1.23478 8.54004 0.98043 8.6454 0.792893 8.83293C0.605357 9.02047 0.5 9.27482 0.5 9.54004V12.54C0.5 12.8053 0.605357 13.0596 0.792893 13.2471C0.98043 13.4347 1.23478 13.54 1.5 13.54H12.5C12.7652 13.54 13.0196 13.4347 13.2071 13.2471C13.3946 13.0596 13.5 12.8053 13.5 12.54V9.54004Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M1.5 5.54004H12.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M1.5 2.54004H12.5\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
 "encounterlog": "<svg viewBox=\"0 0 14 14\" fill=\"none\" class=\"ic\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M3.54999 0.5H1.04999C0.773845 0.5 0.549988 0.723858 0.549988 1V13C0.549988 13.2761 0.773845 13.5 1.04999 13.5H3.54999C3.82613 13.5 4.04999 13.2761 4.04999 13V1C4.04999 0.723858 3.82613 0.5 3.54999 0.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M7.04999 2.5H4.54999C4.27385 2.5 4.04999 2.72386 4.04999 3V13C4.04999 13.2761 4.27385 13.5 4.54999 13.5H7.04999C7.32613 13.5 7.54999 13.2761 7.54999 13V3C7.54999 2.72386 7.32613 2.5 7.04999 2.5Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M10.3965 2.22633L8.45636 2.71187C8.18847 2.77891 8.02566 3.05041 8.0927 3.31829L10.5204 13.0191C10.5874 13.287 10.8589 13.4498 11.1268 13.3828L13.067 12.8973C13.3349 12.8302 13.4977 12.5587 13.4306 12.2908L11.003 2.58999C10.9359 2.32211 10.6644 2.15929 10.3965 2.22633Z\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M0.549988 10H4.04999\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M4.04999 9H7.54999\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M10.05 11L12.93 10.28\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
@@ -626,7 +627,7 @@ function bRenderItem(){
     '<label for="b-name">Legal name</label><input id="b-name" class="t23m-in" value="' + bE(it.who) + '" oninput="bDirty()"' + dis + '>' +
     '<label for="b-dob">Date of birth</label><span><input id="b-dob" class="t23m-in" style="max-width:200px" placeholder="•••• •• ••" oninput="bDirty()"' + dis + '>' + BDEMO + '</span>' +
     '<label for="b-sex">Sex</label><select id="b-sex" class="t23m-in" style="max-width:200px" onchange="bDirty()"' + dis + '><option>As on file</option><option>Female</option><option>Male</option><option>X</option></select>' +
-    '<label for="b-note">Note to MSP</label><textarea id="b-note" class="t23m-in" placeholder="The note record text" oninput="bDirty()"' + dis + '></textarea>' +
+    '<label for="b-note">Note to MSP</label><textarea id="b-note" class="t23m-in" placeholder="Optional: what you corrected, for MSP" oninput="bDirty()"' + dis + '></textarea>' +
     '</div></div>';
   /* 4. Coding: read-only for the MOA (ROLE-R7, CTL-03) */
   var ro = function(k, v){ return '<label>' + k + '</label><span class="t23m-ro">' + v + '</span>'; };
@@ -720,6 +721,6 @@ renderTasks(); renderBilling();
 function dswOpen(){ document.getElementById('dsw').classList.add('open'); document.getElementById('dsw-fab').style.display='none'; }
 function dswClose(){ document.getElementById('dsw').classList.remove('open'); document.getElementById('dsw-fab').style.display='inline-flex'; }
 </script>
-  <div class="build-stamp">build 2026-10-05 11:15</div>
+  <div class="build-stamp">build 2026-10-05 12:18</div>
 </body>
 </html>
