@@ -4784,6 +4784,18 @@
   #t23-digest .t23-dl .ic.warn,#t23-digest .t23-dl .ic.warn svg{color:var(--tag-warn-ic);}
   #t23-digest .t23-dfoot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px;}
   #t23-digest .t23-cap{font-size:14px;color:var(--ink-faint);}
+  /* Ani, 5 Oct: the card can be folded to one line; it remembers per browser */
+  #t23-digest .t23-dhead{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  #t23-digest .t23-dhead .box-title{margin-bottom:0;}
+  #t23-digest .t23-fold{display:inline-flex;align-items:center;gap:6px;background:none;border:none;font:inherit;font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;min-height:44px;padding:0 4px;border-radius:8px;}
+  #t23-digest .t23-fold:hover{color:var(--ink);}
+  #t23-digest .t23-fold .ic,#t23-digest .t23-fold svg{width:18px;height:18px;transition:transform .15s;}
+  #t23-digest .t23-fold[aria-expanded="true"] .ic{transform:rotate(180deg);}
+  #t23-digest .t23-dhead + .t23-dl{border-top:none;}
+  #t23-digest.t23-folded{padding-top:6px;padding-bottom:6px;}
+  #t23-digest .t23-mini{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14.5px;color:var(--ink);background:none;border:none;font-family:inherit;cursor:pointer;text-align:left;padding:0;min-height:44px;}
+  #t23-digest .t23-mini .sep{color:var(--ink-faint);}
+  #t23-digest .t23-mini .ic,#t23-digest .t23-mini svg{width:18px;height:18px;flex-shrink:0;color:var(--tag-warn-ic);}
 </style>
 </head>
 <body>
@@ -13302,13 +13314,32 @@ function t23DigestLines(){
 function t23RenderDigest(){
   var el = document.getElementById('t23-digest'); if(!el) return;
   var L = t23DigestLines();
-  var h = '<p class="box-title">Billing today</p>';
+  var folded = t23DigestFolded();
+  el.classList.toggle('t23-folded', folded);
+  var fold = '<button type="button" class="t23-fold" aria-expanded="' + !folded + '" aria-controls="t23-digest" onclick="t23FoldDigest(' + !folded + ')">' + (folded ? 'Show' : 'Hide') + t23Ic('chevdown') + '</button>';
+  if(folded){
+    /* one line: the deadline stays visible, so folding never hides a claim about to expire */
+    var bits = [], risk = L.filter(function(l){ return l[3] === 'warn'; })[0];
+    var rd = t23Ready().length, dc = t23Decide().length;
+    if(rd) bits.push(rd + ' ready'); if(dc) bits.push(dc + ' to decide');
+    var mini = (risk ? t23Ic('alert', 'warn') + '<span>' + risk[1] + '</span>' + (bits.length ? '<span class="sep">·</span>' : '') : '') + '<span>' + (bits.length ? bits.join(' · ') : (risk ? '' : 'Billing is up to date')) + '</span>';
+    el.innerHTML = '<div class="t23-dhead"><button type="button" class="t23-mini" onclick="t23FoldDigest(false)"><b>Billing today</b><span class="sep">·</span>' + mini + '</button>' + fold + '</div>';
+    el.hidden = false; paintPd(el); return;
+  }
+  var h = '<div class="t23-dhead"><p class="box-title">Billing today</p>' + fold + '</div>';
   h += L.length ? L.map(function(l){ return '<button type="button" class="t23-dl" onclick="t23GoSec(\'' + l[2] + '\')">' + t23Ic(l[0], l[3] || '') + '<span class="t23-dt">' + l[1] + '</span></button>'; }).join('')
                : '<p class="pc-empty">Billing is up to date.</p>';
   if(t23PA()) h += '<p class="pc-empty">Dr. Pannozzo signs these off.</p>';
   h += '<div class="t23-dfoot"><button type="button" class="btn dark" onclick="CL_ON=\'Needs attention\';showScreen(\'claims\')">' + t23Ic('claims') + 'Open Claims</button>' +
        '<span class="t23-cap">Updated today, 7:00 AM</span>' + t23Ph('Demo time · Needs Daniel') + '</div>';
   el.innerHTML = h; el.hidden = false; paintPd(el);
+}
+function t23DigestFolded(){ try { return localStorage.getItem('sc.t23.digestFolded') === '1'; } catch(e){ return !!window.T23_DIGEST_FOLDED; } }
+function t23FoldDigest(on){
+  window.T23_DIGEST_FOLDED = on;
+  try { localStorage.setItem('sc.t23.digestFolded', on ? '1' : '0'); } catch(e){}
+  t23RenderDigest();
+  var b = document.querySelector('#t23-digest .t23-fold'); if(b) b.focus();
 }
 function t23GoSec(sec){
   CL_ON = 'Needs attention'; showScreen('claims');
@@ -13320,6 +13351,6 @@ t23SyncQueue();
 t23RenderDigest();
 /* T23-PART-E */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-05 12:18</div>
+  <div class="build-stamp">v2 · build 2026-10-05 16:45</div>
 </body>
 </html>
