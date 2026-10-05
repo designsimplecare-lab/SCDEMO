@@ -4796,6 +4796,48 @@
   #t23-digest .t23-mini{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14.5px;color:var(--ink);background:none;border:none;font-family:inherit;cursor:pointer;text-align:left;padding:0;min-height:44px;}
   #t23-digest .t23-mini .sep{color:var(--ink-faint);}
   #t23-digest .t23-mini .ic,#t23-digest .t23-mini svg{width:18px;height:18px;flex-shrink:0;color:var(--tag-warn-ic);}
+
+  /* ================= Chart declutter (Ani, 5 Oct: "the patient chart is overwhelming, too much text and noise") =================
+     Same clinical content and gates; quieter presentation. Light mode only (Ani, 4 Oct). 14 px minimum. */
+  /* one name: the patient card. Back + visit status are one small line; the h1 is for screen readers */
+  #screen-patientchart .cs-crumb{display:flex;align-items:center;gap:8px;margin:-8px 0 10px;font-size:14px;color:var(--ink-soft);}
+  #screen-patientchart .cs-crumb .pc-back{height:36px;margin:0;padding:0 10px 0 6px;border:0;border-radius:8px;background:none;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  html body #screen-patientchart .cs-crumb button.pc-back:not(#_a):not(#_b):not(#_c):not(#_d):is(:hover,:focus-visible){background:var(--wash) !important;color:var(--ink) !important;border-color:transparent !important;}
+  html body #screen-patientchart .cs-crumb button.pc-back:not(#_a):not(#_b):not(#_c):not(#_d):is(:hover,:focus-visible) :is(span,svg,.ic){color:var(--ink) !important;}
+  #screen-patientchart .cs-crumb .pc-back .ic{width:16px;height:16px;color:var(--ink-soft);}
+  #screen-patientchart .cs-crumb .sub{margin:0;font-size:14px;color:var(--ink-soft);}
+  #screen-patientchart > h1.cs-h1{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0;}
+  #screen-patientchart #pcv-c .cs-nmrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  #screen-patientchart #pcv-c .cs-newpt{display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:8px;background:var(--tag-info);font-size:14px;font-weight:500;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-newpt[hidden]{display:none;}
+  /* the banner's visit line: one quiet line instead of six labelled columns and amber pills */
+  #screen-patientchart #pcv-c .cs-strip{display:block;padding:8px 20px;}
+  #screen-patientchart #pcv-c .cs-vline{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin:0;min-height:36px;font-size:14px;line-height:20px;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-vline > .ic,#screen-patientchart #pcv-c .cs-vline > .ic svg{width:16px;height:16px;color:var(--ink-faint);}
+  #screen-patientchart #pcv-c .cs-vline b{font-weight:600;}
+  #screen-patientchart #pcv-c .cs-vline .cs-done{font-weight:500;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-vline .cs-done .ic,#screen-patientchart #pcv-c .cs-vline .cs-done svg{width:16px;height:16px;}
+  /* text links: the quiet secondary action */
+  #screen-patientchart #pcv-c .cs-link{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 6px;margin:0 -6px;border:0;border-radius:8px;background:none;
+    font:inherit;font-size:14px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line-strong);cursor:pointer;}
+  #screen-patientchart #pcv-c .cs-link:hover{background:var(--wash);text-decoration-color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-link .ic,#screen-patientchart #pcv-c .cs-link svg{width:16px;height:16px;}
+  #screen-patientchart #pcv-c .cs-link.cs-chk .ic{color:var(--tag-warn-ic);}
+  /* the checklist, only by Finalize */
+  #screen-patientchart #pcv-c .cs-finwhy{display:block;position:relative;margin:0 0 10px;white-space:normal;}
+  #screen-patientchart #pcv-c .cs-finwhy[hidden]{display:none;}
+  #screen-patientchart #pcv-c .cs-ck-h{display:flex;align-items:center;gap:6px;margin:0 0 6px;font-size:14px;font-weight:600;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-ck-h .ic,#screen-patientchart #pcv-c .cs-ck-h svg{width:16px;height:16px;color:var(--tag-warn-ic);}
+  #screen-patientchart #pcv-c .cs-ck{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none;}
+  #screen-patientchart #pcv-c .cs-ck li{position:static;}
+  #screen-patientchart #pcv-c .cs-ck .cs-pop{top:auto;bottom:100%;left:0;margin:0 0 8px;}
+  #screen-patientchart #pcv-c .cs-ck-done{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin:6px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-ck-done > .ic,#screen-patientchart #pcv-c .cs-ck-done > .ic svg{width:16px;height:16px;color:var(--good);}
+  #screen-patientchart #pcv-c .cs-ck-det{display:flex;flex-wrap:wrap;gap:2px 8px;margin:4px 0 0;font-size:14px;line-height:20px;color:var(--ink);}
+  /* Today: headline, then one line */
+  #screen-patientchart #pcv-c .cs-reason{font-size:20px;line-height:28px;margin:0 0 6px;}
+  #screen-patientchart #pcv-c .cs-sum{margin:0 0 6px;font-size:15px;line-height:22px;color:var(--ink);max-width:var(--measure);}
+  #screen-patientchart #pcv-c .cs-flagline{margin:8px 0 0;}
 </style>
 </head>
 <body>
@@ -5046,9 +5088,11 @@
 
     <!-- ===================== PATIENT DETAIL (second layer of the queue) ===================== -->
     <div class="screen" id="screen-patientchart">
-      <button class="pc-back" onclick="showScreen('today')"><span class="ic" data-pcic="back"></span> Back to Home</button>
-      <h1 data-f="name">Patient</h1>
-      <p class="sub" data-f="visitline">Open visit &middot; today</p>
+      <!-- Ani, 5 Oct (chart declutter): "too much text and noise". One name on the screen (the patient card);
+           back and the visit status are one small line. The h1 stays for screen readers only. -->
+      <div class="cs-crumb"><button class="pc-back" onclick="showScreen('today')"><span class="ic" data-pcic="back"></span> Home</button><span aria-hidden="true">&middot;</span>
+      <p class="sub" data-f="visitline">Open visit &middot; today</p></div>
+      <h1 data-f="name" class="cs-h1">Patient</h1>
 
 
       <!-- ============ VERSION A ============ -->
@@ -5205,7 +5249,7 @@
           <div class="cs-snap">
             <span class="vc-av cs-photo" role="img" aria-label="Photo placeholder. The dated photo the patient supplies at intake shows here."><span class="ic" data-pdic="user"></span></span>
             <div class="cs-who">
-              <h2 class="vc-nm" data-f="name">--</h2>
+              <div class="cs-nmrow"><h2 class="vc-nm" data-f="name">--</h2><span class="cs-newpt" id="cs-newpt" hidden>New patient</span></div>
               <p class="vc-sub" id="cs-sub"></p>
             </div>
             <div class="cs-facts">
@@ -6141,7 +6185,8 @@ function syncTopTitle(){
     }
   } else {
     var t = scr.querySelector('h1');
-    el.textContent = t ? t.textContent.trim() : '';
+    /* Ani, 5 Oct (chart declutter): the patient's name shows once, on the patient card */
+    el.textContent = scr.id === 'screen-patientchart' ? 'Patient chart' : (t ? t.textContent.trim() : '');
     if(dt){ dt.style.display = 'none'; }
   }
 }
@@ -11619,7 +11664,7 @@ window.addEventListener('resize', function(){
    not rewritten, so call, Task MOA, prescribing, finalize and claim, the care plan and the scribe keep working.
    ============================================================ */
 var CS = {empty:false, allergy:{}, visit:{}, ai:{}, draft:{}, stripOpen:{}, pop:null, sinceOpen:{}, relOpen:{},
-          fcTab:null, fcReturn:null, ctxScroll:0, view:'chart', dropped:{}};
+          fcTab:null, fcReturn:null, ctxScroll:0, view:'chart', dropped:{}, nsResumed:{}, srcOpen:{}};
 try { CS.draft = JSON.parse(sessionStorage.getItem('sc-cs-draft') || '{}') || {}; } catch(e){ CS.draft = {}; }
 
 function csEsc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -11659,6 +11704,11 @@ function csMissing(name){
   return m;
 }
 function csPlace(name){ var v = csVisit(name); return v.outside ? v.placeOut : v.place; }
+/* a missed call or a no-show, before the doctor reaches the patient (Ani, 5 Oct: a simple no-show state) */
+function csNoShow(name){
+  var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0];
+  return !!(r && !r.signed && (r.status === 'missed' || r.status === 'noshow') && !CS.nsResumed[name]);
+}
 
 /* ================= patient snapshot ================= */
 function csRenderSnap(name){
@@ -11679,44 +11729,60 @@ function csRenderSnap(name){
       : a === 'named' ? csIc('alert') + '<span><span class="cs-k">Allergy</span> <b>Penicillin &mdash; anaphylaxis</b></span>'
       : '<span class="cs-tag warn">' + csIc('alert') + 'Allergies not recorded</span>';
   }
+  /* Ani, 5 Oct: "Since you last saw: No previous visit" is gone; a small tag by the name says it instead */
+  var np = document.getElementById('cs-newpt'); if(np) np.hidden = !!PT_LAST[name];
   var fd = document.getElementById('cs-fd');
   if(fd) fd.innerHTML = csIc('usercheck') + '<span><span class="cs-k">Family doctor</span> ' + (PT_LAST[name] ? '<b>Dr. D. Pannozzo</b>' : 'Not recorded') + '</span>';
   paintPd(document.getElementById('cs-banner'));
 }
 
-/* ================= this-visit strip ================= */
+/* ================= this-visit strip =================
+   Ani, 5 Oct (chart declutter): the checks were shown twice (four amber pills in the banner AND
+   "To finalize, complete" beside Finalize). Now the banner carries one quiet line (mode, callback, place,
+   and "N checks before finalize"), and the checklist itself lives only by Finalize (csRenderChecks).
+   Done items are not pills. Finalize still waits for every check (csFinState / finalizeVisit, unchanged). */
 function csRenderStrip(name){
   var host = document.getElementById('cs-strip'); if(!host) return;
-  var v = csVisit(name), done = csStripDone(name), r = csRow();
-  var signed = !!(r && r.signed);
-  var open = !done || CS.stripOpen[name] || CS.dropped[name];
-  var h = '<h3 id="cs-strip-h">This visit</h3>';
-  if(!open){
-    /* v2.5 §3: once complete it may collapse; location and callback stay in view */
-    h += '<div class="cs-compact"><span class="cs-done">' + csIc('complete') + (signed ? 'Complete &middot; signed off' : 'Complete') + '</span>' +
-      '<span class="cs-dot" aria-hidden="true">&middot;</span><span><span class="cs-k">Location</span> <b>' + csEsc(csPlace(name)) + '</b></span>' +
-      '<span class="cs-dot" aria-hidden="true">&middot;</span><span>' + v.mode + '</span>' +
-      '<span class="cs-dot" aria-hidden="true">&middot;</span><span><span class="cs-k">Callback</span> <b class="pc-mono">' + v.callback + '</b></span>' +
-      '<button type="button" class="vc-more cs-more" aria-expanded="false" onclick="CS.stripOpen[PC_CURRENT]=true;csRenderStrip(PC_CURRENT);csFocus(\'#cs-strip .cs-more\')">Show details</button></div>';
+  var v = csVisit(name), r = csRow(), miss = csMissing(name);
+  var signed = !!(r && r.signed), sep = '<span class="cs-dot" aria-hidden="true">&middot;</span>';
+  var h = '<h3 class="vh" id="cs-strip-h">This visit</h3><p class="cs-vline">' + csIc('phone') + '<span>' + v.mode + '</span>' + sep +
+    '<span><span class="cs-k">Callback</span> <b class="pc-mono">' + v.callback + '</b></span>' +
+    (v.location ? sep + '<span><span class="cs-k">Location</span> <b>' + csEsc(csPlace(name)) + '</b></span>' : '');
+  if(signed) h += sep + '<span class="cs-done">' + csIc('complete') + 'Signed off</span>';
+  else if(csNoShow(name)) h += '';
+  else if(miss.length) h += sep + '<button type="button" class="cs-link cs-chk" onclick="csGoStrip(\'' + miss[0][0] + '\')">' + csIc('alert') +
+    miss.length + (miss.length === 1 ? ' check' : ' checks') + ' before finalize</button>';
+  else h += sep + '<span class="cs-done">' + csIc('complete') + 'Checks complete</span>';
+  host.innerHTML = h + '</p>'; paintPd(host);
+  csRenderChecks(name);
+  csMeasure();
+}
+/* the full checklist, only by Finalize. Incomplete = an amber tag that is the button that completes it. */
+function csRenderChecks(name){
+  var el = document.getElementById('cs-finwhy'); if(!el) return;
+  var r = csRow(), v = csVisit(name), miss = csMissing(name);
+  if(!r || r.signed || csNoShow(name)){ el.hidden = true; el.innerHTML = ''; return; }
+  var all = [['loc','Location','Not confirmed','flag', v.location ? csPlace(name) : ''], ['id','ID verified','Not verified','usercheck', v.id],
+             ['con','Consent','Not recorded','cardok', v.consent], ['oth','Others present','Not asked','user', v.others ? (v.othersText || 'None, patient alone') : '']];
+  var todo = all.filter(function(x){ return !x[4]; }), done = all.filter(function(x){ return !!x[4]; });
+  var h;
+  if(todo.length){
+    h = '<p class="cs-ck-h">' + csIc('alert') + 'Before you finalize</p><ul class="cs-ck">' + todo.map(function(x){ return csTodo(x[3], x[1], x[2], x[0]); }).join('') + '</ul>' +
+      (done.length ? '<p class="cs-ck-done">' + csIc('complete') + '<span>Done: ' + done.map(function(x){ return x[1]; }).join(', ').replace(/, ([^,]*)$/, ' and $1') + '</span></p>' : '');
   } else {
-    var items = [];
-    items.push(v.location ? csLi('flag','Location', csEsc(csPlace(name))) : csTodo('flag','Location','Not confirmed','loc'));
-    items.push(v.id ? csLi('usercheck','ID verified', csEsc(v.id)) : csTodo('usercheck','ID verified','Not verified','id'));
-    items.push(v.consent ? csLi('cardok','Consent', csEsc(v.consent)) : csTodo('cardok','Consent','Not recorded','con'));
-    items.push(v.others ? csLi('user','Others present', csEsc(v.othersText || 'None, patient alone')) : csTodo('user','Others present','Not asked','oth'));
-    items.push(csLi('phone','Video or phone', v.mode));
-    items.push(csLi('patientview','Callback', '<span class="pc-mono">' + v.callback + '</span>'));
-    h += '<ul class="cs-items">' + items.join('') + '</ul>' +
-      (done ? '<button type="button" class="vc-more cs-more" aria-expanded="true" onclick="CS.stripOpen[PC_CURRENT]=false;csRenderStrip(PC_CURRENT);csFocus(\'#cs-strip .cs-more\')">Hide details</button>' : '');
+    var open = !!CS.stripOpen[name];
+    h = '<p class="cs-ck-done">' + csIc('complete') + '<span>Visit checks complete</span>' +
+      '<button type="button" class="cs-link" aria-expanded="' + open + '" onclick="CS.stripOpen[PC_CURRENT]=!CS.stripOpen[PC_CURRENT];csRenderChecks(PC_CURRENT);csFocus(\'#cs-finwhy .cs-link\')">' + (open ? 'Hide details' : 'Details') + '</button></p>' +
+      (open ? '<p class="cs-ck-det">' + done.map(function(x){ return '<span><span class="cs-k">' + x[1] + '</span> ' + csEsc(x[4]) + '</span>'; }).join('<span class="cs-dot" aria-hidden="true">&middot;</span>') + '</p>' : '');
   }
-  host.innerHTML = h; paintPd(host); csMeasure();
+  el.innerHTML = h; el.hidden = false; paintPd(el);
 }
 function csLi(icon, k, v){ return '<li>' + csIc(icon) + '<span><span class="cs-k">' + k + '</span><span class="cs-v">' + v + '</span></span></li>'; }
 function csTodo(icon, k, word, key){
   /* incomplete is amber with a word, and the tag is the button that completes it */
-  return '<li class="todo" id="cs-todo-' + key + '">' + csIc(icon) + '<span><span class="cs-k">' + k + '</span>' +
-    '<button type="button" class="cs-tag warn" aria-haspopup="dialog" aria-expanded="' + (CS.pop === key) + '" aria-label="' + k + ': ' + word + '. Complete it" onclick="csPop(\'' + key + '\')">' +
-    csIc('alert') + word + '</button></span>' + (CS.pop === key ? csPopHtml(key) : '') + '</li>';
+  return '<li class="todo" id="cs-todo-' + key + '">' +
+    '<button type="button" class="cs-tag warn" aria-haspopup="dialog" aria-expanded="' + (CS.pop === key) + '" aria-label="' + k + ': ' + word + '. Complete it" title="' + word + '" onclick="csPop(\'' + key + '\')">' +
+    csIc('alert') + k + '</button>' + (CS.pop === key ? csPopHtml(key) : '') + '</li>';
 }
 function csPopHtml(key){
   var v = csVisit(PC_CURRENT);
@@ -11736,9 +11802,10 @@ function csPopHtml(key){
   return '<div class="cs-pop" role="dialog" aria-label="Record consent"><p>The patient agrees to a virtual visit today.</p>' + acts('Record verbal consent') + '</div>';
 }
 function csPop(key){
-  var prev = CS.pop; CS.pop = key; csRenderStrip(PC_CURRENT);
+  var prev = CS.pop; CS.pop = key; csRenderChecks(PC_CURRENT);
   if(!key){ csFocus('#cs-todo-' + prev + ' button'); return; }
-  var p = document.querySelector('#cs-strip .cs-pop'); if(!p) return;
+  var p = document.querySelector('#cs-finwhy .cs-pop'); if(!p) return;
+  if(p.scrollIntoView) p.scrollIntoView({block:'nearest'});
   var f = p.querySelector('input[type=text]') || p.querySelector('input') || p.querySelector('button');
   if(f){ f.focus(); if(f.select) f.select(); }
   p.querySelectorAll('input[name=cs-oth]').forEach(function(rb){ rb.addEventListener('change', function(){ document.getElementById('cs-p-who-l').hidden = !(rb.value === 'someone' && rb.checked); }); });
@@ -11764,7 +11831,7 @@ function csConfirm(key){
   CS.pop = null;
   csAfterStrip();
   csSay(msg + (csStripDone(PC_CURRENT) ? '. This visit is complete.' : '.'));
-  var next = document.querySelector('#cs-strip li.todo button') || document.getElementById('vc-finalize');
+  var next = document.querySelector('#cs-finwhy li.todo button') || document.getElementById('vc-finalize');
   if(next && !next.hidden) next.focus();
 }
 function csAfterStrip(){ csRenderStrip(PC_CURRENT); csRenderNotices(PC_CURRENT); csFinState(); }
@@ -11872,9 +11939,8 @@ function renderChartAlerts(name){
   el.hidden = false;
   var items = CS.empty ? [] : csNAItems(name);
   if(!items.length){
-    /* v2.5 §3: when empty, one quiet line, no empty card */
-    el.innerHTML = '<h3 class="vh" id="cs-na-h">Needs attention</h3><p class="cs-na-empty">' + csIc('complete') + 'Nothing requiring attention</p>';
-    paintPd(el); return;
+    /* Ani, 5 Oct (declutter): nothing to say, nothing shown (rule 25). Was one quiet "Nothing requiring attention" line. */
+    el.innerHTML = ''; el.hidden = true; return;
   }
   var lead = items.filter(function(x){ return x.tier === 'crit'; })[0];
   var groups = [];
@@ -11910,14 +11976,16 @@ function csRenderToday(name){
   var el = document.getElementById('cs-today'); if(!el) return;
   var r = csRow(); if(!r) return;
   var f = csIntakeFlag(r), sum = csIntakeSummary(name);
-  el.innerHTML = '<h3 class="cs-h3" id="cs-today-h">Today</h3>' +
-    '<p class="cs-reason">' + csEsc(r.concern) + '</p>' +
-    '<dl class="cs-kv"><dt>Reason</dt><dd class="cs-cap">In the patient&rsquo;s words, from booking</dd>' +
-    (sum ? '<dt>Intake summary</dt><dd>' + csEsc(sum) + '</dd>' : '') +
-    (f ? '<dt>Intake red flag</dt><dd class="cs-flagline"><span class="cs-tag warn">' + csIc('alert') + 'Flagged at intake</span>' +
+  /* Ani, 5 Oct: the label "In the patient's words, from booking" was showing as the value. The patient's own
+     words show when booking captured them (r.words; none in the demo data yet); otherwise Reason and Intake
+     summary are one line, the intake summary. */
+  var words = r.words ? '<p class="cs-sum">&ldquo;' + csEsc(r.words) + '&rdquo; <span class="cs-cap">&middot; patient&rsquo;s words, from booking</span></p>' : '';
+  el.innerHTML = '<h3 class="vh" id="cs-today-h">Today</h3>' +
+    '<p class="cs-reason">' + csEsc(r.concern) + '</p>' + words +
+    (sum ? '<p class="cs-sum">' + csEsc(sum) + ' <span class="cs-cap">&middot; intake summary</span></p>' : '') +
+    (f ? '<p class="cs-flagline"><span class="cs-tag warn">' + csIc('alert') + 'Flagged at intake</span>' +
       (f.words ? '<b>&ldquo;' + csEsc(f.words) + '&rdquo;</b><span class="cs-cap">patient&rsquo;s words' + (f.when ? ' &middot; ' + csEsc(f.when) : '') + '</span>' : '') +
-      '<button type="button" class="vc-more" onclick="openBrief(PC_CURRENT)">Open intake</button></dd>' : '') +
-    '</dl>';
+      '<button type="button" class="cs-link" onclick="openBrief(PC_CURRENT)">Open intake</button></p>' : '');
   paintPd(el);
 }
 
@@ -12146,15 +12214,14 @@ function csFinState(){
   if(!b || !why) return;
   var signed = !!(r && r.signed), miss = csMissing(PC_CURRENT);
   var acts = document.getElementById('cs-acts'); if(acts) acts.hidden = signed;
-  if(signed || !miss.length){ b.removeAttribute('aria-disabled'); b.removeAttribute('aria-describedby'); why.hidden = true; why.innerHTML = ''; return; }
-  /* aria-disabled, not disabled: it stays focusable and explains itself */
+  csRenderChecks(PC_CURRENT);
+  if(signed || !miss.length){ b.removeAttribute('aria-disabled'); b.removeAttribute('aria-describedby'); return; }
+  /* aria-disabled, not disabled: it stays focusable and explains itself (the checklist above it names what is missing) */
   b.setAttribute('aria-disabled','true'); b.setAttribute('aria-describedby','cs-finwhy');
-  why.innerHTML = csIc('alert') + '<span>To finalize, complete:</span> ' + miss.map(function(m){
-    return '<button type="button" class="vc-more" onclick="csGoStrip(\'' + m[0] + '\')">' + m[1] + '</button>'; }).join('<span aria-hidden="true">&middot;</span>');
-  why.hidden = false; paintPd(why);
 }
+/* "N checks before finalize" in the banner and a blocked Finalize both open the check by Finalize */
 function csGoStrip(key){
-  window.scrollTo({top: Math.max(0, document.getElementById('pcv-c').getBoundingClientRect().top + window.scrollY - 120)});
+  if(document.getElementById('pcv-c').classList.contains('cs-narrow')) csView('note');
   csPop(key);
 }
 var csFinalize0 = finalizeVisit;
