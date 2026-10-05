@@ -13203,8 +13203,85 @@ function t23RenderBillRow(){
   el.innerHTML = h; el.hidden = false; if(help) help.hidden = false; paintPd(el);
 }
 if(typeof csFinState === 'function'){ var t23CsFin0 = csFinState; csFinState = function(){ t23CsFin0(); t23RenderBillRow(); }; }
+
+/* ================= Health card (spec part 7): a stored, timestamped result, never a guess ================= */
+/* Premiums ended 1 Jan 2020 (gov.bc.ca, checked 3 Oct 2026), so "coverage lapsed on a premium" is gone. No red (rule 21; N15). */
+CARD_STATUS = {
+  verified: {label:'Verified', tone:'ok', icon:'cardok'},
+  check:    {label:'Check required', tone:'warn', icon:'cardwarn'},
+  invalid:  {label:'Invalid card', tone:'warn', icon:'carderr',
+             why:'MSP says this card isn’t valid for 3 Oct.',
+             next:'The visit can go ahead. Before billing: correct the card number, bill another payer, or bill the patient privately.'},
+  ended:    {label:'Coverage ended · 31 Aug', tone:'warn', icon:'carderr',
+             why:'MSP coverage for this card ended on 31 Aug 2026.',
+             next:'The visit can go ahead. Before billing: correct the card number, bill another payer, or bill the patient privately.'},
+  oop:      {label:'Out of province · Alberta', tone:'info', icon:'cardinfo',
+             why:'Alberta card. MSP can’t check it here; it’s billed as a reciprocal claim.',
+             next:'Confirm the card on the call.'},
+  'oop-qc': {label:'Out of province · Quebec', tone:'info', icon:'cardinfo',
+             why:'Quebec doesn’t take part in reciprocal medical billing.',
+             next:'This visit is private pay, or the patient claims it back from Quebec.'},
+  private:  {label:'Private pay', tone:'info', icon:'cardinfo', plain:true,
+             why:'Paying privately. There’s no MSP card to check.'}
+};
+var T23_CHECK_WHY = {
+  name:{why:'MSP has a different name for this card number.', next:'Confirm the patient’s legal name on the call, or ask the MOA to correct it. Then re-check.'},
+  dob:{why:'MSP has a different date of birth for this card number.', next:'Confirm the patient’s legal name on the call, or ask the MOA to correct it. Then re-check.'},
+  nophn:{why:'There’s no card number on file.', next:'Ask the patient for it on the call, or ask the MOA.'},
+  down:{why:'MSP’s eligibility check isn’t responding. It retries automatically and checks again before the claim is sent.', next:''}
+};
+/* demo data (spec "Today's queue") */
+var T23_CARD_SET = {'Andrey Abushakhmanov, 24M':'oop', 'K Arli Eyre, 41':'ended', 'Manjit':'invalid', 'Korynn':'oop-qc'};
+QUEUE_DATA.forEach(function(r){
+  if(T23_CARD_SET[r.name]) r.card = T23_CARD_SET[r.name];
+  if(r.card === 'check') r.cardWhy = r.cardWhy || 'name';
+  r.cardChecks = [{at:'3 Oct, 7:42 AM', when:'at check-in'}];
+});
+function t23CardWords(r){
+  if(r.card === 'check') return T23_CHECK_WHY[r.cardWhy || 'name'];
+  return CARD_STATUS[r.card] || {};
+}
+function t23CardCell(r){
+  var cs = CARD_STATUS[r.card];
+  if(!cs) return '<span class="t23-none">—</span>';
+  if(r.card === 'verified') return '<span class="q-ver ok" title="Checked ' + (r.cardChecks ? r.cardChecks[0].at : 'today') + ', for today’s visit"><span class="ic" data-pdic="cardok"></span>Verified</span>';
+  if(cs.plain) return '<span class="q-ver info" title="' + cs.why + '"><span class="ic" data-pdic="cardinfo"></span>' + cs.label + '</span>';
+  return '<button class="q-ver ' + cs.tone + ' go" onclick="event.stopPropagation();openCard(\'' + esc1(r.name) + '\')"><span class="ic" data-pdic="' + cs.icon + '"></span>' + cs.label + '</button>';
+}
+openCard = function(name){
+  var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0]; if(!r) return;
+  var cs = CARD_STATUS[r.card]; if(!cs || r.card === 'verified') return;
+  BL_FOR = name; BL_KIND = 'card'; T23.open = null;
+  var w = t23CardWords(r), card = document.getElementById('bl-card'); card.classList.add('t23-wide');
+  var acts = '';
+  var reCheck = '<button type="button" class="btn" id="t23-recheck" onclick="t23CardRecheck(\'' + esc1(name) + '\')">' + t23Ic('reopen') + 'Re-check with MSP</button>';
+  var task = '<button type="button" class="btn dark" onclick="closeBilling();openTaskMoa(\'' + esc1(name) + '\')">' + t23Ic('taskmoa') + 'Task the MOA</button>';
+  if(r.card === 'check') acts = (r.cardWhy === 'nophn' ? '' : reCheck) + (r.cardWhy === 'down' ? '' : task);
+  else if(r.card === 'invalid' || r.card === 'ended') acts = reCheck + task;
+  var h = '<p class="bl-eyebrow" id="bl-eyebrow">Health card</p><p class="defer-ttl" id="bl-title">' + cs.label + '</p>' +
+    '<p class="bl-who" id="bl-who"><span><b>' + t23E(r.legal || r.name) + '</b> · ' + winLabel(r.win) + '</span></p>' +
+    '<div class="bl-block"><p class="bl-k">What this means</p><p class="bl-v">' + (w.why || '') + '</p></div>' +
+    (w.next ? '<div class="bl-block"><p class="bl-k">What happens next</p><p class="bl-v">' + w.next + '</p></div>' : '') +
+    '<div class="bl-block"><p class="bl-k">Stored check</p>' + r.cardChecks.map(function(k, i){
+      return '<p class="bl-v"' + (i ? ' style="color:var(--ink-faint)"' : '') + '>Checked ' + k.at + ' · for a 3 Oct visit · ' + k.when + '</p>'; }).join('') + '</div>' +
+    '<div class="defer-acts"><button type="button" class="btn" onclick="closeBilling()">Close</button>' + acts + '</div>';
+  card.innerHTML = h; paintPd(card);
+  document.getElementById('bill-overlay').classList.add('show');
+};
+function t23CardRecheck(name){
+  var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0]; if(!r) return;
+  var b = document.getElementById('t23-recheck'); if(b){ b.disabled = true; b.textContent = 'Checking…'; }
+  setTimeout(function(){
+    /* ELT-01 target under 5 s. The demo returns the same result with a new time; the two portals don't share state. */
+    r.cardChecks.unshift({at:'3 Oct, ' + t23Now(), when:'re-checked by you'});
+    var still = r.card === 'check' ? T23_CARD_WORDS[r.cardWhy || 'name'].still : CARD_STATUS[r.card].label.toLowerCase();
+    if(document.getElementById('bill-overlay').classList.contains('show') && BL_KIND === 'card') openCard(name);
+    toast('Re-checked · still: ' + still);
+  }, 1200);
+}
+billingAct = function(){ closeBilling(); };   /* the old one-tap path is gone (spec part 1) */
 t23SyncQueue();
-/* T23-PART-C */
+/* T23-PART-D */
 </script>
   <div class="build-stamp">v2 · build 2026-10-05 10:30</div>
 </body>
