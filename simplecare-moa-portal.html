@@ -196,6 +196,27 @@
   .build-stamp{position:fixed;left:8px;bottom:4px;z-index:999;font-size:10px;
     letter-spacing:.03em;color:rgba(23,24,28,.30);pointer-events:none;font-family:inherit;}
   :root[data-theme="dark"] .build-stamp{color:rgba(255,255,255,.28);}
+  /* ===== T-023 (spec part 10): Billing queue. MOAP's own classes; 14 px minimum, sentence case, no red. Light only. ===== */
+  #screen-billing .sub,#screen-billing .row .d,#screen-billing .row .who,#screen-billing .box-note,#screen-billing .seg button,#screen-billing .btn{font-size:14px;}
+  #screen-billing .row .t{font-size:15px;}
+  #screen-billing .pill{font-size:14px;font-weight:500;padding:6px 12px;}
+  #screen-billing .box-title{text-transform:none;letter-spacing:0;font-size:15px;color:var(--ink);}
+  #screen-billing .btn{min-height:40px;}
+  .tasktype.bill{text-transform:none;letter-spacing:0;font-size:12.5px;font-weight:700;background:var(--wash);color:var(--ink);}
+  .t23m-demo{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;background:var(--wash);color:var(--ink-soft);font-size:14px;font-weight:500;white-space:nowrap;margin-left:6px;}
+  .t23m-days{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;background:var(--wash);color:var(--ink);font-size:14px;font-weight:500;margin-left:6px;}
+  .t23m-days.warn{background:var(--warn-wash);} .t23m-days.late{font-weight:700;}
+  #screen-billing .t23m-f{display:grid;grid-template-columns:170px 1fr;gap:10px 14px;align-items:center;font-size:14px;}
+  #screen-billing .t23m-f label{color:var(--ink-soft);}
+  #screen-billing .t23m-in{height:40px;border:1px solid var(--line-strong);border-radius:8px;padding:0 10px;font:inherit;font-size:14px;color:var(--ink);background:var(--panel);max-width:320px;width:100%;}
+  #screen-billing textarea.t23m-in{height:72px;padding:8px 10px;max-width:520px;}
+  #screen-billing .t23m-ro{color:var(--ink-soft);font-size:14px;}
+  #screen-billing .t23m-only{font-size:14px;color:var(--ink-soft);margin:10px 0;}
+  #screen-billing .t23m-hist{margin:0;padding:0;list-style:none;font-size:14px;} #screen-billing .t23m-hist li{padding:3px 0;}
+  #screen-billing .t23m-acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  #screen-billing .btn[disabled]{opacity:.45;cursor:not-allowed;}
+  #screen-billing .t23m-err{font-size:14px;background:var(--warn-wash);border-radius:8px;padding:8px 10px;margin:8px 0 0;}
+  #screen-billing .t23m-back{background:none;border:none;font:inherit;font-size:14px;color:var(--accent-ink);cursor:pointer;padding:0;margin:0 0 12px;text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -208,6 +229,7 @@
 
     <p class="nav-group-label">Work</p>
     <button class="nav-btn" data-screen="tasks"><span class="ic" data-ic="taskmoa"></span> Tasks from physicians <span class="nav-flag" id="nf-tasks">0</span></button>
+    <button class="nav-btn" data-screen="billing"><span class="ic" data-ic="claims"></span> Billing <span class="nav-flag" id="nf-bill">0</span></button>
     <button class="nav-btn" data-screen="referrals"><span class="ic" data-ic="practice"></span> Referrals <span class="nav-flag" id="nf-ref">0</span></button>
     <button class="nav-btn" data-screen="imaging"><span class="ic" data-ic="calendar"></span> Imaging scouting <span class="nav-flag mut" id="nf-img">0</span></button>
     <button class="nav-btn" data-screen="callbacks"><span class="ic" data-ic="patientview"></span> Patient callbacks <span class="nav-flag mut" id="nf-call">0</span></button>
@@ -272,6 +294,18 @@
             <button class="btn" onclick="askDoc('phone')"><span class="ic" data-ic="patientview"></span> Phone</button>
           </div>
         </div>
+      </div>
+
+      <!-- ===== BILLING (T-023, spec part 10; ROLE-R7, CTL-03, QUE-01..05) ===== -->
+      <div class="screen" id="screen-billing">
+        <h1>Billing</h1>
+        <p class="sub">Claims that need a fix before MSP pays. You can correct patient details; coding stays with the doctor.</p>
+        <p class="box-note" style="margin:0 0 14px;">Fee items, amounts and explanatory codes here are demo values, not real MSP data.</p>
+        <div id="bill-main">
+          <div class="seg" id="bill-seg"></div>
+          <div class="box"><div id="bill-list"></div></div>
+        </div>
+        <div id="bill-item" hidden></div>
       </div>
 
       <!-- ===== REFERRALS ===== -->
@@ -528,9 +562,164 @@ function renderDirectory(){
 }
 renderTasks(); renderReferrals(); renderImaging(); renderCallbacks(); renderFaxes(); renderDirectory();
 
+/* ===================== T-023 Billing queue (spec part 10; Ani approved 4 Oct) =====================
+   Dolly fixes patient details and clerical fields; coding is read-only for her, with "Ask the doctor".
+   A question on a claim is not a task (rule 12; proposal N5, Needs Daniel). No sign-off here (CNF-10). */
+var BDEMO = '<span class="t23m-demo">Demo value</span>';
+var BILL_ITEMS = [
+  {id:'b1', f:'open', kind:'Teleplan rejection', who:'Carol-Anne Feldman', date:'29 Sep', src:'Teleplan', on:'1 Oct', ex:'EX-D2',
+   issue:'Name on the claim doesn’t match MSP’s record for this card (EX-D2, demo)', fix:'Confirm the legal name with the patient, correct it, resubmit.', due:'Due Mon 5 Oct',
+   fee:'DEMO-A · Visit', dx:'DX-D3 · Yeast infection', mins:10, hist:['1 Oct 9:02 AM · Teleplan · Rejected: EX-D2 (demo)', '1 Oct 9:03 AM · System · Sent to Dolly: patient details']},
+  {id:'b2', f:'open', kind:'Held by MSP', who:'Owen Brady', date:'25 Aug', src:'MSP', on:'22 Sep', ex:'EX-D5', day:39, left:51,
+   issue:'MSP is holding this claim (EX-D5, demo)', fix:'Check the explanatory code and send what MSP asks for.', due:'',
+   fee:'DEMO-A · Visit', dx:'DX-D5 · Back pain', mins:12, hist:['22 Sep · MSP · Held: EX-D5 (demo)']},
+  {id:'b3', f:'open', kind:'Health card', who:'K Arli Eyre', date:'30 Sep', src:'MSP', on:'30 Sep', ex:'',
+   issue:'Coverage ended 31 Aug 2026 (demo)', fix:'Ask the patient about coverage. If there’s none, the doctor chooses private pay, another payer, or not billed.', due:'Due Mon 5 Oct',
+   fee:'DEMO-A · Visit', dx:'DX-D2 · Follow-up', mins:10, card:true, checks:['30 Sep, 7:42 AM · at check-in'], hist:['30 Sep 7:42 AM · System · Health card: coverage ended 31 Aug 2026']},
+  {id:'b4', f:'wait', kind:'Teleplan rejection', who:'Nadia Hassan', date:'15 Jul', src:'Teleplan', on:'2 Oct', ex:'EX-D4', day:80, left:10,
+   issue:'Diagnosis code problem (EX-D4, demo)', fix:'Question sent: can you check the diagnosis?', with:'With Dr. Pannozzo',
+   fee:'DEMO-A · Visit', dx:'DX-D7 · Prescription renewal', mins:9, hist:['2 Oct 9:10 AM · Teleplan · Returned: EX-D4 (demo)', '2 Oct 9:31 AM · Dolly · Question to Dr. Pannozzo: Can you check the diagnosis on this claim?']},
+  {id:'b5', f:'wait', kind:'MSP refusal', who:'Behdis Maleki', date:'12 Sep', src:'MSP', on:'26 Sep', ex:'EX-D1', day:21, left:83,
+   issue:'Fee item not payable with this diagnosis (EX-D1, demo)', fix:'With Dr. Pannozzo: coding.', with:'With Dr. Pannozzo',
+   fee:'DEMO-A · Visit', dx:'DX-D4 · Iron deficiency', mins:12, hist:['26 Sep · MSP · Refused: EX-D1 (demo)', '26 Sep · System · Sent to Dr. Pannozzo: coding']},
+  {id:'b6', f:'wait', kind:'Reassessment', who:'Andrey Abushakhmanov', date:'5 Sep', src:'MSP', on:'19 Sep', ex:'EX-D2', day:28, left:76,
+   issue:'Looks correctly billed (EX-D2, demo)', fix:'Waiting for Dr. Pannozzo to authorise a reassessment.', with:'With Dr. Pannozzo',
+   fee:'DEMO-A · Visit', dx:'DX-D2 · Follow-up', mins:10, hist:['19 Sep · MSP · Refused: EX-D2 (demo)', '3 Oct · Dr. Pannozzo · Marked as a potential dispute']}
+];
+var BILL_F = 'open', BILL_OPEN_ID = null, BILL_ASK = false, BILL_DIRTY = false;
+function bNow(){ return new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
+function bE(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+function bDays(it){
+  if(!it.day || it.day < 30 || it.f === 'done') return '';            /* show from day 30 only (spec part 4) */
+  var w = 'Day ' + it.day + ' · ' + it.left + ' days left';
+  return '<span class="t23m-days' + (it.day >= 60 ? ' warn' : '') + (it.day >= 75 ? ' late' : '') + '">' + w + '</span>';
+}
+function bItem(id){ return BILL_ITEMS.filter(function(x){ return x.id === id; })[0]; }
+function renderBilling(){
+  var c = {open:0, wait:0, done:0}; BILL_ITEMS.forEach(function(x){ c[x.f]++; });
+  document.getElementById('bill-seg').innerHTML = [['open','Open'],['wait','Waiting on the doctor'],['done','Done']].map(function(f){
+    return '<button type="button" class="' + (BILL_F === f[0] ? 'active' : '') + '" onclick="BILL_F=\'' + f[0] + '\';renderBilling()">' + f[1] + ' · ' + c[f[0]] + '</button>'; }).join('');
+  var rows = BILL_ITEMS.filter(function(x){ return x.f === BILL_F; }).sort(function(a, b){ return (a.left || 999) - (b.left || 999); });
+  document.getElementById('bill-list').innerHTML = rows.length ? rows.map(function(it){
+    return '<div class="row"><div class="body"><p class="t"><span class="pill ' + (it.f === 'done' ? 'good' : it.f === 'wait' ? 'mut' : 'warn') + '">' + it.kind + '</span> ' + bE(it.who) + ' · ' + it.date + ' visit</p>' +
+      '<p class="d">' + it.issue + ' → ' + (it.doneNote || it.fix) + '</p>' +
+      '<p class="who">' + (it.f === 'wait' ? (it.with || 'With Dr. Pannozzo') : 'Owner: Dolly') + (it.due && it.f === 'open' ? ' · ' + it.due : '') + bDays(it) + '</p></div>' +
+      '<div class="acts"><button class="btn xs" onclick="bOpen(\'' + it.id + '\')">Open</button></div></div>'; }).join('')
+    : '<p class="empty">Nothing here.</p>';
+  document.getElementById('nf-bill').textContent = c.open;
+  document.getElementById('bill-main').hidden = !!BILL_OPEN_ID;
+}
+function bOpen(id){ BILL_OPEN_ID = id; BILL_ASK = false; BILL_DIRTY = false; bRenderItem(); renderBilling(); window.scrollTo(0, 0); }
+function bBack(){ BILL_OPEN_ID = null; document.getElementById('bill-item').hidden = true; renderBilling(); }
+function bRenderItem(){
+  var it = bItem(BILL_OPEN_ID), el = document.getElementById('bill-item'); if(!it) return;
+  var editable = it.f === 'open' && (it.kind === 'Teleplan rejection' || it.kind === 'MSP refusal' || it.kind === 'Held by MSP' || it.card);
+  var h = '<button class="t23m-back" onclick="bBack()">Back to Billing</button>' +
+    '<div class="box"><p class="box-title">What came back</p><p class="t23m-ro" style="color:var(--ink)"><b>' + bE(it.who) + ' · ' + it.date + ' visit</b> · ' + it.kind + bDays(it) + '</p>' +
+    '<p class="t23m-ro">' + it.src + ' · ' + it.on + (it.ex ? ' · ' + it.ex + BDEMO : '') + ' · ' + it.issue + '</p>' +
+    '<p class="t23m-ro">Owner: Dolly · ' + (it.f === 'wait' ? 'Waiting on the doctor' : it.f === 'done' ? 'Done' : 'Open') + (it.due ? ' · ' + it.due : '') + '</p></div>' +
+    '<div class="box"><p class="box-title">Suggested fix</p><p class="t23m-ro" style="color:var(--ink)">' + it.fix + '</p></div>';
+  /* 3. Patient details: the fields she may edit (ROLE-R7). The demo stores nothing it is given. */
+  var dis = editable ? '' : ' disabled';
+  h += '<div class="box"><p class="box-title">Patient details' + (editable ? '' : ' (read-only here)') + '</p><div class="t23m-f">' +
+    '<label for="b-phn">PHN</label><span><input id="b-phn" class="t23m-in" inputmode="numeric" maxlength="10" placeholder="•••• ••• •••" oninput="this.value=this.value.replace(/\\D/g,\'\');bDirty()"' + dis + '>' + BDEMO + '</span>' +
+    '<label for="b-name">Legal name</label><input id="b-name" class="t23m-in" value="' + bE(it.who) + '" oninput="bDirty()"' + dis + '>' +
+    '<label for="b-dob">Date of birth</label><span><input id="b-dob" class="t23m-in" style="max-width:200px" placeholder="•••• •• ••" oninput="bDirty()"' + dis + '>' + BDEMO + '</span>' +
+    '<label for="b-sex">Sex</label><select id="b-sex" class="t23m-in" style="max-width:200px" onchange="bDirty()"' + dis + '><option>As on file</option><option>Female</option><option>Male</option><option>X</option></select>' +
+    '<label for="b-note">Note to MSP</label><textarea id="b-note" class="t23m-in" placeholder="The note record text" oninput="bDirty()"' + dis + '></textarea>' +
+    '</div></div>';
+  /* 4. Coding: read-only for the MOA (ROLE-R7, CTL-03) */
+  var ro = function(k, v){ return '<label>' + k + '</label><span class="t23m-ro">' + v + '</span>'; };
+  h += '<div class="box"><p class="box-title">Coding</p><div class="t23m-f">' +
+    ro('Fee item', it.fee + BDEMO) + ro('Diagnosis (ICD-9)', it.dx + BDEMO) + ro('Units', '1') + ro('Time', it.mins + ' min') + ro('Service location', 'Virtual (phone)') + ro('Referring practitioner', 'None') +
+    '</div><p class="t23m-only">Only the doctor can change this.</p>' +
+    (it.f === 'done' ? '' : '<button class="btn" onclick="BILL_ASK=true;bRenderItem()"' + (it.f === 'wait' ? ' disabled title="A question is already with Dr. Pannozzo"' : '') + '><span class="ic" data-ic="chat"></span> Ask the doctor</button>') + '</div>';
+  if(BILL_ASK){
+    h += '<div class="box" id="b-ask"><p class="box-title">Ask the doctor</p>' +
+      '<p class="t23m-ro">' + bE(it.who) + ' · ' + it.date + ' claim · ' + (it.ex === 'EX-D1' || it.ex === 'EX-D4' ? 'Diagnosis' : 'Fee item') + ' · MSP’s reason: ' + it.issue + '</p>' +
+      '<div class="t23m-f" style="margin-top:10px"><label for="b-q">Your question</label><textarea id="b-q" class="t23m-in" oninput="bAskState()" placeholder="Required"></textarea>' +
+      '<label for="b-a1">Answers he can tap</label><span style="display:flex;flex-direction:column;gap:6px"><input id="b-a1" class="t23m-in" value="Fix it now"><input id="b-a2" class="t23m-in" value="It’s right · resubmit as is"></span></div>' +
+      '<div class="t23m-acts" style="margin-top:12px"><button class="btn" onclick="BILL_ASK=false;bRenderItem()">Cancel</button><button class="btn dark" id="b-send" onclick="bSend()" disabled>Send to Dr. Pannozzo</button></div></div>';
+  }
+  h += '<div class="box"><p class="box-title">History and messages</p><ul class="t23m-hist">' + it.hist.slice().reverse().map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul></div>';
+  /* 6. Actions depend on the item */
+  var a = '';
+  if(it.f === 'open'){
+    if(it.kind === 'Teleplan rejection' || it.kind === 'MSP refusal') a = '<button class="btn dark" id="b-resub" onclick="bResubmit()"' + (BILL_DIRTY ? '' : ' disabled title="Change a patient detail first"') + '>Save and resubmit</button><button class="btn" onclick="bDone()">Mark done</button>';
+    else if(it.kind === 'Held by MSP') a = '<span class="t23m-f" style="grid-template-columns:auto 1fr"><label for="b-did">What did you do?</label><input id="b-did" class="t23m-in" style="max-width:420px"></span><button class="btn dark" onclick="bDone(true)">Mark done</button>';
+    else if(it.card) a = '<button class="btn dark" id="b-rc" onclick="bRecheck()">Re-check with MSP</button><button class="btn" onclick="document.getElementById(\'b-phn\').focus()">Record new card number</button><button class="btn" onclick="bDone()">Mark done</button>';
+    else if(it.kind === 'Reassessment') a = '<button class="btn dark" onclick="bSendMsp()">Send to MSP</button>';
+  } else if(it.f === 'wait'){
+    a = '<span class="t23m-ro">With Dr. Pannozzo. It moves to Open when he answers or corrects.</span>' +
+      (it.kind === 'Reassessment' ? '<button class="btn xs" onclick="bAuthorised()">Demo: Dr. Pannozzo authorised it</button>' : '');
+  } else a = '<span class="t23m-ro">Done · ' + (it.doneNote || '') + '</span>';
+  if(it.card && it.checks) h += '<div class="box"><p class="box-title">Stored check</p><ul class="t23m-hist">' + it.checks.map(function(x){ return '<li>Checked ' + x + '</li>'; }).join('') + '</ul></div>';
+  h += '<div class="box"><div class="t23m-acts">' + a + '</div><p class="t23m-err" id="b-err" hidden></p>' +
+    '<p class="t23m-only" style="margin-bottom:0">You can’t change coding, sign off, or write off a claim alone. Write-offs need a second signer (Needs Daniel).</p></div>';
+  el.innerHTML = h; el.hidden = false;
+  el.querySelectorAll('[data-ic]').forEach(function(x){ var k = x.getAttribute('data-ic'); if(ICONS[k]) x.innerHTML = ICONS[k]; });
+}
+function bDirty(){ BILL_DIRTY = true; var b = document.getElementById('b-resub'); if(b){ b.disabled = false; b.removeAttribute('title'); } }
+function bAskState(){ var q = document.getElementById('b-q'); document.getElementById('b-send').disabled = !q.value.trim(); }
+function bSend(){
+  var it = bItem(BILL_OPEN_ID), q = document.getElementById('b-q').value.trim(); if(!q) return;
+  it.hist.push('3 Oct ' + bNow() + ' · Dolly · Question to Dr. Pannozzo: ' + q);
+  it.f = 'wait'; it.with = 'With Dr. Pannozzo'; it.fix = 'Question sent: ' + q;
+  BILL_ASK = false; bRenderItem(); renderBilling(); toast('Sent to Dr. Pannozzo · it shows on his claim, not as a task');
+}
+function bResubmit(){
+  var it = bItem(BILL_OPEN_ID); if(!BILL_DIRTY) return;
+  it.hist.push('3 Oct ' + bNow() + ' · Dolly · Patient details corrected; resubmitted');
+  it.f = 'done'; it.doneNote = 'Resubmitted 3 Oct';
+  toast('Resubmitted · ' + it.who + ', ' + it.date + ' claim'); bBack();
+}
+function bDone(needNote){
+  var it = bItem(BILL_OPEN_ID), note = '';
+  if(needNote){ note = (document.getElementById('b-did').value || '').trim();
+    if(!note){ var e = document.getElementById('b-err'); e.textContent = 'Say what you did to close it.'; e.hidden = false; return; } }
+  it.hist.push('3 Oct ' + bNow() + ' · Dolly · Marked done' + (note ? ': ' + note : ''));
+  it.f = 'done'; it.doneNote = note || 'Marked done 3 Oct';
+  toast('Marked done · ' + it.who); bBack();
+}
+function bRecheck(){
+  var it = bItem(BILL_OPEN_ID), b = document.getElementById('b-rc'); b.disabled = true; b.textContent = 'Checking…';
+  setTimeout(function(){
+    it.checks.unshift('3 Oct, ' + bNow() + ' · re-checked by Dolly');
+    it.hist.push('3 Oct ' + bNow() + ' · System · Health card re-checked: coverage ended 31 Aug 2026');
+    bRenderItem(); toast('Re-checked · still: coverage ended 31 Aug 2026');
+  }, 1200);
+}
+function bAuthorised(){
+  var it = bItem(BILL_OPEN_ID);
+  it.hist.push('3 Oct ' + bNow() + ' · Dr. Pannozzo · Signed off; asked MSP to reassess');
+  it.f = 'open'; it.fix = 'Write the note record, then send it to MSP.'; it.kind = 'Reassessment'; bRenderItem(); renderBilling();
+}
+function bSendMsp(){
+  var it = bItem(BILL_OPEN_ID), n = document.getElementById('b-note').value.trim();
+  if(!n){ var e = document.getElementById('b-err'); e.textContent = 'Write the note record first.'; e.hidden = false; document.getElementById('b-note').focus(); return; }
+  it.hist.push('3 Oct ' + bNow() + ' · Dolly · Sent to MSP with a note record (reassessment)');
+  it.f = 'done'; it.doneNote = 'Under appeal · sent 3 Oct'; toast('Sent to MSP · under appeal'); bBack();
+}
+/* Today: billing items at day 60 or later appear in "Needs attention now" */
+var t23mRenderTasks0 = renderTasks;
+renderTasks = function(){
+  t23mRenderTasks0();
+  var late = BILL_ITEMS.filter(function(x){ return x.f !== 'done' && x.day >= 60; });
+  if(!late.length) return;
+  var ul = document.getElementById('urgent-list'), n = document.getElementById('urgent-n');
+  if(ul.querySelector('.empty')) ul.innerHTML = '';
+  ul.innerHTML += late.map(function(it){
+    return '<div class="row"><div class="body"><p class="t"><span class="pill warn">Billing</span> ' + bE(it.who) + ' · ' + it.date + ' visit</p><p class="d">' + it.issue + ' → ' + it.fix + '</p><p class="who">' + (it.f === 'wait' ? 'With Dr. Pannozzo' : 'Owner: Dolly') + bDays(it) + '</p></div>' +
+      '<div class="acts"><button class="btn xs" onclick="showScreen(\'billing\');bOpen(\'' + it.id + '\')">Open</button></div></div>'; }).join('');
+  n.textContent = (+n.textContent || 0) + late.length;
+};
+/* "Task the MOA" on a health-card flag arrives as a doctor -> MOA task of kind Billing, linked to its item (rule 12 allows this direction) */
+TASKS.splice(2, 0, {type:'bill', label:'Billing', patient:'K Arli Eyre', detail:'Health card: coverage ended 31 Aug 2026 (demo). Ask the patient about coverage. Linked to the Billing item.', from:'Dr. Pannozzo &middot; today', urgent:false, status:'open'});
+renderTasks(); renderBilling();
+
 function dswOpen(){ document.getElementById('dsw').classList.add('open'); document.getElementById('dsw-fab').style.display='none'; }
 function dswClose(){ document.getElementById('dsw').classList.remove('open'); document.getElementById('dsw-fab').style.display='inline-flex'; }
 </script>
-  <div class="build-stamp">build 2026-10-03 22:00</div>
+  <div class="build-stamp">build 2026-10-05 11:15</div>
 </body>
 </html>
