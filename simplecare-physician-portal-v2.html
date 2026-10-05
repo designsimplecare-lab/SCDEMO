@@ -4838,6 +4838,18 @@
   #screen-patientchart #pcv-c .cs-reason{font-size:20px;line-height:28px;margin:0 0 6px;}
   #screen-patientchart #pcv-c .cs-sum{margin:0 0 6px;font-size:15px;line-height:22px;color:var(--ink);max-width:var(--measure);}
   #screen-patientchart #pcv-c .cs-flagline{margin:8px 0 0;}
+  /* Needs attention: the panel's other out-of-range values as one line in the card */
+  #screen-patientchart #pcv-c .cs-also{display:flex;align-items:flex-start;gap:6px;margin:4px 0 0;font-size:14px;line-height:20px;color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-also > .ic,#screen-patientchart #pcv-c .cs-also > .ic svg{width:16px;height:16px;margin-top:2px;color:var(--tag-info-ic);flex:none;}
+  #screen-patientchart #pcv-c .cs-also-v{white-space:nowrap;}
+  #screen-patientchart #pcv-c .cs-also-v b{font-weight:600;}
+  #screen-patientchart #pcv-c .cs-also .vca-dir,#screen-patientchart #pcv-c .cs-also .vca-dir svg{display:inline-block;width:14px;height:14px;vertical-align:-2px;color:var(--tag-info-ic);}
+  #screen-patientchart #pcv-c .cs-also .cs-dot{margin:0 6px;}
+  /* lines that open their source look clickable (the chevron always shows); no "Each line opens its source" caption */
+  #screen-patientchart #pcv-c .cs-go{opacity:1;}
+  #screen-patientchart #pcv-c .cs-info{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;margin:-4px 0 0 4px;padding:0;border:0;border-radius:8px;background:none;color:var(--ink-faint);cursor:pointer;vertical-align:middle;}
+  #screen-patientchart #pcv-c .cs-info:hover,#screen-patientchart #pcv-c .cs-info[aria-expanded="true"]{background:var(--wash);color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-info .ic,#screen-patientchart #pcv-c .cs-info svg{width:16px;height:16px;}
 </style>
 </head>
 <body>
@@ -11912,7 +11924,7 @@ function csNAItems(name){
   });
   return out;
 }
-function csNARow(x, related){
+function csNARow(x, related, also){
   var T = CS_TIER[x.tier], it = x.it, t = x.test;
   var title;
   if(x.abn){
@@ -11927,9 +11939,15 @@ function csNARow(x, related){
   var meta = x.tier === 'info'
     ? 'Same panel as ' + csEsc(x.panelOf) + ', reviewed with it &middot; ' + csEsc(it.lab) + ' &middot; received ' + csEsc(it.received)
     : (x.abn && x.ecg ? csEsc(it.panel) + ' &middot; ' : (x.abn ? '' : csEsc(it.panel) + ' &middot; ')) + csEsc(it.lab) + ' &middot; received ' + csEsc(it.received) + ' &middot; Dr. D. Pannozzo';
+  /* Ani, 5 Oct (declutter): the rest of the same panel is one compact line inside its card, not a card each
+     with its own "Open result" (Behdis had 3 of them). Still tier Info: word, symbol, value, direction. */
+  var alsoH = (also && also.length) ? '<p class="cs-also">' + csIc('cardinfo') + '<span><span class="cs-k">Info &middot; also out of range in this panel:</span> ' + also.map(function(a){
+      var at = a.test, up = (at.f || '').indexOf('high') > -1;
+      return '<span class="cs-also-v">' + at.n + ' <b>' + at.v + ' ' + (at.u || '') + '</b><span class="ic vca-dir" role="img" aria-label="' + (up ? 'above range' : 'below range') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span></span>';
+    }).join('<span class="cs-dot" aria-hidden="true">&middot;</span>') + '</span></p>' : '';
   return '<div class="vca-row cs-' + x.tier + (related ? ' cs-rel' : '') + '">' +
     '<span class="ic vca-ic" role="img" aria-label="' + T.w + '" data-pdic="' + T.ic + '"></span>' +
-    '<div class="vca-main"><p class="vca-t">' + title + '</p>' + why + '<p class="vca-s">' + meta + '</p></div>' +
+    '<div class="vca-main"><p class="vca-t">' + title + '</p>' + why + alsoH + '<p class="vca-s">' + meta + '</p></div>' +
     '<div class="cs-side"><p class="cs-stage">' + csIc('clock') + '<span><span class="vh">Stage: </span>' + csEsc(x.stage) + '</span></p>' +
       '<button type="button" class="btn" onclick="openReview(' + x.idx + ')"><span class="ic" data-pdic="eye"></span>' + x.action + '</button></div>' +
   '</div>';
@@ -11942,18 +11960,20 @@ function renderChartAlerts(name){
     /* Ani, 5 Oct (declutter): nothing to say, nothing shown (rule 25). Was one quiet "Nothing requiring attention" line. */
     el.innerHTML = ''; el.hidden = true; return;
   }
-  var lead = items.filter(function(x){ return x.tier === 'crit'; })[0];
+  /* one card per result: the abnormal value that set the tier is the headline; the panel's other
+     out-of-range values sit under it (csNARow "also"); one action. Other unresolved items from the same day
+     stay grouped under a critical one as "Related", each with its own action (v2.5 §3). */
+  var infoOf = function(it){ return items.filter(function(x){ return x.tier === 'info' && x.it === it; }); };
+  var heads = items.filter(function(x){ return x.tier !== 'info'; });
+  var lead = heads.filter(function(x){ return x.tier === 'crit'; })[0];
   var groups = [];
   if(lead){
-    /* v2.5 §3: related items grouped under the critical one (e.g. the ECG and CK under the troponin).
-       Related = the rest of its panel, and anything else unresolved that arrived the same day. */
-    var rel = items.filter(function(x){ return x !== lead && (x.it === lead.it || (x.today && lead.today && x.tier !== 'crit')); });
-    rel.sort(function(a, b){ return (a.tier === 'info') - (b.tier === 'info'); });
-    groups.push('<div class="cs-group" role="group" aria-label="' + lead.test.n + ' and related">' + csNARow(lead, false) +
-      (rel.length ? '<p class="cs-relh">Related</p>' + rel.map(function(x){ return csNARow(x, true); }).join('') : '') + '</div>');
-    items = items.filter(function(x){ return x !== lead && rel.indexOf(x) === -1; });
+    var rel = heads.filter(function(x){ return x !== lead && x.it !== lead.it && x.today && lead.today && x.tier !== 'crit'; });
+    groups.push('<div class="cs-group" role="group" aria-label="' + lead.test.n + ' and related">' + csNARow(lead, false, infoOf(lead.it)) +
+      (rel.length ? '<p class="cs-relh">Related</p>' + rel.map(function(x){ return csNARow(x, true, infoOf(x.it)); }).join('') : '') + '</div>');
+    heads = heads.filter(function(x){ return x !== lead && rel.indexOf(x) === -1; });
   }
-  items.forEach(function(x){ groups.push('<div class="cs-group">' + csNARow(x, false) + '</div>'); });
+  heads.forEach(function(x){ groups.push('<div class="cs-group">' + csNARow(x, false, infoOf(x.it)) + '</div>'); });
   el.innerHTML = '<h3 class="cs-h3" id="cs-na-h">Needs attention</h3>' + groups.join('');
   paintPd(el);
 }
@@ -12009,7 +12029,7 @@ var CS_REL = {
       'Source: <b>Simple Care record</b> &middot; last renewed Aug 30 &middot; not checked against PharmaNet'],
     /* PT_READINGS (home cuff, patient-reported), PT_RESULTS. Today's results are pointed to, not repeated. */
     ['Investigations', [
-      ['@na', 'Troponin I, CK and 12-lead ECG today', 'in Needs attention above'],
+      ['@na', 'Troponin I, CK and 12-lead ECG today', 'see Needs attention'],
       ['@bp', 'Home BP', 'results'],
       ['HbA1c <b>7.1 %</b>', 'Mar 12 &middot; high, ref &lt;7.0 &middot; LifeLabs', 'results']],
       'No lipid panel and no prior ECG on file.'],
@@ -12047,9 +12067,15 @@ function csRelGeneric(name){
   var meds = rxMeds(name);
   if(meds.length) rows.push(['Medications', meds.map(function(m){ return [m.drug + ' ' + m.dose, m.freq, 'medications']; }),
     'Source: <b>Simple Care record</b>' + (meds[0].last ? ' &middot; last renewed ' + meds[0].last : '') + ' &middot; not checked against PharmaNet']);
-  var res = (PT_RESULTS[name] || []).slice(0, 4);
-  if(res.length) rows.push(['Investigations', res.map(function(t){ var p = rsLast(t);
-    return [t.n + ' <b>' + p[1] + ' ' + t.u + '</b>', p[0] + (p[2] ? ' &middot; ' + (p[2].indexOf('crit') === 0 ? 'critical' : p[2]) : '') + ' &middot; ref ' + t.ref, 'results']; })]);
+  /* Ani, 5 Oct: each fact once. Today's values already in Needs attention are left out here, with one pointer. */
+  var na = CS.empty ? [] : csNAItems(name).filter(function(x){ return x.test; });
+  var naN = na.map(function(x){ return x.test.n; }), naP = [];
+  na.forEach(function(x){ if(naP.indexOf(x.it.panel) === -1) naP.push(x.it.panel); });
+  var res = (PT_RESULTS[name] || []).filter(function(t){ return !(naN.indexOf(t.n) > -1 && rsLast(t)[0] === 'Today'); }).slice(0, 4);
+  var inv = res.map(function(t){ var p = rsLast(t);
+    return [t.n + ' <b>' + p[1] + ' ' + t.u + '</b>', p[0] + (p[2] ? ' &middot; ' + (p[2].indexOf('crit') === 0 ? 'critical' : p[2]) : '') + ' &middot; ref ' + t.ref, 'results']; });
+  if(naP.length) inv.unshift(['@na', naP.join(', ') + ', today', 'see Needs attention']);
+  if(inv.length) rows.push(['Investigations', inv]);
   var L = PT_LAST[name];
   if(L) rows.push(['Prior related care', [[csShort(L.date) + ' &middot; you', csEsc(L.why) + '; ' + csEsc(L.plan[0] || ''), 'documents']]]);
   var pend = (L ? L.pending : []).concat(expFor(name).map(function(x){ return {what:x.what, when:x.when, state:'ordered ' + x.by}; }));
@@ -12061,9 +12087,12 @@ function csRenderRel(name){
   var cur = CS_REL[name], rows = cur ? cur.rows : csRelGeneric(name);
   if(!rows.length){ el.innerHTML = ''; el.hidden = true; return; }
   el.hidden = false;
-  var h = '<div class="cs-hd"><h3 class="cs-h3" id="cs-rel-h">' + (cur ? 'Relevant to ' + cur.concern : 'From the chart') + '</h3><p class="cs-cap">Each line opens its source</p></div><dl class="cs-kv cs-relkv">';
+  var h = '<div class="cs-hd"><h3 class="cs-h3" id="cs-rel-h">' + (cur ? 'Relevant to ' + cur.concern : 'From the chart') + '</h3></div><dl class="cs-kv cs-relkv">';
   rows.forEach(function(row){
-    h += '<dt>' + row[0] + '</dt><dd>' + row[1].map(function(x){
+    /* Ani, 5 Oct: "Source: Simple Care record · last renewed … · not checked against PharmaNet" is one small
+       info marker per section, opened on demand (not hover-only, so it works by keyboard). Was a line under each list. */
+    var isSrc = row[2] && /^Source:/.test(row[2]), sk = row[0], sOpen = !!CS.srcOpen[sk];
+    h += '<dt>' + row[0] + (isSrc ? '<button type="button" class="cs-info" aria-expanded="' + sOpen + '" aria-label="Where this list comes from" title="Where this list comes from" onclick="CS.srcOpen[\'' + sk + '\']=!CS.srcOpen[\'' + sk + '\'];csRenderRel(PC_CURRENT);csFocus(\'#cs-rel .cs-info\')">' + csIc('cardinfo') + '</button>' : '') + '</dt><dd>' + row[1].map(function(x){
       if(x[0] === '@na') return CS.empty ? '' : '<button type="button" class="cs-src" onclick="csGoNA()">' + x[1] + ' <span class="cs-when">&middot; ' + x[2] + '</span>' + csIc('chevr', 'cs-go') + '</button>';
       if(x[0] === '@bp') return csBP(name);
       var line = csSrc(x[0], x[1], x[2], x[4]);
@@ -12074,7 +12103,7 @@ function csRenderRel(name){
           '<div class="cs-quote" id="cs-q-' + k + '"' + (open ? '' : ' hidden') + '>' + CS_QUOTES[k].map(function(q){ return '<p>&ldquo;' + q + '&rdquo;</p>'; }).join('') + '</div>';
       }
       return line;
-    }).join('') + (row[2] ? '<p class="cs-note2">' + row[2] + '</p>' : '') + '</dd>';
+    }).join('') + (row[2] && (!isSrc || sOpen) ? '<p class="cs-note2">' + row[2] + '</p>' : '') + '</dd>';
   });
   el.innerHTML = h + '</dl>';
   paintPd(el);
@@ -12084,24 +12113,22 @@ function csRenderRel(name){
    v2.5 §3/§6: New, Changed, Pending, Resolved since the treating doctor's last encounter; 3–6 items,
    critical always shown, then "+N more". Sentence case labels (no uppercase styling, rule 23). */
 var CS_SINCE = {
+  /* Ani, 5 Oct (declutter): each fact once. Removed here because they show elsewhere on the chart: today's cardiac
+     markers and ECG (Needs attention), the Jul 28 and Aug 26 consults (Prior related care, with what they wrote),
+     the lipid panel and HbA1c (Pending) and home BP (Investigations). */
   'Gloria Mcdonald, 74F': [
-    {k:'New', ic:'plus', t:function(){ return CS.empty ? 'Cardiac markers and 12-lead ECG today <span class="cs-cap">&middot; reviewed</span>'
-      : 'Cardiac markers and 12-lead ECG today, including a critical troponin <span class="cs-cap">&middot; in Needs attention</span>'; }},
-    {k:'New', ic:'plus', t:'Cardiology consult, Jul 28 <span class="cs-cap">&middot; stress test arranged; asks you to start bisoprolol</span>'},
-    {k:'New', ic:'plus', t:'Internal medicine consult, Aug 26 <span class="cs-cap">&middot; 3 recommendations not yet in your plan</span>'},
-    {k:'Pending', ic:'clock', t:'Lipid panel and HbA1c <span class="cs-cap">&middot; due Aug 20, not drawn</span><span class="cs-tag warn cs-inl"><span class="ic" data-pdic="clock"></span>Overdue</span>'},
     {k:'Resolved', ic:'complete', t:'Cardiology referral <span class="cs-cap">&middot; seen Jul 28</span>'},
-    {k:'Changed', ic:'carryforward', t:'Home BP <span class="cs-cap">&middot; 4 readings since Jun 25, from 122/78 to 126/79 &middot; patient-reported</span>'},
     {k:'Pending', ic:'clock', t:'Repeat iron studies <span class="cs-cap">&middot; due Sep 25, awaiting</span>'}
   ]
 };
 function csSinceGeneric(name){
   var L = PT_LAST[name]; if(!L) return [];
   var out = [];
-  inboxFor(name).filter(function(it){ return it.status !== 'signed-off'; }).forEach(function(it){
+  /* each fact once: results already in Needs attention, and pending items already under Pending, are left out */
+  var naIts = CS.empty ? [] : csNAItems(name).map(function(x){ return x.it; });
+  inboxFor(name).filter(function(it){ return it.status !== 'signed-off' && naIts.indexOf(it) === -1; }).forEach(function(it){
     out.push({k:'New', ic:'plus', t: csEsc(it.panel) + ' <span class="cs-cap">&middot; received ' + csEsc(it.received) + '</span>'});
   });
-  L.pending.forEach(function(p){ out.push({k:'Pending', ic:'clock', t: csEsc(p.what) + ' <span class="cs-cap">&middot; ' + csEsc(p.when) + ', ' + csEsc(p.state) + '</span>'}); });
   (CARE_PLAN[name] || []).filter(function(x){ return x.status === 'Completed'; }).forEach(function(x){
     out.push({k:'Resolved', ic:'complete', t: csEsc(x.action) + ' <span class="cs-cap">&middot; ' + csEsc(x.due) + '</span>'}); });
   return out;
@@ -12111,11 +12138,9 @@ function renderSinceLast(name){
   var el = document.getElementById('slv'); if(!el) return;
   var L = PT_LAST[name], r = csRow();
   var list = CS_SINCE[name] || csSinceGeneric(name);
+  /* Ani, 5 Oct: no previous visit, or nothing changed -> the section is hidden ("New patient" shows by the name) */
+  if(!L || !list.length){ el.innerHTML = ''; el.hidden = true; return; }
   el.hidden = false;
-  if(!L){
-    el.innerHTML = '<h3 class="cs-h3" id="cs-since-h">Since you last saw ' + csEsc(csPref(r)) + '</h3><p class="cs-cap">No previous visit with you on file.</p>';
-    return;
-  }
   var open = !!CS.sinceOpen[name], shown = open ? list : list.slice(0, CS_SINCE_SHOW), extra = list.length - CS_SINCE_SHOW;
   el.innerHTML = '<div class="cs-hd"><h3 class="cs-h3" id="cs-since-h">Since you last saw ' + csEsc(csPref(r)) + '</h3>' +
       '<p class="cs-cap">Your visit, ' + csShort(L.date) + ' &middot; ' + csEsc(L.why) + '</p></div>' +
