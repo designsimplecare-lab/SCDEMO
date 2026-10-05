@@ -13100,7 +13100,111 @@ document.addEventListener('keydown', function(e){
 });
 
 renderClaims();
-/* T23-PART-B */
+
+/* ================= Queue billing column (spec part 1): information plus a shortcut, never a submit button ================= */
+/* The queue is today's day sheet; earlier claims live in Claims. Every MSP row shows "—" until the visit is finalized (G12). */
+BILL_STATUS = {
+  'msp-none':      {label:'No claim yet', tone:'', open:false},
+  'msp-submit':    {label:'Submit claim', tone:'warn', open:true},
+  'msp-review':    {label:'Review claim', tone:'warn', open:true},
+  'msp-submitted': {label:'Claim submitted', tone:'info', open:false},
+  'notbilled':     {label:'Not billed', tone:'', open:false},
+  'altpayer':      {label:'Alternate payer', tone:'', open:false},
+  'noshow':        {label:'No-show billing: not decided', tone:'', open:false},
+  'pri-due':       {label:'Payment due', tone:'warn', open:true},
+  'pri-review':    {label:'Review payment', tone:'warn', open:true},
+  'pri-paid':      {label:'Payment paid', tone:'ok', open:false}
+};
+BILL_OPEN = ['msp-submit','msp-review','pri-due','pri-review'];
+QUEUE_DATA.forEach(function(r){ if(r.name === 'Manjit') r.claimId = 'c20'; });
+function t23RowClaim(r){ return r && r.claimId ? t23C(r.claimId) : null; }
+function t23RowKey(r){
+  if(r.status === 'noshow') return 'noshow';
+  var c = t23RowClaim(r); if(!c) return 'msp-none';
+  return ({submit:'msp-submit', review:'msp-review', submitted:'msp-submitted', held:'msp-submitted', notbilled:'notbilled', altpayer:'altpayer',
+           'pri-due':'pri-due', 'pri-review':'pri-review', 'pri-paid':'pri-paid'})[c.st] || 'msp-submitted';
+}
+function t23BillCell(r){
+  var k = t23RowKey(r), b = BILL_STATUS[k];
+  r.bill = k;
+  if(k === 'msp-none') return '<span class="t23-none" aria-label="No claim yet. The visit isn’t finished." title="No claim yet. The visit isn’t finished.">—</span>';
+  if(k === 'noshow') return '<span class="t23-ns" title="Whether a no-show is billed, and how, isn’t decided yet (Needs Daniel)">No-show billing: not decided</span>';
+  if(k === 'notbilled' || k === 'altpayer') return '<span class="bill-pill t23-quiet">' + b.label + '</span>';
+  if(b.open) return '<button class="bill-pill ' + b.tone + ' go" aria-haspopup="menu" onclick="event.stopPropagation();openBillMenu(this,\'' + esc1(r.name) + '\')"><span>' + b.label + '</span><span class="q-caret" data-pdic="chevdown" aria-hidden="true"></span></button>';
+  return '<span class="bill-pill ' + b.tone + '">' + b.label + '</span>';
+}
+function t23SyncQueue(){ if(typeof renderQueue === 'function') renderQueue(); updateClaimCount(); }
+/* REQ-BIL-01: the next step first, Details second. No "Sign off & submit" here (CNF-10, TAIL-04). */
+openBillMenu = function(btn, name){
+  var menu = document.getElementById('q-statusmenu');
+  if(qsmName === 'bill:' + name && menu && menu.classList.contains('show')){ closeStatusMenu(); return; }
+  var r = QUEUE_DATA.find(function(x){ return x.name === name; }); if(!r) return;
+  var c = t23RowClaim(r); if(!c) return;
+  openStatusMenu(btn, name);
+  qsmName = 'bill:' + name;
+  var first = c.st === 'submit' ? ['Sign off in Claims', 't23GoClaim(\'' + c.id + '\')']
+            : c.st === 'review' ? ['Decide in Claims', 't23GoClaim(\'' + c.id + '\')']
+            : c.st === 'pri-due' ? ['Mark as paid', 't23SetSt(\'' + c.id + '\',\'pri-paid\',\'Payment marked received\')']
+            : ['Clear the payment', 't23SetSt(\'' + c.id + '\',\'pri-paid\',\'Payment reviewed and cleared\')'];
+  menu.innerHTML =
+    '<button type="button" onclick="event.stopPropagation();closeStatusMenu();' + first[1] + '"><span class="q-tick">&#10003;</span>' + first[0] + '</button>' +
+    '<button type="button" onclick="event.stopPropagation();closeStatusMenu();t23Open(\'' + c.id + '\')"><span class="q-tick">&#10003;</span>Details</button>';
+};
+openBilling = function(name){ var r = QUEUE_DATA.find(function(x){ return x.name === name; }); var c = t23RowClaim(r); if(c) t23Open(c.id); };
+function t23GoClaim(id){ CL_ON = 'Needs attention'; showScreen('claims'); t23Focus(id); }
+
+/* ================= Finalize closes the visit only (spec part 5) ================= */
+function t23OnFinalize(r){
+  if(!r || r.claimId) return '';
+  var v = t23VisitCode(r.name);
+  var c = {id:'q' + r.pos, who:firstLast(r.name), date:'2026-10-03', win:r.win, mins:v.mins, units:v.units, loc:v.loc, ref:v.ref, flags:[], hist:[], at:t23Now()};
+  c.hist.push([t23Stamp(), 'Dr. Pannozzo', 'Visit signed off; claim created']);
+  var suffix;
+  if(v.disp === 'msp' || v.disp === 'recip'){
+    c.fee = v.fee; c.dx = v.dx;
+    if(v.disp === 'recip'){ c.payer = 'recip'; c.prov = 'Alberta'; }
+    var cr = {check:(r.cardWhy || 'name'), ended:'ended', invalid:'invalid'}[r.card];
+    if(cr){ c.card = {res:cr, at:'3 Oct, 7:42 AM', when:'at check-in'}; c.flags.push({k:'card', res:cr}); c.hist.push([t23Stamp(), 'System', 'Health card check attached: ' + T23_CARD_WORDS[cr].still]); }
+    if(!v.dx) c.flags.push({k:'dx'});
+    c.st = c.flags.length ? 'review' : 'submit';
+    suffix = ' · claim waiting in Claims';
+  } else if(v.disp === 'private'){ c.payer = 'private'; c.st = 'pri-due'; suffix = ' · private pay, payment due'; }
+  else if(v.disp === 'alt'){ c.st = 'altpayer'; c.reason = v.alt; suffix = ' · alternate payer'; }
+  else { c.st = 'notbilled'; c.reason = v.disp === 'bundled' ? 'Bundled' : v.reason; suffix = ' · not billed'; }
+  CLAIMS.unshift(c); r.claimId = c.id;
+  renderClaims(); if(typeof t23RenderDigest === 'function') t23RenderDigest();
+  return suffix;
+}
+function t23RenderBillRow(){
+  var el = document.getElementById('t23-billrow'), help = document.getElementById('t23-finhelp');
+  if(!el) return;
+  var r = (typeof csRow === 'function') ? csRow() : null;
+  if(!r){ el.hidden = true; if(help) help.hidden = true; return; }
+  var sep = '<span class="t23-bsep">·</span>';
+  var h = t23Ic('claims') + '<span>Billing</span>' + sep;
+  if(r.signed){
+    var c = t23RowClaim(r);
+    h += c ? '<span>' + (T23_ST[c.st] || {}).label + '</span>' + sep + '<span>' + (c.st === 'submit' || c.st === 'review' ? 'waiting in Claims for your sign-off' : 'recorded') + '</span>' +
+      '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button>' : '<span>Recorded</span>';
+    el.innerHTML = h; el.hidden = false; if(help) help.hidden = true; paintPd(el); return;
+  }
+  var v = t23VisitCode(r.name), btn = 'Change', focus = 'fee';
+  if(v.disp === 'private') h += '<span>Private pay</span>' + sep + '<span>Private visit fee</span>' + T23_DEMO;
+  else if(v.disp === 'notbilled' || v.disp === 'bundled') h += '<span>Not billed</span>' + sep + '<span>' + t23E(v.disp === 'bundled' ? 'Bundled' : v.reason) + '</span>';
+  else if(v.disp === 'alt') h += '<span>Alternate payer</span>' + sep + '<span>' + v.alt + '</span>';
+  else {
+    h += '<span>' + (v.disp === 'recip' ? 'Reciprocal claim' : 'MSP claim') + '</span>' + sep;
+    var cp = {ended:'Health card: coverage ended 31 Aug', invalid:'Health card: not valid', check:'Health card: name doesn’t match MSP'}[r.card];
+    if(cp) h += '<span>' + cp + '</span>';
+    else if(!v.dx){ h += '<span>Diagnosis not set</span>'; btn = 'Add diagnosis'; focus = 'dx'; }
+    else h += '<span>' + v.fee + ' ' + T23_FEES[v.fee].name + '</span>' + T23_DEMO + sep + '<span>' + t23DxName(v.dx) + '</span>' + sep + '<span>' + v.mins + ' min</span>';
+  }
+  h += '<button type="button" class="btn xs" onclick="t23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})">' + t23Ic('edit') + btn + '</button>';
+  el.innerHTML = h; el.hidden = false; if(help) help.hidden = false; paintPd(el);
+}
+if(typeof csFinState === 'function'){ var t23CsFin0 = csFinState; csFinState = function(){ t23CsFin0(); t23RenderBillRow(); }; }
+t23SyncQueue();
+/* T23-PART-C */
 </script>
   <div class="build-stamp">v2 · build 2026-10-05 10:30</div>
 </body>
