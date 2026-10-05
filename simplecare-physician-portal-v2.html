@@ -13334,7 +13334,8 @@ function t23RenderDigest(){
        '<span class="t23-cap">Updated today, 7:00 AM</span>' + t23Ph('Demo time · Needs Daniel') + '</div>';
   el.innerHTML = h; el.hidden = false; paintPd(el);
 }
-function t23DigestFolded(){ try { return localStorage.getItem('sc.t23.digestFolded') === '1'; } catch(e){ return !!window.T23_DIGEST_FOLDED; } }
+/* folded by default (Ani, 5 Oct); opens only if the doctor chose Show */
+function t23DigestFolded(){ try { return localStorage.getItem('sc.t23.digestFolded') !== '0'; } catch(e){ return window.T23_DIGEST_FOLDED !== false; } }
 function t23FoldDigest(on){
   window.T23_DIGEST_FOLDED = on;
   try { localStorage.setItem('sc.t23.digestFolded', on ? '1' : '0'); } catch(e){}
@@ -13351,6 +13352,6 @@ t23SyncQueue();
 t23RenderDigest();
 /* T23-PART-E */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-05 16:45</div>
+  <div class="build-stamp">v2 · build 2026-10-05 17:05</div>
 </body>
 </html>
