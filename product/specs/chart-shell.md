@@ -216,3 +216,19 @@ Main
 - The T-023 billing line is the existing one-line row; in the 440 px popover it wraps to two lines.
 - Dark theme not checked (light only, Ani 4 Oct).
 
+
+## Daniel review, 5 Oct (built 6 Oct)
+
+Daniel reviewed the chart with Ani on 5 Oct; Ani approved the updates on 6 Oct. He prefers layout v2. Current stays the default (Ani decides later). Light mode only.
+
+**Finalize submits the claim, when he says so** (billing rules: `billing-redesign.md`, "Daniel review, 5 Oct")
+- The billing row above Finalize shows fee code · diagnosis · time, with Change (opens "Your coding"; no disposition).
+- MSP visit: primary **Sign off & submit claim** finalizes the visit and submits that one claim after the code check (asked once per session). Secondary (outline) **Finalize, submit later**: the claim goes to Claims, Needs submission. Cancelling the code check also leaves it there. The helper line: "Submitting sends this one claim. Claims go to MSP in one batch at the end of the day."
+- No diagnosis: Sign off & submit opens the diagnosis search instead; Finalize, submit later still closes the visit (billing never blocks the clinical sign-off).
+- Private pay: one primary, **Sign off & finalize visit**.
+- Both buttons go through the same gates (`finalizeVisit`: checks, empty note, template text, undecided AI text, problem-list suggestions). Same nodes and functions in Current and v2 (the v2 Sign off popover holds the moved footer). After sign-off the row says "Claim submitted · goes to MSP at the end of the day" or "Needs submission · in Claims" with Submit claim and Details.
+
+**v2 opens on the Note tab**
+- In the review, v2 opened on Review and Daniel asked where to write the note. During an open visit v2 now opens on **Note**; Review keeps its badge (the count still to review, red when critical).
+- A no-show opens on Review (its banner, Call again); a signed-off visit opens on Review. Switching Current → v2 on an open chart uses the same rule.
+- Screenshots (local): `product/reports/shots/daniel5-chart-billing-row-current.png`, `daniel5-chart-billing-row-v2.png`, `daniel5-v2-note-default.png`.

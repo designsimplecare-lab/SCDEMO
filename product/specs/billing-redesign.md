@@ -40,6 +40,64 @@ Builder: `ux-designer`, after T-021. Gates: `clinical-safety` (sign-off and AI f
 
 ---
 
+## Daniel review, 5 Oct
+
+Daniel reviewed the billing demo with Ani on 5 Oct 2026; Ani approved the changes on 6 Oct. **These rules replace the parts of this spec they contradict** (sections 2, 2a, 2b, 5, 6, 7 on claims, 8a and 10 as noted). Build: `ux-designer`, 6 Oct; notes in `billing-build-notes.md`.
+
+**Home**
+- No billing card on Home. Home Needs attention is clinical only; the queue billing status and the sidebar Claims are the shortcuts into Claims. (Replaces 8a, the digest.)
+- One exception: an MSP claim not submitted yet that is close to going stale-dated appears as one item in Home Needs attention, amber (not red, not critical), and opens that claim in Claims. Threshold: 5 days left or fewer (proposal; Needs Daniel).
+
+**Claims: MSP and private pay are separate**
+- A segmented switch at the top of Claims: "MSP | Private pay". The two are organised differently and never mixed.
+- MSP tiles: **Needs submission**, **Rejected by MSP**, **Paid this cycle**. "With MSP", "Ready to sign off" and "Needs your decision" are gone. Submitted claims stay reachable through the Submitted, Paid and All tabs.
+- Order: **Rejected by MSP first** (top priority, front and center), then **Needs submission**.
+
+**Rejected by MSP**
+- Keeps Correct, Dispute and "ask MSP to reassess", the claim details and history, and the link to the related visit (Daniel liked it).
+- Each rejected claim counts down from the rejection date: about 90 days to fix it ("about 3 months"; the exact window per rejection type Needs Daniel and Dev). Dev to supply the full list of rejection types.
+- A corrected claim goes back to Needs submission, keeps the rejection's countdown, and the doctor submits it himself.
+
+**Needs submission**
+- One merged list of every MSP claim not submitted yet, for any reason. The product doesn't ask or track why.
+- No batch sign-off and no include checkboxes. Each claim has its own **Submit claim** button. The doctor submits one at a time; the system sends the day's submitted claims to MSP in one batch at the end of the day (said once, in a quiet line).
+- A day countdown on each claim: 90 days from the date of service; the visit day is day 90, the next day day 89 (Daniel will double-check the rule). Sorted fewest days left first.
+- Chip tones (proposal, Needs Daniel): neutral; amber at 10 days or fewer; stronger amber at 5 or fewer; critical red only at 2 days or fewer (48 hours). This is the only red in billing (rule 21: red is critical only). Daniel's own proposal adds an automatic alert to the doctor's inbox at 48 hours: not built, Needs Daniel.
+- The simulated code check stays, asked once per session.
+
+**The billing agent**
+- The person who works on rejections and asks billing questions is the **billing agent**, a role separate from the MOA (it can be the same person). The doctor stays responsible for every claim. The MOA is not part of the doctor's billing. Demo person: Japneet, "billing agent".
+- The billing agent's question on a claim stays ("Can you check the diagnosis on this claim?", with "Fix it now" and "The diagnosis is right · resubmit as is"), shown inside its claim: in Needs submission, or in Rejected by MSP when it came from a rejection. "Resubmit as is" runs the code check, because the doctor always presses submit himself.
+- The MOA portal's Billing screen (section 10) is hidden from the MOA nav. A separate billing agent view is future work.
+
+**Removed use cases**
+- Health card problems on claims (coverage ended, name mismatch, invalid card): they are caught before the visit. The queue's health-card column stays.
+- The duplicate check (it won't happen).
+- The AI review flag "fee item may not match the visit", and the AI flag system on claims. AI help to make the note audit-proof belongs in the chart note (a later discussion).
+- "Not billed" and "Alternate payer" (section 6): a visit is MSP or private pay, decided before the visit.
+- The physician-assistant viewer switch on Claims: Japneet now appears in billing as the billing agent, so it no longer made sense.
+
+**Coding ("Your coding")**
+- "Fee item" is renamed **Fee code**. Fee codes are deterministic by the patient's age (about 5 codes): the code is set automatically from the age ("Set from age · 74") and can still be changed from the short list. The real codes and age bands Need Daniel.
+- **Diagnosis (ICD-9):** a search box only. Results appear only after typing (for example "back pain", "UTI", "cold sore"). No long list, no free text. AI pre-fills it. If nothing is found: "Can't find it? Open the ICD-9 source list" (Daniel has the source document and list; link Needs Daniel).
+- Removed: units, service location, referring practitioner and the whole Disposition section.
+- **Time:** start and stop, filled from the call, editable; every change is logged. Time matters for time-based codes.
+- The chart's billing row shows fee code · diagnosis · time, with Change (no disposition).
+
+**Finalize in the chart** (replaces section 5's "Finalize closes the visit only")
+- Daniel wants a bill submitted when the consult is done, and the doctor always presses submit himself.
+- MSP visit: primary **Sign off & submit claim** (finalizes the visit and submits that one claim, after the code check); secondary **Finalize, submit later** (the claim goes to Needs submission). Cancelling the code check also leaves it in Needs submission.
+- A claim can't be submitted without a diagnosis: Sign off & submit opens the diagnosis search; Finalize, submit later still closes the visit.
+- Private-pay visit: just finalize.
+
+**Private pay view**
+- Payment status per visit: the card on file charged after the visit, or a payment link sent (a form is released once it's paid), with **Outstanding** or **Paid**.
+- An outstanding payment link has "Ask the MOA to follow up" (doctor → MOA, rule 12).
+
+**Later (not in this build):** an analytics page: earnings by remittance cycle and by period, and volume by weekday.
+
+---
+
 ## 0. Rules for every part
 
 **The design system to use (V2's own).**

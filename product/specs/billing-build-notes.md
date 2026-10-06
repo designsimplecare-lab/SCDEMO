@@ -1,5 +1,30 @@
 # T-023 billing: build notes
 
+## Daniel review, 5 Oct: what changed (built 6 Oct)
+
+`ux-designer`, 6 Oct 2026, after Ani approved the updates. Rules: `billing-redesign.md`, "Daniel review, 5 Oct". Files: `simplecare-physician-portal-v2.html` and `simplecare-moa-portal.html`. Light mode only. Committed locally in six steps ("Daniel 5 Oct (step 1)" … "(step 6)"); not pushed or deployed. The section further down ("5 Oct") describes the build before this review; where they differ, this section wins.
+
+**Built**
+1. **Light by default.** The portal no longer follows the system dark setting (it opened dark on Daniel's computer). Dark only when someone uses the theme button; the choice is remembered (`sc-theme`, try/catch). The MOA portal has no theme switch and never followed the system, so it is unchanged.
+2. **Home.** "Billing today" is gone. One amber Needs attention row for an MSP claim not submitted yet with 5 days left or fewer (demo: Frank D., 9 Jul visit, 4 days left); it opens the claim in Claims. Several such claims fold into one row ("N MSP claims not submitted", fewest days shown). The queue billing status ("Needs submission", "Payment outstanding") opens Claims; nothing in the queue submits.
+3. **Claims.** "MSP | Private pay" switch. MSP tiles: Needs submission, Rejected by MSP, Paid this cycle. Rejected by MSP first (Correct, Dispute, reassess, Open the visit, Details, days left from the rejection date), then Needs submission (one list, one Submit claim each, 90-day countdown, fewest first, one quiet line about the end-of-day batch). Japneet (billing agent) asks the question on Nadia Hassan's returned claim. Removed: health-card, duplicate and AI review flags on claims, Not billed, Alternate payer, the batch and checkboxes, the PA viewer switch, the digest. Private pay: card on file or payment link, Outstanding/Paid, "Ask the MOA to follow up". The code check is asked once per session. Demo hook: `t23DemoDays('c18', 2)` shows the 48-hour red chip.
+4. **Your coding.** Fee code set from age (demo codes DEMO-1…DEMO-5 by demo age bands), changeable from the short list; ICD-9 search only (demo list DX-D1…DX-D16 with search words), results after typing, "Can't find it? Open the ICD-9 source list" (placeholder: shows a toast); start and stop time (demo 9:12–9:24 AM), changes logged on the claim's history. The chart billing row: fee code · diagnosis · time · Change.
+5. **Finalize.** Sign off & submit claim (primary) and Finalize, submit later (secondary) above the note column's footer, the same nodes in Current and v2 (the v2 Sign off popover). Private pay: one button, Sign off & finalize visit; the demo charges the card on file.
+6. **Chart v2** opens on the Note tab during an open visit; no-show and signed-off visits open on Review. Current stays the default layout.
+- **MOA portal:** the Billing screen is hidden from the nav, its Today items and the health-card billing task are off (`T23M_BILLING_FOR_MOA = false`); the code is kept. **Future work:** a separate billing agent view.
+
+**Verification (6 Oct).** `node --check` on the 5 inline scripts in the physician portal and the 1 in the MOA portal: all pass. Headless Chrome 1440 × 900 with the system set to dark: the portal opens light; console clean on every run. Checked: Claims MSP and Private pay; submit one claim (code asked once, then not again); Correct a rejection (back in Needs submission, keeps its countdown); dispute → reassess; adjusted → dispute; the billing agent's question, both answers; Ask the MOA to follow up; the coding dialog (no results before typing, "uti", "back pain", no match → source link; fee list; time change logged); Sign off & submit claim and Finalize, submit later in both layouts; a missing diagnosis blocks only the submit; private pay finalize; v2 start tab on all eight queue charts; Home; regression on Inbox, Tasks, Assistant (claims answer), MOA chat, every queue chart, the queue billing column. Measured: 0 red elements in Claims at the demo values, text 14 px minimum in Claims and the coding dialog. Screenshots (local): `product/reports/shots/daniel5-*.png`.
+
+**Still open**
+- **Needs Daniel:** the stale-date thresholds (Home item at 5 days or fewer; chips amber at 10, stronger at 5, red at 2, and whether 48 hours also sends an inbox alert, which isn't built); the exact 90-day rule (is the visit day day 90?); the rejection window ("about 3 months", per rejection type?); the official ICD-9 source list and its link; the real fee codes and age bands; what "Paid this cycle" covers (the remittance period); whether a no-show is billed.
+- **Needs Dev:** the full list of MSP rejection types (Daniel asked for it), and the structure of claim details and history.
+- **Needs Ani:** retiring the PA viewer switch; the stronger-amber chip (warn wash, bold) versus the plain amber; the Home row names the patient (the old digest named none); the private-pay demo charges the card on finalize; v2 opens a completed-but-unsigned demo visit (Manjit) on Note.
+- The two portals still don't share state.
+
+---
+
+## 5 Oct (before Daniel's review)
+
 `ux-designer`, 5 Oct 2026. Spec: `product/specs/billing-redesign.md` (Ani approved it on 4 Oct). Task: `product/tasks/T-023-billing-redesign.md`.
 Files: `simplecare-physician-portal-v2.html` (build 2026-10-05 10:30) and `simplecare-moa-portal.html` (build 2026-10-05 11:15). Light mode only. Built locally, not pushed or deployed.
 
