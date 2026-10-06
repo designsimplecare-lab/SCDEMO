@@ -569,25 +569,27 @@ renderTasks(); renderReferrals(); renderImaging(); renderCallbacks(); renderFaxe
    Dolly fixes patient details and clerical fields; coding is read-only for her, with "Ask the doctor".
    A question on a claim is not a task (rule 12; proposal N5, Needs Daniel). No sign-off here (CNF-10). */
 var BDEMO = '';  /* no demo tags in the UI (Ani, 6 Oct) */
+/* Real data (Ani, 6 Oct 2026): diagnosis codes are real BC MSP ICD-9 codes (the same as the physician portal's
+   claims; source assets/data/bc-msp-diagnostic-codes.json). Fee and explanatory codes are still demo values. */
 var BILL_ITEMS = [
   {id:'b1', f:'open', kind:'Teleplan rejection', who:'Carol-Anne Feldman', date:'29 Sep', src:'Teleplan', on:'1 Oct', ex:'EX-D2',
    issue:'Name on the claim doesn’t match MSP’s record for this card (EX-D2)', fix:'Confirm the legal name with the patient, correct it, resubmit.', due:'Due Mon 5 Oct',
-   fee:'DEMO-A · Visit', dx:'DX-D3 · Yeast infection', mins:10, hist:['1 Oct 9:02 AM · Teleplan · Rejected: EX-D2 (demo)', '1 Oct 9:03 AM · System · Sent to Dolly: patient details']},
+   fee:'DEMO-A · Visit', dx:'112.1 · Candidiasis of vulva and vagina', mins:10, hist:['1 Oct 9:02 AM · Teleplan · Rejected: EX-D2 (demo)', '1 Oct 9:03 AM · System · Sent to Dolly: patient details']},
   {id:'b2', f:'open', kind:'Held by MSP', who:'Owen Brady', date:'25 Aug', src:'MSP', on:'22 Sep', ex:'EX-D5', day:39, left:51,
    issue:'MSP is holding this claim (EX-D5)', fix:'Check the explanatory code and send what MSP asks for.', due:'',
-   fee:'DEMO-A · Visit', dx:'DX-D5 · Back pain', mins:12, hist:['22 Sep · MSP · Held: EX-D5 (demo)']},
+   fee:'DEMO-A · Visit', dx:'724.2 · Lumbago', mins:12, hist:['22 Sep · MSP · Held: EX-D5 (demo)']},
   {id:'b3', f:'open', kind:'Health card', who:'K Arli Eyre', date:'30 Sep', src:'MSP', on:'30 Sep', ex:'',
    issue:'Coverage ended 31 Aug 2026 (demo)', fix:'Ask the patient about coverage. If there’s none, the doctor chooses private pay, another payer, or not billed.', due:'Due Mon 5 Oct',
-   fee:'DEMO-A · Visit', dx:'DX-D2 · Follow-up', mins:10, card:true, checks:['30 Sep, 7:42 AM · at check-in'], hist:['30 Sep 7:42 AM · System · Health card: coverage ended 31 Aug 2026']},
+   fee:'DEMO-A · Visit', dx:'V67.9 · Follow-up examination, unspecified', mins:10, card:true, checks:['30 Sep, 7:42 AM · at check-in'], hist:['30 Sep 7:42 AM · System · Health card: coverage ended 31 Aug 2026']},
   {id:'b4', f:'wait', kind:'Teleplan rejection', who:'Nadia Hassan', date:'15 Jul', src:'Teleplan', on:'2 Oct', ex:'EX-D4', day:80, left:10,
    issue:'Diagnosis code problem (EX-D4)', fix:'Question sent: can you check the diagnosis?', with:'With Dr. Pannozzo',
-   fee:'DEMO-A · Visit', dx:'DX-D7 · Prescription renewal', mins:9, hist:['2 Oct 9:10 AM · Teleplan · Returned: EX-D4 (demo)', '2 Oct 9:31 AM · Dolly · Question to Dr. Pannozzo: Can you check the diagnosis on this claim?']},
+   fee:'DEMO-A · Visit', dx:'V68.1 · Issue of repeat prescriptions', mins:9, hist:['2 Oct 9:10 AM · Teleplan · Returned: EX-D4 (demo)', '2 Oct 9:31 AM · Dolly · Question to Dr. Pannozzo: Can you check the diagnosis on this claim?']},
   {id:'b5', f:'wait', kind:'MSP refusal', who:'Behdis Maleki', date:'12 Sep', src:'MSP', on:'26 Sep', ex:'EX-D1', day:21, left:83,
    issue:'Fee item not payable with this diagnosis (EX-D1)', fix:'With Dr. Pannozzo: coding.', with:'With Dr. Pannozzo',
-   fee:'DEMO-A · Visit', dx:'DX-D4 · Iron deficiency', mins:12, hist:['26 Sep · MSP · Refused: EX-D1 (demo)', '26 Sep · System · Sent to Dr. Pannozzo: coding']},
+   fee:'DEMO-A · Visit', dx:'280 · Iron deficiency anaemias', mins:12, hist:['26 Sep · MSP · Refused: EX-D1 (demo)', '26 Sep · System · Sent to Dr. Pannozzo: coding']},
   {id:'b6', f:'wait', kind:'Reassessment', who:'Andrey Abushakhmanov', date:'5 Sep', src:'MSP', on:'19 Sep', ex:'EX-D2', day:28, left:76,
    issue:'Looks correctly billed (EX-D2)', fix:'Waiting for Dr. Pannozzo to authorise a reassessment.', with:'With Dr. Pannozzo',
-   fee:'DEMO-A · Visit', dx:'DX-D2 · Follow-up', mins:10, hist:['19 Sep · MSP · Refused: EX-D2 (demo)', '3 Oct · Dr. Pannozzo · Marked as a potential dispute']}
+   fee:'DEMO-A · Visit', dx:'V67.9 · Follow-up examination, unspecified', mins:10, hist:['19 Sep · MSP · Refused: EX-D2 (demo)', '3 Oct · Dr. Pannozzo · Marked as a potential dispute']}
 ];
 var BILL_F = 'open', BILL_OPEN_ID = null, BILL_ASK = false, BILL_DIRTY = false;
 function bNow(){ return new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
@@ -725,6 +727,6 @@ renderTasks(); renderBilling();
 function dswOpen(){ document.getElementById('dsw').classList.add('open'); document.getElementById('dsw-fab').style.display='none'; }
 function dswClose(){ document.getElementById('dsw').classList.remove('open'); document.getElementById('dsw-fab').style.display='inline-flex'; }
 </script>
-  <div class="build-stamp">build 2026-10-06 15:40</div>
+  <div class="build-stamp">build 2026-10-06 17:30</div>
 </body>
 </html>

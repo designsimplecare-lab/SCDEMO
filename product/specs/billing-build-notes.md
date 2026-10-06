@@ -1,5 +1,19 @@
 # T-023 billing: build notes
 
+## Real data, 6 Oct (Ani)
+
+`ux-designer`, 6 Oct 2026. Ani sent real data; rule: nothing in the UI says demo, placeholder or Needs Daniel (open questions live here and in code comments only). Committed locally as "Real data (part 1)" and "(part 2)"; not pushed or deployed.
+
+**Source (diagnostic codes):** `assets/data/bc-msp-diagnostic-codes.json` is built from Ani's `bc_msp_diagnostic_codes.json` (7,137 rows: 7,060 ICD-9 + 77 MSP additional codes), public data from the Province of BC, "Diagnostic Code Descriptions (ICD-9)", https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/msp/physicians/diagnostic-code-descriptions-icd-9 (page verified 6 Oct 2026). Kept: the 6,168 leaf codes (code, readable text, search words, common/MSP flags) plus the 969 parent headings for search; about 430 KB, loaded on the first open of "Your coding".
+
+**Part 1, diagnosis (ICD-9):**
+- Search in "Your coding" (the only place a diagnosis is picked): results only after typing; a word matches the start of a code ("599") or of a word in the description, its parent headings, or the plain-language search words ("uti", "cold sore"). Ranking: exact code, then common codes, then the rest; within a tier, code matches, then search words (an exact search word wins, earlier in the list first), then list order. Up to 8 results with "Showing 8 of N"; arrow keys and Enter; only leaf codes can be picked ("054" lists 054.0–054.9).
+- Display text: ALL CAPS turned into sentence case (a few acronyms such as HIV kept). A child that reads as a fragment ("UNSPECIFIED", "OF VULVA AND VAGINA", "NOT SPECIFIED AS MALIGNANT OR BENIGN") is joined to its parent: "Candidiasis of vulva and vagina", "Essential hypertension, not specified as malignant or benign". **Assumption:** the joining rule is ours, not MSP's; the code is always shown as is.
+- "Can't find it? Open BC's full diagnostic code list" links to the gov.bc.ca page above (new tab), under the results and when nothing matches. If the list fails to load: "The diagnosis list didn't load…" with try again.
+- Demo codes replaced: DX-D1 chest pressure → 786.5 Chest pain; DX-D2 follow-up → V67.9 Follow-up examination, unspecified; DX-D3 yeast infection → 112.1 Candidiasis of vulva and vagina; DX-D4 iron deficiency → 280 Iron deficiency anaemias (280 is itself a leaf in this list; there is no 280.9); DX-D5 back pain → 724.2 Lumbago; DX-D6 lab review → V72.6 Laboratory examination; DX-D7 prescription renewal → V68.1 Issue of repeat prescriptions; DX-D8 high blood pressure → 401.9; DX-D9 rash → 782.1; DX-D10 UTI → 599.0; DX-D11 cold sore → 054.9; DX-D12 sinus → 461.9; DX-D13 common cold → 460; DX-D14 anxiety → 300.0; DX-D15 depression → 311; fever → 780.6. Same codes in the MOA portal's billing items (hidden screen).
+- Fee codes (DEMO-1…5) and explanatory codes (EX-D…) are unchanged until Ani sends the real ones.
+- **Needs Daniel:** searching "suicide" (or "suicidal") finds nothing in this list (Daniel's complaint). Which code should be used for suicidal ideation, and which search words should we add to it? Also: is V72.6 right for a lab-review visit, and V67.9 for a general follow-up?
+
 ## Daniel review, 5 Oct: what changed (built 6 Oct)
 
 `ux-designer`, 6 Oct 2026, after Ani approved the updates. Rules: `billing-redesign.md`, "Daniel review, 5 Oct". Files: `simplecare-physician-portal-v2.html` and `simplecare-moa-portal.html`. Light mode only. Committed locally in six steps ("Daniel 5 Oct (step 1)" … "(step 6)"); not pushed or deployed. The section further down ("5 Oct") describes the build before this review; where they differ, this section wins.

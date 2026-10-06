@@ -5253,6 +5253,19 @@
 
   /* no demo or open-question tags in the UI (Ani, 6 Oct) */
   .t23-demo,.t23-ph{display:none !important;}
+
+  /* Real data (Ani, 6 Oct): diagnosis results show the code and a readable description, which can wrap;
+     the highlighted result (arrow keys) and the official-list link */
+  #t23-pick ul.t23-dxlist button{display:flex;align-items:baseline;gap:12px;padding:10px 12px;line-height:1.35;}
+  #t23-pick ul.t23-dxlist button b{flex:0 0 52px;font-variant-numeric:tabular-nums;}
+  #t23-pick ul.t23-dxlist button span{flex:1 1 auto;min-width:0;}
+  #t23-pick ul.t23-dxlist button.act{background:var(--wash);box-shadow:inset 3px 0 0 var(--accent);}
+  #t23-pick ul.t23-dxlist button.act[aria-selected="true"]{background:var(--tag-info);}
+  #t23-pick .t23-nores + .t23-nores{margin-top:6px;}
+  #t23-pick .t23-src{display:inline-flex;align-items:center;gap:4px;text-decoration:none;}
+  #t23-pick .t23-src:hover{text-decoration:underline;}
+  #t23-pick .t23-src .ic,#t23-pick .t23-src svg{width:16px;height:16px;}
+  #t23-pick .t23-retry{border:0;background:none;padding:0;font:inherit;font-size:14px;font-weight:600;color:var(--accent-ink);cursor:pointer;text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -13161,16 +13174,44 @@ var T23_FEES = {
   'DEMO-5': {name:'Visit, 70 and over', amt:35, min:70, max:200}
 };
 function t23FeeForAge(age){ age = parseInt(age, 10); if(isNaN(age)) return 'DEMO-2'; for(var k in T23_FEES){ if(age >= T23_FEES[k].min && age <= T23_FEES[k].max) return k; } return 'DEMO-2'; }
-/* Demo diagnosis list with search words (codes are demo values; the full official ICD-9 list Needs Daniel's source) */
-var T23_DX = [
-  ['DX-D1','Chest pressure','chest pain tightness'], ['DX-D2','Follow-up visit','follow up review'], ['DX-D3','Yeast infection','candida thrush vaginal'],
-  ['DX-D4','Iron deficiency','anemia anaemia low iron'], ['DX-D5','Back pain','low back lumbar'], ['DX-D6','Lab review','blood test results'],
-  ['DX-D7','Prescription renewal','rx refill medication'], ['DX-D8','High blood pressure','hypertension bp check'], ['DX-D9','Rash','skin dermatitis'],
-  ['DX-D10','Urinary tract infection','uti bladder cystitis'], ['DX-D11','Cold sore','herpes labialis lip'], ['DX-D12','Sinus infection','sinusitis'],
-  ['DX-D13','Common cold','upper respiratory infection uri cough'], ['DX-D14','Anxiety','anxious panic'], ['DX-D15','Depression','low mood depressed'],
-  ['DX-D16','Suicidal thoughts','suicide suicidal ideation']
-];
-function t23DxName(code){ var x = T23_DX.filter(function(d){ return d[0] === code; })[0]; return x ? x[1] : ''; }
+/* Real data (Ani, 6 Oct 2026): BC MSP diagnostic codes (ICD-9 plus MSP's additional codes), public data from
+   gov.bc.ca, "Diagnostic Code Descriptions (ICD-9)". The full list (6,168 leaf codes) is in
+   assets/data/bc-msp-diagnostic-codes.json and loads the first time "Your coding" opens (t23DxLoad).
+   T23_DX holds only the codes the demo claims and visits use, so Claims and the chart can name them before
+   the full list has loaded. Old demo codes → real codes: DX-D1 → 786.5, DX-D2 → V67.9, DX-D3 → 112.1, DX-D4 → 280,
+   DX-D5 → 724.2, DX-D6 → V72.6, DX-D7 → V68.1, DX-D8 → 401.9, DX-D9 → 782.1, DX-D10 → 599.0, DX-D11 → 054.9,
+   DX-D12 → 461.9, DX-D13 → 460, DX-D14 → 300.0, DX-D15 → 311 (DX-D16 "Suicidal thoughts" has no code in this list:
+   which code to use, and which search words to add, Needs Daniel; see product/specs/billing-build-notes.md). */
+var T23_DX = {
+  '786.5':'Chest pain', 'V67.9':'Follow-up examination, unspecified', '112.1':'Candidiasis of vulva and vagina',
+  '280':'Iron deficiency anaemias', '724.2':'Lumbago', 'V72.6':'Special investigations and examinations, laboratory examination', 'V68.1':'Issue of repeat prescriptions',
+  '401.9':'Essential hypertension, not specified as malignant or benign', '782.1':'Rash and other nonspecific skin eruption',
+  '599.0':'Urinary tract infection, site not specified', '054.9':'Herpes simplex without mention of complication',
+  '461.9':'Acute sinusitis, unspecified', '460':'Acute nasopharyngitis (common cold)', '300.0':'Anxiety states',
+  '311':'Depressive disorder, not elsewhere classified', '780.6':'Pyrexia of unknown origin'
+};
+/* the official list, for "Can't find it?" (verified 6 Oct 2026) */
+var T23_DX_SRC = 'https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/msp/physicians/diagnostic-code-descriptions-icd-9';
+var T23_DXDB = null, T23_DXST = 'idle';   /* idle | loading | ready | error */
+var T23_DXBY = {};
+function t23DxName(code){ var d = T23_DXBY[code]; return d ? d.t : (T23_DX[code] || ''); }
+/* Load once, on the first open of the diagnosis search. Row: [code, text, search terms, flags (1 common, 2 MSP code),
+   parent when it can't be derived]; p: parent code → text, used so "herpes simplex" also finds 054.x. */
+function t23DxLoad(){
+  if(T23_DXST === 'loading' || T23_DXST === 'ready') return;
+  T23_DXST = 'loading';
+  fetch('assets/data/bc-msp-diagnostic-codes.json').then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); }).then(function(j){
+    var norm = function(t){ return ' ' + String(t || '').toLowerCase().replace(/[^a-z0-9.]+/g, ' ') + ' '; };
+    T23_DXDB = j.r.map(function(x, i){
+      var code = x[0], anc = '', pc = x[4] || code.slice(0, -1).replace(/\.$/, ''), guard = 0;
+      while(pc && j.p[pc] && guard++ < 4){ anc += ' ' + j.p[pc]; pc = pc.slice(0, -1).replace(/\.$/, ''); }
+      var d = {c:code, t:x[1], s:x[2] || '', f:x[3] || 0, i:i};
+      d.lc = code.toLowerCase(); d.hay = norm(code + ' ' + x[1] + ' ' + d.s + anc); d.tl = d.s ? d.s.toLowerCase().split(/\s*,\s*/) : [];
+      T23_DXBY[code] = d; return d;
+    });
+    T23_DXST = 'ready';
+  }).catch(function(){ T23_DXST = 'error'; }).then(function(){ if(T23.pick) t23RenderDx(); });
+}
 var T23_EX = {
   'EX-D1':'Fee item not payable with this diagnosis',
   'EX-D2':'Name on the claim doesn’t match MSP’s record for this card',
@@ -13210,33 +13251,33 @@ function t23Hist(c){
 }
 var CLAIMS = [
   /* Needs submission: MSP claims not submitted yet (demo dates; days left count from the demo "today", 3 Oct) */
-  {id:'c18', who:'Frank D.', date:'2026-07-09', win:'2-5', fee:'DEMO-A', dx:'DX-D8', mins:8, st:'submit'},
-  {id:'c21', who:'Owen Brady', date:'2026-07-12', win:'8-10', fee:'DEMO-A', dx:'DX-D5', mins:13, st:'submit'},
-  {id:'c22', who:'Gloria McDonald', date:'2026-09-24', win:'8-10', fee:'DEMO-A', dx:'DX-D8', mins:11, st:'submit'},
-  {id:'c3', who:'Grace Lin', date:'2026-10-01', win:'10-2', fee:'DEMO-B', dx:'DX-D6', mins:8, st:'submit'},
-  {id:'c4', who:'Owen Brady', date:'2026-10-01', win:'8-10', fee:'DEMO-A', dx:'DX-D5', mins:13, st:'submit'},
-  {id:'c1', who:'Behdis Maleki', date:'2026-10-02', win:'10-2', fee:'DEMO-A', dx:'DX-D2', mins:14, st:'submit'},
-  {id:'c2', who:'Andrey Abushakhmanov', date:'2026-10-02', win:'8-10', fee:'DEMO-A', dx:'DX-D2', mins:11, st:'submit', payer:'recip', prov:'Alberta'},
-  {id:'c5', who:'Carol-Anne Feldman', date:'2026-10-02', win:'8-10', fee:'DEMO-A', dx:'DX-D3', mins:12, start:'09:12', stop:'09:24', st:'submit'},
+  {id:'c18', who:'Frank D.', date:'2026-07-09', win:'2-5', fee:'DEMO-A', dx:'401.9', mins:8, st:'submit'},
+  {id:'c21', who:'Owen Brady', date:'2026-07-12', win:'8-10', fee:'DEMO-A', dx:'724.2', mins:13, st:'submit'},
+  {id:'c22', who:'Gloria McDonald', date:'2026-09-24', win:'8-10', fee:'DEMO-A', dx:'401.9', mins:11, st:'submit'},
+  {id:'c3', who:'Grace Lin', date:'2026-10-01', win:'10-2', fee:'DEMO-B', dx:'V72.6', mins:8, st:'submit'},
+  {id:'c4', who:'Owen Brady', date:'2026-10-01', win:'8-10', fee:'DEMO-A', dx:'724.2', mins:13, st:'submit'},
+  {id:'c1', who:'Behdis Maleki', date:'2026-10-02', win:'10-2', fee:'DEMO-A', dx:'V67.9', mins:14, st:'submit'},
+  {id:'c2', who:'Andrey Abushakhmanov', date:'2026-10-02', win:'8-10', fee:'DEMO-A', dx:'V67.9', mins:11, st:'submit', payer:'recip', prov:'Alberta'},
+  {id:'c5', who:'Carol-Anne Feldman', date:'2026-10-02', win:'8-10', fee:'DEMO-A', dx:'112.1', mins:12, start:'09:12', stop:'09:24', st:'submit'},
   /* Rejected by MSP */
-  {id:'c6', who:'Nadia Hassan', date:'2026-07-15', win:'2-5', fee:'DEMO-A', dx:'DX-D7', mins:9, st:'rejected',
+  {id:'c6', who:'Nadia Hassan', date:'2026-07-15', win:'2-5', fee:'DEMO-A', dx:'V68.1', mins:9, st:'rejected',
    msp:{on:'2026-10-02', ex:'EX-D4', src:'Teleplan'},
    flags:[{k:'q', from:T23_AGENT, ex:'EX-D4', ask:'Can you check the diagnosis on this claim?', due:'Tue 6 Oct'}],
    hist:[['15 Jul 2:41 PM','Dr. Pannozzo','Visit signed off; claim created'],
          ['16 Jul 7:02 PM','Dr. Pannozzo','Submitted'],
          ['2 Oct 9:10 AM','Teleplan','Returned: EX-D4 (demo)'],
          ['2 Oct 9:31 AM', T23_AGENT + ' (billing agent)','Question: Can you check the diagnosis on this claim?']]},
-  {id:'c9', who:'Behdis Maleki', date:'2026-09-12', win:'10-2', fee:'DEMO-A', dx:'DX-D4', mins:12, st:'rejected',
+  {id:'c9', who:'Behdis Maleki', date:'2026-09-12', win:'10-2', fee:'DEMO-A', dx:'280', mins:12, st:'rejected',
    msp:{on:'2026-09-26', ex:'EX-D1'}},
-  {id:'c10', who:'Andrey Abushakhmanov', date:'2026-09-05', win:'8-10', fee:'DEMO-A', dx:'DX-D2', mins:10, st:'dispute',
+  {id:'c10', who:'Andrey Abushakhmanov', date:'2026-09-05', win:'8-10', fee:'DEMO-A', dx:'V67.9', mins:10, st:'dispute',
    msp:{on:'2026-09-19', ex:'EX-D2', reason:'Refused as billed; the claim looks correctly billed'}},
-  {id:'c11', who:'Grace Lin', date:'2026-09-10', win:'10-2', fee:'DEMO-A', dx:'DX-D6', mins:11, st:'adjusted', paid:25, msp:{on:'2026-09-24', ex:'EX-D3'}},
+  {id:'c11', who:'Grace Lin', date:'2026-09-10', win:'10-2', fee:'DEMO-A', dx:'V72.6', mins:11, st:'adjusted', paid:25, msp:{on:'2026-09-24', ex:'EX-D3'}},
   /* Submitted (with MSP) and paid: reachable from the Submitted, Paid and All tabs */
-  {id:'c12', who:'Andrey Abushakhmanov', date:'2026-09-28', win:'8-10', fee:'DEMO-A', dx:'DX-D2', mins:10, st:'submitted', sub:'Acknowledged by MSP'},
-  {id:'c13', who:'Owen Brady', date:'2026-08-25', win:'8-10', fee:'DEMO-A', dx:'DX-D5', mins:12, st:'held', msp:{ex:'EX-D5'}},
-  {id:'c14', who:'Carol-Anne Feldman', date:'2026-09-29', win:'10-2', fee:'DEMO-A', dx:'DX-D3', mins:10, st:'rejmoa', msp:{on:'2026-10-01', ex:'EX-D2', src:'Teleplan'}},
-  {id:'c15', who:'Nadia Hassan', date:'2026-08-20', win:'2-5', fee:'DEMO-A', dx:'DX-D7', mins:9, st:'appeal', sub:'Reassessment requested 15 Sep'},
-  {id:'c16', who:'Behdis Maleki', date:'2026-09-02', win:'10-2', fee:'DEMO-A', dx:'DX-D4', mins:12, st:'paid', paid:30, sub:'Paid 16 Sep'},
+  {id:'c12', who:'Andrey Abushakhmanov', date:'2026-09-28', win:'8-10', fee:'DEMO-A', dx:'V67.9', mins:10, st:'submitted', sub:'Acknowledged by MSP'},
+  {id:'c13', who:'Owen Brady', date:'2026-08-25', win:'8-10', fee:'DEMO-A', dx:'724.2', mins:12, st:'held', msp:{ex:'EX-D5'}},
+  {id:'c14', who:'Carol-Anne Feldman', date:'2026-09-29', win:'10-2', fee:'DEMO-A', dx:'112.1', mins:10, st:'rejmoa', msp:{on:'2026-10-01', ex:'EX-D2', src:'Teleplan'}},
+  {id:'c15', who:'Nadia Hassan', date:'2026-08-20', win:'2-5', fee:'DEMO-A', dx:'V68.1', mins:9, st:'appeal', sub:'Reassessment requested 15 Sep'},
+  {id:'c16', who:'Behdis Maleki', date:'2026-09-02', win:'10-2', fee:'DEMO-A', dx:'280', mins:12, st:'paid', paid:30, sub:'Paid 16 Sep'},
   /* Private pay (its own view; never mixed with MSP). how: 'card' = card on file, charged after the visit;
      'link' = payment link sent; a form is released once it's paid. All demo values. */
   {id:'c19', who:'Greg', date:'2026-09-30', win:'2-5', st:'pri-due', payer:'private', item:'visit', how:'link', sent:'30 Sep'},
@@ -13683,7 +13724,7 @@ closeBilling = function(){ t23CloseBilling0(); T23.open = null; var c = document
    - "Fee item" is now "Fee code". Fee codes are deterministic by the patient's age (about 5 codes), so the code is
      set automatically from the age ("Set from age · 74") and can still be changed from the short list.
    - Diagnosis (ICD-9): a search box only. Results appear after typing; no long radio list, no free text. If nothing
-     is found: "Can't find it? Open the ICD-9 source list" (placeholder link; Daniel sent the source on WhatsApp).
+     is found: "Can't find it?" opens BC's official diagnostic code page (T23_DX_SRC; real data, Ani 6 Oct).
    - Units, service location, referring practitioner and the whole Disposition section are gone (a visit is MSP or
      private pay, decided before the visit).
    - Time: start and stop, filled from the call (demo values), editable; every change is logged. */
@@ -13694,7 +13735,7 @@ function t23VisitCode(name){
   T23.visit = T23.visit || {};
   if(T23.visit[name]) return T23.visit[name];
   var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0] || {};
-  var dxBy = {'Follow up — chest pressure noted':'DX-D1', 'Follow up appointment':'DX-D2', 'Yeast infection':'DX-D3', 'Rx renewal':'DX-D7', 'Lab follow-up':'DX-D6'};
+  var dxBy = {'Follow up — chest pressure noted':'786.5', 'Follow up appointment':'V67.9', 'Yeast infection':'112.1', 'Rx renewal':'V68.1', 'Lab follow-up':'V72.6'};
   var disp = (r.card === 'private' || r.card === 'oop-qc' || r.plan === 'Private') ? 'private' : r.card === 'oop' ? 'recip' : 'msp';
   var age = parseInt(r.age, 10);
   /* start and stop come from the call log; these are demo values */
@@ -13708,7 +13749,8 @@ function t23OpenPick(o){
     src = {age:c.age, fee:c.fee || t23FeeForAge(c.age), dx:c.dx, start:c.start, stop:c.stop, disp:c.payer === 'recip' ? 'recip' : 'msp'};
   } else { if(!o.visit){ toast('Open a chart first'); return; } src = t23VisitCode(o.visit); }
   if(src.disp === 'private'){ toast('Private pay: no MSP coding for this visit'); return; }
-  T23.pick = {o:o, v:JSON.parse(JSON.stringify(src)), q:'', err:'', feeOpen:o.focus === 'fee' && !!o.correct};
+  T23.pick = {o:o, v:JSON.parse(JSON.stringify(src)), q:'', err:'', act:0, res:[], feeOpen:o.focus === 'fee' && !!o.correct};
+  t23DxLoad();   /* real data, Ani 6 Oct: the full code list loads the first time this dialog opens */
   t23RenderPick();
   document.getElementById('t23-pick').classList.add('show');
   setTimeout(function(){ var f = document.querySelector('#t23-pick [data-focus="' + (o.focus || 'dx') + '"]') || document.querySelector('#t23-pick [data-focus="dx"]'); if(f){ f.scrollIntoView({block:'nearest'}); f.focus(); } }, 40);
@@ -13733,37 +13775,74 @@ function t23RenderPick(){
   /* Diagnosis: search only */
   h += '<div class="bl-block"><p class="bl-k">Diagnosis (ICD-9)</p>' +
     '<p class="t23-dxcur">' + (v.dx ? t23Ic('complete') + '<b>' + v.dx + ' · ' + t23DxName(v.dx) + '</b>' + T23_DEMO : 'No diagnosis yet') + '</p>' +
-    '<input class="t23-in wide" type="search" data-focus="dx" placeholder="Search diagnoses, e.g. back pain or UTI" value="' + t23E(P.q) + '" oninput="T23.pick.q=this.value;t23RenderDx()" aria-label="Search diagnoses (ICD-9)" aria-controls="t23-dxres" autocomplete="off">' +
+    '<input class="t23-in wide" type="search" data-focus="dx" placeholder="Search by code or words, e.g. 599 or UTI" value="' + t23E(P.q) + '" oninput="T23.pick.q=this.value;T23.pick.act=0;t23RenderDx()" onkeydown="t23DxKey(event)" role="combobox" aria-autocomplete="list" aria-expanded="' + !!P.q + '" aria-label="Search diagnoses (ICD-9)" aria-controls="t23-dxres" autocomplete="off">' +
     '<div id="t23-dxres" class="t23-dxres" aria-live="polite"></div></div>';
   /* Time: start and stop from the call */
   h += '<div class="bl-block"><p class="bl-k">Time</p><div class="t23-row2">' +
     '<label>Start<input class="t23-in" type="time" data-focus="time" value="' + v.start + '" onchange="T23.pick.v.start=this.value;t23RenderMins()"></label>' +
     '<label>Stop<input class="t23-in" type="time" value="' + v.stop + '" onchange="T23.pick.v.stop=this.value;t23RenderMins()"></label>' +
     '<span class="t23-mins" id="t23-mins"></span></div>' +
-    '<p class="t23-hint">Filled from the call' + t23Ph('Demo values') + ' You can change it. Changes are logged.</p></div>';
+    '<p class="t23-hint">Filled from the call.' + t23Ph('Demo values') + ' You can change it. Changes are logged.</p></div>';
   if(P.err) h += '<p class="t23-err" role="alert">' + P.err + '</p>';
   h += '<div class="defer-acts"><button type="button" class="btn" onclick="t23PickClose()">Cancel</button><button type="button" class="btn dark" onclick="t23PickSave()">' + t23Ic('complete') + 'Save</button></div>';
   card.innerHTML = h; paintPd(card);
   t23RenderDx(); t23RenderMins();
 }
 function t23RenderMins(){ var el = document.getElementById('t23-mins'); if(!el || !T23.pick) return; var m = t23Mins(T23.pick.v.start, T23.pick.v.stop); el.textContent = m != null && m > 0 ? m + ' min' : 'Stop must be after start'; }
+/* Ani, 6 Oct (real data): results only after typing; a word matches the start of a code ("599") or of a word in the
+   description, its parent headings or the plain-language search words ("uti", "cold sore"). Ranking: the exact code,
+   then common codes, then the rest; within each, code matches, then the search words (a search word equal to the query
+   wins, earlier in the list first: "uti" is 599.0's first search word and 595.0's second), then list order. */
 function t23DxMatch(q){
-  q = String(q || '').trim().toLowerCase(); if(!q) return [];
-  var words = q.split(/\s+/);
-  return T23_DX.filter(function(d){ var hay = (d[0] + ' ' + d[1] + ' ' + (d[2] || '')).toLowerCase(); return words.every(function(w){ return hay.indexOf(w) > -1; }); });
+  q = String(q || '').trim().toLowerCase(); if(!q || !T23_DXDB) return [];
+  var words = q.replace(/[^a-z0-9.]+/g, ' ').trim().split(' ').filter(Boolean); if(!words.length) return [];
+  var res = T23_DXDB.filter(function(d){ return words.every(function(w){ return d.hay.indexOf(' ' + w) > -1; }); });
+  var qn = words.join(' ');
+  var termScore = function(d){ var k = d.tl.indexOf(qn); if(k > -1) return Math.min(k, 3); return d.tl.some(function(t){ return t.indexOf(qn) === 0; }) ? 4 : 6; };
+  var rank = function(d){ return (d.lc === q ? 0 : (d.f & 1) ? 100 : 200) + (d.lc.indexOf(words[0]) === 0 ? 0 : 10) + termScore(d); };
+  return res.sort(function(a, b){ return (rank(a) - rank(b)) || (a.i - b.i); });
+}
+function t23DxCant(){
+  return '<a class="t23-src" href="' + T23_DX_SRC + '" target="_blank" rel="noopener">Can’t find it? Open BC’s full diagnostic code list' + t23Ic('link') + '</a>';
 }
 function t23RenderDx(){
   var el = document.getElementById('t23-dxres'); if(!el || !T23.pick) return;
-  var q = T23.pick.q, res = t23DxMatch(q);
+  var q = T23.pick.q, inp = document.querySelector('#t23-pick [data-focus="dx"]');
+  if(inp) inp.removeAttribute('aria-activedescendant');
+  T23.pick.res = [];
   if(!String(q).trim()){ el.innerHTML = ''; return; }   /* results appear only after typing */
-  if(!res.length){
-    el.innerHTML = '<p class="t23-nores">No match for “' + t23E(q) + '”. <a href="#" class="t23-src" onclick="event.preventDefault();toast(\'Opening the ICD-9 source list\')">Can’t find it? Open the ICD-9 source list</a></p>';
-    return;
+  if(T23_DXST === 'error'){
+    el.innerHTML = '<p class="t23-nores">The diagnosis list didn’t load. Check your connection, then <button type="button" class="t23-retry" onclick="T23_DXST=\'idle\';t23DxLoad();t23RenderDx()">try again</button>.</p><p class="t23-nores">' + t23DxCant() + '</p>';
+    paintPd(el); return;
   }
-  el.innerHTML = '<ul class="t23-dxlist" role="listbox" aria-label="Matching diagnoses">' + res.slice(0, 8).map(function(d){
-    return '<li><button type="button" role="option" aria-selected="' + (T23.pick.v.dx === d[0]) + '" onclick="T23.pick.v.dx=\'' + d[0] + '\';T23.pick.q=\'\';t23RenderPick();var e=document.querySelector(\'#t23-pick [data-focus=dx]\');if(e)e.focus()">' +
-      '<b>' + d[0] + '</b> · ' + d[1] + '</button></li>'; }).join('') + '</ul>' + T23_DEMO;
+  if(T23_DXST !== 'ready'){ el.innerHTML = '<p class="t23-nores">Loading diagnoses…</p>'; t23DxLoad(); return; }
+  var res = t23DxMatch(q);
+  if(!res.length){
+    el.innerHTML = '<p class="t23-nores">No match for “' + t23E(q) + '”.</p><p class="t23-nores">' + t23DxCant() + '</p>';
+    paintPd(el); return;
+  }
+  var top = res.slice(0, 8), act = Math.min(T23.pick.act || 0, top.length - 1);
+  T23.pick.res = top; T23.pick.act = act;
+  el.innerHTML = '<ul class="t23-dxlist" role="listbox" id="t23-dxlb" aria-label="Matching diagnoses">' + top.map(function(d, i){
+    return '<li><button type="button" role="option" id="t23-dxo-' + i + '" tabindex="-1" class="' + (i === act ? 'act' : '') + '" aria-selected="' + (T23.pick.v.dx === d.c) + '" onclick="t23DxPick(' + i + ')">' +
+      '<b>' + t23E(d.c) + '</b><span>' + t23E(d.t) + '</span></button></li>'; }).join('') + '</ul>' +
+    '<p class="t23-nores">' + (res.length > top.length ? 'Showing ' + top.length + ' of ' + res.length + '. Add a word to narrow it. ' : '') + t23DxCant() + '</p>';
+  if(inp) inp.setAttribute('aria-activedescendant', 't23-dxo-' + act);
   paintPd(el);
+}
+function t23DxPick(i){
+  var d = T23.pick && T23.pick.res && T23.pick.res[i]; if(!d) return;
+  T23.pick.v.dx = d.c; T23.pick.q = ''; T23.pick.act = 0; t23RenderPick();
+  var e = document.querySelector('#t23-pick [data-focus=dx]'); if(e) e.focus();
+}
+/* keyboard: arrow keys move through the results, Enter picks the highlighted one */
+function t23DxKey(ev){
+  var P = T23.pick; if(!P || !P.res || !P.res.length) return;
+  if(ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){
+    ev.preventDefault();
+    P.act = (P.act + (ev.key === 'ArrowDown' ? 1 : -1) + P.res.length) % P.res.length; t23RenderDx();
+    var o = document.getElementById('t23-dxo-' + P.act); if(o) o.scrollIntoView({block:'nearest'});
+  } else if(ev.key === 'Enter'){ ev.preventDefault(); t23DxPick(P.act || 0); }
 }
 function t23PickClose(){ document.getElementById('t23-pick').classList.remove('show'); T23.pick = null; }
 function t23PickSave(){
@@ -13920,7 +13999,7 @@ function t23RenderBillRow(){
   if(v.disp === 'private') h += '<span>Private pay</span>' + sep + '<span>Private visit fee</span>' + T23_DEMO;
   else {
     h += '<span>' + v.fee + ' ' + T23_FEES[v.fee].name + '</span>' + T23_DEMO + sep +
-         (v.dx ? '<span>' + t23DxName(v.dx) + '</span>' : '<span>Diagnosis not set</span>') + sep + '<span>' + t23SpanTxt(v) + '</span>';
+         (v.dx ? '<span>' + v.dx + ' · ' + t23DxName(v.dx) + '</span>' : '<span>Diagnosis not set</span>') + sep + '<span>' + t23SpanTxt(v) + '</span>';
     if(!v.dx) btn = 'Add diagnosis';
     h += '<button type="button" class="btn xs" onclick="t23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})">' + t23Ic('edit') + btn + '</button>';
   }
@@ -14432,6 +14511,6 @@ function v2RxFocus(){
   csLayout(m);
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 15:40</div>
+  <div class="build-stamp">v2 · build 2026-10-06 17:30</div>
 </body>
 </html>
