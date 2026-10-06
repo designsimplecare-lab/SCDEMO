@@ -4944,6 +4944,245 @@
   #screen-patientchart #pcv-c .cs-also > .ic{display:none;}
   /* one primary per area: in the no-show state "Call again" is the call action, so the banner's Call steps back */
   #screen-patientchart #pcv-c.cs-ns-on .cs-snap .vc-acts > .btn.dark{display:none;}
+  /* ================= Chart layout v2 (Ani, 5 Oct: "still feels like too much text in one long scroll") =================
+     Borrowed structure only (a calm telestroke layout Ani designed): a left column of stacked white context cards,
+     the work split by tabs, one primary Sign off at the top right. Portal variables, buttons, tags and Mage icons;
+     light mode only; 14 px minimum. Colour only on status chips; critical stays red and is the only strong colour.
+     Every selector is scoped to #pcv-c.cs-v2, so Current is untouched. */
+  /* the layout switch in the crumb line (compact secondary: 36 px, like the other crumb controls) */
+  #screen-patientchart .cs-crumb .cs-layout{display:inline-flex;align-items:center;gap:2px;margin-left:auto;padding:2px;border-radius:10px;background:var(--wash);}
+  #screen-patientchart .cs-crumb .cs-layout-k{padding:0 8px 0 10px;font-size:14px;color:var(--ink-soft);}
+  #screen-patientchart .cs-crumb .cs-layout button{height:36px;min-width:64px;padding:0 12px;border:0;border-radius:8px;background:none;font:inherit;font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
+  #screen-patientchart .cs-crumb .cs-layout button:hover{color:var(--ink);}
+  #screen-patientchart .cs-crumb .cs-layout button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(23,24,28,.08);}
+  #screen-patientchart .cs-crumb .cs-layout button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  #screen-patientchart #pcv-c.cs-v2 > .cs-banner,#screen-patientchart #pcv-c.cs-v2 > .cs-work{display:none !important;}
+  #screen-patientchart #pcv-c .v2[hidden]{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 .v2{display:grid;grid-template-columns:312px minmax(0,1fr);gap:16px;align-items:start;}
+  #screen-patientchart #pcv-c.cs-v2 [hidden]{display:none !important;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-card{display:block;margin:0;padding:18px 20px;border:0;border-radius:16px;background:var(--panel);box-shadow:var(--shadow-card);}
+  /* card header: icon + title + one status chip + actions right */
+  #screen-patientchart #pcv-c.cs-v2 .v2-ch{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:32px;margin:0 0 14px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-ch > .ic,#screen-patientchart #pcv-c.cs-v2 .v2-ch > .ic svg{width:20px;height:20px;color:var(--ink-soft);flex:none;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-ch h3{margin:0;font-size:17px;line-height:24px;font-weight:700;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-cr{display:flex;align-items:center;gap:4px;margin-left:auto;}
+  /* status chip (tonal, no stroke; the colour sits on the icon). 32 px in card headers: Needs Ani, with the open 32 px tag question */
+  #screen-patientchart #pcv-c.cs-v2 .v2-chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border:0;border-radius:8px;
+    background:var(--wash);font:inherit;font-size:14px;font-weight:500;line-height:18px;color:var(--ink);white-space:nowrap;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-chip .ic,#screen-patientchart #pcv-c.cs-v2 .v2-chip svg{width:16px;height:16px;flex:none;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-chip.warn{background:var(--tag-warn);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-chip.warn .ic{color:var(--tag-warn-ic);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-chip.crit{background:var(--tag-bad);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-chip.crit .ic{color:var(--crit);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-chip:empty{display:none;}
+  /* label above value, one fact per line */
+  #screen-patientchart #pcv-c.cs-v2 .v2-kv{margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-kv dt{margin:14px 0 2px;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-kv dt:first-child{margin-top:0;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-kv dd{margin:0;font-size:16px;line-height:24px;color:var(--ink);max-width:66ch;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-kv dd.v2-big{font-size:20px;line-height:28px;font-weight:700;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-kv dd b{font-weight:600;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-q{display:block;margin:2px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);max-width:66ch;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-q b{color:var(--ink);font-weight:600;}
+
+  /* ---- left column: stacked context cards, sticky, scrolls on its own when sections are open ---- */
+  #screen-patientchart #pcv-c.cs-v2 .v2-side{position:sticky;top:calc(var(--cs-top,0px) + 4px);display:grid;gap:12px;align-content:start;min-width:0;
+    max-height:calc(100vh - var(--cs-top,0px) - 12px);overflow:auto;overscroll-behavior:contain;padding:2px 4px 24px 2px;margin:-2px -4px 0 -2px;scrollbar-width:thin;}
+  /* patient card: the chart's own snapshot (moved here), stacked */
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-snap{display:grid;grid-template-columns:48px minmax(0,1fr);align-items:center;gap:12px;padding:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-photo{width:48px;height:48px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-who .vc-nm{font-size:19px;line-height:26px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-who .vc-sub{margin:2px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-newpt{height:28px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-facts{grid-column:1 / -1;display:grid;gap:12px;margin:4px 0 0;padding:14px 0 0;border-top:1px solid var(--line);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-fact{display:block;margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-fact .cs-k{display:block;margin:0 0 2px;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-fact .cs-v{display:flex;align-items:center;gap:6px;font-size:16px;line-height:24px;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-fact .cs-v .ic,#screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-fact .cs-v > .ic svg{width:18px;height:18px;flex:none;color:var(--ink-faint);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-al-nkda .cs-v > .ic{color:var(--good);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-al-named .cs-v > .ic{color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-al-none .cs-tag{height:32px;padding:0 10px;font-size:14px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:2px 0 0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts > .btn{justify-content:center;width:100%;margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts > .pc-callstrip,#screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts > .pc-callsum{grid-column:1 / -1;justify-self:start;}
+  #screen-patientchart #pcv-c.cs-v2.cs-ns-on #v2-pt .vc-acts > #cs-fc-btn{grid-column:1 / -1;}
+  /* This visit */
+  #screen-patientchart #pcv-c.cs-v2 .v2-pair{display:grid;grid-template-columns:1fr 1.4fr;gap:12px;margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-pair dt{margin:0 0 2px;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-pair dd{margin:0;font-size:16px;line-height:24px;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-checks{display:grid;gap:4px;margin:14px 0 0;padding:12px 0 0;border-top:1px solid var(--line);list-style:none;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-checks li{display:flex;align-items:center;gap:8px;min-height:36px;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-checks li.ok > .ic,#screen-patientchart #pcv-c.cs-v2 .v2-checks li.ok > .ic svg{width:16px;height:16px;flex:none;color:var(--ink-faint);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-checks .v2-ck{flex:none;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-checks .v2-cv{flex:1;min-width:0;text-align:right;color:var(--ink-soft);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-checks .v2-chipbtn{height:40px;padding:0 12px;font-size:15px;cursor:pointer;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-checks .v2-chipbtn:hover{box-shadow:inset 0 0 0 1px var(--tag-warn-ic);}
+  /* collapsible section cards: title + count + chevron, collapsed by default */
+  #screen-patientchart #pcv-c.cs-v2 .v2-sec{padding:0;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-sh{margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-sbtn{display:flex;align-items:center;gap:10px;width:100%;min-height:56px;padding:0 16px 0 20px;border:0;border-radius:16px;background:none;
+    font:inherit;font-size:16px;font-weight:700;color:var(--ink);text-align:left;cursor:pointer;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-sbtn:hover{background:var(--wash);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-sbtn[aria-expanded="true"]{border-radius:16px 16px 0 0;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-sbtn > .ic,#screen-patientchart #pcv-c.cs-v2 .v2-sbtn > .ic svg{width:18px;height:18px;flex:none;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-sn{font-size:15px;font-weight:500;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-sc{display:inline-flex;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-sbtn .v2-chev{margin-left:auto;transition:transform .15s;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-sbtn[aria-expanded="true"] .v2-chev{transform:rotate(180deg);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-sb{padding:4px 20px 18px;}
+  /* a line that opens its source: value, then quiet lines */
+  #screen-patientchart #pcv-c.cs-v2 .v2-line{position:relative;display:block;width:calc(100% + 16px);margin:0 -8px;padding:8px 32px 8px 8px;border:0;border-radius:10px;background:none;
+    font:inherit;text-align:left;color:var(--ink);cursor:pointer;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-line + .v2-line{margin-top:2px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-line:hover{background:var(--wash);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-l0{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-l1{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-l1 b{font-weight:700;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-l2{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-go,#screen-patientchart #pcv-c.cs-v2 .v2-go svg{position:absolute;right:8px;top:10px;width:16px;height:16px;color:var(--ink-faint);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-src-l{display:grid;margin:10px 0 0;padding:10px 0 0;border-top:1px solid var(--line);font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-sb .cs-exp{margin:2px 0 0 0;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-sb .cs-quote{margin:4px 0 10px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-readnote{margin:8px 0 0;}
+  /* Since you last saw: the chart's own section, label above value in the narrow column */
+  #screen-patientchart #pcv-c.cs-v2 #slv{margin:0;padding:0;background:none;border:0;box-shadow:none;}
+  #screen-patientchart #pcv-c.cs-v2 #slv .cs-hd{display:block;margin:0 0 6px;}
+  #screen-patientchart #pcv-c.cs-v2 #slv .cs-hd .cs-h3{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  #screen-patientchart #pcv-c.cs-v2 #slv > .vc-more{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #slv .cs-since li{display:block;padding:8px 0;}
+  #screen-patientchart #pcv-c.cs-v2 #slv .cs-kind{display:flex;font-weight:500;}
+  #screen-patientchart #pcv-c.cs-v2 #slv .cs-txt{display:block;}
+
+  /* ---- main: sticky tab bar with the one primary, then the tab's cards ---- */
+  #screen-patientchart #pcv-c.cs-v2 .v2-main{display:grid;gap:12px;min-width:0;padding-bottom:104px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-top{position:sticky;top:calc(var(--cs-top,0px) + 4px);z-index:45;display:flex;align-items:center;gap:12px;min-height:64px;padding:0 12px 0 10px;
+    border-radius:16px;background:var(--panel);box-shadow:var(--shadow-card);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-tabs{display:flex;align-self:stretch;gap:2px;min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab]{display:inline-flex;align-items:center;gap:8px;min-height:64px;padding:3px 14px 0;border:0;border-bottom:3px solid transparent;border-radius:0;
+    background:none;font:inherit;font-size:16px;font-weight:600;color:var(--ink-soft);cursor:pointer;white-space:nowrap;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab]:hover{color:var(--ink);background:var(--wash);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab][aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab]:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-tm{display:inline-flex;align-items:center;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-tick,#screen-patientchart #pcv-c.cs-v2 .v2-tick svg{width:18px;height:18px;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-badge{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 7px;border-radius:999px;
+    background:var(--tag-warn);font-size:14px;font-weight:600;line-height:1;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-badge.crit{background:var(--tag-bad);color:var(--crit-text);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-acts{display:flex;align-items:center;gap:8px;margin-left:auto;}
+  /* Save draft: secondary, ghost, 44 px */
+  #screen-patientchart #pcv-c.cs-v2 #vc-savedraft{height:44px;padding:0 14px;border-radius:12px;font-size:15px;font-weight:600;}
+  #screen-patientchart #pcv-c.cs-v2 #vc-savedraft .ic,#screen-patientchart #pcv-c.cs-v2 #vc-savedraft svg{width:18px;height:18px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-finwrap{position:relative;display:inline-flex;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-fin{height:44px;padding:0 16px;gap:8px;font-size:15px;white-space:nowrap;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-fin .v2-fin-n{display:inline-flex;align-items:center;height:26px;padding:0 9px;border-radius:999px;background:rgba(255,255,255,.2);font-size:14px;font-weight:500;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-fin.v2-signed{background:var(--wash);border-color:var(--wash);color:var(--ink);box-shadow:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-fin.v2-signed .ic{color:var(--good);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-finpop{position:absolute;top:calc(100% + 10px);right:0;z-index:70;display:block;width:440px;max-width:calc(100vw - 48px);
+    max-height:calc(100vh - var(--cs-top,0px) - 96px);overflow:auto;padding:16px 20px 18px;border-radius:16px;background:var(--panel);
+    box-shadow:0 16px 48px rgba(23,24,28,.16),0 2px 6px rgba(23,24,28,.06);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-fph{display:flex;align-items:center;gap:8px;margin:0 0 12px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-fph h3{margin:0;font-size:17px;line-height:24px;font-weight:700;color:var(--ink);outline:none;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-x{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin:-6px -10px -6px auto;border:0;border-radius:10px;background:none;font-size:26px;line-height:1;color:var(--ink-soft);cursor:pointer;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-x:hover{background:var(--wash);color:var(--ink);}
+  /* the footer, moved into the popover: checklist, warnings, billing line, Finalize, helper */
+  #screen-patientchart #pcv-c.cs-v2 .v2-finpop .cs-foot{position:static;margin:0;padding:0;border:0;background:none;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-finpop .cs-finwhy{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 14px;white-space:normal;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-finpop .cs-ck-h{flex-basis:100%;margin:0;font-size:14px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-finpop .cs-ck{display:flex;flex-wrap:wrap;gap:8px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-finpop .cs-ck li.todo:has(.cs-pop){flex-basis:100%;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-finpop .cs-ck .cs-pop{position:static;width:auto;margin:10px 0 0;box-shadow:none;background:var(--wash);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-finpop .cs-pop input[type=text]{width:100%;box-sizing:border-box;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-finpop .t23-billrow{margin:0 0 14px;padding:12px 0 0;border-top:1px solid var(--line);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-finpop .vc-finrow{display:flex;gap:8px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-finpop #vc-finalize,#screen-patientchart #pcv-c.cs-v2 .v2-finpop #vc-nextpt{flex:1;justify-content:center;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-finpop .vc-finwarn{margin:0 0 12px;}
+
+  /* notices (dropped call, outside BC) sit above the tabs' content in every tab */
+  #screen-patientchart #pcv-c.cs-v2 #v2-notices:not(:has(.cs-notices:not([hidden]))){display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-notices .cs-notices{padding:0;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-panel{display:grid;gap:12px;min-width:0;outline:none;}
+  #screen-patientchart #pcv-c.cs-v2.cs-fc-open .v2-panel{display:none !important;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-ns-slot:not(:has(#cs-ns:not([hidden]),#recall.on)){display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #vc-alerts .v2-nar .cs-info .ic,#screen-patientchart #pcv-c.cs-v2 #vc-alerts .v2-nar .cs-info svg{color:var(--ink-faint);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-ns-slot{display:grid;gap:12px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-ns-slot .cs-ns{margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-today-slot:empty{display:none;}
+  /* Needs attention: the chart's own rows, flat inside one card */
+  #screen-patientchart #pcv-c.cs-v2 #vc-alerts{margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 #vc-alerts > .cs-h3{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  #screen-patientchart #pcv-c.cs-v2 #vc-alerts .cs-group{background:none;box-shadow:none;border-radius:0;overflow:visible;}
+  #screen-patientchart #pcv-c.cs-v2 #vc-alerts .cs-group + .cs-group{margin-top:0;border-top:1px solid var(--line);}
+  #screen-patientchart #pcv-c.cs-v2 #vc-alerts .vca-row{padding:14px 0;}
+  #screen-patientchart #pcv-c.cs-v2 #vc-alerts .cs-group:first-child .vca-row:first-child{padding-top:2px;}
+  #screen-patientchart #pcv-c.cs-v2 #vc-alerts .vca-row.cs-rel{padding-left:36px;}
+  #screen-patientchart #pcv-c.cs-v2 #vc-alerts .cs-relh{padding:10px 0 0 36px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-nar .v2-na-k{margin:0;font-size:14px;line-height:20px;font-weight:600;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-nar .vca-t{margin:2px 0 0;font-size:17px;line-height:24px;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-nar .vca-t b{font-weight:700;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-nar .v2-na-c{margin:4px 0 0;font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-nar .vca-dir,#screen-patientchart #pcv-c.cs-v2 .v2-nar .vca-dir svg{display:inline-block;width:16px;height:16px;vertical-align:-2px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-nar .cs-also-v .vca-dir,#screen-patientchart #pcv-c.cs-v2 .v2-nar .cs-also-v .vca-dir svg{width:14px;height:14px;color:var(--tag-info-ic);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-meta{display:flex;align-items:center;gap:2px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-meta .cs-info{margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-src{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;margin:6px 0 2px;padding:10px 12px;border-radius:10px;background:var(--wash);font-size:14px;line-height:20px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-src dt{color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-src dd{margin:0;color:var(--ink);}
+  /* Today: the chart's own section, as a card */
+  #screen-patientchart #pcv-c.cs-v2 #cs-today{display:block;margin:0;padding:18px 20px;border:0;border-radius:16px;background:var(--panel);box-shadow:var(--shadow-card);}
+  #screen-patientchart #pcv-c.cs-v2 #cs-today .v2-chip{margin-left:2px;}
+  /* investigations */
+  #screen-patientchart #pcv-c.cs-v2 #v2-inv .v2-lines{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:4px 24px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-inv .v2-line + .v2-line{margin-top:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-inv > .v2-q{margin-top:10px;}
+
+  /* Note tab */
+  #screen-patientchart #pcv-c.cs-v2 .v2-notecard .v2-ch{margin-bottom:12px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-notecard .cs-saved{font-size:14px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-acts .cs-tb{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 10px;border:0;border-radius:8px;background:none;
+    font:inherit;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;white-space:nowrap;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-acts .cs-tb:hover,#screen-patientchart #pcv-c.cs-v2 #v2-note-acts .cs-tb[aria-expanded="true"]{background:var(--wash);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-acts .cs-tb .ic,#screen-patientchart #pcv-c.cs-v2 #v2-note-acts .cs-tb svg{width:16px;height:16px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-acts .cs-scdot{width:8px;height:8px;border-radius:50%;background:var(--ink-faint);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-acts .cs-ins{position:relative;display:inline-flex;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-acts .cs-ins-menu{position:absolute;top:100%;right:0;left:auto;z-index:60;display:grid;min-width:240px;margin-top:6px;padding:6px;border-radius:12px;
+    background:var(--panel);box-shadow:0 16px 48px rgba(23,24,28,.16),0 2px 6px rgba(23,24,28,.06);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-acts .cs-ins-menu button{display:flex;align-items:center;min-height:44px;padding:0 12px;border:0;border-radius:8px;background:none;font:inherit;font-size:15px;color:var(--ink);text-align:left;cursor:pointer;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-acts .cs-ins-menu button:hover,#screen-patientchart #pcv-c.cs-v2 #v2-note-acts .cs-ins-menu button:focus-visible{background:var(--wash);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-b .cs-ai{display:grid;gap:6px;margin:0 0 12px;padding:12px 14px;border-radius:12px;background:var(--brand-wash);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-b .cs-ai-a{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-b .cs-ai-b{display:flex;gap:8px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-b .cs-ai-b .btn{min-height:44px;border-color:transparent;background:var(--panel);box-shadow:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-b #cs-ai:empty{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-b .sc-block{margin:0 0 12px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-note-b .sc-hd{flex-wrap:wrap;}
+  #screen-patientchart #pcv-c.cs-v2 #vc-note-input{display:block;width:100%;box-sizing:border-box;min-height:380px;margin:0;font-size:16px;line-height:24px;}
+  #screen-patientchart #pcv-c.cs-v2.cs-ns-on #vc-note-input{min-height:160px;}
+  #screen-patientchart #pcv-c.cs-v2 #vc-signed{margin:10px 0 0;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-notefoot:empty{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-notefoot{margin:14px 0 0;padding:12px 0 0;border-top:1px solid var(--line);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-notefoot:not(:has(#cs-ns-bill:not([hidden]))){display:none;}
+
+  /* Orders tab: clear rows, not a toolbar */
+  #screen-patientchart #pcv-c.cs-v2 .v2-ord{display:grid;gap:8px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-orow{position:relative;display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:10px 44px 10px 16px;border:0;border-radius:12px;
+    background:var(--wash);font:inherit;text-align:left;color:var(--ink);cursor:pointer;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-orow:hover{background:var(--line);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-orow > .ic,#screen-patientchart #pcv-c.cs-v2 .v2-orow > .ic svg{width:22px;height:22px;flex:none;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-orow .v2-ot{display:grid;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-orow .v2-ot b{font-size:16px;line-height:22px;font-weight:600;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-orow .v2-ot span{font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-orow .v2-go,#screen-patientchart #pcv-c.cs-v2 .v2-orow .v2-go svg{top:50%;right:16px;margin-top:-8px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-ord-done{margin:0;font-size:15px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-rx-slot .rx-card{margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-fc-slot .cs-fc{margin:0;}
+
+  /* narrower windows: the sidebar steps down to 288 px; under 1100 px it stacks above the work */
+  @media (max-width:1360px){ #screen-patientchart #pcv-c.cs-v2 .v2{grid-template-columns:288px minmax(0,1fr);} }
+  @media (max-width:1100px){
+    #screen-patientchart #pcv-c.cs-v2 .v2{grid-template-columns:minmax(0,1fr);}
+    #screen-patientchart #pcv-c.cs-v2 .v2-side{position:static;max-height:none;overflow:visible;}
+  }
 </style>
 </head>
 <body>
@@ -5197,7 +5436,12 @@
       <!-- Ani, 5 Oct (chart declutter): "too much text and noise". One name on the screen (the patient card);
            back and the visit status are one small line. The h1 stays for screen readers only. -->
       <div class="cs-crumb"><button class="pc-back" onclick="showScreen('today')"><span class="ic" data-pcic="back"></span> Home</button><span aria-hidden="true">&middot;</span>
-      <p class="sub" data-f="visitline">Open visit &middot; today</p></div>
+      <p class="sub" data-f="visitline">Open visit &middot; today</p>
+      <!-- Ani, 5 Oct ("Chart layout v2"): v2 lives in this one file as a switchable layout. Default stays Current;
+           ?chart=v2 or this control turns it on, and the choice is remembered in this browser. -->
+      <span class="cs-layout" role="group" aria-label="Chart layout"><span class="cs-layout-k" aria-hidden="true">Layout</span>
+        <button type="button" id="cs-lay-current" aria-pressed="true" onclick="csLayout('current')">Current</button>
+        <button type="button" id="cs-lay-v2" aria-pressed="false" onclick="csLayout('v2')">v2</button></span></div>
       <h1 data-f="name" class="cs-h1">Patient</h1>
 
 
@@ -5349,6 +5593,76 @@
            the full chart is one step away and never discards the note. Ani, 3 Oct: built in v2's own
            design system; the Figma migration comes later. Rendered by the chart-shell script (csRender). -->
       <div class="pcv active cs" id="pcv-c">
+        <!-- ============ Chart layout v2 (Ani, 5 Oct) ============
+             "Still too much text in one long scroll." Borrowed from a calm telestroke layout Ani designed: a left
+             column of white context cards and the work split into tabs, with one primary Sign off at the top right.
+             This is only a frame. When v2 is on, csLayout() moves the existing chart nodes (patient card, Needs
+             attention, Today, the note, the AI block, the scribe, Insert, the checklist, billing and Finalize, the full
+             chart) into these slots, and moves them back for Current. Same nodes, same functions, same gates. -->
+        <div class="v2" id="v2" hidden>
+          <aside class="v2-side" id="v2-side" aria-label="Patient and context">
+            <section class="v2-card v2-pt" id="v2-pt" aria-label="Patient"></section>
+            <section class="v2-card v2-visit" id="v2-visit" aria-labelledby="v2-visit-h"></section>
+            <section class="v2-card v2-sec" id="v2s-meds" data-k="meds"><h3 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-meds-b" onclick="v2Sec('meds')"><span class="ic" data-pdic="encounterlog"></span><span class="v2-st">Medications</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h3><div class="v2-sb" id="v2s-meds-b" hidden></div></section>
+            <section class="v2-card v2-sec" id="v2s-hist" data-k="hist"><h3 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-hist-b" onclick="v2Sec('hist')"><span class="ic" data-pdic="tasks"></span><span class="v2-st">History</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h3><div class="v2-sb" id="v2s-hist-b" hidden></div></section>
+            <section class="v2-card v2-sec" id="v2s-pend" data-k="pend"><h3 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-pend-b" onclick="v2Sec('pend')"><span class="ic" data-pdic="clock"></span><span class="v2-st">Pending</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h3><div class="v2-sb" id="v2s-pend-b" hidden></div></section>
+            <section class="v2-card v2-sec" id="v2s-since" data-k="since"><h3 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-since-b" onclick="v2Sec('since')"><span class="ic" data-pdic="reassign"></span><span class="v2-st">Since you last saw</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h3><div class="v2-sb" id="v2s-since-b" hidden></div></section>
+            <section class="v2-card v2-sec" id="v2s-prev" data-k="prev"><h3 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-prev-b" onclick="v2Sec('prev')"><span class="ic" data-pdic="calendar"></span><span class="v2-st">Previous visits</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h3><div class="v2-sb" id="v2s-prev-b" hidden></div></section>
+          </aside>
+          <div class="v2-main" id="v2-main">
+            <div class="v2-top" id="v2-top">
+              <div class="v2-tabs" role="tablist" aria-label="This visit" id="v2-tabs">
+                <button type="button" role="tab" id="v2t-review" aria-controls="v2p-review" aria-selected="true" tabindex="0" onclick="v2Tab('review')"><span class="v2-tl">Review</span><span class="v2-tm"></span></button>
+                <button type="button" role="tab" id="v2t-note" aria-controls="v2p-note" aria-selected="false" tabindex="-1" onclick="v2Tab('note')"><span class="v2-tl">Note</span><span class="v2-tm"></span></button>
+                <button type="button" role="tab" id="v2t-orders" aria-controls="v2p-orders" aria-selected="false" tabindex="-1" onclick="v2Tab('orders')"><span class="v2-tl">Orders</span><span class="v2-tm"></span></button>
+              </div>
+              <div class="v2-acts" id="v2-acts">
+                <span id="v2-draft-slot"></span>
+                <span class="v2-finwrap">
+                  <button type="button" class="btn dark" id="v2-fin" aria-haspopup="dialog" aria-expanded="false" aria-controls="v2-finpop" onclick="v2Fin()"><span class="ic" data-pdic="complete"></span><span class="v2-fin-l">Sign off &amp; finalize</span><span class="v2-fin-n" id="v2-fin-n"></span></button>
+                  <div class="v2-finpop" id="v2-finpop" role="dialog" aria-labelledby="v2-finpop-h" hidden>
+                    <div class="v2-fph"><h3 id="v2-finpop-h" tabindex="-1">Sign off &amp; finalize</h3>
+                      <button type="button" class="v2-x" onclick="v2Fin(false)" aria-label="Close">&times;</button></div>
+                    <div id="v2-finpop-b"></div>
+                  </div>
+                </span>
+              </div>
+            </div>
+            <div id="v2-notices"></div>
+            <div class="v2-panel" id="v2p-review" role="tabpanel" aria-labelledby="v2t-review" tabindex="-1">
+              <div id="v2-ns-slot"></div>
+              <section class="v2-card v2-na" id="v2-na" aria-labelledby="v2-na-h">
+                <div class="v2-ch"><span class="ic" data-pdic="alert"></span><h3 id="v2-na-h">Needs attention</h3><span class="v2-chip" id="v2-na-chip"></span></div>
+                <div id="v2-na-b"></div>
+              </section>
+              <div id="v2-today-slot"></div>
+              <section class="v2-card" id="v2-inv" aria-labelledby="v2-inv-h"></section>
+            </div>
+            <div class="v2-panel" id="v2p-note" role="tabpanel" aria-labelledby="v2t-note" tabindex="-1" hidden>
+              <section class="v2-card v2-notecard" aria-labelledby="v2-note-h">
+                <div class="v2-ch"><span class="ic" data-pdic="edit"></span><h3 id="v2-note-h">Today&rsquo;s note</h3><span id="v2-saved-slot"></span>
+                  <span class="v2-cr" id="v2-note-acts"></span></div>
+                <div id="v2-note-b"></div>
+                <div class="v2-notefoot" id="v2-notefoot"></div>
+              </section>
+            </div>
+            <div class="v2-panel" id="v2p-orders" role="tabpanel" aria-labelledby="v2t-orders" tabindex="-1" hidden>
+              <section class="v2-card" aria-labelledby="v2-ord-h">
+                <div class="v2-ch"><span class="ic" data-pdic="addon"></span><h3 id="v2-ord-h">Orders and actions</h3></div>
+                <div class="v2-ord" id="v2-ord">
+                  <button type="button" class="v2-orow" onclick="rxOpen();v2RxFocus()"><span class="ic" data-pdic="chartnote"></span><span class="v2-ot"><b>Prescribe</b><span>Renew or start a medication</span></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="toast('Lab requisition started (demo)')"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order</b><span>Lab work or imaging</span></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="toast('Referral started (demo)')"><span class="ic" data-pdic="practice"></span><span class="v2-ot"><b>Refer</b><span>To a specialist or service</span></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pdic="taskmoa"></span><span class="v2-ot"><b>Task</b><span>Ask your MOA to do something</span></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="toast('Message to the patient portal (demo)')"><span class="ic" data-pdic="chat"></span><span class="v2-ot"><b>Message</b><span>To the patient portal</span></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                </div>
+                <p class="v2-ord-done" id="v2-ord-done" hidden>This visit is signed off, so its orders are closed.</p>
+              </section>
+              <div id="v2-rx-slot"></div>
+            </div>
+            <div id="v2-fc-slot"></div>
+          </div>
+        </div>
         <!-- v2.5 §3 Patient snapshot (persistent): name, age, gender as recorded, masked PHN, photo,
              allergies in three states, family doctor. No clinical counts or diagnosis badges. -->
         <header class="vc-banner cs-banner" id="cs-banner" aria-label="Patient and this visit">
@@ -11783,7 +12097,9 @@ window.addEventListener('resize', function(){
    not rewritten, so call, Task MOA, prescribing, finalize and claim, the care plan and the scribe keep working.
    ============================================================ */
 var CS = {empty:false, allergy:{}, visit:{}, ai:{}, draft:{}, stripOpen:{}, pop:null, sinceOpen:{}, relOpen:{},
-          fcTab:null, fcReturn:null, ctxScroll:0, view:'chart', dropped:{}, nsResumed:{}, srcOpen:{}};
+          fcTab:null, fcReturn:null, ctxScroll:0, view:'chart', dropped:{}, nsResumed:{}, srcOpen:{},
+          /* Ani, 5 Oct: chart layout v2 (csLayout, script at the end). Only presentation reads this. */
+          layout:'current', metaOpen:{}};
 try { CS.draft = JSON.parse(sessionStorage.getItem('sc-cs-draft') || '{}') || {}; } catch(e){ CS.draft = {}; }
 
 function csEsc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -11844,8 +12160,13 @@ function csRenderSnap(name){
     (age ? age + ' &middot; ' : '') + csEsc(r.sex || 'Not recorded') + ' &middot; PHN <span class="pc-mono" aria-label="PHN ending ' + csEsc(phn.slice(-3)) + '">' + masked + '</span>';
   /* v2.5 §3: allergies in three distinct states. Named is ink with a symbol (an allergy is not a critical
      result, so not red); "Not recorded" is amber with its word. The named example is v2.5 §8's, demo only. */
-  var a = CS.allergy[name] || 'nkda', el = document.getElementById('cs-allergy');
-  if(el){
+  var a = CS.allergy[name] || 'nkda', el = document.getElementById('cs-allergy'), v2 = CS.layout === 'v2';
+  if(el && v2){
+    /* layout v2 (Ani, 5 Oct): label above value, one fact per line. Same three states. */
+    el.className = 'cs-fact cs-al-' + a;
+    el.innerHTML = '<span class="cs-k">Allergies</span><span class="cs-v">' + (a === 'nkda' ? csIc('complete') + 'No known drug allergies'
+      : a === 'named' ? csIc('alert') + '<b>Penicillin &mdash; anaphylaxis</b>' : '<span class="cs-tag warn">' + csIc('alert') + 'Not recorded</span>') + '</span>';
+  } else if(el){
     el.className = 'cs-fact cs-al-' + a;
     el.innerHTML = a === 'nkda' ? csIc('complete') + '<span>No known drug allergies</span>'
       : a === 'named' ? csIc('alert') + '<span><span class="cs-k">Allergy</span> <b>Penicillin &mdash; anaphylaxis</b></span>'
@@ -11854,7 +12175,8 @@ function csRenderSnap(name){
   /* Ani, 5 Oct: "Since you last saw: No previous visit" is gone; a small tag by the name says it instead */
   var np = document.getElementById('cs-newpt'); if(np) np.hidden = !!PT_LAST[name];
   var fd = document.getElementById('cs-fd');
-  if(fd) fd.innerHTML = csIc('usercheck') + '<span><span class="cs-k">Family doctor</span> ' + (PT_LAST[name] ? '<b>Dr. D. Pannozzo</b>' : 'Not recorded') + '</span>';
+  if(fd) fd.innerHTML = v2 ? '<span class="cs-k">Family doctor</span><span class="cs-v">' + (PT_LAST[name] ? 'Dr. D. Pannozzo' : 'Not recorded') + '</span>'
+    : csIc('usercheck') + '<span><span class="cs-k">Family doctor</span> ' + (PT_LAST[name] ? '<b>Dr. D. Pannozzo</b>' : 'Not recorded') + '</span>';
   paintPd(document.getElementById('cs-banner'));
 }
 
@@ -12034,7 +12356,38 @@ function csNAItems(name){
   });
   return out;
 }
+/* layout v2 (Ani, 5 Oct): the same item, tier, stage and action, as label above value. The tier word is the label,
+   the result is the value, the concern is one line, the range one quiet line; panel, lab, doctor and basis sit behind
+   one info button instead of a dot-separated line. Nothing is re-tiered here. */
+function csNARowV2(x, related, also){
+  var T = CS_TIER[x.tier], it = x.it, t = x.test;
+  var mk = x.idx + '-' + (t ? String(t.n).replace(/[^a-z0-9]/gi,'') : 'abn'), open = !!CS.metaOpen[mk];
+  var val, up = t && (t.f || '').indexOf('high') > -1, low = t && (t.f || '').indexOf('low') > -1;
+  if(x.abn) val = '<b>' + (x.ecg ? traceFlag(it) : 'Abnormal ' + csEsc(it.panel)) + '</b>';
+  else val = '<b>' + t.n + '</b> <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span>' +
+    (up || low ? '<span class="ic vca-dir" role="img" aria-label="' + (up ? 'high' : 'low') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span>' : '');
+  var h = '';
+  if(!x.abn && t.concern) h += '<p class="v2-na-c">' + t.concern + '</p>';
+  if(!x.abn) h += '<p class="v2-q">Reference ' + csEsc(t.ref) + (x.label ? ', ' + x.label.toLowerCase() : '') + '</p>';
+  if(also && also.length) h += '<p class="v2-q"><span class="vh">Info: </span>Also out of range: ' + also.map(function(a){
+      var at = a.test, au = (at.f || '').indexOf('high') > -1;
+      return '<span class="cs-also-v">' + at.n + ' ' + at.v + ' ' + (at.u || '') + '<span class="ic vca-dir" role="img" aria-label="' + (au ? 'above range' : 'below range') + '" data-pdic="' + (au ? 'arrowup' : 'arrowdown') + '"></span></span>';
+    }).join(', ') + '</p>';
+  h += '<p class="v2-q v2-meta">Received ' + csEsc(it.received) +
+    '<button type="button" class="cs-info" id="cs-mi-' + mk + '" aria-expanded="' + open + '" aria-controls="cs-md-' + mk + '" aria-label="Source details" title="Source details" onclick="CS.metaOpen[\'' + mk + '\']=!CS.metaOpen[\'' + mk + '\'];renderChartAlerts(PC_CURRENT);csFocus(\'#cs-mi-' + mk + '\')">' + csIc('cardinfo') + '</button></p>' +
+    '<dl class="v2-src" id="cs-md-' + mk + '"' + (open ? '' : ' hidden') + '>' +
+      (x.tier === 'info' ? '<dt>Panel</dt><dd>Same panel as ' + csEsc(x.panelOf) + ', reviewed with it</dd>' : '<dt>Panel</dt><dd>' + csEsc(it.panel) + '</dd>') +
+      '<dt>Lab</dt><dd>' + csEsc(it.lab) + '</dd>' + (x.tier === 'info' ? '' : '<dt>Responsible</dt><dd>Dr. D. Pannozzo</dd>') +
+      (!x.abn && x.tier !== 'info' && t.basis ? '<dt>Why it is flagged</dt><dd>' + t.basis + '</dd>' : '') + '</dl>';
+  return '<div class="vca-row v2-nar cs-' + x.tier + (related ? ' cs-rel' : '') + '">' +
+    '<span class="ic vca-ic" role="img" aria-label="' + T.w + '" data-pdic="' + T.ic + '"></span>' +
+    '<div class="vca-main"><p class="v2-na-k">' + T.w + '</p><p class="vca-t">' + val + '</p>' + h + '</div>' +
+    '<div class="cs-side"><p class="cs-stage">' + csIc('clock') + '<span><span class="vh">Stage: </span>' + csEsc(x.stage) + '</span></p>' +
+      '<button type="button" class="btn" onclick="openReview(' + x.idx + ')"><span class="ic" data-pdic="eye"></span>' + x.action + '</button></div>' +
+  '</div>';
+}
 function csNARow(x, related, also){
+  if(CS.layout === 'v2') return csNARowV2(x, related, also);
   var T = CS_TIER[x.tier], it = x.it, t = x.test;
   var title;
   if(x.abn){
@@ -12109,6 +12462,17 @@ function csRenderToday(name){
   /* Ani, 5 Oct: the label "In the patient's words, from booking" was showing as the value. The patient's own
      words show when booking captured them (r.words; none in the demo data yet); otherwise Reason and Intake
      summary are one line, the intake summary. */
+  if(CS.layout === 'v2'){
+    /* layout v2 (Ani, 5 Oct): one card, icon + title + one status chip + action; label above value, one fact per line */
+    var when = f && f.when ? f.when.charAt(0).toUpperCase() + f.when.slice(1) : '';
+    el.innerHTML = '<div class="v2-ch">' + csIc('today') + '<h3 id="cs-today-h">Today</h3>' +
+      (f ? '<span class="v2-chip warn">' + csIc('alert') + 'Flagged at intake</span><span class="v2-cr"><button type="button" class="cs-link" onclick="openBrief(PC_CURRENT)">Open intake</button></span>' : '') + '</div>' +
+      '<dl class="v2-kv"><dt>Reason for visit</dt><dd class="v2-big">' + csEsc(r.concern) + '</dd>' +
+      (r.words ? '<dt>In the patient&rsquo;s words, from booking</dt><dd>&ldquo;' + csEsc(r.words) + '&rdquo;</dd>' : '') +
+      (sum ? '<dt>Intake summary</dt><dd>' + csEsc(sum) + '</dd>' : '') +
+      (f && f.words ? '<dt>What they flagged</dt><dd><b>&ldquo;' + csEsc(f.words) + '&rdquo;</b><span class="v2-q">Patient&rsquo;s words' + (when ? '. ' + csEsc(when) : '') + '</span></dd>' : '') + '</dl>';
+    paintPd(el); return;
+  }
   var words = r.words ? '<p class="cs-sum">&ldquo;' + csEsc(r.words) + '&rdquo; <span class="cs-cap">&middot; patient&rsquo;s words, from booking</span></p>' : '';
   el.innerHTML = '<h3 class="vh" id="cs-today-h">Today</h3>' +
     '<p class="cs-reason">' + csEsc(r.concern) + '</p>' + words +
@@ -13646,6 +14010,362 @@ t23SyncQueue();
 t23RenderDigest();
 /* T23-PART-E */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-05 19:58</div>
+<script>
+/* ============================================================
+   CHART LAYOUT v2 (Ani, 5 Oct 2026: "Chart layout v2" for the encounter view)
+   Ani: the decluttered chart "still feels like too much text in one long scroll". She asked for the calm structure
+   of a telestroke product she designed: a left column of stacked white context cards, the work split by tabs
+   (Review, Note, Orders), and one primary "Sign off & finalize" at the top right that says what is missing.
+   The project rule is one main file, so v2 is a switchable layout here, not a new file. Default stays Current.
+   How it shares everything: csLayout('v2') MOVES the existing chart nodes (patient card, notices, no-show banner,
+   Needs attention, Today, Since you last saw, the note, the AI block, the scribe, Insert, the prescribing card, the
+   checklist, billing and Finalize, the full chart) into the v2 slots, leaving a marker where each was, and moves them
+   back for Current. Every render, gate and handler is the same function in both layouts. The only v2-specific code
+   is presentation: the sidebar sections, the This visit card, the investigations card, the tabs and the header.
+   ============================================================ */
+var V2 = {tab:'review', open:{}, moved:[], fin:false, booting:false, justOpened:false};
+var V2_KEY = 'sc-chart-layout';
+var V2_TABS = ['review','note','orders'];
+function v2On(){ return CS.layout === 'v2'; }
+function v2El(id){ return document.getElementById(id); }
+
+/* ---------- moving nodes in and out (one set of nodes, two arrangements) ---------- */
+function v2Move(node, slot){
+  if(!node || !slot) return;
+  var ph = document.createComment('v2 moved: ' + (node.id || node.className));
+  node.parentNode.insertBefore(ph, node);
+  slot.appendChild(node);
+  V2.moved.push([node, ph]);
+}
+function v2Restore(){
+  while(V2.moved.length){ var m = V2.moved.pop(); if(m[1].parentNode){ m[1].parentNode.insertBefore(m[0], m[1]); m[1].remove(); } }
+}
+function v2Mount(){
+  if(V2.moved.length) return;
+  var q = function(sel){ return document.querySelector('#pcv-c ' + sel); };
+  v2Move(q('.cs-snap'), v2El('v2-pt'));
+  v2Move(v2El('cs-notices'), v2El('v2-notices'));
+  v2Move(v2El('cs-ns'), v2El('v2-ns-slot'));
+  v2Move(v2El('recall'), v2El('v2-ns-slot'));
+  v2Move(v2El('vc-alerts'), v2El('v2-na-b'));
+  v2Move(v2El('cs-today'), v2El('v2-today-slot'));
+  v2Move(v2El('slv'), v2El('v2s-since-b'));
+  v2Move(v2El('cs-saved'), v2El('v2-saved-slot'));
+  v2Move(v2El('cs-scribe-btn'), v2El('v2-note-acts'));
+  v2Move(q('#cs-acts .cs-ins'), v2El('v2-note-acts'));
+  v2Move(v2El('cs-ai'), v2El('v2-note-b'));
+  v2Move(v2El('sc-block'), v2El('v2-note-b'));
+  v2Move(q('label[for="vc-note-input"]'), v2El('v2-note-b'));
+  v2Move(v2El('vc-note-input'), v2El('v2-note-b'));
+  v2Move(v2El('vc-signed'), v2El('v2-note-b'));
+  /* the no-show billing placeholder leaves the footer first, so it shows under the note when Finalize is hidden */
+  v2Move(v2El('cs-ns-bill'), v2El('v2-notefoot'));
+  v2Move(v2El('rx-card'), v2El('v2-rx-slot'));
+  v2Move(v2El('vc-savedraft'), v2El('v2-draft-slot'));
+  /* checklist, warnings, the T-023 billing line, Finalize, Next patient and the claim helper: the finalize popover */
+  v2Move(q('.cs-foot'), v2El('v2-finpop-b'));
+  v2Move(v2El('cs-fc'), v2El('v2-fc-slot'));
+}
+
+/* ---------- the switch: "Layout: Current | v2", ?chart=v2, remembered in this browser ---------- */
+function csLayout(mode){
+  mode = mode === 'v2' ? 'v2' : 'current';
+  var was = CS.layout, root = v2El('pcv-c'), shell = v2El('v2'); if(!root || !shell) return;
+  try { localStorage.setItem(V2_KEY, mode); } catch(e){}
+  v2Fin(false, true);
+  if(typeof csCloseFull === 'function') csCloseFull(true);
+  if(CS.pop){ CS.pop = null; }
+  CS.layout = mode;
+  if(mode === 'v2'){ v2Mount(); shell.hidden = false; root.classList.add('cs-v2'); paintPd(shell); }
+  else { v2Restore(); shell.hidden = true; root.classList.remove('cs-v2'); }
+  ['current','v2'].forEach(function(k){ var b = v2El('cs-lay-' + k); if(b) b.setAttribute('aria-pressed', String(k === mode)); });
+  if(PC_CURRENT && was !== mode){
+    /* the patient card, Today and Needs attention have layout-specific markup: render them again */
+    csRefresh();
+    if(mode === 'v2'){ v2Tab(V2.tab); v2Render(); }
+    if(typeof vcGrow === 'function') vcGrow();
+  }
+  csMeasure();
+}
+
+/* ---------- tabs: Review, Note, Orders (role=tablist, arrow keys, Home, End) ---------- */
+function v2Tab(tab, focus){
+  var root = v2El('pcv-c');
+  if(tab === 'orders' && root.classList.contains('cs-ns-on')) tab = 'review';
+  V2.tab = tab;
+  var fc = v2El('cs-fc'); if(fc && !fc.hidden) csCloseFull(true);
+  V2_TABS.forEach(function(k){
+    var b = v2El('v2t-' + k), p = v2El('v2p-' + k), on = k === tab;
+    if(b){ b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; }
+    if(p) p.hidden = !on;
+  });
+  if(tab === 'note' && typeof vcGrow === 'function') vcGrow();
+  if(focus){ var t = v2El('v2t-' + tab); if(t) t.focus(); }
+}
+document.addEventListener('keydown', function(e){
+  var t = e.target;
+  if(!t || !t.closest || !t.closest('#v2-tabs') || t.getAttribute('role') !== 'tab') return;
+  if(!/^(ArrowRight|ArrowLeft|Home|End)$/.test(e.key)) return;
+  var ids = V2_TABS.filter(function(k){ var b = v2El('v2t-' + k); return b && !b.hidden; });
+  var i = ids.indexOf(V2.tab); if(i < 0) i = 0;
+  i = e.key === 'Home' ? 0 : e.key === 'End' ? ids.length - 1 : (i + (e.key === 'ArrowRight' ? 1 : -1) + ids.length) % ids.length;
+  v2Tab(ids[i], true); e.preventDefault();
+});
+
+/* ---------- sidebar sections: collapsed by default, title + count + chevron ---------- */
+function v2Sec(k, open){
+  if(open === undefined) open = !V2.open[k];
+  V2.open[k] = open;
+  var s = v2El('v2s-' + k); if(!s) return;
+  var b = s.querySelector('.v2-sbtn'), body = v2El('v2s-' + k + '-b');
+  if(b) b.setAttribute('aria-expanded', String(!!open));
+  if(body) body.hidden = !open;
+}
+function v2Secs(){ ['meds','hist','pend','since','prev'].forEach(function(k){ v2Sec(k, !!V2.open[k]); }); }
+
+/* one fact per line: "a · b · c" becomes a value and quiet lines (presentation only; the rows are the chart's own) */
+function v2Parts(t){ return String(t || '').split(/\s*&middot;\s*/).filter(function(x){ return x !== ''; }); }
+function v2Cap(t){ t = String(t || ''); return t.charAt(0).toUpperCase() + t.slice(1); }
+function v2Line(x){
+  var lab = v2Parts(x[0]), sub = v2Parts(x[1]);
+  var top = lab.length > 1 ? '<span class="v2-l0">' + lab[0] + '</span>' : '';
+  var main = lab.length > 1 ? v2Cap(lab.slice(1).join(', ')) : lab[0];
+  return '<button type="button" class="v2-line" onclick="csOpenFull(\'' + x[2] + '\',this)">' + top +
+    '<span class="v2-l1">' + main + (x[4] ? '<span class="v2-chip warn">' + csIc('clock') + x[4] + '</span>' : '') + '</span>' +
+    (sub.length ? '<span class="v2-l2">' + v2Cap(sub[0]) + '</span>' : '') +
+    (sub.length > 1 ? '<span class="v2-l2">' + v2Cap(sub.slice(1).join(', ')) + '</span>' : '') +
+    '<span class="vh"> &mdash; open the source</span>' + csIc('chevr', 'v2-go') + '</button>';
+}
+function v2BP(name){
+  var bp = (PT_READINGS[name] || {}).bp || []; if(!bp.length) return '';
+  var last = bp[bp.length - 1];
+  var spark = bp.length > 1 ? '<span class="cs-trend">' + prSpark([bp.map(function(x){ return +x[1].split('/')[0]; }), bp.map(function(x){ return +x[1].split('/')[1]; })], 64, 28) + '</span>' : '';
+  return '<button type="button" class="v2-line" onclick="csOpenFull(\'results\',this)"><span class="v2-l0">Home BP</span>' +
+    '<span class="v2-l1">' + last[1] + ' mmHg' + spark + '</span><span class="v2-l2">' + last[0] + ', ' + bp.length + ' readings since ' + bp[0][0] + '</span>' +
+    '<span class="v2-l2">Patient-reported, home cuff</span><span class="vh"> &mdash; open the source</span>' + csIc('chevr', 'v2-go') + '</button>';
+}
+function v2Rows(name){
+  var cur = CS_REL[name], rows = cur ? cur.rows : csRelGeneric(name), by = {};
+  rows.forEach(function(r){ by[r[0]] = r; });
+  return by;
+}
+function v2Lines(row, name){
+  if(!row) return '';
+  return row[1].map(function(x){
+    if(x[0] === '@na') return '';            /* Needs attention is on the same tab, directly above */
+    if(x[0] === '@bp') return v2BP(name);
+    var h = v2Line(x);
+    if(x[3] && CS_QUOTES[x[3]]){
+      var k = x[3], open = !!CS.relOpen[k];
+      h += '<button type="button" class="cs-exp" id="v2-qb-' + k + '" aria-expanded="' + open + '" aria-controls="v2-q-' + k + '" onclick="CS.relOpen[\'' + k + '\']=!CS.relOpen[\'' + k + '\'];v2RenderSide(PC_CURRENT);csFocus(\'#v2-qb-' + k + '\')">' +
+        csIc('chevdown') + (open ? 'Hide' : 'Show') + ' what they wrote</button>' +
+        '<div class="cs-quote" id="v2-q-' + k + '"' + (open ? '' : ' hidden') + '>' + CS_QUOTES[k].map(function(q){ return '<p>&ldquo;' + q + '&rdquo;</p>'; }).join('') + '</div>';
+    }
+    return h;
+  }).join('');
+}
+function v2Count(row){ return row ? row[1].filter(function(x){ return x[0] !== '@na'; }).length : 0; }
+function v2SetSec(k, count, chip, body, show){
+  var s = v2El('v2s-' + k); if(!s) return;
+  s.hidden = !show;
+  var n = s.querySelector('.v2-sn'), c = s.querySelector('.v2-sc');
+  if(n){ n.textContent = count ? String(count) : ''; }
+  if(c){ c.innerHTML = chip || ''; c.hidden = !chip; }
+  var b = v2El('v2s-' + k + '-b'); if(b && body !== null) b.innerHTML = body;
+  paintPd(s);
+}
+function v2RenderSide(name){
+  if(!v2On() || !name) return;
+  var by = v2Rows(name), L = PT_LAST[name];
+  var src = function(row){
+    if(!row || !row[2]) return '';
+    var t = row[2].replace(/^Source:\s*/, ''), p = v2Parts(t);
+    return '<p class="v2-src-l">' + (/^Source:/.test(row[2]) ? '<span class="v2-l0">Source</span>' : '') + p.map(function(x){ return '<span>' + v2Cap(x) + '</span>'; }).join('') + '</p>';
+  };
+  var meds = by['Medications'], hist = by['History'], pend = by['Pending'], prev = by['Prior related care'];
+  v2SetSec('meds', v2Count(meds), '', meds ? v2Lines(meds, name) + src(meds) : '<p class="v2-q">No medications on file.</p>', true);
+  v2SetSec('hist', v2Count(hist), '', hist ? v2Lines(hist, name) + src(hist) : '<p class="v2-q">No conditions on file.</p>', true);
+  var over = pend ? pend[1].filter(function(x){ return x[4] === 'Overdue'; }).length : 0;
+  v2SetSec('pend', v2Count(pend), over ? '<span class="v2-chip warn">' + csIc('clock') + over + ' overdue</span>' : '', pend ? v2Lines(pend, name) : '', !!pend);
+  /* Since you last saw: the chart's own section (renderSinceLast), moved here; hidden when it is */
+  var slv = v2El('slv'), list = L ? (CS_SINCE[name] || csSinceGeneric(name)) : [];
+  v2SetSec('since', list.length, '', null, !!(slv && !slv.hidden));
+  var prevBody = (prev ? v2Lines(prev, name) : '') +
+    (L ? '<button type="button" class="cs-link v2-readnote" onclick="csOpenFull(\'documents\',this)">Read the ' + csShort(L.date) + ' note</button>' : '');
+  v2SetSec('prev', v2Count(prev), '', prevBody, !!(prev || L));
+  var inv = by['Investigations'], el = v2El('v2-inv');
+  if(el){
+    var lines = v2Lines(inv, name);
+    el.hidden = !lines;
+    el.innerHTML = lines ? '<div class="v2-ch">' + csIc('chartup') + '<h3 id="v2-inv-h">' + (CS_REL[name] ? 'Relevant investigations' : 'Investigations') + '</h3></div>' +
+      '<div class="v2-lines">' + lines + '</div>' + (inv[2] ? '<p class="v2-q">' + inv[2] + '</p>' : '') : '';
+    paintPd(el);
+  }
+}
+
+/* ---------- This visit: mode and callback, the checks as a short list ---------- */
+function v2RenderVisit(name){
+  var el = v2El('v2-visit'); if(!v2On() || !el || !name) return;
+  var v = csVisit(name), r = csRow(), ns = csNoShow(name), signed = !!(r && r.signed);
+  var all = [['loc','Location', v.location ? csPlace(name) : ''], ['id','ID verified', v.id], ['con','Consent', v.consent],
+             ['oth','Others present', v.others ? (v.othersText || 'None, patient alone') : '']];
+  var h = '<div class="v2-ch">' + csIc('phone') + '<h3 id="v2-visit-h">This visit</h3></div>' +
+    '<dl class="v2-pair"><div><dt>Visit</dt><dd>' + csEsc(v.mode) + '</dd></div><div><dt>Callback</dt><dd class="pc-mono">' + csEsc(v.callback) + '</dd></div></dl>';
+  if(!ns){
+    /* done = a quiet tick; missing = one tonal chip, which opens its form by Finalize (the one checklist) */
+    h += '<ul class="v2-checks" aria-label="Visit checks">' + all.map(function(x){
+      if(x[2]) return '<li class="ok">' + csIc('complete') + '<span class="v2-ck">' + x[1] + '</span><span class="v2-cv" title="' + csEsc(x[2]) + '">' + csEsc(x[2]) + '</span></li>';
+      return '<li><button type="button" class="v2-chip warn v2-chipbtn" aria-haspopup="dialog" aria-label="' + x[1] + ': not done. Complete it" onclick="csGoStrip(\'' + x[0] + '\')">' + csIc('alert') + x[1] + '</button></li>';
+    }).join('') + '</ul>';
+  }
+  el.innerHTML = h; paintPd(el);
+}
+
+/* ---------- header and tab marks: what is left, in one place ---------- */
+function v2NA(name){
+  if(CS.empty || !name) return {n:0, crit:false, total:0};
+  var it = csNAItems(name).filter(function(x){ return x.tier !== 'info'; });
+  var un = it.filter(function(x){ return /^Not /.test(x.stage); });
+  return {n:un.length, crit:un.some(function(x){ return x.tier === 'crit'; }), total:it.length};
+}
+function v2Mark(k, m){
+  var b = v2El('v2t-' + k); if(!b) return;
+  var el = b.querySelector('.v2-tm'); if(!el) return;
+  el.innerHTML = !m ? '' : m.badge ? '<span class="v2-badge' + (m.crit ? ' crit' : '') + '" aria-hidden="true">' + m.badge + '</span><span class="vh">, ' + m.label + '</span>'
+    : csIc('complete', 'v2-tick') + '<span class="vh">, ' + m.label + '</span>';
+  paintPd(el);
+}
+function v2SyncHead(){
+  if(!v2On() || !PC_CURRENT) return;
+  var r = csRow(), signed = !!(r && r.signed), ns = csNoShow(PC_CURRENT), miss = csMissing(PC_CURRENT);
+  var fin = v2El('v2-fin'), n = v2El('v2-fin-n');
+  if(fin){
+    fin.hidden = ns;                                   /* no-show: Call again is the one primary */
+    fin.classList.toggle('dark', !signed); fin.classList.toggle('v2-signed', signed);
+    fin.querySelector('.v2-fin-l').textContent = signed ? 'Signed off' : 'Sign off & finalize';
+    var left = !signed && miss.length ? miss.length + (miss.length === 1 ? ' check left' : ' checks left') : '';
+    n.textContent = left; n.hidden = !left;
+    fin.setAttribute('aria-label', signed ? 'Signed off. Show billing and the next patient' : 'Sign off and finalize' + (left ? ', ' + left : ''));
+  }
+  var na = v2NA(PC_CURRENT);
+  v2Mark('review', na.n ? {badge:na.n, crit:na.crit, label:na.n + ' to review'} : {label:'nothing left to review'});
+  var a = csAI(PC_CURRENT), ai = !ns && !signed && a.state === 'pending' && !!a.text;
+  var txt = ((v2El('vc-note-input') || {}).value || '').trim();
+  v2Mark('note', ai ? {badge:1, label:'AI text to accept or reject'} : (signed || txt) ? {label:'note written'} : null);
+  var rx = v2El('rx-card'), st = RX_STATE[PC_CURRENT];
+  v2Mark('orders', rx && !rx.hidden && !signed && st && !(st.sent || []).length ? {badge:1, label:'a prescription to review'} : null);
+  var ot = v2El('v2t-orders'); if(ot) ot.hidden = ns;
+  if(ns && V2.tab === 'orders') v2Tab('review');
+  var ord = v2El('v2-ord'), od = v2El('v2-ord-done'); if(ord) ord.hidden = signed; if(od) od.hidden = !signed;
+  /* Needs attention card follows the section it holds (hidden when the chart has nothing to say) */
+  var al = v2El('vc-alerts'), card = v2El('v2-na'), chip = v2El('v2-na-chip');
+  if(card) card.hidden = !al || al.hidden;
+  if(chip){
+    chip.className = 'v2-chip' + (na.n ? (na.crit ? ' crit' : ' warn') : '');
+    chip.innerHTML = na.n ? csIc(na.crit ? 'crit' : 'alert') + na.n + ' to review' : na.total ? csIc('complete') + 'Reviewed' : '';
+    chip.hidden = !na.total; paintPd(chip);
+  }
+}
+function v2Render(){ if(!v2On() || !PC_CURRENT) return; v2RenderVisit(PC_CURRENT); v2RenderSide(PC_CURRENT); v2SyncHead(); }
+
+/* ---------- Sign off & finalize: one primary, opening the checklist, billing line and the real Finalize ---------- */
+function v2Fin(open, noFocus){
+  var pop = v2El('v2-finpop'), b = v2El('v2-fin'); if(!pop || !b) return;
+  if(open === undefined) open = pop.hidden;
+  open = !!open;
+  if(!open && pop.hidden){ V2.fin = false; return; }
+  pop.hidden = !open; V2.fin = open; b.setAttribute('aria-expanded', String(open));
+  if(!open){
+    if(CS.pop){ CS.pop = null; csRenderChecks(PC_CURRENT); }
+    if(!noFocus) b.focus();
+    return;
+  }
+  V2.justOpened = true; setTimeout(function(){ V2.justOpened = false; }, 0);
+  csFinState();
+  if(noFocus) return;
+  var fz = v2El('vc-finalize'), nx = v2El('vc-nextpt');
+  var f = pop.querySelector('#cs-finwhy li.todo button') || (fz && !fz.hidden ? fz : null) || (nx && !nx.hidden ? nx : null) || v2El('v2-finpop-h');
+  f.focus();
+}
+document.addEventListener('click', function(e){
+  if(!V2.fin || V2.justOpened) return;
+  var t = e.target; if(!t || !t.closest || !document.contains(t)) return;
+  if(t.closest('.v2-finwrap') || !t.closest('#v2')) return;
+  v2Fin(false, true);
+});
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape' || !V2.fin || CS.pop) return;
+  var a = document.activeElement;
+  if(!a || !a.closest || !a.closest('.v2-finwrap')) return;
+  e.stopPropagation(); v2Fin(false);
+}, true);
+/* the Orders row opens the prescribing card under it */
+function v2RxFocus(){
+  var c = v2El('rx-card'); if(!c || c.hidden) return;
+  if(c.scrollIntoView) c.scrollIntoView({block:'nearest'});
+  var f = c.querySelector('input, select, button'); if(f) f.focus({preventScroll:true});
+}
+
+/* ---------- wrappers: the shared functions tell v2 when something changed (they behave the same in both) ---------- */
+(function(){
+  var w = function(name, after, before){
+    var f = window[name]; if(typeof f !== 'function') return;
+    window[name] = function(){
+      if(before && v2On()){ var r0 = before.apply(this, arguments); if(r0 === false) return; }
+      var r = f.apply(this, arguments);
+      if(v2On()) after.apply(this, arguments);
+      return r;
+    };
+  };
+  w('csRefresh', function(){ v2Render(); });
+  w('csFinState', function(){ v2SyncHead(); v2RenderVisit(PC_CURRENT); });
+  w('csRenderStrip', function(){ v2RenderVisit(PC_CURRENT); v2SyncHead(); });
+  w('csRenderAI', function(){ v2SyncHead(); });
+  w('csDraft', function(){ v2SyncHead(); });
+  w('renderChartAlerts', function(){ v2SyncHead(); });
+  w('renderSinceLast', function(name){ v2RenderSide(name || PC_CURRENT); });
+  w('csRenderRel', function(name){ v2RenderSide(name || PC_CURRENT); });
+  w('csRenderSnap', function(){ paintPd(v2El('v2-pt')); });
+  w('rxOpen', function(){ if(!V2.booting) v2Tab('orders'); v2SyncHead(); });
+  w('rxClose', function(){ v2SyncHead(); });
+  w('csNsCall', function(){ v2Tab('note'); var n = v2El('vc-note-input'); if(n) n.focus({preventScroll:true}); });
+  w('csOpenFull', function(){ V2_TABS.forEach(function(k){ var b = v2El('v2t-' + k); if(b) b.setAttribute('aria-selected', 'false'); }); });
+  w('csCloseFull', function(){ var fc = v2El('cs-fc'); if(fc && fc.hidden) V2_TABS.forEach(function(k){ var b = v2El('v2t-' + k); if(b) b.setAttribute('aria-selected', String(k === V2.tab)); }); });
+  /* Go to Needs attention: in v2 that is the Review tab */
+  w('csGoNA', function(){}, function(){ v2Tab('review'); });
+  /* the condensed reason line belongs to Current's sticky banner; v2 keeps the reason on the Review tab */
+  w('csCondensed', function(){}, function(){ var c = v2El('cs-cond'); if(c) c.hidden = true; return false; });
+  /* focus is never hidden under v2's sticky tab bar */
+  w('csMeasure', function(){
+    if(!csOnChart()) return;
+    var top = csTopbarH(), bar = v2El('v2-top'), h = bar ? bar.getBoundingClientRect().height : 0;
+    document.documentElement.style.scrollPaddingTop = Math.round(top + h + 20) + 'px';
+  });
+  /* a blocked Finalize, a missing-check chip or "N checks" opens the checklist inside the finalize popover */
+  var go0 = window.csGoStrip;
+  window.csGoStrip = function(key){
+    if(!v2On()) return go0.apply(this, arguments);
+    v2Fin(true, true); csPop(key);
+  };
+  /* a new chart starts on Review with the sidebar sections collapsed */
+  var open0 = window.openChart;
+  window.openChart = function(name){
+    v2Fin(false, true); V2.open = {};
+    V2.booting = true;
+    try { open0.apply(this, arguments); } finally { V2.booting = false; }
+    if(v2On()){ v2Secs(); v2Tab('review'); v2Render(); }
+  };
+})();
+
+/* ---------- start: ?chart=v2 (or ?chart=current), else the remembered choice, else Current ---------- */
+(function(){
+  var m = null;
+  try { var p = new URLSearchParams(location.search).get('chart'); if(p === 'v2' || p === 'current') m = p; } catch(e){}
+  if(!m){ try { m = localStorage.getItem(V2_KEY); } catch(e){ m = null; } }
+  if(m === 'v2') csLayout('v2');
+  else if(m === 'current') csLayout('current');
+})();
+</script>
+  <div class="build-stamp">v2 · build 2026-10-05 20:27</div>
 </body>
 </html>
