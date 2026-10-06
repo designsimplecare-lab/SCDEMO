@@ -5280,6 +5280,15 @@
   /* status tags sit on the right of a claim card's header */
   #screen-claims .t23-chead{display:flex;align-items:center;flex-wrap:wrap;gap:8px;}
   #screen-claims .t23-chead .t23-chips{margin-left:auto;display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;}
+
+  /* Claims summary as one slim strip (Ani, 6 Oct: the tiles were too big) */
+  html body #screen-claims .cl-stats{display:flex;gap:0;margin-bottom:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  html body #screen-claims .cl-stats .cl-stat{flex:1 1 0;min-width:0;background:none;border:0;border-radius:0;padding:10px 16px;box-shadow:none;}
+  html body #screen-claims .cl-stats .cl-stat + .cl-stat{border-left:1px solid var(--line);}
+  html body #screen-claims .cl-stat .k{margin:0 0 2px;font-size:14px;font-weight:500;color:var(--ink-soft);}
+  html body #screen-claims .cl-stat .vs{margin:0;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+  html body #screen-claims .cl-stat .vs .v{font-size:20px;font-weight:700;line-height:1.2;letter-spacing:-.01em;color:var(--ink);}
+  html body #screen-claims .cl-stat .vs .s{font-size:14px;color:var(--ink-soft);margin:0;display:inline;}
 </style>
 </head>
 <body>
@@ -13425,7 +13434,8 @@ function t23Seg(){
 function t23Stats(){
   var sw = document.getElementById('cl-stats'); if(!sw) return;
   var sum = function(a){ return a.reduce(function(t, c){ return t + t23Amt(c); }, 0); };
-  var st = function(k, v, s){ return '<div class="cl-stat"><p class="k">' + k + '</p><p class="v">' + v + '</p><p class="s">' + s + '</p></div>'; };
+  /* Ani, 6 Oct: one slim summary strip: label, then the count and its amount on one line */
+  var st = function(k, v, s){ return '<div class="cl-stat"><p class="k">' + k + '</p><p class="vs"><span class="v">' + v + '</span><span class="s">' + s + '</span></p></div>'; };
   if(T23.view === 'private'){
     var due = CLAIMS.filter(function(c){ return c.st === 'pri-due'; }), pd = CLAIMS.filter(function(c){ return c.st === 'pri-paid'; });
     sw.innerHTML = '<div class="cl-stats t23-stats2">' +
@@ -14561,6 +14571,6 @@ function v2RxFocus(){
   csLayout(m);
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 18:50</div>
+  <div class="build-stamp">v2 · build 2026-10-06 19:00</div>
 </body>
 </html>
