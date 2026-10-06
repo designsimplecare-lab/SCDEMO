@@ -4995,6 +4995,9 @@
   #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-who .vc-nm{font-size:19px;line-height:26px;}
   #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-who .vc-sub{margin:2px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
   #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-newpt{height:28px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-snap{align-items:start;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-nmrow{gap:4px 8px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-who .vc-sub .pc-mono{white-space:nowrap;}
   #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-facts{grid-column:1 / -1;display:grid;gap:12px;margin:4px 0 0;padding:14px 0 0;border-top:1px solid var(--line);}
   #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-fact{display:block;margin:0;}
   #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-fact .cs-k{display:block;margin:0 0 2px;font-size:14px;line-height:20px;color:var(--ink-soft);}
@@ -5055,7 +5058,7 @@
   #screen-patientchart #pcv-c.cs-v2 #slv .cs-txt{display:block;}
 
   /* ---- main: sticky tab bar with the one primary, then the tab's cards ---- */
-  #screen-patientchart #pcv-c.cs-v2 .v2-main{display:grid;gap:12px;min-width:0;padding-bottom:104px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-main{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;min-width:0;padding-bottom:104px;}
   #screen-patientchart #pcv-c.cs-v2 .v2-top{position:sticky;top:calc(var(--cs-top,0px) + 4px);z-index:45;display:flex;align-items:center;gap:12px;min-height:64px;padding:0 12px 0 10px;
     border-radius:16px;background:var(--panel);box-shadow:var(--shadow-card);}
   #screen-patientchart #pcv-c.cs-v2 .v2-tabs{display:flex;align-self:stretch;gap:2px;min-width:0;}
@@ -5101,7 +5104,7 @@
   /* notices (dropped call, outside BC) sit above the tabs' content in every tab */
   #screen-patientchart #pcv-c.cs-v2 #v2-notices:not(:has(.cs-notices:not([hidden]))){display:none;}
   #screen-patientchart #pcv-c.cs-v2 #v2-notices .cs-notices{padding:0;}
-  #screen-patientchart #pcv-c.cs-v2 .v2-panel{display:grid;gap:12px;min-width:0;outline:none;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-panel{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;min-width:0;outline:none;}
   #screen-patientchart #pcv-c.cs-v2.cs-fc-open .v2-panel{display:none !important;}
   #screen-patientchart #pcv-c.cs-v2 #v2-ns-slot:not(:has(#cs-ns:not([hidden]),#recall.on)){display:none;}
   #screen-patientchart #pcv-c.cs-v2 #vc-alerts .v2-nar .cs-info .ic,#screen-patientchart #pcv-c.cs-v2 #vc-alerts .v2-nar .cs-info svg{color:var(--ink-faint);}
@@ -5178,7 +5181,12 @@
   #screen-patientchart #pcv-c.cs-v2 #v2-fc-slot .cs-fc{margin:0;}
 
   /* narrower windows: the sidebar steps down to 288 px; under 1100 px it stacks above the work */
-  @media (max-width:1360px){ #screen-patientchart #pcv-c.cs-v2 .v2{grid-template-columns:288px minmax(0,1fr);} }
+  @media (max-width:1360px){
+    #screen-patientchart #pcv-c.cs-v2 .v2{grid-template-columns:280px minmax(0,1fr);}
+    #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab]{padding:3px 10px 0;}
+    /* Save draft keeps its name for screen readers and on hover; only the word is hidden to fit the bar */
+    #screen-patientchart #pcv-c.cs-v2 #vc-savedraft{width:44px;padding:0;justify-content:center;gap:0;font-size:0;}
+  }
   @media (max-width:1100px){
     #screen-patientchart #pcv-c.cs-v2 .v2{grid-template-columns:minmax(0,1fr);}
     #screen-patientchart #pcv-c.cs-v2 .v2-side{position:static;max-height:none;overflow:visible;}
@@ -5763,7 +5771,7 @@
             <div class="vc-h cs-nh"><span class="ic" data-pcic="edit"></span><h3 id="cs-note-h" tabindex="-1">Today&rsquo;s note</h3>
               <span class="right cs-nh-r"><span class="cs-saved" id="cs-saved" aria-live="polite"></span>
                 <button type="button" class="cs-tb" id="cs-scribe-btn" onclick="scAskConsent()" title="Drafts the note and proposes orders while you talk. It files nothing on its own."><span class="cs-scdot" aria-hidden="true"></span>Scribe</button>
-                <button type="button" class="cs-tb" id="vc-savedraft" onclick="csDraft();toast('Draft saved')"><span class="ic" data-pdic="edit"></span>Save draft</button></span></div>
+                <button type="button" class="cs-tb" id="vc-savedraft" title="Save draft" onclick="csDraft();toast('Draft saved')"><span class="ic" data-pdic="edit"></span>Save draft</button></span></div>
             <!-- v2.5 §7: AI text is visually distinct from chart facts until accepted -->
             <div id="cs-ai"></div>
             <div class="sc-block" id="sc-block" hidden>
@@ -14077,7 +14085,7 @@ function csLayout(mode){
   if(CS.pop){ CS.pop = null; }
   CS.layout = mode;
   if(mode === 'v2'){ v2Mount(); shell.hidden = false; root.classList.add('cs-v2'); paintPd(shell); }
-  else { v2Restore(); shell.hidden = true; root.classList.remove('cs-v2'); }
+  else { v2Restore(); shell.hidden = true; root.classList.remove('cs-v2'); var ins = document.querySelector('#cs-acts .cs-ins'); if(ins) ins.hidden = false; }
   ['current','v2'].forEach(function(k){ var b = v2El('cs-lay-' + k); if(b) b.setAttribute('aria-pressed', String(k === mode)); });
   if(PC_CURRENT && was !== mode){
     /* the patient card, Today and Needs attention have layout-specific markup: render them again */
@@ -14183,8 +14191,8 @@ function v2RenderSide(name){
     return '<p class="v2-src-l">' + (/^Source:/.test(row[2]) ? '<span class="v2-l0">Source</span>' : '') + p.map(function(x){ return '<span>' + v2Cap(x) + '</span>'; }).join('') + '</p>';
   };
   var meds = by['Medications'], hist = by['History'], pend = by['Pending'], prev = by['Prior related care'];
-  v2SetSec('meds', v2Count(meds), '', meds ? v2Lines(meds, name) + src(meds) : '<p class="v2-q">No medications on file.</p>', true);
-  v2SetSec('hist', v2Count(hist), '', hist ? v2Lines(hist, name) + src(hist) : '<p class="v2-q">No conditions on file.</p>', true);
+  v2SetSec('meds', v2Count(meds), '', meds ? v2Lines(meds, name) + src(meds) : '<p class="v2-q">No medications recorded in Simple Care.</p>', true);
+  v2SetSec('hist', v2Count(hist), '', hist ? v2Lines(hist, name) + src(hist) : '<p class="v2-q">No conditions recorded in Simple Care.</p>', true);
   var over = pend ? pend[1].filter(function(x){ return x[4] === 'Overdue'; }).length : 0;
   v2SetSec('pend', v2Count(pend), over ? '<span class="v2-chip warn">' + csIc('clock') + over + ' overdue</span>' : '', pend ? v2Lines(pend, name) : '', !!pend);
   /* Since you last saw: the chart's own section (renderSinceLast), moved here; hidden when it is */
@@ -14257,6 +14265,8 @@ function v2SyncHead(){
   var ot = v2El('v2t-orders'); if(ot) ot.hidden = ns;
   if(ns && V2.tab === 'orders') v2Tab('review');
   var ord = v2El('v2-ord'), od = v2El('v2-ord-done'); if(ord) ord.hidden = signed; if(od) od.hidden = !signed;
+  /* Insert sat in Current's toolbar, which hides on sign-off and in the no-show state: same here */
+  var ins = document.querySelector('#v2-note-acts .cs-ins'); if(ins) ins.hidden = signed || ns;
   /* Needs attention card follows the section it holds (hidden when the chart has nothing to say) */
   var al = v2El('vc-alerts'), card = v2El('v2-na'), chip = v2El('v2-na-chip');
   if(card) card.hidden = !al || al.hidden;
@@ -14353,7 +14363,7 @@ function v2RxFocus(){
     v2Fin(false, true); V2.open = {};
     V2.booting = true;
     try { open0.apply(this, arguments); } finally { V2.booting = false; }
-    if(v2On()){ v2Secs(); v2Tab('review'); v2Render(); }
+    if(v2On()){ v2Secs(); v2Tab('review'); v2Render(); var sd = v2El('v2-side'); if(sd) sd.scrollTop = 0; }
   };
 })();
 
@@ -14366,6 +14376,6 @@ function v2RxFocus(){
   else if(m === 'current') csLayout('current');
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-05 20:27</div>
+  <div class="build-stamp">v2 · build 2026-10-05 20:30</div>
 </body>
 </html>
