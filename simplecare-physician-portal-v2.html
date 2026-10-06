@@ -14062,6 +14062,12 @@ var V2 = {tab:'review', open:{}, moved:[], fin:false, booting:false, justOpened:
 var V2_KEY = 'sc-chart-layout';
 var V2_TABS = ['review','note','orders'];
 function v2On(){ return CS.layout === 'v2'; }
+/* Daniel 5 Oct (step 6): which tab a chart opens on in v2 */
+function v2StartTab(name){
+  var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0];
+  if(!r || r.signed || csNoShow(name)) return 'review';
+  return 'note';
+}
 function v2El(id){ return document.getElementById(id); }
 
 /* ---------- moving nodes in and out (one set of nodes, two arrangements) ---------- */
@@ -14117,7 +14123,7 @@ function csLayout(mode){
   if(PC_CURRENT && was !== mode){
     /* the patient card, Today and Needs attention have layout-specific markup: render them again */
     csRefresh();
-    if(mode === 'v2'){ v2Tab(V2.tab); v2Render(); }
+    if(mode === 'v2'){ v2Tab(V2.tabFor === PC_CURRENT ? V2.tab : v2StartTab(PC_CURRENT)); V2.tabFor = PC_CURRENT; v2Render(); }
     if(typeof vcGrow === 'function') vcGrow();
   }
   csMeasure();
@@ -14384,13 +14390,15 @@ function v2RxFocus(){
     if(!v2On()) return go0.apply(this, arguments);
     v2Fin(true, true); csPop(key);
   };
-  /* a new chart starts on Review with the sidebar sections collapsed */
+  /* a new chart starts with the sidebar sections collapsed. Daniel 5 Oct (step 6): during an open visit it starts on
+     the Note tab (on Review he asked "where do I do the note taking?"); a no-show starts on Review (its banner), and a
+     signed-off visit on Review. Review keeps its badge. */
   var open0 = window.openChart;
   window.openChart = function(name){
     v2Fin(false, true); V2.open = {};
     V2.booting = true;
     try { open0.apply(this, arguments); } finally { V2.booting = false; }
-    if(v2On()){ v2Secs(); v2Tab('review'); v2Render(); var sd = v2El('v2-side'); if(sd) sd.scrollTop = 0; }
+    if(v2On()){ v2Secs(); V2.tabFor = name; v2Tab(v2StartTab(name)); v2Render(); var sd = v2El('v2-side'); if(sd) sd.scrollTop = 0; }
   };
 })();
 
@@ -14403,6 +14411,6 @@ function v2RxFocus(){
   else if(m === 'current') csLayout('current');
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 12:14</div>
+  <div class="build-stamp">v2 · build 2026-10-06 12:15</div>
 </body>
 </html>
