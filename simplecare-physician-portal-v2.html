@@ -4930,6 +4930,7 @@
      light mode only; 14 px minimum. Colour only on status chips; critical stays red and is the only strong colour.
      Every selector is scoped to #pcv-c.cs-v2, so Current is untouched. */
   /* the layout switch in the crumb line (compact secondary: 36 px, like the other crumb controls) */
+  #screen-patientchart .cs-crumb .cs-layout[hidden]{display:none;}
   #screen-patientchart .cs-crumb .cs-layout{display:inline-flex;align-items:center;gap:2px;margin-left:auto;padding:2px;border-radius:10px;background:var(--wash);}
   #screen-patientchart .cs-crumb .cs-layout-k{padding:0 8px 0 10px;font-size:14px;color:var(--ink-soft);}
   #screen-patientchart .cs-crumb .cs-layout button{height:36px;min-width:64px;padding:0 12px;border:0;border-radius:8px;background:none;font:inherit;font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
@@ -5489,7 +5490,8 @@
       <p class="sub" data-f="visitline">Open visit &middot; today</p>
       <!-- Ani, 5 Oct ("Chart layout v2"): v2 lives in this one file as a switchable layout. Default stays Current;
            ?chart=v2 or this control turns it on, and the choice is remembered in this browser. -->
-      <span class="cs-layout" role="group" aria-label="Chart layout"><span class="cs-layout-k" aria-hidden="true">Layout</span>
+      <!-- Ani, 6 Oct: we work in v2 from now on. The switch is hidden; ?chart=current still opens the old layout for comparison. -->
+      <span class="cs-layout" role="group" aria-label="Chart layout" hidden><span class="cs-layout-k" aria-hidden="true">Layout</span>
         <button type="button" id="cs-lay-current" aria-pressed="true" onclick="csLayout('current')">Current</button>
         <button type="button" id="cs-lay-v2" aria-pressed="false" onclick="csLayout('v2')">v2</button></span></div>
       <h1 data-f="name" class="cs-h1">Patient</h1>
@@ -14402,15 +14404,13 @@ function v2RxFocus(){
   };
 })();
 
-/* ---------- start: ?chart=v2 (or ?chart=current), else the remembered choice, else Current ---------- */
+/* ---------- start: v2 is the chart (Ani, 6 Oct). Only ?chart=current opens the old layout ---------- */
 (function(){
-  var m = null;
-  try { var p = new URLSearchParams(location.search).get('chart'); if(p === 'v2' || p === 'current') m = p; } catch(e){}
-  if(!m){ try { m = localStorage.getItem(V2_KEY); } catch(e){ m = null; } }
-  if(m === 'v2') csLayout('v2');
-  else if(m === 'current') csLayout('current');
+  var m = 'v2';
+  try { if(new URLSearchParams(location.search).get('chart') === 'current') m = 'current'; } catch(e){}
+  csLayout(m);
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 12:15</div>
+  <div class="build-stamp">v2 · build 2026-10-06 14:00</div>
 </body>
 </html>
