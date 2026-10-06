@@ -4673,7 +4673,7 @@
   #screen-claims .cl-stat .k{text-transform:none;letter-spacing:0;font-size:14px;font-weight:600;}
   #screen-claims .cl-stat .s{font-size:14px;}
   #screen-claims .cl-stat .v.warn{color:var(--ink);}
-  #screen-claims .box-title,#t23-digest .box-title{text-transform:none;letter-spacing:0;font-size:16px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+  #screen-claims .box-title{text-transform:none;letter-spacing:0;font-size:16px;font-weight:700;color:var(--ink);margin-bottom:6px;}
   #screen-claims .t23-sum{font-size:14px;color:var(--ink-soft);margin:0 0 6px;display:flex;align-items:center;flex-wrap:wrap;}
   #screen-claims .cl-row{gap:14px;align-items:center;}
   #screen-claims{padding-bottom:96px;}
@@ -4690,9 +4690,9 @@
   #screen-claims .t23-stmt{font-size:14px;line-height:1.55;color:var(--ink-soft);max-width:66ch;margin:14px 0 10px;}
   #screen-claims .t23-go{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
   #screen-claims .t23-help{font-size:14px;color:var(--ink-soft);}
-  :is(#screen-claims,#bill-overlay,#t23-mfa,#t23-pick,#t23-digest,#pcv-c) .btn:not(.xs){min-height:44px;display:inline-flex;align-items:center;gap:6px;font-size:14px;}
+  :is(#screen-claims,#bill-overlay,#t23-mfa,#t23-pick,#pcv-c) .btn:not(.xs){min-height:44px;display:inline-flex;align-items:center;gap:6px;font-size:14px;}
   :is(#screen-claims,#bill-overlay,#t23-pick,#pcv-c) .btn.xs{min-height:36px;font-size:14px;display:inline-flex;align-items:center;gap:5px;}
-  :is(#screen-claims,#bill-overlay,#t23-mfa,#t23-pick,#t23-digest,#pcv-c) .btn .ic,:is(#screen-claims,#bill-overlay,#t23-mfa,#t23-pick,#t23-digest) .btn svg{width:18px;height:18px;}
+  :is(#screen-claims,#bill-overlay,#t23-mfa,#t23-pick,#pcv-c) .btn .ic,:is(#screen-claims,#bill-overlay,#t23-mfa,#t23-pick) .btn svg{width:18px;height:18px;}
   :is(#screen-claims,#bill-overlay,#t23-pick) .btn[disabled],:is(#screen-claims,#bill-overlay) .btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed;}
   /* the state chip: one tag spec (15/500, 40 px), barely tinted, no stroke, never red */
   :is(#screen-claims,#bill-overlay) .bill-pill{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:999px;
@@ -4776,26 +4776,6 @@
   html body .q-table td.q-bill .t23-none{font-size:15px;color:var(--ink-faint);}
   html body .q-table td.q-bill span.bill-pill.t23-quiet{background:var(--wash) !important;color:var(--ink) !important;padding:0 14px !important;height:36px;display:inline-flex;align-items:center;border-radius:999px;font-weight:500;}
   html body .q-table td.q-bill span.t23-ns{display:inline-flex;align-items:center;height:36px;padding:0 12px;border:1px dashed var(--line-strong);border-radius:999px;color:var(--ink-faint);font-size:14px;white-space:nowrap;}
-  /* digest */
-  #t23-digest .t23-dl{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:none;border-top:1px solid var(--wash);padding:10px 0;font:inherit;font-size:14.5px;color:var(--ink);cursor:pointer;min-height:44px;}
-  #t23-digest .t23-dl:first-of-type{border-top:none;}
-  #t23-digest .t23-dl:hover span.t23-dt{text-decoration:underline;}
-  #t23-digest .t23-dl .ic,#t23-digest .t23-dl svg{width:18px;height:18px;color:var(--ink-faint);flex-shrink:0;}
-  #t23-digest .t23-dl .ic.warn,#t23-digest .t23-dl .ic.warn svg{color:var(--tag-warn-ic);}
-  #t23-digest .t23-dfoot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px;}
-  #t23-digest .t23-cap{font-size:14px;color:var(--ink-faint);}
-  /* Ani, 5 Oct: the card can be folded to one line; it remembers per browser */
-  #t23-digest .t23-dhead{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-  #t23-digest .t23-dhead .box-title{margin-bottom:0;}
-  #t23-digest .t23-fold{display:inline-flex;align-items:center;gap:6px;background:none;border:none;font:inherit;font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;min-height:44px;padding:0 4px;border-radius:8px;}
-  #t23-digest .t23-fold:hover{color:var(--ink);}
-  #t23-digest .t23-fold .ic,#t23-digest .t23-fold svg{width:18px;height:18px;transition:transform .15s;}
-  #t23-digest .t23-fold[aria-expanded="true"] .ic{transform:rotate(180deg);}
-  #t23-digest .t23-dhead + .t23-dl{border-top:none;}
-  #t23-digest.t23-folded{padding-top:6px;padding-bottom:6px;}
-  #t23-digest .t23-mini{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14.5px;color:var(--ink);background:none;border:none;font-family:inherit;cursor:pointer;text-align:left;padding:0;min-height:44px;}
-  #t23-digest .t23-mini .sep{color:var(--ink-faint);}
-  #t23-digest .t23-mini .ic,#t23-digest .t23-mini svg{width:18px;height:18px;flex-shrink:0;color:var(--tag-warn-ic);}
 
   /* ================= Chart declutter (Ani, 5 Oct: "the patient chart is overwhelming, too much text and noise") =================
      Same clinical content and gates; quieter presentation. Light mode only (Ani, 4 Oct). 14 px minimum. */
@@ -5191,6 +5171,11 @@
     #screen-patientchart #pcv-c.cs-v2 .v2{grid-template-columns:minmax(0,1fr);}
     #screen-patientchart #pcv-c.cs-v2 .v2-side{position:static;max-height:none;overflow:visible;}
   }
+  /* Daniel 5 Oct (step 2): the stale-date claim on Home is amber, never red, and opens Claims */
+  #alerts-box .al-row.t23-stale-row{cursor:pointer;}
+  #alerts-box .al-row.t23-stale-row .al-tone svg{color:var(--warn);}
+  #alerts-box .al-row.t23-stale-row .al-val{color:var(--warn);font-size:14.5px;font-weight:600;}
+  #alerts-box .al-row.t23-stale-row i{font-style:normal;}
 </style>
 </head>
 <body>
@@ -5293,12 +5278,14 @@
           </span>
         </div>
         <div id="attn-tasks"></div>
+        <!-- Daniel 5 Oct (step 2): the one billing exception on Home, an MSP claim about to go stale-dated -->
+        <div id="t23-stale"></div>
         </div>
         <button class="attn-handle" id="attn-handle" onclick="attnToggle()" hidden></button>
       </div>
 
-      <!-- T-023 (spec 8a): one daily billing digest; placement on Home is OQ-90, Needs Daniel -->
-      <div class="box t23-digest" id="t23-digest" hidden></div>
+      <!-- Daniel 5 Oct (step 2): the "Billing today" card is gone from Home. Home Needs attention is clinical;
+           billing lives in Claims (the queue billing status and the sidebar are the shortcuts). -->
 
       <!-- Live queue + Inbox in one card, switched by tabs -->
       <div class="work-tabs">
@@ -13156,8 +13143,8 @@ var CLAIMS = [
   {id:'c15', who:'Nadia Hassan', date:'2026-08-20', win:'2-5', fee:'DEMO-A', dx:'DX-D7', mins:9, st:'appeal', sub:'Reassessment requested 15 Sep'},
   {id:'c16', who:'Behdis Maleki', date:'2026-09-02', win:'10-2', fee:'DEMO-A', dx:'DX-D4', mins:12, st:'paid', paid:30, sub:'Paid 16 Sep'},
   {id:'c17', who:'Gloria McDonald', date:'2026-09-24', win:'8-10', st:'notbilled', reason:'Doctor’s choice'},
-  {id:'c18', who:'Frank D.', date:'2026-07-02', win:'2-5', fee:'DEMO-A', dx:'DX-D8', mins:8, st:'writtenoff',
-   sub:'Past the deadline, no pathway · proposed by Dolly · approved by a second signer'},
+  /* Daniel 5 Oct: a claim never submitted, close to going stale-dated (demo date: 4 days left on the demo "today") */
+  {id:'c18', who:'Frank D.', date:'2026-07-09', win:'2-5', fee:'DEMO-A', dx:'DX-D8', mins:8, st:'submit'},
   {id:'c19', who:'Greg', date:'2026-09-30', win:'2-5', st:'pri-due', payer:'private'},
   {id:'c20', who:'Manjit', date:'2026-10-03', win:'5-7', st:'pri-paid', payer:'private', queue:'Manjit'}
 ];
@@ -13964,56 +13951,37 @@ function t23CardRecheck(name){
 billingAct = function(){ closeBilling(); };   /* the old one-tap path is gone (spec part 1) */
 t23SyncQueue();
 
-/* ================= Daily billing digest (spec 8a): one card a day, never one reminder per claim (CNF-02) ================= */
-/* No patient names on the card (APP-03). Placement on Home is OQ-90, Needs Daniel. */
-function t23DigestLines(){
-  var out = [];
-  var risk = CLAIMS.filter(function(c){ return ['submit','review','rejected'].indexOf(c.st) > -1 && t23Left(c).day >= 75; });
-  if(risk.length){ var m = Math.min.apply(null, risk.map(function(c){ return t23Left(c).left; }));
-    out.push(['alert', risk.length + ' claim' + (risk.length === 1 ? ' has ' : 's have ') + m + ' days left to submit', 't23-decide', 'warn']); }
-  var rd = t23Ready(); if(rd.length) out.push(['complete', rd.length + ' clean claim' + (rd.length === 1 ? '' : 's') + ' ready to sign off · ' + t23Money(rd.reduce(function(t, c){ return t + t23Amt(c); }, 0)) + ' expected' + T23_DEMO, 't23-ready']);
-  var dc = t23Decide(); if(dc.length) out.push(['edit', dc.length + ' claim' + (dc.length === 1 ? ' needs' : 's need') + ' your decision', 't23-decide']);
-  var qs = []; CLAIMS.forEach(function(c){ if(c.st === 'review') c.flags.forEach(function(f){ if(f.k === 'q' && !f.done) qs.push(f); }); });
-  if(qs.length) out.push(['chat', qs.length + ' question' + (qs.length === 1 ? '' : 's') + ' from Dolly · answer by ' + qs[0].due, 't23-decide']);
-  var rj = CLAIMS.filter(function(c){ return c.st === 'rejected' || c.st === 'dispute'; });
-  if(rj.length) out.push(['reopen', rj.length + ' claim' + (rj.length === 1 ? '' : 's') + ' rejected by MSP', 't23-rej']);
-  return out.slice(0, 5);
+/* ================= Home: the one billing exception (Daniel 5 Oct, step 2) =================
+   Daniel, 5 Oct: remove "Billing today" from Home; Home Needs attention is clinical only. The exception is an MSP
+   claim not submitted yet that is about to go stale-dated: it appears as ONE item in Home Needs attention, amber
+   (not red, not critical), and opens that claim in Claims.
+   Days left: 90 days from the date of service, the visit day is day 90 (Daniel's rule; he will double-check it).
+   T23_STALE_HOME = 5 days left: threshold Needs Daniel (his proposed tiers: amber, then 5 days, then 48 hours). */
+var T23_STALE_HOME = 5;   /* threshold Needs Daniel */
+function t23SubLeft(c){ return 90 - t23Diff(t23D(c.date), T23_TODAY); }   /* the 90-day rule: Needs Daniel */
+function t23StaleList(){
+  return CLAIMS.filter(function(c){ return c.st === 'submit' && c.payer !== 'private' && t23SubLeft(c) <= T23_STALE_HOME; })
+               .sort(function(a, b){ return t23SubLeft(a) - t23SubLeft(b); });
 }
-function t23RenderDigest(){
-  var el = document.getElementById('t23-digest'); if(!el) return;
-  var L = t23DigestLines();
-  var folded = t23DigestFolded();
-  el.classList.toggle('t23-folded', folded);
-  var fold = '<button type="button" class="t23-fold" aria-expanded="' + !folded + '" aria-controls="t23-digest" onclick="t23FoldDigest(' + !folded + ')">' + (folded ? 'Show' : 'Hide') + t23Ic('chevdown') + '</button>';
-  if(folded){
-    /* one line: the deadline stays visible, so folding never hides a claim about to expire */
-    var bits = [], risk = L.filter(function(l){ return l[3] === 'warn'; })[0];
-    var rd = t23Ready().length, dc = t23Decide().length;
-    if(rd) bits.push(rd + ' ready'); if(dc) bits.push(dc + ' to decide');
-    var mini = (risk ? t23Ic('alert', 'warn') + '<span>' + risk[1] + '</span>' + (bits.length ? '<span class="sep">·</span>' : '') : '') + '<span>' + (bits.length ? bits.join(' · ') : (risk ? '' : 'Billing is up to date')) + '</span>';
-    el.innerHTML = '<div class="t23-dhead"><button type="button" class="t23-mini" onclick="t23FoldDigest(false)"><b>Billing today</b><span class="sep">·</span>' + mini + '</button>' + fold + '</div>';
-    el.hidden = false; paintPd(el); return;
-  }
-  var h = '<div class="t23-dhead"><p class="box-title">Billing today</p>' + fold + '</div>';
-  h += L.length ? L.map(function(l){ return '<button type="button" class="t23-dl" onclick="t23GoSec(\'' + l[2] + '\')">' + t23Ic(l[0], l[3] || '') + '<span class="t23-dt">' + l[1] + '</span></button>'; }).join('')
-               : '<p class="pc-empty">Billing is up to date.</p>';
-  if(t23PA()) h += '<p class="pc-empty">Dr. Pannozzo signs these off.</p>';
-  h += '<div class="t23-dfoot"><button type="button" class="btn dark" onclick="CL_ON=\'Needs attention\';showScreen(\'claims\')">' + t23Ic('claims') + 'Open Claims</button>' +
-       '<span class="t23-cap">Updated today, 7:00 AM</span>' + t23Ph('Demo time · Needs Daniel') + '</div>';
-  el.innerHTML = h; el.hidden = false; paintPd(el);
+function t23RenderStale(){
+  var el = document.getElementById('t23-stale'); if(!el) return;
+  var L = t23StaleList();
+  if(!L.length){ el.innerHTML = ''; if(typeof syncAttnFold === 'function') syncAttnFold(); return; }
+  var c = L[0], left = t23SubLeft(c), more = L.length - 1;
+  var words = left < 0 ? 'Past 90 days' : left + (left === 1 ? ' day left' : ' days left');
+  var test = more ? (L.length + ' MSP claims not submitted') : 'MSP claim not submitted';
+  el.innerHTML = '<div class="al-row t23-stale-row" role="button" tabindex="0" onclick="t23GoClaim(\'' + c.id + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();t23GoClaim(\'' + c.id + '\')}" aria-label="' + t23E(test + ', ' + c.who + ', ' + words + '. Open in Claims') + '">' +
+    '<span class="al-mark"></span>' +
+    '<span class="al-who"><span class="ic al-tone warn" role="img" aria-label="Billing deadline" data-pdic="clock"></span><b>' + t23E(c.who) + '</b><i>' + t23F(c.date) + ' visit</i></span>' +
+    '<span class="al-test">' + test + '</span>' +
+    '<span class="al-val flagtext">' + words + (more ? ' · fewest' : '') + '</span>' +
+    '<span class="al-acts"><button type="button" class="al-btn" onclick="event.stopPropagation();t23GoClaim(\'' + c.id + '\')"><span class="ic" data-pdic="claims"></span>Open in Claims</button></span>' +
+  '</div>';
+  paintPd(el);
+  if(typeof syncAttnFold === 'function') syncAttnFold();
 }
-/* folded by default (Ani, 5 Oct); opens only if the doctor chose Show */
-function t23DigestFolded(){ try { return localStorage.getItem('sc.t23.digestFolded') !== '0'; } catch(e){ return window.T23_DIGEST_FOLDED !== false; } }
-function t23FoldDigest(on){
-  window.T23_DIGEST_FOLDED = on;
-  try { localStorage.setItem('sc.t23.digestFolded', on ? '1' : '0'); } catch(e){}
-  t23RenderDigest();
-  var b = document.querySelector('#t23-digest .t23-fold'); if(b) b.focus();
-}
-function t23GoSec(sec){
-  CL_ON = 'Needs attention'; showScreen('claims');
-  setTimeout(function(){ var e = document.getElementById(sec); if(e) e.scrollIntoView({block:'start'}); }, 60);
-}
+/* every caller that used to refresh the digest now refreshes the Home item */
+function t23RenderDigest(){ t23RenderStale(); }
 /* demo switch for the question's overdue state (spec 8b) */
 function t23QOverdue(on){ var c = t23C('c6'); if(c && c.flags[0]){ c.flags[0].overdue = on; t23Refresh(); } }
 t23SyncQueue();
@@ -14378,6 +14346,6 @@ function v2RxFocus(){
   else if(m === 'current') csLayout('current');
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 12:01</div>
+  <div class="build-stamp">v2 · build 2026-10-06 12:05</div>
 </body>
 </html>
