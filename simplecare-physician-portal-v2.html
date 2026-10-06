@@ -6881,9 +6881,11 @@ function toggleTheme(){
 }
 (function(){
   var t = null;
+  /* Daniel 5 Oct (step 1): the portal opened dark on Daniel's computer because it
+     followed the system setting. Light is the default regardless of the system;
+     dark only when the user toggles it here (remembered in sc-theme). */
   try { t = localStorage.getItem('sc-theme'); } catch(e){}
-  if(!t && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) t = 'dark';
-  document.documentElement.setAttribute('data-theme', t || 'light');
+  document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
 })();
 
 /* ===== the queue follows the day =====
@@ -14376,6 +14378,6 @@ function v2RxFocus(){
   else if(m === 'current') csLayout('current');
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-05 20:35</div>
+  <div class="build-stamp">v2 · build 2026-10-06 12:01</div>
 </body>
 </html>
