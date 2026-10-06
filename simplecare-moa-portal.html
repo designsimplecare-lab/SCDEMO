@@ -217,6 +217,7 @@
   #screen-billing .btn[disabled]{opacity:.45;cursor:not-allowed;}
   #screen-billing .t23m-err{font-size:14px;background:var(--warn-wash);border-radius:8px;padding:8px 10px;margin:8px 0 0;}
   #screen-billing .t23m-back{background:none;border:none;font:inherit;font-size:14px;color:var(--accent-ink);cursor:pointer;padding:0;margin:0 0 12px;text-decoration:underline;}
+  .nav-btn[hidden]{display:none !important;}   /* Daniel 5 Oct: Billing hidden from the MOA nav */
 </style>
 </head>
 <body>
@@ -229,7 +230,9 @@
 
     <p class="nav-group-label">Work</p>
     <button class="nav-btn" data-screen="tasks"><span class="ic" data-ic="taskmoa"></span> Tasks from physicians <span class="nav-flag" id="nf-tasks">0</span></button>
-    <button class="nav-btn" data-screen="billing"><span class="ic" data-ic="claims"></span> Billing <span class="nav-flag" id="nf-bill">0</span></button>
+    <!-- Daniel 5 Oct: billing belongs to a separate billing agent role, not the MOA. The Billing screen (T-023) is hidden
+         from the MOA nav; its code is kept for a future billing agent view. -->
+    <button class="nav-btn" data-screen="billing" hidden><span class="ic" data-ic="claims"></span> Billing <span class="nav-flag" id="nf-bill">0</span></button>
     <button class="nav-btn" data-screen="referrals"><span class="ic" data-ic="practice"></span> Referrals <span class="nav-flag" id="nf-ref">0</span></button>
     <button class="nav-btn" data-screen="imaging"><span class="ic" data-ic="calendar"></span> Imaging scouting <span class="nav-flag mut" id="nf-img">0</span></button>
     <button class="nav-btn" data-screen="callbacks"><span class="ic" data-ic="patientview"></span> Patient callbacks <span class="nav-flag mut" id="nf-call">0</span></button>
@@ -703,8 +706,10 @@ function bSendMsp(){
 }
 /* Today: billing items at day 60 or later appear in "Needs attention now" */
 var t23mRenderTasks0 = renderTasks;
+var T23M_BILLING_FOR_MOA = false;   /* Daniel 5 Oct: no billing in the MOA's work (billing agent view is future work) */
 renderTasks = function(){
   t23mRenderTasks0();
+  if(!T23M_BILLING_FOR_MOA) return;
   var late = BILL_ITEMS.filter(function(x){ return x.f !== 'done' && x.day >= 60; });
   if(!late.length) return;
   var ul = document.getElementById('urgent-list'), n = document.getElementById('urgent-n');
@@ -715,12 +720,12 @@ renderTasks = function(){
   n.textContent = (+n.textContent || 0) + late.length;
 };
 /* "Task the MOA" on a health-card flag arrives as a doctor -> MOA task of kind Billing, linked to its item (rule 12 allows this direction) */
-TASKS.splice(2, 0, {type:'bill', label:'Billing', patient:'K Arli Eyre', detail:'Health card: coverage ended 31 Aug 2026 (demo). Ask the patient about coverage. Linked to the Billing item.', from:'Dr. Pannozzo &middot; today', urgent:false, status:'open'});
+if(T23M_BILLING_FOR_MOA) TASKS.splice(2, 0, {type:'bill', label:'Billing', patient:'K Arli Eyre', detail:'Health card: coverage ended 31 Aug 2026 (demo). Ask the patient about coverage. Linked to the Billing item.', from:'Dr. Pannozzo &middot; today', urgent:false, status:'open'});
 renderTasks(); renderBilling();
 
 function dswOpen(){ document.getElementById('dsw').classList.add('open'); document.getElementById('dsw-fab').style.display='none'; }
 function dswClose(){ document.getElementById('dsw').classList.remove('open'); document.getElementById('dsw-fab').style.display='inline-flex'; }
 </script>
-  <div class="build-stamp">build 2026-10-05 12:18</div>
+  <div class="build-stamp">build 2026-10-06 12:10</div>
 </body>
 </html>
