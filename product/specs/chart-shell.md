@@ -1,6 +1,6 @@
 # Chart shell: the core encounter view (T-021)
 
-Owner: `ux-designer` · Ani approves · Built into `simplecare-physician-portal-v2.html` (the chart, `#pcv-c`) · Build 2026-10-05 19:58 (declutter, see the end)
+Owner: `ux-designer` · Ani approves · Built into `simplecare-physician-portal-v2.html` (the chart, `#pcv-c`) · Build 2026-10-05 20:35 (declutter, then Layout v2 behind a switch; see the end)
 Source: Physician Chart View Requirements v2.5 (B-006), delivery step 1 · ECG Critical Result Requirements v2.0 · Daniel, 30 Sep (`from-daniel/2026-09-30-chart-workflow.md`, `2026-09-30-ecg-and-result-flags.md`).
 Scope: light theme, 1440 px, the demo patient. Dark theme not checked (Ani, 4 Oct). The Figma "SC – Design System" is not used yet (Ani, 3 Oct); the chart uses v2's own variables, buttons, tags and Mage icons.
 
@@ -160,3 +160,59 @@ Ani, 5 Oct: the chart was "overwhelming, too much text and noise". The lead revi
 **Not changed, and why**
 - Andrey's ALT 88 and AST 65 (above range today) are not in Needs attention. That is the data and the existing rules, not a bug: their flags are `high` (above the reference range), not LifeLabs `alert` or `crit`, and the item has no `abnormal` mark, so `labTier` and `resultIsAbnormal` return nothing. They now show under "From the chart → Investigations" and as "New · Liver function" in Since you last saw. Whether above-range results like these are To do (Daniel, 30 Sep: a yellow result is one "the doctor has to look at and clear") is **Needs Daniel**.
 - Sign-off for the demo patient still stops first at the suggested problem-list updates (existing v2 gate).
+
+## Layout v2, 5 Oct
+
+Ani, 5 Oct: after the declutter the chart "still feels like too much text in one long scroll". She asked for "Chart layout v2", borrowing the **visual structure only** of a telestroke product she designed: a left column of stacked white context cards, the work split by tabs, and one primary "Sign off & finalize" at the top right that says what is missing. Not its content, and not its AI behaviour. Light mode only. Screenshots (local only): `product/reports/shots/chart-v2-{gloria,behdis,greg}-{review,note,orders}.png`, `chart-v2-arli-{review,note}.png`, `chart-v2-gloria-sidebar-open.png`.
+
+**How it ships.** The project rule is one main file, so v2 is a switchable layout inside `simplecare-physician-portal-v2.html`, not a new file.
+- A segmented control in the chart's crumb line: "Layout: Current | v2". `?chart=v2` (or `?chart=current`) sets it from a link. The choice is remembered in this browser (`localStorage` key `sc-chart-layout`, wrapped in try/catch, so a blocked store just means Current).
+- **Default is Current.** The deployed chart is unchanged unless someone picks v2.
+- **One set of nodes, two arrangements.** `csLayout('v2')` moves the chart's existing nodes into the v2 frame and leaves a marker where each was; `csLayout('current')` puts them back. Moved: the patient card, the notices (dropped call, outside BC), the no-show banner, Needs attention, Today, Since you last saw, the note, the AI block, the scribe, Insert, the prescribing card, the footer (checklist, warnings, the T-023 billing line, Finalize, Next patient, claim helper) and the full chart. So Finalize gates, critical results, AI Accept/Reject, the billing line, no-show, Insert, scribe consent and the full chart are the **same functions** in both layouts. The v2-only code is presentation: the sidebar sections, the This visit card, the investigations card, the tabs, the header, and label-above-value branches in the patient card, Today and the Needs attention row (`CS.layout === 'v2'`). No clinical rule, tier or gate was changed.
+
+**Anatomy (v2)**
+```
+Crumb:  Home · visit status                                        Layout: Current | v2
+Left column (312 px; 280 px at 1360 px and below; sticky, scrolls on its own)
+  Patient card: name, New patient (when no previous visit), age · sex · masked PHN,
+                Allergies (label, value), Family doctor (label, value), Call (primary) + Full chart
+  This visit:   Visit (Phone), Callback; checks as a short list: done = quiet tick + value,
+                missing = one tonal chip each (opens its form by Finalize)
+  Medications N · History N · Pending N [k overdue] · Since you last saw N · Previous visits N
+                (collapsible cards, collapsed by default; each line opens its source in the full chart)
+Main
+  Tab bar (sticky):  Review [badge] | Note [badge or tick] | Orders [badge]      Save draft   [Sign off & finalize · N checks left]
+  Review:  no-show banner (when it applies) · Needs attention (card, "N to review" chip) · Today · Relevant investigations
+  Note:    Today's note + draft status, Scribe, Insert · AI suggestion (Accept / Reject) · scribe panel when in use · the note
+  Orders:  Prescribe, Order, Refer, Task, Message as rows · the prescribing card under them when open
+  Full chart replaces the tab content; any tab, Back to the visit or Escape returns
+```
+
+**Rules in v2**
+1. **One card pattern.** Icon + title + at most one status chip + actions on the right. White cards on the page, generous spacing. Colour only on status chips; critical stays red (value, symbol, "2 to review" chip and the Review badge when a critical is unreviewed) and is the only strong colour.
+2. **Label above value, one fact per line.** Long dot-separated lines are split: the value first, then quiet lines. A Needs attention row is: tier word (label), result and value (red only when critical), the concern, the range, "Also out of range" when the panel has more, "Received …" and one info button that opens panel, lab, responsible doctor and why it is flagged. Stage and action stay on the right, as before.
+3. **Tabs.** `role=tablist`, roving tabindex, Left/Right/Home/End. Marks: Review shows the count of Needs attention items still "Not reviewed" or "Not cleared" (a tick when none are left); Note shows 1 while AI text waits for Accept or Reject, and a tick once the note has text and nothing is pending; Orders shows 1 while an open prescription has not been sent. Every mark has words for screen readers.
+4. **Sign off & finalize** is the one primary in the main area. It shows "N checks left" and opens a popover holding the chart's own footer: the checklist (each missing check is the tag that opens its form), any warning (empty note, template text, undecided AI text), the T-023 billing line, the real "Sign off & finalize visit" button, Next patient and the claim helper. Pressing Finalize with a check missing, a missing-check chip in This visit, or a blocked finalize all open the right form in that popover. Escape or the close button closes it and returns focus. After sign-off the header button reads "Signed off" (tonal) and opens the billing status and Next patient. **T-023 unchanged:** Finalize closes the visit only; the claim goes to Claims for sign-off.
+5. **Save draft** is a ghost button next to it (44 px; icon only at 1360 px and below, its name kept for screen readers and on hover).
+6. **AI text** is the same slim block above the note, with Accept and Reject; nothing enters the note until Accept, and undecided text still triggers the warning at Finalize and is never filed.
+7. **No-show.** The banner (Call again, Mark no-show) leads the Review tab. The Note tab shows the note with "Note the attempt (optional)"; Insert, Scribe and the AI block are hidden; a marked no-show shows the existing "No-show billing: not decided" placeholder under the note. The Orders tab and Sign off & finalize are hidden (Call again is the one primary). Call again brings the full visit back and moves to the Note tab, as Current moves focus to the note.
+8. **Each fact once.** The investigations card leaves out today's results already in Needs attention on the same tab (Current's "see Needs attention" pointer is not needed). Since you last saw is the chart's own section; its "Read the note" link moved to Previous visits.
+
+**Proof (headless Chrome, light, 1440 × 900 and 1280 × 800).** All five inline scripts pass `node --check`. All eight charts (Gloria, Andrey, Carol-Anne, Behdis, K Arli Eyre, Greg, Manjit, Korynn) open in v2 with a clean console and no horizontal scroll at either size. Current ↔ v2 switched three times on three charts: every node returns to its place each time (note in the note column, snapshot in the banner) and Current looks as before. Checked in v2: Finalize blocked with checks missing (opens the location form), checks completed from the popover, AI Reject (nothing added) and Accept (added, Note tick), sign-off (claim waiting in Claims, Next patient), the billing line, no-show (Call again, Mark no-show, billing placeholder), sidebar sections open and close (`aria-expanded`), tabs by keyboard, Escape and outside click close the popover, Insert menu, scribe consent, full chart and back, Review screen and back. Current regression: default is Current, its gates and AI accept unchanged; Home, Inbox, Claims, Tasks, the Assistant and the MOA chat open with v2 on.
+
+**Measures.** Text 14 px or larger everywhere in v2 (the only exception is T-023's existing icon-only demo marker, which keeps its words for screen readers). Buttons 44 px, except these compact secondary ones: the layout switch (36), Scribe and Insert (36, as in Current's toolbar), "Show what they wrote" (36), text links such as Open intake and Read the note (32), the info buttons (32) and the billing line's Change (32), all as in Current. Missing-check chips and the checklist tags are the 40 px tag spec. Section-header chips ("1 overdue", "2 to review", "Flagged at intake") are 32 px: see Needs Ani.
+
+**Decisions made (Needs Ani to confirm)**
+1. The checklist lives in the Sign off popover (one place for every check form), and This visit shows status only; its missing chips open that popover. The billing line also lives in the popover, not under the note.
+2. Orders has no completion tick (nothing there must be done for every visit); it gets a badge only for an unsent open prescription.
+3. Review shows a tick when nothing is left to review, including when there was nothing (e.g. a no-show).
+4. Underline and focus use the portal's primary blue (current state), not the reference's black.
+5. 32 px chips in card and section headers (the same open question as the 32 px tag inside reading lines).
+6. Empty Medications or History cards say "No medications recorded in Simple Care" / "No conditions recorded in Simple Care" rather than hiding, so the sidebar keeps the same five sections; Pending, Since you last saw and Previous visits hide when empty (display by exception).
+7. Under 1100 px the left column stacks above the work (not checked in detail; the brief's sizes are 1280 and 1440).
+
+**Not changed, and why**
+- Andrey's ALT 88 and AST 65 above range are still not in Needs attention (existing rules; Needs Daniel, see Declutter).
+- The T-023 billing line is the existing one-line row; in the 440 px popover it wraps to two lines.
+- Dark theme not checked (light only, Ani 4 Oct).
+
