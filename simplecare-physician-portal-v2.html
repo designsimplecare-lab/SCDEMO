@@ -5277,6 +5277,10 @@
   #screen-claims .t23-tabn{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 7px;border-radius:12px;background:var(--wash);font-size:14px;font-weight:600;color:var(--ink-soft);}
   /* Ani, 6 Oct: the counts are red badges, like the Claims count in the sidebar */
   #screen-claims .t23-tabs .t23-tabn,#screen-claims .t23-tabs [aria-selected="true"] .t23-tabn{background:var(--crit);color:#fff;font-weight:700;}
+  /* Ani, 6 Oct (one row of tabs): grey counts on Submitted, Paid and All; red only where there is work */
+  #screen-claims .t23-tabs .t23-tabn.neu,#screen-claims .t23-tabs [aria-selected="true"] .t23-tabn.neu{background:var(--wash);color:var(--ink-soft);font-weight:600;}
+  #screen-claims .t23-tabs [role=tab]{flex:none;white-space:nowrap;}
+  @media (max-width:900px){ #screen-claims .t23-tabs{overflow-x:auto;scrollbar-width:none;} }
   /* status tags sit on the right of a claim card's header */
   #screen-claims .t23-chead{display:flex;align-items:center;flex-wrap:wrap;gap:8px;}
   #screen-claims .t23-chead .t23-chips{margin-left:auto;display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;}
@@ -9907,7 +9911,12 @@ function aiReply(text){
       /* Daniel 5 Oct: Rejected by MSP first, then Needs submission; he submits each claim himself */
       var t23n = (typeof t23NeedsSub === 'function') ? [t23Rej().length, t23NeedsSub().length] : [0, 0];
       aiAppend('<b>' + t23n[0] + '</b> claims were rejected by MSP and <b>' + t23n[1] + '</b> need submission. You submit each one in Claims.','bot');
-      aiActionBtn('&#36;','Open Claims', t23n[0] + ' rejected',function(){aiDo(function(){showScreen('claims');});});
+      /* each answer lands on its own Claims tab (Ani, 6 Oct); "unsubmitted" asks lead with Needs submission */
+      var aiTab = function(k){ return function(){ aiDo(function(){ T23.view = 'msp'; CL_ON = k; showScreen('claims'); }); }; };
+      var aiTabs = [['rej', 'Open Rejected by MSP', t23n[0] + ' rejected', t23n[0]], ['ns', 'Open Needs submission', t23n[1] + ' to submit', t23n[1]]];
+      if(/(unsubmit|not submitted|submission|submit)/.test(t)) aiTabs.reverse();
+      aiTabs.forEach(function(b){ if(b[3]) aiActionBtn('&#36;', b[1], b[2], aiTab(b[0])); });
+      if(!t23n[0] && !t23n[1]) aiActionBtn('&#36;','Open Claims',null,aiTab('all'));
     }
     else if(/(schedule|calendar|next week|tomorrow|booked)/.test(t)){
       aiAppend('Next week&#39;s schedule is unlocked and editable, and you have 3 patients booked for tomorrow.','bot');
@@ -9930,7 +9939,7 @@ function aiReply(text){
     else {
       aiAppend('I can help with your <b>queue</b> (who&#39;s next), <b>patient briefs</b>, <b>claims</b>, your <b>schedule</b>, or <b>drafting a note</b>. What would you like?','bot');
       aiActionBtn('&#128101;','Who&#39;s next?',null,function(){aiSend('Who is next?');});
-      aiActionBtn('&#36;','Check claims',null,function(){aiDo(function(){showScreen('claims');});});
+      aiActionBtn('&#36;','Check claims',null,function(){aiDo(function(){ T23.view = 'msp'; CL_ON = 'rej'; showScreen('claims');});});
     }
   }, 650);
 }
@@ -13577,9 +13586,22 @@ function t23FlagKind(f){ return f.k === 'q' ? 'Question from ' + (f.from || T23_
 function t23OpenQ(c){ return c.flags.filter(function(f){ return f.k === 'q' && !f.done; }).length > 0; }
 
 /* ================= Claims screen ================= */
-var CL_FILTERS = ['Needs attention','Submitted','Paid','All'];
-var CL_ON = 'Needs attention';
-function clSet(f){ CL_ON = f; renderClaims(); }
+/* Ani, 6 Oct: one row of tabs instead of pills over tabs. Rejected by MSP is the default (Daniel's top priority).
+   CL_ON is the open tab: rej, ns, sub, paid or all. Red count badges only where the doctor has work to do. */
+var CL_TABS = [['rej','Rejected by MSP',true],['ns','Needs submission',true],['sub','Submitted'],['paid','Paid'],['all','All']];
+var CL_ON = 'rej';
+var CL_OLD = {'Needs attention':'rej', 'Submitted':'sub', 'Paid':'paid', 'All':'all'};
+function clSet(f){ CL_ON = CL_OLD[f] || f; renderClaims(); var b = document.getElementById('t23-tab-' + CL_ON); if(b) b.focus(); }
+function clRows(k){
+  return k === 'rej' ? t23Rej() : k === 'ns' ? t23NeedsSub() : k === 'sub' ? t23Subm() : k === 'paid' ? t23Paid()
+    : t23Msp().sort(function(a, b){ return t23D(b.date) - t23D(a.date); });
+}
+/* the tab a claim lives in (the All tab holds every MSP claim) */
+function clTabOf(c){
+  if(!c || c.payer === 'private') return null;
+  for(var i = 0; i < 4; i++){ var k = CL_TABS[i][0]; if(clRows(k).indexOf(c) > -1) return k; }
+  return 'all';
+}
 function t23View(v){ T23.view = v === 'private' ? 'private' : 'msp'; renderClaims(); var b = document.getElementById('t23-seg-' + T23.view); if(b) b.focus(); }
 function t23Sort(a, b){ var x = t23DaysLeft(a), y = t23DaysLeft(b); x = x == null ? 9999 : x; y = y == null ? 9999 : y; return (x - y) || (t23D(a.date) - t23D(b.date)); }
 function t23Msp(){ return CLAIMS.filter(function(c){ return c.payer !== 'private'; }); }
@@ -13726,29 +13748,24 @@ function renderClaims(){
       '<p class="t23-quiet">Paid by the card on file after the visit, or by a payment link. A form is released once it’s paid.</p>' +
       (pv.length ? pv.map(t23PrivRow).join('') : '<p class="pc-empty">No private-pay visits.</p>') + '</div>';
   } else {
-    fw.hidden = false;
-    var counts = {'Needs attention':t23Attn(), 'Submitted':t23Subm().length, 'Paid':t23Paid().length, 'All':t23Msp().length};
-    fw.innerHTML = CL_FILTERS.map(function(f){
-      return '<button type="button" class="' + (f === CL_ON ? 'on' : '') + '" aria-pressed="' + (f === CL_ON) + '" onclick="clSet(&#39;' + f + '&#39;)">' + f + ' &middot; ' + counts[f] + '</button>';
-    }).join('');
-    if(CL_ON === 'Needs attention'){
-      /* Ani, 6 Oct: Rejected by MSP and Needs submission as two tabs (Rejected first: Daniel's top priority) */
-      var rej = t23Rej(), ns = t23NeedsSub(), at = T23.attn || 'rej';
-      var tab = function(k, label, n){ return '<button type="button" role="tab" id="t23-tab-' + k + '" aria-controls="t23-' + (k === 'rej' ? 'rej' : 'ready') + '" aria-selected="' + (at === k) + '" tabindex="' + (at === k ? 0 : -1) + '" onclick="t23Attn2(\'' + k + '\')" onkeydown="t23AttnKey(event)">' + label + '<span class="t23-tabn">' + n + '</span></button>'; };
-      h += '<div class="t23-tabs" role="tablist" aria-label="Needs attention">' + tab('rej', 'Rejected by MSP', rej.length) + tab('ns', 'Needs submission', ns.length) + '</div>';
-      if(at === 'rej') h += '<div class="box t23-sec" id="t23-rej" role="tabpanel" aria-labelledby="t23-tab-rej">' +
-           (rej.length ? rej.map(t23RejHtml).join('') : '<p class="pc-empty">Nothing rejected that needs you.</p>') + '</div>';
-      else h += '<div class="box t23-sec" id="t23-ready" role="tabpanel" aria-labelledby="t23-tab-ns">' +
+    fw.innerHTML = ''; fw.hidden = true;   /* the pill row is gone (Ani, 6 Oct): one row of tabs below */
+    var at = CL_ON;
+    if(!CL_TABS.some(function(t){ return t[0] === at; })) at = CL_ON = 'rej';
+    var tab = function(t){
+      var k = t[0], n = clRows(k).length;
+      return '<button type="button" role="tab" id="t23-tab-' + k + '" aria-controls="t23-panel-' + k + '" aria-selected="' + (at === k) + '" tabindex="' + (at === k ? 0 : -1) + '" onclick="clSet(\'' + k + '\')" onkeydown="t23AttnKey(event)">' +
+        t[1] + '<span class="t23-tabn' + (t[2] && n ? '' : ' neu') + '">' + n + '</span></button>';
+    };
+    h += '<div class="t23-tabs" role="tablist" aria-label="Claims">' + CL_TABS.map(tab).join('') + '</div>';
+    var rows = clRows(at), pan = function(id, inner){ return '<div class="box t23-sec" id="' + id + '" role="tabpanel" aria-labelledby="t23-tab-' + at + '">' + inner + '</div>'; };
+    if(at === 'rej') h += pan('t23-panel-rej', rows.length ? rows.map(t23RejHtml).join('') : '<p class="pc-empty">Nothing rejected that needs you.</p>');
+    else if(at === 'ns') h += pan('t23-panel-ns',
            '<p class="t23-quiet">Submit each claim when you’re ready. Everything submitted today goes to MSP in one batch at the end of the day.</p>' +
            /* Real data (Ani, 6 Oct): the next MSP close-off and its payment date, one quiet line */
            (t23NextCut() ? '<p class="t23-quiet t23-cut">Next close-off ' + t23FDW(t23NextCut()[0]) + ' · paid ' + t23FDW(t23NextCut()[1]) + '</p>' : '') +
-           (ns.length ? ns.map(t23SubRow).join('') : '<p class="pc-empty">Nothing to submit. Claims from finalized visits land here.</p>') + '</div>';
-    } else {
-      var rows = CL_ON === 'Submitted' ? t23Subm() : CL_ON === 'Paid' ? t23Paid() : t23Msp().sort(function(a, b){ return t23D(b.date) - t23D(a.date); });
-      h += '<div class="box">' + (rows.length ? rows.map(function(c){ return t23Row(c, {pill:true}); }).join('') : '<p class="pc-empty">Nothing in this view.</p>');
-      if(CL_ON === 'All') h += '<div class="t23-nsdash">' + 'Korynn, no-show today.</div>';
-      h += '</div>';
-    }
+           (rows.length ? rows.map(t23SubRow).join('') : '<p class="pc-empty">Nothing to submit. Claims from finalized visits land here.</p>'));
+    else h += pan('t23-panel-' + at, (rows.length ? rows.map(function(c){ return t23Row(c, {pill:true}); }).join('') : '<p class="pc-empty">Nothing in this view.</p>') +
+           (at === 'all' ? '<div class="t23-nsdash">' + 'Korynn, no-show today.</div>' : ''));
   }
   lw.innerHTML = h;
   paintPd(lw); paintPd(document.getElementById('cl-stats'));
@@ -13928,16 +13945,19 @@ function t23Note(id){
   closeBilling();
   if(q && typeof openChart === 'function') openChart(q.name); else toast('The ' + t23F(c.date) + ' visit opens read-only');
 }
-function t23Attn2(k){ T23.attn = k; renderClaims(); var b = document.getElementById('t23-tab-' + k); if(b) b.focus(); }
+function t23Attn2(k){ clSet(k); }
+/* tablist keys: arrows move and wrap, Home and End jump to the ends (Ani, 6 Oct: one row of five tabs) */
 function t23AttnKey(e){
   if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Home' && e.key !== 'End') return;
-  e.preventDefault(); t23Attn2((T23.attn || 'rej') === 'rej' ? 'ns' : 'rej');
+  e.preventDefault();
+  var ids = CL_TABS.map(function(t){ return t[0]; }), i = ids.indexOf(CL_ON), n = ids.length;
+  i = e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : (i + (e.key === 'ArrowRight' ? 1 : -1) + n) % n;
+  clSet(ids[i]);
 }
 function t23Focus(id){
-  /* the claim may sit in the other tab: open that one first */
-  if(!document.getElementById('t23-c-' + id) && typeof CL_ON !== 'undefined' && CL_ON === 'Needs attention'){
-    T23.attn = (T23.attn || 'rej') === 'rej' ? 'ns' : 'rej'; renderClaims();
-  }
+  /* the claim may sit in another tab: open that one first */
+  var fc = t23C(id), ft = fc ? clTabOf(fc) : null;
+  if(!document.getElementById('t23-c-' + id) && ft){ CL_ON = ft; renderClaims(); }
   setTimeout(function(){
     var el = document.getElementById('t23-c-' + id); if(!el) return;
     el.scrollIntoView({block:'center'}); el.classList.add('t23-hl');
@@ -14172,7 +14192,7 @@ openBillMenu = function(btn, name){
     '<button type="button" onclick="event.stopPropagation();closeStatusMenu();t23Open(\'' + c.id + '\')"><span class="q-tick">&#10003;</span>Details</button>';
 };
 openBilling = function(name){ var r = QUEUE_DATA.find(function(x){ return x.name === name; }); var c = t23RowClaim(r); if(c) t23Open(c.id); };
-function t23GoClaim(id){ var c = t23C(id); T23.view = c && c.payer === 'private' ? 'private' : 'msp'; CL_ON = 'Needs attention'; showScreen('claims'); t23Focus(id); }
+function t23GoClaim(id){ var c = t23C(id); T23.view = c && c.payer === 'private' ? 'private' : 'msp'; CL_ON = clTabOf(c) || CL_ON; showScreen('claims'); t23Focus(id); }
 
 /* ================= Finalize closes the visit only (spec part 5) ================= */
 function t23OnFinalize(r){
@@ -15071,7 +15091,7 @@ function ernWeekChart(){
 
 /* ---------- money at risk: the same lists and sums as Claims ---------- */
 function ernOpenClaims(tab){
-  T23.view = 'msp'; CL_ON = 'Needs attention'; T23.attn = tab;
+  T23.view = 'msp'; CL_ON = tab;
   showScreen('claims');
   var b = document.getElementById('t23-tab-' + tab); if(b) b.focus();
 }
@@ -15273,6 +15293,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 22:00</div>
+  <div class="build-stamp">v2 · build 2026-10-06 22:30</div>
 </body>
 </html>
