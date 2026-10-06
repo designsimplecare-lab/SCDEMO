@@ -5267,6 +5267,18 @@
   #t23-pick .t23-src:hover{text-decoration:underline;}
   #t23-pick .t23-src .ic,#t23-pick .t23-src svg{width:16px;height:16px;}
   #t23-pick .t23-retry{border:0;background:none;padding:0;font:inherit;font-size:14px;font-weight:600;color:var(--accent-ink);cursor:pointer;text-decoration:underline;}
+
+  /* Needs attention tabs (Ani, 6 Oct) */
+  #screen-claims .t23-tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:4px 0 14px;}
+  #screen-claims .t23-tabs [role=tab]{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 14px;border:0;border-bottom:3px solid transparent;background:none;font:inherit;font-size:15px;font-weight:600;color:var(--ink-soft);cursor:pointer;margin-bottom:-1px;}
+  #screen-claims .t23-tabs [role=tab]:hover{color:var(--ink);background:var(--wash);}
+  #screen-claims .t23-tabs [role=tab][aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);}
+  #screen-claims .t23-tabs [role=tab]:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;}
+  #screen-claims .t23-tabn{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 7px;border-radius:12px;background:var(--wash);font-size:14px;font-weight:600;color:var(--ink-soft);}
+  #screen-claims .t23-tabs [aria-selected="true"] .t23-tabn{background:var(--accent-wash,#EEF0FD);color:var(--ink);}
+  /* status tags sit on the right of a claim card's header */
+  #screen-claims .t23-chead{display:flex;align-items:center;flex-wrap:wrap;gap:8px;}
+  #screen-claims .t23-chead .t23-chips{margin-left:auto;display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;}
 </style>
 </head>
 <body>
@@ -13487,7 +13499,7 @@ function t23RejHtml(c){
   var when = c.msp.on ? (c.msp.src === 'Teleplan' ? 'Returned by Teleplan ' : c.st === 'adjusted' ? 'Paid, adjusted ' : 'Refused ') + t23F(c.msp.on) + ' · ' : '';
   var q = c.flags.map(function(f, i){ return f.k === 'q' ? t23FlagHtml(c, f, i) : ''; }).join('');
   var openQ = t23OpenQ(c);
-  return '<div class="t23-card" id="t23-c-' + c.id + '"><div class="t23-chead"><b>' + t23E(c.who) + '</b><span class="t23-meta">' + t23F(c.date) + ' visit · ' + c.fee + ' · ' + T23_FEES[c.fee].name + '</span>' + T23_DEMO + t23Pill(c) + t23DaysChip(c) + '</div>' +
+  return '<div class="t23-card" id="t23-c-' + c.id + '"><div class="t23-chead"><b>' + t23E(c.who) + '</b><span class="t23-meta">' + t23F(c.date) + ' visit · ' + c.fee + ' · ' + T23_FEES[c.fee].name + '</span>' + T23_DEMO + '<span class="t23-chips">' + t23Pill(c) + t23DaysChip(c) + '</span></div>' +
     '<p class="t23-reason">' + when + reason + '</p>' + q +
     '<div class="t23-cfoot">' + (openQ ? '' : '<button type="button" class="btn dark" onclick="' + p[1] + '">' + t23Ic(p[2]) + p[0] + '</button><button type="button" class="btn" onclick="' + s[1] + '">' + s[0] + '</button>') +
     '<button type="button" class="btn xs" onclick="t23Note(\'' + c.id + '\')">' + t23Ic('file') + 'Open the visit</button>' +
@@ -13541,10 +13553,13 @@ function renderClaims(){
       return '<button type="button" class="' + (f === CL_ON ? 'on' : '') + '" aria-pressed="' + (f === CL_ON) + '" onclick="clSet(&#39;' + f + '&#39;)">' + f + ' &middot; ' + counts[f] + '</button>';
     }).join('');
     if(CL_ON === 'Needs attention'){
-      var rej = t23Rej(), ns = t23NeedsSub();
-      h += '<div class="box t23-sec" id="t23-rej"><p class="box-title">Rejected by MSP</p>' +
+      /* Ani, 6 Oct: Rejected by MSP and Needs submission as two tabs (Rejected first: Daniel's top priority) */
+      var rej = t23Rej(), ns = t23NeedsSub(), at = T23.attn || 'rej';
+      var tab = function(k, label, n){ return '<button type="button" role="tab" id="t23-tab-' + k + '" aria-controls="t23-' + (k === 'rej' ? 'rej' : 'ready') + '" aria-selected="' + (at === k) + '" tabindex="' + (at === k ? 0 : -1) + '" onclick="t23Attn2(\'' + k + '\')" onkeydown="t23AttnKey(event)">' + label + '<span class="t23-tabn">' + n + '</span></button>'; };
+      h += '<div class="t23-tabs" role="tablist" aria-label="Needs attention">' + tab('rej', 'Rejected by MSP', rej.length) + tab('ns', 'Needs submission', ns.length) + '</div>';
+      if(at === 'rej') h += '<div class="box t23-sec" id="t23-rej" role="tabpanel" aria-labelledby="t23-tab-rej">' +
            (rej.length ? rej.map(t23RejHtml).join('') : '<p class="pc-empty">Nothing rejected that needs you.</p>') + '</div>';
-      h += '<div class="box t23-sec" id="t23-ready"><p class="box-title">Needs submission</p>' +
+      else h += '<div class="box t23-sec" id="t23-ready" role="tabpanel" aria-labelledby="t23-tab-ns">' +
            '<p class="t23-quiet">Submit each claim when you’re ready. Everything submitted today goes to MSP in one batch at the end of the day.</p>' +
            /* Real data (Ani, 6 Oct): the next MSP close-off and its payment date, one quiet line */
            (t23NextCut() ? '<p class="t23-quiet t23-cut">Next close-off ' + t23FDW(t23NextCut()[0]) + ' · paid ' + t23FDW(t23NextCut()[1]) + '</p>' : '') +
@@ -13732,9 +13747,18 @@ function t23Note(id){
   var c = t23C(id);
   var q = QUEUE_DATA.filter(function(r){ return firstLast(r.name) === c.who || r.legal === c.who || (r.legal || '').indexOf(c.who) > -1; })[0];
   closeBilling();
-  if(q && typeof openChart === 'function') openChart(q.name); else toast('The ' + t23F(c.date) + ' visit opens read-only (demo)');
+  if(q && typeof openChart === 'function') openChart(q.name); else toast('The ' + t23F(c.date) + ' visit opens read-only');
+}
+function t23Attn2(k){ T23.attn = k; renderClaims(); var b = document.getElementById('t23-tab-' + k); if(b) b.focus(); }
+function t23AttnKey(e){
+  if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Home' && e.key !== 'End') return;
+  e.preventDefault(); t23Attn2((T23.attn || 'rej') === 'rej' ? 'ns' : 'rej');
 }
 function t23Focus(id){
+  /* the claim may sit in the other tab: open that one first */
+  if(!document.getElementById('t23-c-' + id) && typeof CL_ON !== 'undefined' && CL_ON === 'Needs attention'){
+    T23.attn = (T23.attn || 'rej') === 'rej' ? 'ns' : 'rej'; renderClaims();
+  }
   setTimeout(function(){
     var el = document.getElementById('t23-c-' + id); if(!el) return;
     el.scrollIntoView({block:'center'}); el.classList.add('t23-hl');
@@ -14536,6 +14560,6 @@ function v2RxFocus(){
   csLayout(m);
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 18:10</div>
+  <div class="build-stamp">v2 · build 2026-10-06 18:40</div>
 </body>
 </html>
