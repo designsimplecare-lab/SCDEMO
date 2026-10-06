@@ -5253,6 +5253,7 @@
 
   /* no demo or open-question tags in the UI (Ani, 6 Oct) */
   .t23-demo,.t23-ph{display:none !important;}
+  #screen-claims .t23-quiet.t23-cut{margin-top:-2px;}
 
   /* Real data (Ani, 6 Oct): diagnosis results show the code and a readable description, which can wrap;
      the highlighted result (arrow keys) and the official-list link */
@@ -13159,6 +13160,26 @@ function t23E(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replac
 /* Ani, 6 Oct: show it the way a real user sees it, no demo tags (real values coming from Ani) */
 var T23_DEMO = '';
 function t23Ph(t){ return ''; }
+/* Real data (Ani, 6 Oct 2026): MSP's 2026 close-off and payment schedule. MSP pays twice a month; claims submitted
+   through Teleplan by a close-off date are paid on the matching payment date. Source: gov.bc.ca, "Designated holidays
+   and close-off dates", https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/msp/claim-submission-payment/designated-holidays-and-close-off-dates
+   Pairs are [close-off, payment]. Holidays are kept for later use (not shown yet). Inlined: small, no extra request. */
+var T23_MSP_2026 = {
+  pairs:[['2026-01-05','2026-01-15'],['2026-01-20','2026-01-30'],['2026-02-03','2026-02-13'],['2026-02-17','2026-02-27'],
+         ['2026-03-03','2026-03-13'],['2026-03-19','2026-03-31'],['2026-04-01','2026-04-15'],['2026-04-20','2026-04-30'],
+         ['2026-05-05','2026-05-15'],['2026-05-19','2026-05-29'],['2026-06-03','2026-06-15'],['2026-06-18','2026-06-30'],
+         ['2026-07-03','2026-07-15'],['2026-07-21','2026-07-31'],['2026-08-04','2026-08-14'],['2026-08-19','2026-08-31'],
+         ['2026-09-02','2026-09-15'],['2026-09-17','2026-09-29'],['2026-10-02','2026-10-15'],['2026-10-20','2026-10-30'],
+         ['2026-11-02','2026-11-13'],['2026-11-18','2026-11-30'],['2026-12-03','2026-12-15'],['2026-12-17','2026-12-31']],
+  holidays:['2026-01-01','2026-02-16','2026-04-03','2026-04-06','2026-05-18','2026-07-01','2026-08-03','2026-09-07',
+            '2026-09-30','2026-10-12','2026-11-11','2026-12-25','2026-12-28']
+};
+var T23_DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function t23FDW(iso){ var d = t23D(iso); return T23_DOW[d.getDay()] + ' ' + t23FD(d); }
+/* the most recent payment date on or before the demo "today" (3 Oct → 29 Sep) */
+function t23LastPay(){ var p = T23_MSP_2026.pairs.filter(function(x){ return t23D(x[1]) <= T23_TODAY; }); return p.length ? p[p.length - 1][1] : null; }
+/* the next close-off on or after the demo "today", and its payment date (3 Oct → close-off 20 Oct, paid 30 Oct) */
+function t23NextCut(){ return T23_MSP_2026.pairs.filter(function(x){ return t23D(x[0]) >= T23_TODAY; })[0] || null; }
 function t23Money(n){ return '$' + n.toFixed(2); }
 function t23Now(){ return new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'}); }
 function t23Stamp(){ return '3 Oct ' + t23Now(); }
@@ -13271,13 +13292,13 @@ var CLAIMS = [
    msp:{on:'2026-09-26', ex:'EX-D1'}},
   {id:'c10', who:'Andrey Abushakhmanov', date:'2026-09-05', win:'8-10', fee:'DEMO-A', dx:'V67.9', mins:10, st:'dispute',
    msp:{on:'2026-09-19', ex:'EX-D2', reason:'Refused as billed; the claim looks correctly billed'}},
-  {id:'c11', who:'Grace Lin', date:'2026-09-10', win:'10-2', fee:'DEMO-A', dx:'V72.6', mins:11, st:'adjusted', paid:25, msp:{on:'2026-09-24', ex:'EX-D3'}},
+  {id:'c11', who:'Grace Lin', date:'2026-09-10', win:'10-2', fee:'DEMO-A', dx:'V72.6', mins:11, st:'adjusted', paid:25, paidOn:'2026-09-29', msp:{on:'2026-09-29', ex:'EX-D3'}},
   /* Submitted (with MSP) and paid: reachable from the Submitted, Paid and All tabs */
   {id:'c12', who:'Andrey Abushakhmanov', date:'2026-09-28', win:'8-10', fee:'DEMO-A', dx:'V67.9', mins:10, st:'submitted', sub:'Acknowledged by MSP'},
   {id:'c13', who:'Owen Brady', date:'2026-08-25', win:'8-10', fee:'DEMO-A', dx:'724.2', mins:12, st:'held', msp:{ex:'EX-D5'}},
   {id:'c14', who:'Carol-Anne Feldman', date:'2026-09-29', win:'10-2', fee:'DEMO-A', dx:'112.1', mins:10, st:'rejmoa', msp:{on:'2026-10-01', ex:'EX-D2', src:'Teleplan'}},
   {id:'c15', who:'Nadia Hassan', date:'2026-08-20', win:'2-5', fee:'DEMO-A', dx:'V68.1', mins:9, st:'appeal', sub:'Reassessment requested 15 Sep'},
-  {id:'c16', who:'Behdis Maleki', date:'2026-09-02', win:'10-2', fee:'DEMO-A', dx:'280', mins:12, st:'paid', paid:30, sub:'Paid 16 Sep'},
+  {id:'c16', who:'Behdis Maleki', date:'2026-09-02', win:'10-2', fee:'DEMO-A', dx:'280', mins:12, st:'paid', paid:30, paidOn:'2026-09-29', sub:'Paid 29 Sep'},
   /* Private pay (its own view; never mixed with MSP). how: 'card' = card on file, charged after the visit;
      'link' = payment link sent; a form is released once it's paid. All demo values. */
   {id:'c19', who:'Greg', date:'2026-09-30', win:'2-5', st:'pri-due', payer:'private', item:'visit', how:'link', sent:'30 Sep'},
@@ -13400,13 +13421,15 @@ function t23Stats(){
     return;
   }
   /* Daniel 5 Oct: three MSP tiles. "With MSP", "Ready to sign off" and "Needs your decision" are gone. */
-  var ns = t23NeedsSub(), rej = t23Rej(), paid = t23Paid();
+  /* Real data (Ani, 6 Oct): "Paid this cycle" = MSP claims paid on the most recent payment date */
+  var lastPay = t23LastPay();
+  var ns = t23NeedsSub(), rej = t23Rej(), paid = t23Paid().filter(function(c){ return c.paidOn && c.paidOn === lastPay; });
   var rejSum = rej.reduce(function(t, c){ return t + (c.st === 'adjusted' ? t23Amt(c) - c.paid : t23Amt(c)); }, 0);
   var paidSum = paid.reduce(function(t, c){ return t + (c.paid || 0); }, 0);
   sw.innerHTML = '<div class="cl-stats t23-stats3">' +
     st('Needs submission', ns.length, t23Money(sum(ns)) + ' expected' + T23_DEMO) +
     st('Rejected by MSP', rej.length, t23Money(rejSum) + ' not paid' + T23_DEMO) +
-    st('Paid this cycle', paid.length, t23Money(paidSum) + ' paid' + T23_DEMO + t23Ph('Remittance period Needs Daniel')) +
+    st('Paid this cycle', paid.length, t23Money(paidSum) + (lastPay ? ' · Paid ' + t23F(lastPay) : ' paid')) +
   '</div>';
 }
 
@@ -13523,6 +13546,8 @@ function renderClaims(){
            (rej.length ? rej.map(t23RejHtml).join('') : '<p class="pc-empty">Nothing rejected that needs you.</p>') + '</div>';
       h += '<div class="box t23-sec" id="t23-ready"><p class="box-title">Needs submission</p>' +
            '<p class="t23-quiet">Submit each claim when you’re ready. Everything submitted today goes to MSP in one batch at the end of the day.</p>' +
+           /* Real data (Ani, 6 Oct): the next MSP close-off and its payment date, one quiet line */
+           (t23NextCut() ? '<p class="t23-quiet t23-cut">Next close-off ' + t23FDW(t23NextCut()[0]) + ' · paid ' + t23FDW(t23NextCut()[1]) + '</p>' : '') +
            (ns.length ? ns.map(t23SubRow).join('') : '<p class="pc-empty">Nothing to submit. Claims from finalized visits land here.</p>') + '</div>';
     } else {
       var rows = CL_ON === 'Submitted' ? t23Subm() : CL_ON === 'Paid' ? t23Paid() : t23Msp().sort(function(a, b){ return t23D(b.date) - t23D(a.date); });
@@ -14511,6 +14536,6 @@ function v2RxFocus(){
   csLayout(m);
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 17:30</div>
+  <div class="build-stamp">v2 · build 2026-10-06 18:10</div>
 </body>
 </html>
