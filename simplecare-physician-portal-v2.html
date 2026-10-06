@@ -5227,6 +5227,10 @@
   #t23-pick .t23-src{color:var(--accent-ink);font-weight:600;}
   #t23-pick .t23-row2{align-items:flex-end;}
   #t23-pick .t23-mins{font-size:15px;color:var(--ink);padding-bottom:10px;}
+  /* Daniel 5 Oct (step 5): Sign off & submit claim (primary) and Finalize, submit later (secondary, outline) */
+  #screen-patientchart #pcv-c #t23-finlater{flex:1 1 100%;justify-content:center;}
+  #screen-patientchart #pcv-c #t23-finlater[hidden]{display:none;}
+  #screen-patientchart #pcv-c #t23-finlater[aria-disabled="true"]{opacity:.55;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -5882,10 +5886,13 @@
             <p class="cs-ns-bill" id="cs-ns-bill" hidden></p>
             <div class="vc-finrow" id="vc-finrow">
               <!-- Daniel, 26 Sep: "I 'sign off' on the chart ... It means that i've finalized the visit." -->
-              <button class="btn dark" id="vc-finalize" onclick="finalizeVisit()"><span class="ic" data-pdic="complete"></span>Sign off &amp; finalize visit</button>
+              <!-- Daniel 5 Oct (step 5): bills are submitted when the consult is done, but he always presses submit himself.
+                   MSP visit: primary "Sign off & submit claim", secondary "Finalize, submit later". Private pay: just finalize. -->
+              <button class="btn dark" id="vc-finalize" onclick="t23Fin('now')"><span class="ic" data-pdic="complete"></span><span id="vc-finalize-lbl">Sign off &amp; finalize visit</span></button>
+              <button class="btn" id="t23-finlater" onclick="t23Fin('later')" hidden><span class="ic" data-pdic="clock"></span>Finalize, submit later</button>
               <button class="btn dark" id="vc-nextpt" hidden><span class="ic" data-pdic="chevr"></span><span></span></button>
             </div>
-            <p class="t23-finhelp" id="t23-finhelp" hidden>Your claim goes to Claims for sign-off. Nothing is sent to MSP yet.</p>
+            <p class="t23-finhelp" id="t23-finhelp" hidden>Submitting sends this one claim. Claims go to MSP in one batch at the end of the day.</p>
             </div>
           </section>
         </div>
@@ -11664,10 +11671,11 @@ function vcNoteState(row){
 function vcFinWarn(msg){
   var w = document.getElementById('vc-finwarn'); if(!w) return;
   w.innerHTML = '<span class="ic" data-pdic="alert"></span><p>' + msg + '</p>' +
-    '<button type="button" class="btn" onclick="document.getElementById(\'vc-finwarn\').hidden=true;document.getElementById(\'vc-finalize\').hidden=false;document.getElementById(\'vc-note-input\').focus()"><span class="ic" data-pdic="edit"></span>Keep writing</button>' +
+    '<button type="button" class="btn" onclick="document.getElementById(\'vc-finwarn\').hidden=true;document.getElementById(\'vc-finalize\').hidden=false;if(window.t23SyncFin)t23SyncFin();document.getElementById(\'vc-note-input\').focus()"><span class="ic" data-pdic="edit"></span>Keep writing</button>' +
     '<button type="button" class="btn dark" onclick="finalizeVisit(true)"><span class="ic" data-pdic="complete"></span>Sign off anyway</button>';
   w.hidden = false;
   var fb = document.getElementById('vc-finalize'); if(fb) fb.hidden = true;
+  var fl = document.getElementById('t23-finlater'); if(fl) fl.hidden = true;
   paintPd(w);
 }
 
@@ -13099,8 +13107,10 @@ function csDemoSync(){
    T-023 billing redesign. Spec: product/specs/billing-redesign.md (billing-msp, 3 Oct; Ani approved
    4 Oct: "start build billing"). Ani, 3 Oct: "Daniel changed the billing so we should change our billing
    how he did, new way." PRD refs (IDs only): CNF-09/10, COD-01..07, TAIL-04, CLM-01..06, ELT-01..09.
-   The doctor signs off claims in a batch in Claims; Finalize closes the visit only. Every code and
-   amount here is a demo value (REQ-BIL-07, OQ-24). No red anywhere in billing (rule 21).
+   Revised after Daniel's review, 5 Oct (product/specs/billing-redesign.md, "Daniel review, 5 Oct"): the doctor submits
+   one claim at a time (at sign-off, or later from Claims, Needs submission); the system batches them to MSP at the end
+   of the day. Every code and amount here is a demo value (REQ-BIL-07, OQ-24). Red in billing only at 2 days left or
+   fewer (critical, rule 21).
    ===================================================================================================== */
 var T23_TODAY = new Date(2026, 9, 3);   /* the spec's demo "today": Sat 3 Oct 2026, so its day counts hold */
 var T23_MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -13845,12 +13855,25 @@ function t23OnFinalize(r){
     c.fee = v.fee; c.dx = v.dx;
     if(v.disp === 'recip'){ c.payer = 'recip'; c.prov = 'Alberta'; }
     c.st = 'submit';
-    suffix = ' · claim in Claims, Needs submission';
+    if(T23.finMode === 'now'){
+      /* "Sign off & submit claim": the visit is finalized AND this one claim is submitted, after the code check.
+         Cancelling the code check leaves the claim in Needs submission. */
+      var cid = c.id;
+      setTimeout(function(){
+        t23Signoff([cid], 'visit', function(at){
+          var cc = t23C(cid); cc.st = 'submitted'; cc.signed = at; cc.sub = 'Submitted ' + at + ' at sign-off · goes to MSP in today’s end-of-day batch';
+          t23Log(cc, 'Dr. Pannozzo', 'Submitted at sign-off (his sign-off); goes to MSP in the end-of-day batch');
+          toast('Signed off · claim submitted · it goes to MSP at the end of the day');
+        }, function(){ toast('Visit signed off · the claim is in Claims, Needs submission'); t23RenderBillRow(); });
+      }, 0);
+      suffix = ' · submitting the claim';
+    } else suffix = ' · claim in Claims, Needs submission';
   } else {
     /* private pay: the card on file is charged after the visit (demo; a payment link is the other route) */
     c.payer = 'private'; c.item = 'visit'; c.how = 'card'; c.st = 'pri-paid'; c.paidOn = '3 Oct';
     suffix = ' · private pay, card on file charged';
   }
+  T23.finMode = 'later';
   CLAIMS.unshift(c); r.claimId = c.id;
   renderClaims(); if(typeof t23RenderStale === 'function') t23RenderStale();
   return suffix;
@@ -13864,9 +13887,10 @@ function t23RenderBillRow(){
   var h = t23Ic('claims') + '<span>Billing</span>' + sep;
   if(r.signed){
     var c = t23RowClaim(r);
-    h += c ? '<span>' + (T23_ST[c.st] || {}).label + '</span>' + sep + '<span>' + (c.st === 'submit' ? 'waiting in Claims' : 'recorded') + '</span>' +
+    h += c ? '<span>' + (T23_ST[c.st] || {}).label + '</span>' + sep + '<span>' + (c.st === 'submit' ? 'in Claims' : c.st === 'submitted' ? 'goes to MSP at the end of the day' : 'recorded') + '</span>' +
+      (c.st === 'submit' ? '<button type="button" class="btn xs" onclick="t23SubmitOne(\'' + c.id + '\')">' + t23Ic('arrowup') + 'Submit claim</button>' : '') +
       '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button>' : '<span>Recorded</span>';
-    el.innerHTML = h; el.hidden = false; if(help) help.hidden = true; paintPd(el); return;
+    el.innerHTML = h; el.hidden = false; if(help) help.hidden = true; paintPd(el); t23SyncFin(); return;
   }
   /* Daniel 5 Oct (step 4): the row is fee code · diagnosis · time; Change opens "Your coding" (no disposition) */
   var v = t23VisitCode(r.name), btn = 'Change', focus = 'dx';
@@ -13877,7 +13901,32 @@ function t23RenderBillRow(){
     if(!v.dx) btn = 'Add diagnosis';
     h += '<button type="button" class="btn xs" onclick="t23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})">' + t23Ic('edit') + btn + '</button>';
   }
-  el.innerHTML = h; el.hidden = false; if(help) help.hidden = false; paintPd(el);
+  el.innerHTML = h; el.hidden = false; if(help) help.hidden = v.disp === 'private'; paintPd(el);
+  t23SyncFin();
+}
+/* Daniel 5 Oct (step 5): the Finalize buttons follow the visit's payer. Same nodes and logic in both chart layouts
+   (v2 moves this footer into its Sign off popover). */
+function t23SyncFin(){
+  var r = (typeof csRow === 'function') ? csRow() : null;
+  var b = document.getElementById('vc-finalize'), lbl = document.getElementById('vc-finalize-lbl'), later = document.getElementById('t23-finlater');
+  if(!b || !lbl || !later) return;
+  var msp = !!(r && t23VisitCode(r.name).disp !== 'private');
+  lbl.textContent = msp ? 'Sign off & submit claim' : 'Sign off & finalize visit';
+  later.hidden = !r || !msp || !!r.signed || b.hidden;
+  if(b.getAttribute('aria-disabled') === 'true') later.setAttribute('aria-disabled', 'true'); else later.removeAttribute('aria-disabled');
+}
+function t23Fin(mode){
+  var r = (typeof csRow === 'function') ? csRow() : null;
+  if(mode === 'now' && r && !r.signed && csStripDone(PC_CURRENT)){
+    var v = t23VisitCode(r.name);
+    if(v.disp !== 'private' && !v.dx){
+      /* a claim can't be submitted without a diagnosis; "Finalize, submit later" still closes the visit */
+      toast('Add the diagnosis to submit the claim, or choose Finalize, submit later');
+      t23OpenPick({visit:PC_CURRENT, focus:'dx'}); return;
+    }
+  }
+  T23.finMode = mode === 'now' ? 'now' : 'later';
+  finalizeVisit();
 }
 if(typeof csFinState === 'function'){ var t23CsFin0 = csFinState; csFinState = function(){ t23CsFin0(); t23RenderBillRow(); }; }
 
@@ -14354,6 +14403,6 @@ function v2RxFocus(){
   else if(m === 'current') csLayout('current');
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 12:13</div>
+  <div class="build-stamp">v2 · build 2026-10-06 12:14</div>
 </body>
 </html>
