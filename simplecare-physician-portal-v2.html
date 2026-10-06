@@ -5250,6 +5250,9 @@
   html body #screen-today .q-table td.q-bill .t23-ns,
   html body #screen-today .q-table td.q-bill .bill-pill{max-width:100%;box-sizing:border-box;white-space:normal !important;height:auto !important;min-height:32px;line-height:1.3;text-align:left;}
   html body #screen-today .q-table td.q-card,html body #screen-today .q-table td.q-bill{padding-right:12px;}
+
+  /* no demo or open-question tags in the UI (Ani, 6 Oct) */
+  .t23-demo,.t23-ph{display:none !important;}
 </style>
 </head>
 <body>
@@ -6318,7 +6321,6 @@
     <div class="screen" id="screen-claims">
       <h1>Claims</h1>
       <p class="sub">Every completed visit, billed and accounted for.</p>
-      <p class="t23-demoline"><span class="ic" data-pdic="demo"></span>Fee codes, diagnoses, amounts and explanatory codes here are demo values, not real MSP data.</p>
       <!-- Daniel 5 Oct (step 3): "MSP | Private pay", organised separately and never mixed -->
       <div id="t23-seg"></div>
 
@@ -6330,7 +6332,7 @@
     <div class="screen" id="screen-feesettings">
       <h1>Fee Settings</h1>
       <p class="sub">What you bill for each kind of visit.</p>
-      <div class="box"><div class="sched-row"><span>Private Visit Fee</span><span>$100 CAD <span class="t23-demo"><span class="ic" data-pdic="demo"></span>Demo value</span></span></div></div>
+      <div class="box"><div class="sched-row"><span>Private Visit Fee</span><span>$100 CAD</span></div></div>
     </div>
     <div class="screen" id="screen-tasks">
       <div class="cpt-head">
@@ -13043,7 +13045,7 @@ function csRenderNoShow(name){
   if(n && !n.readOnly) n.placeholder = on ? 'Note the attempt (optional).' : 'Start the note here. Insert adds a template, an exam, a reading or a diagnosis.';
   if(bill){
     bill.hidden = !(on && r.status === 'noshow');
-    bill.innerHTML = bill.hidden ? '' : csIc('claims') + '<span>Billing</span><span class="cs-dot" aria-hidden="true">&middot;</span><span class="t23-ns" title="Whether a no-show is billed, and how, isn&rsquo;t decided yet (Needs Daniel)">No-show billing: not decided</span>';
+    bill.innerHTML = bill.hidden ? '' : csIc('claims') + '<span>Billing</span><span class="cs-dot" aria-hidden="true">&middot;</span><span class="t23-ns">No-show</span>';
     paintPd(bill);
   }
   if(!on && !resumed){ el.hidden = true; el.innerHTML = ''; return; }
@@ -13141,8 +13143,9 @@ function t23Diff(a, b){ return Math.round((b - a) / 86400000); }
 function t23Plus(iso, n){ var d = t23D(iso); d.setDate(d.getDate() + n); return d; }
 function t23Ic(n, cls){ return '<span class="ic' + (cls ? ' ' + cls : '') + '" data-pdic="' + n + '" aria-hidden="true"></span>'; }
 function t23E(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-var T23_DEMO = '<span class="t23-demo" title="Demo value: invented for the prototype">' + '<span class="ic" data-pdic="demo" aria-hidden="true"></span>Demo value</span>';
-function t23Ph(t){ return '<span class="t23-ph">' + t23Ic('demo') + t + '</span>'; }
+/* Ani, 6 Oct: show it the way a real user sees it, no demo tags (real values coming from Ani) */
+var T23_DEMO = '';
+function t23Ph(t){ return ''; }
 function t23Money(n){ return '$' + n.toFixed(2); }
 function t23Now(){ return new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'}); }
 function t23Stamp(){ return '3 Oct ' + t23Now(); }
@@ -13290,7 +13293,7 @@ function t23LeftChip(n, from){
   if(n == null) return '';
   var w = n < 0 ? 'Past the deadline' : n + (n === 1 ? ' day left' : ' days left');
   var cls = n <= T23_CRIT ? 'crit' : n <= T23_STRONG ? 'warn strong' : n <= T23_AMBER ? 'warn' : '';
-  var tip = from === 'rej' ? 'About 90 days from the rejection date (Needs Daniel)' : '90 days from the date of service; the visit day is day 90 (Needs Daniel)';
+  var tip = from === 'rej' ? 'About 90 days from the rejection date' : '90 days from the date of service; the visit day is day 90';
   return '<span class="t23-days ' + cls + '" title="' + tip + '">' + t23Ic(n <= T23_STRONG ? 'alert' : 'clock') + w + '</span>';
 }
 function t23DaysChip(c){ return t23LeftChip(t23DaysLeft(c), c.st === 'submit' && !c.dl ? 'sub' : 'rej'); }
@@ -13399,7 +13402,7 @@ function t23FlagHtml(c, f, i){
   var id = c.id;
   var btn = function(label, fn, icon, dark){ return '<button type="button" class="btn ' + (dark ? 'dark' : '') + '" onclick="' + fn + '">' + (icon ? t23Ic(icon) : '') + label + '</button>'; };
   var head = t23Ic('chat') + '<div><p class="t23-kind">Question from ' + t23E(f.from) + ' · ' + T23_AGENT_ROLE + '</p>';
-  var body = (f.ex ? '<p class="t23-why">' + t23F(c.date) + ' visit · ' + c.fee + ' · ' + c.dx + T23_DEMO + ' Teleplan returned the claim because of the diagnosis code (' + f.ex + ', demo).</p>' : '') +
+  var body = (f.ex ? '<p class="t23-why">' + t23F(c.date) + ' visit · ' + c.fee + ' · ' + c.dx + T23_DEMO + ' Teleplan returned the claim because of the diagnosis code (' + f.ex + ').</p>' : '') +
          '<p class="t23-find">“' + t23E(f.ask) + '”</p>' +
          (f.done ? '' : (f.overdue ? '<p class="t23-why"><span class="t23-days warn">' + t23Ic('alert') + 'Overdue since ' + f.due + '</span></p>' : '<p class="t23-why">Answer by ' + f.due + '</p>'));
   var acts = f.done ? '' : '<div class="t23-acts">' + btn('Fix it now', 't23OpenPick({claim:\'' + id + '\',focus:\'dx\',flag:' + i + '})', 'edit', true) +
@@ -13483,7 +13486,7 @@ function renderClaims(){
     } else {
       var rows = CL_ON === 'Submitted' ? t23Subm() : CL_ON === 'Paid' ? t23Paid() : t23Msp().sort(function(a, b){ return t23D(b.date) - t23D(a.date); });
       h += '<div class="box">' + (rows.length ? rows.map(function(c){ return t23Row(c, {pill:true}); }).join('') : '<p class="pc-empty">Nothing in this view.</p>');
-      if(CL_ON === 'All') h += '<div class="t23-nsdash">' + t23Ph('Needs Daniel') + ' Korynn, no-show today. Whether a no-show is billed, and how, isn’t decided yet.</div>';
+      if(CL_ON === 'All') h += '<div class="t23-nsdash">' + 'Korynn, no-show today.</div>';
       h += '</div>';
     }
   }
@@ -13630,12 +13633,12 @@ function t23Open(id){
       : (c.msp.src === 'Teleplan' ? 'Returned by Teleplan ' : 'Refused ') + (c.msp.on ? t23F(c.msp.on) + ' · ' : '') + c.msp.ex + ' · ' + (c.msp.reason || T23_EX[c.msp.ex]);
     h += '<div class="bl-block"><p class="bl-k">MSP response</p><p class="bl-v">' + refused + T23_DEMO + '</p>' +
       (left != null ? '<p class="bl-v">' + left + ' days left to fix it</p>' : '') +
-      '<details><summary>How we count this</summary><p>About 90 days from the rejection date to fix and resubmit (Daniel, 5 Oct: “about 3 months”). The exact window, by rejection type, Needs Daniel and Dev.</p></details></div>';
+      '<details><summary>How we count this</summary><p>About 90 days from the rejection date to fix and resubmit.</p></details></div>';
   } else if(c.st === 'held'){
     h += '<div class="bl-block"><p class="bl-k">MSP response</p><p class="bl-v">Held by MSP · ' + c.msp.ex + ' · ' + T23_EX[c.msp.ex] + T23_DEMO + '</p><p class="bl-v">' + T23_AGENT + ' (billing agent) is following it up. Nothing for you.</p></div>';
   }
   if(c.st === 'submit') h += '<div class="bl-block"><p class="bl-k">Deadline</p><p class="bl-v">' + t23DaysLeft(c) + ' days left to submit</p>' +
-      '<details><summary>How we count this</summary><p>90 days from the date of service; the visit day is day 90 and the next day is day 89. Daniel will double-check the rule (Needs Daniel).</p></details></div>';
+      '<details><summary>How we count this</summary><p>90 days from the date of service. The visit day is day 90 and the next day is day 89.</p></details></div>';
   if(c.st === 'appeal') h += '<div class="bl-block"><p class="bl-k">Reassessment</p><p class="bl-v">' + (c.sub || '') + ' · Possible recovery ' + t23Money(t23Amt(c)) + ' estimated' + T23_DEMO + '</p></div>';
   h += '<div class="bl-block"><p class="bl-k">Visit</p><p class="bl-v"><button type="button" class="t23-more" onclick="t23Note(\'' + id + '\')">Open the ' + t23F(c.date) + ' visit</button> (read-only)</p></div>';
   var all = T23.histAll[id], hist = c.hist.slice().reverse(), shown = all ? hist : hist.slice(0, 2);
@@ -13726,7 +13729,7 @@ function t23RenderPick(){
       return '<label class="t23-opt"><input type="radio" name="t23fee" value="' + k + '"' + (v.fee === k ? ' checked' : '') + ' onchange="T23.pick.v.fee=this.value;t23RenderPick()">' +
         k + ' · ' + T23_FEES[k].name + (k === auto ? ' · matches age ' + v.age : '') + '</label>'; }).join('') + '</div>';
   }
-  h += '<p class="t23-hint">Fee codes and age bands are demo values. The real list Needs Daniel.</p></div>';
+  h += '</div>';
   /* Diagnosis: search only */
   h += '<div class="bl-block"><p class="bl-k">Diagnosis (ICD-9)</p>' +
     '<p class="t23-dxcur">' + (v.dx ? t23Ic('complete') + '<b>' + v.dx + ' · ' + t23DxName(v.dx) + '</b>' + T23_DEMO : 'No diagnosis yet') + '</p>' +
@@ -13754,7 +13757,7 @@ function t23RenderDx(){
   var q = T23.pick.q, res = t23DxMatch(q);
   if(!String(q).trim()){ el.innerHTML = ''; return; }   /* results appear only after typing */
   if(!res.length){
-    el.innerHTML = '<p class="t23-nores">No match for “' + t23E(q) + '”. <a href="#" class="t23-src" onclick="event.preventDefault();toast(\'Demo: this opens the official ICD-9 source list (link Needs Daniel)\')">Can’t find it? Open the ICD-9 source list</a></p>';
+    el.innerHTML = '<p class="t23-nores">No match for “' + t23E(q) + '”. <a href="#" class="t23-src" onclick="event.preventDefault();toast(\'Opening the ICD-9 source list\')">Can’t find it? Open the ICD-9 source list</a></p>';
     return;
   }
   el.innerHTML = '<ul class="t23-dxlist" role="listbox" aria-label="Matching diagnoses">' + res.slice(0, 8).map(function(d){
@@ -13842,7 +13845,7 @@ function t23BillCell(r){
   var k = t23RowKey(r), b = BILL_STATUS[k];
   r.bill = k;
   if(k === 'msp-none') return '<span class="t23-none" aria-label="No claim yet. The visit isn’t finished." title="No claim yet. The visit isn’t finished.">—</span>';
-  if(k === 'noshow') return '<span class="t23-ns" title="Whether a no-show is billed, and how, isn’t decided yet (Needs Daniel)">No-show billing: not decided</span>';
+  if(k === 'noshow') return '<span class="t23-ns">No-show</span>';
   if(b.open) return '<button class="bill-pill ' + b.tone + ' go" aria-haspopup="menu" onclick="event.stopPropagation();openBillMenu(this,\'' + esc1(r.name) + '\')"><span>' + b.label + '</span><span class="q-caret" data-pdic="chevdown" aria-hidden="true"></span></button>';
   return '<span class="bill-pill ' + b.tone + '">' + b.label + '</span>';
 }
@@ -14429,6 +14432,6 @@ function v2RxFocus(){
   csLayout(m);
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 15:20</div>
+  <div class="build-stamp">v2 · build 2026-10-06 15:40</div>
 </body>
 </html>
