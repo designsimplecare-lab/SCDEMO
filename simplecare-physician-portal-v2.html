@@ -5206,6 +5206,27 @@
   .t23-days.crit{background:var(--crit-wash);color:var(--crit-ink);font-weight:700;}
   .t23-days.crit .ic,.t23-days.crit svg{color:var(--crit);}
   #screen-claims .t23-reason{margin:0 0 4px;}
+  /* Daniel 5 Oct (step 4): "Your coding": fee code set from age, diagnosis search only, start and stop time */
+  #t23-pick .t23-feeline{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;font-size:15px;color:var(--ink);}
+  #t23-pick .t23-feeline .t23-more{margin-left:auto;}
+  .t23-auto{display:inline-flex;align-items:center;gap:4px;font-size:14px;color:var(--ink-soft);margin-left:6px;}
+  .t23-auto .ic,.t23-auto svg{width:16px;height:16px;color:var(--good);}
+  #t23-pick .t23-feelist{margin:6px 0 0;padding:4px 0 0;border-top:1px solid var(--wash);}
+  #t23-pick .t23-hint{font-size:14px;color:var(--ink-soft);margin:6px 0 0;display:flex;align-items:center;flex-wrap:wrap;gap:4px;}
+  #t23-pick .t23-dxcur{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:15px;color:var(--ink-soft);margin:0 0 8px;}
+  #t23-pick .t23-dxcur b{color:var(--ink);}
+  #t23-pick .t23-dxcur .ic,#t23-pick .t23-dxcur svg{width:16px;height:16px;color:var(--good);}
+  #t23-pick .t23-dxres:empty{display:none;}
+  #t23-pick .t23-dxres{margin-top:6px;}
+  #t23-pick ul.t23-dxlist{list-style:none;margin:0 0 6px;padding:0;max-height:none;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  #t23-pick ul.t23-dxlist li + li{border-top:1px solid var(--wash);}
+  #t23-pick ul.t23-dxlist button{display:block;width:100%;text-align:left;min-height:44px;padding:0 12px;border:0;background:var(--panel);font:inherit;font-size:15px;color:var(--ink);cursor:pointer;}
+  #t23-pick ul.t23-dxlist button:hover,#t23-pick ul.t23-dxlist button:focus-visible{background:var(--wash);}
+  #t23-pick ul.t23-dxlist button[aria-selected="true"]{background:var(--tag-info);}
+  #t23-pick .t23-nores{font-size:14px;color:var(--ink-soft);margin:4px 0 0;}
+  #t23-pick .t23-src{color:var(--accent-ink);font-weight:600;}
+  #t23-pick .t23-row2{align-items:flex-end;}
+  #t23-pick .t23-mins{font-size:15px;color:var(--ink);padding-bottom:10px;}
 </style>
 </head>
 <body>
@@ -6270,7 +6291,7 @@
     <div class="screen" id="screen-claims">
       <h1>Claims</h1>
       <p class="sub">Every completed visit, billed and accounted for.</p>
-      <p class="t23-demoline"><span class="ic" data-pdic="demo"></span>Fee items, amounts and explanatory codes here are demo values, not real MSP data.</p>
+      <p class="t23-demoline"><span class="ic" data-pdic="demo"></span>Fee codes, diagnoses, amounts and explanatory codes here are demo values, not real MSP data.</p>
       <!-- Daniel 5 Oct (step 3): "MSP | Private pay", organised separately and never mixed -->
       <div id="t23-seg"></div>
 
@@ -13097,14 +13118,24 @@ function t23Now(){ return new Date().toLocaleTimeString('en-US', {hour:'numeric'
 function t23Stamp(){ return '3 Oct ' + t23Now(); }
 
 /* Spec part 0: values that can't be mistaken for real MSP ones. The real list Needs Daniel (N1, OQ-24). */
+/* Daniel 5 Oct (step 4): fee codes are deterministic by the patient's age (about 5 codes). These codes, names, age
+   bands and amounts are DEMO values invented for the prototype; the real fee codes and bands Need Daniel. */
 var T23_FEES = {
-  'DEMO-A': {name:'Visit', amt:30},
-  'DEMO-B': {name:'Brief follow-up', amt:20},
-  'DEMO-C': {name:'Extended visit', amt:40}
+  'DEMO-1': {name:'Visit, under 2',     amt:32, min:0,  max:1},
+  'DEMO-2': {name:'Visit, 2 to 49',     amt:30, min:2,  max:49},
+  'DEMO-3': {name:'Visit, 50 to 59',    amt:31, min:50, max:59},
+  'DEMO-4': {name:'Visit, 60 to 69',    amt:33, min:60, max:69},
+  'DEMO-5': {name:'Visit, 70 and over', amt:35, min:70, max:200}
 };
+function t23FeeForAge(age){ age = parseInt(age, 10); if(isNaN(age)) return 'DEMO-2'; for(var k in T23_FEES){ if(age >= T23_FEES[k].min && age <= T23_FEES[k].max) return k; } return 'DEMO-2'; }
+/* Demo diagnosis list with search words (codes are demo values; the full official ICD-9 list Needs Daniel's source) */
 var T23_DX = [
-  ['DX-D1','Chest pressure'], ['DX-D2','Follow-up'], ['DX-D3','Yeast infection'], ['DX-D4','Iron deficiency'],
-  ['DX-D5','Back pain'], ['DX-D6','Lab review'], ['DX-D7','Prescription renewal'], ['DX-D8','Blood pressure check'], ['DX-D9','Rash']
+  ['DX-D1','Chest pressure','chest pain tightness'], ['DX-D2','Follow-up visit','follow up review'], ['DX-D3','Yeast infection','candida thrush vaginal'],
+  ['DX-D4','Iron deficiency','anemia anaemia low iron'], ['DX-D5','Back pain','low back lumbar'], ['DX-D6','Lab review','blood test results'],
+  ['DX-D7','Prescription renewal','rx refill medication'], ['DX-D8','High blood pressure','hypertension bp check'], ['DX-D9','Rash','skin dermatitis'],
+  ['DX-D10','Urinary tract infection','uti bladder cystitis'], ['DX-D11','Cold sore','herpes labialis lip'], ['DX-D12','Sinus infection','sinusitis'],
+  ['DX-D13','Common cold','upper respiratory infection uri cough'], ['DX-D14','Anxiety','anxious panic'], ['DX-D15','Depression','low mood depressed'],
+  ['DX-D16','Suicidal thoughts','suicide suicidal ideation']
 ];
 function t23DxName(code){ var x = T23_DX.filter(function(d){ return d[0] === code; })[0]; return x ? x[1] : ''; }
 var T23_EX = {
@@ -13153,7 +13184,7 @@ var CLAIMS = [
   {id:'c4', who:'Owen Brady', date:'2026-10-01', win:'8-10', fee:'DEMO-A', dx:'DX-D5', mins:13, st:'submit'},
   {id:'c1', who:'Behdis Maleki', date:'2026-10-02', win:'10-2', fee:'DEMO-A', dx:'DX-D2', mins:14, st:'submit'},
   {id:'c2', who:'Andrey Abushakhmanov', date:'2026-10-02', win:'8-10', fee:'DEMO-A', dx:'DX-D2', mins:11, st:'submit', payer:'recip', prov:'Alberta'},
-  {id:'c5', who:'Carol-Anne Feldman', date:'2026-10-02', win:'8-10', fee:'DEMO-A', dx:'DX-D3', mins:12, span:'9:12–9:24 AM', st:'submit'},
+  {id:'c5', who:'Carol-Anne Feldman', date:'2026-10-02', win:'8-10', fee:'DEMO-A', dx:'DX-D3', mins:12, start:'09:12', stop:'09:24', st:'submit'},
   /* Rejected by MSP */
   {id:'c6', who:'Nadia Hassan', date:'2026-07-15', win:'2-5', fee:'DEMO-A', dx:'DX-D7', mins:9, st:'rejected',
    msp:{on:'2026-10-02', ex:'EX-D4', src:'Teleplan'},
@@ -13180,7 +13211,15 @@ var CLAIMS = [
   {id:'c23', who:'Owen Brady', date:'2026-09-28', win:'8-10', st:'pri-paid', payer:'private', item:'form', how:'link', sent:'28 Sep', paidOn:'29 Sep'},
   {id:'c20', who:'Manjit', date:'2026-10-03', win:'5-7', st:'pri-paid', payer:'private', item:'visit', how:'card', paidOn:'3 Oct', queue:'Manjit'}
 ];
-CLAIMS.forEach(function(c){ if(!c.hist) c.hist = t23Hist(c); c.flags = c.flags || []; });
+/* demo ages (existing queue ages where the patient is in the queue); the fee code follows the age (Daniel 5 Oct) */
+var T23_AGES = {'Frank D.':71, 'Owen Brady':38, 'Gloria McDonald':74, 'Grace Lin':52, 'Behdis Maleki':35, 'Andrey Abushakhmanov':24, 'Carol-Anne Feldman':44, 'Nadia Hassan':67, 'Greg':58, 'Manjit':66, 'K Arli Eyre':41};
+CLAIMS.forEach(function(c){
+  if(!c.hist) c.hist = t23Hist(c); c.flags = c.flags || [];
+  c.age = T23_AGES[c.who];
+  if(c.fee) c.fee = t23FeeForAge(c.age);
+  if(c.mins && !c.start){ c.start = '09:10'; var e = 10 + c.mins; c.stop = (e >= 60 ? '10:' : '09:') + ((e % 60) < 10 ? '0' : '') + (e % 60); }   /* demo times */
+});
+/* the question on Nadia's claim keeps its demo codes in its text */
 function t23C(id){ return CLAIMS.filter(function(c){ return c.id === id; })[0]; }
 
 /* T23.view: 'msp' or 'private' (Daniel 5 Oct: "MSP | Private pay", organised separately, never mixed).
@@ -13236,7 +13275,7 @@ function t23Pill(c, btn){
 }
 function t23FeeHtml(c){
   if(c.payer === 'private') return '<b>' + (c.item === 'form' ? 'Form' : 'Private visit fee') + T23_DEMO + '</b>';
-  if(!c.fee) return '<b>No fee item</b>';
+  if(!c.fee) return '<b>No fee code</b>';
   return '<b>' + c.fee + ' · ' + T23_FEES[c.fee].name + T23_DEMO + '</b>' +
          '<span>' + (c.dx ? c.dx + ' · ' + t23DxName(c.dx) : 'Diagnosis not set') + '</span>';
 }
@@ -13545,9 +13584,9 @@ function t23Open(id){
   if(c.payer !== 'private' && c.fee){
     var b = t23Basis(c);
     h += '<div class="bl-block"><p class="bl-k">Your coding</p>' +
-      line('Fee item', c.fee + ' · ' + T23_FEES[c.fee].name + T23_DEMO, 'fee') +
+      line('Fee code', c.fee + ' · ' + T23_FEES[c.fee].name + T23_DEMO + (c.fee === t23FeeForAge(c.age) ? '<span class="t23-auto">Set from age · ' + c.age + '</span>' : ''), 'fee') +
       line('Diagnosis (ICD-9)', c.dx ? c.dx + ' · ' + t23DxName(c.dx) + T23_DEMO : 'Diagnosis not set', 'dx') +
-      line('Time', (c.span ? c.span + ' · ' : '') + (c.mins || '—') + ' min · from the call', 'time') +
+      line('Time', (c.start ? t23SpanTxt(c) : (c.mins || '—') + ' min') + ' · from the call', 'time') +
       line('Amount', b ? t23Money(b[0]) + ' ' + b[1] + T23_DEMO : '—', null, true) + '</div>';
   } else if(c.payer === 'private'){
     h += '<div class="bl-block"><p class="bl-k">Payment</p>' +
@@ -13606,89 +13645,107 @@ function t23Focus(id){
 var t23CloseBilling0 = closeBilling;
 closeBilling = function(){ t23CloseBilling0(); T23.open = null; var c = document.getElementById('bl-card'); if(c) c.classList.remove('t23-wide'); };
 
-/* ================= Coding and disposition picker (spec parts 3, 5, 6) ================= */
+/* ================= "Your coding" (Daniel 5 Oct, step 4) =================
+   Daniel, 5 Oct, reviewing this dialog: "get rid of all of that, just search".
+   - "Fee item" is now "Fee code". Fee codes are deterministic by the patient's age (about 5 codes), so the code is
+     set automatically from the age ("Set from age · 74") and can still be changed from the short list.
+   - Diagnosis (ICD-9): a search box only. Results appear after typing; no long radio list, no free text. If nothing
+     is found: "Can't find it? Open the ICD-9 source list" (placeholder link; Daniel sent the source on WhatsApp).
+   - Units, service location, referring practitioner and the whole Disposition section are gone (a visit is MSP or
+     private pay, decided before the visit).
+   - Time: start and stop, filled from the call (demo values), editable; every change is logged. */
+function t23Clock(hhmm){ var p = String(hhmm || '').split(':'), h = +p[0], m = +p[1]; if(isNaN(h) || isNaN(m)) return '—'; var ap = h >= 12 ? 'PM' : 'AM'; var h12 = h % 12 || 12; return h12 + ':' + (m < 10 ? '0' : '') + m + ' ' + ap; }
+function t23Mins(a, b){ var x = String(a).split(':'), y = String(b).split(':'); var d = (+y[0] * 60 + +y[1]) - (+x[0] * 60 + +x[1]); return isNaN(d) ? null : d; }
+function t23SpanTxt(v){ var m = t23Mins(v.start, v.stop); var a = t23Clock(v.start), b = t23Clock(v.stop); if(a.slice(-2) === b.slice(-2)) a = a.slice(0, -3); return a + '–' + b + (m != null && m > 0 ? ' (' + m + ' min)' : ''); }
 function t23VisitCode(name){
   T23.visit = T23.visit || {};
   if(T23.visit[name]) return T23.visit[name];
   var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0] || {};
   var dxBy = {'Follow up — chest pressure noted':'DX-D1', 'Follow up appointment':'DX-D2', 'Yeast infection':'DX-D3', 'Rx renewal':'DX-D7', 'Lab follow-up':'DX-D6'};
   var disp = (r.card === 'private' || r.card === 'oop-qc' || r.plan === 'Private') ? 'private' : r.card === 'oop' ? 'recip' : 'msp';
-  var v = {fee:'DEMO-A', dx:dxBy[r.concern] || null, units:1, mins:12, loc:'Virtual (phone)', ref:'None', disp:disp, reason:'', alt:''};
+  var age = parseInt(r.age, 10);
+  /* start and stop come from the call log; these are demo values */
+  var v = {age:age, fee:t23FeeForAge(age), dx:dxBy[r.concern] || null, start:'09:12', stop:'09:24', disp:disp};
+  v.mins = t23Mins(v.start, v.stop);
   T23.visit[name] = v; return v;
 }
 function t23OpenPick(o){
-  if(t23PA()){ toast(T23_PA_LINE); return; }
   var src;
   if(o.claim){ var c = t23C(o.claim); if(!c) return;
-    src = {fee:c.fee || 'DEMO-A', dx:c.dx, units:c.units || 1, mins:c.mins || 10, loc:c.loc || 'Virtual (phone)', ref:c.ref || 'None',
-           disp:c.payer === 'private' ? 'private' : c.st === 'notbilled' ? 'notbilled' : c.st === 'altpayer' ? 'alt' : c.payer === 'recip' ? 'recip' : 'msp', reason:c.reason || '', alt:''};
-  } else { if(!o.visit) { toast('Open a chart first'); return; } src = t23VisitCode(o.visit); }
-  T23.pick = {o:o, v:JSON.parse(JSON.stringify(src)), q:'', err:''};
-  if(o.disp) T23.pick.v.disp = o.disp;
+    src = {age:c.age, fee:c.fee || t23FeeForAge(c.age), dx:c.dx, start:c.start, stop:c.stop, disp:c.payer === 'recip' ? 'recip' : 'msp'};
+  } else { if(!o.visit){ toast('Open a chart first'); return; } src = t23VisitCode(o.visit); }
+  if(src.disp === 'private'){ toast('Private pay: no MSP coding for this visit'); return; }
+  T23.pick = {o:o, v:JSON.parse(JSON.stringify(src)), q:'', err:'', feeOpen:o.focus === 'fee' && !!o.correct};
   t23RenderPick();
   document.getElementById('t23-pick').classList.add('show');
-  setTimeout(function(){ var f = document.querySelector('#t23-pick [data-focus="' + (o.focus || 'fee') + '"]'); if(f){ f.scrollIntoView({block:'nearest'}); f.focus(); } }, 40);
+  setTimeout(function(){ var f = document.querySelector('#t23-pick [data-focus="' + (o.focus || 'dx') + '"]') || document.querySelector('#t23-pick [data-focus="dx"]'); if(f){ f.scrollIntoView({block:'nearest'}); f.focus(); } }, 40);
 }
 function t23RenderPick(){
   var P = T23.pick, v = P.v, o = P.o, card = document.getElementById('t23-pick-card');
   var c = o.claim ? t23C(o.claim) : null;
   var who = c ? c.who + ' · ' + t23F(c.date) : (o.visit ? firstLast(o.visit) + ' · today’s visit' : '');
-  var radio = function(name, val, label, cur, extra){ return '<label class="t23-opt"><input type="radio" name="' + name + '" value="' + val + '"' + (cur === val ? ' checked' : '') + ' onchange="T23.pick.v.' + name + '=this.value;' + (extra || '') + 't23RenderPick()"' + (name === 'fee' && val === 'DEMO-A' ? ' data-focus="fee"' : '') + (name === 'disp' && val === 'msp' ? ' data-focus="disp"' : '') + '>' + label + '</label>'; };
-  var h = '<p class="bl-eyebrow">' + (c ? t23Payer(c) : 'Billing for this visit') + '</p><p class="defer-ttl" id="t23-pick-ttl">Your coding</p><p class="bl-who">' + t23E(who) + '</p>';
-  var coded = v.disp === 'msp' || v.disp === 'recip';
-  if(coded){
-    h += '<div class="bl-block"><p class="bl-k">Fee item</p>';
-    if(o.ai && o.ai.field === 'fee') h += '<p class="t23-ai">' + AI_MARK + 'AI suggests ' + o.ai.to + ' · ' + T23_FEES[o.ai.to].name + ' (confidence ' + o.ai.conf + '%). Current: ' + (c ? c.fee : v.fee) + '. Nothing changes until you save.</p>';
-    h += Object.keys(T23_FEES).map(function(k){ return radio('fee', k, k + ' · ' + T23_FEES[k].name + ' · ' + t23Money(T23_FEES[k].amt) + ' expected' + T23_DEMO, v.fee); }).join('') +
-      '<p class="bl-v" style="color:var(--ink-soft);margin-top:4px">The amount comes from the fee item; it can’t be typed. The real fee list Needs Daniel (N1).</p></div>';
-    var q = P.q.toLowerCase();
-    var dx = T23_DX.filter(function(d){ return !q || (d[0] + ' ' + d[1]).toLowerCase().indexOf(q) > -1; });
-    h += '<div class="bl-block"><p class="bl-k">Diagnosis (ICD-9)</p>' +
-      '<input class="t23-in wide" type="search" data-focus="dx" placeholder="Search by words, e.g. back pain" value="' + t23E(P.q) + '" oninput="T23.pick.q=this.value;t23RenderPick();var e=document.querySelector(\'#t23-pick [data-focus=dx]\');e.focus();e.setSelectionRange(e.value.length,e.value.length)" aria-label="Search diagnoses">' +
-      '<div class="t23-dxlist">' + (dx.length ? dx.map(function(d){ return radio('dx', d[0], d[0] + ' · ' + d[1] + T23_DEMO, v.dx); }).join('') : '<p class="pc-empty">No match.</p>') + '</div></div>';
-    h += '<div class="bl-block"><div class="t23-row2">' +
-      '<label>Units<input class="t23-in" style="width:80px" type="number" min="1" max="9" data-focus="units" value="' + v.units + '" onchange="T23.pick.v.units=Math.max(1,+this.value||1)"></label>' +
-      '<label>Time (minutes)<input class="t23-in" style="width:120px" type="number" min="1" data-focus="time" value="' + v.mins + '" onchange="T23.pick.v.mins=Math.max(1,+this.value||1)"></label>' +
-      '<label>Service location<select class="t23-in" data-focus="loc" onchange="T23.pick.v.loc=this.value">' + ['Virtual (phone)','Virtual (video)'].map(function(x){ return '<option' + (v.loc === x ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select></label>' +
-      '<label>Referring practitioner<select class="t23-in" data-focus="ref" onchange="T23.pick.v.ref=this.value"><option>None</option></select></label>' +
-      '</div><p class="bl-v" style="color:var(--ink-soft);margin-top:6px">Time is filled in from the call log; you can change it.</p></div>';
+  var auto = t23FeeForAge(v.age);
+  var h = '<p class="bl-eyebrow">' + (c ? t23Payer(c) : (v.disp === 'recip' ? 'Reciprocal claim' : 'MSP claim')) + '</p><p class="defer-ttl" id="t23-pick-ttl">Your coding</p><p class="bl-who">' + t23E(who) + '</p>';
+  /* Fee code: set from age, changeable from the short list */
+  h += '<div class="bl-block"><p class="bl-k">Fee code</p>' +
+    '<div class="t23-feeline"><b>' + v.fee + ' · ' + T23_FEES[v.fee].name + '</b>' + T23_DEMO +
+    (v.fee === auto && !isNaN(v.age) ? '<span class="t23-auto">' + t23Ic('complete') + 'Set from age · ' + v.age + '</span>' : '<span class="t23-auto">Changed by you</span>') +
+    '<button type="button" class="t23-more" data-focus="fee" aria-expanded="' + !!P.feeOpen + '" onclick="T23.pick.feeOpen=!T23.pick.feeOpen;t23RenderPick();var b=document.querySelector(\'#t23-pick [data-focus=fee]\');if(b)b.focus()">' + (P.feeOpen ? 'Done' : 'Change') + '</button></div>';
+  if(P.feeOpen){
+    h += '<div class="t23-feelist" role="radiogroup" aria-label="Fee code">' + Object.keys(T23_FEES).map(function(k){
+      return '<label class="t23-opt"><input type="radio" name="t23fee" value="' + k + '"' + (v.fee === k ? ' checked' : '') + ' onchange="T23.pick.v.fee=this.value;t23RenderPick()">' +
+        k + ' · ' + T23_FEES[k].name + (k === auto ? ' · matches age ' + v.age : '') + '</label>'; }).join('') + '</div>';
   }
-  /* part 6: exactly one disposition per completed visit */
-  var reasons = ['Doctor’s choice','Duplicate','Other'];
-  h += '<div class="bl-block"><p class="bl-k">Disposition ' + t23Ph('Reasons and payers Needs Daniel (N4)') + '</p>' +
-    radio('disp', 'msp', 'MSP claim', v.disp) +
-    ((c && c.payer === 'recip') || (!c && v.disp === 'recip') ? radio('disp', 'recip', 'Reciprocal claim', v.disp) : '') +
-    radio('disp', 'notbilled', 'Not billed', v.disp) +
-    (v.disp === 'notbilled' ? '<div class="t23-sub2"><div class="t23-chips">' + reasons.map(function(r){ return '<button type="button" class="t23-chip' + (v.reason === r ? ' on' : '') + '" onclick="T23.pick.v.reason=\'' + r.replace(/'/g, "\\'") + '\';T23.pick.err=\'\';t23RenderPick()">' + r + '</button>'; }).join('') + '</div>' +
-      '<input class="t23-in wide" style="margin-top:6px" type="text" placeholder="Or write the reason" value="' + (reasons.indexOf(v.reason) > -1 ? '' : t23E(v.reason)) + '" oninput="T23.pick.v.reason=this.value;T23.pick.err=\'\'" aria-label="Reason not billed"></div>' : '') +
-    radio('disp', 'bundled', 'Bundled or not billable', v.disp) +
-    radio('disp', 'alt', 'Alternate payer', v.disp) +
-    (v.disp === 'alt' ? '<div class="t23-sub2 t23-chips">' + ['WorkSafeBC','ICBC','Other'].map(function(r){ return '<button type="button" class="t23-chip' + (v.alt === r ? ' on' : '') + '" onclick="T23.pick.v.alt=\'' + r + '\';T23.pick.err=\'\';t23RenderPick()">' + r + '</button>'; }).join('') + '</div>' : '') +
-    radio('disp', 'private', 'Private pay', v.disp) + '</div>';
+  h += '<p class="t23-hint">Fee codes and age bands are demo values. The real list Needs Daniel.</p></div>';
+  /* Diagnosis: search only */
+  h += '<div class="bl-block"><p class="bl-k">Diagnosis (ICD-9)</p>' +
+    '<p class="t23-dxcur">' + (v.dx ? t23Ic('complete') + '<b>' + v.dx + ' · ' + t23DxName(v.dx) + '</b>' + T23_DEMO : 'No diagnosis yet') + '</p>' +
+    '<input class="t23-in wide" type="search" data-focus="dx" placeholder="Search diagnoses, e.g. back pain or UTI" value="' + t23E(P.q) + '" oninput="T23.pick.q=this.value;t23RenderDx()" aria-label="Search diagnoses (ICD-9)" aria-controls="t23-dxres" autocomplete="off">' +
+    '<div id="t23-dxres" class="t23-dxres" aria-live="polite"></div></div>';
+  /* Time: start and stop from the call */
+  h += '<div class="bl-block"><p class="bl-k">Time</p><div class="t23-row2">' +
+    '<label>Start<input class="t23-in" type="time" data-focus="time" value="' + v.start + '" onchange="T23.pick.v.start=this.value;t23RenderMins()"></label>' +
+    '<label>Stop<input class="t23-in" type="time" value="' + v.stop + '" onchange="T23.pick.v.stop=this.value;t23RenderMins()"></label>' +
+    '<span class="t23-mins" id="t23-mins"></span></div>' +
+    '<p class="t23-hint">Filled from the call' + t23Ph('Demo values') + ' You can change it. Changes are logged.</p></div>';
   if(P.err) h += '<p class="t23-err" role="alert">' + P.err + '</p>';
-  h += '<div class="defer-acts"><button type="button" class="btn" onclick="t23PickClose()">Cancel</button><button type="button" class="btn dark" onclick="t23PickSave()">' + t23Ic('complete') + 'Save change</button></div>';
+  h += '<div class="defer-acts"><button type="button" class="btn" onclick="t23PickClose()">Cancel</button><button type="button" class="btn dark" onclick="t23PickSave()">' + t23Ic('complete') + 'Save</button></div>';
   card.innerHTML = h; paintPd(card);
+  t23RenderDx(); t23RenderMins();
+}
+function t23RenderMins(){ var el = document.getElementById('t23-mins'); if(!el || !T23.pick) return; var m = t23Mins(T23.pick.v.start, T23.pick.v.stop); el.textContent = m != null && m > 0 ? m + ' min' : 'Stop must be after start'; }
+function t23DxMatch(q){
+  q = String(q || '').trim().toLowerCase(); if(!q) return [];
+  var words = q.split(/\s+/);
+  return T23_DX.filter(function(d){ var hay = (d[0] + ' ' + d[1] + ' ' + (d[2] || '')).toLowerCase(); return words.every(function(w){ return hay.indexOf(w) > -1; }); });
+}
+function t23RenderDx(){
+  var el = document.getElementById('t23-dxres'); if(!el || !T23.pick) return;
+  var q = T23.pick.q, res = t23DxMatch(q);
+  if(!String(q).trim()){ el.innerHTML = ''; return; }   /* results appear only after typing */
+  if(!res.length){
+    el.innerHTML = '<p class="t23-nores">No match for “' + t23E(q) + '”. <a href="#" class="t23-src" onclick="event.preventDefault();toast(\'Demo: this opens the official ICD-9 source list (link Needs Daniel)\')">Can’t find it? Open the ICD-9 source list</a></p>';
+    return;
+  }
+  el.innerHTML = '<ul class="t23-dxlist" role="listbox" aria-label="Matching diagnoses">' + res.slice(0, 8).map(function(d){
+    return '<li><button type="button" role="option" aria-selected="' + (T23.pick.v.dx === d[0]) + '" onclick="T23.pick.v.dx=\'' + d[0] + '\';T23.pick.q=\'\';t23RenderPick();var e=document.querySelector(\'#t23-pick [data-focus=dx]\');if(e)e.focus()">' +
+      '<b>' + d[0] + '</b> · ' + d[1] + '</button></li>'; }).join('') + '</ul>' + T23_DEMO;
+  paintPd(el);
 }
 function t23PickClose(){ document.getElementById('t23-pick').classList.remove('show'); T23.pick = null; }
 function t23PickSave(){
   var P = T23.pick; if(!P) return; var v = P.v, o = P.o;
-  if(v.disp === 'notbilled' && !String(v.reason).trim()){ P.err = 'Add a reason to save.'; t23RenderPick(); return; }
-  if(v.disp === 'alt' && !v.alt){ P.err = 'Choose the payer to save.'; t23RenderPick(); return; }
+  var m = t23Mins(v.start, v.stop);
+  if(m == null || m <= 0){ P.err = 'The stop time must be after the start time.'; t23RenderPick(); return; }
+  v.mins = m;
   if(o.claim){
     var c = t23C(o.claim), ch = [];
-    var dName = {msp:'MSP claim', recip:'Reciprocal claim', notbilled:'Not billed', bundled:'Bundled or not billable', alt:'Alternate payer', private:'Private pay'};
-    var oldDisp = c.payer === 'private' ? 'private' : c.st === 'notbilled' ? 'notbilled' : c.st === 'altpayer' ? 'alt' : c.payer === 'recip' ? 'recip' : 'msp';
-    if(v.disp === 'msp' || v.disp === 'recip'){
-      if(c.fee !== v.fee) ch.push('fee item ' + (c.fee || '—') + ' → ' + v.fee);
-      if(c.dx !== v.dx) ch.push('diagnosis ' + (c.dx || '—') + ' → ' + (v.dx || '—'));
-      if((c.units || 1) !== v.units) ch.push('units ' + (c.units || 1) + ' → ' + v.units);
-      if(c.mins !== v.mins) ch.push('time ' + c.mins + ' → ' + v.mins + ' min');
-      if((c.loc || 'Virtual (phone)') !== v.loc) ch.push('location → ' + v.loc);
-      c.fee = v.fee; c.dx = v.dx; c.units = v.units; c.mins = v.mins; c.loc = v.loc; c.ref = v.ref;
-    }
-    if(oldDisp !== v.disp) ch.push('disposition ' + dName[oldDisp] + ' → ' + dName[v.disp]);
+    if(c.fee !== v.fee) ch.push('fee code ' + (c.fee || '—') + ' → ' + v.fee);
+    if(c.dx !== v.dx) ch.push('diagnosis ' + (c.dx || '—') + ' → ' + (v.dx || '—'));
+    if(c.start !== v.start || c.stop !== v.stop) ch.push('time ' + t23SpanTxt(c) + ' → ' + t23SpanTxt(v));
+    c.fee = v.fee; c.dx = v.dx; c.start = v.start; c.stop = v.stop; c.mins = v.mins;
     if(!ch.length && !o.correct){ t23PickClose(); toast('Nothing changed'); return; }
-    t23Log(c, 'Dr. Pannozzo', 'Changed ' + (ch.join('; ') || 'nothing'));    /* AUD-02: before and after */
+    if(ch.length) t23Log(c, 'Dr. Pannozzo', 'Changed ' + ch.join('; '));    /* AUD-02: before and after; every change is logged */
     var fixed = false;
     if(o.flag != null && c.flags[o.flag] && c.flags[o.flag].k === 'q'){
       /* "Fix it now" on the billing agent's question */
@@ -13702,13 +13759,20 @@ function t23PickSave(){
       c.st = 'submit'; c.msp = null; c.sub = 'Corrected by you · submit it when you’re ready';
     }
     t23PickClose(); t23Refresh();
-    toast(c.st === 'submit' && (o.correct || fixed) ? 'Saved · it’s in Needs submission. Submit it when you’re ready.' : 'Saved');
+    toast(c.st === 'submit' && (o.correct || fixed) ? 'Saved · it’s in Needs submission. Submit it when you’re ready.' : 'Saved · the change is logged');
     if(c.st === 'submit' && (o.correct || fixed)) t23Focus(c.id);
   } else {
+    var old = T23.visit[o.visit], vch = [];
+    if(old){
+      if(old.fee !== v.fee) vch.push('fee code ' + old.fee + ' → ' + v.fee);
+      if(old.dx !== v.dx) vch.push('diagnosis ' + (old.dx || '—') + ' → ' + (v.dx || '—'));
+      if(old.start !== v.start || old.stop !== v.stop) vch.push('time ' + t23SpanTxt(old) + ' → ' + t23SpanTxt(v));
+    }
+    v.log = (old && old.log || []).concat(vch.length ? [[t23Stamp(), 'Dr. Pannozzo', 'Changed ' + vch.join('; ')]] : []);
     T23.visit[o.visit] = v;
     t23PickClose();
     if(typeof t23RenderBillRow === 'function') t23RenderBillRow();
-    toast('Billing saved for this visit');
+    toast(vch.length ? 'Saved · the change is logged' : 'Saved');
   }
 }
 
@@ -13774,7 +13838,7 @@ function t23GoClaim(id){ var c = t23C(id); T23.view = c && c.payer === 'private'
 function t23OnFinalize(r){
   if(!r || r.claimId) return '';
   var v = t23VisitCode(r.name);
-  var c = {id:'q' + r.pos, who:firstLast(r.name), date:'2026-10-03', win:r.win, mins:v.mins, units:v.units, loc:v.loc, ref:v.ref, flags:[], hist:[], at:t23Now()};
+  var c = {id:'q' + r.pos, who:firstLast(r.name), date:'2026-10-03', win:r.win, age:v.age, mins:v.mins, start:v.start, stop:v.stop, flags:[], hist:(v.log || []).slice(), at:t23Now()};
   c.hist.push([t23Stamp(), 'Dr. Pannozzo', 'Visit signed off; claim created']);
   var suffix;
   if(v.disp === 'msp' || v.disp === 'recip'){
@@ -13804,14 +13868,15 @@ function t23RenderBillRow(){
       '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button>' : '<span>Recorded</span>';
     el.innerHTML = h; el.hidden = false; if(help) help.hidden = true; paintPd(el); return;
   }
-  var v = t23VisitCode(r.name), btn = 'Change', focus = 'fee';
+  /* Daniel 5 Oct (step 4): the row is fee code · diagnosis · time; Change opens "Your coding" (no disposition) */
+  var v = t23VisitCode(r.name), btn = 'Change', focus = 'dx';
   if(v.disp === 'private') h += '<span>Private pay</span>' + sep + '<span>Private visit fee</span>' + T23_DEMO;
   else {
-    h += '<span>' + (v.disp === 'recip' ? 'Reciprocal claim' : 'MSP claim') + '</span>' + sep;
-    if(!v.dx){ h += '<span>Diagnosis not set</span>'; btn = 'Add diagnosis'; focus = 'dx'; }
-    else h += '<span>' + v.fee + ' ' + T23_FEES[v.fee].name + '</span>' + T23_DEMO + sep + '<span>' + t23DxName(v.dx) + '</span>' + sep + '<span>' + v.mins + ' min</span>';
+    h += '<span>' + v.fee + ' ' + T23_FEES[v.fee].name + '</span>' + T23_DEMO + sep +
+         (v.dx ? '<span>' + t23DxName(v.dx) + '</span>' : '<span>Diagnosis not set</span>') + sep + '<span>' + t23SpanTxt(v) + '</span>';
+    if(!v.dx) btn = 'Add diagnosis';
+    h += '<button type="button" class="btn xs" onclick="t23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})">' + t23Ic('edit') + btn + '</button>';
   }
-  h += '<button type="button" class="btn xs" onclick="t23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})">' + t23Ic('edit') + btn + '</button>';
   el.innerHTML = h; el.hidden = false; if(help) help.hidden = false; paintPd(el);
 }
 if(typeof csFinState === 'function'){ var t23CsFin0 = csFinState; csFinState = function(){ t23CsFin0(); t23RenderBillRow(); }; }
@@ -14289,6 +14354,6 @@ function v2RxFocus(){
   else if(m === 'current') csLayout('current');
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 12:10</div>
+  <div class="build-stamp">v2 · build 2026-10-06 12:13</div>
 </body>
 </html>
