@@ -5411,6 +5411,11 @@
   #cd-panel .drw-bd :is(.cd-sugg > .lead,.cd-s-item .ev,.cd-s-item .will,.btn.xs,.cd-lbl,.cd-st,.cd-since,.cd-aka,.cd-last .k,.gw,.ga button,.cd-note,.cd-log-row .w,.cd-log-row .a,.cd-log-row p,.cd-log-row .by){font-size:14px;}
   #cd-panel .drw-bd :is(.cd-lbl,.cd-last .k,.cd-st,.cd-log-row .a){text-transform:none;letter-spacing:0;}
   :is(#tm-overlay,#ao-overlay) .drw .tm-field label,:is(#tm-overlay,#ao-overlay) .drw .tm-chip,#tm-overlay .drw :is(.tm-for,.tm-route,.tm-keep){font-size:14px;}
+  /* ===== Sidebar glitch (Ani, 6 Oct): with the rail collapsed, hovering an item widened the button (its label came back as
+     an in-flow flex item), so a black slice of the active highlight showed to the right of the icons. Collapsed shows
+     icons only; the name is the button's tooltip and accessible name (set in JS). ===== */
+  #sidebar.collapsed .nav-btn .nav-label,#sidebar.collapsed .nav-btn:hover .nav-label,
+  #sidebar.collapsed .nav-btn-parent .nav-label,#sidebar.collapsed .nav-btn-parent:hover .nav-label{display:none !important;}
 </style>
 </head>
 <body>
@@ -9608,6 +9613,14 @@ function initSidebarCollapse(){
 function syncCollapseBtn(collapsed){
   var b = document.getElementById('collapse-btn');
   if(b) b.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+  /* Ani, 6 Oct (sidebar glitch): collapsed shows icons only, so each item's name is its tooltip and accessible name */
+  document.querySelectorAll('#sidebar .nav-btn, #sidebar .nav-btn-parent').forEach(function(n){
+    var l = n.querySelector('.nav-label'); if(!l) return;
+    var name = (l.firstChild && l.firstChild.nodeType === 3 ? l.firstChild.textContent : l.textContent).trim();
+    if(!name) return;
+    if(collapsed){ n.setAttribute('aria-label', name); n.title = name; }
+    else { n.removeAttribute('aria-label'); if(n.title === name) n.removeAttribute('title'); }
+  });
 }
 function toggleSidebarCollapse(){
   var sb = document.getElementById('sidebar');
@@ -15293,6 +15306,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 22:30</div>
+  <div class="build-stamp">v2 · build 2026-10-06 22:45</div>
 </body>
 </html>
