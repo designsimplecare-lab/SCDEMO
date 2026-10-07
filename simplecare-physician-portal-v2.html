@@ -5679,6 +5679,71 @@
      panel closes. ===== */
   #callw{transition:right .18s ease-out, bottom .18s ease-out;}
   @media (prefers-reduced-motion: reduce){ #callw{transition:none;} }
+
+  /* ===== Batch B (1): structured note (lead brief, 6 Oct: "four sections: Reason, Findings, Assessment, Plan ... a compact
+     layout, not four huge boxes"). One card, label beside the field, hairlines between rows, each field grows. ===== */
+  #screen-patientchart #pcv-c #ns-wrap{display:block;margin:0;border:1px solid var(--line);border-radius:12px;background:var(--panel);}
+  #screen-patientchart #pcv-c #ns-wrap .ns-row{display:grid;grid-template-columns:120px minmax(0,1fr);gap:0 12px;align-items:start;padding:8px 12px 8px 14px;}
+  #screen-patientchart #pcv-c #ns-wrap .ns-row + .ns-row{border-top:1px solid var(--line);}
+  #screen-patientchart #pcv-c #ns-wrap .ns-row:focus-within{background:var(--wash);}
+  #screen-patientchart #pcv-c #ns-wrap .ns-row:first-child{border-radius:12px 12px 0 0;}
+  #screen-patientchart #pcv-c #ns-wrap .ns-row:last-child{border-radius:0 0 12px 12px;}
+  #screen-patientchart #pcv-c #ns-wrap .ns-k{margin:0;padding-top:10px;font-size:15px;line-height:24px;font-weight:600;color:var(--ink);cursor:text;}
+  #screen-patientchart #pcv-c #ns-wrap .ns-f{display:grid;gap:8px;min-width:0;}
+  #screen-patientchart #pcv-c #ns-wrap .ns-ta{display:block;width:100%;box-sizing:border-box;min-height:44px;margin:0;padding:10px 0;border:0;border-radius:0;
+    background:transparent;resize:none;overflow:hidden;font:inherit;font-size:16px;line-height:24px;color:var(--ink);box-shadow:none;}
+  #screen-patientchart #pcv-c #ns-wrap .ns-ta::placeholder{color:var(--ink-faint);opacity:1;font-size:16px;}
+  #screen-patientchart #pcv-c #ns-wrap .ns-ta:focus{outline:none;}
+  #screen-patientchart #pcv-c #ns-wrap .ns-row:has(.ns-ta:focus-visible){box-shadow:inset 3px 0 0 var(--brand);}
+  #screen-patientchart #pcv-c #ns-wrap .ns-ta[readonly]{color:var(--ink);cursor:default;}
+  #screen-patientchart #pcv-c #ns-wrap .ns-ai:empty,#screen-patientchart #pcv-c #ns-wrap .ns-dx:empty{display:none;}
+  #screen-patientchart #pcv-c #ns-wrap .ns-ai .cs-ai{margin:0 0 4px;}
+  #screen-patientchart #pcv-c #ns-wrap .ns-ai .cs-ai-done{margin:0 0 4px;}
+  #screen-patientchart #pcv-c #ns-wrap .ns-ai .cs-ai-b{display:flex;gap:8px;flex-wrap:wrap;}
+  #screen-patientchart #pcv-c #ns-wrap .ns-ai .cs-ai-b .btn{min-height:44px;border-color:transparent;background:var(--panel);box-shadow:none;}
+  #screen-patientchart #pcv-c #ns-wrap .ns-held{background:var(--wash);}
+  #screen-patientchart #pcv-c #ns-wrap .ns-aie{display:block;width:100%;box-sizing:border-box;min-height:96px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;
+    background:var(--panel);font:inherit;font-size:15px;line-height:22px;color:var(--ink);resize:vertical;}
+  #screen-patientchart #pcv-c #ns-wrap.ns-min #ns-r-reason,#screen-patientchart #pcv-c #ns-wrap.ns-min #ns-r-assessment,
+  #screen-patientchart #pcv-c #ns-wrap.ns-min #ns-r-plan{display:none;}
+  #screen-patientchart #pcv-c #ns-wrap.ns-min #ns-r-findings{border-top:0;}
+  #screen-patientchart #pcv-c #vc-note-input{display:none !important;}
+  /* diagnosis in Assessment: the claim's diagnosis, same search as Your coding */
+  #screen-patientchart #pcv-c #ns-dx{display:grid;gap:8px;padding:0 0 4px;}
+  #screen-patientchart #pcv-c #ns-dx .ns-dxline{display:flex;align-items:center;flex-wrap:wrap;gap:8px;}
+  #screen-patientchart #pcv-c #ns-dx .ns-chip{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 6px 0 12px;border:0;border-radius:10px;
+    background:var(--tag-info);font-size:15px;font-weight:500;color:var(--ink);max-width:100%;box-sizing:border-box;}
+  #screen-patientchart #pcv-c #ns-dx .ns-chip.ro{padding-right:12px;}
+  #screen-patientchart #pcv-c #ns-dx .ns-chip > .ic{width:18px;height:18px;color:var(--tag-info-ic);flex:none;}
+  #screen-patientchart #pcv-c #ns-dx .ns-chip b{font-weight:600;font-variant-numeric:tabular-nums;}
+  #screen-patientchart #pcv-c #ns-dx .ns-chip .ns-chip-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+  #screen-patientchart #pcv-c #ns-dx .ns-chip-x{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;flex:none;border:0;border-radius:8px;background:transparent;color:var(--ink-soft);cursor:pointer;font-size:20px;line-height:1;}
+  #screen-patientchart #pcv-c #ns-dx .ns-chip-x:hover,#screen-patientchart #pcv-c #ns-dx .ns-chip-x:focus-visible{background:var(--panel);color:var(--ink);}
+  #screen-patientchart #pcv-c #ns-dx .ns-dxk{font-size:14px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c #ns-dx .ns-dxs{display:grid;gap:6px;padding:10px 12px;border-radius:10px;background:var(--panel);border:1px solid var(--line);}
+  #screen-patientchart #pcv-c #ns-dx .ns-dxs-hd{display:flex;align-items:center;gap:8px;}
+  #screen-patientchart #pcv-c #ns-dx .ns-dxs-hd .ns-dxk{flex:1 1 auto;}
+  #screen-patientchart #pcv-c #ns-dx .t23-in{height:44px;width:100%;box-sizing:border-box;border:1px solid var(--line-strong);border-radius:8px;padding:0 12px;font:inherit;font-size:15px;color:var(--ink);background:var(--panel);}
+  #screen-patientchart #pcv-c #ns-dx .t23-dxres:empty{display:none;}
+  #screen-patientchart #pcv-c #ns-dx ul.t23-dxlist{list-style:none;margin:0 0 6px;padding:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  #screen-patientchart #pcv-c #ns-dx ul.t23-dxlist li + li{border-top:1px solid var(--wash);}
+  #screen-patientchart #pcv-c #ns-dx ul.t23-dxlist button{display:flex;align-items:baseline;gap:12px;width:100%;text-align:left;min-height:44px;padding:10px 12px;border:0;background:var(--panel);font:inherit;font-size:15px;line-height:1.35;color:var(--ink);cursor:pointer;}
+  #screen-patientchart #pcv-c #ns-dx ul.t23-dxlist button b{flex:0 0 52px;font-variant-numeric:tabular-nums;}
+  #screen-patientchart #pcv-c #ns-dx ul.t23-dxlist button span{flex:1 1 auto;min-width:0;}
+  #screen-patientchart #pcv-c #ns-dx ul.t23-dxlist button:hover,#screen-patientchart #pcv-c #ns-dx ul.t23-dxlist button.act{background:var(--wash);}
+  #screen-patientchart #pcv-c #ns-dx ul.t23-dxlist button[aria-selected="true"]{background:var(--tag-info);}
+  #screen-patientchart #pcv-c #ns-dx .t23-nores{font-size:14px;color:var(--ink-soft);margin:4px 0 0;}
+  #screen-patientchart #pcv-c #ns-dx .t23-src{color:var(--accent-ink);font-weight:600;font-size:14px;}
+  #screen-patientchart #pcv-c #ns-dx .t23-src .ic{width:16px;height:16px;}
+  @media (max-width:1360px){
+    #screen-patientchart #pcv-c #ns-wrap .ns-row{grid-template-columns:104px minmax(0,1fr);}
+  }
+  /* Batch B (1): the scribe panel's transcript and counts were 11.5–13.5 px; nothing a physician reads is under 14 px */
+  #screen-patientchart #pcv-c #sc-block .sc-sub,#screen-patientchart #pcv-c #sc-block .sc-sub b,#screen-patientchart #pcv-c #sc-block .sc-count,
+  #screen-patientchart #pcv-c #sc-block .sc-turn .x,#screen-patientchart #pcv-c #sc-block .sc-turn .w,#screen-patientchart #pcv-c #sc-block .sc-prop,
+  #screen-patientchart #pcv-c #sc-block .sc-prop *,#screen-patientchart #pcv-c #sc-block .sc-consent,#screen-patientchart #pcv-c #sc-block .sc-consent *,
+  #screen-patientchart #pcv-c #sc-block .sc-lbl,#screen-patientchart #pcv-c #sc-block .sc-rule,#screen-patientchart #pcv-c #sc-block .sc-rule b{font-size:max(14px, 1em);}
+  #screen-patientchart #pcv-c #sc-block .sc-turn .w{font-size:14px;}
 </style>
 </head>
 <body>
@@ -6294,7 +6359,7 @@
                   <button type="button" role="menuitem" onclick="csInsMenu(false);vcInsert('Follow-up template')">Follow-up template</button>
                   <button type="button" role="menuitem" onclick="csInsMenu(false);vcInsert('Normal exam')">Normal exam</button>
                   <button type="button" role="menuitem" onclick="csInsMenu(false);prOpenForm()">Reading from patient</button>
-                  <button type="button" role="menuitem" onclick="csInsMenu(false);t23OpenPick({visit:PC_CURRENT, focus:'dx'})">Diagnosis</button>
+                  <button type="button" role="menuitem" onclick="csInsMenu(false);nsDxOpen(true)">Diagnosis</button>
                 </span>
               </span>
               <span class="cs-tsep" aria-hidden="true"></span>
@@ -6304,9 +6369,27 @@
               <button type="button" class="cs-tb" onclick="openTaskMoa(PC_CURRENT)" aria-label="Task the MOA"><span class="ic" data-pcic="task"></span>Task</button>
               <button type="button" class="cs-tb" onclick="toast('Message to the patient portal (demo)')"><span class="ic" data-pdic="chat"></span>Message</button>
             </div>
-            <label class="vh" for="vc-note-input">Today&rsquo;s note</label>
-            <!-- Ani, 5 Oct: the note starts empty with a placeholder, not with template text -->
-            <textarea class="vc-note" id="vc-note-input" placeholder="Start the note here. Insert adds a template, an exam, a reading or a diagnosis." oninput="vcGrow();csDraft()"></textarea>
+            <!-- Batch B (1), lead brief 6 Oct: "replace the single empty textarea with four sections: Reason, Findings,
+                 Assessment, Plan". One compact card, label beside each field, hairlines between rows; each field grows
+                 with its text. AI suggestions sit inside their section and enter the note only on Accept. The
+                 diagnosis is picked in Assessment and IS the claim's diagnosis (same search as Your coding). -->
+            <div class="ns" id="ns-wrap" role="group" aria-label="Today&rsquo;s note">
+              <div class="ns-row" id="ns-r-reason"><label class="ns-k" for="ns-reason">Reason</label>
+                <div class="ns-f"><textarea class="ns-ta" id="ns-reason" data-sec="reason" rows="1" placeholder="Why the patient is seen today"></textarea>
+                  <div class="ns-ai" id="ns-ai-reason"></div></div></div>
+              <div class="ns-row" id="ns-r-findings"><label class="ns-k" for="ns-findings" id="ns-k-findings">Findings</label>
+                <div class="ns-f"><textarea class="ns-ta" id="ns-findings" data-sec="findings" rows="1" placeholder="History, exam, readings"></textarea>
+                  <div class="ns-ai" id="ns-ai-findings"></div></div></div>
+              <div class="ns-row" id="ns-r-assessment"><label class="ns-k" for="ns-assessment">Assessment</label>
+                <div class="ns-f"><textarea class="ns-ta" id="ns-assessment" data-sec="assessment" rows="1" placeholder="Your assessment"></textarea>
+                  <div class="ns-ai" id="ns-ai-assessment"></div>
+                  <div class="ns-dx" id="ns-dx"></div></div></div>
+              <div class="ns-row" id="ns-r-plan"><label class="ns-k" for="ns-plan">Plan</label>
+                <div class="ns-f"><textarea class="ns-ta" id="ns-plan" data-sec="plan" rows="1" placeholder="Treatment, follow-up, safety netting"></textarea>
+                  <div class="ns-ai" id="ns-ai-plan"></div></div></div>
+            </div>
+            <!-- the four sections, composed ("Reason: ...", "Findings: ...") for the gates, the signed record and the tick -->
+            <textarea class="vc-note" id="vc-note-input" tabindex="-1" aria-hidden="true" hidden></textarea>
             <p class="vc-signed" id="vc-signed" hidden></p>
               <!-- Renewal in one flow, from the shadowed visit: "send along a
                    three-month supply, 90 tablets, directly to Shoppers... when you
@@ -8865,7 +8948,9 @@ function finalizeVisit(force){
      still carried "[document findings including reducibility ...]". */
   var n = document.getElementById('vc-note-input'), txt = n ? n.value.trim() : '';
   if(!force){
-    if(!txt){ vcFinWarn('Today\u2019s note is empty. Sign off and finalize the visit anyway?'); return; }
+    /* Batch B (1): the note has four sections; the gate asks for Assessment and Plan (same confirm pattern as before) */
+    var nsGap = typeof nsMissing === 'function' ? nsMissing() : (txt ? '' : 'Today\u2019s note is empty.');
+    if(nsGap){ vcFinWarn(nsGap + ' Sign off and finalize the visit anyway?'); return; }
     var br = txt.match(/\[[^\]]{3,}\]/);
     if(br){ vcFinWarn('Today\u2019s note still has template text: \u201c' + br[0].slice(0, 60) + (br[0].length > 60 ? '\u2026' : '') + '\u201d. Sign off and finalize anyway?'); return; }
   }
@@ -8873,7 +8958,7 @@ function finalizeVisit(force){
   if(!r){ toast('Visit signed off'); return; }
   /* shadowing 2: "The patient leaves the queue at once." */
   r.status = 'done'; r.wait = '\u2014';
-  r.signed = {at: new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}), note: txt};
+  r.signed = {at: new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}), note: txt, secs: typeof nsGet === 'function' ? nsGet() : null};
   /* T-023 (spec part 5): Finalize closes the visit only. It sets the disposition and puts the claim in
      Claims for sign-off; nothing goes to MSP here (Ani, 3 Oct: billing follows the PRD; CNF-09). */
   var billNote = (typeof t23OnFinalize === 'function') ? t23OnFinalize(r) : '';
@@ -9169,7 +9254,6 @@ function scDecline(){
 }
 function scStart(){
   scState = 'live'; scIdx = 0; scSeen = []; scDone = {};
-  var n = document.getElementById('vc-note-input'); if(n) n.value = '';
   renderScribe();
   clearInterval(scTimer);
   scTimer = setInterval(scTick, 1100);
@@ -9339,7 +9423,7 @@ function renderScribe(){
     props+
     ((accepted||dropped) ? '<p class="sc-rule"><b>'+accepted+'</b> accepted &middot; <b>'+dropped+'</b> dismissed this call.</p>' : '')+
     (chartCritical(PC_CURRENT) ? '<p class="sc-rule sc-held"><b>Held back:</b> the assessment, the plan, &ldquo;Code as stable angina&rdquo; and &ldquo;Telephone review in 4 weeks&rdquo;. They were drafted without today&rsquo;s critical result.</p>' : '')+
-    '<p class="sc-rule">The scribe writes the draft note and suggests what follows from it. It cannot create a task, send a requisition, prescribe, or release anything to the patient &mdash; <b>you press the button, every time</b>.</p>';
+    '<p class="sc-rule">The scribe suggests text for Findings, Assessment and Plan, and what follows from it. Nothing enters your note until you accept it. It cannot create a task, send a requisition, prescribe, or release anything to the patient &mdash; <b>you press the button, every time</b>.</p>';
 
   var tx = document.getElementById('sc-tx');
   if(tx) tx.scrollTop = tx.scrollHeight;
@@ -11117,9 +11201,12 @@ function vcToggle(grp, btn){
 function vcInsert(t){
   var n=document.getElementById('vc-note-input'); if(!n) return;
   if(n.readOnly) return;
-  n.value = (n.value ? n.value.replace(/\s*$/,'') + '\n' : '') + t + ': ';
-  vcGrow();
-  n.focus();
+  /* Batch B (1): goes into the section the doctor was last in (exam → Findings, template → Plan when none yet) */
+  var sec = nsTarget(t === 'Normal exam' ? 'findings' : t === 'Follow-up template' ? 'plan' : 'findings');
+  var ta = nsTa(sec);
+  ta.value = (ta.value ? ta.value.replace(/\s*$/,'') + '\n' : '') + t + ': ';
+  nsSync(); vcGrow(); csDraft();
+  ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
 }
 function pcFill(map){
   Object.keys(map).forEach(function(k){
@@ -11178,6 +11265,7 @@ function openChart(name){
   var vn=document.getElementById('vc-note-input');
   /* Ani, 5 Oct (chart declutter): the note opens empty with a placeholder (was "Patient presents for …") */
   if(vn) vn.value = '';
+  if(typeof nsSet === 'function') nsSet(null);   /* Batch B (1): the four sections start empty */
   document.querySelectorAll('[data-f="bannerflag"]').forEach(function(el){
     el.className = 'vc-sf' + (r.redflag ? ' crit vc-sf-btn' : '');
     /* exception-based: nothing to say, nothing shown */
@@ -11932,7 +12020,7 @@ function rxConfirm(){
     }, 5000);
     toast('Signed off \u00b7 faxing to ' + ph);
   }
-  if(n && !n.readOnly){ n.value = (n.value.trim() ? n.value.trim() + '\n' : '') + noteLine; vcGrow(); }
+  if(n && !n.readOnly) nsAppend('plan', noteLine);   /* Batch B (1): a renewal is part of the plan */
   rxRender();
 }
 function rxRenderStatus(st){
@@ -12188,9 +12276,12 @@ function renderChartAlerts(name){
 /* ===== The note grows with its content (shadowing 2: "Nested scrolling. The note box is
    roughly 200px tall and scrolls. It sits inside the chart modal, which also scrolls") ===== */
 function vcGrow(){
-  var n = document.getElementById('vc-note-input'); if(!n) return;
-  n.style.height = 'auto';
-  n.style.height = Math.max(120, n.scrollHeight + 2) + 'px';
+  /* Batch B (1): each of the four sections grows with its own text (no nested scroll) */
+  document.querySelectorAll('#ns-wrap .ns-ta').forEach(function(t){
+    if(!t.offsetParent) return;
+    t.style.height = 'auto';
+    t.style.height = Math.max(44, t.scrollHeight + 2) + 'px';
+  });
 }
 
 /* ===== Finalize closes today's visit (doctor review ask 4; shadowing 2 and 3) ===== */
@@ -12198,6 +12289,7 @@ function vcNoteState(row){
   var n = document.getElementById('vc-note-input'), stamp = document.getElementById('vc-signed');
   var signed = !!(row && row.signed);
   if(n){ n.readOnly = signed; n.classList.toggle('signed', signed); if(signed) n.value = row.signed.note; }
+  if(typeof nsReadOnly === 'function'){ if(signed) nsSet(row.signed.secs || {findings: row.signed.note}); nsReadOnly(signed); }
   if(stamp){
     stamp.hidden = !signed;
     /* Daniel, 26 Sep: "The Doctor has approved this, meaning my a** is on the line." The name and time are the point. */
@@ -12218,7 +12310,7 @@ function vcNoteState(row){
 function vcFinWarn(msg){
   var w = document.getElementById('vc-finwarn'); if(!w) return;
   w.innerHTML = '<span class="ic" data-pdic="alert"></span><p>' + msg + '</p>' +
-    '<button type="button" class="btn" onclick="document.getElementById(\'vc-finwarn\').hidden=true;document.getElementById(\'vc-finalize\').hidden=false;if(window.t23SyncFin)t23SyncFin();document.getElementById(\'vc-note-input\').focus()"><span class="ic" data-pdic="edit"></span>Keep writing</button>' +
+    '<button type="button" class="btn" onclick="document.getElementById(\'vc-finwarn\').hidden=true;document.getElementById(\'vc-finalize\').hidden=false;if(window.t23SyncFin)t23SyncFin();nsFocusGap()"><span class="ic" data-pdic="edit"></span>Keep writing</button>' +
     '<button type="button" class="btn dark" onclick="finalizeVisit(true)"><span class="ic" data-pdic="complete"></span>Sign off anyway</button>';
   w.hidden = false;
   var fb = document.getElementById('vc-finalize'); if(fb) fb.hidden = true;
@@ -12268,7 +12360,7 @@ function mxSave(){
   var m = {drug:drug, dose:dose, freq:g('mx-freq') || 'once daily', form:'tablets', last:'', src:{where:g('mx-where'), when:g('mx-when')}};
   (RX_MEDS[PC_CURRENT] = RX_MEDS[PC_CURRENT] || []).push(m);
   var n = document.getElementById('vc-note-input');
-  if(n && !n.readOnly){ n.value = (n.value.trim() ? n.value.trim() + '\n' : '') + 'Medication started elsewhere: ' + drug + ' ' + dose + ' ' + m.freq + ', started ' + m.src.where + (m.src.when ? ' (' + m.src.when + ')' : '') + ', patient-reported.'; vcGrow(); }
+  if(n && !n.readOnly) nsAppend('findings', 'Medication started elsewhere: ' + drug + ' ' + dose + ' ' + m.freq + ', started ' + m.src.where + (m.src.when ? ' (' + m.src.when + ')' : '') + ', patient-reported.');
   MX_FORM = false; renderMedRail(PC_CURRENT);
   var c = document.getElementById('rx-card'); if(c && !c.hidden) rxRender();
   toast(drug + ' ' + dose + ' added to the medication list');
@@ -12418,7 +12510,7 @@ function prSave(){
     line = 'Patient-reported weight ' + w.toFixed(1) + ' kg today, given on the call.';
   }
   var n = document.getElementById('vc-note-input');
-  if(n && !n.readOnly){ n.value = (n.value.trim() ? n.value.trim() + '\n' : '') + line; vcGrow(); }
+  if(n && !n.readOnly) nsAppend(nsTarget('findings'), line);   /* Batch B (1): Insert → Reading goes to the focused section */
   PR_FORM = false; renderPtReadings(PC_CURRENT);
   toast('Reading saved and added to today’s note');
 }
@@ -12563,7 +12655,7 @@ function rsSaveExp(){
   var x = {what:what, when:g('rs-when') ? 'booked ' + g('rs-when') : 'date not known', by:g('rs-by') ? 'by ' + g('rs-by') : 'elsewhere'};
   (PT_EXPECT[PC_CURRENT] = PT_EXPECT[PC_CURRENT] || []).push(x);
   var n = document.getElementById('vc-note-input');
-  if(n && !n.readOnly){ n.value = (n.value.trim() ? n.value.trim() + '\n' : '') + 'Expected result: ' + what + ', ' + x.when + ', ordered ' + x.by + ' (outside SimpleCare).'; vcGrow(); }
+  if(n && !n.readOnly) nsAppend('findings', 'Expected result: ' + what + ', ' + x.when + ', ordered ' + x.by + ' (outside SimpleCare).');
   RS_ADD = false; renderResults(PC_CURRENT); renderSinceLast(PC_CURRENT);
   toast('Expected result added · shows under Pending until it arrives');
 }
@@ -12701,7 +12793,7 @@ window.addEventListener('resize', function(){
    and ECG Critical v2.0 ("Abnormal ECG" alone is not CRITICAL ECG). Existing functions are wrapped,
    not rewritten, so call, Task MOA, prescribing, finalize and claim, the care plan and the scribe keep working.
    ============================================================ */
-var CS = {empty:false, allergy:{}, visit:{}, ai:{}, draft:{}, stripOpen:{}, pop:null, sinceOpen:{}, relOpen:{},
+var CS = {empty:false, allergy:{}, visit:{}, ai:{}, sc:{}, draft:{}, stripOpen:{}, pop:null, sinceOpen:{}, relOpen:{},
           fcTab:null, fcReturn:null, ctxScroll:0, view:'chart', dropped:{}, nsResumed:{}, srcOpen:{},
           /* Ani, 5 Oct: chart layout v2 (csLayout, script at the end). Only presentation reads this. */
           layout:'current', metaOpen:{}};
@@ -13264,57 +13356,103 @@ function csAI(name){
   return (CS.ai[name] = s ? {mode:'intake', text:s, src:'From today&rsquo;s intake: an AI summary of the patient&rsquo;s answers', state:'pending'} : {state:'none'});
 }
 function csRenderAI(){
+  /* Batch B (1): the intake suggestion sits in Reason; the scribe's suggestions arrive in Findings, Assessment and Plan.
+     Same rule as before: nothing enters the note until the doctor accepts (or edits and adds) it. */
   var el = document.getElementById('cs-ai'); if(!el || !PC_CURRENT) return;
-  var a = csAI(PC_CURRENT), r = csRow();
-  if(r && r.signed){ el.innerHTML = ''; return; }
-  if(a.state === 'pending' && a.text){
-    var live = a.mode === 'scribe' && scState === 'live';
-    /* Ani, 5 Oct: a slim banner above the note (was a large card). Same meaning and the same two choices. */
-    el.innerHTML = '<div class="cs-ai" role="group" aria-labelledby="cs-ai-k">' +
-      '<p class="cs-ai-k" id="cs-ai-k"><span class="cs-ai-ic">' + AI_MARK.replace('url(#aiGrad)','currentColor') + '</span>' +
-        (a.mode === 'scribe' ? 'AI draft from the call' : 'AI suggestion') + ' &middot; not in your note until you accept</p>' +
-      '<p class="cs-ai-t">' + csEsc(a.text) + '</p>' +
-      '<div class="cs-ai-a"><span class="cs-cap">' + (a.mode === 'scribe' ? 'From the ambient scribe' : 'From today&rsquo;s intake') + '</span>' +
-      (live ? '<span class="cs-cap">Drafting while you talk&hellip;</span>' :
-      '<span class="cs-ai-b"><button type="button" class="btn xs" onclick="csAIAccept()"><span class="ic" data-pdic="complete"></span>Accept</button>' +
-      '<button type="button" class="btn xs" onclick="csAIReject()"><span class="ic" data-pdic="reopen"></span>Reject</button></span>') + '</div></div>';
-  } else if(a.state === 'accepted'){
-    el.innerHTML = '<p class="cs-ai-done">' + csIc('complete') + 'You accepted the AI text. It is now part of your note.</p>';
-  } else if(a.state === 'rejected'){
-    el.innerHTML = '<p class="cs-ai-done">' + csIc('reopen') + 'You rejected the AI text. Nothing was added.</p>';
-  } else el.innerHTML = '';
+  var r = csRow(), signed = !!(r && r.signed);
+  var a = csAI(PC_CURRENT), S = CS.sc[PC_CURRENT];
+  el.innerHTML = !signed && S && scState === 'live' ? '<p class="cs-ai-done">' + csIc('clock') + 'The scribe is listening. Its suggestions appear in each section, marked as AI.</p>' : '';
+  NS_SECS.forEach(function(k){
+    var slot = document.getElementById('ns-ai-' + k); if(!slot) return;
+    var x = k === 'reason' ? (a.state !== 'none' ? a : null) : (S && S[k]) || null;
+    slot.innerHTML = signed || !x ? '' : nsAIHtml(k, x);
+    paintPd(slot);
+  });
   paintPd(el);
 }
-function csAIAccept(){
-  var a = csAI(PC_CURRENT), n = document.getElementById('vc-note-input'); if(!n || n.readOnly) return;
-  n.value = (n.value.trim() ? n.value.replace(/\s+$/,'') + (a.mode === 'scribe' ? '\n\n' : ' ') : '') + a.text;
-  a.state = 'accepted'; vcGrow(); csDraft(); csRenderAI();
-  csSay('Added to your note. It is now your text.'); n.focus();
+function nsAIHtml(k, x){
+  var scribe = k !== 'reason';
+  if(x.held) return '<div class="cs-ai ns-held" role="note"><p class="cs-ai-k"><span class="cs-ai-ic">' + AI_MARK.replace('url(#aiGrad)','currentColor') + '</span>AI draft held back</p><p class="cs-ai-t">' + csEsc(x.text) + '</p></div>';
+  if(x.state === 'pending' && x.text){
+    return '<div class="cs-ai" role="group" aria-labelledby="ns-aik-' + k + '">' +
+      '<p class="cs-ai-k" id="ns-aik-' + k + '"><span class="cs-ai-ic">' + AI_MARK.replace('url(#aiGrad)','currentColor') + '</span>' +
+        (scribe ? 'AI draft from the call' : 'AI suggestion') + ' &middot; not in your note until you accept</p>' +
+      '<p class="cs-ai-t">' + csEsc(x.text) + '</p>' +
+      '<div class="cs-ai-a"><span class="cs-cap">' + (scribe ? 'From the ambient scribe' : 'From today&rsquo;s intake') + '</span>' +
+      '<span class="cs-ai-b"><button type="button" class="btn xs" onclick="csAIAccept(\'' + k + '\')"><span class="ic" data-pdic="complete"></span>Accept</button>' +
+      (scribe ? '<button type="button" class="btn xs" onclick="nsAIEdit(\'' + k + '\')"><span class="ic" data-pdic="edit"></span>Edit</button>' : '') +
+      '<button type="button" class="btn xs" onclick="csAIReject(\'' + k + '\')"><span class="ic" data-pdic="reopen"></span>Reject</button></span></div></div>';
+  }
+  if(x.state === 'editing'){
+    return '<div class="cs-ai" role="group" aria-labelledby="ns-aik-' + k + '">' +
+      '<p class="cs-ai-k" id="ns-aik-' + k + '"><span class="cs-ai-ic">' + AI_MARK.replace('url(#aiGrad)','currentColor') + '</span>Edit the AI draft &middot; not in your note until you add it</p>' +
+      '<label class="vh" for="ns-aie-' + k + '">Edit the AI draft for ' + NS_LBL[k] + '</label>' +
+      '<textarea class="ns-aie" id="ns-aie-' + k + '" rows="3">' + csEsc(x.text) + '</textarea>' +
+      '<div class="cs-ai-a"><span class="cs-cap">From the ambient scribe</span><span class="cs-ai-b">' +
+      '<button type="button" class="btn xs" onclick="nsAIEditDone(\'' + k + '\', true)"><span class="ic" data-pdic="complete"></span>Add to note</button>' +
+      '<button type="button" class="btn xs" onclick="nsAIEditDone(\'' + k + '\', false)">Cancel</button></span></div></div>';
+  }
+  if(x.state === 'accepted') return '<p class="cs-ai-done">' + csIc('complete') + 'You accepted the AI text. It is now part of your note.</p>';
+  if(x.state === 'rejected') return '<p class="cs-ai-done">' + csIc('reopen') + 'You rejected the AI text. Nothing was added.</p>';
+  return '';
 }
-function csAIReject(){ csAI(PC_CURRENT).state = 'rejected'; csRenderAI(); csSay('Rejected. Nothing was added.'); var n = document.getElementById('vc-note-input'); if(n) n.focus(); }
+function nsAIObj(k){ return k === 'reason' ? csAI(PC_CURRENT) : ((CS.sc[PC_CURRENT] || {})[k] || null); }
+function csAIAccept(k){
+  k = k || 'reason';
+  var x = nsAIObj(k), n = document.getElementById('vc-note-input'); if(!x || !n || n.readOnly) return;
+  nsAppend(k, x.text, k === 'reason' ? ' ' : '\n');
+  x.state = 'accepted'; csDraft(); csRenderAI(); if(typeof v2SyncHead === 'function') v2SyncHead();
+  csSay('Added to ' + NS_LBL[k] + '. It is now your text.'); nsTa(k).focus();
+}
+function csAIReject(k){
+  k = k || 'reason';
+  var x = nsAIObj(k); if(!x) return;
+  x.state = 'rejected'; csRenderAI(); if(typeof v2SyncHead === 'function') v2SyncHead();
+  csSay('Rejected. Nothing was added.'); nsTa(k).focus();
+}
+function nsAIEdit(k){
+  var x = nsAIObj(k); if(!x) return;
+  x.state = 'editing'; csRenderAI();
+  var t = document.getElementById('ns-aie-' + k); if(t){ t.focus(); t.setSelectionRange(t.value.length, t.value.length); }
+}
+function nsAIEditDone(k, add){
+  var x = nsAIObj(k); if(!x) return;
+  var t = document.getElementById('ns-aie-' + k), v = t ? t.value.trim() : x.text;
+  if(!add){ x.state = 'pending'; csRenderAI(); var b = document.querySelector('#ns-ai-' + k + ' .cs-ai-b .btn'); if(b) b.focus(); return; }
+  if(!v){ toast('The edited text is empty. Reject it instead, or type the text'); if(t) t.focus(); return; }
+  x.text = v; csAIAccept(k);
+}
 
-/* the scribe drafts into the AI block, not straight into the doctor's note (was: n.value += ...) */
+/* the scribe drafts into per-section suggestions, never straight into the doctor's note (was: n.value += ...) */
 scStart = function(){
   scState = 'live'; scIdx = 0; scSeen = []; scDone = {};
-  CS.ai[PC_CURRENT] = {mode:'scribe', text:'', src:'Drafted by the ambient scribe from today&rsquo;s call, with consent', state:'pending'};
+  CS.sc[PC_CURRENT] = {};
   renderScribe(); csRenderAI();
   clearInterval(scTimer);
   scTimer = setInterval(scTick, 1100);
   toast('Recording. ' + csPref(csRow()) + ' consented at the start of the call.');
 };
+/* SC_NOTE blocks → sections: SUBJECTIVE and BACKGROUND are Findings, ASSESSMENT is Assessment, PLAN is Plan */
+function nsScSec(t){ return /^\s*ASSESSMENT/.test(t) ? 'assessment' : /^\s*PLAN/.test(t) ? 'plan' : 'findings'; }
 scStep = function(){
   SC_PROPOSALS.forEach(function(p){
     if(p.after === scIdx && scSeen.indexOf(p.id) === -1 && !scHeld(p)) scSeen.push(p.id);
   });
-  var a = csAI(PC_CURRENT);
+  var S = CS.sc[PC_CURRENT] = CS.sc[PC_CURRENT] || {};
   SC_NOTE.forEach(function(nb){
     if(nb.after !== scIdx) return;
-    /* doctor review ask 1: with an unsigned critical result, the assessment and plan are held back */
-    if(scHeld(nb)){ if(a.text.indexOf('ASSESSMENT AND PLAN') === -1) a.text += scCritLine(); }
-    else a.text += nb.text.replace(/&rsquo;/g,'’').replace(/&mdash;/g,'—');
+    var raw = nb.text.replace(/&rsquo;/g,'’').replace(/&mdash;/g,'—'), k = nsScSec(raw);
+    var body = raw.replace(/^\s*(SUBJECTIVE|BACKGROUND|ASSESSMENT|PLAN)\n/, '').trim();
+    /* doctor review ask 1: with an unsigned critical result, the assessment and plan are held back (shown, never insertable) */
+    if(scHeld(nb)){
+      var it = chartCritical(PC_CURRENT), tt = it && (it.tests || []).filter(function(x){ return x.f && x.f.indexOf('crit') === 0; })[0];
+      S[k] = {held:true, state:'held', text:'Not drafted. ' + (tt ? tt.n + ' ' + tt.v + ' ' + tt.u : (it ? it.panel : 'A critical result')) + ' is critical and not part of this conversation. Assess with the result before writing the ' + (k === 'plan' ? 'plan' : 'assessment') + '.'};
+      return;
+    }
+    if(S[k] && S[k].state === 'pending') S[k].text += '\n\n' + body;
+    else S[k] = {text:body, state:'pending'};
   });
-  a.text = a.text.replace(/^\n+/, '');
-  csRenderAI();
+  csRenderAI(); if(typeof v2SyncHead === 'function') v2SyncHead();
 };
 var csRenderScribe0 = renderScribe;
 renderScribe = function(){
@@ -13324,7 +13462,7 @@ renderScribe = function(){
   if(blk) blk.hidden = scState === 'off';
   if(sb) sb.hidden = scState !== 'off' || !!(rr && rr.signed) || (PC_CURRENT && csNoShow(PC_CURRENT));
   var sub = document.getElementById('sc-sub');
-  if(sub && scState === 'live') sub.textContent = 'Recording with consent. The draft appears under the scribe, marked as AI, until you accept it.';
+  if(sub && scState === 'live') sub.textContent = 'Recording with consent. Suggestions appear in Findings, Assessment and Plan, marked as AI, until you accept them.';
   csRenderAI();
 };
 
@@ -13351,7 +13489,8 @@ document.addEventListener('keydown', function(e){
 /* ================= note draft survives navigation (v2.5 §3, §7) ================= */
 function csDraft(){
   var n = document.getElementById('vc-note-input'); if(!n || !PC_CURRENT || n.readOnly) return;
-  CS.draft[PC_CURRENT] = n.value;
+  nsSync();
+  CS.draft[PC_CURRENT] = nsGet();   /* Batch B (1): {reason, findings, assessment, plan} */
   try { sessionStorage.setItem('sc-cs-draft', JSON.stringify(CS.draft)); } catch(e){}
   var s = document.getElementById('cs-saved'); if(s){ s.innerHTML = csIc('complete') + 'Draft saved &middot; ' + csNow(); paintPd(s); }
 }
@@ -13380,9 +13519,9 @@ finalizeVisit = function(force){
     csGoStrip(m[0][0]);
     return;
   }
-  var a = PC_CURRENT ? csAI(PC_CURRENT) : null;
-  if(!force && a && a.state === 'pending' && a.text && !(csRow() || {}).signed){
-    vcFinWarn('The AI ' + (a.mode === 'scribe' ? 'draft' : 'suggestion') + ' you haven&rsquo;t accepted will not be filed. Sign off and finalize anyway?');
+  var aiw = PC_CURRENT ? nsAIPending() : null;
+  if(!force && aiw && !(csRow() || {}).signed){
+    vcFinWarn('The AI ' + aiw + ' you haven&rsquo;t accepted will not be filed. Sign off and finalize anyway?');
     return;
   }
   return csFinalize0(force);
@@ -13585,8 +13724,12 @@ function csRenderNoShow(name){
   var r = csRow(), on = csNoShow(name), c = PC_CALL[name];
   var resumed = !!(r && !r.signed && (r.status === 'missed' || r.status === 'noshow') && CS.nsResumed[name]);
   root.classList.toggle('cs-ns-on', on);
-  var n = document.getElementById('vc-note-input');
-  if(n && !n.readOnly) n.placeholder = on ? 'Note the attempt (optional).' : 'Start the note here. Insert adds a template, an exam, a reading or a diagnosis.';
+  /* Batch B (1): a no-show keeps one field for an optional attempt note */
+  var nw = document.getElementById('ns-wrap'), nf = document.getElementById('ns-findings'), nk = document.getElementById('ns-k-findings');
+  if(nw) nw.classList.toggle('ns-min', on);
+  if(nf) nf.placeholder = on ? 'Note the attempt (optional).' : 'History, exam, readings';
+  if(nk) nk.textContent = on ? 'Note' : 'Findings';
+  if(typeof nsRenderDx === 'function') nsRenderDx();
   if(bill){
     bill.hidden = !(on && r.status === 'noshow');
     bill.innerHTML = bill.hidden ? '' : csIc('claims') + '<span>Billing</span><span class="cs-dot" aria-hidden="true">&middot;</span><span class="t23-ns">No-show</span>';
@@ -13613,7 +13756,7 @@ function csNsCall(){
   var n = PC_CURRENT; if(!n) return;
   CS.nsResumed[n] = true;
   pcStartCall(); csRefresh();
-  var t = document.getElementById('vc-note-input'); if(t) t.focus({preventScroll:true});
+  var t = nsTa('reason'); if(t) t.focus({preventScroll:true});
 }
 function csNsMark(){
   var n = PC_CURRENT, r = csRow(); if(!n || !r) return;
@@ -13641,7 +13784,8 @@ openChart = function(name){
   if(PC_CURRENT !== name) return;
   csCloseFull(true); csView('chart');
   var r = csRow(), n = document.getElementById('vc-note-input');
-  if(n && r && !r.signed && CS.draft[name] !== undefined){ n.value = CS.draft[name]; vcGrow(); }
+  /* Batch B (1): a draft from before the sections (one string) goes into Findings, so nothing is lost */
+  if(n && r && !r.signed && CS.draft[name] !== undefined){ nsSet(typeof CS.draft[name] === 'string' ? {findings: CS.draft[name]} : CS.draft[name]); vcGrow(); }
   var s = document.getElementById('cs-saved'); if(s) s.innerHTML = '';
   csRefresh();
   window.scrollTo({top:0});
@@ -13792,7 +13936,7 @@ function t23DxLoad(){
       T23_DXBY[code] = d; return d;
     });
     T23_DXST = 'ready';
-  }).catch(function(){ T23_DXST = 'error'; }).then(function(){ if(T23.pick) t23RenderDx(); });
+  }).catch(function(){ T23_DXST = 'error'; }).then(function(){ if(T23.pick) t23RenderDx(); if(typeof NS !== 'undefined' && NS.dx.open) nsRenderDxRes(); });
 }
 /* Dev answers, 6 Oct 2026 (answer 01, msp-explanatory-codes.csv): MSP's real explanatory codes (MSP list dated 1 Jul
    2026). The public columns of the hand-written rows are in assets/data/msp-explanatory-codes.json; the codes the demo
@@ -14485,11 +14629,12 @@ function t23VisitCode(name){
   T23.visit = T23.visit || {};
   if(T23.visit[name]) return T23.visit[name];
   var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0] || {};
-  var dxBy = {'Follow up — chest pressure noted':'786.5', 'Follow up appointment':'V67.9', 'Yeast infection':'112.1', 'Rx renewal':'V68.1', 'Lab follow-up':'V72.6'};
   var disp = (r.card === 'private' || r.card === 'oop-qc' || r.plan === 'Private') ? 'private' : r.card === 'oop' ? 'recip' : 'msp';
   var age = parseInt(r.age, 10);
   /* start and stop come from the call log; these are demo values */
-  var v = {age:age, fee:t23FeeForAge(age), dx:dxBy[r.concern] || null, start:'09:12', stop:'09:24', disp:disp};
+  /* Batch B (1): the visit starts with no diagnosis; the doctor picks it in the note's Assessment (or in Your coding).
+     It used to be pre-filled from the booking reason (dxBy), a guess the doctor never chose. */
+  var v = {age:age, fee:t23FeeForAge(age), dx:null, start:'09:12', stop:'09:24', disp:disp};
   if(r.legal === 'Behdis Maleki'){ v.start = '10:20'; v.stop = '10:44'; }   /* a 24-minute call: shows "Switch to counselling" */
   v.mins = t23Mins(v.start, v.stop);
   T23.visit[name] = v; return v;
@@ -14587,12 +14732,19 @@ function t23DxCant(){
 }
 function t23RenderDx(){
   var el = document.getElementById('t23-dxres'); if(!el || !T23.pick) return;
-  var q = T23.pick.q, inp = document.querySelector('#t23-pick [data-focus="dx"]');
+  t23DxList({st:T23.pick, el:el, inp:document.querySelector('#t23-pick [data-focus="dx"]'), pfx:'t23-dxo-', lb:'t23-dxlb', pick:'t23DxPick', redo:'t23RenderDx', sel:T23.pick.v.dx});
+}
+/* Batch B (1): one ICD-9 result list for Your coding and the note's Assessment (same matching, ranking, keyboard and
+   "Can't find it?" link). cfg: st {q, act, res}, el, inp, pfx (option id prefix), lb (listbox id), pick and redo
+   (global function names), sel (the code already picked). */
+function t23DxList(cfg){
+  var st = cfg.st, el = cfg.el, q = st.q, inp = cfg.inp;
   if(inp) inp.removeAttribute('aria-activedescendant');
-  T23.pick.res = [];
-  if(!String(q).trim()){ el.innerHTML = ''; return; }   /* results appear only after typing */
+  if(inp) inp.setAttribute('aria-expanded', String(!!String(q || '').trim()));
+  st.res = [];
+  if(!String(q || '').trim()){ el.innerHTML = ''; return; }   /* results appear only after typing */
   if(T23_DXST === 'error'){
-    el.innerHTML = '<p class="t23-nores">The diagnosis list didn’t load. Check your connection, then <button type="button" class="t23-retry" onclick="T23_DXST=\'idle\';t23DxLoad();t23RenderDx()">try again</button>.</p><p class="t23-nores">' + t23DxCant() + '</p>';
+    el.innerHTML = '<p class="t23-nores">The diagnosis list didn’t load. Check your connection, then <button type="button" class="t23-retry" onclick="T23_DXST=\'idle\';t23DxLoad();' + cfg.redo + '()">try again</button>.</p><p class="t23-nores">' + t23DxCant() + '</p>';
     paintPd(el); return;
   }
   if(T23_DXST !== 'ready'){ el.innerHTML = '<p class="t23-nores">Loading diagnoses…</p>'; t23DxLoad(); return; }
@@ -14601,13 +14753,13 @@ function t23RenderDx(){
     el.innerHTML = '<p class="t23-nores">No match for “' + t23E(q) + '”.</p><p class="t23-nores">' + t23DxCant() + '</p>';
     paintPd(el); return;
   }
-  var top = res.slice(0, 8), act = Math.min(T23.pick.act || 0, top.length - 1);
-  T23.pick.res = top; T23.pick.act = act;
-  el.innerHTML = '<ul class="t23-dxlist" role="listbox" id="t23-dxlb" aria-label="Matching diagnoses">' + top.map(function(d, i){
-    return '<li><button type="button" role="option" id="t23-dxo-' + i + '" tabindex="-1" class="' + (i === act ? 'act' : '') + '" aria-selected="' + (T23.pick.v.dx === d.c) + '" onclick="t23DxPick(' + i + ')">' +
+  var top = res.slice(0, 8), act = Math.min(st.act || 0, top.length - 1);
+  st.res = top; st.act = act;
+  el.innerHTML = '<ul class="t23-dxlist" role="listbox" id="' + cfg.lb + '" aria-label="Matching diagnoses">' + top.map(function(d, i){
+    return '<li><button type="button" role="option" id="' + cfg.pfx + i + '" tabindex="-1" class="' + (i === act ? 'act' : '') + '" aria-selected="' + (cfg.sel === d.c) + '" onclick="' + cfg.pick + '(' + i + ')">' +
       '<b>' + t23E(d.c) + '</b><span>' + t23E(d.t) + '</span></button></li>'; }).join('') + '</ul>' +
     '<p class="t23-nores">' + (res.length > top.length ? 'Showing ' + top.length + ' of ' + res.length + '. Add a word to narrow it. ' : '') + t23DxCant() + '</p>';
-  if(inp) inp.setAttribute('aria-activedescendant', 't23-dxo-' + act);
+  if(inp) inp.setAttribute('aria-activedescendant', cfg.pfx + act);
   paintPd(el);
 }
 function t23DxPick(i){
@@ -14615,15 +14767,16 @@ function t23DxPick(i){
   T23.pick.v.dx = d.c; T23.pick.q = ''; T23.pick.act = 0; t23RenderPick();
   var e = document.querySelector('#t23-pick [data-focus=dx]'); if(e) e.focus();
 }
-/* keyboard: arrow keys move through the results, Enter picks the highlighted one */
-function t23DxKey(ev){
-  var P = T23.pick; if(!P || !P.res || !P.res.length) return;
+/* keyboard: arrow keys move through the results, Enter picks the highlighted one (shared with Assessment) */
+function t23DxNav(ev, st, pfx, redo, pick){
+  if(!st || !st.res || !st.res.length) return;
   if(ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){
     ev.preventDefault();
-    P.act = (P.act + (ev.key === 'ArrowDown' ? 1 : -1) + P.res.length) % P.res.length; t23RenderDx();
-    var o = document.getElementById('t23-dxo-' + P.act); if(o) o.scrollIntoView({block:'nearest'});
-  } else if(ev.key === 'Enter'){ ev.preventDefault(); t23DxPick(P.act || 0); }
+    st.act = (st.act + (ev.key === 'ArrowDown' ? 1 : -1) + st.res.length) % st.res.length; redo();
+    var o = document.getElementById(pfx + st.act); if(o) o.scrollIntoView({block:'nearest'});
+  } else if(ev.key === 'Enter'){ ev.preventDefault(); pick(st.act || 0); }
 }
+function t23DxKey(ev){ t23DxNav(ev, T23.pick, 't23-dxo-', t23RenderDx, t23DxPick); }
 function t23PickClose(){ document.getElementById('t23-pick').classList.remove('show'); T23.pick = null; }
 function t23PickSave(){
   var P = T23.pick; if(!P) return; var v = P.v, o = P.o;
@@ -14809,8 +14962,9 @@ function t23Fin(mode){
     var v = t23VisitCode(r.name);
     if(v.disp !== 'private' && !v.dx){
       /* a claim can't be submitted without a diagnosis; "Finalize, submit later" still closes the visit */
-      toast('Add the diagnosis to submit the claim, or choose Finalize, submit later');
-      t23OpenPick({visit:PC_CURRENT, focus:'dx'}); return;
+      /* Batch B (1): the diagnosis lives in Assessment; no separate step when Assessment has one */
+      toast('Add the diagnosis in Assessment to submit the claim, or choose Finalize, submit later');
+      nsGoDx(); return;
     }
     if(v.disp !== 'private' && t23CounselBlock(v)){ toast(t23CounselBlock(v)); t23OpenPick({visit:PC_CURRENT, focus:'time'}); return; }
   }
@@ -14985,7 +15139,7 @@ function v2Mount(){
   v2Move(q('#cs-acts .cs-ins'), v2El('v2-note-acts'));
   v2Move(v2El('cs-ai'), v2El('v2-note-b'));
   v2Move(v2El('sc-block'), v2El('v2-note-b'));
-  v2Move(q('label[for="vc-note-input"]'), v2El('v2-note-b'));
+  v2Move(v2El('ns-wrap'), v2El('v2-note-b'));
   v2Move(v2El('vc-note-input'), v2El('v2-note-b'));
   v2Move(v2El('vc-signed'), v2El('v2-note-b'));
   /* the no-show billing placeholder leaves the footer first, so it shows under the note when Finalize is hidden */
@@ -15335,9 +15489,9 @@ function v2SyncHead(){
   }
   var na = v2NA(PC_CURRENT);
   v2Mark('review', na.n ? {badge:na.n, crit:na.crit, label:na.n + ' to review'} : {label:'nothing left to review'});
-  var a = csAI(PC_CURRENT), ai = !ns && !signed && a.state === 'pending' && !!a.text;
-  var txt = ((v2El('vc-note-input') || {}).value || '').trim();
-  v2Mark('note', ai ? {badge:1, label:'AI text to accept or reject'} : (signed || txt) ? {label:'note written'} : null);
+  /* Batch B (1): the Note tick needs Assessment and Plan (Reason may be accepted AI text) */
+  var ai = !ns && !signed && !!nsAIPending();
+  v2Mark('note', ai ? {badge:nsAICount(), label:'AI text to accept or reject'} : (signed || nsDone()) ? {label:'note written'} : null);
   var rx = v2El('rx-card'), st = RX_STATE[PC_CURRENT];
   v2Mark('orders', rx && !rx.hidden && !signed && st && !(st.sent || []).length ? {badge:1, label:'a prescription to review'} : null);
   var ot = v2El('v2t-orders'); if(ot) ot.hidden = ns;
@@ -15416,7 +15570,7 @@ function v2RxFocus(){
   w('csRenderSnap', function(){ paintPd(v2El('v2-pt')); });
   w('rxOpen', function(){ if(!V2.booting) v2Tab('orders'); v2SyncHead(); });
   w('rxClose', function(){ v2SyncHead(); });
-  w('csNsCall', function(){ v2Tab('note'); var n = v2El('vc-note-input'); if(n) n.focus({preventScroll:true}); });
+  w('csNsCall', function(){ v2Tab('note'); var n = nsTa('reason'); if(n) n.focus({preventScroll:true}); });
   w('csOpenFull', function(){ V2_TABS.forEach(function(k){ var b = v2El('v2t-' + k); if(b) b.setAttribute('aria-selected', 'false'); }); });
   w('csCloseFull', function(){ var fc = v2El('cs-fc'); if(fc && fc.hidden) V2_TABS.forEach(function(k){ var b = v2El('v2t-' + k); if(b) b.setAttribute('aria-selected', String(k === V2.tab)); }); });
   /* Go to Needs attention: in v2 that is the Review tab */
@@ -16416,7 +16570,7 @@ document.addEventListener('keydown', function(e){
   /* Cmd/Ctrl+S and Cmd/Ctrl+Enter: in a chart only; allowed in the note itself, not in other fields */
   if(mod && !e.altKey && !e.shiftKey && (k === 's' || k === 'S' || k === 'Enter')){
     if(!onChart || kbBlocked()) return;
-    if(ed && t.id !== 'vc-note-input') return;
+    if(ed && !(t.classList && t.classList.contains('ns-ta'))) return;
     e.preventDefault();
     var r = typeof csRow === 'function' ? csRow() : null;
     if(k === 'Enter'){ v2Fin(true); return; }
@@ -16477,6 +16631,152 @@ baWrap('cwPlace', function(){
   baWrap('toggleChatPanel', function(){ cwPlace(); });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 02:30</div>
+<script>
+/* ============================================================
+   Batch B (1): STRUCTURED NOTE (lead brief, 6 Oct). Four sections, Reason, Findings, Assessment, Plan, replace the single
+   textarea. #vc-note-input stays as a hidden mirror holding the composed text ("Reason: ...\n\nFindings: ..."), so the
+   existing gates (template text), the signed record and the review screen read one string. Writers go through nsAppend.
+   ============================================================ */
+var NS_SECS = ['reason', 'findings', 'assessment', 'plan'];
+var NS_LBL = {reason:'Reason', findings:'Findings', assessment:'Assessment', plan:'Plan'};
+var NS = {last:null, dx:{open:false, q:'', act:0, res:[]}};
+function nsTa(k){ return document.getElementById('ns-' + k); }
+function nsGet(){ var o = {}; NS_SECS.forEach(function(k){ var t = nsTa(k); o[k] = t ? t.value : ''; }); return o; }
+function nsSet(o){
+  o = o || {};
+  NS_SECS.forEach(function(k){ var t = nsTa(k); if(t) t.value = o[k] || ''; });
+  NS.last = null; NS.dx = {open:false, q:'', act:0, res:[]};
+  nsSync(); nsRenderDx(); if(typeof vcGrow === 'function') vcGrow();
+}
+function nsSync(){
+  var n = document.getElementById('vc-note-input'); if(!n) return;
+  var v = nsGet(), parts = [];
+  NS_SECS.forEach(function(k){ var t = (v[k] || '').trim(); if(t) parts.push(NS_LBL[k] + ':\n' + t); });
+  var dx = nsDxCode();
+  if(dx){ var line = 'Diagnosis (ICD-9): ' + dx + ' ' + t23DxName(dx); var ai = parts.findIndex(function(p){ return p.indexOf('Assessment:') === 0; });
+    if(ai > -1) parts[ai] += '\n' + line; else parts.splice(Math.min(parts.length, v.reason.trim() ? (v.findings.trim() ? 2 : 1) : (v.findings.trim() ? 1 : 0)), 0, 'Assessment:\n' + line); }
+  n.value = parts.join('\n\n');
+}
+function nsAppend(k, text, sep){
+  var t = nsTa(k); if(!t || t.readOnly || !text) return;
+  t.value = (t.value.trim() ? t.value.replace(/\s+$/, '') + (sep || '\n') : '') + text;
+  nsSync(); if(typeof vcGrow === 'function') vcGrow(); if(typeof csDraft === 'function') csDraft();
+}
+/* the section the doctor was last in; otherwise the item's own default */
+function nsTarget(def){ return NS.last && NS_SECS.indexOf(NS.last) > -1 && !(nsTa(NS.last) || {}).readOnly && (nsTa(NS.last) || {}).offsetParent ? NS.last : def; }
+function nsReadOnly(on){ NS_SECS.forEach(function(k){ var t = nsTa(k); if(t){ t.readOnly = on; t.classList.toggle('signed', on); } }); nsRenderDx(); }
+function nsDone(){ var v = nsGet(); return !!(v.assessment.trim() && v.plan.trim()); }
+function nsMissing(){
+  var v = nsGet(), a = !v.assessment.trim(), p = !v.plan.trim();
+  return a && p ? 'Assessment and Plan are empty.' : a ? 'Assessment is empty.' : p ? 'Plan is empty.' : '';
+}
+function nsFocusGap(){
+  var v = nsGet(), k = !v.assessment.trim() ? 'assessment' : !v.plan.trim() ? 'plan' : 'reason';
+  if(typeof v2Fin === 'function' && typeof v2On === 'function' && v2On()){ v2Fin(false, true); v2Tab('note'); }
+  var t = nsTa(k); if(t){ t.focus(); t.scrollIntoView({block:'nearest'}); }
+}
+/* AI text still waiting for Accept / Reject: the intake suggestion and any scribe section */
+function nsAIList(){
+  if(!PC_CURRENT) return [];
+  var out = [], a = csAI(PC_CURRENT), S = CS.sc[PC_CURRENT] || {};
+  if(a.state === 'pending' && a.text) out.push('reason');
+  ['findings', 'assessment', 'plan'].forEach(function(k){ var x = S[k]; if(x && !x.held && (x.state === 'pending' || x.state === 'editing') && x.text) out.push(k); });
+  return out;
+}
+function nsAICount(){ return nsAIList().length; }
+function nsAIPending(){
+  var l = nsAIList(); if(!l.length) return '';
+  return l.length === 1 ? (l[0] === 'reason' ? 'suggestion' : 'draft') + ' in ' + NS_LBL[l[0]] : 'text in ' + l.map(function(k){ return NS_LBL[k]; }).join(', ').replace(/, ([^,]*)$/, ' and $1');
+}
+document.addEventListener('focusin', function(e){ var t = e.target; if(t && t.classList && t.classList.contains('ns-ta')) NS.last = t.getAttribute('data-sec'); });
+document.addEventListener('input', function(e){
+  var t = e.target; if(!t || !t.classList || !t.classList.contains('ns-ta')) return;
+  nsSync(); vcGrow(); csDraft();
+});
+
+/* ---------- Diagnosis in Assessment: THE claim's diagnosis (T23.visit[name].dx), same search as Your coding ---------- */
+function nsVisit(){ var r = PC_CURRENT ? csRow() : null; if(!r || typeof t23VisitCode !== 'function') return null; return t23VisitCode(r.name); }
+function nsDxCode(){
+  var r = PC_CURRENT ? csRow() : null; if(!r) return null;
+  if(r.signed){ var c = typeof t23RowClaim === 'function' ? t23RowClaim(r) : null; return c ? c.dx || null : null; }
+  var v = nsVisit(); return v && v.disp !== 'private' ? v.dx || null : null;
+}
+function nsRenderDx(){
+  var el = document.getElementById('ns-dx'); if(!el) return;
+  var r = PC_CURRENT ? csRow() : null, v = nsVisit();
+  if(!r || !v || v.disp === 'private' || (typeof csNoShow === 'function' && csNoShow(PC_CURRENT))){ el.innerHTML = ''; return; }
+  var signed = !!r.signed, dx = nsDxCode(), D = NS.dx;
+  var h = '';
+  if(dx){
+    h += '<div class="ns-dxline"><span class="ns-chip' + (signed ? ' ro' : '') + '" role="group" aria-label="Diagnosis for the claim: ' + t23E(dx + ' ' + t23DxName(dx)) + '">' + csIc('claims') +
+      '<span class="ns-chip-t"><b>' + t23E(dx) + '</b> &middot; ' + t23E(t23DxName(dx)) + '</span>' +
+      (signed ? '' : '<button type="button" class="ns-chip-x" onclick="nsDxRemove()" aria-label="Remove diagnosis ' + t23E(dx) + '">&times;</button>') + '</span>' +
+      (signed || D.open ? '' : '<button type="button" class="btn xs" id="ns-dx-btn" onclick="nsDxOpen(true)">' + csIc('edit') + 'Change</button>') +
+      '<span class="ns-dxk">' + (signed ? 'The claim&rsquo;s diagnosis' : 'The claim&rsquo;s diagnosis &middot; also in Billing') + '</span></div>';
+  } else if(!signed && !D.open){
+    h += '<div class="ns-dxline"><button type="button" class="btn xs" id="ns-dx-btn" onclick="nsDxOpen(true)">' + csIc('plus') + 'Add diagnosis</button>' +
+      '<span class="ns-dxk">ICD-9, for the claim</span></div>';
+  }
+  if(!signed && D.open){
+    h += '<div class="ns-dxs"><div class="ns-dxs-hd"><label class="ns-dxk" for="ns-dx-q">' + (dx ? 'Change the diagnosis (ICD-9)' : 'Add a diagnosis (ICD-9)') + '</label>' +
+      '<button type="button" class="btn xs" onclick="nsDxOpen(false)">Cancel</button></div>' +
+      '<input class="t23-in" id="ns-dx-q" type="search" placeholder="Search by code or words, e.g. 786.5 or chest pain" value="' + t23E(D.q) + '" oninput="NS.dx.q=this.value;NS.dx.act=0;nsRenderDxRes()" onkeydown="nsDxKey(event)" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ns-dxres" autocomplete="off">' +
+      '<div id="ns-dxres" class="t23-dxres" aria-live="polite"></div></div>';
+  }
+  el.innerHTML = h; paintPd(el);
+  if(D.open) nsRenderDxRes();
+}
+function nsRenderDxRes(){
+  var el = document.getElementById('ns-dxres'); if(!el) return;
+  t23DxList({st:NS.dx, el:el, inp:document.getElementById('ns-dx-q'), pfx:'ns-dxo-', lb:'ns-dxlb', pick:'nsDxPick', redo:'nsRenderDxRes', sel:nsDxCode()});
+}
+function nsDxKey(ev){
+  if(ev.key === 'Escape'){ ev.preventDefault(); ev.stopPropagation(); nsDxOpen(false); return; }
+  t23DxNav(ev, NS.dx, 'ns-dxo-', nsRenderDxRes, nsDxPick);
+}
+function nsDxOpen(on){
+  var r = PC_CURRENT ? csRow() : null, v = nsVisit();
+  if(on && (!r || r.signed)){ toast(r ? 'This visit is signed off. Change the diagnosis on the claim in Claims' : 'Open a chart first'); return; }
+  if(on && v && v.disp === 'private'){ toast('Private pay: no MSP claim, so no claim diagnosis'); return; }
+  NS.dx = {open:!!on, q:'', act:0, res:[]};
+  if(on){ t23DxLoad(); if(typeof v2On === 'function' && v2On() && typeof V2 !== 'undefined' && V2.tab !== 'note') v2Tab('note'); }
+  nsRenderDx();
+  var f = document.getElementById(on ? 'ns-dx-q' : 'ns-dx-btn'); if(f){ f.focus(); if(on) f.scrollIntoView({block:'nearest'}); }
+}
+function nsGoDx(){ if(typeof v2Fin === 'function') v2Fin(false, true); nsDxOpen(true); }
+function nsDxPick(i){
+  var d = NS.dx.res && NS.dx.res[i]; if(!d || !PC_CURRENT) return;
+  NS.dx = {open:false, q:'', act:0, res:[]};
+  t23SetVisitDx(PC_CURRENT, d.c);
+  csSay('Diagnosis ' + d.c + ' · ' + d.t + ' added. It is the claim’s diagnosis.');
+  var b = document.getElementById('ns-dx-btn'); if(b) b.focus();
+}
+function nsDxRemove(){
+  if(!PC_CURRENT) return; var old = nsDxCode(); if(!old) return;
+  t23SetVisitDx(PC_CURRENT, null);
+  csSay('Diagnosis ' + old + ' removed from the claim.');
+  var b = document.getElementById('ns-dx-btn'); if(b) b.focus();
+}
+/* one place sets the visit's diagnosis from the note; the billing row, Your coding and the chip all read T23.visit */
+function t23SetVisitDx(name, code){
+  var v = t23VisitCode(name), old = v.dx || null; code = code || null;
+  if(old === code) return;
+  var nv = JSON.parse(JSON.stringify(v)); nv.dx = code;
+  t23LogVisit(name, v, nv);
+  v.dx = code;
+  if(T23.pick && T23.pick.o && T23.pick.o.visit === name){ T23.pick.v.dx = code; t23RenderPick(); }
+  t23Refresh();
+}
+function t23LogVisit(name, oldV, newV){
+  var what = !oldV.dx && newV.dx ? 'Added diagnosis ' + newV.dx : oldV.dx && !newV.dx ? 'Removed diagnosis ' + oldV.dx : 'Changed diagnosis ' + oldV.dx + ' → ' + newV.dx;
+  oldV.log = (oldV.log || []).concat([[t23Stamp(), 'Dr. Pannozzo', what]]);
+}
+/* the billing row re-renders on every coding change: the chip follows it (single source of truth) */
+(function(){
+  var br0 = t23RenderBillRow;
+  t23RenderBillRow = function(){ br0.apply(this, arguments); nsRenderDx(); nsSync(); };
+})();
+</script>
+  <div class="build-stamp">v2 · build 2026-10-07 04:10 · Batch B</div>
 </body>
 </html>
