@@ -280,6 +280,14 @@
   /* build stamp: which version is loaded (rule 24a) */
   .build-stamp{position:fixed;left:8px;bottom:4px;z-index:5;font-size:14px;color:rgba(23,24,28,.28);pointer-events:none;}
   h1 .tip .ic{width:22px;height:22px;}
+
+  /* Ani, 7 Oct: "from the MOA portal there's no way back to the doctor dashboard" -> Switch portal in the profile menu */
+  #profile-menu .menu-lbl{margin:4px 0 2px;padding:6px 12px 4px;font-size:14px;color:var(--ink-soft);border-top:1px solid var(--line);}
+  #profile-menu .sw-item{display:flex;align-items:center;gap:10px;height:44px;padding:0 12px;border-radius:8px;font-size:15px;color:var(--ink);text-decoration:none;}
+  #profile-menu a.sw-item:hover,#profile-menu [role=menuitem]:focus-visible{background:var(--wash);outline:none;}
+  #profile-menu .sw-cur{font-weight:600;cursor:default;}
+  #profile-menu .sw-tick{width:20px;height:20px;margin-left:auto;color:var(--accent);}
+  #profile-menu .menu-sep{border-top:1px solid var(--line);margin:6px 0;}
 </style>
 </head>
 <body>
@@ -302,14 +310,17 @@
           <span><b id="tb-cut"></b><span class="t" id="tb-pay"></span></span>
         </div>
         <div class="profile">
-          <button type="button" class="profile-btn" id="profile-btn" aria-haspopup="true" aria-expanded="false" aria-controls="profile-menu" onclick="toggleMenu()">
+          <button type="button" class="profile-btn" id="profile-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="profile-menu" onclick="toggleMenu()">
             <span class="avatar" aria-hidden="true">J</span>
             <span class="who"><b>Japneet</b><span>Billing agent</span></span>
             <span class="ic" data-ic="chevrondown"></span>
           </button>
-          <div class="menu" id="profile-menu">
-            <div class="mh"><b>Japneet</b><span>Billing agent</span><span>Dr. Pannozzo is responsible for every claim.</span></div>
-            <button type="button" onclick="toggleMenu(false);toast('Signed out (demo)')"><span class="ic" data-ic="logout"></span>Sign out</button>
+          <div class="menu" id="profile-menu" role="menu" aria-label="Account">
+            <div class="mh" role="presentation"><b>Japneet</b><span>Billing agent</span><span>Dr. Pannozzo is responsible for every claim.</span></div>
+            <p class="menu-lbl" role="presentation" id="sw-lbl">Switch portal</p>
+            <div role="group" aria-labelledby="sw-lbl"><a role="menuitem" tabindex="-1" class="sw-item" href="simplecare-physician-portal-v2.html">Doctor</a><a role="menuitem" tabindex="-1" class="sw-item" href="simplecare-moa-portal.html">MOA</a><span role="menuitem" tabindex="-1" class="sw-item sw-cur" aria-current="page" aria-disabled="true">Billing<svg class="ic sw-tick" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><a role="menuitem" tabindex="-1" class="sw-item" href="simplecare-patient-portal-v2.html">Patient</a></div>
+            <div class="menu-sep" role="separator"></div>
+            <button type="button" role="menuitem" tabindex="-1" onclick="location.href='simplecare-login.html?next=simplecare-billing-portal.html'"><span class="ic" data-ic="logout"></span>Sign out</button>
           </div>
         </div>
       </div>
@@ -1128,8 +1139,22 @@ function toggleMenu(force){
   var m = document.getElementById('profile-menu'), b = document.getElementById('profile-btn');
   var on = typeof force === 'boolean' ? force : !m.classList.contains('show');
   m.classList.toggle('show', on); b.setAttribute('aria-expanded', on);
+  if(on && typeof force !== 'boolean'){ var f = m.querySelector('[role=menuitem]'); if(f) f.focus(); }
 }
 document.addEventListener('click', function(e){ if(!e.target.closest('.profile')) toggleMenu(false); });
+/* profile menu: menu pattern (Ani, 7 Oct: Switch portal). Arrow keys, Home/End move; Escape closes (handled above); Tab closes */
+function menuItems(){ return Array.prototype.slice.call(document.querySelectorAll('#profile-menu [role=menuitem]')); }
+document.getElementById('profile-menu').addEventListener('keydown', function(e){
+  var it = menuItems(), i = it.indexOf(document.activeElement), k = e.key;
+  if(k === 'ArrowDown' || k === 'ArrowUp'){ e.preventDefault(); it[(i + (k === 'ArrowDown' ? 1 : -1) + it.length) % it.length].focus(); }
+  else if(k === 'Home' || k === 'End'){ e.preventDefault(); it[k === 'Home' ? 0 : it.length - 1].focus(); }
+  else if(k === 'Tab'){ toggleMenu(false); }
+  else if(k === ' ' && document.activeElement.tagName === 'A'){ e.preventDefault(); document.activeElement.click(); }
+});
+document.getElementById('profile-btn').addEventListener('keydown', function(e){
+  if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){ e.preventDefault(); toggleMenu(true); var it = menuItems(); it[e.key === 'ArrowDown' ? 0 : it.length - 1].focus(); }
+});
+
 var toastT;
 function toast(t){ var el = document.getElementById('toast'); el.textContent = t; el.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(function(){ el.classList.remove('show'); }, 4200); }
 function renderAll(){ renderQueue(); renderRemit(); }
@@ -1141,6 +1166,6 @@ paint();
 renderAll();
 if(location.hash === '#remit') go('remit');
 </script>
-<div class="build-stamp">build 2026-10-06 23:18</div>
+<div class="build-stamp">build 2026-10-07 07:47</div>
 </body>
 </html>

@@ -938,6 +938,15 @@
   @media (max-width:760px){ html body :is(#screen-dashboard,#screen-appointments,#screen-documents,#screen-activity,#screen-family,#screen-carechoice) > h1{margin-bottom:18px;} }
   /* nothing a patient reads is under 14px: the notification titles were 13px */
   html body #notif-dropdown .notif-item b{font-size:14px;}
+  /* Ani, 7 Oct: Switch portal in the account menu */
+  html body #profile-dropdown{width:240px;}
+  html body #profile-dropdown .pd-lbl{margin:6px 2px 0;padding:8px 8px 4px;border-top:1px dashed var(--line);font-size:14px;color:var(--ink-soft);}
+  html body #profile-dropdown .pd-item{font-size:14px;min-height:44px;text-decoration:none;}
+  html body #profile-dropdown .pd-item:focus-visible{background:var(--wash);outline:none;}
+  html body #profile-dropdown .sw-cur{font-weight:600;cursor:default;}
+  html body #profile-dropdown .sw-cur:hover{background:none;}
+  html body #profile-dropdown .sw-tick{width:18px;height:18px;margin-left:auto;color:var(--accent);}
+  html body .build-stamp{font-size:14px;}
 </style>
 </head>
 <body class="mode-v1">
@@ -991,19 +1000,21 @@
         </div>
       </div>
       <div class="profile-wrap">
-        <button class="profile-trigger" onclick="toggleProfileMenu()">
+        <button type="button" class="profile-trigger" id="profile-trigger" aria-label="Account" aria-haspopup="menu" aria-expanded="false" aria-controls="profile-dropdown" onclick="toggleProfileMenu()">
           <span class="avatar" style="margin-right:0;">A</span>
         </button>
-        <div class="profile-dropdown" id="profile-dropdown">
-          <div class="pd-head">
+        <div class="profile-dropdown" id="profile-dropdown" role="menu" aria-label="Account">
+          <div class="pd-head" role="presentation">
             <span class="avatar" style="margin-right:0;">A</span>
             <div><b>Ani</b><div class="notif-sub">Patient</div></div>
           </div>
-          <button class="pd-item" onclick="toggleProfileMenu();showScreen('profile')"><span>&#128100;</span> View profile</button>
-          <button class="pd-item" onclick="toggleProfileMenu();showScreen('family')"><span>&#128101;</span> Family members</button>
-          <button class="pd-item" onclick="toggleProfileMenu();toggleFeedback()"><span>&#128172;</span> Give feedback</button>
-          <div class="pd-divider"></div>
-          <button class="pd-item" onclick="toggleProfileMenu();toast('Would sign you out')"><span>&#8618;</span> Sign out</button>
+          <button type="button" class="pd-item" role="menuitem" tabindex="-1" onclick="toggleProfileMenu();showScreen('profile')"><span>&#128100;</span> View profile</button>
+          <button type="button" class="pd-item" role="menuitem" tabindex="-1" onclick="toggleProfileMenu();showScreen('family')"><span>&#128101;</span> Family members</button>
+          <button type="button" class="pd-item" role="menuitem" tabindex="-1" onclick="toggleProfileMenu();toggleFeedback()"><span>&#128172;</span> Give feedback</button>
+          <p class="pd-lbl" role="presentation" id="pp-sw-lbl">Switch portal</p>
+          <div role="group" aria-labelledby="pp-sw-lbl"><a role="menuitem" tabindex="-1" class="pd-item" href="simplecare-physician-portal-v2.html">Doctor</a><a role="menuitem" tabindex="-1" class="pd-item" href="simplecare-moa-portal.html">MOA</a><a role="menuitem" tabindex="-1" class="pd-item" href="simplecare-billing-portal.html">Billing</a><span role="menuitem" tabindex="-1" class="pd-item sw-cur" aria-current="page" aria-disabled="true">Patient<svg class="ic sw-tick" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></div>
+          <div class="pd-divider" role="separator"></div>
+          <button type="button" class="pd-item" role="menuitem" tabindex="-1" onclick="location.href='simplecare-login.html?next=simplecare-patient-portal-v2.html'"><span>&#8618;</span> Sign out</button>
         </div>
       </div>
     </div>
@@ -1664,15 +1675,7 @@
 
 <button class="dsw-fab" id="dsw-fab" onclick="dswOpen()" title="Walkthrough" aria-label="Walkthrough"><svg class="ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h10"/></svg></button>
 <div class="dsw" id="dsw">
-  <div class="dsw-hd"><b>Demo switcher</b><button class="x" onclick="dswClose()">&times;</button></div>
-  <div class="dsw-sec">
-    <p>Portal</p>
-    <div class="dsw-grid">
-      <a href="simplecare-physician-portal-v2.html">Physician</a>
-      <a href="simplecare-moa-portal.html">MOA</a>
-      <a href="simplecare-patient-portal-v2.html" class='on'>Patient</a>
-    </div>
-  </div>
+  <div class="dsw-hd"><b>Walkthrough</b><button class="x" onclick="dswClose()">&times;</button></div>
   <div class="dsw-sec">
     <p>Account type</p>
     <div class="dsw-grid" id="dsw-mode">
@@ -1859,9 +1862,25 @@ function submitFeedback(){
 function toggleNotifs(){
   document.getElementById('notif-dropdown').classList.toggle('show');
 }
-function toggleProfileMenu(){
-  document.getElementById('profile-dropdown').classList.toggle('show');
+function toggleProfileMenu(force){
+  var m = document.getElementById('profile-dropdown'), b = document.getElementById('profile-trigger');
+  var on = typeof force === 'boolean' ? force : !m.classList.contains('show');
+  m.classList.toggle('show', on); b.setAttribute('aria-expanded', on ? 'true' : 'false');
+  if(on && typeof force !== 'boolean'){ var f = m.querySelector('[role=menuitem]'); if(f) f.focus(); }
 }
+/* account menu: menu pattern (Ani, 7 Oct: Switch portal). Arrows, Home/End move; Escape and Tab close */
+function ppMenuItems(){ return Array.prototype.slice.call(document.querySelectorAll('#profile-dropdown [role=menuitem]')); }
+document.getElementById('profile-dropdown').addEventListener('keydown', function(e){
+  var it = ppMenuItems(), i = it.indexOf(document.activeElement), k = e.key;
+  if(k === 'ArrowDown' || k === 'ArrowUp'){ e.preventDefault(); it[(i + (k === 'ArrowDown' ? 1 : -1) + it.length) % it.length].focus(); }
+  else if(k === 'Home' || k === 'End'){ e.preventDefault(); it[k === 'Home' ? 0 : it.length - 1].focus(); }
+  else if(k === 'Escape'){ e.preventDefault(); toggleProfileMenu(false); document.getElementById('profile-trigger').focus(); }
+  else if(k === 'Tab'){ toggleProfileMenu(false); }
+  else if(k === ' ' && document.activeElement.tagName === 'A'){ e.preventDefault(); document.activeElement.click(); }
+});
+document.getElementById('profile-trigger').addEventListener('keydown', function(e){
+  if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){ e.preventDefault(); toggleProfileMenu(true); var it = ppMenuItems(); it[e.key === 'ArrowDown' ? 0 : it.length - 1].focus(); }
+});
 document.addEventListener('click', function(e){
   var wrap = document.querySelector('.bell-wrap');
   if(wrap && !wrap.contains(e.target)){
@@ -1869,7 +1888,7 @@ document.addEventListener('click', function(e){
   }
   var pwrap = document.querySelector('.profile-wrap');
   if(pwrap && !pwrap.contains(e.target)){
-    document.getElementById('profile-dropdown').classList.remove('show');
+    toggleProfileMenu(false);
   }
 });
 
@@ -2511,6 +2530,6 @@ window.addEventListener('resize', function(){ if(window.innerWidth > 760 && docu
 renderPtLabWork();
 </script>
 
-  <div class="build-stamp">build 2026-10-06 23:24</div>
+  <div class="build-stamp">build 2026-10-07 08:05</div>
 </body>
 </html>
