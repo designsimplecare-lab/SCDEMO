@@ -5813,6 +5813,66 @@
     font-size:15px;font-weight:500;line-height:20px;color:var(--ink);}
   #screen-patientchart #pcv-c .ns-dxsug .ns-sugchip .ic,#screen-patientchart #pcv-c .ns-dxsug .ns-sugchip svg{width:16px;height:16px;color:var(--ink-faint);}
   #screen-patientchart #pcv-c .ns-dxsug .ns-sugk{color:var(--ink-soft);}
+  /* ===== Batch C (1), lead brief 6 Oct: Earnings follow-ups. Light only; text 14 px and up. ===== */
+  /* (1a) the strip's third section: a small Today | This week | This month switch, a little wider than the others */
+  html body #screen-earnings .cl-stats .cl-stat.ern-span{flex:1.3 1 0;}
+  #screen-earnings .ern-mseg{display:inline-flex;gap:2px;padding:2px;margin:-2px 0 4px -2px;border-radius:10px;background:var(--wash);max-width:100%;}
+  #screen-earnings .ern-mseg button{height:30px;padding:0 10px;border:0;border-radius:8px;background:none;font:inherit;font-size:14px;font-weight:500;color:var(--ink-soft);cursor:pointer;white-space:nowrap;}
+  #screen-earnings .ern-mseg button:hover{color:var(--ink);}
+  #screen-earnings .ern-mseg button[aria-pressed="true"]{background:var(--panel);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(23,24,28,.08);}
+  #screen-earnings .ern-mseg button:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+  #screen-earnings .ern-cmp{margin:2px 0 0;font-size:14px;color:var(--ink-soft);}
+  /* (1d) every figure is a button: ink, no box; a hairline underline on hover says it opens */
+  html body #screen-earnings .cl-stat .vs .v.ern-num{appearance:none;border:0;background:none;padding:0;margin:0;font:inherit;font-size:20px;font-weight:700;line-height:1.2;
+    letter-spacing:-.01em;color:var(--ink);cursor:pointer;border-radius:4px;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px;text-decoration-thickness:1px;}
+  html body #screen-earnings .cl-stat .vs .v.ern-num:hover{text-decoration-color:var(--line-strong);}
+  html body #screen-earnings .cl-stat .vs .v.ern-num:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+  #screen-earnings .ern-bar,#screen-earnings .ern-wd{cursor:pointer;}
+  #screen-earnings .ern-wd{outline:none;}
+  #screen-earnings .ern-wd .ern-hit{fill:transparent;}
+  #screen-earnings .ern-wd:hover .ern-hit{fill:rgba(67,83,232,.06);}
+  #screen-earnings .ern-wd:focus-visible .ern-hit{stroke:var(--accent);stroke-width:2;}
+  #screen-earnings .ern-tip-h{margin-top:4px;color:var(--ink-soft);}
+  /* (1c) the weekday card's switch: the chart's segmented control, a touch narrower */
+  #screen-earnings .ern-wseg button{min-width:88px;}
+  #screen-earnings .ern-head .ern-h{align-self:center;}
+  /* (1d) the drawer: the shared side-drawer pattern (#kb-overlay's rules, repeated for this id), a little wider for the table */
+  #ern-drw.drw-ov{display:none;position:fixed;inset:0;z-index:200;padding:0;background:rgba(23,24,28,.42);align-items:stretch;justify-content:flex-end;overflow:hidden;}
+  #ern-drw.drw-ov.show{display:flex;animation:drwFade 240ms ease-out;}
+  #ern-drw.drw-ov.drw-stacked{background:rgba(23,24,28,.16);animation:none;}
+  #ern-drw > #ern-drw-card.drw{position:relative;box-sizing:border-box;margin:0;width:min(680px,100vw) !important;max-width:100vw !important;height:100%;max-height:none !important;
+    padding:0 !important;border-radius:16px 0 0 16px;background:var(--panel);display:flex;flex-direction:column;overflow:hidden !important;
+    box-shadow:-18px 0 44px rgba(23,24,28,.16);animation:drwIn 240ms ease-out;}
+  @media (prefers-reduced-motion: reduce){ #ern-drw.drw-ov.show,#ern-drw > #ern-drw-card.drw{animation:none;} }
+  @media (max-width:639px){ #ern-drw > #ern-drw-card.drw{width:100vw !important;border-radius:0;} }
+  #ern-drw .drw-hd{flex:none;position:relative;padding:20px 72px 16px 24px;border-bottom:1px solid var(--line);}
+  #ern-drw .drw-hd .bl-eyebrow{margin:0 0 4px;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  #ern-drw .drw-hd .tm-title{font-size:20px;font-weight:800;line-height:1.3;margin:0 0 6px;color:var(--ink);}
+  #ern-drw .drw-hd .tm-sub{font-size:14.5px;color:var(--ink-soft);margin:0;line-height:1.5;max-width:66ch;}
+  #ern-drw .drw-hd .tm-sub:empty{display:none;}
+  #ern-drw .drw-x{position:absolute;top:14px;right:16px;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;background:none;color:var(--ink-soft);cursor:pointer;padding:0;}
+  #ern-drw .drw-x:hover{background:var(--wash);color:var(--ink);}
+  #ern-drw .drw-x:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #ern-drw .drw-x svg{width:22px;height:22px;}
+  #ern-drw .drw-bd{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:14px 24px 24px;}
+  #ern-drw .drw-bd:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+  #ern-drw .drw-ft{flex:none;padding:14px 24px;border-top:1px solid var(--line);background:var(--panel);}
+  #ern-drw .drw-ft > .tm-actions{display:flex;justify-content:flex-end;gap:8px;margin:0;}
+  #ern-drw .drw-ft .btn{min-height:44px;font-size:14px;}
+  #ern-drw .ern-dsum{margin:0 0 10px;font-size:15px;color:var(--ink-soft);}
+  #ern-drw .ern-dsum b{color:var(--ink);font-weight:700;}
+  #ern-drw .ern-dt{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums;color:var(--ink);}
+  #ern-drw .ern-dt th{position:sticky;top:-14px;z-index:1;background:var(--panel);text-align:left;font-weight:600;color:var(--ink-soft);padding:8px 10px 8px 0;border-bottom:1px solid var(--line-strong);white-space:nowrap;}
+  #ern-drw .ern-dt td{padding:8px 10px 8px 0;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4;}
+  #ern-drw .ern-dt td:first-child{white-space:nowrap;}
+  #ern-drw .ern-dt .num{text-align:right;padding-right:16px;white-space:nowrap;}
+  #ern-drw .ern-dt tr:last-child td{border-bottom:0;}
+  #ern-drw .ern-dlink{appearance:none;border:0;background:none;padding:0;font:inherit;font-size:14px;color:var(--accent-ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer;text-align:left;}
+  #ern-drw .ern-dlink:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px;}
+  #ern-drw .ern-dmore{margin-top:12px;}
+  #ern-drw .ern-dmore .btn{min-height:40px;font-size:14px;}
+  #ern-drw .ern-vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  #ern-drw .ern-quiet{font-size:14px;color:var(--ink-soft);}
 </style>
 </head>
 <body>
@@ -6946,9 +7006,12 @@
 
       <div class="ern-cols">
         <section class="box ern-box" aria-labelledby="ern-week-h">
-          <h2 class="ern-h" id="ern-week-h">Visits by weekday</h2>
+          <div class="ern-head">
+            <h2 class="ern-h" id="ern-week-h">By weekday</h2>
+            <div class="ern-seg ern-wseg" id="ern-wseg" role="group" aria-label="Show by weekday"></div>
+          </div>
           <p class="ern-lead" id="ern-week-lead"></p>
-          <p class="ern-quiet">Average visits per day over the last 8 weeks, on days you worked. Income follows visits one for one.</p>
+          <p class="ern-quiet" id="ern-week-q">Average visits per day over the last 8 weeks, on days you worked. Income follows visits one for one.</p>
           <div class="ern-week" id="ern-week"></div>
         </section>
         <div class="ern-side">
@@ -7131,6 +7194,16 @@
 </div>
 
 <!-- Batch A (4): keyboard shortcuts, a side drawer ("?" or the profile menu) -->
+<!-- Batch C (1d): the claims or visits behind an Earnings number. Same side-drawer pattern (joins the drawer stack). -->
+<div class="tm-overlay drw-ov" id="ern-drw" onclick="if(event.target===this) ernDrwClose()">
+  <div class="tm-card drw" id="ern-drw-card" role="dialog" aria-modal="true" aria-labelledby="ern-drw-ttl">
+    <p class="bl-eyebrow" id="ern-drw-eye">Earnings</p>
+    <p class="tm-title" id="ern-drw-ttl"></p>
+    <p class="tm-sub" id="ern-drw-sub"></p>
+    <div id="ern-drw-body"></div>
+    <div class="tm-actions"><button type="button" class="btn" onclick="ernDrwClose()">Close</button></div>
+  </div>
+</div>
 <div class="tm-overlay drw-ov" id="kb-overlay" onclick="if(event.target===this) kbClose()">
   <div class="tm-card drw" id="kb-card" role="dialog" aria-modal="true" aria-labelledby="kb-ttl">
     <p class="tm-title" id="kb-ttl">Keyboard shortcuts</p>
@@ -16067,21 +16140,21 @@ var ERN_DAYS = (function(){
   ERN_OFF.forEach(function(x){ off[x] = 1; });
   var d = t23D(ERN_START), i = 0;
   while(d <= T23_TODAY){
-    var iso = ernISO(d), wd = d.getDay(), n = 0, amt = 0, priv = [];
+    var iso = ernISO(d), wd = d.getDay(), n = 0, amt = 0, priv = [], fees = [];   /* Batch C (1d): each visit's code, for the drawers */
     if(!off[iso] && wd !== 0){
       var grow = 0.92 + 0.08 * (i / 380);   /* a practice slowly growing over the year */
       n = wd === 6 ? Math.floor(rnd() * 9) : Math.max(0, Math.round(ERN_BASE[wd] * grow + (rnd() - 0.5) * 8));
       for(var k = 0; k < n; k++){
         var r = rnd(), acc = 0, fee = '13437';
         for(var j = 0; j < ERN_MIX.length; j++){ acc += ERN_MIX[j][1]; if(r < acc){ fee = ERN_MIX[j][0]; break; } }
-        amt += T23_FEES[fee].amt;
+        amt += T23_FEES[fee].amt; fees.push(fee);
       }
       if(iso <= ERN_PRIV_TO && wd !== 6){
         if(rnd() < 0.16) priv.push({item:'visit', amt:T23_PRIVATE_FEE});
         if(rnd() < 0.05) priv.push({item:'form', amt:T23_FORM_FEE});
       }
     }
-    out.push({iso:iso, d:new Date(d), wd:wd, msp:n, amt:amt, priv:priv});
+    out.push({iso:iso, d:new Date(d), wd:wd, msp:n, amt:amt, priv:priv, fees:fees});
     d.setDate(d.getDate() + 1); i++;
   }
   return out;
@@ -16142,18 +16215,27 @@ function ernPrivate(){
 function ernWeekdays(){
   var end = T23_TODAY, start = new Date(end); start.setDate(start.getDate() - 55);
   var s = ernISO(start), e = ernISO(end), off = {}, tot = [0,0,0,0,0,0,0], cnt = [0,0,0,0,0,0,0];
+  /* Batch C (1c): earnings per weekday as well (MSP billed + private + the demo claims of that day, billed value),
+     and the open days behind each bar, for its drawer */
+  var amt = [0,0,0,0,0,0,0], days = [[],[],[],[],[],[],[]];
   ERN_OFF.forEach(function(x){ off[x] = 1; });
-  var demo = {};
-  CLAIMS.forEach(function(c){ demo[c.date] = (demo[c.date] || 0) + 1; });
+  var demo = {}, demoAmt = {};
+  CLAIMS.forEach(function(c){ demo[c.date] = (demo[c.date] || 0) + 1; demoAmt[c.date] = (demoAmt[c.date] || 0) + t23Amt(c); });
   ERN_DAYS.forEach(function(x){
     if(x.iso < s || x.iso > e || off[x.iso]) return;
     tot[x.wd] += x.msp + x.priv.length + (demo[x.iso] || 0); cnt[x.wd]++;
+    amt[x.wd] += x.amt + x.priv.reduce(function(a, p){ return a + p.amt; }, 0) + (demoAmt[x.iso] || 0);
+    if(x.wd) days[x.wd].push(x.iso);   /* Sunday is closed */
   });
   var avg = tot.map(function(t, i){ return cnt[i] ? t / cnt[i] : 0; });
+  var avgAmt = amt.map(function(t, i){ return cnt[i] ? t / cnt[i] : 0; });
   var order = [1,2,3,4,5,6,0], wk = [1,2,3,4,5];
   var mean = wk.reduce(function(a, i){ return a + avg[i]; }, 0) / wk.length;
   var slow = wk.reduce(function(m, i){ return avg[i] < avg[m] ? i : m; }, 1);
-  return {avg:avg, order:order, mean:mean, slow:slow, from:start, to:end};
+  var meanAmt = wk.reduce(function(a, i){ return a + avgAmt[i]; }, 0) / wk.length;
+  var slowAmt = wk.reduce(function(m, i){ return avgAmt[i] < avgAmt[m] ? i : m; }, 1);
+  return {avg:avg, order:order, mean:mean, slow:slow, from:start, to:end, cnt:cnt, days:days,
+          avgAmt:avgAmt, meanAmt:meanAmt, slowAmt:slowAmt};
 }
 </script>
 <script>
@@ -16171,7 +16253,7 @@ function ernBuckets(agg){
   var pays = ernPayments();
   if(agg === 'period') return pays.map(function(p){
     var d = t23D(p.pay), from = p.prevClose ? t23Plus(p.prevClose, 1) : null;
-    return {key:p.pay, paid:p.exp ? 0 : p.amt, exp:p.exp ? p.amt : 0, n:p.n, pays:1,
+    return {key:p.pay, paid:p.exp ? 0 : p.amt, exp:p.exp ? p.amt : 0, n:p.n, pays:1, list:[p],
       label:T23_MON[d.getMonth()], year:d.getMonth() === 0 || p === pays[0] ? String(d.getFullYear()) : '', monthStart:true,
       title:(p.exp ? 'Expected ' : 'Paid ') + ernFD(p.pay, true),
       detail:p.n.toLocaleString('en-CA') + ' claims' + (p.exp ? ' submitted by close-off ' + t23F(p.close) : (from ? ' · visits ' + t23FD(from) + ' to ' + t23F(p.close) : ''))};
@@ -16182,7 +16264,8 @@ function ernBuckets(agg){
   var out = [], by = {};
   pays.forEach(function(p){
     var k = keyOf(p.pay), b = by[k];
-    if(!b){ b = by[k] = {key:k, paid:0, exp:0, n:0, pays:0, first:p.pay, last:p.pay}; out.push(b); }
+    if(!b){ b = by[k] = {key:k, paid:0, exp:0, n:0, pays:0, first:p.pay, last:p.pay, list:[]}; out.push(b); }
+    b.list.push(p);
     if(p.exp) b.exp += p.amt; else b.paid += p.amt;
     b.n += p.n; b.pays++; b.last = p.pay;
   });
@@ -16242,8 +16325,9 @@ function ernChart(){
   if(ERN.focus < 0 || ERN.focus >= bs.length) ERN.focus = bs.length - 1;
   bs.forEach(function(b, i){
     var cx = L + band * i + band / 2, x = cx - bw / 2;
-    var gi = ernS('g', {class:'ern-bar' + (b.exp && !b.paid ? ' exp' : ''), tabindex:i === ERN.focus ? 0 : -1, role:'img', 'data-i':i,
-      'aria-label':b.title + ': ' + (b.paid && b.exp ? ernUSD(b.paid + b.exp) + ' in all' : b.paid ? ernUSD(b.paid) + ' paid' : 'about ' + ernUSD(b.exp) + ' expected') + '. ' + b.detail});
+    /* Batch C (1d): a bar is a button; Enter, Space or a click opens the claims behind it in a side drawer */
+    var gi = ernS('g', {class:'ern-bar' + (b.exp && !b.paid ? ' exp' : ''), tabindex:i === ERN.focus ? 0 : -1, role:'button', 'data-i':i,
+      'aria-label':b.title + ': ' + (b.paid && b.exp ? ernUSD(b.paid + b.exp) + ' in all' : b.paid ? ernUSD(b.paid) + ' paid' : 'about ' + ernUSD(b.exp) + ' expected') + '. ' + b.detail + '. Show the claims.'});
     gi.appendChild(ernS('rect', {class:'ern-hit', x:L + band * i + 1, y:T - 26, width:Math.max(1, band - 2), height:ph + 26, rx:6}));
     var hp = b.paid / top * ph, he = b.exp / top * ph;
     var p1 = bar(x, y(b.paid), hp, bw, '#4353E8', !b.exp); if(p1) gi.appendChild(p1);
@@ -16275,6 +16359,7 @@ function ernChart(){
     v.appendChild(ernEl('span', 'k ' + (b.exp && !b.paid ? 'exp' : 'paid')));
     v.appendChild(document.createTextNode(b.paid && b.exp ? ernUSD(b.paid + b.exp) : b.exp ? 'About ' + ernUSD(b.exp) : ernUSD(b.paid)));
     tip.appendChild(v); tip.appendChild(ernEl('div', 'ern-tip-t', b.title)); tip.appendChild(ernEl('div', 'ern-tip-d', b.detail));
+    tip.appendChild(ernEl('div', 'ern-tip-h', 'Click to see the claims'));
     tip.hidden = false;
     var cx = L + band * i + band / 2, top = y(b.paid + b.exp);
     var tw = tip.offsetWidth, th = tip.offsetHeight, left = cx + 16;
@@ -16289,7 +16374,9 @@ function ernChart(){
     n.addEventListener('pointerleave', function(){ if(document.activeElement !== n) hide(); });
     n.addEventListener('focus', function(){ ERN.focus = i; show(i); });
     n.addEventListener('blur', hide);
+    n.addEventListener('click', function(){ ERN.focus = i; ernDrill('bucket', i); });
     n.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); ERN.focus = i; ernDrill('bucket', i); return; }
       var j = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? bs.length - 1 : null;
       if(j == null) return; e.preventDefault(); j = Math.max(0, Math.min(bs.length - 1, j));
       var to = svg.querySelector('.ern-bar[data-i="' + j + '"]'); if(!to) return;
@@ -16330,27 +16417,62 @@ function ernAgg(k){
 }
 
 /* ---------- visits by weekday ---------- */
+/* Batch C (1c), lead brief 6 Oct: "show both visits and earnings per weekday". A Visits | Earnings switch (same
+   segmented control as the chart); the slowest-day sentence follows the chosen metric. Each bar is a button that
+   opens the visits behind it (roving Tab stop, arrow keys, Home and End, like the payments chart). */
+var ERN_WM = 'visits';
+function ernWm(k){
+  ERN_WM = k;
+  document.querySelectorAll('#ern-wseg button').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.wm === k)); });
+  ernWeekChart();
+}
 function ernWeekChart(){
   var wrap = document.getElementById('ern-week'); if(!wrap) return;
   var w = ernWeekdays(), names = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  var below = Math.round((w.mean - w.avg[w.slow]) / w.mean * 100);
+  var money = ERN_WM === 'earnings';
+  var vals = money ? w.avgAmt : w.avg, mean = money ? w.meanAmt : w.mean, slow = money ? w.slowAmt : w.slow;
+  var fmt = money ? function(v){ return ernUSD(v); } : function(v){ return String(Math.round(v)); };
+  var below = mean ? Math.round((mean - vals[slow]) / mean * 100) : 0;
   var lead = document.getElementById('ern-week-lead');
-  if(lead) lead.textContent = names[w.slow] + ' is your slowest day: ' + Math.round(w.avg[w.slow]) + ' visits on average, ' + below + '% below your weekday average of ' + Math.round(w.mean) + '.';
+  if(lead) lead.textContent = money
+    ? names[slow] + ' is your slowest day: ' + ernUSD(vals[slow]) + ' billed on average, ' + below + '% below your weekday average of ' + ernUSD(mean) + '.'
+    : names[slow] + ' is your slowest day: ' + Math.round(vals[slow]) + ' visits on average, ' + below + '% below your weekday average of ' + Math.round(mean) + '.';
+  var q = document.getElementById('ern-week-q');
+  if(q) q.textContent = money
+    ? 'Average billed per day (MSP and private) over the last 8 weeks, on days you worked.'
+    : 'Average visits per day over the last 8 weeks, on days you worked. Income follows visits one for one.';
   var W = Math.max(280, wrap.clientWidth), H = 200, L = 8, R = 8, T = 26, B = 32, pw = W - L - R, ph = H - T - B;
-  var max = Math.max.apply(null, w.avg), band = pw / 7, bw = Math.min(24, band * 0.5);
-  var svg = ernS('svg', {width:W, height:H, viewBox:'0 0 ' + W + ' ' + H, role:'img',
-    'aria-label':'Average visits per weekday, last 8 weeks: ' + w.order.map(function(i){ return names[i] + ' ' + Math.round(w.avg[i]); }).join(', ')});
+  var max = Math.max.apply(null, vals), band = pw / 7, bw = Math.min(24, band * 0.5);
+  if(ERN.wfocus == null) ERN.wfocus = 0;
+  var svg = ernS('svg', {width:W, height:H, viewBox:'0 0 ' + W + ' ' + H, role:'group',
+    'aria-label':(money ? 'Average billed per weekday' : 'Average visits per weekday') + ', last 8 weeks. Use the arrow keys to move between days.'});
   svg.appendChild(ernS('line', {x1:L, x2:W - R, y1:T + ph, y2:T + ph, class:'ern-base'}));
   w.order.forEach(function(d, k){
-    var v = w.avg[d], h = max ? v / max * ph : 0, cx = L + band * k + band / 2, x = cx - bw / 2, y0 = T + ph - h;
-    var gi = ernS('g', {class:'ern-wd' + (d === w.slow ? ' slow' : '')});
+    var v = vals[d], h = max ? v / max * ph : 0, cx = L + band * k + band / 2, x = cx - bw / 2, y0 = T + ph - h;
+    var n = w.days[d].length;
+    var gi = ernS('g', {class:'ern-wd' + (d === slow ? ' slow' : ''), role:'button', tabindex:k === ERN.wfocus ? 0 : -1, 'data-k':k, 'data-d':d,
+      'aria-label':names[d] + ': ' + (money ? ernUSD(v) + ' billed' : Math.round(v) + ' visits') + ' on average' +
+        (n ? ' over ' + n + ' days. Show the visits.' : '. Closed.')});
+    gi.appendChild(ernS('rect', {class:'ern-hit', x:L + band * k + 2, y:T - 24, width:Math.max(1, band - 4), height:ph + 24 + B - 4, rx:6}));
     if(h > 0){ var r = Math.min(4, h); gi.appendChild(ernS('path', {d:'M' + x + ',' + (T + ph) + 'V' + (y0 + r) + 'Q' + x + ',' + y0 + ' ' + (x + r) + ',' + y0 + 'H' + (x + bw - r) + 'Q' + (x + bw) + ',' + y0 + ' ' + (x + bw) + ',' + (y0 + r) + 'V' + (T + ph) + 'Z'})); }
-    var vt = ernS('text', {x:cx, y:y0 - 8, 'text-anchor':'middle', class:'ern-val'}); vt.textContent = Math.round(v); gi.appendChild(vt);
-    var lt = ernS('text', {x:cx, y:H - 8, 'text-anchor':'middle', class:'ern-tick' + (d === w.slow ? ' strong' : '')}); lt.textContent = names[d].slice(0, 3); gi.appendChild(lt);
-    var tt = ernS('title', {}); tt.textContent = names[d] + ': ' + v.toFixed(1) + ' visits on average'; gi.appendChild(tt);
+    var vt = ernS('text', {x:cx, y:y0 - 8, 'text-anchor':'middle', class:'ern-val'}); vt.textContent = fmt(v); gi.appendChild(vt);
+    var lt = ernS('text', {x:cx, y:H - 8, 'text-anchor':'middle', class:'ern-tick' + (d === slow ? ' strong' : '')}); lt.textContent = names[d].slice(0, 3); gi.appendChild(lt);
+    var tt = ernS('title', {}); tt.textContent = names[d] + ': ' + (money ? ernUSD(v) + ' billed' : v.toFixed(1) + ' visits') + ' on average' + (n ? '. Click to see the visits.' : ''); gi.appendChild(tt);
     svg.appendChild(gi);
   });
   wrap.innerHTML = ''; wrap.appendChild(svg);
+  svg.querySelectorAll('.ern-wd').forEach(function(g){
+    var k = +g.getAttribute('data-k'), d = +g.getAttribute('data-d');
+    g.addEventListener('focus', function(){ ERN.wfocus = k; });
+    g.addEventListener('click', function(){ ERN.wfocus = k; ernDrill('wd', d); });
+    g.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); ernDrill('wd', d); return; }
+      var j = e.key === 'ArrowRight' ? k + 1 : e.key === 'ArrowLeft' ? k - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? 6 : null;
+      if(j == null) return; e.preventDefault(); j = Math.max(0, Math.min(6, j));
+      var to = svg.querySelector('.ern-wd[data-k="' + j + '"]'); if(!to) return;
+      g.setAttribute('tabindex', -1); to.setAttribute('tabindex', 0); to.focus();
+    });
+  });
 }
 
 /* ---------- money at risk: the same lists and sums as Claims ---------- */
@@ -16389,29 +16511,205 @@ function ernPriv(){
 }
 
 /* ---------- summary strip (same slim pattern as Claims) ---------- */
+/* Batch C (1a, 1b), lead brief 6 Oct, from Daniel (call 5 Oct: "this month, this week, this day").
+   The third section has a small "Today | This week | This month" switch (default This month), counted by VISIT date
+   from the same seeded history as the chart, so the three reconcile with each other and with every drawer.
+   Each is compared with the SAME WEEKDAYS one period back (earnings.md open question 6: 1-3 Oct is Thu-Sat, 1-3 Sep
+   was Tue-Thu, so the old comparison was mostly the calendar):
+     Today      -> the same weekday last week (Sat 3 Oct vs Sat 26 Sep)
+     This week  -> Monday to today vs the same days last week
+     This month -> the 1st to today vs the same weekdays 4 weeks earlier (Thu 1-Sat 3 Oct vs Thu 3-Sat 5 Sep);
+                   5 weeks from the 29th on, so the comparison stays in last month. */
+var ERN_SPAN = 'month';
+function ernSpan(k){
+  var t = T23_TODAY, a, back, word, name;
+  if(k === 'today'){ a = new Date(t); back = 7; word = 'the same day last week'; name = 'Today'; }
+  else if(k === 'week'){ a = new Date(t); a.setDate(a.getDate() - ((a.getDay() + 6) % 7)); back = 7; word = 'the same days last week'; name = 'This week'; }
+  else { a = new Date(t.getFullYear(), t.getMonth(), 1); back = t.getDate() > 28 ? 35 : 28; word = 'the same days last month'; name = 'This month so far'; }
+  var pa = new Date(a); pa.setDate(pa.getDate() - back);
+  var pb = new Date(t); pb.setDate(pb.getDate() - back);
+  return {k:k, name:name, a:a, b:new Date(t), pa:pa, pb:pb, word:word};
+}
+/* "Sat 3 Oct", or "Thu 1 – Sat 3 Oct", or "Mon 28 Sep – Sat 3 Oct" */
+function ernRange(a, b){
+  var d = function(x){ return T23_DOW[x.getDay()] + ' ' + x.getDate(); };
+  if(ernISO(a) === ernISO(b)) return d(a) + ' ' + T23_MON[a.getMonth()];
+  return d(a) + (a.getMonth() !== b.getMonth() ? ' ' + T23_MON[a.getMonth()] : '') + ' – ' + d(b) + ' ' + T23_MON[b.getMonth()];
+}
+function ernSpanSet(k){
+  ERN_SPAN = k; ernStats();
+  var b = document.querySelector('#ern-mseg button[data-span="' + k + '"]'); if(b) b.focus();
+}
 function ernStats(){
   var sw = document.getElementById('ern-stats'); if(!sw) return;
   var pays = ernPayments(), paid = pays.filter(function(p){ return !p.exp; }), last = paid[paid.length - 1], next = pays.filter(function(p){ return p.exp; })[0];
-  var t = T23_TODAY, m0 = new Date(t.getFullYear(), t.getMonth(), 1), lm0 = new Date(t.getFullYear(), t.getMonth() - 1, 1), lmT = new Date(t.getFullYear(), t.getMonth() - 1, t.getDate());
-  var cur = ernBilled(ernISO(m0), ernISO(t)), prev = ernBilled(ernISO(lm0), ernISO(lmT));
-  var pct = prev.amt ? Math.round((cur.amt - prev.amt) / prev.amt * 100) : 0;
-  var rng = function(a, b){ return a.getDate() + (a.getDate() !== b.getDate() ? '–' + b.getDate() : '') + ' ' + T23_MON[b.getMonth()]; };
+  var sp = ernSpan(ERN_SPAN);
+  var cur = ernBilled(ernISO(sp.a), ernISO(sp.b)), prev = ernBilled(ernISO(sp.pa), ernISO(sp.pb));
+  var pct = prev.amt ? Math.round((cur.amt - prev.amt) / prev.amt * 100) : null;
   var pv = ernPrivate();
-  var st = function(k, v, s){ return '<div class="cl-stat"><p class="k">' + k + '</p><p class="vs"><span class="v">' + v + '</span><span class="s">' + s + '</span></p></div>'; };
+  /* every figure is a button that opens the claims or visits behind it (Batch C 1d) */
+  var num = function(v, kind, label){ return '<button type="button" class="v ern-num" onclick="ernDrill(\'' + kind + '\')" aria-label="' + t23E(label) + '">' + v + '</button>'; };
+  var st = function(k, v, s){ return '<div class="cl-stat"><p class="k">' + k + '</p><p class="vs">' + v + '<span class="s">' + s + '</span></p></div>'; };
+  var seg = '<div class="ern-mseg" id="ern-mseg" role="group" aria-label="Billed so far, by visit date">' +
+    [['today','Today'],['week','This week'],['month','This month']].map(function(o){
+      return '<button type="button" data-span="' + o[0] + '" aria-pressed="' + (ERN_SPAN === o[0]) + '" onclick="ernSpanSet(\'' + o[0] + '\')">' + o[1] + '</button>'; }).join('') + '</div>';
+  var cmp = pct == null
+    ? 'no visits on ' + sp.word.replace('the ', 'the ')
+    : '<span class="ern-delta">' + t23Ic(pct >= 0 ? 'arrowup' : 'arrowdown') + '<span class="ern-vh">' + (pct >= 0 ? 'up ' : 'down ') + '</span>' + Math.abs(pct) + '%</span> vs ' + sp.word;
   sw.innerHTML = '<div class="cl-stats">' +
-    st('Last MSP payment', last ? ernUSD(last.amt) : '$0', last ? 'paid ' + ernFD(last.pay) : 'no payment yet') +
-    st('Next payment', next ? 'About ' + ernUSD(next.amt) : '$0', next ? 'expected ' + ernFD(next.pay) + ', from claims submitted by ' + t23F(next.close) : 'nothing submitted yet') +
-    st('This month so far', ernUSD(cur.amt), 'visits ' + rng(m0, t) + ' · <span class="ern-delta">' + t23Ic(pct >= 0 ? 'arrowup' : 'arrowdown') + Math.abs(pct) + '%</span> vs ' + rng(lm0, lmT)) +
-    st('Private pay this month', ernUSD(pv.month.amt), 'collected · ' + ernUSD(pv.due.amt) + ' outstanding') +
+    st('Last MSP payment', last ? num(ernUSD(last.amt), 'last', 'Last MSP payment, ' + ernUSD(last.amt) + ': show the claims') : '<span class="v">$0</span>', last ? 'paid ' + ernFD(last.pay) : 'no payment yet') +
+    st('Next payment', next ? num('About ' + ernUSD(next.amt), 'next', 'Next payment, about ' + ernUSD(next.amt) + ': show the claims') : '<span class="v">$0</span>', next ? 'expected ' + ernFD(next.pay) + ', from claims submitted by ' + t23F(next.close) : 'nothing submitted yet') +
+    '<div class="cl-stat ern-span">' + seg +
+      '<p class="vs">' + num(ernUSD(cur.amt), 'span', sp.name + ', ' + ernUSD(cur.amt) + ': show the visits') +
+      '<span class="s">' + cur.n + (cur.n === 1 ? ' visit' : ' visits') + ' · ' + ernRange(sp.a, sp.b) + '</span></p>' +
+      '<p class="ern-cmp" title="Compared with ' + t23E(ernRange(sp.pa, sp.pb)) + ': ' + ernUSD(prev.amt) + '">' + cmp + '</p></div>' +
+    st('Private pay this month', num(ernUSD(pv.month.amt), 'priv', 'Private pay this month, ' + ernUSD(pv.month.amt) + ' collected: show the payments'), 'collected · ' + ernUSD(pv.due.amt) + ' outstanding') +
   '</div>';
   paintPd(sw);
 }
+
+/* ---------- the claims or visits behind a number (Batch C 1d) ----------
+   Lead brief 6 Oct: "make every number clickable where it makes sense: a bar opens a side drawer listing the claims or
+   visits behind it, a compact table with date, patient, fee code, amount, status". Built from the same lists as the
+   numbers, so a drawer's total is always the figure that opened it. Patients in the generated history get generated
+   first names and initials (no real people); the demo claims keep their Claims names and open in Claims. */
+var ERN_FIRST = ['Amira','Ben','Chloe','Dev','Elena','Farid','Gwen','Hana','Isaac','Jade','Kofi','Lena','Mateo','Nora','Omar','Priya',
+                 'Quinn','Rosa','Sam','Tara','Uma','Victor','Wen','Yara','Zane','Aiden','Bea','Cal','Dana','Eli','Fern','Gus','Ivy','Jon','Kai','Lia'];
+var ERN_INIT = 'ABCDEFGHJKLMNPRSTVWY';
+function ernWho(iso, k){ var r = ernRng(+iso.replace(/-/g, '') * 97 + k); return ERN_FIRST[Math.floor(r() * ERN_FIRST.length)] + ' ' + ERN_INIT[Math.floor(r() * ERN_INIT.length)] + '.'; }
+function ernGenSt(iso){
+  var t = ernISO(T23_TODAY); if(iso === t) return 'Goes in tonight’s batch';
+  var p = ernPairFor(iso); return p && p[1] <= t ? 'Paid ' + t23F(p[1]) : 'Sent — waiting for MSP';
+}
+function ernClaimRow(c, amt, st){
+  var priv = c.payer === 'private';
+  return {iso:c.date, who:c.who, fee:priv ? (c.item === 'form' ? 'Form' : 'Private') : c.fee, amt:amt != null ? amt : t23Amt(c),
+          st:st || (c.st === 'adjusted' ? 'Paid, adjusted' : (T23_ST[c.st] || {}).label || ''), id:c.id};
+}
+function ernGenRows(x, st, withPriv, out){
+  x.fees.forEach(function(f, k){ out.push({iso:x.iso, who:ernWho(x.iso, k), fee:f, amt:T23_FEES[f].amt, st:st}); });
+  if(withPriv) x.priv.forEach(function(p, k){ out.push({iso:x.iso, who:ernWho(x.iso, 100 + k), fee:p.item === 'form' ? 'Form' : 'Private', amt:p.amt, st:'Paid'}); });
+}
+/* visits in [a, b] by visit date: mirrors ernBilled (MSP), plus private when asked (the weekday chart counts both) */
+function ernRowsVisits(a, b, withPriv){
+  var out = [];
+  ERN_DAYS.forEach(function(x){ if(x.iso >= a && x.iso <= b) ernGenRows(x, ernGenSt(x.iso), withPriv, out); });
+  CLAIMS.forEach(function(c){ if(c.date >= a && c.date <= b && (withPriv || c.payer !== 'private')) out.push(ernClaimRow(c)); });
+  return out;
+}
+/* the claims in a set of payments: mirrors ernPayments */
+function ernRowsPays(list){
+  var by = {}, t = ernISO(T23_TODAY), out = [];
+  list.forEach(function(p){ by[p.pay] = p; });
+  ERN_DAYS.forEach(function(x){
+    if(!x.msp || x.iso === t) return;
+    var p = ernPairFor(x.iso); if(!p || !by[p[1]]) return;
+    ernGenRows(x, by[p[1]].exp ? 'Sent — waiting for MSP' : 'Paid ' + t23F(p[1]), false, out);
+  });
+  CLAIMS.forEach(function(c){
+    if(c.payer === 'private') return;
+    if((c.st === 'paid' || c.st === 'adjusted') && c.paidOn && by[c.paidOn]) out.push(ernClaimRow(c, c.paid, c.st === 'adjusted' ? 'Paid ' + t23F(c.paidOn) + ', adjusted' : 'Paid ' + t23F(c.paidOn)));
+    if(c.st === 'submitted'){ var p = ernPairFor(c.date); if(p && by[p[1]] && by[p[1]].exp) out.push(ernClaimRow(c)); }
+  });
+  return out;
+}
+/* private pay this month: mirrors ernPrivate (collected this month + the outstanding links) */
+function ernRowsPriv(){
+  var m0 = ernISO(new Date(T23_TODAY.getFullYear(), T23_TODAY.getMonth(), 1)), out = [];
+  ERN_DAYS.forEach(function(x){ if(x.iso >= m0) x.priv.forEach(function(p, k){ out.push({iso:x.iso, who:ernWho(x.iso, 100 + k), fee:p.item === 'form' ? 'Form' : 'Private', amt:p.amt, st:'Paid'}); }); });
+  CLAIMS.forEach(function(c){
+    if(c.payer !== 'private') return;
+    if(c.st === 'pri-paid' && c.date >= m0) out.push(ernClaimRow(c));
+    if(c.st === 'pri-due') out.push(ernClaimRow(c, null, 'Outstanding · link sent ' + c.sent));
+  });
+  return out;
+}
+var ERN_DRW = {rows:[], shown:0, page:100};
+function ernDrill(kind, arg){
+  var rows = [], ttl = '', sub = '', eye = 'Earnings', noun = 'claims';
+  var pays = ernPayments();
+  if(kind === 'last' || kind === 'next'){
+    var p = kind === 'last' ? pays.filter(function(x){ return !x.exp; }).pop() : pays.filter(function(x){ return x.exp; })[0];
+    if(!p) return;
+    rows = ernRowsPays([p]);
+    eye = kind === 'last' ? 'Last MSP payment' : 'Next payment';
+    ttl = (p.exp ? 'Expected ' : 'Paid ') + ernFD(p.pay, true);
+    sub = p.exp ? 'Claims submitted by the close-off on ' + t23F(p.close) + '. MSP can still reject or adjust some.' : (p.prevClose ? 'Visits ' + t23FD(t23Plus(p.prevClose, 1)) + ' to ' + t23F(p.close) + '.' : '');
+  } else if(kind === 'bucket'){
+    var bs = ernBuckets(ERN.agg), bk = bs[arg]; if(!bk) return;
+    rows = ernRowsPays(bk.list);
+    eye = 'MSP payments · ' + {period:'pay period', month:'month', quarter:'quarter', year:'year'}[ERN.agg];
+    ttl = bk.title;
+    var p0 = bk.list[0], pN = bk.list[bk.list.length - 1];
+    sub = bk.list.length === 1
+      ? (p0.exp ? 'Claims submitted by the close-off on ' + t23F(p0.close) + '. MSP can still reject or adjust some.' : (p0.prevClose ? 'Visits ' + t23FD(t23Plus(p0.prevClose, 1)) + ' to ' + t23F(p0.close) + '.' : ''))
+      : bk.list.length + ' payments, ' + t23F(p0.pay) + ' to ' + t23F(pN.pay) + (bk.exp ? ' (the last one expected)' : '') + '.';
+  } else if(kind === 'span'){
+    var sp = ernSpan(ERN_SPAN);
+    rows = ernRowsVisits(ernISO(sp.a), ernISO(sp.b), false); noun = 'visits';
+    eye = 'Billed by visit date'; ttl = sp.name + ' · ' + ernRange(sp.a, sp.b);
+    var prev = ernBilled(ernISO(sp.pa), ernISO(sp.pb));
+    sub = 'MSP billed value. Compared with ' + ernRange(sp.pa, sp.pb) + ' (' + sp.word + '): ' + ernUSD(prev.amt) + ' from ' + prev.n + ' visits.';
+  } else if(kind === 'priv'){
+    rows = ernRowsPriv(); noun = 'payments';
+    eye = 'Private pay'; ttl = ernMonthName(T23_TODAY.getMonth()) + ' ' + T23_TODAY.getFullYear();
+    sub = 'Collected this month, and the payment links still outstanding.';
+  } else if(kind === 'wd'){
+    var w = ernWeekdays(), names = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'], days = w.days[arg] || [];
+    days.forEach(function(iso){ rows = rows.concat(ernRowsVisits(iso, iso, true)); }); noun = 'visits';
+    eye = 'Visits by weekday'; ttl = names[arg] + 's · last 8 weeks';
+    sub = days.length ? days.length + ' days worked (' + t23F(days[0]) + ' to ' + t23F(days[days.length - 1]) + '). On average ' +
+      Math.round(w.avg[arg]) + ' visits and ' + ernUSD(w.avgAmt[arg]) + ' a day.' : 'Closed on ' + names[arg] + 's.';
+  }
+  rows.sort(function(x, y){ return x.iso < y.iso ? 1 : x.iso > y.iso ? -1 : 0; });
+  var tot = rows.reduce(function(a, r){ return a + r.amt; }, 0);
+  ERN_DRW.rows = rows; ERN_DRW.shown = 0;
+  document.getElementById('ern-drw-eye').textContent = eye;
+  document.getElementById('ern-drw-ttl').textContent = ttl;
+  document.getElementById('ern-drw-sub').textContent = sub;
+  var body = document.getElementById('ern-drw-body');
+  body.innerHTML = '<p class="ern-dsum"><b>' + rows.length.toLocaleString('en-CA') + '</b> ' + (rows.length === 1 ? noun.replace(/s$/, '') : noun) +
+      ' · <b>' + ernUSD(tot) + '</b></p>' +
+    (rows.length ? '<table class="ern-dt"><caption class="ern-vh">' + t23E(ttl) + '</caption><thead><tr><th scope="col">Date</th><th scope="col">Patient</th><th scope="col">Fee code</th>' +
+      '<th scope="col" class="num">Amount</th><th scope="col">Status</th></tr></thead><tbody id="ern-dt-body"></tbody></table>' +
+      '<div class="ern-dmore" id="ern-dmore"></div>' : '<p class="ern-quiet">Nothing here.</p>');
+  ernDrwMore();
+  document.getElementById('ern-drw').classList.add('show');
+}
+function ernDrwMore(){
+  var tb = document.getElementById('ern-dt-body'); if(!tb) return;
+  var from = ERN_DRW.shown, to = Math.min(ERN_DRW.rows.length, from + ERN_DRW.page), html = '';
+  for(var i = from; i < to; i++){
+    var r = ERN_DRW.rows[i], fee = T23_FEES[r.fee];
+    var who = r.id ? '<button type="button" class="ern-dlink" onclick="ernDrwClaim(\'' + r.id + '\')" aria-label="' + t23E(r.who) + ', open this claim in Claims">' + t23E(r.who) + '</button>' : t23E(r.who);
+    html += '<tr><td>' + ernFD(r.iso) + '</td><td>' + who + '</td><td' + (fee ? ' title="' + t23E(fee.name) + '"' : '') + '>' + t23E(r.fee) + '</td>' +
+      '<td class="num">$' + r.amt.toLocaleString('en-CA', {minimumFractionDigits:2, maximumFractionDigits:2}) + '</td><td>' + t23E(r.st) + '</td></tr>';
+  }
+  tb.insertAdjacentHTML('beforeend', html);
+  ERN_DRW.shown = to;
+  var m = document.getElementById('ern-dmore'), left = ERN_DRW.rows.length - to;
+  if(m) m.innerHTML = left > 0 ? '<button type="button" class="btn xs" onclick="ernDrwMoreGo()">Show ' + Math.min(left, ERN_DRW.page) + ' more · ' + left.toLocaleString('en-CA') + ' not shown</button>' : '';
+}
+function ernDrwMoreGo(){
+  var n = ERN_DRW.shown; ernDrwMore();
+  /* focus goes to the first new row's first cell area, so the keyboard keeps its place */
+  var rows = document.querySelectorAll('#ern-dt-body tr'), b = document.querySelector('#ern-dmore button');
+  if(b) b.focus(); else { var bd = document.querySelector('#ern-drw .drw-bd'); if(bd) bd.focus(); }
+  if(rows[n]) rows[n].scrollIntoView({block:'nearest'});
+}
+function ernDrwClose(){ var o = document.getElementById('ern-drw'); if(o) o.classList.remove('show'); }
+function ernDrwClaim(id){ ernDrwClose(); setTimeout(function(){ t23GoClaim(id); }, 0); }
 
 function renderEarnings(){
   var seg = document.getElementById('ern-seg');
   if(seg && !seg.childNodes.length){
     seg.innerHTML = [['period','Pay period'],['month','Month'],['quarter','Quarter'],['year','Year']].map(function(o){
       return '<button type="button" data-agg="' + o[0] + '" aria-pressed="' + (ERN.agg === o[0]) + '" onclick="ernAgg(\'' + o[0] + '\')">' + o[1] + '</button>'; }).join('');
+  }
+  var ws = document.getElementById('ern-wseg');
+  if(ws && !ws.childNodes.length){
+    ws.innerHTML = [['visits','Visits'],['earnings','Earnings']].map(function(o){
+      return '<button type="button" data-wm="' + o[0] + '" aria-pressed="' + (ERN_WM === o[0]) + '" onclick="ernWm(\'' + o[0] + '\')">' + o[1] + '</button>'; }).join('');
   }
   ernStats(); ernChart(); ernWeekChart(); ernRisk(); ernPriv();
 }
@@ -17023,6 +17321,21 @@ function t23LogVisit(name, oldV, newV){ t23LogEdits(oldV, T23_DR, t23ChangeList(
   t23RenderBillRow = function(){ br0.apply(this, arguments); nsRenderDx(); nsSync(); };
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 06:10 · Chart tab</div>
+<script>
+/* ============================================================
+   BATCH C (lead brief, 6 Oct 2026). One block, one section per item.
+   ============================================================ */
+/* ---------- (1d) the Earnings drawer joins the shared drawer stack (focus in, trap, Escape, backdrop, focus back) ---------- */
+(function(){
+  var ov = document.getElementById('ern-drw'); if(!ov || typeof DRW_CLOSE === 'undefined') return;
+  DRW_CLOSE['ern-drw'] = ernDrwClose;
+  new MutationObserver(function(){
+    var on = ov.classList.contains('show'), was = DRW_STACK.some(function(l){ return l.id === 'ern-drw'; });
+    if(on && !was) drwOpened(ov); else if(!on && was) drwClosed(ov);
+  }).observe(ov, {attributes:true, attributeFilter:['class']});
+  drwShape(ov.firstElementChild);
+})();
+</script>
+  <div class="build-stamp">v2 · build 2026-10-07 06:45 · Batch C</div>
 </body>
 </html>
