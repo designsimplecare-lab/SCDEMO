@@ -1,6 +1,6 @@
 # Chart shell: the core encounter view (T-021)
 
-Owner: `ux-designer` · Ani approves · Built into `simplecare-physician-portal-v2.html` (the chart, `#pcv-c`) · Build 2026-10-05 20:35 (declutter, then Layout v2 behind a switch; see the end)
+Owner: `ux-designer` · Ani approves · Built into `simplecare-physician-portal-v2.html` (the chart, `#pcv-c`) · Build 2026-10-06 23:40 (declutter, Layout v2, Daniel review, then Left panel and call widget; see the end)
 Source: Physician Chart View Requirements v2.5 (B-006), delivery step 1 · ECG Critical Result Requirements v2.0 · Daniel, 30 Sep (`from-daniel/2026-09-30-chart-workflow.md`, `2026-09-30-ecg-and-result-flags.md`).
 Scope: light theme, 1440 px, the demo patient. Dark theme not checked (Ani, 4 Oct). The Figma "SC – Design System" is not used yet (Ani, 3 Oct); the chart uses v2's own variables, buttons, tags and Mage icons.
 
@@ -232,3 +232,48 @@ Daniel reviewed the chart with Ani on 5 Oct; Ani approved the updates on 6 Oct. 
 - In the review, v2 opened on Review and Daniel asked where to write the note. During an open visit v2 now opens on **Note**; Review keeps its badge (the count still to review, red when critical).
 - A no-show opens on Review (its banner, Call again); a signed-off visit opens on Review. Switching Current → v2 on an open chart uses the same rule.
 - Screenshots (local): `product/reports/shots/daniel5-chart-billing-row-current.png`, `daniel5-chart-billing-row-v2.png`, `daniel5-v2-note-default.png`.
+
+
+## Left panel, 6 Oct
+
+Ani, 6 Oct, on Gloria's chart at 1440 px: the left column "scrolls weirdly and looks heavy". It was its own scroll box (cards clipped at the top under the crumb line and at the right edge), and it was seven separate big cards. Screenshots (local only): `product/reports/shots/leftpanel-gloria.png`, `leftpanel-gloria-scrolled.png`, `leftpanel-greg.png`, `leftpanel-arli.png`, `call-widget.png`, `call-widget-home.png`.
+
+**Scrolling.** The column is no longer a scroll container (no `overflow`, so no shadow, border or corner is ever cut). It moves with the page: pinned under the top bar while it fits the window; when an open row makes it taller than the window it scrolls with the page until its end (or start) shows, then holds (`v2Stick`, on scroll, resize and a ResizeObserver). Opening a row never moves the row you clicked. When the column is the tallest thing on the page it simply scrolls with the page. Under 1100 px it stacks above the work, as before. Chosen over "sticky with its own scroll as a fallback" because a second scrollbar was exactly the "separate from the page" feeling.
+
+**Anatomy**
+```
+Patient card   name, New patient, age · sex · PHN, Allergies, Family doctor, Call + Full chart (16 px padding, tighter)
+This visit     Phone · Callback 604-555-01xx (one line); "1 call · 00:04" after a call (quiet)
+               checks as rows: done = tick, label, value on its own line (wraps; never truncated)
+               open = label + one-tap answers:
+                 Location: At home in BC | Elsewhere in BC (asks where) | Outside BC (asks where; raises the outside-BC notice)
+                 ID verified: BC Services Card | Driver's licence | Name, DOB and PHN
+                 Consent: Record verbal consent
+                 Others present: No one | Someone (asks who and relationship)
+               Location and Others present have "Change" until sign-off (asked on every call)
+Patient summary (one card): Medications · History · Pending · Since you last saw · Previous visits
+               accordion rows split by thin lines: icon, title 15 px semibold, grey count, status chip ("1 overdue"), chevron
+               open row: soft grey background, content 14 px indented under the title (not indented at 1360 px and below)
+```
+
+**Rules**
+1. One place records a check: `csApplyCheck(key, answer)`. The Sign off popover's forms (`csConfirm`) and the inline answers (`v2Ans`) both call it, so the state, the outside-BC notice, "N checks left" on Sign off and the Finalize gate are shared and update at once. Finalize and its gates are unchanged.
+2. One summary row opens by itself per visit, never more: Pending when something is overdue (Gloria); Medications for a prescription renewal visit (Greg, "Rx renewal"); otherwise all rows start closed.
+3. Rows are `button` + `aria-expanded` + `aria-controls` inside an `h4` (the card title is the `h3`). Inline answers are buttons in a labelled group; after an answer focus moves to the next open check, or to the card title.
+4. Cards: 16 px padding, 12 px gaps, card titles 16 px semibold. Colour only for status (amber icon on an open check, the overdue chip).
+
+**Floating call widget** (Ani, 6 Oct, same day: "the call state should NOT live inside the patient card")
+- A dark ink pill in the top bar, centred over the work: pulsing green dot, "On call · full name", live timer, the callback number, Mute, Hold (amber dot and a hold timer), Keypad (a small dark panel under it) and End call (red, the only red). Buttons 40 px with aria-labels; Mute and Hold use `aria-pressed`. A polite live region speaks state changes only (started, muted, on hold, resumed, ended), never the timer. Reduced motion: no pulse.
+- It lives in the top bar, so it shows while scrolling, on every tab and on every screen, and never covers the tabs, Sign off or the MOA chat. At 1360 px and below it takes the page title's place while a call is on. The name returns to that patient's chart.
+- The call belongs to its patient (`PC_CALL_WHO`): opening another chart no longer ends it. One call at a time: Call on another patient asks in the widget, "End the call with Gloria to call Greg?" (End and call | Keep call). Finalize or Mark no-show on another chart does not end it.
+- End call: "Call ended · 04:12" for 3 seconds, then it goes. The card's button reads "Call again" (outline) and This visit keeps "N calls · mm:ss total". During the call the card shows only Full chart.
+- Billing: the call's real start (first call) and end (last call) fill the coding Time (start and stop) unless the doctor changed the time by hand (a logged change). Same call and timer functions as before.
+- Mute, Hold and Keypad are presentation in this demo; there is no telephony behind them.
+
+**Proof (headless Chrome, light, 1440 × 900 and 1280 × 800, `?nologin=1`).** All nine inline scripts pass `node --check`; console clean. All eight charts open with no horizontal scroll, the column has `overflow: visible` and no clipping ancestor, no text under 14 px in it. Accordion rows open and close by keyboard (Enter); inline answers by keyboard. Gloria: Finalize with checks missing opens the location form in the Sign off popover; "At home in BC" → "1 check left"; "Someone" + "Daughter, …" → no checks left; the popover's own forms still work and update the inline rows. Auto-open: Gloria Pending, Greg Medications, others none. Call widget: started on Gloria, through all three tabs, scrolled, Home and Claims and back by its name; no overlap with the tab bar, Sign off, the MOA chat or the top-bar controls at either size; Greg's chart opened during the call (call kept), Call asked to switch, Keep and End and call both work; Mute, Hold (timer), Keypad, End; billing time moved from the demo 9:12–9:24 to the call's times; the no-show "Call again" starts the widget.
+
+**Decisions made (Needs Ani to confirm)**
+1. "At home in BC" records the place as "At home in BC" (not the last known town, which the demo takes from the pharmacy and may not be home).
+2. Location options stack (three full-width rows) because three choices do not fit side by side in the 312 px column at 14 px.
+3. During this patient's call the card's Call button is hidden (the widget is the call); afterwards it is "Call again" as an outline.
+4. The widget sits in the top bar rather than below it, because anything floating below the bar would cover the sticky tab bar once the page scrolls.
