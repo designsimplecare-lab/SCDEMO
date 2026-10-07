@@ -166,35 +166,25 @@
   }
   /* the line leaves through the top and the next one arrives from below,
      so the set reads as one strip rolling upward rather than a cross-fade */
-  .vp-line,.vp-sub{
-    opacity:0;transform:translateY(10px);will-change:opacity,transform;
-    transition:opacity .7s cubic-bezier(.4,0,.2,1), transform .9s cubic-bezier(.16,1,.3,1);
-  }
-  .vp-line{
-    margin:0;font-size:29px;line-height:1.22;font-weight:700;letter-spacing:-.02em;
-    max-width:17ch;min-height:2.44em;
-  }
-  .vp-sub{
-    margin:10px 0 0;font-size:15px;line-height:1.45;color:rgba(255,255,255,.80);
-    max-width:36ch;min-height:2.9em;
-    transition-delay:.12s;
-  }
-  .vp.in .vp-line,.vp.in .vp-sub{opacity:1;transform:none;}
-  .vp.out .vp-line,.vp.out .vp-sub{opacity:0;transform:translateY(-8px);transition-duration:.5s,.5s;transition-delay:0s;}
-  /* the return to the starting point below must be a jump, not a journey —
-     tweened, it would carry the line down through the panel in full view */
-  .vp.noanim .vp-line,.vp.noanim .vp-sub{transition:none;}
-  /* the strip is clipped so a line is never caught half outside the panel */
-  .vp{overflow:hidden;}
+  /* Ani, 6 Oct: the lines cross-fade in place. Two stacked copies: the old one fades out while
+     the new one fades in from a soft blur, so the panel is never empty and nothing jumps. */
+  .vp-stack{position:relative;min-height:calc(29px*1.22*2 + 10px + 15px*1.45*2);}
+  .vp-item{position:absolute;left:0;right:0;bottom:0;opacity:0;filter:blur(6px);transform:scale(.985);transform-origin:left bottom;
+    transition:opacity .9s cubic-bezier(.4,0,.2,1), filter .9s cubic-bezier(.4,0,.2,1), transform 1.1s cubic-bezier(.16,1,.3,1);
+    will-change:opacity,filter,transform;pointer-events:none;}
+  .vp-item.on{opacity:1;filter:none;transform:none;}
+  .vp-item .vp-line{margin:0;font-size:29px;line-height:1.22;font-weight:700;letter-spacing:-.02em;max-width:17ch;}
+  .vp-item .vp-sub{margin:10px 0 0;font-size:15px;line-height:1.45;color:rgba(255,255,255,.80);max-width:36ch;}
   .vp-dots{display:flex;gap:6px;margin-top:18px;}
   .vp-dots i{
+    position:relative;overflow:hidden;
     width:18px;height:3px;border-radius:2px;background:rgba(255,255,255,.34);
     transition:background .6s ease;
   }
   .vp-dots i.on{background:#fff;}
 
   @media (prefers-reduced-motion: reduce){
-    .vp-line,.vp-sub{opacity:1;transform:none;transition:none;}
+    .vp-item{transition:none;filter:none;transform:none;}
   }
 
   /* Splash (Ani, 6 Oct): brand navy with the white logo for a moment, then the sign-in page.
@@ -238,8 +228,10 @@
 
     <div class="vp">
       <p class="vp-eyebrow">Virtual family practice, British Columbia</p>
-      <h2 class="vp-line" id="vp-line"></h2>
-      <p class="vp-sub" id="vp-sub"></p>
+      <div class="vp-stack" id="vp-stack" aria-live="polite">
+        <div class="vp-item on"><h2 class="vp-line"></h2><p class="vp-sub"></p></div>
+        <div class="vp-item" aria-hidden="true"><h2 class="vp-line"></h2><p class="vp-sub"></p></div>
+      </div>
       <div class="vp-dots" id="vp-dots" aria-hidden="true"></div>
     </div>
   </section>
@@ -280,7 +272,7 @@
   </section>
 </div>
 
-<div class="build-stamp">build 2026-10-06 22:40</div>
+<div class="build-stamp">build 2026-10-06 23:00</div>
 
 <script>
 /* the portals remember the theme; this page follows the same key so signing
@@ -333,35 +325,34 @@ var VALUE_PROPS = [
 ];
 
 var vpI = 0, vpTimer = null;
-var vpLine = document.getElementById('vp-line');
-var vpSub  = document.getElementById('vp-sub');
-var vpWrap = document.querySelector('.vp');
+var vpItems = document.querySelectorAll('#vp-stack .vp-item');
 var vpDots = document.getElementById('vp-dots');
-
-function vpPaint(){
-  var v = VALUE_PROPS[vpI];
-  vpLine.textContent = v.line;
-  vpSub.textContent  = v.sub;
-  [].forEach.call(vpDots.children, function(d, n){ d.classList.toggle('on', n === vpI); });
-  vpWrap.classList.add('in');
-}
+var vpOn = 0;
+function vpFill(el){ var v = VALUE_PROPS[vpI]; el.querySelector('.vp-line').textContent = v.line; el.querySelector('.vp-sub').textContent = v.sub; }
+function vpMarkDots(){ [].forEach.call(vpDots.children, function(d, n){ d.classList.toggle('on', n === vpI); }); }
 function vpNext(){
   if(document.hidden) return;                  /* nothing moves on a tab nobody is looking at */
-  vpWrap.classList.add('out');                 /* current line rises and fades */
-  vpWrap.classList.remove('in');
-  setTimeout(function(){
-    vpI = (vpI + 1) % VALUE_PROPS.length;
-    vpWrap.classList.add('noanim');            /* snap, don't slide, back to the start */
-    vpWrap.classList.remove('out');            /* now parked below the panel, unseen */
-    vpPaint();                                 /* new words, still out of sight */
-    void vpWrap.offsetHeight;                  /* commit that before re-enabling the tween */
-    vpWrap.classList.remove('noanim');
-    vpWrap.classList.add('in');                /* and it rises into place from below */
-  }, 560);
+  vpI = (vpI + 1) % VALUE_PROPS.length;
+  var cur = vpItems[vpOn], nxt = vpItems[1 - vpOn];
+  vpFill(nxt);
+  nxt.removeAttribute('aria-hidden'); cur.setAttribute('aria-hidden', 'true');
+  nxt.classList.add('on'); cur.classList.remove('on');   /* old fades out while the new fades in, same place */
+  vpOn = 1 - vpOn;
+  vpMarkDots();
 }
 (function vpStart(){
   VALUE_PROPS.forEach(function(){ vpDots.appendChild(document.createElement('i')); });
-  vpPaint();
+  vpFill(vpItems[0]); vpMarkDots();
+  /* the stack is as tall as the tallest line, so a 3-line one never runs into the eyebrow */
+  var stack = document.getElementById('vp-stack');
+  var size = function(){
+    var probe = vpItems[1], keep = vpI, mx = 0;
+    probe.style.visibility = 'hidden';
+    VALUE_PROPS.forEach(function(v, k){ vpI = k; vpFill(probe); mx = Math.max(mx, probe.offsetHeight); });
+    vpI = keep; vpFill(probe); probe.style.visibility = '';
+    stack.style.minHeight = mx + 'px';
+  };
+  size(); window.addEventListener('resize', size);
   var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(!still) vpTimer = setInterval(vpNext, 6000);
 })();
