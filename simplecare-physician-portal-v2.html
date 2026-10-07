@@ -5873,6 +5873,47 @@
   #ern-drw .ern-dmore .btn{min-height:40px;font-size:14px;}
   #ern-drw .ern-vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
   #ern-drw .ern-quiet{font-size:14px;color:var(--ink-soft);}
+  /* ===== Batch C (2), lead brief 6 Oct: Home start-of-day card. The slim strip pattern (Claims, Earnings): one white bar,
+     sections divided by hairlines, each section one button. Colour only on icons: red only for a critical result
+     not reviewed, amber only for a claim near its deadline. ===== */
+  #screen-today .hsd{margin:0 0 22px;}
+  #screen-today .hsd:empty{display:none;}
+  #screen-today .hsd-strip{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  #screen-today .hsd-sec{position:relative;flex:1 1 0;min-width:0;display:flex;align-items:flex-start;gap:12px;padding:12px 16px;}
+  #screen-today .hsd-sec + .hsd-sec{border-left:1px solid var(--line);}
+  #screen-today .hsd-sec:first-child{flex-grow:1.3;}   /* the visits line is the longest */
+  #screen-today .hsd-tx .vs .s{white-space:nowrap;}
+  #screen-today .hsd-sec:hover{background:var(--wash);}
+  #screen-today .hsd-go{position:absolute;inset:0;z-index:1;width:100%;height:100%;border:0;background:none;padding:0;margin:0;cursor:pointer;border-radius:0;}
+  #screen-today .hsd-go:focus-visible{outline:2px solid var(--accent);outline-offset:-3px;border-radius:10px;}
+  #screen-today .hsd-ic{flex:none;display:inline-flex;margin-top:2px;color:var(--ink-soft);}
+  #screen-today .hsd-ic.crit{color:var(--crit);}
+  #screen-today .hsd-ic.warn{color:var(--warn);}
+  #screen-today .hsd-ic .ic,#screen-today .hsd-ic svg{width:22px;height:22px;}
+  #screen-today .hsd-tx{min-width:0;}
+  #screen-today .hsd-tx .k{margin:0 0 2px;font-size:14px;font-weight:500;color:var(--ink-soft);}
+  #screen-today .hsd-tx .vs{margin:0;display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 8px;}
+  #screen-today .hsd-tx .v{font-size:20px;font-weight:700;line-height:1.2;color:var(--ink);font-variant-numeric:tabular-nums;}
+  #screen-today .hsd-tx .s{font-size:14px;color:var(--ink-soft);}
+  #screen-today .hsd-tx .s2{margin:2px 0 0;font-size:14px;color:var(--ink-soft);}
+  /* the second link in the Inbox section (unread MOA messages) sits above the section's own button */
+  #screen-today .hsd-msg{position:relative;z-index:2;display:inline-flex;align-items:center;gap:6px;margin:4px 0 0;padding:4px 8px 4px 6px;margin-left:-6px;border:0;border-radius:8px;
+    background:none;font:inherit;font-size:14px;color:var(--ink);cursor:pointer;text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px;}
+  #screen-today .hsd-msg:hover{background:var(--panel);text-decoration-color:var(--ink-soft);}
+  #screen-today .hsd-msg:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+  #screen-today .hsd-msg .ic,#screen-today .hsd-msg svg{width:18px;height:18px;color:var(--ink-soft);}
+  #screen-today .hsd-clear{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--panel);border:1px solid var(--line);border-radius:12px;font-size:15px;color:var(--ink-soft);}
+  #screen-today .hsd-clear b{color:var(--ink);font-weight:600;}
+  #screen-today .hsd-clear .ic,#screen-today .hsd-clear svg{width:22px;height:22px;color:var(--ink-soft);}
+  #screen-today .work-tabs{scroll-margin-top:104px;}   /* clears the sticky top bar when the card scrolls to the queue */
+  #screen-today .lq-head .sect-title:focus{outline:none;}
+  #screen-today .lq-head .sect-title:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:6px;}
+  @media (max-width:1100px){
+    #screen-today .hsd-strip{flex-wrap:wrap;}
+    #screen-today .hsd-sec{flex:1 1 45%;}
+    #screen-today .hsd-sec:nth-child(3){border-left:0;}
+    #screen-today .hsd-sec:nth-child(n+3){border-top:1px solid var(--line);}
+  }
 </style>
 </head>
 <body>
@@ -5962,6 +6003,11 @@
       <div class="ia-note">IA change: merges Dashboard, Daysheet's queue, and Calendar's day-view into a single canonical screen. Reordered by how time-sensitive each thing is: alerts and the live queue first (act now), then your own outstanding tasks, then lower-priority previews and logs pushed to the bottom. MOA online status moved off this screen entirely — it's ambient "peace of mind" info, not something that should compete with clinical content for space, so it now lives as a small dot on the chat button instead.</div>
 
 
+
+      <!-- Batch C (2), lead brief 6 Oct: one calm start-of-day card above Needs attention, not a dashboard. One slim strip:
+           visits today, critical results, claims near deadline (the single billing count Daniel allows on Home), inbox.
+           Counts come from the same sources as the queue, Needs attention, Claims and Inbox. -->
+      <section class="hsd" id="hsd" aria-label="Your day at a glance"></section>
 
       <p class="sect-title">Needs your attention</p>
       <div class="box" id="alerts-box">
@@ -17335,7 +17381,96 @@ function t23LogVisit(name, oldV, newV){ t23LogEdits(oldV, T23_DR, t23ChangeList(
   }).observe(ov, {attributes:true, attributeFilter:['class']});
   drwShape(ov.firstElementChild);
 })();
+
+/* ---------- (2) Home start-of-day card (lead brief, 6 Oct) ----------
+   One calm strip above Needs attention. Every count reads the source its own screen reads:
+   - Visits today: QUEUE_DATA (today's queue). Booked = every visit on today's list; done = 'done'; in queue = not done and
+     not a no-show (the Live queue count, updateWorkCounts). Next window from BC_WINDOWS on the BC clock (the top-bar pill).
+   - Critical results: INBOX_ITEMS still 'received' with labTier 'critical' (renderCriticals' list, critical tier only);
+     opens the first one, in Needs attention's order. Red icon only when there is one.
+   - Claims near deadline: t23StaleList() (the Needs attention row, 5 days or fewer); opens Claims on Needs submission.
+     Daniel (5 Oct): Home is clinical; this single count is the only billing on Home.
+   - Inbox: INBOX_ITEMS 'received' (the Inbox's Needs review count), plus the MOA chat's unread messages (the chat badge).
+   Nothing waiting anywhere and nobody in the queue: one line, "All clear for now". */
+function hsdNextWindow(){
+  if(typeof BC_WINDOWS === 'undefined' || !BC_WINDOWS.length) return 'No call windows today';
+  var bc = zoneParts(new Date(), BC_ZONE), mins = bc.h * 60 + bc.m;
+  for(var i = 0; i < BC_WINDOWS.length; i++){
+    var w = BC_WINDOWS[i];
+    if(mins < w.start * 60) return 'Next window ' + winRange(w);
+    if(mins < w.end * 60) return 'Now in the ' + winRange(w) + ' window';
+  }
+  return 'Next window tomorrow ' + hLabel(BC_WINDOWS[0].start);
+}
+function hsdCounts(){
+  var q = typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : [];
+  var open = q.filter(function(r){ return r.status !== 'done' && r.status !== 'noshow'; }).length;
+  var done = q.filter(function(r){ return r.status === 'done'; }).length;
+  var items = typeof INBOX_ITEMS !== 'undefined' ? INBOX_ITEMS : [];
+  var crit = items.filter(function(it){ return it.status === 'received' && labTier(it) === 'critical'; });
+  var recv = items.filter(function(it){ return it.status === 'received'; }).length;
+  var near = typeof t23StaleList === 'function' ? t23StaleList().length : 0;
+  var msgs = typeof chatUnreadTotal === 'function' ? chatUnreadTotal() : 0;
+  return {booked:q.length, open:open, done:done, crit:crit, recv:recv, near:near, msgs:msgs};
+}
+function hsdRender(){
+  var el = document.getElementById('hsd'); if(!el) return;
+  var c = hsdCounts(), win = hsdNextWindow();
+  if(!c.open && !c.crit.length && !c.near && !c.recv && !c.msgs){
+    hsdSet(el, '<div class="hsd-clear"><span class="ic" data-pdic="complete"></span><b>All clear for now</b><span>' + t23E(win) + '</span></div>'); return;
+  }
+  var sec = function(go, label, icon, tone, k, v, s, s2, extra){
+    return '<div class="hsd-sec"><button type="button" class="hsd-go" onclick="hsdGo(\'' + go + '\')" aria-label="' + t23E(label) + '"></button>' +
+      '<span class="hsd-ic' + (tone ? ' ' + tone : '') + '">' + t23Ic(icon) + '</span>' +
+      '<div class="hsd-tx"><p class="k">' + k + '</p><p class="vs"><span class="v">' + v + '</span><span class="s">' + s + '</span></p>' +
+      (s2 ? '<p class="s2">' + s2 + '</p>' : '') + (extra || '') + '</div></div>';
+  };
+  var first = c.crit[0], critWho = first ? first.patient : '';
+  var visitsWords = c.booked + ' booked · ' + c.done + ' done · ' + c.open + ' in queue';
+  var msg = c.msgs ? '<button type="button" class="hsd-msg" onclick="hsdGo(\'msgs\')" aria-label="' + c.msgs + ' unread ' + (c.msgs === 1 ? 'message' : 'messages') + ' from your MOA, open the chat">' +
+    t23Ic('chat') + c.msgs + ' unread ' + (c.msgs === 1 ? 'message' : 'messages') + '</button>' : '';
+  hsdSet(el, '<div class="hsd-strip">' +
+    sec('visits', 'Visits today: ' + visitsWords + '. ' + win + '. Go to the live queue', 'phone', '', 'Visits today', c.booked,
+        'booked · ' + c.done + ' done · ' + c.open + ' in queue', t23E(win)) +
+    sec('crit', c.crit.length ? 'Critical results: ' + c.crit.length + ' not reviewed. Review ' + critWho : 'Critical results: none waiting. Open the Inbox',
+        c.crit.length ? 'crit' : 'complete', c.crit.length ? 'crit' : '', 'Critical results', c.crit.length,
+        c.crit.length ? 'not reviewed' : 'none waiting', c.crit.length ? t23E(critWho) + (c.crit.length > 1 ? ' and ' + (c.crit.length - 1) + ' more' : '') : '') +
+    sec('claims', 'Claims near deadline: ' + c.near + ' with ' + T23_STALE_HOME + ' days or fewer left. Open Claims, Needs submission', 'clock', c.near ? 'warn' : '',
+        'Claims near deadline', c.near, c.near ? 'with ' + T23_STALE_HOME + ' days or fewer left' : 'none within ' + T23_STALE_HOME + ' days', '') +
+    sec('inbox', 'Inbox: ' + c.recv + ' to review. Open the Inbox', 'inbox', '', 'Inbox', c.recv, c.recv ? 'to review' : 'nothing to review', '', msg) +
+  '</div>');
+}
+/* only touch the DOM when a count changed, so focus on a section survives the queue's frequent re-renders */
+function hsdSet(el, html){
+  if(el._hsd === html) return;
+  var a = document.activeElement, keep = el.contains(a) ? (a.classList.contains('hsd-msg') ? '.hsd-msg' : a.getAttribute('onclick')) : null;
+  el._hsd = html; el.innerHTML = html; paintPd(el);
+  if(keep){ var b = keep === '.hsd-msg' ? el.querySelector('.hsd-msg') : el.querySelector('[onclick="' + CSS.escape(keep) + '"]'); if(b) b.focus(); }
+}
+function hsdGo(k){
+  if(k === 'visits'){
+    if(typeof dayOffset !== 'undefined' && dayOffset !== 0 && typeof goToday === 'function') goToday();
+    var t = document.querySelector('#screen-today .lq-head .sect-title'), box = document.getElementById('work-queue');
+    var wt = document.querySelector('#screen-today .work-tabs');
+    if(t){ t.setAttribute('tabindex', '-1'); (wt || t).scrollIntoView({behavior:'smooth', block:'start'}); t.focus({preventScroll:true}); }
+    else if(box) box.scrollIntoView({behavior:'smooth', block:'start'});
+    return;
+  }
+  if(k === 'crit'){
+    var c = hsdCounts().crit[0];
+    if(c){ openReview(INBOX_ITEMS.indexOf(c)); return; }
+    k = 'inbox';
+  }
+  if(k === 'claims'){ ernOpenClaims('ns'); return; }
+  if(k === 'inbox'){ showScreen('inbox'); if(typeof ixTab === 'function') ixTab('recv'); var tb = document.getElementById('ixt-recv'); if(tb) tb.focus(); return; }
+  if(k === 'msgs'){ var p = document.getElementById('chat-panel'); if(p && !p.classList.contains('show')) toggleChatPanel(); }
+}
+/* the card follows every change to the counts it reads */
+['renderCriticals', 't23RenderStale', 'updateWorkCounts', 'updateChatBadge', 'renderInboxList', 'renderQueue', 'openThread'].forEach(function(n){ baWrap(n, function(){ hsdRender(); }); });
+baWrap('showScreen', function(r, name){ if(name === 'today') hsdRender(); });
+hsdRender();
+setInterval(function(){ var s = document.getElementById('screen-today'); if(s && s.classList.contains('active')) hsdRender(); }, 60000);   /* the next window moves with the clock */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 06:45 · Batch C</div>
+  <div class="build-stamp">v2 · build 2026-10-07 07:05 · Batch C</div>
 </body>
 </html>

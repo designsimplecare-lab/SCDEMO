@@ -42,7 +42,7 @@ The sidebar item is **Earnings**, placed right after Claims. Its icon is the Mag
 
 7. **The numbers behind a number** (Batch C). See below.
 
-**The Assistant** answers "how much did I make this month" (or "earnings", "next payment" and similar) with the strip's numbers and an **Open Earnings** button. Home is unchanged.
+**The Assistant** answers "how much did I make this month" (or "earnings", "next payment" and similar) with the strip's numbers and an **Open Earnings** button. Home shows no earnings: its start-of-day card carries only the "Claims near deadline" count (see `home-summary.md`).
 
 ## Data assumptions (prototype)
 - **Today** is the portal's demo today, **Sat 3 Oct 2026** (`T23_TODAY`), everywhere.
