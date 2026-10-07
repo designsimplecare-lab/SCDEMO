@@ -1,5 +1,62 @@
 # T-023 billing: build notes
 
+## Dev answers, 6 Oct
+
+`ux-designer`, 6 Oct 2026. Dev answered our 13 billing questions (6 Oct 2026; the answers stay in `private/`, git-ignored, and are cited here only for public MSP rules and our design choices). Files: `simplecare-physician-portal-v2.html` and `simplecare-moa-portal.html` (same data on the hidden billing screen). Light mode only. Committed locally as "Dev answers (part 1)" … "(part 9)"; not pushed or deployed. Where this section and older sections differ, this one wins.
+
+**Part 1, fee codes (Dev answer 05; MSC Payment Schedule 31 May 2026 p.7-6/7-7, MSP fee file 1 Jul 2026).**
+- DEMO-1…5 and the guessed age bands are gone. The visit code is picked from the age on the visit date: 13237 (0–1) $41.42 · 13437 (2–49) $38.61 · 13537 (50–59) $41.42 · 13637 (60–69) $43.29 · 13737 (70–79) $48.76 · 13837 (80+) $56.47. 13637 uses $43.29, what MSP pays (the printed schedule says $43.27).
+- Counselling 13238 $82.84 · 13438 $77.24 · 13538 $82.84 · 13638 $86.57 · 13738 $97.52 · 13838 $112.93: at least 20 minutes, start and end time on the claim, at most 4 per patient per year (shown as a rule line; we don't count uses yet).
+- "Your coding" no longer has a fee list (MSP refuses a code that doesn't match the age). The fee line shows code, name, amount and "Set from age · N". When the call lasted 20 minutes or more: "This call lasted N min · counselling eligible" with **Switch to counselling (13x38)**; on a counselling code: the rule line and **Back to the visit code**. Same offer in the claim drawer (claims that can still change) and the chart billing row ("Switch to counselling (13438)" on Behdis's 24-minute demo call; Gloria's 12-minute call shows none).
+- Counselling with no times (or under 20 minutes) shows the submit check's message, word for word, in Your coding, the claim drawer, the chart billing row ("Add time"), Needs submission ("Needs info · Doctor") and on Submit / Sign off & submit: "Counselling needs the call's start and end time on the claim. Add both to submit it." Times may now be left empty; if given, stop must be after start.
+- Totals: every sum reads `t23Amt` (the real fee): Claims tiles, the Earnings generator (fee mix now 13237 2%, 13437 54%, 13537 14%, 13637 12%, 13737 9%, 13837 4%, 13438 3%, 13638 2%, generated), Earnings "Money at risk". Paid demo claims: Behdis (2 Sep) $38.61; Grace (10 Sep) paid $38.61 of $41.42. "Paid this cycle" now reads $77.22 · 2. Private pay unchanged.
+
+**Part 2, explanatory codes (Dev answer 01; MSP list dated 1 Jul 2026).** EX-D… are gone. `assets/data/msp-explanatory-codes.json` holds the 202 hand-written rows with only the public columns (code, MSP wording, plain language, category, outcome, who fixes, how to fix). Production counts, "seen in prod", sources and internal check names were stripped; sentences about our own past refusals were removed from the plain-language and how-to text. The codes the demo uses are inlined in the portal (`T23_EX`).
+- Mapping: name/initials mismatch → **AM** (Carol-Anne, 29 Sep; billing agent fixes); amount doesn't match the fee code → **BJ** (new demo claim, Frank D. 21 Sep; billing agent re-prices); counselling without times → **CF** (new, Nadia 16 Sep, 13638; doctor adds times); diagnosis missing/invalid → **YY · VN** (Nadia 15 Jul; YY is never shown alone); duplicate paid $0 → **HX** (new, Owen 8 Sep, Closed — not paid); held → **BH** (Owen 25 Aug: "MSP will decide on a later statement. Don't resend."); too late → **BV** (new, Grace 5 Jun, Closed — not paid); resent without a note → **YY · YA** (new, Andrey 14 Sep; billing agent adds the note).
+- **Our choices** (Ani to confirm): the "refused but looks correctly billed" reassess case (Andrey, 5 Sep) uses **ED**, "insufficient medical necessity": the one curated refusal a doctor would dispute by explaining, which fits "Sign off & ask MSP to reassess". The old "fee item not payable with this diagnosis" (Behdis, 12 Sep) maps to **BI**, "fee item and diagnosis do not correspond", its exact MSP equivalent (BJ got its own claim). The old "paid at a lower amount" (Grace) uses **HC**, "paid under the indicated fee item" (paid as 13437).
+- Statement codes now sit on payment dates (BI 29 Sep, ED 15 Sep, HC/HX/BH 29 Sep); front-door refusals arrive the next business day after sending (AM 1 Oct, since 30 Sep is a holiday).
+- The claim drawer's MSP response: the date and code(s), then **What it means**, **Who fixes it**, **How**, and "MSP's words" one click away.
+
+**Part 3, diagnosis list (Dev answer 06).** `assets/data/bc-msp-diagnostic-codes.json` regenerated from Dev's MSP list (7,196 codes: MSP's Teleplan list plus Dr. Pannozzo's 4 Oct list, with our plain-English keywords): 6,226 leaf codes (was 6,168), about 440 KB. Existing rows keep their sentence-case text and flags; Dev's keywords are merged into the search words; 59 new leaf codes (mostly MSP's chronic-condition combination codes, LFP, COVID-19, MAID, chronic pain syndrome 338.4) get sentence-case text. Search behaviour unchanged. "suicide" and "suicidal ideation" now return 311, 50B, 300.4 (3004) and V62.8 (V628) first.
+
+**Part 4, submission (Dev answer 08).** There is no end-of-day batch. "Everything submitted today goes to MSP in one batch at the end of the day" → "Claims go to MSP as soon as you submit. MSP processes them at 7 PM each business day." The sign-off help, toasts, sub-lines and history say "Sent to MSP … MSP processes it at 7 PM". "Next close-off Tue 20 Oct · paid Fri 30 Oct" kept.
+
+**Part 5, deadlines (Dev answer 03).** First submission: the visit day is day 0, so the last day is visit + 90 (8 Jul → 6 Oct); the countdown already matched, the words now say so and name the last day ("4 days left to submit · last day Wed 7 Oct"; "Last day today" at 0). Refused: 90 days from the statement date that refused it (`msp.on`); the drawer says "N days left to fix and resend · last day …" and How we count this explains it. A corrected refusal keeps that clock.
+
+**Part 6, statuses (Dev answer 02 §5).** Chip labels are Dev's 7 states, from one function (`t23Label`): Needs info · Doctor / Billing (a submit check blocks it: question, diagnosis, counselling times, name check), Ready to send, Sent — waiting for MSP (also "resent with a note, asking MSP to reassess"), Held by MSP, Refused — fix & resend (also the reassess case and the claims the billing agent fixes), Paid / "Paid $x of $y", Closed — not paid. Used in Claims rows, the claim drawer title, the queue billing column and the chart billing row. In Needs submission a chip shows only for Needs info (display by exception). Colours: amber for Needs info, Held, Refused and an undecided underpayment; blue for Ready and Sent; green for Paid; neutral for Closed. No new red. The tab names (Rejected by MSP, Needs submission, Submitted, Paid, All) are unchanged.
+
+**Part 7, name check (Dev answer 09).** Gloria McDonald's 24 Sep claim (registered name has 3 words): "Needs info · Billing", "Patient name not yet confirmed by MSP" and **Check with MSP now** (in Needs submission and the drawer). Pressing it: "Sent to MSP · answer next business day", logged in the history; Submit stays blocked until MSP answers. Greg (Gregory Paul Nakashima) is private pay in the demo, so he has no MSP claim.
+
+**Part 8, history (Dev answer 04).** Every demo claim has a history built from Dev's event types: claim created from the visit (code, amount, diagnosis), edited old → new, blocked by check, name check sent / answered, sent to MSP, refused + code + meaning, held, paid $ + date, paid a different amount, paid $0 duplicate, resent with a note, closed. Who: Dr. Pannozzo, Japneet (billing agent), MSP, or SimpleCare (automatic). Newest first, collapsed after five.
+
+**Open questions from Dev's answers (for Ani to send; no production figures here).**
+*Daniel*
+1. Write-offs: should there be a "written off / closed" status, and who decides when to give up on a refused claim? (The demo shows "Closed — not paid" for a duplicate and a too-late claim.)
+2. Who is the billing agent: staff, an outside agency, or both? Should doctors see MSP codes and fix their own claims? (The demo shows the codes to the doctor.)
+3. After a refusal, does the doctor fix and resend the same claim, or create a new linked one?
+4. Should claims show days left and warn from day 75? Should Claims show the next close-off and any unsent ready claims? (The demo shows both.)
+5. Should claims be sent automatically before close-off, or stay manual? (The demo stays manual.)
+6. Are phone counselling claims (13x38) paid? The schedule says counselling by telephone is not a benefit in one place and counts phone as telehealth in another.
+7. Should a 5th counselling claim in a year be blocked rather than warned? Can several calls add up to 20 minutes? Is a voicemail billable?
+8. Are 311 / 50B / 300.4 / V62.8 the right codes for suicidal ideation?
+9. Earnings: net or gross? Per doctor or per payee? Can doctors see each other's?
+10. Unpaid payment links: reminders (how often, email or SMS)? What happens at 30 days? Should MOAs see the clinic-wide list?
+11. Should the history name the physician assistant who made an edit, or the supervising doctor?
+
+*HIBC / MSP*
+12. Is the visit day day 0? Does "submitted" mean received by Teleplan or processed in the 7 PM run?
+13. For a front-door refusal that never appears on a statement, which date starts the 90-day resend clock? (The demo counts from the refusal date.)
+14. Does taking back a paid claim (code E) have a 90-day limit?
+
+*Ours (Ani)*
+- The ED / BI / HC choices above.
+- Rename the "Rejected by MSP" tab and tile to "Refused by MSP" to match MSP's and Dev's word? Not done.
+- Dev suggests red for "Refused"; we kept amber (rule 21).
+
+Dev's engineering follow-ups are internal and stay in the private folder.
+
+**Verification (6 Oct).** `node --check` on every inline script (9 in the physician portal, 1 in the MOA portal): all pass. Headless Chrome 1440 × 900, `?nologin=1`, local server: console clean in both portals (only the local server's favicon 404). Fee code by age for every demo patient: Frank D. 71 → 13737, Owen 38 → 13437, Gloria 74 → 13737, Grace 52 → 13537, Behdis 35 → 13437, Andrey 24 → 13437, Carol-Anne 44 → 13437, Nadia 67 → 13637, Greg 58 → 13537, Manjit 66 → 13637, K Arli 41 → 13437. Counselling: Behdis (24 min) offers Switch to counselling (13438) → 13438 $77.24; clearing the times shows the blocking message; Gloria (12 min) shows no offer. "suicide" → 311, 50B, 300.4, V62.8 first. Totals: Needs submission 8 · $331.99 = the sum of its rows; Rejected by MSP 5 · $209.89 = Earnings "Money at risk" $209.89 · 5; Paid this cycle 2 · $77.22. Name check: Check with MSP now → "Sent to MSP · answer next business day" and a history line. No "DEMO-", "EX-D", "DX-D", "Demo value", "Needs Daniel" or "placeholder" in either page's text. Smallest text in Claims, the drawer and Your coding: 14 px; 0 red text in the Rejected tab. Screenshots (local): `product/reports/shots/devdata-claims.png`, `devdata-claim-drawer.png`, `devdata-coding-counselling.png`.
+
 ## Real data, 6 Oct (Ani)
 
 `ux-designer`, 6 Oct 2026. Ani sent real data; rule: nothing in the UI says demo, placeholder or Needs Daniel (open questions live here and in code comments only). Committed locally as "Real data (part 1)" and "(part 2)"; not pushed or deployed.
@@ -11,8 +68,8 @@
 - Display text: ALL CAPS turned into sentence case (a few acronyms such as HIV kept). A child that reads as a fragment ("UNSPECIFIED", "OF VULVA AND VAGINA", "NOT SPECIFIED AS MALIGNANT OR BENIGN") is joined to its parent: "Candidiasis of vulva and vagina", "Essential hypertension, not specified as malignant or benign". **Assumption:** the joining rule is ours, not MSP's; the code is always shown as is.
 - "Can't find it? Open BC's full diagnostic code list" links to the gov.bc.ca page above (new tab), under the results and when nothing matches. If the list fails to load: "The diagnosis list didn't load…" with try again.
 - Demo codes replaced: DX-D1 chest pressure → 786.5 Chest pain; DX-D2 follow-up → V67.9 Follow-up examination, unspecified; DX-D3 yeast infection → 112.1 Candidiasis of vulva and vagina; DX-D4 iron deficiency → 280 Iron deficiency anaemias (280 is itself a leaf in this list; there is no 280.9); DX-D5 back pain → 724.2 Lumbago; DX-D6 lab review → V72.6 Laboratory examination; DX-D7 prescription renewal → V68.1 Issue of repeat prescriptions; DX-D8 high blood pressure → 401.9; DX-D9 rash → 782.1; DX-D10 UTI → 599.0; DX-D11 cold sore → 054.9; DX-D12 sinus → 461.9; DX-D13 common cold → 460; DX-D14 anxiety → 300.0; DX-D15 depression → 311; fever → 780.6. Same codes in the MOA portal's billing items (hidden screen).
-- Fee codes (DEMO-1…5) and explanatory codes (EX-D…) are unchanged until Ani sends the real ones.
-- **Needs Daniel:** searching "suicide" (or "suicidal") finds nothing in this list (Daniel's complaint). Which code should be used for suicidal ideation, and which search words should we add to it? Also: is V72.6 right for a lab-review visit, and V67.9 for a general follow-up?
+- Fee codes (DEMO-1…5) and explanatory codes (EX-D…) are unchanged until Ani sends the real ones. *(Replaced 6 Oct: see Dev answers.)*
+- *(Answered 6 Oct: "suicide" now finds 311, 50B, 300.4 and V62.8; see Dev answers.)* **Needs Daniel:** searching "suicide" (or "suicidal") finds nothing in this list (Daniel's complaint). Which code should be used for suicidal ideation, and which search words should we add to it? Also: is V72.6 right for a lab-review visit, and V67.9 for a general follow-up?
 
 **Part 2, MSP 2026 close-off and payment schedule:** source https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/msp/claim-submission-payment/designated-holidays-and-close-off-dates (Ani's figures, 6 Oct). Inlined in the portal as `T23_MSP_2026` (24 close-off → payment pairs and the 13 designated holidays; small, so no separate file).
 - "Paid this cycle" now counts only MSP claims paid on the most recent payment date on or before the demo "today" (Sat 3 Oct → 29 Sep); the tile reads "$55.00 · Paid 29 Sep". The two demo paid claims (Behdis, 2 Sep visit; Grace, 10 Sep visit, adjusted) were moved to the 29 Sep payment (visits before the 17 Sep close-off); Grace's adjustment date moved from 24 Sep to 29 Sep with it, so her rejection countdown reads 86 days instead of 81.

@@ -55,13 +55,13 @@ Daniel reviewed the billing demo with Ani on 5 Oct 2026; Ani approved the change
 
 **Rejected by MSP**
 - Keeps Correct, Dispute and "ask MSP to reassess", the claim details and history, and the link to the related visit (Daniel liked it).
-- Each rejected claim counts down from the rejection date: about 90 days to fix it ("about 3 months"; the exact window per rejection type Needs Daniel and Dev). Dev to supply the full list of rejection types.
+- Each rejected claim counts down from the rejection date: about 90 days to fix it ("about 3 months"; the exact window per rejection type Needs Daniel and Dev). Dev to supply the full list of rejection types. *(6 Oct: 90 days from the statement date that refused it; MSP's real codes. See "Dev answers, 6 Oct".)*
 - A corrected claim goes back to Needs submission, keeps the rejection's countdown, and the doctor submits it himself.
 
 **Needs submission**
 - One merged list of every MSP claim not submitted yet, for any reason. The product doesn't ask or track why.
-- No batch sign-off and no include checkboxes. Each claim has its own **Submit claim** button. The doctor submits one at a time; the system sends the day's submitted claims to MSP in one batch at the end of the day (said once, in a quiet line).
-- A day countdown on each claim: 90 days from the date of service; the visit day is day 90, the next day day 89 (Daniel will double-check the rule). Sorted fewest days left first.
+- No batch sign-off and no include checkboxes. Each claim has its own **Submit claim** button. The doctor submits one at a time; the system sends the day's submitted claims to MSP in one batch at the end of the day (said once, in a quiet line). *(6 Oct: wrong; there is no batch. See "Dev answers, 6 Oct".)*
+- A day countdown on each claim: 90 days from the date of service; the visit day is day 90, the next day day 89 (Daniel will double-check the rule). Sorted fewest days left first. *(6 Oct: the visit day is day 0; the last day is visit + 90.)*
 - Chip tones (proposal, Needs Daniel): neutral; amber at 10 days or fewer; stronger amber at 5 or fewer; critical red only at 2 days or fewer (48 hours). This is the only red in billing (rule 21: red is critical only). Daniel's own proposal adds an automatic alert to the doctor's inbox at 48 hours: not built, Needs Daniel.
 - The simulated code check stays, asked once per session.
 
@@ -78,7 +78,7 @@ Daniel reviewed the billing demo with Ani on 5 Oct 2026; Ani approved the change
 - The physician-assistant viewer switch on Claims: Japneet now appears in billing as the billing agent, so it no longer made sense.
 
 **Coding ("Your coding")**
-- "Fee item" is renamed **Fee code**. Fee codes are deterministic by the patient's age (about 5 codes): the code is set automatically from the age ("Set from age · 74") and can still be changed from the short list. The real codes and age bands Need Daniel.
+- "Fee item" is renamed **Fee code**. Fee codes are deterministic by the patient's age (about 5 codes): the code is set automatically from the age ("Set from age · 74") and can still be changed from the short list. The real codes and age bands Need Daniel. *(6 Oct: real codes; no list, only visit or counselling. See "Dev answers, 6 Oct".)*
 - **Diagnosis (ICD-9):** a search box only. Results appear only after typing (for example "back pain", "UTI", "cold sore"). No long list, no free text. AI pre-fills it. If nothing is found: "Can't find it? Open the ICD-9 source list" (Daniel has the source document and list; link Needs Daniel).
 - Removed: units, service location, referring practitioner and the whole Disposition section.
 - **Time:** start and stop, filled from the call, editable; every change is logged. Time matters for time-based codes.
@@ -95,6 +95,28 @@ Daniel reviewed the billing demo with Ani on 5 Oct 2026; Ani approved the change
 - An outstanding payment link has "Ask the MOA to follow up" (doctor → MOA, rule 12).
 
 **Later (not in this build):** an analytics page: earnings by remittance cycle and by period, and volume by weekday.
+
+---
+
+## Dev answers, 6 Oct
+
+Dev answered our 13 billing questions on 6 Oct 2026 (answers kept private; public MSP rules only here). **These rules replace the parts of "Daniel review, 5 Oct" and the older sections they contradict.** Build: `ux-designer`, 6 Oct; details, mapping choices and open questions in `billing-build-notes.md`, "Dev answers, 6 Oct".
+
+**Fee codes.** MSP telehealth codes, picked automatically from the patient's age on the visit date; the doctor never picks a visit code. Visit: 13237 (0–1) $41.42, 13437 (2–49) $38.61, 13537 (50–59) $41.42, 13637 (60–69) $43.29, 13737 (70–79) $48.76, 13837 (80+) $56.47. Counselling: 13238–13838 ($77.24–$112.93), at least 20 minutes, start and end time on the claim, at most 4 per patient per year. Every claim starts as the visit code; when the call lasted 20 minutes or more, "Switch to counselling (13x38)" is offered (Your coding, the claim drawer, the chart billing row). The system never switches on its own. A counselling claim without times can't be submitted, with one message everywhere.
+
+**Explanatory codes.** MSP's real codes (list dated 1 Jul 2026). The claim shows the code(s), what they mean, who fixes it and how. YY (and DR, HK) are wrappers, never shown alone: "YY · VN". Held (BH): "MSP will decide on a later statement. Don't resend."
+
+**Diagnosis list.** MSP's list plus Dr. Pannozzo's 4 Oct codes, with plain-English search words; "suicide" finds 311, 50B, 300.4 and V62.8.
+
+**Submission.** No end-of-day batch: a claim goes to MSP the moment the doctor presses Submit. MSP processes what it received at 7 PM Pacific each business day; twice a month that run is the payment close-off, and anything later rolls to the next one. Copy: "Claims go to MSP as soon as you submit. MSP processes them at 7 PM each business day."
+
+**Deadlines.** First submission: the visit day is day 0, the last day is the visit date + 90 days (8 Jul → 6 Oct). A refused claim: resend with a note within 90 days of the statement date that refused it.
+
+**States.** Dev's seven user-facing states are the chip labels everywhere: Needs info (+ Doctor / Billing), Ready to send, Sent — waiting for MSP, Held by MSP, Refused — fix & resend, Paid ("Paid $x of $y" when they differ), Closed — not paid. Amber for the needs-attention states; red only on the 2-days-left chip and tab count badges.
+
+**Name check.** A 3+ word name MSP hasn't confirmed: "Patient name not yet confirmed by MSP" with "Check with MSP now"; the answer comes the next business day and the claim waits.
+
+**History.** Dev's event types with doctor-facing labels (created, edited old → new, blocked by check, name check, sent to MSP, refused + code + meaning, held, paid $ + date, adjusted, resent with a note, closed); newest first, collapsed after five.
 
 ---
 
