@@ -760,6 +760,80 @@
   .build-stamp{position:fixed;left:8px;bottom:4px;z-index:999;font-size:10px;
     letter-spacing:.03em;color:rgba(23,24,28,.30);pointer-events:none;font-family:inherit;}
   :root[data-theme="dark"] .build-stamp{color:rgba(255,255,255,.28);}
+
+  /* ============================================================
+     PATIENT PORTAL CLEANUP (Ani, 6 Oct 2026), in line with the physician portal:
+     text 14 px or more, sentence case, calm colour (red only for the emergency message),
+     tags that wrap inside their box, 44 px tap targets, slim lab summary strip.
+     ============================================================ */
+  /* no uppercase styling anywhere (rule 23) */
+  html body *{text-transform:none !important;}
+  html body :is(.brand-tag,.notif-title,.lofi-tag,.who-tag,.today-eyebrow,.stat .k,.tenure-strip .k,.hist-table th,.tl-date,.tl-caused-by,
+    .section-title,.step-label,.q-eyebrow,.dsw-sec p){letter-spacing:0 !important;}
+  /* nothing a patient reads under 14 px */
+  html body{font-size:15px;line-height:1.45;}
+  html body :is(.pd-item,.notif-item,.notif-sub,.notif-title,.who-tag,.activity-snap-item,.critical-text,.circle-label,.today-eyebrow,.today-sub,
+    .today-toggle-inline,.today-links,.btn,.btn.sm,.cutoff-note,.appt-date,.pill,.detail-row,.chip,.year-toggle,.hist-table,.hist-table th,
+    .empty p,.fam-form label,.rel-badge,.modal-option,.doc-left,.doc-sub,.field label,.field .val,.ptab,.verified-badge,.tl-date,.tl-event,
+    .tl-caused-by,.clin-list,.clin-disclaimer,.toast,.fp-note,.step-label,.step-sub,.opt-card .oc-sub,.check-row,.review-row,.triage-alert,
+    .upload-zone .uz-t,.upload-zone .uz-s,.upload-row,.q-eyebrow,.ai-msg,.ai-action,.ai-action small,.ai-chip,.ai-head .sub,.dsw-sec p,
+    .dsw-grid a,.dsw-grid button,.dsw-hd b,.ptlab-prog,.ptlab-ord,.ptlab-test,.ptlab-out,.ptlab-book,.ptlab-note,.detail-row span,
+    .toggle-row span,.feedback-head b,.modal-title,.navlist button,.navlist .feedback-nav-btn){font-size:14px;}
+  html body :is(.sub,.q-msg,.critical-text,.opt-card b,.clin-section-title,.check-row,.step-sub){font-size:15px;}
+  html body h1{font-size:22px;line-height:1.25;}
+  html body .critical-title{font-size:16px;}
+  html body .section-title{font-size:15px;color:var(--ink);}
+  html body .step-h{font-size:18px;}
+  html body .navlist button,html body .navlist .feedback-nav-btn{font-size:15px;}
+  html body :is(.search-input,.fam-form input,.intake-field,.feedback-panel textarea,.ai-foot input,#pp-fb textarea){font-size:16px;}   /* 16 px so phones do not zoom in */
+  html body .bell-btn .badge{font-size:12px;min-width:20px;text-align:center;}
+  /* tags wrap inside their container instead of overlapping */
+  html body .pill{white-space:normal;max-width:100%;display:inline-block;line-height:1.3;padding:4px 10px;text-align:center;}
+  html body .today-top{flex-wrap:wrap;}
+  html body .rel-badge,html body .verified-badge{white-space:normal;}
+  html body .ptlab-test{padding:6px 11px;}
+  /* show by exception: no "(editable)" tag on the normal case; locked fields keep their note */
+  html body .field.editable label::after{content:none;}
+  /* calm colour: red only for the emergency message (rule 17, 17a) */
+  html body .bell-btn .badge{background:var(--accent);}
+  html body .q-hero.missed{background:#fff4e2;border:1px solid #e0b978;}
+  html body .q-countdown{color:var(--ink);}
+  /* 44 px tap targets */
+  html body .btn{min-height:44px;padding:10px 16px;display:inline-flex;align-items:center;justify-content:center;gap:6px;line-height:1.25;text-align:center;}
+  html body .btn.sm{min-height:44px;padding:8px 14px;}
+  html body .chip{min-height:44px;padding:8px 16px;}
+  html body .navlist button,html body .navlist .feedback-nav-btn{min-height:44px;}
+  html body .bell-btn{width:44px;height:44px;}
+  html body .profile-trigger{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;}
+  html body .profile-trigger .avatar{width:36px;height:36px;font-size:14px;}
+  html body .critical-dismiss{width:44px;height:44px;margin:-10px -10px 0 0;font-size:22px;border-radius:10px;}
+  html body .critical-actions{flex-wrap:wrap;}
+  html body .critical-actions .btn{padding:10px 16px !important;font-size:14px !important;}
+  html body .today-link{display:inline-flex;align-items:center;min-height:44px;}
+  html body .toggle{position:relative;}
+  html body .toggle::before{content:"";position:absolute;inset:-11px -4px;}
+  html body .today-toggle-inline{min-height:44px;}
+  html body .ptab{min-height:44px;}
+  html body .pd-item{min-height:44px;}
+  html body .modal-option{min-height:52px;}
+  html body .check-row{min-height:48px;}
+  html body .year-toggle{min-height:48px;}
+  html body .ai-chip{min-height:44px;}
+  html body .ai-head .close,html body .fp-close,html body .dsw-hd .x{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:10px;}
+  html body .ai-foot .mic,html body .ai-foot .send{width:44px;height:44px;}
+  html body .dsw-grid a,html body .dsw-grid button{min-height:44px;}
+  html body .rel-chip-row{flex-wrap:wrap;}
+  /* walkthrough button: icon only, like the physician portal */
+  html body .dsw-fab{width:44px;height:44px;padding:0;justify-content:center;gap:0;border-radius:50%;}
+  html body .dsw-fab .ic{width:20px;height:20px;}
+  /* lab work: one slim summary strip instead of four big numbers (same as Claims in the physician portal) */
+  html body .ptlab-strip{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;padding:10px 14px;background:var(--wash);border-radius:10px;
+    margin:0 0 12px;font-size:14px;color:var(--ink-soft);}
+  html body .ptlab-strip span{display:inline-flex;align-items:center;gap:7px;}
+  html body .ptlab-strip b{color:var(--ink);font-weight:700;}
+  html body .ptlab-dot{width:9px;height:9px;flex-shrink:0;}
+  /* the top bar is sticky, as its watermark comment intends (visual bug: it was a tinted band that scrolled away) */
+  html body .topbar{position:sticky;top:0;z-index:40;margin:-28px -34px 10px;padding:12px 34px;}
 </style>
 </head>
 <body class="mode-v1">
@@ -857,8 +931,8 @@
           <p class="critical-title">Dr. Pannozzo has reviewed your August 14 bloodwork</p>
           <p class="critical-text">He'd like to go over one of the results with you. <b>Our office will call you within 24 hours to book a time</b> &mdash; there's nothing you need to do right now.</p>
           <div class="critical-actions">
-            <button class="btn primary" style="padding:7px 12px;font-size:12.5px;" onclick="openCase('aug14')">View your results</button>
-            <button class="btn ghost" style="padding:7px 12px;font-size:12.5px;background:transparent;" onclick="toast('Would call the office directly')">Call the office</button>
+            <button class="btn primary" style="padding:7px 12px;font-size:14px;" onclick="openCase('aug14')">View your results</button>
+            <button class="btn ghost" style="padding:7px 12px;font-size:14px;background:transparent;" onclick="toast('Would call the office directly')">Call the office</button>
           </div>
         </div>
         <button class="critical-dismiss" onclick="document.getElementById('critical-banner').style.display='none'" title="Dismiss">&times;</button>
@@ -898,7 +972,7 @@
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
             <p class="section-title" style="margin:0;">Upcoming, whole family</p>
-            <button class="btn primary" style="padding:6px 12px;font-size:12px;" onclick="handleBookClick()">Book new</button>
+            <button class="btn primary" style="padding:6px 12px;font-size:14px;" onclick="handleBookClick()">Book new</button>
           </div>
           <div class="dash-mini-row-wrap" data-person="ani">
             <div class="dash-mini-row" style="border-bottom:none;padding-bottom:2px;" onclick="showScreen('appointments')">
@@ -940,7 +1014,7 @@
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
             <p class="section-title" style="margin:0;">Upcoming</p>
-            <button class="btn primary" style="padding:6px 12px;font-size:12px;" onclick="handleBookClick()">Book new</button>
+            <button class="btn primary" style="padding:6px 12px;font-size:14px;" onclick="handleBookClick()">Book new</button>
           </div>
           <div class="dash-mini-row-wrap">
             <div class="dash-mini-row" style="border-bottom:none;padding-bottom:2px;" onclick="showScreen('appointments')">
@@ -972,8 +1046,8 @@
         <div style="display:flex;align-items:center;gap:12px;">
           <span style="font-size:22px;">&#128101;</span>
           <div style="flex:1;">
-            <p style="font-weight:600;font-size:13.5px;margin:0 0 2px;">Booking for someone else too?</p>
-            <p style="font-size:12.5px;color:var(--ink-soft);margin:0;">Add a partner, parent, or child and manage their visits from this same account.</p>
+            <p style="font-weight:600;font-size:14px;margin:0 0 2px;">Booking for someone else too?</p>
+            <p style="font-size:14px;color:var(--ink-soft);margin:0;">Add a partner, parent, or child and manage their visits from this same account.</p>
           </div>
           <button class="btn ghost" style="flex-shrink:0;" onclick="showScreen('family')">Add family</button>
         </div>
@@ -982,16 +1056,16 @@
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
           <p class="section-title" style="margin:0;">Your lab work</p>
-          <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;" onclick="showScreen('documents')">Open in health records</button>
+          <button class="btn ghost" style="padding:5px 10px;font-size:14px;" onclick="showScreen('documents')">Open in health records</button>
         </div>
-        <p class="muted" style="margin:0 0 12px;font-size:12.5px;">Exactly what was ordered, what has come back, and what is still with the lab.</p>
+        <p class="muted" style="margin:0 0 12px;font-size:14px;">Exactly what was ordered, what has come back, and what is still with the lab.</p>
         <div id="dash-lab-list"></div>
       </div>
 
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
           <p class="section-title" style="margin:0;">Latest clinical activity</p>
-          <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;" onclick="showScreen('activity')">View full timeline</button>
+          <button class="btn ghost" style="padding:5px 10px;font-size:14px;" onclick="showScreen('activity')">View full timeline</button>
         </div>
         <div class="activity-snap">
           <div class="activity-snap-item"><span class="tl-ico">&#129514;</span><div><b>Laboratory results reviewed</b><div class="doc-sub">July 30, 2026</div></div></div>
@@ -1034,7 +1108,7 @@
         <button class="chip">Cancelled</button>
         <button class="chip">No show</button>
       </div>
-      <p style="font-size:12px;color:var(--ink-faint);margin:0 0 16px;">Today's appointment lives on your dashboard. This is history only.</p>
+      <p style="font-size:14px;color:var(--ink-faint);margin:0 0 16px;">Today's appointment lives on your dashboard. This is history only.</p>
 
       <p class="section-title" style="margin-top:0;">2026</p>
       <table class="hist-table">
@@ -1188,14 +1262,14 @@
         <div class="tl-day">
           <p class="tl-date">July 18, 2026</p>
           <div class="tl-appt" data-cat="appointment" onclick="showScreen('appointments')">
-            <span class="pill" style="background:var(--accent-wash);color:var(--accent-ink);font-size:10.5px;">Appointment</span>
+            <span class="pill" style="background:var(--accent-wash);color:var(--accent-ink);font-size:14px;">Appointment</span>
             <span>Dr. Daniel Pannozzo, upcoming</span>
           </div>
         </div>
         <div class="tl-day">
           <p class="tl-date">June 25, 2026</p>
           <div class="tl-appt" data-cat="appointment" onclick="openCase('jun25')">
-            <span class="pill" style="background:var(--good-wash);color:var(--good);font-size:10.5px;">Appointment</span>
+            <span class="pill" style="background:var(--good-wash);color:var(--good);font-size:14px;">Appointment</span>
             <span>Dr. Daniel Pannozzo, completed</span>
           </div>
           <p class="tl-caused-by">Clinical actions from this visit</p>
@@ -1223,21 +1297,21 @@
 
       <div class="card">
         <div class="fam-list-item clickable" onclick="openPatientLog('ani')">
-          <div class="fam-left"><span class="avatar">A</span><div><b style="font-size:13.5px;">Ani</b> <span class="rel-badge you">You</span><div class="doc-sub">Born 1957 &middot; patient since 2025 &middot; 27 visits</div></div></div>
+          <div class="fam-left"><span class="avatar">A</span><div><b style="font-size:14px;">Ani</b> <span class="rel-badge you">You</span><div class="doc-sub">Born 1957 &middot; patient since 2025 &middot; 27 visits</div></div></div>
           <div class="fam-row-actions">
             <button class="btn primary" onclick="event.stopPropagation(); handleBookClick('Ani')">Book</button>
             <button class="btn ghost" onclick="event.stopPropagation(); openPatientLog('ani')">Case log</button>
           </div>
         </div>
         <div class="fam-list-item clickable v1-only" onclick="openPatientLog('karen')">
-          <div class="fam-left"><span class="avatar">K</span><div><b style="font-size:13.5px;">Karen Walker</b> <span class="rel-badge">Mother</span><div class="doc-sub">Born 1957 &middot; added June 2023 &middot; 8 visits</div></div></div>
+          <div class="fam-left"><span class="avatar">K</span><div><b style="font-size:14px;">Karen Walker</b> <span class="rel-badge">Mother</span><div class="doc-sub">Born 1957 &middot; added June 2023 &middot; 8 visits</div></div></div>
           <div class="fam-row-actions">
             <button class="btn primary" onclick="event.stopPropagation(); openBookModal('Karen Walker')">Book</button>
             <button class="btn ghost" onclick="event.stopPropagation(); openPatientLog('karen')">Case log</button>
           </div>
         </div>
         <div class="fam-list-item clickable v1-only" onclick="toast('Would open Leo\'s case log, managed fully by you since he\'s a minor')">
-          <div class="fam-left"><span class="avatar">L</span><div><b style="font-size:13.5px;">Leo Walker</b> <span class="rel-badge">Son</span> <span class="rel-badge minor">Minor</span><div class="doc-sub">Born 2015, age 10 &middot; added June 2023 &middot; 4 visits</div></div></div>
+          <div class="fam-left"><span class="avatar">L</span><div><b style="font-size:14px;">Leo Walker</b> <span class="rel-badge">Son</span> <span class="rel-badge minor">Minor</span><div class="doc-sub">Born 2015, age 10 &middot; added June 2023 &middot; 4 visits</div></div></div>
           <div class="fam-row-actions">
             <button class="btn primary" onclick="event.stopPropagation(); openBookModal('Leo Walker')">Book</button>
             <button class="btn ghost" onclick="event.stopPropagation(); toast('Would open Leo\'s case log')">Case log</button>
@@ -1349,7 +1423,7 @@
         </div>
         <div class="card">
           <p class="section-title" style="margin-top:0;">Authorized persons</p>
-          <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px;">No one else is authorized to manage this account yet.</p>
+          <p style="font-size:14px;color:var(--ink-soft);margin:0 0 10px;">No one else is authorized to manage this account yet.</p>
           <button class="btn ghost" onclick="toast('Would start the authorized person flow')">Add an authorized person</button>
         </div>
       </div>
@@ -1488,7 +1562,7 @@
         <div class="detail-row"><span>Intake</span><span>Completed</span></div>
         <div class="detail-row"><span>Attachments</span><span>1 photo</span></div>
         <div class="toggle-row">
-          <span style="font-size:13px;">Text me when it's my turn</span>
+          <span style="font-size:14px;">Text me when it's my turn</span>
           <div class="toggle on" onclick="this.classList.toggle('on')"></div>
         </div>
       </div>
@@ -1640,7 +1714,7 @@ function openCase(id){
     }).join('');
     body += '<p class="clin-disclaimer">This shows the clinical actions from this visit. Clinical notes, assessments, and physician documentation stay in your provider\'s medical record and are not shown here.</p>';
   } else {
-    body = '<p style="font-size:13px;color:var(--ink-soft);margin:0;">' + c.note + '</p>';
+    body = '<p style="font-size:14px;color:var(--ink-soft);margin:0;">' + c.note + '</p>';
   }
   document.getElementById('case-content').innerHTML =
     '<div class="appt-top" style="margin-bottom:14px;"><div><p class="appt-doc">' + c.doc + '</p><p class="appt-date">' + c.date + '</p></div>' +
@@ -1778,7 +1852,7 @@ function addFamilyMember(){
   var el = document.createElement('div');
   el.className = 'fam-list-item';
   var initial = name.charAt(0).toUpperCase();
-  el.innerHTML = '<div class="fam-left"><span class="avatar">' + initial + '</span><div><b style="font-size:13.5px;">' + name + '</b> <span class="rel-badge">' + rel + '</span><div class="doc-sub">Added just now</div></div></div><button class="btn ghost" onclick="toast(\'Case log would open here\')">Case log</button>';
+  el.innerHTML = '<div class="fam-left"><span class="avatar">' + initial + '</span><div><b style="font-size:14px;">' + name + '</b> <span class="rel-badge">' + rel + '</span><div class="doc-sub">Added just now</div></div></div><button class="btn ghost" onclick="toast(\'Case log would open here\')">Case log</button>';
   document.getElementById('fam-added').appendChild(el);
   document.getElementById('fam-name').value = '';
   document.getElementById('fam-dob').value = '';
@@ -2235,16 +2309,12 @@ function ptLabTotals(){
 function ptLabHTML(){
   var t = ptLabTotals();
   var out =
-    '<div class="ptlab-summary">' +
-      '<div class="ptlab-stat"><b>'+t.total+'</b><span>tests ordered</span></div>' +
-      '<div class="ptlab-stat reviewed"><b>'+t.reviewed+'</b><span>reviewed by your doctor</span></div>' +
-      '<div class="ptlab-stat back"><b>'+t.back+'</b><span>in, awaiting review</span></div>' +
-      '<div class="ptlab-stat waiting"><b>'+t.waiting+'</b><span>still with the lab</span></div>' +
-    '</div>' +
-    '<div class="ptlab-legend">' +
-      '<i><span class="ptlab-dot reviewed"></span>Reviewed by your doctor</i>' +
-      '<i><span class="ptlab-dot back"></span>Result in, awaiting review</i>' +
-      '<i><span class="ptlab-dot waiting"></span>Still with the lab</i>' +
+    /* Ani, 6 Oct: one slim strip instead of big stat tiles; the dots double as the legend for the test chips */
+    '<div class="ptlab-strip">' +
+      '<span><b>'+t.total+'</b> tests ordered</span>' +
+      '<span><i class="ptlab-dot reviewed"></i><b>'+t.reviewed+'</b> reviewed by your doctor</span>' +
+      '<span><i class="ptlab-dot back"></i><b>'+t.back+'</b> in, awaiting review</span>' +
+      '<span><i class="ptlab-dot waiting"></i><b>'+t.waiting+'</b> still with the lab</span>' +
     '</div>';
 
   out += PT_LABWORK.map(function(o){
@@ -2284,6 +2354,6 @@ function handleDashUpload(files, listId){
 renderPtLabWork();
 </script>
 
-  <div class="build-stamp">build 2026-10-06 16:10</div>
+  <div class="build-stamp">build 2026-10-06 16:40</div>
 </body>
 </html>
