@@ -6540,8 +6540,8 @@
             </div>
             <div class="cs-pane" id="csp-problems" role="tabpanel" aria-labelledby="cst-problems" tabindex="-1" hidden>
               <div class="vc-block vc-condcard">
-                <div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Ongoing conditions</h4>
-                  <span class="right"><button class="vc-more" onclick="openConditions()">Open list</button></span></div>
+                <div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Problems</h4>
+                  <span class="right"><button class="vc-more" onclick="openConditions()">Open</button></span></div>
                 <div id="cond-rail"></div>
               </div>
             </div>
@@ -11269,21 +11269,21 @@ var CARE_EVENTS = [];
 function buildCareEvents(r){
   var base = r.name.split(',')[0].trim();
   var ev = [];
-  if(r.redflag) ev.push({when:'Today, 7:48 AM', kind:'warn', title:'Intake flag \u2014 ' + r.concern, desc:'Patient flagged concerning symptoms in pre-visit intake.', pill:'Urgent', pcls:'urgent'});
-  ev.push({when:'Today, 8:02 AM', kind:'note', title:'Joined the live queue', desc:'Window ' + (WIN_TEXT[r.win]||r.win) + ' \u00b7 status ' + STATUS_LABEL[r.status] + '.', pill:'Visit', pcls:'note'});
-  ev.push({when:'Jun 25, 2026', kind:'lab', title:'Lab result: Ferritin', desc:'18 \u00b5g/L \u2014 below reference range. Consider iron studies.', pill:'Low', pcls:'low'});
-  ev.push({when:'Jun 25, 2026', kind:'lab', title:'Lab result: CBC + differential', desc:'Within normal limits.', pill:'Normal', pcls:'normal'});
+  if(r.redflag) ev.push({when:'Today, 7:48 AM', kind:'warn', title:'Intake · ' + r.concern, desc:'', pill:'Flagged', pcls:'urgent'});
+  ev.push({when:'Today, 8:02 AM', kind:'note', title:'In queue · ' + (WIN_TEXT[r.win]||r.win), desc:'', pill:'Visit', pcls:'note'});
+  ev.push({when:'Jun 25, 2026', kind:'lab', title:'Ferritin', desc:'18 \u00b5g/L', pill:'Low', pcls:'low'});
+  ev.push({when:'Jun 25, 2026', kind:'lab', title:'CBC + differential', desc:'', pill:'Normal', pcls:'normal'});
   var L = (typeof PT_LAST !== 'undefined') ? PT_LAST[r.name] : null;
   if(L) ev.push({when:L.date, kind:'note', title:'Visit note \u00b7 ' + L.why, desc:L.note.P, pill:'Note', pcls:'note'});
   ev.push({when:'Jun 25, 2026', kind:'vitals', title:'Vitals recorded', desc:'BP 122/78 mmHg \u00b7 HR 72 bpm \u00b7 Temp 36.8 \u00b0C', pill:'Normal', pcls:'normal'});
-  ev.push({when:'Ongoing', kind:'med', title:'Medication: Metformin 500 mg', desc:'Twice daily with meals', pill:'Ongoing', pcls:'ongoing'});
-  ev.push({when:'Ongoing', kind:'med', title:'Medication: Amlodipine 5 mg', desc:'Once daily', pill:'Ongoing', pcls:'ongoing'});
+  ev.push({when:'Ongoing', kind:'med', title:'Metformin 500 mg', desc:'Twice daily with meals', pill:'Ongoing', pcls:'ongoing'});
+  ev.push({when:'Ongoing', kind:'med', title:'Amlodipine 5 mg', desc:'Once daily', pill:'Ongoing', pcls:'ongoing'});
   return ev;
 }
 function renderCareTimeline(){
   var html = CARE_EVENTS.map(function(e){
     return '<div class="ctl-row">'+
-      '<div class="ctl-when">'+e.when+'</div>'+
+      '<div class="ctl-when">'+String(e.when).replace(/, 2026$/,'')+'</div>'+
       '<div class="ctl-spine"><span class="ctl-dot '+e.kind+'"></span></div>'+
       '<div class="ctl-card"><div class="body"><p class="t">'+e.title+'</p>'+(e.desc?'<p class="d">'+e.desc+'</p>':'')+'</div>'+
       '<span class="ctl-pill '+e.pcls+'">'+e.pill+'</span></div>'+
@@ -11770,7 +11770,7 @@ function cpFind(id){
 
 function cpItemHTML(it){
   var own = it.owner==='GP' ? 'gp' : 'spec';
-  var lbl = it.owner==='GP' ? 'GP' : 'SPEC';
+  var lbl = it.owner==='GP' ? 'Ours' : 'Specialist';
   var od  = it.status==='Overdue';
   var h = '<div class="cp-item'+(it.status==='Completed'?' done':'')+'">'+
     '<span class="cp-own '+own+'">'+lbl+'</span>'+
@@ -11844,8 +11844,7 @@ function renderCarePlan(name){
     h += '<button class="vc-more" style="margin-top:12px;" onclick="cpToggleDone(this)">Show '+done.length+' completed</button>'+
       '<div class="cp-done vc-hidden" id="cp-done">'+done.map(cpItemHTML).join('')+'</div>';
   }
-  h += '<p class="cp-note">Everything outstanding here also appears in Care Plan Tracking, so nothing depends on this chart being reopened. '+
-    'Completed items stay on file and remain auditable.</p>';
+
 
   document.querySelectorAll('.care-plan-mount').forEach(function(m){ m.innerHTML = h; });
   applyIcons();
@@ -12809,7 +12808,7 @@ function rsSorted(name){
 function rsSrc(src, date){
   return src === 'patient'
     ? '<span class="rs-src pt"><span class="ic" data-pdic="upload"></span>' + date + ' &middot; Uploaded by patient &middot; patient-supplied</span>'
-    : '<span class="rs-src"><span class="ic" data-pdic="link"></span>' + date + ' &middot; From ' + src + ' (direct)</span>';
+    : '<span class="rs-src"><span class="ic" data-pdic="link"></span>' + date + ' &middot; ' + src + '</span>';
 }
 /* Daniel, 30 Sep: critical and high "should be with an exclamation mark at least, even if you
    didn't want to call it critical." Outside the range stays a yellow arrow. */
@@ -13317,8 +13316,8 @@ function csNARowV2(x, related, also){
     (up || low ? '<span class="ic vca-dir" role="img" aria-label="' + (up ? 'high' : 'low') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span>' : '');
   var h = '';
   if(!x.abn && t.concern) h += '<p class="v2-na-c">' + t.concern + '</p>';
-  if(!x.abn) h += '<p class="v2-q">Reference ' + csEsc(t.ref) + (x.label ? ', ' + x.label.toLowerCase() : '') + '</p>';
-  if(also && also.length) h += '<p class="v2-q"><span class="vh">Info: </span>Also out of range: ' + also.map(function(a){
+  if(!x.abn) h += '<p class="v2-q">ref ' + csEsc(t.ref) + (x.label ? ', ' + x.label.toLowerCase() : '') + '</p>';
+  if(also && also.length) h += '<p class="v2-q"><span class="vh">Info: </span>Also ' + also.map(function(a){
       var at = a.test, au = (at.f || '').indexOf('high') > -1;
       return '<span class="cs-also-v">' + at.n + ' ' + at.v + ' ' + (at.u || '') + '<span class="ic vca-dir" role="img" aria-label="' + (au ? 'above range' : 'below range') + '" data-pdic="' + (au ? 'arrowup' : 'arrowdown') + '"></span></span>';
     }).join(', ') + '</p>';
@@ -13454,7 +13453,7 @@ var CS_REL = {
       ['@na', 'Troponin I, CK and 12-lead ECG today', 'see Needs attention'],
       ['@bp', 'Home BP', 'results'],
       ['HbA1c <b>7.1 %</b>', 'Mar 12 &middot; high, ref &lt;7.0 &middot; LifeLabs', 'results']],
-      'No lipid panel and no prior ECG on file.'],
+      ''],
     /* PT_LAST, CARE_PLAN (cardiology Jul 28), CP_PENDING (internal medicine Aug 26) */
     ['Prior related care', [
       ['Jun 25 &middot; you', 'exertional chest pressure; referred to cardiology; safety netting given', 'documents'],
@@ -13847,7 +13846,7 @@ function csRenderConsults(name){
   });
   var h = Object.keys(by).map(function(k){ var g = by[k];
     return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pcic="consult"></span><h4>' + g.src + '</h4></div><p class="cs-cap">' + g.service + '</p>' +
-      '<ul class="cs-list">' + g.items.map(function(x){ return '<li><b>' + x.action + '</b> <span class="cs-cap">&middot; ' + x.status + ' &middot; owner: ' + (x.owner === 'GP' ? 'you' : 'specialist') + '</span>' +
+      '<ul class="cs-list">' + g.items.map(function(x){ return '<li><b>' + x.action + '</b> <span class="cs-cap">&middot; ' + x.status + ' &middot; ' + (x.owner === 'GP' ? 'you' : 'specialist') + '</span>' +
         (x.quote ? '<p class="cs-quote">' + x.quote + '</p>' : '') + '</li>'; }).join('') + '</ul></div>';
   }).join('');
   var P2 = CP_PENDING[name];
@@ -13865,7 +13864,7 @@ function csRenderDocs(name){
     (AI_SUMMARY[name] ? '<dt>Summary</dt><dd>' + csEsc(csIntakeSummary(name)) + '</dd>' : '') +
     (f && f.words ? '<dt>Flagged</dt><dd>&ldquo;' + csEsc(f.words) + '&rdquo;' + (f.when ? ' &middot; ' + csEsc(f.when) : '') + '</dd>' : '') + '</dl></div>';
   if(L) h += '<div class="vc-block cs-doc" id="cs-doc-last"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>Visit note &middot; ' + csShort(L.date) + '</h4></div>' +
-    '<p class="slv-ro"><span class="ic" data-pdic="complete"></span>Signed off by Dr. Pannozzo &middot; read-only</p><dl class="cs-kv">' +
+    '<p class="slv-ro"><span class="ic" data-pdic="complete"></span>Signed</p><dl class="cs-kv">' +
     ['S','O','A','P'].map(function(k){ return '<dt>' + {S:'Subjective',O:'Objective',A:'Assessment',P:'Plan'}[k] + '</dt><dd>' + L.note[k] + '</dd>'; }).join('') + '</dl></div>';
   else h += '<p class="pc-empty">No earlier notes on file.</p>';
   el.innerHTML = h; paintPd(el);
@@ -13875,7 +13874,7 @@ function csRenderMsgs(name){
   var base = csBase(name).toLowerCase();
   var hits = [];
   (typeof MOA_THREADS !== 'undefined' ? MOA_THREADS : []).forEach(function(th){ th.messages.forEach(function(m){ if(m.text.toLowerCase().indexOf(base) > -1) hits.push({who:th.name, m:m}); }); });
-  el.innerHTML = hits.length ? '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="chat"></span><h4>Your MOA this window</h4></div><ul class="cs-list">' +
+  el.innerHTML = hits.length ? '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="chat"></span><h4>Dolly</h4></div><ul class="cs-list">' +
     hits.map(function(x){ return '<li>&ldquo;' + csEsc(x.m.text) + '&rdquo; <span class="cs-cap">&middot; ' + csEsc(x.who) + ', ' + x.m.time + '</span></li>'; }).join('') + '</ul></div>'
     : '<p class="pc-empty">No messages about this patient.</p>';
 }
@@ -15668,7 +15667,7 @@ function v2BP(name){
   var spark = bp.length > 1 ? '<span class="cs-trend">' + prSpark([bp.map(function(x){ return +x[1].split('/')[0]; }), bp.map(function(x){ return +x[1].split('/')[1]; })], 64, 28) + '</span>' : '';
   return '<button type="button" class="v2-line" onclick="csOpenFull(\'results\',this)"><span class="v2-l0">Home BP</span>' +
     '<span class="v2-l1">' + last[1] + ' mmHg' + spark + '</span><span class="v2-l2">' + last[0] + ', ' + bp.length + ' readings since ' + bp[0][0] + '</span>' +
-    '<span class="v2-l2">Patient-reported, home cuff</span><span class="vh"> &mdash; open the source</span>' + csIc('chevr', 'v2-go') + '</button>';
+    '<span class="v2-l2">Home cuff</span><span class="vh"> &mdash; open the source</span>' + csIc('chevr', 'v2-go') + '</button>';
 }
 function v2Rows(name){
   var cur = CS_REL[name], rows = cur ? cur.rows : csRelGeneric(name), by = {};
@@ -15718,7 +15717,9 @@ function v2RenderSide(name){
     return '<p class="v2-src-l">' + (/^Source:/.test(row[2]) ? '<span class="v2-l0">Source</span>' : '') + p.map(function(x){ return '<span>' + v2Cap(x) + '</span>'; }).join('') + '</p>';
   };
   var meds = by['Medications'], hist = by['History'], pend = by['Pending'], prev = by['Prior related care'];
-  v2SetSec('meds', v2Count(meds), '', meds ? v2Lines(meds, name) + src(meds) : '<p class="v2-q">No medications recorded in Simple Care.</p>', true);
+  /* count active medicines only, so it matches Chart > Medications (a recommended, not-started one is listed but not counted) */
+  var medsN = meds ? meds[1].filter(function(x){ return x[0] !== '@na' && !/not started/.test(x[1] || ''); }).length : 0;
+  v2SetSec('meds', medsN, '', meds ? v2Lines(meds, name) + src(meds) : '<p class="v2-q">No medications recorded in Simple Care.</p>', true);
   v2SetSec('hist', v2Count(hist), '', hist ? v2Lines(hist, name) + src(hist) : '<p class="v2-q">No conditions recorded in Simple Care.</p>', true);
   var over = pend ? pend[1].filter(function(x){ return x[4] === 'Overdue'; }).length : 0;
   v2SetSec('pend', v2Count(pend), over ? '<span class="v2-chip warn">' + csIc('clock') + over + ' overdue</span>' : '', pend ? v2Lines(pend, name) : '', !!pend);
@@ -17529,6 +17530,6 @@ baWrap('showScreen', function(r, name){ if(name === 'today') hsdRender(); });
 hsdRender();
 setInterval(function(){ var s = document.getElementById('screen-today'); if(s && s.classList.contains('active')) hsdRender(); }, 60000);   /* the next window moves with the clock */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 11:30</div>
+  <div class="build-stamp">v2 · build 2026-10-07 12:00</div>
 </body>
 </html>
