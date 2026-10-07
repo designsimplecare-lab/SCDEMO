@@ -13744,8 +13744,48 @@ var T23_AGENT = 'Japneet';
 var T23_AGENT_ROLE = 'billing agent';
 
 /* Spec "Demo data, all in one place", trimmed to Daniel's 5 Oct rules. Existing demo names only; no PHN or DOB. */
+/* Dev answers, 6 Oct (answer 04): the claim history uses Dev's event types and doctor-facing labels: claim created
+   from the visit, edited old → new, blocked by a check, name check sent / answered, sent to MSP, refused + code +
+   meaning, held, paid $ + date, paid a different amount, paid $0 (duplicate), resent with a note, closed. Who: the
+   doctor, the billing agent, MSP, or SimpleCare for automatic steps. The demo stories below match each claim's state
+   (dates follow MSP's rhythm: a front-door refusal the next business day, statement codes on a payment date). */
+var T23_BA = T23_AGENT + ' (billing agent)';
+function t23HxRef(ex, pre){ var l = Array.isArray(ex) ? ex : [ex], m = l.filter(function(x){ return T23_EX_WRAP.indexOf(x) < 0; })[0] || l[0];
+  return (pre || 'Refused by MSP: ') + l.join(' · ') + ' · ' + (T23_EX[m] ? T23_EX[m].p : ''); }
+var T23_HX = {
+  c6:  function(c){ return [['1 Oct 4:40 PM','Dr. Pannozzo','Sent to MSP'], ['2 Oct 9:10 AM','MSP',t23HxRef(['YY','VN'])],
+         ['2 Oct 9:31 AM', T23_BA, 'Question: Can you check the diagnosis on this claim?']]; },
+  c9:  function(c){ return [['12 Sep 5:52 PM','Dr. Pannozzo','Sent to MSP'], ['29 Sep 8:15 AM','MSP',t23HxRef('BI') + ' (29 Sep statement)']]; },
+  c10: function(c){ return [['5 Sep 6:04 PM','Dr. Pannozzo','Sent to MSP'], ['15 Sep 8:15 AM','MSP',t23HxRef('ED') + ' (15 Sep statement)'],
+         ['16 Sep 10:12 AM', T23_BA, 'Looks correctly billed: asked Dr. Pannozzo whether to ask MSP to reassess']]; },
+  c11: function(c){ return [['10 Sep 5:31 PM','Dr. Pannozzo','Sent to MSP'], ['29 Sep 8:15 AM','MSP','Paid a different amount: $38.61 (billed $41.42) · HC · paid under 13437 · paid 29 Sep']]; },
+  c12: function(c){ return [['28 Sep 5:44 PM','Dr. Pannozzo','Sent to MSP'], ['28 Sep 7:00 PM','SimpleCare','Waiting for MSP · processed in MSP’s 7 PM run; no answer yet']]; },
+  c13: function(c){ return [['25 Aug 6:20 PM','Dr. Pannozzo','Sent to MSP'], ['29 Sep 8:15 AM','MSP',t23HxRef('BH', 'Held by MSP: ') + ' (29 Sep statement)']]; },
+  c14: function(c){ return [['29 Sep 6:02 PM','Dr. Pannozzo','Sent to MSP'], ['1 Oct 8:15 AM','MSP',t23HxRef('AM')],
+         ['1 Oct 8:16 AM','SimpleCare','Name check sent to MSP: is “Carol-Anne Feldman” the registered name?'],
+         ['2 Oct 8:15 AM','MSP','Answered the name check: the registered name splits differently'],
+         ['2 Oct 9:40 AM', T23_BA, 'Correcting the billed name; will resend with a note']]; },
+  c15: function(c){ return [['20 Aug 5:15 PM','Dr. Pannozzo','Sent to MSP'], ['31 Aug 8:15 AM','MSP',t23HxRef('ED') + ' (31 Aug statement)'],
+         ['14 Sep 11:02 AM','Dr. Pannozzo','Signed off: ask MSP to reassess'], ['15 Sep 9:20 AM', T23_BA, 'Resent with a note (submission code X) asking MSP to reassess']]; },
+  c16: function(c){ return [['2 Sep 5:48 PM','Dr. Pannozzo','Sent to MSP'], ['29 Sep 8:15 AM','MSP','Paid $38.61 on 29 Sep']]; },
+  c25: function(c){ return [['21 Sep 5:36 PM','Dr. Pannozzo','Sent to MSP'], ['23 Sep 8:15 AM','MSP',t23HxRef('BJ')],
+         ['23 Sep 10:05 AM', T23_BA, 'Re-pricing to MSP’s amount for 13737; will resend with a note']]; },
+  c26: function(c){ return [['16 Sep 2:40 PM','Dr. Pannozzo','Edited: fee code 13637 → 13638 (counselling) · the call was made outside the app, so the claim has no start or end time'],
+         ['16 Sep 5:58 PM','Dr. Pannozzo','Sent to MSP'], ['18 Sep 8:15 AM','MSP',t23HxRef('CF')]]; },
+  c27: function(c){ return [['8 Sep 6:11 PM','Dr. Pannozzo','Sent to MSP'], ['29 Sep 8:15 AM','MSP','Paid $0 · duplicate of an already-paid claim · HX (29 Sep statement)'],
+         ['30 Sep 9:12 AM', T23_BA, 'Closed — not paid: the same visit was already paid']]; },
+  c28: function(c){ return [['8 Sep 4:20 PM', T23_BA, 'Sent to MSP (day 95)'], ['10 Sep 8:15 AM','MSP',t23HxRef('BV')],
+         ['11 Sep 9:30 AM', T23_BA, 'Closed — not paid: past MSP’s 90-day limit']]; },
+  c29: function(c){ return [['14 Sep 5:20 PM','Dr. Pannozzo','Sent to MSP'], ['15 Sep 8:15 AM','MSP',t23HxRef('AM')],
+         ['15 Sep 8:16 AM','SimpleCare','Name check sent to MSP'], ['16 Sep 8:15 AM','MSP','Answered the name check: name confirmed'],
+         ['29 Sep 4:55 PM', T23_BA, 'Resent (submission code X) without a note'], ['1 Oct 8:15 AM','MSP',t23HxRef(['YY','YA'])],
+         ['1 Oct 9:02 AM', T23_BA, 'Adding the note; will resend']]; },
+  c22: function(c){ return [['2 Oct 8:15 AM','SimpleCare','Blocked by check: patient name not yet confirmed by MSP (MSP’s health-card check returned a 3-word name) · the name check goes out Monday morning']]; }
+};
 function t23Hist(c){
-  return [[t23F(c.date) + ' ' + (c.at || '9:24 AM'), 'Dr. Pannozzo', 'Visit signed off; claim created']];
+  var vf = c.fee ? t23FeeForAge(c.age, false) : null;
+  var H = [[t23F(c.date) + ' ' + (c.at || '9:24 AM'), 'Dr. Pannozzo', 'Visit signed off · claim created from the visit' + (vf ? ': ' + vf + ' · ' + t23Money(T23_FEES[vf].amt) + (c.dx ? ' · ' + c.dx : ' · no diagnosis yet') : '')]];
+  return H.concat(T23_HX[c.id] ? T23_HX[c.id](c) : []);
 }
 var CLAIMS = [
   /* Needs submission: MSP claims not submitted yet (demo dates; days left count from the demo "today", 3 Oct) */
@@ -13761,24 +13801,21 @@ var CLAIMS = [
   {id:'c6', who:'Nadia Hassan', date:'2026-07-15', win:'2-5', fee:'V', dx:'V68.1', mins:9, st:'rejected',
    msp:{on:'2026-10-02', ex:['YY','VN'], src:'Teleplan'},
    flags:[{k:'q', from:T23_AGENT, ex:'VN', ask:'Can you check the diagnosis on this claim?', due:'Tue 6 Oct'}],
-   hist:[['15 Jul 2:41 PM','Dr. Pannozzo','Visit signed off; claim created'],
-         ['16 Jul 7:02 PM','Dr. Pannozzo','Submitted'],
-         ['2 Oct 9:10 AM','MSP','Refused: YY · VN · Diagnosis (ICD-9) code missing or invalid'],
-         ['2 Oct 9:31 AM', T23_AGENT + ' (billing agent)','Question: Can you check the diagnosis on this claim?']]},
+   at:'2:41 PM'},
   {id:'c9', who:'Behdis Maleki', date:'2026-09-12', win:'10-2', fee:'V', dx:'280', mins:12, st:'rejected',
-   msp:{on:'2026-09-26', ex:'BI'}},
+   msp:{on:'2026-09-29', ex:'BI'}},
   {id:'c10', who:'Andrey Abushakhmanov', date:'2026-09-05', win:'8-10', fee:'V', dx:'V67.9', mins:10, st:'dispute',
-   msp:{on:'2026-09-19', ex:'ED'}, sub:'Looks correctly billed: you can ask MSP to reassess, with a note'},
+   msp:{on:'2026-09-15', ex:'ED'}, sub:'Looks correctly billed: you can ask MSP to reassess, with a note'},
   {id:'c11', who:'Grace Lin', date:'2026-09-10', win:'10-2', fee:'V', dx:'V72.6', mins:11, st:'adjusted', paid:38.61, paidOn:'2026-09-29', msp:{on:'2026-09-29', ex:'HC', paidAs:'13437'}},
   /* Submitted (with MSP) and paid: reachable from the Submitted, Paid and All tabs */
-  {id:'c12', who:'Andrey Abushakhmanov', date:'2026-09-28', win:'8-10', fee:'V', dx:'V67.9', mins:10, st:'submitted', sub:'Acknowledged by MSP'},
+  {id:'c12', who:'Andrey Abushakhmanov', date:'2026-09-28', win:'8-10', fee:'V', dx:'V67.9', mins:10, st:'submitted', sub:'Sent 28 Sep · no answer from MSP yet'},
   {id:'c13', who:'Owen Brady', date:'2026-08-25', win:'8-10', fee:'V', dx:'724.2', mins:12, st:'held', msp:{on:'2026-09-29', ex:'BH'}},
   {id:'c14', who:'Carol-Anne Feldman', date:'2026-09-29', win:'10-2', fee:'V', dx:'112.1', mins:10, st:'rejmoa', msp:{on:'2026-10-01', ex:'AM', src:'Teleplan'}},
   {id:'c15', who:'Nadia Hassan', date:'2026-08-20', win:'2-5', fee:'V', dx:'V68.1', mins:9, st:'appeal', sub:'Reassessment requested 15 Sep'},
   /* Dev answers, 6 Oct: one demo claim for each real refusal Dev listed (BJ, CF, HX, BV, YY · YA) */
   {id:'c25', who:'Frank D.', date:'2026-09-21', win:'2-5', fee:'V', dx:'401.9', mins:10, st:'rejmoa', msp:{on:'2026-09-23', ex:'BJ', src:'Teleplan'}},
   {id:'c26', who:'Nadia Hassan', date:'2026-09-16', win:'2-5', fee:'C', dx:'300.0', mins:26, notimes:true, st:'rejected', msp:{on:'2026-09-18', ex:'CF', src:'Teleplan'}},
-  {id:'c29', who:'Andrey Abushakhmanov', date:'2026-09-14', win:'8-10', fee:'V', dx:'V67.9', mins:9, st:'rejmoa', msp:{on:'2026-09-30', ex:['YY','YA'], src:'Teleplan'}},
+  {id:'c29', who:'Andrey Abushakhmanov', date:'2026-09-14', win:'8-10', fee:'V', dx:'V67.9', mins:9, st:'rejmoa', msp:{on:'2026-10-01', ex:['YY','YA'], src:'Teleplan'}},
   {id:'c27', who:'Owen Brady', date:'2026-09-08', win:'8-10', fee:'V', dx:'724.2', mins:11, st:'closed', paid:0, msp:{on:'2026-09-29', ex:'HX'}},
   {id:'c28', who:'Grace Lin', date:'2026-06-05', win:'10-2', fee:'V', dx:'V72.6', mins:8, st:'closed', msp:{on:'2026-09-10', ex:'BV', src:'Teleplan'}},
   {id:'c16', who:'Behdis Maleki', date:'2026-09-02', win:'10-2', fee:'V', dx:'280', mins:12, st:'paid', paid:38.61, paidOn:'2026-09-29', sub:'Paid 29 Sep'},
@@ -13792,9 +13829,10 @@ var CLAIMS = [
 /* demo ages (existing queue ages where the patient is in the queue); the fee code follows the age (Daniel 5 Oct) */
 var T23_AGES = {'Frank D.':71, 'Owen Brady':38, 'Gloria McDonald':74, 'Grace Lin':52, 'Behdis Maleki':35, 'Andrey Abushakhmanov':24, 'Carol-Anne Feldman':44, 'Nadia Hassan':67, 'Greg':58, 'Manjit':66, 'K Arli Eyre':41};
 CLAIMS.forEach(function(c){
-  if(!c.hist) c.hist = t23Hist(c); c.flags = c.flags || [];
+  c.flags = c.flags || [];
   c.age = T23_AGES[c.who];
   if(c.fee) c.fee = t23FeeForAge(c.age, c.fee === 'C');   /* 'V' visit, 'C' counselling: the code follows the age */
+  if(!c.hist) c.hist = t23Hist(c);
   if(c.mins && !c.start && !c.notimes){ c.start = '09:10'; var e = 10 + c.mins; c.stop = (e >= 60 ? '10:' : '09:') + ((e % 60) < 10 ? '0' : '') + (e % 60); }   /* demo times */
 });
 /* the question on Nadia's claim keeps its demo codes in its text */
@@ -14261,9 +14299,9 @@ function t23Open(id){
       '<details><summary>How we count this</summary><p>' + t23CountTxt(c) + '</p></details></div>'; }
   if(c.st === 'appeal') h += '<div class="bl-block"><p class="bl-k">Reassessment</p><p class="bl-v">' + (c.sub || '') + ' · Possible recovery ' + t23Money(t23Amt(c)) + ' estimated' + T23_DEMO + '</p></div>';
   h += '<div class="bl-block"><p class="bl-k">Visit</p><p class="bl-v"><button type="button" class="t23-more" onclick="t23Note(\'' + id + '\')">Open the ' + t23F(c.date) + ' visit</button> (read-only)</p></div>';
-  var all = T23.histAll[id], hist = c.hist.slice().reverse(), shown = all ? hist : hist.slice(0, 2);
+  var all = T23.histAll[id], hist = c.hist.slice().reverse(), shown = all ? hist : hist.slice(0, 5);   /* Dev answers, 6 Oct: newest first, collapsed after five */
   h += '<div class="bl-block"><p class="bl-k">History</p><ul class="t23-hist">' + shown.map(function(e){ return '<li>' + e[0] + ' · ' + e[1] + ' · ' + t23E(e[2]) + '</li>'; }).join('') + '</ul>' +
-    (hist.length > 2 ? '<button type="button" class="t23-more" onclick="T23.histAll[\'' + id + '\']=' + (all ? 'false' : 'true') + ';t23Open(\'' + id + '\')">' + (all ? 'Show fewer' : 'Show all ' + hist.length) + '</button>' : '') + '</div>';
+    (hist.length > 5 ? '<button type="button" class="t23-more" onclick="T23.histAll[\'' + id + '\']=' + (all ? 'false' : 'true') + ';t23Open(\'' + id + '\')">' + (all ? 'Show fewer' : 'Show all ' + hist.length) + '</button>' : '') + '</div>';
   h += '<div class="defer-acts"><button type="button" class="btn" onclick="closeBilling()">Close</button>' + t23PrimaryBtn(c) + '</div>';
   card.innerHTML = h;
   paintPd(card);
@@ -15964,6 +16002,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 01:10</div>
+  <div class="build-stamp">v2 · build 2026-10-07 01:20</div>
 </body>
 </html>
