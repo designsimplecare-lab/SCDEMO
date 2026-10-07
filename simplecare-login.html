@@ -266,7 +266,7 @@
   </section>
 </div>
 
-<div class="build-stamp">build 2026-10-06 16:10</div>
+<div class="build-stamp">build 2026-10-06 22:10</div>
 
 <script>
 /* the portals remember the theme; this page follows the same key so signing
@@ -387,9 +387,7 @@ function vpNext(){
 /* splash: about 2 seconds the first time in this tab, then the sign-in page */
 (function(){
   var s = document.getElementById('splash'); if(!s) return;
-  var seen = false; try{ seen = sessionStorage.getItem('sc.splashSeen') === '1'; }catch(e){}
-  if(seen){ s.remove(); return; }
-  try{ sessionStorage.setItem('sc.splashSeen','1'); }catch(e){}
+  /* Ani, 6 Oct: the splash plays on every load, not once per tab */
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   setTimeout(function(){ s.classList.add('out'); setTimeout(function(){ s.remove(); var u = document.getElementById('email') || document.querySelector('#f input'); if(u) u.focus(); }, 500); }, reduce ? 900 : 2000);
 })();
