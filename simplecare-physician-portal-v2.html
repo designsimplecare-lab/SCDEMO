@@ -5566,6 +5566,9 @@
   #bill-overlay .t23-err,#t23-pick .t23-cnsl + .t23-err{margin:8px 0 0;}
   #t23-billrow .t23-berr{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink);}
   #t23-billrow .t23-berr .ic,#t23-billrow .t23-berr svg{width:16px;height:16px;color:var(--warn, #B7791F);}
+  /* Dev answers, 6 Oct: the explanatory code's meaning, who fixes it and how, in the claim drawer */
+  #bill-overlay .bl-block .t23-line.ro + details,#bill-overlay .bl-block > .t23-line.ro:first-of-type{margin-top:6px;}
+  #bill-overlay .bl-block details p{font-size:14.5px;color:var(--ink-soft);margin:4px 0 0;max-width:66ch;}
 </style>
 </head>
 <body>
@@ -13662,13 +13665,42 @@ function t23DxLoad(){
     T23_DXST = 'ready';
   }).catch(function(){ T23_DXST = 'error'; }).then(function(){ if(T23.pick) t23RenderDx(); });
 }
+/* Dev answers, 6 Oct 2026 (answer 01, msp-explanatory-codes.csv): MSP's real explanatory codes (MSP list dated 1 Jul
+   2026). The public columns of the hand-written rows are in assets/data/msp-explanatory-codes.json; the codes the demo
+   claims use are inlined here (w: MSP's words in sentence case, p: plain meaning, who: who fixes it, how: how).
+   YY, DR and HK are wrappers: never shown alone, the reason is the next code ("YY · VN").
+   Demo claims → codes: name/initials → AM; amount doesn't match the fee code → BJ; counselling without times → CF;
+   diagnosis missing → YY · VN; fee code and diagnosis don't go together → BI (was "fee item not payable with this
+   diagnosis"); duplicate paid $0 → HX; held → BH; too late → BV; resent without a note → YY · YA; refused but looks
+   correctly billed (the reassess case) → ED (insufficient medical necessity: the doctor explains, MSP reassesses);
+   paid less than billed → HC (paid under another fee code). */
 var T23_EX = {
-  'EX-D1':'Fee item not payable with this diagnosis',
-  'EX-D2':'Name on the claim doesn’t match MSP’s record for this card',
-  'EX-D3':'Paid at a lower amount than billed',
-  'EX-D4':'Diagnosis code problem',
-  'EX-D5':'MSP is holding this claim'
+  'AM':{w:"Dependant number and/or initial(s) do not match our records.", p:"Patient initials (or dependent number) do not match MSP's records.", who:"Billing agent", how:"Use the exact legal name MSP holds (SimpleCare asks MSP with a free name check), then resubmit with submission code X and a note."},
+  'BH':{w:"This claim will be processed on a future remittance statement. Please do not rebill.", p:"Will be processed on a future remittance statement. Please do not rebill.", who:"Nobody – wait for MSP", how:"Wait. Do NOT resubmit."},
+  'BI':{w:"Fee item and diagnosis do not correspond", p:"Fee code and diagnosis do not go together.", who:"Doctor supplies the information; billing agent resubmits", how:"Doctor reviews the fee code and ICD-9 pairing; billing agent resubmits."},
+  'BJ':{w:"Fee item and amount billed do not correspond.", p:"The amount billed does not match what MSP pays for that fee code. MSP refuses the whole claim rather than adjusting it.", who:"Billing agent", how:"Re-price to MSP's amount and resubmit with code X + note."},
+  'BV':{w:"Service date exceeds allowable claim submission period.", p:"Service date is older than MSP allows for a first submission (90 days).", who:"Billing agent", how:"Usually a write-off. A late claim can only go with an approved over-age reason (non-zero submission code + note); a refused-then-resubmitted claim has 90 days from the refusal's remittance date."},
+  'CF':{w:"Time service was rendered is missing or invalid.", p:"Start/finish time of the service is missing or invalid. Counselling codes (13x38) must carry both.", who:"Doctor supplies the information; billing agent resubmits", how:"Doctor gives the call start and end time; billing agent resubmits with code X + note."},
+  'ED':{w:"There is insufficient medical necessity to process this claim.", p:"Insufficient medical necessity to process this claim.", who:"Doctor supplies the information; billing agent resubmits", how:"Doctor writes the medical reason; resubmit with a note, or accept."},
+  'HC':{w:"This claim has been paid under the indicated fee item.", p:"Paid under the fee code shown (MSP changed the code).", who:"Nobody – information only", how:"Information; check if the fee code choice needs fixing for future claims."},
+  'HX':{w:"This claim has been paid to you. Computer refusal.", p:"This claim has already been paid to you – MSP treated it as a duplicate and paid $0 (\"computer refusal\").", who:"Billing agent", how:"Check whether another claim for the same patient/day was paid. If yes, nothing is owed. If not, query MSP."},
+  'VN':{w:"Diagnostic code missing or invalid", p:"Diagnosis (ICD-9) code missing or invalid.", who:"Doctor supplies the information; billing agent resubmits", how:"Doctor picks a valid MSP ICD-9 diagnosis code; billing agent resubmits."},
+  'YA':{w:"Note record missing or invalid for submission code C, E or X.", p:"Submission code C, E or X was used but no note record was attached (or the note was invalid).", who:"SimpleCare (software fix) / billing agent", how:"Attach the note record (N01) explaining the resubmission and send again."},
+  'YY':{w:"Pre-edit system refusal. See second explanatory code(s).", p:"Refused at the front door before MSP looked at it. YY is never the reason on its own – the real reason is the second code on the same line.", who:"Depends on the second code", how:"Read explanatory code 2 (and 3). Fix whatever that code says, then resubmit."}
 };
+T23_EX.BH.how = 'MSP will decide on a later statement. Don’t resend.';   /* Dev, answer 02 §5: the doctor-facing words */
+var T23_EX_WRAP = ['YY', 'DR', 'HK'];
+function t23ExList(c){ var e = c && c.msp && c.msp.ex; return !e ? [] : Array.isArray(e) ? e : [e]; }
+function t23ExCode(c){ return t23ExList(c).join(' · '); }
+function t23ExMain(c){ var l = t23ExList(c), m = l.filter(function(x){ return T23_EX_WRAP.indexOf(x) < 0; }); return T23_EX[m[0] || l[0]] || null; }
+function t23ExMeaning(c){ var e = t23ExMain(c); return e ? e.p : ''; }
+/* the claim drawer: plain meaning, who fixes it and how, MSP's own words one click away */
+function t23ExBlock(c){
+  var e = t23ExMain(c); if(!e) return '';
+  var ln = function(k, v){ return '<div class="t23-line ro"><span class="t23-lk">' + k + '</span><span class="t23-lv">' + t23E(v) + '</span></div>'; };
+  return ln('What it means', e.p) + ln('Who fixes it', e.who) + ln('How', e.how) +
+    '<details><summary>MSP’s words</summary>' + t23ExList(c).map(function(x){ return '<p>' + x + ' · ' + t23E(T23_EX[x] ? T23_EX[x].w : '') + '</p>'; }).join('') + '</details>';
+}
 var T23_PRIVATE_FEE = 100;  /* the private visit fee (V2 Fee Settings); unsourced, so a demo value (N17) */
 
 /* One vocabulary everywhere (rule 26): queue, Claims and the claim detail.
@@ -13687,6 +13719,7 @@ var T23_ST = {
   appeal:     {label:'Under appeal',      tone:'info', icon:'clock'},      /* N3 */
   adjusted:   {label:'Paid, adjusted',    tone:'warn', icon:'alert'},      /* N3 */
   paid:       {label:'Claim paid',        tone:'ok',   icon:'complete'},
+  closed:     {label:'Closed — not paid', tone:'',     icon:'complete'},
   'pri-due':  {label:'Outstanding',       tone:'warn', icon:'clock'},
   'pri-paid': {label:'Paid',              tone:'ok',   icon:'complete'}
 };
@@ -13711,22 +13744,28 @@ var CLAIMS = [
   {id:'c5', who:'Carol-Anne Feldman', date:'2026-10-02', win:'8-10', fee:'V', dx:'112.1', mins:12, start:'09:12', stop:'09:24', st:'submit'},
   /* Rejected by MSP */
   {id:'c6', who:'Nadia Hassan', date:'2026-07-15', win:'2-5', fee:'V', dx:'V68.1', mins:9, st:'rejected',
-   msp:{on:'2026-10-02', ex:'EX-D4', src:'Teleplan'},
-   flags:[{k:'q', from:T23_AGENT, ex:'EX-D4', ask:'Can you check the diagnosis on this claim?', due:'Tue 6 Oct'}],
+   msp:{on:'2026-10-02', ex:['YY','VN'], src:'Teleplan'},
+   flags:[{k:'q', from:T23_AGENT, ex:'VN', ask:'Can you check the diagnosis on this claim?', due:'Tue 6 Oct'}],
    hist:[['15 Jul 2:41 PM','Dr. Pannozzo','Visit signed off; claim created'],
          ['16 Jul 7:02 PM','Dr. Pannozzo','Submitted'],
-         ['2 Oct 9:10 AM','Teleplan','Returned: EX-D4 (demo)'],
+         ['2 Oct 9:10 AM','MSP','Refused: YY · VN · Diagnosis (ICD-9) code missing or invalid'],
          ['2 Oct 9:31 AM', T23_AGENT + ' (billing agent)','Question: Can you check the diagnosis on this claim?']]},
   {id:'c9', who:'Behdis Maleki', date:'2026-09-12', win:'10-2', fee:'V', dx:'280', mins:12, st:'rejected',
-   msp:{on:'2026-09-26', ex:'EX-D1'}},
+   msp:{on:'2026-09-26', ex:'BI'}},
   {id:'c10', who:'Andrey Abushakhmanov', date:'2026-09-05', win:'8-10', fee:'V', dx:'V67.9', mins:10, st:'dispute',
-   msp:{on:'2026-09-19', ex:'EX-D2', reason:'Refused as billed; the claim looks correctly billed'}},
-  {id:'c11', who:'Grace Lin', date:'2026-09-10', win:'10-2', fee:'V', dx:'V72.6', mins:11, st:'adjusted', paid:38.61, paidOn:'2026-09-29', msp:{on:'2026-09-29', ex:'EX-D3'}},
+   msp:{on:'2026-09-19', ex:'ED'}, sub:'Looks correctly billed: you can ask MSP to reassess, with a note'},
+  {id:'c11', who:'Grace Lin', date:'2026-09-10', win:'10-2', fee:'V', dx:'V72.6', mins:11, st:'adjusted', paid:38.61, paidOn:'2026-09-29', msp:{on:'2026-09-29', ex:'HC', paidAs:'13437'}},
   /* Submitted (with MSP) and paid: reachable from the Submitted, Paid and All tabs */
   {id:'c12', who:'Andrey Abushakhmanov', date:'2026-09-28', win:'8-10', fee:'V', dx:'V67.9', mins:10, st:'submitted', sub:'Acknowledged by MSP'},
-  {id:'c13', who:'Owen Brady', date:'2026-08-25', win:'8-10', fee:'V', dx:'724.2', mins:12, st:'held', msp:{ex:'EX-D5'}},
-  {id:'c14', who:'Carol-Anne Feldman', date:'2026-09-29', win:'10-2', fee:'V', dx:'112.1', mins:10, st:'rejmoa', msp:{on:'2026-10-01', ex:'EX-D2', src:'Teleplan'}},
+  {id:'c13', who:'Owen Brady', date:'2026-08-25', win:'8-10', fee:'V', dx:'724.2', mins:12, st:'held', msp:{on:'2026-09-29', ex:'BH'}},
+  {id:'c14', who:'Carol-Anne Feldman', date:'2026-09-29', win:'10-2', fee:'V', dx:'112.1', mins:10, st:'rejmoa', msp:{on:'2026-10-01', ex:'AM', src:'Teleplan'}},
   {id:'c15', who:'Nadia Hassan', date:'2026-08-20', win:'2-5', fee:'V', dx:'V68.1', mins:9, st:'appeal', sub:'Reassessment requested 15 Sep'},
+  /* Dev answers, 6 Oct: one demo claim for each real refusal Dev listed (BJ, CF, HX, BV, YY · YA) */
+  {id:'c25', who:'Frank D.', date:'2026-09-21', win:'2-5', fee:'V', dx:'401.9', mins:10, st:'rejmoa', msp:{on:'2026-09-23', ex:'BJ', src:'Teleplan'}},
+  {id:'c26', who:'Nadia Hassan', date:'2026-09-16', win:'2-5', fee:'C', dx:'300.0', mins:26, notimes:true, st:'rejected', msp:{on:'2026-09-18', ex:'CF', src:'Teleplan'}},
+  {id:'c29', who:'Andrey Abushakhmanov', date:'2026-09-14', win:'8-10', fee:'V', dx:'V67.9', mins:9, st:'rejmoa', msp:{on:'2026-09-30', ex:['YY','YA'], src:'Teleplan'}},
+  {id:'c27', who:'Owen Brady', date:'2026-09-08', win:'8-10', fee:'V', dx:'724.2', mins:11, st:'closed', paid:0, msp:{on:'2026-09-29', ex:'HX'}},
+  {id:'c28', who:'Grace Lin', date:'2026-06-05', win:'10-2', fee:'V', dx:'V72.6', mins:8, st:'closed', msp:{on:'2026-09-10', ex:'BV', src:'Teleplan'}},
   {id:'c16', who:'Behdis Maleki', date:'2026-09-02', win:'10-2', fee:'V', dx:'280', mins:12, st:'paid', paid:38.61, paidOn:'2026-09-29', sub:'Paid 29 Sep'},
   /* Private pay (its own view; never mixed with MSP). how: 'card' = card on file, charged after the visit;
      'link' = payment link sent; a form is released once it's paid. All demo values. */
@@ -13762,6 +13801,7 @@ function t23Basis(c){
     case 'submit': case 'submitted': case 'held': return [t23Amt(c), 'expected'];
     case 'rejected': case 'rejmoa': case 'dispute': case 'appeal': return [t23Amt(c), 'billed, not paid'];
     case 'adjusted': case 'paid': return [c.paid, 'paid'];
+    case 'closed': return [t23Amt(c), 'not paid'];
     case 'pri-due': return [t23Amt(c), 'outstanding'];
     case 'pri-paid': return [t23Amt(c), 'paid'];
   }
@@ -13808,8 +13848,9 @@ function t23AmtHtml(c){
   return '<div class="cl-amt">' + t23Money(b[0]) + '<span>' + b[1] + '</span></div>';
 }
 function t23SubLine(c){
-  if(c.st === 'held') return 'Held by MSP · ' + c.msp.ex + ' · ' + T23_AGENT + ' (billing agent) is following it up';
-  if(c.st === 'rejmoa') return T23_AGENT + ' (billing agent) is fixing the patient’s details. Nothing for you.';
+  if(c.st === 'held') return 'Held by MSP · ' + t23ExCode(c) + ' · ' + T23_EX.BH.how;
+  if(c.st === 'rejmoa') return t23ExCode(c) + ' · ' + t23ExMeaning(c) + ' ' + T23_AGENT + ' (billing agent) is fixing it. Nothing for you.';
+  if(c.st === 'closed') return t23ExCode(c) + ' · ' + t23ExMeaning(c);
   return c.sub || '';
 }
 function t23FlagKind(f){ return f.k === 'q' ? 'Question from ' + (f.from || T23_AGENT) + ' · ' + T23_AGENT_ROLE : 'Flag'; }
@@ -13839,6 +13880,7 @@ function t23NeedsSub(){ return t23Msp().filter(function(c){ return c.st === 'sub
 function t23Rej(){ return t23Msp().filter(function(c){ return ['rejected','dispute','adjusted'].indexOf(c.st) > -1; }).sort(t23Sort); }
 function t23Subm(){ return t23Msp().filter(function(c){ return ['submitted','held','rejmoa','appeal'].indexOf(c.st) > -1; }).sort(function(a, b){ return t23D(b.date) - t23D(a.date); }); }
 function t23Paid(){ return t23Msp().filter(function(c){ return ['paid','adjusted'].indexOf(c.st) > -1; }); }
+function t23Closed(){ return t23Msp().filter(function(c){ return c.st === 'closed'; }); }
 function t23Priv(){ return CLAIMS.filter(function(c){ return c.payer === 'private'; }).sort(function(a, b){ return ((a.st === 'pri-due' ? 0 : 1) - (b.st === 'pri-due' ? 0 : 1)) || (t23D(b.date) - t23D(a.date)); }); }
 function t23Attn(){ return t23NeedsSub().length + t23Rej().length; }
 /* kept for older callers (the Assistant reads the same counts) */
@@ -13909,7 +13951,7 @@ function t23FlagHtml(c, f, i){
   var id = c.id;
   var btn = function(label, fn, icon, dark){ return '<button type="button" class="btn ' + (dark ? 'dark' : '') + '" onclick="' + fn + '">' + (icon ? t23Ic(icon) : '') + label + '</button>'; };
   var head = t23Ic('chat') + '<div><p class="t23-kind">Question from ' + t23E(f.from) + ' · ' + T23_AGENT_ROLE + '</p>';
-  var body = (f.ex ? '<p class="t23-why">' + t23F(c.date) + ' visit · ' + c.fee + ' · ' + c.dx + ' Teleplan returned the claim because of the diagnosis code (' + f.ex + ').</p>' : '') +
+  var body = (f.ex ? '<p class="t23-why">' + t23F(c.date) + ' visit · ' + c.fee + ' · ' + c.dx + ' MSP refused the claim: ' + t23ExCode(c) + ' · ' + t23ExMeaning(c) + '</p>' : '') +
          '<p class="t23-find">“' + t23E(f.ask) + '”</p>' +
          (f.done ? '' : (f.overdue ? '<p class="t23-why"><span class="t23-days warn">' + t23Ic('alert') + 'Overdue since ' + f.due + '</span></p>' : '<p class="t23-why">Answer by ' + f.due + '</p>'));
   var acts = f.done ? '' : '<div class="t23-acts">' + btn('Fix it now', 't23OpenPick({claim:\'' + id + '\',focus:\'dx\',flag:' + i + '})', 'edit', true) +
@@ -13925,13 +13967,13 @@ function t23RejHtml(c){
   if(c.st === 'dispute'){ p = ['Sign off &amp; ask MSP to reassess', 't23Reassess(\'' + c.id + '\')', 'complete']; s = ['Correct instead', 't23Correct(\'' + c.id + '\')']; }
   if(c.st === 'adjusted'){ p = ['Accept', 't23SetSt(\'' + c.id + '\',\'paid\',\'Adjustment accepted\')', 'complete']; s = ['Dispute', 't23SetSt(\'' + c.id + '\',\'dispute\',\'Marked as a potential dispute\')']; }
   var reason = c.st === 'adjusted'
-    ? t23Money(t23Amt(c) - c.paid) + ' less than expected · ' + c.msp.ex + T23_DEMO
-    : c.msp.ex + ' · ' + (c.msp.reason || T23_EX[c.msp.ex]) + T23_DEMO;
-  var when = c.msp.on ? (c.msp.src === 'Teleplan' ? 'Returned by Teleplan ' : c.st === 'adjusted' ? 'Paid, adjusted ' : 'Refused ') + t23F(c.msp.on) + ' · ' : '';
+    ? t23Money(c.paid) + ' paid of ' + t23Money(t23Amt(c)) + ' · ' + t23ExCode(c) + ' · ' + t23ExMeaning(c)
+    : t23ExCode(c) + ' · ' + t23ExMeaning(c);
+  var when = c.msp.on ? (c.st === 'adjusted' ? 'Paid ' : 'Refused ') + t23F(c.msp.on) + ' · ' : '';
   var q = c.flags.map(function(f, i){ return f.k === 'q' ? t23FlagHtml(c, f, i) : ''; }).join('');
   var openQ = t23OpenQ(c);
   return '<div class="t23-card" id="t23-c-' + c.id + '"><div class="t23-chead"><b>' + t23E(c.who) + '</b><span class="t23-meta">' + t23F(c.date) + ' visit · ' + t23FeeTxt(c.fee) + '</span>' + T23_DEMO + '<span class="t23-chips">' + t23Pill(c) + t23DaysChip(c) + '</span></div>' +
-    '<p class="t23-reason">' + when + reason + '</p>' + q +
+    '<p class="t23-reason">' + when + t23E(reason) + '</p>' + (c.sub && c.st === 'dispute' ? '<p class="t23-reason">' + t23E(c.sub) + '</p>' : '') + q +
     '<div class="t23-cfoot">' + (openQ ? '' : '<button type="button" class="btn dark" onclick="' + p[1] + '">' + t23Ic(p[2]) + p[0] + '</button><button type="button" class="btn" onclick="' + s[1] + '">' + s[0] + '</button>') +
     '<button type="button" class="btn xs" onclick="t23Note(\'' + c.id + '\')">' + t23Ic('file') + 'Open the visit</button>' +
     '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button></div></div>';
@@ -14024,7 +14066,7 @@ function t23SetSt(id, st, words){
   c.st = st; t23Log(c, 'Dr. Pannozzo', words);
   t23Refresh(); toast(words);
 }
-function t23Correct(id){ t23OpenPick({claim:id, focus:'fee', correct:true}); }
+function t23Correct(id){ var c = t23C(id), ex = t23ExList(c); t23OpenPick({claim:id, focus:ex.indexOf('CF') > -1 ? 'time' : ex.indexOf('VN') > -1 || ex.indexOf('BI') > -1 ? 'dx' : 'fee', correct:true}); }
 function t23Reassess(id){
   t23Signoff([id], 'reassess', function(at){
     var c = t23C(id);
@@ -14136,15 +14178,17 @@ function t23Open(id){
       line('How', t23HowLine(c), null, true) +
       line('Status', (T23_ST[c.st] || {}).label + (c.moaAsked ? ' · MOA asked to follow up ' + c.moaAsked : ''), null, true) + '</div>';
   }
+  /* Dev answers, 6 Oct: the real code(s), what they mean, who fixes it and how (msp-explanatory-codes.csv) */
   if(c.msp && c.st !== 'held'){
     var left = t23DaysLeft(c);
-    var refused = c.st === 'adjusted' ? 'Paid, adjusted ' + t23F(c.msp.on) + ' · ' + c.msp.ex + ' · ' + t23Money(c.paid) + ' paid, ' + t23Money(t23Amt(c) - c.paid) + ' less than expected'
-      : (c.msp.src === 'Teleplan' ? 'Returned by Teleplan ' : 'Refused ') + (c.msp.on ? t23F(c.msp.on) + ' · ' : '') + c.msp.ex + ' · ' + (c.msp.reason || T23_EX[c.msp.ex]);
-    h += '<div class="bl-block"><p class="bl-k">MSP response</p><p class="bl-v">' + refused + T23_DEMO + '</p>' +
-      (left != null ? '<p class="bl-v">' + left + ' days left to fix it</p>' : '') +
-      '<details><summary>How we count this</summary><p>About 90 days from the rejection date to fix and resubmit.</p></details></div>';
+    var refused = c.st === 'adjusted' || (c.st === 'paid' && c.msp.ex) ? 'Paid ' + t23F(c.msp.on) + ' · ' + t23Money(c.paid) + ' of ' + t23Money(t23Amt(c)) + (c.msp.paidAs ? ' · paid as ' + c.msp.paidAs : '') + ' · ' + t23ExCode(c)
+      : c.st === 'closed' && c.msp.ex === 'HX' ? 'Paid $0.00 ' + t23F(c.msp.on) + ' · ' + t23ExCode(c)
+      : 'Refused ' + (c.msp.on ? t23F(c.msp.on) + ' · ' : '') + t23ExCode(c);
+    h += '<div class="bl-block"><p class="bl-k">MSP response</p><p class="bl-v">' + refused + '</p>' + t23ExBlock(c) +
+      (left != null ? '<p class="bl-v">' + left + ' days left to fix it</p>' +
+      '<details><summary>How we count this</summary><p>About 90 days from the rejection date to fix and resubmit.</p></details>' : '') + '</div>';
   } else if(c.st === 'held'){
-    h += '<div class="bl-block"><p class="bl-k">MSP response</p><p class="bl-v">Held by MSP · ' + c.msp.ex + ' · ' + T23_EX[c.msp.ex] + T23_DEMO + '</p><p class="bl-v">' + T23_AGENT + ' (billing agent) is following it up. Nothing for you.</p></div>';
+    h += '<div class="bl-block"><p class="bl-k">MSP response</p><p class="bl-v">Held by MSP ' + (c.msp.on ? t23F(c.msp.on) + ' ' : '') + '· ' + t23ExCode(c) + '</p>' + t23ExBlock(c) + '<p class="bl-v">' + T23_AGENT + ' (billing agent) is watching it. Nothing for you.</p></div>';
   }
   if(c.st === 'submit') h += '<div class="bl-block"><p class="bl-k">Deadline</p><p class="bl-v">' + t23DaysLeft(c) + ' days left to submit</p>' +
       '<details><summary>How we count this</summary><p>90 days from the date of service. The visit day is day 90 and the next day is day 89.</p></details></div>';
@@ -14258,7 +14302,7 @@ function t23RenderPick(){
     '<label>Start<input class="t23-in" type="time" data-focus="time" value="' + (v.start || '') + '" onchange="T23.pick.v.start=this.value;t23RenderMins()"></label>' +
     '<label>Stop<input class="t23-in" type="time" value="' + (v.stop || '') + '" onchange="T23.pick.v.stop=this.value;t23RenderMins()"></label>' +
     '<span class="t23-mins" id="t23-mins"></span></div>' +
-    '<p class="t23-hint">Filled from the call.' + t23Ph('Demo values') + ' You can change it. Changes are logged.</p></div>';
+    '<p class="t23-hint">' + (v.start || v.stop ? 'Filled from the call. You can change it.' : 'No call times on this claim. Enter the start and end time.') + ' Changes are logged.</p></div>';
   if(P.err) h += '<p class="t23-err" role="alert">' + P.err + '</p>';
   h += '<div class="defer-acts"><button type="button" class="btn" onclick="t23PickClose()">Cancel</button><button type="button" class="btn dark" onclick="t23PickSave()">' + t23Ic('complete') + 'Save</button></div>';
   card.innerHTML = h; paintPd(card);
@@ -15852,6 +15896,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 00:05</div>
+  <div class="build-stamp">v2 · build 2026-10-07 00:20</div>
 </body>
 </html>

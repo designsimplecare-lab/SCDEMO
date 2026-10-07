@@ -570,26 +570,29 @@ renderTasks(); renderReferrals(); renderImaging(); renderCallbacks(); renderFaxe
    A question on a claim is not a task (rule 12; proposal N5, Needs Daniel). No sign-off here (CNF-10). */
 var BDEMO = '';  /* no demo tags in the UI (Ani, 6 Oct) */
 /* Real data (Ani, 6 Oct 2026): diagnosis codes are real BC MSP ICD-9 codes (the same as the physician portal's
-   claims; source assets/data/bc-msp-diagnostic-codes.json). Fee and explanatory codes are still demo values. */
+   claims; source assets/data/bc-msp-diagnostic-codes.json). Dev answers, 6 Oct 2026: fee codes are MSP's real telehealth
+   codes (set by age on the visit date) and the explanatory codes are MSP's real ones (assets/data/msp-explanatory-codes.json),
+   the same codes the physician portal shows for the same claims: AM, BH, YY · VN, BI, ED. Days left on a refused claim
+   count 90 days from the statement date that refused it; a held claim (BH) has no countdown (don't resend). */
 var BILL_ITEMS = [
-  {id:'b1', f:'open', kind:'Teleplan rejection', who:'Carol-Anne Feldman', date:'29 Sep', src:'Teleplan', on:'1 Oct', ex:'EX-D2',
-   issue:'Name on the claim doesn’t match MSP’s record for this card (EX-D2)', fix:'Confirm the legal name with the patient, correct it, resubmit.', due:'Due Mon 5 Oct',
-   fee:'DEMO-A · Visit', dx:'112.1 · Candidiasis of vulva and vagina', mins:10, hist:['1 Oct 9:02 AM · Teleplan · Rejected: EX-D2 (demo)', '1 Oct 9:03 AM · System · Sent to Dolly: patient details']},
-  {id:'b2', f:'open', kind:'Held by MSP', who:'Owen Brady', date:'25 Aug', src:'MSP', on:'22 Sep', ex:'EX-D5', day:39, left:51,
-   issue:'MSP is holding this claim (EX-D5)', fix:'Check the explanatory code and send what MSP asks for.', due:'',
-   fee:'DEMO-A · Visit', dx:'724.2 · Lumbago', mins:12, hist:['22 Sep · MSP · Held: EX-D5 (demo)']},
+  {id:'b1', f:'open', kind:'Teleplan rejection', who:'Carol-Anne Feldman', date:'29 Sep', src:'Teleplan', on:'1 Oct', ex:'AM',
+   issue:'AM · Patient initials (or dependent number) do not match MSP’s records', fix:'Use the exact legal name MSP holds (SimpleCare asks MSP with a free name check), then resubmit with submission code X and a note.', due:'Due Mon 5 Oct',
+   fee:'13437 · Telehealth visit, age 2–49', dx:'112.1 · Candidiasis of vulva and vagina', mins:10, hist:['1 Oct 9:02 AM · MSP · Refused: AM · Patient initials don’t match MSP’s records', '1 Oct 9:03 AM · System · Sent to Dolly: patient details']},
+  {id:'b2', f:'open', kind:'Held by MSP', who:'Owen Brady', date:'25 Aug', src:'MSP', on:'29 Sep', ex:'BH',
+   issue:'BH · Held by MSP: it will be processed on a later statement', fix:'MSP will decide on a later statement. Don’t resend.', due:'',
+   fee:'13437 · Telehealth visit, age 2–49', dx:'724.2 · Lumbago', mins:12, hist:['29 Sep · MSP · Held: BH · Will be processed on a later statement. Don’t resend.']},
   {id:'b3', f:'open', kind:'Health card', who:'K Arli Eyre', date:'30 Sep', src:'MSP', on:'30 Sep', ex:'',
    issue:'Coverage ended 31 Aug 2026 (demo)', fix:'Ask the patient about coverage. If there’s none, the doctor chooses private pay, another payer, or not billed.', due:'Due Mon 5 Oct',
-   fee:'DEMO-A · Visit', dx:'V67.9 · Follow-up examination, unspecified', mins:10, card:true, checks:['30 Sep, 7:42 AM · at check-in'], hist:['30 Sep 7:42 AM · System · Health card: coverage ended 31 Aug 2026']},
-  {id:'b4', f:'wait', kind:'Teleplan rejection', who:'Nadia Hassan', date:'15 Jul', src:'Teleplan', on:'2 Oct', ex:'EX-D4', day:80, left:10,
-   issue:'Diagnosis code problem (EX-D4)', fix:'Question sent: can you check the diagnosis?', with:'With Dr. Pannozzo',
-   fee:'DEMO-A · Visit', dx:'V68.1 · Issue of repeat prescriptions', mins:9, hist:['2 Oct 9:10 AM · Teleplan · Returned: EX-D4 (demo)', '2 Oct 9:31 AM · Dolly · Question to Dr. Pannozzo: Can you check the diagnosis on this claim?']},
-  {id:'b5', f:'wait', kind:'MSP refusal', who:'Behdis Maleki', date:'12 Sep', src:'MSP', on:'26 Sep', ex:'EX-D1', day:21, left:83,
-   issue:'Fee item not payable with this diagnosis (EX-D1)', fix:'With Dr. Pannozzo: coding.', with:'With Dr. Pannozzo',
-   fee:'DEMO-A · Visit', dx:'280 · Iron deficiency anaemias', mins:12, hist:['26 Sep · MSP · Refused: EX-D1 (demo)', '26 Sep · System · Sent to Dr. Pannozzo: coding']},
-  {id:'b6', f:'wait', kind:'Reassessment', who:'Andrey Abushakhmanov', date:'5 Sep', src:'MSP', on:'19 Sep', ex:'EX-D2', day:28, left:76,
-   issue:'Looks correctly billed (EX-D2)', fix:'Waiting for Dr. Pannozzo to authorise a reassessment.', with:'With Dr. Pannozzo',
-   fee:'DEMO-A · Visit', dx:'V67.9 · Follow-up examination, unspecified', mins:10, hist:['19 Sep · MSP · Refused: EX-D2 (demo)', '3 Oct · Dr. Pannozzo · Marked as a potential dispute']}
+   fee:'13437 · Telehealth visit, age 2–49', dx:'V67.9 · Follow-up examination, unspecified', mins:10, card:true, checks:['30 Sep, 7:42 AM · at check-in'], hist:['30 Sep 7:42 AM · System · Health card: coverage ended 31 Aug 2026']},
+  {id:'b4', f:'wait', kind:'Teleplan rejection', who:'Nadia Hassan', date:'15 Jul', src:'Teleplan', on:'2 Oct', ex:'VN', day:1, left:89,
+   issue:'YY · VN · Diagnosis (ICD-9) code missing or invalid', fix:'Question sent: can you check the diagnosis?', with:'With Dr. Pannozzo',
+   fee:'13637 · Telehealth visit, age 60–69', dx:'V68.1 · Issue of repeat prescriptions', mins:9, hist:['2 Oct 9:10 AM · MSP · Refused: YY · VN · Diagnosis (ICD-9) code missing or invalid', '2 Oct 9:31 AM · Dolly · Question to Dr. Pannozzo: Can you check the diagnosis on this claim?']},
+  {id:'b5', f:'wait', kind:'MSP refusal', who:'Behdis Maleki', date:'12 Sep', src:'MSP', on:'26 Sep', ex:'BI', day:7, left:83,
+   issue:'BI · Fee code and diagnosis do not go together', fix:'With Dr. Pannozzo: coding.', with:'With Dr. Pannozzo',
+   fee:'13437 · Telehealth visit, age 2–49', dx:'280 · Iron deficiency anaemias', mins:12, hist:['26 Sep · MSP · Refused: BI · Fee code and diagnosis do not go together', '26 Sep · System · Sent to Dr. Pannozzo: coding']},
+  {id:'b6', f:'wait', kind:'Reassessment', who:'Andrey Abushakhmanov', date:'5 Sep', src:'MSP', on:'19 Sep', ex:'ED', day:14, left:76,
+   issue:'ED · Insufficient medical necessity to process this claim (looks correctly billed)', fix:'Waiting for Dr. Pannozzo to authorise a reassessment.', with:'With Dr. Pannozzo',
+   fee:'13437 · Telehealth visit, age 2–49', dx:'V67.9 · Follow-up examination, unspecified', mins:10, hist:['19 Sep · MSP · Refused: ED · Insufficient medical necessity', '3 Oct · Dr. Pannozzo · Marked as a potential dispute']}
 ];
 var BILL_F = 'open', BILL_OPEN_ID = null, BILL_ASK = false, BILL_DIRTY = false;
 function bNow(){ return new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
@@ -621,7 +624,7 @@ function bRenderItem(){
   var editable = it.f === 'open' && (it.kind === 'Teleplan rejection' || it.kind === 'MSP refusal' || it.kind === 'Held by MSP' || it.card);
   var h = '<button class="t23m-back" onclick="bBack()">Back to Billing</button>' +
     '<div class="box"><p class="box-title">What came back</p><p class="t23m-ro" style="color:var(--ink)"><b>' + bE(it.who) + ' · ' + it.date + ' visit</b> · ' + it.kind + bDays(it) + '</p>' +
-    '<p class="t23m-ro">' + it.src + ' · ' + it.on + (it.ex ? ' · ' + it.ex + BDEMO : '') + ' · ' + it.issue + '</p>' +
+    '<p class="t23m-ro">' + it.src + ' · ' + it.on + ' · ' + it.issue + '</p>' +
     '<p class="t23m-ro">Owner: Dolly · ' + (it.f === 'wait' ? 'Waiting on the doctor' : it.f === 'done' ? 'Done' : 'Open') + (it.due ? ' · ' + it.due : '') + '</p></div>' +
     '<div class="box"><p class="box-title">Suggested fix</p><p class="t23m-ro" style="color:var(--ink)">' + it.fix + '</p></div>';
   /* 3. Patient details: the fields she may edit (ROLE-R7). The demo stores nothing it is given. */
@@ -636,12 +639,12 @@ function bRenderItem(){
   /* 4. Coding: read-only for the MOA (ROLE-R7, CTL-03) */
   var ro = function(k, v){ return '<label>' + k + '</label><span class="t23m-ro">' + v + '</span>'; };
   h += '<div class="box"><p class="box-title">Coding</p><div class="t23m-f">' +
-    ro('Fee item', it.fee + BDEMO) + ro('Diagnosis (ICD-9)', it.dx + BDEMO) + ro('Units', '1') + ro('Time', it.mins + ' min') + ro('Service location', 'Virtual (phone)') + ro('Referring practitioner', 'None') +
+    ro('Fee code', it.fee + BDEMO) + ro('Diagnosis (ICD-9)', it.dx + BDEMO) + ro('Units', '1') + ro('Time', it.mins + ' min') + ro('Service location', 'Virtual (phone)') + ro('Referring practitioner', 'None') +
     '</div><p class="t23m-only">Only the doctor can change this.</p>' +
     (it.f === 'done' ? '' : '<button class="btn" onclick="BILL_ASK=true;bRenderItem()"' + (it.f === 'wait' ? ' disabled title="A question is already with Dr. Pannozzo"' : '') + '><span class="ic" data-ic="chat"></span> Ask the doctor</button>') + '</div>';
   if(BILL_ASK){
     h += '<div class="box" id="b-ask"><p class="box-title">Ask the doctor</p>' +
-      '<p class="t23m-ro">' + bE(it.who) + ' · ' + it.date + ' claim · ' + (it.ex === 'EX-D1' || it.ex === 'EX-D4' ? 'Diagnosis' : 'Fee item') + ' · MSP’s reason: ' + it.issue + '</p>' +
+      '<p class="t23m-ro">' + bE(it.who) + ' · ' + it.date + ' claim · ' + (it.ex === 'BI' || it.ex === 'VN' ? 'Diagnosis' : 'Fee code') + ' · MSP’s reason: ' + it.issue + '</p>' +
       '<div class="t23m-f" style="margin-top:10px"><label for="b-q">Your question</label><textarea id="b-q" class="t23m-in" oninput="bAskState()" placeholder="Required"></textarea>' +
       '<label for="b-a1">Answers he can tap</label><span style="display:flex;flex-direction:column;gap:6px"><input id="b-a1" class="t23m-in" value="Fix it now"><input id="b-a2" class="t23m-in" value="It’s right · resubmit as is"></span></div>' +
       '<div class="t23m-acts" style="margin-top:12px"><button class="btn" onclick="BILL_ASK=false;bRenderItem()">Cancel</button><button class="btn dark" id="b-send" onclick="bSend()" disabled>Send to Dr. Pannozzo</button></div></div>';
@@ -727,6 +730,6 @@ renderTasks(); renderBilling();
 function dswOpen(){ document.getElementById('dsw').classList.add('open'); document.getElementById('dsw-fab').style.display='none'; }
 function dswClose(){ document.getElementById('dsw').classList.remove('open'); document.getElementById('dsw-fab').style.display='inline-flex'; }
 </script>
-  <div class="build-stamp">build 2026-10-06 17:30</div>
+  <div class="build-stamp">build 2026-10-07 00:20</div>
 </body>
 </html>
