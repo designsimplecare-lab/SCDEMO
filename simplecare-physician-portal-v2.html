@@ -6239,7 +6239,7 @@
               <button class="btn" id="t23-finlater" onclick="t23Fin('later')" hidden><span class="ic" data-pdic="clock"></span>Finalize, submit later</button>
               <button class="btn dark" id="vc-nextpt" hidden><span class="ic" data-pdic="chevr"></span><span></span></button>
             </div>
-            <p class="t23-finhelp" id="t23-finhelp" hidden>Submitting sends this one claim. Claims go to MSP in one batch at the end of the day.</p>
+            <p class="t23-finhelp" id="t23-finhelp" hidden>Submitting sends this one claim to MSP right away. MSP processes claims at 7 PM each business day.</p>
             </div>
           </section>
         </div>
@@ -13546,8 +13546,9 @@ function csDemoSync(){
    4 Oct: "start build billing"). Ani, 3 Oct: "Daniel changed the billing so we should change our billing
    how he did, new way." PRD refs (IDs only): CNF-09/10, COD-01..07, TAIL-04, CLM-01..06, ELT-01..09.
    Revised after Daniel's review, 5 Oct (product/specs/billing-redesign.md, "Daniel review, 5 Oct"): the doctor submits
-   one claim at a time (at sign-off, or later from Claims, Needs submission); the system batches them to MSP at the end
-   of the day. Fee codes and amounts are MSP's real telehealth codes since Dev's answers (6 Oct). Red in billing only at 2 days left or
+   one claim at a time (at sign-off, or later from Claims, Needs submission). Dev answers, 6 Oct (answer 08): there is NO
+   end-of-day batch: a claim goes to MSP the moment the doctor presses Submit; MSP processes what it received at 7 PM
+   Pacific each business day, and twice a month that run is the payment close-off. Fee codes and amounts are MSP's real telehealth codes since Dev's answers (6 Oct). Red in billing only at 2 days left or
    fewer (critical, rule 21).
    ===================================================================================================== */
 var T23_TODAY = new Date(2026, 9, 3);   /* the spec's demo "today": Sat 3 Oct 2026, so its day counts hold */
@@ -14032,7 +14033,7 @@ function renderClaims(){
     var rows = clRows(at), pan = function(id, inner){ return '<div class="box t23-sec" id="' + id + '" role="tabpanel" aria-labelledby="t23-tab-' + at + '">' + inner + '</div>'; };
     if(at === 'rej') h += pan('t23-panel-rej', rows.length ? rows.map(t23RejHtml).join('') : '<p class="pc-empty">Nothing rejected that needs you.</p>');
     else if(at === 'ns') h += pan('t23-panel-ns',
-           '<p class="t23-quiet">Submit each claim when you’re ready. Everything submitted today goes to MSP in one batch at the end of the day.</p>' +
+           '<p class="t23-quiet">Claims go to MSP as soon as you submit. MSP processes them at 7 PM each business day.</p>' +   /* Dev answers, 6 Oct (answer 08): no end-of-day batch */
            /* Real data (Ani, 6 Oct): the next MSP close-off and its payment date, one quiet line */
            (t23NextCut() ? '<p class="t23-quiet t23-cut">Next close-off ' + t23FDW(t23NextCut()[0]) + ' · paid ' + t23FDW(t23NextCut()[1]) + '</p>' : '') +
            (rows.length ? rows.map(t23SubRow).join('') : '<p class="pc-empty">Nothing to submit. Claims from finalized visits land here.</p>'));
@@ -14057,7 +14058,7 @@ function t23Answer(id, i){
     var ans = 'The diagnosis is right · resubmit as is';
     f.done = 'Answered by Dr. Pannozzo · 3 Oct, ' + at + ' · ‘' + ans + '’';
     t23Log(c, 'Dr. Pannozzo', 'Answered ' + f.from + ' (billing agent): ' + ans + '; resubmitted as is');
-    c.st = 'submitted'; c.signed = at; c.sub = 'Resubmitted as is · goes to MSP in today’s end-of-day batch';
+    c.st = 'submitted'; c.signed = at; c.sub = 'Resent as is · sent to MSP · MSP processes it at 7 PM';
     toast('Resubmitted as is · ' + f.from + ' sees your answer');
   });
 }
@@ -14122,11 +14123,11 @@ function t23DoSign(){
   if(p.done){ p.done(at); t23Refresh(); return; }
   p.ids.forEach(function(id){
     var c = t23C(id); if(!c) return;
-    c.st = 'submitted'; c.signed = at; c.sub = 'Submitted ' + at + ' · goes to MSP in today’s end-of-day batch';
-    t23Log(c, 'Dr. Pannozzo', 'Submitted (his sign-off); goes to MSP in the end-of-day batch');
+    c.st = 'submitted'; c.signed = at; c.sub = 'Sent to MSP ' + at + ' · MSP processes it at 7 PM';
+    t23Log(c, 'Dr. Pannozzo', 'Sent to MSP (his sign-off)');
   });
   t23Refresh();
-  toast('Claim submitted · it goes to MSP at the end of the day');
+  toast('Claim sent to MSP · MSP processes it at 7 PM');
 }
 /* one claim at a time (Daniel 5 Oct: no batch, no checkboxes) */
 function t23SubmitOne(id){
@@ -14518,9 +14519,9 @@ function t23OnFinalize(r){
       var cid = c.id;
       setTimeout(function(){
         t23Signoff([cid], 'visit', function(at){
-          var cc = t23C(cid); cc.st = 'submitted'; cc.signed = at; cc.sub = 'Submitted ' + at + ' at sign-off · goes to MSP in today’s end-of-day batch';
-          t23Log(cc, 'Dr. Pannozzo', 'Submitted at sign-off (his sign-off); goes to MSP in the end-of-day batch');
-          toast('Signed off · claim submitted · it goes to MSP at the end of the day');
+          var cc = t23C(cid); cc.st = 'submitted'; cc.signed = at; cc.sub = 'Sent to MSP ' + at + ' at sign-off · MSP processes it at 7 PM';
+          t23Log(cc, 'Dr. Pannozzo', 'Sent to MSP at sign-off (his sign-off)');
+          toast('Signed off · claim sent to MSP · MSP processes it at 7 PM');
         }, function(){ toast('Visit signed off · the claim is in Claims, Needs submission'); t23RenderBillRow(); });
       }, 0);
       suffix = ' · submitting the claim';
@@ -14544,7 +14545,7 @@ function t23RenderBillRow(){
   var h = t23Ic('claims') + '<span>Billing</span>' + sep;
   if(r.signed){
     var c = t23RowClaim(r);
-    h += c ? '<span>' + (T23_ST[c.st] || {}).label + '</span>' + sep + '<span>' + (c.st === 'submit' ? 'in Claims' : c.st === 'submitted' ? 'goes to MSP at the end of the day' : 'recorded') + '</span>' +
+    h += c ? '<span>' + (T23_ST[c.st] || {}).label + '</span>' + sep + '<span>' + (c.st === 'submit' ? 'in Claims' : c.st === 'submitted' ? 'MSP processes it at 7 PM' : 'recorded') + '</span>' +
       (c.st === 'submit' ? '<button type="button" class="btn xs" onclick="t23SubmitOne(\'' + c.id + '\')">' + t23Ic('arrowup') + 'Submit claim</button>' : '') +
       '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button>' : '<span>Recorded</span>';
     el.innerHTML = h; el.hidden = false; if(help) help.hidden = true; paintPd(el); t23SyncFin(); return;
@@ -15437,10 +15438,10 @@ function ernPayments(){
   ERN_PAIRS.forEach(function(p, i){
     if(p[1] > fromISO){ var o = {close:p[0], pay:p[1], prevClose:i ? ERN_PAIRS[i - 1][0] : null, amt:0, n:0, exp:p[1] > todayISO}; by[p[1]] = o; list.push(o); }
   });
-  /* generated claims: submitted the day of the visit (the end-of-day batch), paid on their pair's payment date */
+  /* generated claims: sent to MSP the day of the visit (Submit sends at once), paid on their pair's payment date */
   ERN_DAYS.forEach(function(x){
     if(!x.msp) return;
-    if(x.iso === todayISO) return;   /* today's claims go out in tonight's batch, after the 2 Oct close-off */
+    if(x.iso === todayISO) return;   /* today's claims are processed in MSP's next 7 PM run, after the 2 Oct close-off */
     var p = ernPairFor(x.iso); if(p && by[p[1]]){ by[p[1]].amt += x.amt; by[p[1]].n += x.msp; }
   });
   /* the demo claims in Claims: paid ones on their payment date, submitted ones in the next payment; the rest are not paid */
@@ -15896,6 +15897,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 00:30</div>
+  <div class="build-stamp">v2 · build 2026-10-07 00:40</div>
 </body>
 </html>
