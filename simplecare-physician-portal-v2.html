@@ -5760,6 +5760,53 @@
     font:inherit;font-size:14px;font-weight:600;color:var(--accent-ink);cursor:pointer;white-space:nowrap;}
   .t23-edited:hover,.t23-edited:focus-visible{background:var(--wash);}
   .t23-edited .ic,.t23-edited svg{width:16px;height:16px;}
+
+  /* ===== Chart tab (Ani, 7 Oct): the separate Full chart page "feels awkward because it replaces the whole visit".
+     It is the visit's 4th tab: "Search the chart" on top, the sections as a compact pill row (smaller than the main
+     tabs), then the section. The rest of the visit (patient card, This visit, Patient summary, the critical bar, Save
+     draft, Sign off, the call widget) stays where it is. ===== */
+  #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-fc{display:grid;gap:12px;margin:0;min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-fc-hd{display:block;}
+  #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-search{margin:0;width:auto;max-width:none;box-sizing:border-box;border-color:transparent;background:var(--panel);box-shadow:var(--shadow-card);}
+  #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-search input{flex:1 1 auto;width:auto;min-width:0;height:42px;font-size:16px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-tabs{display:flex;flex-wrap:wrap;gap:6px;padding:0;border:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-tabs [role=tab]{display:inline-flex;align-items:center;min-height:36px;margin:0;padding:0 14px;border:0;border-radius:999px;
+    background:transparent;font:inherit;font-size:15px;font-weight:500;line-height:20px;color:var(--ink-soft);cursor:pointer;white-space:nowrap;}
+  #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-tabs [role=tab]:hover{background:var(--panel);color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-tabs [role=tab][aria-selected="true"]{background:var(--accent-wash);color:var(--ink);font-weight:600;}
+  #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-tabs [role=tab]:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-pane{outline:none;}
+  /* search results, in place of the section */
+  #screen-patientchart #pcv-c.cs-v2 #csp-search{padding:16px 20px;border-radius:16px;background:var(--panel);box-shadow:var(--shadow-card);}
+  #screen-patientchart #pcv-c.cs-v2 #csp-search[hidden]{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #csp-search .cs-sres-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 4px;}
+  #screen-patientchart #pcv-c.cs-v2 #csp-search .cs-sres-hd .cs-cap{margin:0;font-size:15px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #csp-search .cs-sres-hd .cs-link{margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 #csp-search .cs-since li{grid-template-columns:120px minmax(0,1fr);}
+  #screen-patientchart #pcv-c.cs-v2 #csp-search .cs-src{font-size:15px;line-height:22px;}
+  #screen-patientchart #pcv-c.cs-v2 #csp-search mark{background:var(--accent-wash);color:inherit;border-radius:3px;padding:0 1px;}
+  #screen-patientchart #pcv-c.cs-v2 #csp-search .pc-empty{margin:8px 0 0;font-size:15px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-hit{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px;transition:outline-color .6s ease;}
+  @media (prefers-reduced-motion:reduce){#screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-hit{transition:none;}}
+  /* the sections' older content had 10.5–13.5 px labels (timeline pills, lab orders, care plan "Why this is ours", problem
+     goals); inside the Chart tab nothing a physician reads is under 14 px */
+  #screen-patientchart #pcv-c.cs-v2 #v2p-chart :is(.ctl-pill,.lo-legend,.lo-sub,.lo-fact,.lo-fact i,.lo-test .st,.nm .st,.lo-unmapped,.lo-unmapped b,.lo-unmapped span,
+    .lo-standing,.lo-prog span,.lo-note,.lo-why,.gp,.cd-sugg-cue,.cp-why,div.t > span){font-size:14px;}
+  /* "See all" at the end of each Patient summary row */
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sa{margin:6px 0 0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-seeall{font-size:14px;font-weight:600;color:var(--accent-ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-seeall .ic,#screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-seeall svg{width:16px;height:16px;}
+  /* four main tabs: Save draft is icon-only up to 1500 px (its name kept for screen readers and on hover), tighter tabs at 1360 */
+  @media (max-width:1500px){
+    #screen-patientchart #pcv-c.cs-v2 #vc-savedraft{width:44px;padding:0;justify-content:center;gap:0;font-size:0;}
+  }
+  @media (max-width:1360px){
+    #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-tabs{gap:2px;}
+    #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-tabs [role=tab]{padding:0 10px;font-size:14px;}
+    #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab]{padding:3px 8px 0;}
+    #screen-patientchart #pcv-c.cs-v2 .v2-top{gap:8px;}
+    #screen-patientchart #pcv-c.cs-v2 #v2-fin .v2-fin-x{display:none;}
+  }
 </style>
 </head>
 <body>
@@ -6203,11 +6250,13 @@
                 <button type="button" role="tab" id="v2t-review" aria-controls="v2p-review" aria-selected="true" tabindex="0" onclick="v2Tab('review')"><span class="v2-tl">Review</span><span class="v2-tm"></span></button>
                 <button type="button" role="tab" id="v2t-note" aria-controls="v2p-note" aria-selected="false" tabindex="-1" onclick="v2Tab('note')"><span class="v2-tl">Note</span><span class="v2-tm"></span></button>
                 <button type="button" role="tab" id="v2t-orders" aria-controls="v2p-orders" aria-selected="false" tabindex="-1" onclick="v2Tab('orders')"><span class="v2-tl">Orders</span><span class="v2-tm"></span></button>
+                <!-- Chart tab (Ani, 7 Oct): the separate Full chart page "feels awkward because it replaces the whole visit"; it is now the 4th tab -->
+                <button type="button" role="tab" id="v2t-chart" aria-controls="v2p-chart" aria-selected="false" tabindex="-1" onclick="v2Tab('chart')"><span class="v2-tl">Chart</span><span class="v2-tm"></span></button>
               </div>
               <div class="v2-acts" id="v2-acts">
                 <span id="v2-draft-slot"></span>
                 <span class="v2-finwrap">
-                  <button type="button" class="btn dark" id="v2-fin" aria-haspopup="dialog" aria-expanded="false" aria-controls="v2-finpop" onclick="v2Fin()"><span class="ic" data-pdic="complete"></span><span class="v2-fin-l">Sign off &amp; finalize</span><span class="v2-fin-n" id="v2-fin-n"></span></button>
+                  <button type="button" class="btn dark" id="v2-fin" aria-haspopup="dialog" aria-expanded="false" aria-controls="v2-finpop" onclick="v2Fin()"><span class="ic" data-pdic="complete"></span><span class="v2-fin-l">Sign off<span class="v2-fin-x"> &amp; finalize</span></span><span class="v2-fin-n" id="v2-fin-n"></span></button>
                   <div class="v2-finpop" id="v2-finpop" role="dialog" aria-labelledby="v2-finpop-h" hidden>
                     <div class="v2-fph"><h3 id="v2-finpop-h" tabindex="-1">Sign off &amp; finalize</h3>
                       <button type="button" class="v2-x" onclick="v2Fin(false)" aria-label="Close">&times;</button></div>
@@ -6252,7 +6301,8 @@
               </section>
               <div id="v2-rx-slot"></div>
             </div>
-            <div id="v2-fc-slot"></div>
+            <!-- Chart tab (Ani, 7 Oct): the full chart's own sections, inside the visit (the doctor never leaves it) -->
+            <div class="v2-panel" id="v2p-chart" role="tabpanel" aria-labelledby="v2t-chart" tabindex="-1" hidden></div>
           </div>
         </div>
         <!-- v2.5 §3 Patient snapshot (persistent): name, age, gender as recorded, masked PHN, photo,
@@ -6273,7 +6323,7 @@
               <span class="pc-callstrip" id="pc-callstrip-c"><span class="dot"></span> <span id="pc-timer-c">00:00</span> <button class="hang" onclick="pcEndCall()">End</button></span>
               <!-- shadowing 3: "the timer restarts from 0:00, so the screen no longer shows how long he has been with the patient" -->
               <span class="pc-callsum" id="pc-callsum" hidden></span>
-              <button class="btn" id="cs-fc-btn" onclick="csOpenFull()" aria-controls="cs-fc"><span class="ic" data-pdic="file"></span>Full chart</button>
+              <button class="btn" id="cs-fc-btn" onclick="csOpenFull()" aria-controls="v2p-chart"><span class="ic" data-pdic="file"></span>Chart</button>
             </div>
           </div>
           <!-- v2.5 §3 This-visit strip: location, ID verified, consent, others present, video or phone,
@@ -6309,12 +6359,12 @@
                context column's place; the note column stays where it is. One action back. -->
           <section class="cs-fc" id="cs-fc" aria-labelledby="cs-fc-h" hidden>
             <div class="cs-fc-hd">
-              <h3 id="cs-fc-h" tabindex="-1">Full chart</h3>
-              <label class="cs-search"><span class="ic" data-pdic="search"></span><span class="vh">Search the whole chart</span>
-                <input type="search" id="cs-q" placeholder="Search the chart" autocomplete="off" oninput="csSearch()" onkeydown="if(event.key==='Enter'){event.preventDefault();csTab('search');}"></label>
-              <button class="btn" onclick="csCloseFull()"><span class="ic" data-pdic="collapse"></span>Back to the visit</button>
+              <h3 class="vh" id="cs-fc-h" tabindex="-1">Chart</h3>
+              <!-- Chart tab (Ani, 7 Oct): "Search the chart" sits at the top; the old Search sub-tab merged into it (results show in place) -->
+              <label class="cs-search"><span class="ic" data-pdic="search"></span><span class="vh">Search the chart</span>
+                <input type="search" id="cs-q" placeholder="Search the chart" autocomplete="off" aria-controls="cs-sres" oninput="csSearch()" onkeydown="csSearchKey(event)"></label>
             </div>
-            <div class="cs-tabs" role="tablist" aria-label="Full chart sections" id="cs-tabs"></div>
+            <div class="cs-tabs" role="tablist" aria-label="Chart sections" id="cs-tabs"></div>
             <div class="cs-pane" id="csp-timeline" role="tabpanel" aria-labelledby="cst-timeline" tabindex="-1" hidden><div class="care-tl-mount"></div></div>
             <div class="cs-pane" id="csp-results" role="tabpanel" aria-labelledby="cst-results" tabindex="-1" hidden>
               <!-- Daniel, 26 Sep: "it is madness that I am opening up raw pdf's". Tests with values and a trend. -->
@@ -6343,7 +6393,8 @@
             <div class="cs-pane" id="csp-consults" role="tabpanel" aria-labelledby="cst-consults" tabindex="-1" hidden><div id="cs-consults"></div></div>
             <div class="cs-pane" id="csp-documents" role="tabpanel" aria-labelledby="cst-documents" tabindex="-1" hidden><div id="cs-docs"></div></div>
             <div class="cs-pane" id="csp-messages" role="tabpanel" aria-labelledby="cst-messages" tabindex="-1" hidden><div id="cs-msgs"></div></div>
-            <div class="cs-pane" id="csp-search" role="tabpanel" aria-labelledby="cst-search" tabindex="-1" hidden><div id="cs-sres" aria-live="polite"></div></div>
+            <div class="cs-pane cs-sres-p" id="csp-search" role="region" aria-label="Search results" tabindex="-1" hidden><div id="cs-sres"></div></div>
+            <p class="vh" id="cs-sres-live" aria-live="polite"></p>
           </section>
 
           <!-- v2.5 §3 Note + actions, visible beside the context at 1440 px (Daniel, 30 Sep: "where am I
@@ -13562,7 +13613,9 @@ pcStartCall = function(){
 
 /* ================= full chart, one step away ================= */
 var CS_TABS = [['timeline','Timeline','calendar'],['results','Results','chartup'],['medications','Medications','encounterlog'],['problems','Problems','tasks'],
-  ['careplan','Care plan','today'],['consults','Consults','registerpatient'],['documents','Documents','file'],['messages','Messages','chat'],['search','Search','search']];
+  ['careplan','Care plan','today'],['consults','Consults','registerpatient'],['documents','Documents','file'],['messages','Messages','chat']];
+/* Chart tab (Ani, 7 Oct): the Search sub-tab merged into "Search the chart" at the top; each chart remembers its last section */
+CS.fcTabBy = {};
 function csOpenFull(tab, from){
   var fc = document.getElementById('cs-fc'), ctx = document.getElementById('cs-ctx'); if(!fc) return;
   if(fc.hidden){ CS.ctxScroll = window.scrollY; CS.fcReturn = from || document.activeElement; }
@@ -13587,18 +13640,23 @@ function csCloseFull(silent){
   var back = CS.fcReturn && document.contains(CS.fcReturn) && CS.fcReturn.offsetParent ? CS.fcReturn : b;
   if(back) back.focus({preventScroll:true});
 }
-function csTab(tab, noFocus){
-  CS.fcTab = tab;
+function csTab(tab, noFocus, keepQ){
+  if(tab === 'search'){ var qi = document.getElementById('cs-q'); if(qi) qi.focus(); return; }   /* old callers: the search field */
+  if(!CS_TABS.some(function(t){ return t[0] === tab; })) tab = 'timeline';
+  CS.fcTab = tab; if(PC_CURRENT) CS.fcTabBy[PC_CURRENT] = tab;
+  /* picking a section leaves the search (the section shows again) */
+  if(!keepQ){ var q = document.getElementById('cs-q'); if(q) q.value = ''; }
+  var srch = !!keepQ;
   var tabs = document.getElementById('cs-tabs');
   tabs.innerHTML = CS_TABS.map(function(t){
-    var on = t[0] === tab;
-    return '<button type="button" role="tab" id="cst-' + t[0] + '" aria-controls="csp-' + t[0] + '" aria-selected="' + on + '" tabindex="' + (on ? 0 : -1) + '" onclick="csTab(\'' + t[0] + '\')">' + csIc(t[2]) + t[1] + '</button>';
+    var on = t[0] === tab && !srch;
+    return '<button type="button" role="tab" id="cst-' + t[0] + '" aria-controls="csp-' + t[0] + '" aria-selected="' + on + '" tabindex="' + (t[0] === tab ? 0 : -1) + '" onclick="csTab(\'' + t[0] + '\')">' + t[1] + '</button>';
   }).join('');
-  CS_TABS.forEach(function(t){ var p = document.getElementById('csp-' + t[0]); if(p) p.hidden = t[0] !== tab; });
+  CS_TABS.forEach(function(t){ var p = document.getElementById('csp-' + t[0]); if(p) p.hidden = srch || t[0] !== tab; });
+  var sp = document.getElementById('csp-search'); if(sp) sp.hidden = !srch;
   if(tab === 'consults') csRenderConsults(PC_CURRENT);
   if(tab === 'documents') csRenderDocs(PC_CURRENT);
   if(tab === 'messages') csRenderMsgs(PC_CURRENT);
-  if(tab === 'search') csSearch();
   paintPd(document.getElementById('cs-fc'));
   if(!noFocus){ var f = document.getElementById('cst-' + tab); if(f) f.focus(); }
 }
@@ -13655,14 +13713,23 @@ function csRenderMsgs(name){
     hits.map(function(x){ return '<li>&ldquo;' + csEsc(x.m.text) + '&rdquo; <span class="cs-cap">&middot; ' + csEsc(x.who) + ', ' + x.m.time + '</span></li>'; }).join('') + '</ul></div>'
     : '<p class="pc-empty">No messages about this patient.</p>';
 }
-/* v2.5 §7 search everything: here, the text of every full-chart section */
-function csSearch(){
-  var q = ((document.getElementById('cs-q') || {}).value || '').trim().toLowerCase(), out = document.getElementById('cs-sres'); if(!out) return;
-  if(q.length < 2){ out.innerHTML = '<p class="cs-cap">Type at least two letters in the search box above.</p>'; if(CS.fcTab !== 'search' && q.length) csTab('search', true); return; }
-  if(CS.fcTab !== 'search'){ csTab('search', true); return; }
+/* v2.5 §7 search everything. Chart tab (Ani, 7 Oct): "Search the chart" sits at the top of the Chart tab; typing searches
+   the text of every section and shows the results in place of the section (no separate Search sub-tab). A result opens
+   its section and brings the matching line into view. Escape or Clear search goes back to the section. */
+function csSearchKey(e){
+  if(e.key === 'Enter'){ e.preventDefault(); var f = document.querySelector('#cs-sres .cs-src'); if(f) f.focus(); return; }
+  if(e.key === 'Escape' && e.target.value){ e.preventDefault(); e.stopPropagation(); csSearchClear(); }
+}
+function csSearchClear(){
+  var q = document.getElementById('cs-q'); if(q) q.value = '';
+  csTab(CS.fcTab || 'timeline', true);
+  var l = document.getElementById('cs-sres-live'); if(l) l.textContent = '';
+  if(q) q.focus();
+}
+function csSearchHits(q){
   csRenderConsults(PC_CURRENT); csRenderDocs(PC_CURRENT); csRenderMsgs(PC_CURRENT);
   var hits = [];
-  CS_TABS.slice(0, 8).forEach(function(t){
+  CS_TABS.forEach(function(t){
     var p = document.getElementById('csp-' + t[0]); if(!p) return;
     p.querySelectorAll('p, li, dd, .vc-line, .rs-row, .cp-item, .ctl-item, .cd-rail-row').forEach(function(n){
       if(n.querySelector('p, li, dd, .vc-line, .rs-row, .cp-item')) return;
@@ -13670,11 +13737,51 @@ function csSearch(){
       if(tx && tx.length < 320 && tx.toLowerCase().indexOf(q) > -1) hits.push([t[0], t[1], tx]);
     });
   });
-  var seen = {}; hits = hits.filter(function(x){ var k = x[0] + x[2]; if(seen[k]) return false; seen[k] = 1; return true; });
+  var seen = {};
+  return hits.filter(function(x){ var k = x[0] + x[2]; if(seen[k]) return false; seen[k] = 1; return true; });
+}
+function csSearch(){
+  var q = ((document.getElementById('cs-q') || {}).value || '').trim().toLowerCase(), out = document.getElementById('cs-sres'); if(!out) return;
+  var live = document.getElementById('cs-sres-live');
+  if(q.length < 2){
+    var sp = document.getElementById('csp-search');
+    if(sp && !sp.hidden){ var keep = document.getElementById('cs-q').value; csTab(CS.fcTab || 'timeline', true); document.getElementById('cs-q').value = keep; }
+    out.innerHTML = ''; if(live) live.textContent = q.length ? 'Type at least two letters to search' : '';
+    return;
+  }
+  var qv = document.getElementById('cs-q').value;
+  csTab(CS.fcTab || 'timeline', true, true);
+  document.getElementById('cs-q').value = qv;
+  var hits = csSearchHits(q);
+  CS.sHits = hits;
   var re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')','ig');
-  out.innerHTML = '<p class="cs-cap">' + hits.length + ' result' + (hits.length === 1 ? '' : 's') + ' for &ldquo;' + csEsc(q) + '&rdquo;</p><ul class="cs-since">' + hits.slice(0, 40).map(function(x){
-    return '<li><span class="cs-kind">' + x[1] + '</span><span class="cs-txt"><button type="button" class="cs-src" onclick="csTab(\'' + x[0] + '\')">' + csEsc(x[2]).replace(re,'<mark>$1</mark>') + '</button></span></li>';
-  }).join('') + '</ul>';
+  var n = hits.length, say = n + ' result' + (n === 1 ? '' : 's') + ' for “' + q + '”';
+  out.innerHTML = '<div class="cs-sres-hd"><p class="cs-cap">' + csEsc(say) + (n ? ' across the chart' : '') + '</p>' +
+    '<button type="button" class="cs-link" onclick="csSearchClear()">Clear search</button></div>' +
+    (n ? '<ul class="cs-since">' + hits.slice(0, 40).map(function(x, i){
+      return '<li><span class="cs-kind">' + x[1] + '</span><span class="cs-txt"><button type="button" class="cs-src" onclick="csSearchGo(' + i + ')">' + csEsc(x[2]).replace(re,'<mark>$1</mark>') +
+        '<span class="vh"> &mdash; open in ' + x[1] + '</span>' + csIc('chevr', 'cs-go') + '</button></span></li>';
+    }).join('') + '</ul>' + (n > 40 ? '<p class="cs-cap">Showing the first 40. Type more to narrow it down.</p>' : '')
+      : '<p class="pc-empty">Nothing in this chart matches. Try another word.</p>');
+  paintPd(out);
+  if(live) live.textContent = say;
+}
+/* a result: open its section and bring the matching line into view (a short ring; none with reduced motion) */
+function csSearchGo(i){
+  var x = (CS.sHits || [])[i]; if(!x) return;
+  csTab(x[0], true);
+  var p = document.getElementById('csp-' + x[0]), hit = null;
+  if(p) [].slice.call(p.querySelectorAll('p, li, dd, .vc-line, .rs-row, .cp-item, .ctl-item, .cd-rail-row')).some(function(n){
+    if(n.querySelector('p, li, dd, .vc-line, .rs-row, .cp-item')) return false;
+    if(n.textContent.replace(/\s+/g,' ').trim() === x[2]){ hit = n; return true; } return false;
+  });
+  var t = document.getElementById('cst-' + x[0]);
+  if(hit){
+    hit.classList.add('cs-hit'); setTimeout(function(){ hit.classList.remove('cs-hit'); }, 1800);
+    if(hit.scrollIntoView) hit.scrollIntoView({block:'center'});
+    if(!hit.hasAttribute('tabindex')) hit.setAttribute('tabindex', '-1');
+    hit.focus({preventScroll:true});
+  } else if(t) t.focus();
 }
 
 /* ================= narrow widths: the note is one tab away (v2.5 §3) ================= */
@@ -15176,7 +15283,7 @@ t23RenderDigest();
    ============================================================ */
 var V2 = {tab:'review', open:{}, moved:[], fin:false, booting:false, justOpened:false};
 var V2_KEY = 'sc-chart-layout';
-var V2_TABS = ['review','note','orders'];
+var V2_TABS = ['review','note','orders','chart'];   /* Chart tab (Ani, 7 Oct): the full chart is the 4th tab */
 function v2On(){ return CS.layout === 'v2'; }
 /* Daniel 5 Oct (step 6): which tab a chart opens on in v2 */
 function v2StartTab(name){
@@ -15221,7 +15328,7 @@ function v2Mount(){
   v2Move(v2El('vc-savedraft'), v2El('v2-draft-slot'));
   /* checklist, warnings, the T-023 billing line, Finalize, Next patient and the claim helper: the finalize popover */
   v2Move(q('.cs-foot'), v2El('v2-finpop-b'));
-  v2Move(v2El('cs-fc'), v2El('v2-fc-slot'));
+  v2Move(v2El('cs-fc'), v2El('v2p-chart'));   /* Chart tab (Ani, 7 Oct): the full chart's sections live in the 4th tab */
 }
 
 /* ---------- the switch: "Layout: Current | v2", ?chart=v2, remembered in this browser ---------- */
@@ -15233,8 +15340,8 @@ function csLayout(mode){
   if(typeof csCloseFull === 'function') csCloseFull(true);
   if(CS.pop){ CS.pop = null; }
   CS.layout = mode;
-  if(mode === 'v2'){ v2Mount(); shell.hidden = false; root.classList.add('cs-v2'); paintPd(shell); }
-  else { v2Restore(); shell.hidden = true; root.classList.remove('cs-v2'); var ins = document.querySelector('#cs-acts .cs-ins'); if(ins) ins.hidden = false; }
+  if(mode === 'v2'){ v2Mount(); shell.hidden = false; root.classList.add('cs-v2'); root.classList.remove('cs-fc-open'); var fc2 = v2El('cs-fc'); if(fc2) fc2.hidden = false; paintPd(shell); }
+  else { v2Restore(); shell.hidden = true; root.classList.remove('cs-v2'); var fc3 = v2El('cs-fc'); if(fc3) fc3.hidden = true; var ctx3 = v2El('cs-ctx'); if(ctx3) ctx3.hidden = false; var ins = document.querySelector('#cs-acts .cs-ins'); if(ins) ins.hidden = false; }
   ['current','v2'].forEach(function(k){ var b = v2El('cs-lay-' + k); if(b) b.setAttribute('aria-pressed', String(k === mode)); });
   if(PC_CURRENT && was !== mode){
     /* the patient card, Today and Needs attention have layout-specific markup: render them again */
@@ -15250,13 +15357,18 @@ function v2Tab(tab, focus){
   var root = v2El('pcv-c');
   if(tab === 'orders' && root.classList.contains('cs-ns-on')) tab = 'review';
   V2.tab = tab;
-  var fc = v2El('cs-fc'); if(fc && !fc.hidden) csCloseFull(true);
   V2_TABS.forEach(function(k){
     var b = v2El('v2t-' + k), p = v2El('v2p-' + k), on = k === tab;
     if(b){ b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; }
     if(p) p.hidden = !on;
   });
   if(tab === 'note' && typeof vcGrow === 'function') vcGrow();
+  /* Chart tab (Ani, 7 Oct): it opens on the section this chart was last on (Timeline the first time) */
+  if(tab === 'chart' && PC_CURRENT && typeof csTab === 'function'){
+    var sp = v2El('csp-search'), q = v2El('cs-q');
+    if(!(sp && !sp.hidden && q && q.value.trim().length > 1)) csTab(CS.fcTabBy[PC_CURRENT] || 'timeline', true);
+  }
+  var cb = v2El('cs-fc-btn'); if(cb) cb.setAttribute('aria-expanded', String(tab === 'chart'));
   if(focus){ var t = v2El('v2t-' + tab); if(t) t.focus(); }
 }
 document.addEventListener('keydown', function(e){
@@ -15410,6 +15522,15 @@ function v2SetSec(k, count, chip, body, show){
   var b = v2El('v2s-' + k + '-b'); if(b && body !== null) b.innerHTML = body;
   paintPd(s);
 }
+var V2_SEEALL = {medications:'medications', problems:'problems (conditions)', careplan:'pending items in the care plan', results:'results', consults:'consults', timeline:'the timeline', documents:'documents'};
+function v2SeeAll(k, tab){
+  var b = v2El('v2s-' + k + '-b'); if(!b) return;
+  var old = b.querySelector(':scope > .v2-sa'); if(old) old.remove();
+  var t = (CS_TABS.filter(function(x){ return x[0] === tab; })[0] || [tab, tab])[1];
+  var p = document.createElement('p'); p.className = 'v2-sa';
+  p.innerHTML = '<button type="button" class="cs-link v2-seeall" data-tab="' + tab + '" onclick="csOpenFull(\'' + tab + '\',this)" aria-label="See all ' + (V2_SEEALL[tab] || t) + ' in the Chart tab">See all' + csIc('chevr') + '</button>';
+  b.appendChild(p); paintPd(p);
+}
 function v2RenderSide(name){
   if(!v2On() || !name) return;
   var by = v2Rows(name), L = PT_LAST[name];
@@ -15429,6 +15550,16 @@ function v2RenderSide(name){
   var prevBody = (prev ? v2Lines(prev, name) : '') +
     (L ? '<button type="button" class="cs-link v2-readnote" onclick="csOpenFull(\'documents\',this)">Read the ' + csShort(L.date) + ' note</button>' : '');
   v2SetSec('prev', v2Count(prev), '', prevBody, !!(prev || L));
+  /* Chart tab (Ani, 7 Oct): each Patient summary row ends with a small "See all" that opens the Chart tab on its section.
+     Pending goes where its items live (the care plan for most; the section most of its lines open) */
+  var most = function(row, dflt){
+    var n = {}; (row ? row[1] : []).forEach(function(x){ if(x[2] && x[0] !== '@na') n[x[2]] = (n[x[2]] || 0) + 1; });
+    var best = dflt, bn = n[dflt] || 0;   /* a tie keeps the default */
+    Object.keys(n).forEach(function(k){ if(n[k] > bn && CS_TABS.some(function(t){ return t[0] === k; })){ best = k; bn = n[k]; } });
+    return best;
+  };
+  v2SeeAll('meds', 'medications'); v2SeeAll('hist', 'problems'); v2SeeAll('pend', most(pend, 'careplan'));
+  v2SeeAll('since', 'timeline'); v2SeeAll('prev', 'timeline');
   v2SumEdges();
   var inv = by['Investigations'], el = v2El('v2-inv');
   if(el){
@@ -15555,7 +15686,8 @@ function v2SyncHead(){
   if(fin){
     fin.hidden = ns;                                   /* no-show: Call again is the one primary */
     fin.classList.toggle('dark', !signed); fin.classList.toggle('v2-signed', signed);
-    fin.querySelector('.v2-fin-l').textContent = signed ? 'Signed off' : 'Sign off & finalize';
+    /* Chart tab (Ani, 7 Oct): with four tabs, "& finalize" drops at 1360 px and below (the button's name keeps it) */
+    fin.querySelector('.v2-fin-l').innerHTML = signed ? 'Signed off' : 'Sign off<span class="v2-fin-x"> &amp; finalize</span>';
     var left = !signed && miss.length ? miss.length + (miss.length === 1 ? ' check left' : ' checks left') : '';
     n.textContent = left; n.hidden = !left;
     fin.setAttribute('aria-label', signed ? 'Signed off. Show billing and the next patient' : 'Sign off and finalize' + (left ? ', ' + left : ''));
@@ -15644,8 +15776,23 @@ function v2RxFocus(){
   w('rxOpen', function(){ if(!V2.booting) v2Tab('orders'); v2SyncHead(); });
   w('rxClose', function(){ v2SyncHead(); });
   w('csNsCall', function(){ v2Tab('note'); var n = nsTa('reason'); if(n) n.focus({preventScroll:true}); });
-  w('csOpenFull', function(){ V2_TABS.forEach(function(k){ var b = v2El('v2t-' + k); if(b) b.setAttribute('aria-selected', 'false'); }); });
-  w('csCloseFull', function(){ var fc = v2El('cs-fc'); if(fc && fc.hidden) V2_TABS.forEach(function(k){ var b = v2El('v2t-' + k); if(b) b.setAttribute('aria-selected', String(k === V2.tab)); }); });
+  /* Chart tab (Ani, 7 Oct): every path that opened the separate Full chart page (the patient card's Chart, each source line,
+     Read the note, Full care plan, See all) now opens the Chart tab on that section. The doctor never leaves the visit:
+     the patient card, This visit, Patient summary, the call widget, the critical bar, Save draft and Sign off stay. */
+  var openFull0 = window.csOpenFull, closeFull0 = window.csCloseFull;
+  window.csOpenFull = function(tab, from){
+    if(!v2On()) return openFull0.apply(this, arguments);
+    var q = v2El('cs-q'); if(q) q.value = '';
+    v2Tab('chart');
+    csTab(tab || CS.fcTabBy[PC_CURRENT] || 'timeline', true);
+    var mn = v2El('v2-main'); if(mn) mn.scrollTop = 0;
+    if(window.scrollY && !v2Wide()){ var p = v2El('v2-top'); if(p && p.scrollIntoView) p.scrollIntoView({block:'start'}); }
+    /* a link (See all, a source line) lands on the section's own sub-tab; the card's Chart button on the Chart tab */
+    var f = from && from.id !== 'cs-fc-btn' ? v2El('cst-' + CS.fcTab) : v2El('v2t-chart');
+    if(f) f.focus({preventScroll:true});
+  };
+  /* there is no separate page to close any more: kept for old callers (openChart, the layout switch, Go to needs attention) */
+  window.csCloseFull = function(){ if(!v2On()) return closeFull0.apply(this, arguments); };
   /* Go to Needs attention: in v2 that is the Review tab */
   w('csGoNA', function(){}, function(){ v2Tab('review'); });
   /* the condensed reason line belongs to Current's sticky banner; v2 keeps the reason on the Review tab */
@@ -15668,6 +15815,7 @@ function v2RxFocus(){
   var open0 = window.openChart;
   window.openChart = function(name){
     v2Fin(false, true); V2.open = {}; V2.pick = {};
+    var cq = v2El('cs-q'); if(cq) cq.value = '';   /* Chart tab: a search never carries over to another chart */
     V2.booting = true;
     try { open0.apply(this, arguments); } finally { V2.booting = false; }
     if(v2On()){ v2Secs(); V2.tabFor = name; v2Tab(v2StartTab(name)); v2Render(); var ao = v2AutoOpen(name); if(ao) v2Sec(ao, true); v2Stick(true); }
@@ -16588,7 +16736,7 @@ function navTip(btn){
 /* ---------- (4) Keyboard shortcuts (lead brief, 6 Oct) ----------
    Only when focus is not in a text field or editable area, and never with the browser's own modifier combos, except
    Cmd/Ctrl+S (Save draft) and Cmd/Ctrl+Enter (Sign off & finalize) in a chart, which also work from the note itself.
-   In a chart: 1 / 2 / 3 = Review / Note / Orders; C = Call (or, during a call, focus the call widget).
+   In a chart: 1 / 2 / 3 / 4 = Review / Note / Orders / Chart; C = Call (or, during a call, focus the call widget).
    Cmd/Ctrl+Enter only OPENS the Sign off popover: the checks, warnings and code check stay exactly as they are.
    Anywhere: G then H / C / E / T / I = Home / Claims / Earnings / Tasks / Inbox (within 1.5 s); "?" = this list.
    Nothing fires while a drawer or the code check is open (Escape still closes the top drawer, as before). */
@@ -16602,7 +16750,7 @@ function kbRender(){
   var then = '<span>then</span>';
   b.innerHTML =
     '<section class="kb-sec" aria-labelledby="kb-h1"><h3 class="kb-h" id="kb-h1">In a chart</h3><dl class="kb-list">' +
-      row(kbKeys('1'), 'Review tab') + row(kbKeys('2'), 'Note tab') + row(kbKeys('3'), 'Orders tab') +
+      row(kbKeys('1'), 'Review tab') + row(kbKeys('2'), 'Note tab') + row(kbKeys('3'), 'Orders tab') + row(kbKeys('4'), 'Chart tab (the full chart)') +
       row(kbKeys('C'), 'Call the patient, or go to the call during a call') +
       row(kbKeys(kbMod(), 'Enter'), 'Open Sign off &amp; finalize (it never signs by itself)') +
       row(kbKeys(kbMod(), 'S'), 'Save draft') + row(kbKeys('Esc'), 'Close a drawer or the Sign off panel') +
@@ -16661,7 +16809,12 @@ document.addEventListener('keydown', function(e){
   if(k === 'g' || k === 'G'){ KB.g = Date.now(); return; }
   if(k === '?'){ e.preventDefault(); kbOpen(); return; }
   if(!onChart || V2.fin) return;
-  if(k === '1' || k === '2' || k === '3'){ e.preventDefault(); v2Tab(V2_TABS[+k - 1], true); return; }
+  /* Chart tab (Ani, 7 Oct): 4 = Chart. Orders is hidden on a no-show, so 3 does nothing there */
+  if(k === '1' || k === '2' || k === '3' || k === '4'){
+    e.preventDefault(); var tb = v2El('v2t-' + V2_TABS[+k - 1]);
+    if(tb && !tb.hidden) v2Tab(V2_TABS[+k - 1], true);
+    return;
+  }
   if(k === 'c' || k === 'C'){ e.preventDefault(); kbCall(); }
 });
 (function(){
@@ -16847,6 +17000,6 @@ function t23LogVisit(name, oldV, newV){ t23LogEdits(oldV, T23_DR, t23ChangeList(
   t23RenderBillRow = function(){ br0.apply(this, arguments); nsRenderDx(); nsSync(); };
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 05:20 · Batch B</div>
+  <div class="build-stamp">v2 · build 2026-10-07 06:10 · Chart tab</div>
 </body>
 </html>
