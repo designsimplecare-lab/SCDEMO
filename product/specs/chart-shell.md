@@ -1,6 +1,6 @@
 # Chart shell: the core encounter view (T-021)
 
-Owner: `ux-designer` · Ani approves · Built into `simplecare-physician-portal-v2.html` (the chart, `#pcv-c`) · Build 2026-10-06 23:40 (declutter, Layout v2, Daniel review, then Left panel and call widget; see the end)
+Owner: `ux-designer` · Ani approves · Built into `simplecare-physician-portal-v2.html` (the chart, `#pcv-c`) · Build 2026-10-07 02:30 (declutter, Layout v2, Daniel review, Left panel and call widget, then Batch A; see the end)
 Source: Physician Chart View Requirements v2.5 (B-006), delivery step 1 · ECG Critical Result Requirements v2.0 · Daniel, 30 Sep (`from-daniel/2026-09-30-chart-workflow.md`, `2026-09-30-ecg-and-result-flags.md`).
 Scope: light theme, 1440 px, the demo patient. Dark theme not checked (Ani, 4 Oct). The Figma "SC – Design System" is not used yet (Ani, 3 Oct); the chart uses v2's own variables, buttons, tags and Mage icons.
 
@@ -281,3 +281,18 @@ Patient summary (one card): Medications · History · Pending · Since you last 
 2. Location options stack (three full-width rows) because three choices do not fit side by side in the 312 px column at 14 px.
 3. During this patient's call the card's Call button is hidden (the widget is the call); afterwards it is "Call again" as an outline.
 4. ~~The widget sits in the top bar~~ Moved to the bottom right beside the MOA chat (Ani, 6 Oct, second pass). If the MOA chat panel is opened it can sit over the widget; the chat panel closes back to the button.
+
+
+## Batch A, 7 Oct
+
+Lead brief, 6 Oct. Light only; v2 is the only chart layout. Screenshots (local only): `product/reports/shots/batchA-*.png`.
+
+### 1. Critical result bar on every tab (safety)
+- **Shows:** while the open chart has a critical result that is not reviewed, a slim bar hangs under the sticky tab bar, on Review, Note and Orders: critical symbol, "Critical · Troponin I **0.42 µg/L** · not reviewed", and **Review**. Two or more: "2 critical results not reviewed". Red only on the symbol and the value (the critical value stays the only red text).
+- **Where:** attached to the tab bar (the tab bar loses its bottom corners, the bar takes them), so it sticks with it while the main column scrolls; the column's `scroll-padding-top` grows by the bar's height so focus is never hidden under it.
+- **Review:** goes to the Review tab, brings that result's row into view (a short ring on the row; static with reduced motion) and puts focus on its own "Review result" button, so one Enter opens the review. It does not review anything by itself.
+- **Gone:** as soon as the result's status is "reviewed" (set by the review screen: Accept & assign, or Done). A reviewed-but-not-signed-off critical stays in Needs attention as before; the bar is only about "not reviewed".
+- **Data:** the items and tiers are `csNAItems` / `labTier`, unchanged. Nothing is re-tiered.
+- **Accessibility:** `role="alert"` is set only the first time the bar appears for that chart and its set of criticals (then removed after 4 s), so switching tabs does not re-announce it. The Review button's name says what it reviews ("Review Troponin I").
+- **Measures:** bar 52 px; Review is a 36 px compact outline button (same exception as the toolbar buttons: Needs Ani). Text 15 px.
+

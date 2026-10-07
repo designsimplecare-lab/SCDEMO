@@ -5608,6 +5608,28 @@
       background:linear-gradient(160deg,#DCE0E4 0%,#FFFAF3 100%);background-attachment:fixed;}
     #screen-patientchart #pcv-c.cs-v2 .v2-top::after{content:"";position:absolute;z-index:-1;inset:0;border-radius:16px;background:var(--panel);}
   }
+  /* ===== Batch A (1): critical result bar on every tab (lead brief, 6 Oct: "safety"). While the open chart has an
+     unreviewed critical result, a slim bar hangs under the sticky tab bar on Review, Note and Orders and moves with it,
+     so it stays in view while the main column scrolls. Red only on the symbol and the critical value (rule: critical is
+     the only red text). Gone once the result is reviewed. ===== */
+  #screen-patientchart #pcv-c.cs-v2 #v2-top.v2-has-crit{border-bottom-left-radius:0;border-bottom-right-radius:0;margin-bottom:var(--v2c-h,52px);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-top.v2-has-crit::after{border-bottom-left-radius:0;border-bottom-right-radius:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-crit{position:absolute;left:0;right:0;top:100%;z-index:1;box-sizing:border-box;display:flex;align-items:center;gap:12px;
+    min-height:52px;padding:7px 12px 7px 16px;border-top:1px solid var(--line);border-radius:0 0 16px 16px;background:var(--panel);
+    box-shadow:0 8px 14px -10px rgba(23,24,28,.22);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-crit[hidden]{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-crit::before{content:"";position:absolute;z-index:-1;left:-2px;right:-14px;top:0;bottom:-4px;pointer-events:none;
+    background:linear-gradient(160deg,#DCE0E4 0%,#FFFAF3 100%);background-attachment:fixed;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-crit::after{content:"";position:absolute;z-index:-1;inset:0;border-radius:0 0 16px 16px;background:var(--panel);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-crit .v2c-ic{width:22px;height:22px;color:var(--crit);flex:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-crit .v2c-t{flex:1 1 auto;min-width:0;margin:0;font-size:15px;line-height:1.35;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-crit .v2c-t b{font-weight:700;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-crit .v2c-v{color:var(--crit);font-weight:700;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-crit .v2c-dot{color:var(--ink-soft);margin:0 4px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-crit .btn{flex:none;min-height:36px;height:36px;padding:0 14px;font-size:14px;display:inline-flex;align-items:center;gap:6px;}
+  #screen-patientchart #pcv-c.cs-v2 #vc-alerts .vca-row.crb-flash{animation:crbFlash 1.8s ease-out;}
+  @keyframes crbFlash{0%,35%{box-shadow:0 0 0 3px var(--crit-line);}100%{box-shadow:0 0 0 3px transparent;}}
+  @media (prefers-reduced-motion: reduce){ #screen-patientchart #pcv-c.cs-v2 #vc-alerts .vca-row.crb-flash{animation:none;box-shadow:0 0 0 3px var(--crit-line);} }
 </style>
 </head>
 <body>
@@ -6061,6 +6083,8 @@
                   </div>
                 </span>
               </div>
+              <!-- Batch A (1): critical result bar, shown on every tab while a critical result is not reviewed -->
+              <div id="v2-crit" hidden></div>
             </div>
             <div id="v2-notices"></div>
             <div class="v2-panel" id="v2p-review" role="tabpanel" aria-labelledby="v2t-review" tabindex="-1">
@@ -16089,6 +16113,75 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 01:45</div>
+<script>
+/* ============================================================
+   BATCH A (lead brief, 6 Oct 2026). One block, one section per item.
+   ============================================================ */
+function baWrap(name, after, before){
+  var f = window[name]; if(typeof f !== 'function') return;
+  window[name] = function(){
+    if(before){ var r0 = before.apply(this, arguments); if(r0 === false) return; }
+    var r = f.apply(this, arguments);
+    try { after.apply(this, [r].concat([].slice.call(arguments))); } catch(e){ if(window.console) console.error(e); }
+    return r;
+  };
+}
+
+/* ---------- (1) Critical result bar on every tab (lead brief: "safety") ----------
+   While the open chart has a critical result that is not reviewed, a slim bar hangs under the sticky tab bar on Review,
+   Note and Orders: symbol, "Critical · Troponin I 0.42 µg/L · not reviewed", Review. Review goes to the Review tab,
+   brings that result into view and puts focus on its own "Review result" button (one Enter opens the review).
+   Two or more: "2 critical results not reviewed". It goes once reviewed (status 'reviewed', set by the review screen).
+   The items and tiers are csNAItems / labTier's, unchanged. role="alert" only the first time it appears for a chart. */
+var CRB = {seen:{}, html:'', t:0};
+function crbItems(name){
+  if(!name || typeof csNAItems !== 'function' || (typeof CS !== 'undefined' && CS.empty)) return [];
+  return csNAItems(name).filter(function(x){ return x.tier === 'crit' && x.it && x.it.status !== 'reviewed'; });
+}
+function crbRender(){
+  var bar = v2El('v2-crit'), top = v2El('v2-top'), mn = v2El('v2-main'); if(!bar || !top) return;
+  var list = (v2On() && PC_CURRENT) ? crbItems(PC_CURRENT) : [];
+  if(!list.length){
+    bar.hidden = true; bar.innerHTML = ''; CRB.html = ''; bar.removeAttribute('role');
+    top.classList.remove('v2-has-crit'); top.style.removeProperty('--v2c-h'); if(mn) mn.style.scrollPaddingTop = '';
+    return;
+  }
+  var t = list[0].test, dot = '<span class="v2c-dot" aria-hidden="true">&middot;</span>';
+  var words = list.length === 1
+    ? '<b>Critical</b>' + dot + '<b>' + t.n + '</b> <span class="v2c-v">' + t.v + (t.u ? ' ' + t.u : '') + '</span>' + dot + 'not reviewed'
+    : '<b>' + list.length + ' critical results</b> not reviewed';
+  var html = '<span class="ic v2c-ic" role="img" aria-label="Critical" data-pdic="crit"></span><p class="v2c-t">' + words + '</p>' +
+    '<button type="button" class="btn" id="v2-crit-go" onclick="crbGo()"' + (list.length === 1 ? ' aria-label="Review ' + csEsc(t.n) + '"' : '') + '><span class="ic" data-pdic="eye"></span>Review</button>';
+  var key = PC_CURRENT + '|' + list.map(function(x){ return x.idx + ':' + x.test.n; }).join(',');
+  var first = !CRB.seen[key]; CRB.seen[key] = true;
+  if(first){
+    /* announce once: the role goes on before the words go in, and comes off again after */
+    bar.setAttribute('role', 'alert'); clearTimeout(CRB.t);
+    CRB.t = setTimeout(function(){ bar.removeAttribute('role'); }, 4000);
+    bar.innerHTML = ''; CRB.html = '';
+  }
+  bar.hidden = false; top.classList.add('v2-has-crit');
+  if(CRB.html !== html){ bar.innerHTML = html; CRB.html = html; paintPd(bar); }
+  var h = Math.round(bar.getBoundingClientRect().height) || 52;
+  top.style.setProperty('--v2c-h', h + 'px');
+  if(mn) mn.style.scrollPaddingTop = (84 + h) + 'px';
+}
+function crbGo(){
+  var list = crbItems(PC_CURRENT); if(!list.length) return;
+  if(typeof v2Fin === 'function') v2Fin(false, true);
+  v2Tab('review');
+  var b = document.querySelector('#vc-alerts button[onclick="openReview(' + list[0].idx + ')"]');
+  if(!b) return;
+  var row = b.closest('.vca-row');
+  if(row){ row.classList.remove('crb-flash'); void row.offsetWidth; row.classList.add('crb-flash'); }
+  if(row && row.scrollIntoView) row.scrollIntoView({block:'center'});
+  b.focus({preventScroll:true});
+}
+['renderChartAlerts','v2Tab','v2Render','csLayout','showScreen'].forEach(function(n){ baWrap(n, function(){ crbRender(); }); });
+baWrap('openChart', function(){ crbRender(); });
+window.addEventListener('resize', function(){ if(CRB.html) crbRender(); });
+crbRender();
+</script>
+  <div class="build-stamp">v2 · build 2026-10-07 02:30</div>
 </body>
 </html>
