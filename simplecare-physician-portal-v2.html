@@ -5419,6 +5419,51 @@
 
   /* room below the last cards so the floating MOA chat never covers their buttons (Ani, 6 Oct) */
   #screen-earnings,#screen-claims{padding-bottom:104px;}
+  /* ===== Chart left panel (Ani, 6 Oct): "scrolls weirdly and looks heavy". =====
+     Scrolling: the column is no longer its own scroll box (that clipped card tops under the crumb line and the right-edge
+     shadows). It moves with the page: sticky while it fits; when an open section makes it taller than the window, it
+     scrolls with the page until its end shows, then holds (v2Stick). Nothing has overflow, so no shadow or corner is cut.
+     Weight: 16 px card padding, 12 px gaps, smaller titles; the five sections are rows in one Patient summary card. */
+  #screen-patientchart #pcv-c.cs-v2 .v2-side{position:sticky;top:calc(var(--cs-top,0px) + 4px);max-height:none;overflow:visible;overscroll-behavior:auto;padding:0;margin:0;gap:12px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-side > .v2-card{padding:16px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-side .v2-ch{min-height:24px;margin:0 0 10px;gap:8px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-side .v2-ch > .ic,#screen-patientchart #pcv-c.cs-v2 .v2-side .v2-ch > .ic svg{width:18px;height:18px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-side .v2-ch h3{font-size:16px;line-height:24px;font-weight:600;}
+  /* patient card, tighter */
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-snap{gap:10px 12px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-who .vc-nm{font-size:18px;line-height:24px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-facts{gap:10px;margin:2px 0 0;padding:12px 0 0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-fact .cs-k{margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-fact .cs-v{font-size:15px;line-height:22px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts{margin:4px 0 0;}
+  /* Patient summary: one card, accordion rows split by thin lines; open = soft grey, content indented under the title */
+  #screen-patientchart #pcv-c.cs-v2 .v2-side > #v2-sum{padding:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sum-h{margin:0;padding:14px 16px 10px;font-size:16px;line-height:24px;font-weight:600;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sec{border-top:1px solid var(--line);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sec.v2-open{background:var(--wash);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sec.v2-last{border-radius:0 0 16px 16px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sbtn,#screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sbtn[aria-expanded="true"]{gap:10px;min-height:48px;padding:6px 12px 6px 16px;border-radius:0;
+    font-size:15px;line-height:22px;font-weight:600;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-last .v2-sbtn[aria-expanded="false"]{border-radius:0 0 16px 16px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sbtn:hover{background:var(--wash);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sbtn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sbtn > .ic,#screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sbtn > .ic svg{width:18px;height:18px;color:var(--ink-faint);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sn{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 7px;box-sizing:border-box;border-radius:999px;
+    background:var(--wash);font-size:14px;font-weight:500;line-height:1;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sn:empty{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-open .v2-sn{background:var(--panel);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sb{padding:0 16px 14px 44px;font-size:14px;line-height:20px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sb .v2-l1{font-size:14px;line-height:20px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sb .v2-line:hover{background:var(--panel);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sb .v2-q,#screen-patientchart #pcv-c.cs-v2 #v2-sum #slv .cs-since li{font-size:14px;line-height:20px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-src-l{border-top-color:var(--line-strong);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sum #slv .cs-since li + li{border-top-color:var(--line-strong);}
+  @media (max-width:1360px){
+    #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sb{padding-left:16px;}
+  }
+  @media (max-width:1100px){
+    #screen-patientchart #pcv-c.cs-v2 .v2-side{position:static;}
+  }
 </style>
 </head>
 <body>
@@ -5844,11 +5889,15 @@
           <aside class="v2-side" id="v2-side" aria-label="Patient and context">
             <section class="v2-card v2-pt" id="v2-pt" aria-label="Patient"></section>
             <section class="v2-card v2-visit" id="v2-visit" aria-labelledby="v2-visit-h"></section>
-            <section class="v2-card v2-sec" id="v2s-meds" data-k="meds"><h3 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-meds-b" onclick="v2Sec('meds')"><span class="ic" data-pdic="encounterlog"></span><span class="v2-st">Medications</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h3><div class="v2-sb" id="v2s-meds-b" hidden></div></section>
-            <section class="v2-card v2-sec" id="v2s-hist" data-k="hist"><h3 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-hist-b" onclick="v2Sec('hist')"><span class="ic" data-pdic="tasks"></span><span class="v2-st">History</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h3><div class="v2-sb" id="v2s-hist-b" hidden></div></section>
-            <section class="v2-card v2-sec" id="v2s-pend" data-k="pend"><h3 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-pend-b" onclick="v2Sec('pend')"><span class="ic" data-pdic="clock"></span><span class="v2-st">Pending</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h3><div class="v2-sb" id="v2s-pend-b" hidden></div></section>
-            <section class="v2-card v2-sec" id="v2s-since" data-k="since"><h3 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-since-b" onclick="v2Sec('since')"><span class="ic" data-pdic="reassign"></span><span class="v2-st">Since you last saw</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h3><div class="v2-sb" id="v2s-since-b" hidden></div></section>
-            <section class="v2-card v2-sec" id="v2s-prev" data-k="prev"><h3 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-prev-b" onclick="v2Sec('prev')"><span class="ic" data-pdic="calendar"></span><span class="v2-st">Previous visits</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h3><div class="v2-sb" id="v2s-prev-b" hidden></div></section>
+            <!-- Ani, 6 Oct: "too many separate big cards". One Patient summary card; its sections are accordion rows. -->
+            <section class="v2-card v2-sum" id="v2-sum" aria-labelledby="v2-sum-h">
+            <h3 class="v2-sum-h" id="v2-sum-h">Patient summary</h3>
+            <section class="v2-sec" id="v2s-meds" data-k="meds"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-meds-b" onclick="v2Sec('meds')"><span class="ic" data-pdic="encounterlog"></span><span class="v2-st">Medications</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-meds-b" hidden></div></section>
+            <section class="v2-sec" id="v2s-hist" data-k="hist"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-hist-b" onclick="v2Sec('hist')"><span class="ic" data-pdic="tasks"></span><span class="v2-st">History</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-hist-b" hidden></div></section>
+            <section class="v2-sec" id="v2s-pend" data-k="pend"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-pend-b" onclick="v2Sec('pend')"><span class="ic" data-pdic="clock"></span><span class="v2-st">Pending</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-pend-b" hidden></div></section>
+            <section class="v2-sec" id="v2s-since" data-k="since"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-since-b" onclick="v2Sec('since')"><span class="ic" data-pdic="reassign"></span><span class="v2-st">Since you last saw</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-since-b" hidden></div></section>
+            <section class="v2-sec" id="v2s-prev" data-k="prev"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-prev-b" onclick="v2Sec('prev')"><span class="ic" data-pdic="calendar"></span><span class="v2-st">Previous visits</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-prev-b" hidden></div></section>
+            </section>
           </aside>
           <div class="v2-main" id="v2-main">
             <div class="v2-top" id="v2-top">
@@ -14527,8 +14576,36 @@ function v2Sec(k, open){
   var b = s.querySelector('.v2-sbtn'), body = v2El('v2s-' + k + '-b');
   if(b) b.setAttribute('aria-expanded', String(!!open));
   if(body) body.hidden = !open;
+  s.classList.toggle('v2-open', !!open);   /* Ani, 6 Oct: the open row gets a soft background */
 }
 function v2Secs(){ ['meds','hist','pend','since','prev'].forEach(function(k){ v2Sec(k, !!V2.open[k]); }); }
+/* the last visible row takes the card's bottom corners (rows can hide: display by exception) */
+function v2SumEdges(){
+  var rows = [].slice.call(document.querySelectorAll('#v2-sum .v2-sec')), last = null;
+  rows.forEach(function(r){ r.classList.remove('v2-last'); if(!r.hidden) last = r; });
+  if(last) last.classList.add('v2-last');
+}
+/* Ani, 6 Oct: the left column scrolled on its own and clipped cards. Now it moves with the page: pinned under the top bar
+   while it fits; when it is taller than the window it scrolls with the page until its end (or start) shows, then holds.
+   Opening a row never moves the row you clicked. Under 1100 px it stacks above the work and simply scrolls. */
+var V2S = {y:0, rt:null};
+function v2Stick(reset){
+  var sd = v2El('v2-side'); if(!sd || !v2On() || !csOnChart()) return;
+  if(window.matchMedia && window.matchMedia('(max-width:1100px)').matches){ sd.style.top = ''; V2S.rt = null; return; }
+  var T = Math.round(csTopbarH() + 4), y = window.scrollY || 0;
+  var min = Math.min(T, window.innerHeight - sd.offsetHeight - 16);
+  if(reset || V2S.rt === null){ V2S.rt = sd.getBoundingClientRect().top; V2S.y = y; }
+  var want = Math.max(min, Math.min(T, V2S.rt - (y - V2S.y)));
+  V2S.y = y;
+  sd.style.top = Math.round(want) + 'px';
+  V2S.rt = sd.getBoundingClientRect().top;
+}
+(function(){
+  var raf = 0, go = function(){ if(raf) return; raf = requestAnimationFrame(function(){ raf = 0; v2Stick(); }); };
+  window.addEventListener('scroll', go, {passive:true});
+  window.addEventListener('resize', go);
+  if(window.ResizeObserver){ var sd = document.getElementById('v2-side'); if(sd) new ResizeObserver(go).observe(sd); }
+})();
 
 /* one fact per line: "a · b · c" becomes a value and quiet lines (presentation only; the rows are the chart's own) */
 function v2Parts(t){ return String(t || '').split(/\s*&middot;\s*/).filter(function(x){ return x !== ''; }); }
@@ -14600,6 +14677,7 @@ function v2RenderSide(name){
   var prevBody = (prev ? v2Lines(prev, name) : '') +
     (L ? '<button type="button" class="cs-link v2-readnote" onclick="csOpenFull(\'documents\',this)">Read the ' + csShort(L.date) + ' note</button>' : '');
   v2SetSec('prev', v2Count(prev), '', prevBody, !!(prev || L));
+  v2SumEdges();
   var inv = by['Investigations'], el = v2El('v2-inv');
   if(el){
     var lines = v2Lines(inv, name);
@@ -14764,7 +14842,7 @@ function v2RxFocus(){
     v2Fin(false, true); V2.open = {};
     V2.booting = true;
     try { open0.apply(this, arguments); } finally { V2.booting = false; }
-    if(v2On()){ v2Secs(); V2.tabFor = name; v2Tab(v2StartTab(name)); v2Render(); var sd = v2El('v2-side'); if(sd) sd.scrollTop = 0; }
+    if(v2On()){ v2Secs(); V2.tabFor = name; v2Tab(v2StartTab(name)); v2Render(); v2Stick(true); }
   };
 })();
 
@@ -15309,6 +15387,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 23:00</div>
+  <div class="build-stamp">v2 · build 2026-10-06 23:10</div>
 </body>
 </html>
