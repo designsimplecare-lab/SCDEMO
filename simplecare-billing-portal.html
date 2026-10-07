@@ -270,6 +270,16 @@
     .strip{grid-template-columns:repeat(2,minmax(0,1fr));}
     .tb-pill.close-off{display:none;}
   }
+  /* Ani, 7 Oct copy diet: help text that is still needed sits behind a small info icon */
+  .tip{display:inline-flex;vertical-align:middle;width:20px;height:20px;color:var(--ink-faint);cursor:help;border-radius:50%;}
+  .tip .ic{width:20px;height:20px;}
+  .tip:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  /* the subtitles under the page titles are gone, so the title carries the gap they used to give */
+  #screen-queue h1,#screen-remit h1{margin-bottom:18px;}
+  h1 .tip{width:22px;height:22px;margin-left:4px;}
+  /* build stamp: which version is loaded (rule 24a) */
+  .build-stamp{position:fixed;left:8px;bottom:4px;z-index:5;font-size:14px;color:rgba(23,24,28,.28);pointer-events:none;}
+  h1 .tip .ic{width:22px;height:22px;}
 </style>
 </head>
 <body>
@@ -280,7 +290,7 @@
       <button type="button" class="nav-btn active" data-screen="queue" onclick="go('queue')" aria-current="page"><span class="ic" data-ic="claims"></span><span class="lbl">Work queue</span><span class="nav-n" id="nav-n-queue"></span></button>
       <button type="button" class="nav-btn" data-screen="remit" onclick="go('remit')"><span class="ic" data-ic="earnings"></span><span class="lbl">Remittance</span></button>
     </nav>
-    <p class="side-foot">MSP claims for Dr. Daniel Pannozzo</p>
+    <p class="side-foot">Dr. Daniel Pannozzo</p>
   </aside>
 
   <div class="main">
@@ -298,8 +308,8 @@
             <span class="ic" data-ic="chevrondown"></span>
           </button>
           <div class="menu" id="profile-menu">
-            <div class="mh"><b>Japneet</b><span>Billing agent · signed in</span><span>Works on MSP claims for Dr. Daniel Pannozzo. The doctor is responsible for every claim.</span></div>
-            <button type="button" onclick="toggleMenu(false);toast('You would be signed out here.')"><span class="ic" data-ic="logout"></span>Sign out</button>
+            <div class="mh"><b>Japneet</b><span>Billing agent</span><span>Dr. Pannozzo is responsible for every claim.</span></div>
+            <button type="button" onclick="toggleMenu(false);toast('Signed out (demo)')"><span class="ic" data-ic="logout"></span>Sign out</button>
           </div>
         </div>
       </div>
@@ -308,8 +318,8 @@
     <main class="content">
       <!-- ===== Work queue (default) ===== -->
       <section class="screen active" id="screen-queue" aria-labelledby="h-queue">
-        <h1 id="h-queue">Work queue</h1>
-        <p class="sub">MSP claims that were refused or held, and the questions you've sent. You fix and resend. Dr. Pannozzo decides the coding and approves write-offs.</p>
+        <!-- Ani, 7 Oct copy diet: the explainer subtitle is now the tooltip -->
+        <h1 id="h-queue">Work queue <span id="h-queue-tip"></span></h1>
         <div class="strip" id="q-strip"></div>
         <div class="tabs" role="tablist" aria-label="Work queue" id="q-tabs"></div>
         <div id="q-panels"></div>
@@ -318,7 +328,6 @@
       <!-- ===== Remittance ===== -->
       <section class="screen" id="screen-remit" aria-labelledby="h-remit">
         <h1 id="h-remit">Remittance</h1>
-        <p class="sub">MSP's latest statement, matched line by line against our claims.</p>
         <div class="coming" id="r-coming"></div>
         <div class="strip" id="r-strip"></div>
         <div class="tabs" role="tablist" aria-label="Statement lines" id="r-tabs"></div>
@@ -360,10 +369,13 @@ var ICONS = {
 "usercheck": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M12.359 14.724c-3.6 0-7.62 2.928-7.62 6.526m7.62-9.785a4.36 4.36 0 0 0 4.035-2.683a4.355 4.355 0 0 0-3.171-5.948a4.362 4.362 0 0 0-5.215 4.274a4.356 4.356 0 0 0 4.35 4.357m.904 6.897l1.688 1.689a.637.637 0 0 0 .909 0l3.403-3.403\"/><\/svg>",
 "flag": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"M4.382 14.72s1.089-1.088 4.353-1.088c3.265 0 3.265 2.177 6.53 2.177a11.3 11.3 0 0 0 4.353-1.088V3.838a11.3 11.3 0 0 1-4.353 1.088C12 4.926 12 2.75 8.735 2.75c-3.264 0-4.353 1.088-4.353 1.088m0 17.412V3.838\"/><\/svg>",
 "chartnote": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\"><path d=\"M21.25 6.861v6.342a2.06 2.06 0 0 1-.606 1.459l-5.982 5.982a2.06 2.06 0 0 1-1.46.606h-6.34a4.11 4.11 0 0 1-4.112-4.111V6.86a4.11 4.11 0 0 1 4.111-4.11H17.14a4.11 4.11 0 0 1 4.111 4.111\"/><path d=\"m14.056 21.075l-.514-4.11a3.082 3.082 0 0 1 3.443-3.444l4.11.514M6.861 7.889h9.25M6.861 12h4.111m-4.111 4.111h3.083\"/><\/g><\/svg>",
+"info": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke-width=\"1.7\" d=\"M12 21.5a9.5 9.5 0 1 0 0-19a9.5 9.5 0 0 0 0 19m.005-4.222v-6.333\"/><path stroke-width=\"2\" d=\"M11.956 7.443h.01\"/><\/g><\/svg>",
 "calendar": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.6\" d=\"M17 4.625H7a4 4 0 0 0-4 4v8.75a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-8.75a4 4 0 0 0-4-4m-14 6h18m-4-8v4m-10-4v4m.375 7.515h1.028m7.194 0h1.028m-5.139 0h1.028m-5.139 3.084h1.028m7.194 0h1.028m-5.139 0h1.028\"/><\/svg>"
 };
 function ic(n){ return '<span class="ic" aria-hidden="true">' + (ICONS[n] || '') + '</span>'; }
 function paint(root){ (root || document).querySelectorAll('[data-ic]').forEach(function(e){ if(!e.firstChild){ e.innerHTML = ICONS[e.getAttribute('data-ic')] || ''; e.setAttribute('aria-hidden', 'true'); } }); }
+/* Ani, 7 Oct copy diet: needed help text moves into a small info tooltip */
+function tip(t){ return '<span class="tip" tabindex="0" role="img" aria-label="' + esc(t) + '" title="' + esc(t) + '">' + ic('info') + '</span>'; }
 function esc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 /* today in this prototype: Tue 6 Oct 2026 (Ani's brief) */
@@ -398,11 +410,11 @@ var PENDING_RUN = ['2026-10-02','2026-10-15'];         /* claims sent by Fri 2 O
 /* MSP telehealth fee codes SimpleCare bills (MSP fee file 1 Jul 2026; MSC Payment Schedule p.7-6/7-7).
    The patient's age on the visit date picks the code; 13x38 is counselling (20 min or more, start and end time). */
 var FEES = {
-  '13237':{n:'Telehealth visit, age 0–1', a:41.42}, '13437':{n:'Telehealth visit, age 2–49', a:38.61},
-  '13537':{n:'Telehealth visit, age 50–59', a:41.42}, '13637':{n:'Telehealth visit, age 60–69', a:43.29},
-  '13737':{n:'Telehealth visit, age 70–79', a:48.76}, '13837':{n:'Telehealth visit, age 80+', a:56.47},
-  '13438':{n:'Telehealth counselling, age 2–49', a:77.24}, '13538':{n:'Telehealth counselling, age 50–59', a:82.84},
-  '13638':{n:'Telehealth counselling, age 60–69', a:86.57}, '13738':{n:'Telehealth counselling, age 70–79', a:97.52}
+  '13237':{n:'Visit 0–1', a:41.42}, '13437':{n:'Visit 2–49', a:38.61},
+  '13537':{n:'Visit 50–59', a:41.42}, '13637':{n:'Visit 60–69', a:43.29},
+  '13737':{n:'Visit 70–79', a:48.76}, '13837':{n:'Visit 80+', a:56.47},
+  '13438':{n:'Counselling 2–49', a:77.24}, '13538':{n:'Counselling 50–59', a:82.84},
+  '13638':{n:'Counselling 60–69', a:86.57}, '13738':{n:'Counselling 70–79', a:97.52}
 };
 /* BC MSP diagnostic codes used by these claims (gov.bc.ca, "Diagnostic Code Descriptions (ICD-9)") */
 var DX = {'401.9':'Essential hypertension','112.1':'Candidiasis of vulva and vagina','V67.9':'Follow-up examination, unspecified',
@@ -414,33 +426,33 @@ var DX = {'401.9':'Essential hypertension','112.1':'Candidiasis of vulva and vag
    fixer: 'agent' (the billing agent can fix and resend), 'doctor' (coding: the doctor decides), 'wait', 'info';
    how: what to do. YY is a wrapper: the reason is the next code. Public subset: assets/data/msp-explanatory-codes.json */
 var EX = {
-  AM:{w:'Dependant number and/or initial(s) do not match our records.', p:"The patient's initials don't match MSP's records.", who:'You (billing agent)', fixer:'agent',
-      how:"Bill the exact legal name MSP has on file (check it with MSP), then resend with code X and a note."},
-  AQ:{w:'Surname does not match our records.', p:"The patient's last name doesn't match MSP's records.", who:'You (billing agent)', fixer:'agent',
-      how:"Correct the last name to the one MSP has on file, then resend with code X and a note."},
-  AF:{w:'This patient does not have coverage for the date of service.', p:'The patient had no MSP coverage on the visit date.', who:'You (billing agent), with the patient', fixer:'agent',
-      how:"Check coverage with MSP. If coverage really lapsed, the claim won't pay: close it and bill the patient privately, or resend once the patient has sorted coverage with MSP."},
-  BJ:{w:'Fee item and amount billed do not correspond.', p:"The amount billed doesn't match what MSP pays for that fee code. MSP refuses the whole claim.", who:'You (billing agent)', fixer:'agent',
-      how:"Re-price to MSP's amount for the fee code and resend with code X and a note."},
-  YA:{w:'Note record missing or invalid for submission code C, E or X.', p:'The claim was resent with code X but without a note to MSP.', who:'You (billing agent)', fixer:'agent',
-      how:'Write the note explaining the resend and send it again with code X.'},
-  YY:{w:'Pre-edit system refusal. See second explanatory code(s).', p:"Refused before MSP reviewed it. The reason is the next code.", who:'Depends on the next code', fixer:'wrap', how:'Read the next code and fix that.'},
-  VN:{w:'Diagnostic code missing or invalid', p:'The diagnosis (ICD-9) code is missing or not on MSP’s list.', who:'Dr. Pannozzo decides; you resend', fixer:'doctor',
-      how:'The doctor picks a valid MSP diagnosis code. You resend with code X and a note.'},
-  BI:{w:'Fee item and diagnosis do not correspond', p:"The fee code and the diagnosis don't go together.", who:'Dr. Pannozzo decides; you resend', fixer:'doctor',
-      how:'The doctor reviews the fee code and diagnosis pairing. You resend with code X and a note.'},
-  CF:{w:'Time service was rendered is missing or invalid.', p:'The call start or end time is missing. Counselling codes (13x38) need both.', who:'Dr. Pannozzo gives the times; you resend', fixer:'doctor',
-      how:'The doctor gives the call start and end time. You resend with code X and a note.'},
-  ED:{w:'There is insufficient medical necessity to process this claim.', p:"MSP doesn't see enough medical reason for this claim.", who:'Dr. Pannozzo explains; you resend', fixer:'doctor',
-      how:'The doctor writes the medical reason. You resend with code X and the reason in the note, or the doctor accepts the refusal.'},
-  BH:{w:'This claim will be processed on a future remittance statement. Please do not rebill.', p:"MSP will decide on a later statement. Don't resend.", who:'Nobody: wait for MSP', fixer:'wait',
-      how:"Wait. Resending now would be refused as a duplicate."},
-  HC:{w:'This claim has been paid under the indicated fee item.', p:'MSP paid it under a different fee code.', who:'Dr. Pannozzo, if it should be disputed', fixer:'info',
-      how:'Check the fee code. If the original code was right, ask the doctor whether to dispute it.'},
-  HX:{w:'This claim has been paid to you. Computer refusal.', p:'MSP treated it as a duplicate of a claim already paid, and paid $0.', who:'You (billing agent)', fixer:'agent',
-      how:'Check that the same visit was already paid. If it was, nothing is owed: close it. If not, query MSP.'},
-  BV:{w:'Service date exceeds allowable claim submission period.', p:'The visit is older than MSP allows for a first submission (90 days).', who:'You (billing agent); the doctor approves the write-off', fixer:'agent',
-      how:"Resending won't help. Close it as not paid, with the doctor's approval."}
+  AM:{w:'Dependant number and/or initial(s) do not match our records.', p:"Initials don't match MSP's records.", who:'You', fixer:'agent',
+      how:"Use the legal name MSP has on file, then resend with code X and a note."},
+  AQ:{w:'Surname does not match our records.', p:"Last name doesn't match MSP's records.", who:'You', fixer:'agent',
+      how:"Correct the last name to MSP's, then resend with code X and a note."},
+  AF:{w:'This patient does not have coverage for the date of service.', p:'No MSP coverage on the visit date.', who:'You, with the patient', fixer:'agent',
+      how:"Check coverage with MSP. If it lapsed, close and bill privately, or resend once coverage is fixed."},
+  BJ:{w:'Fee item and amount billed do not correspond.', p:"Amount doesn't match MSP's fee for the code. Whole claim refused.", who:'You', fixer:'agent',
+      how:"Re-price to MSP's fee and resend with code X and a note."},
+  YA:{w:'Note record missing or invalid for submission code C, E or X.', p:'Resent with code X but no note.', who:'You', fixer:'agent',
+      how:'Add the note and resend with code X.'},
+  YY:{w:'Pre-edit system refusal. See second explanatory code(s).', p:"Pre-edit refusal. The reason is the next code.", who:'Depends on the next code', fixer:'wrap', how:'Read the next code and fix that.'},
+  VN:{w:'Diagnostic code missing or invalid', p:'ICD-9 code missing or not on MSP’s list.', who:'Dr. Pannozzo decides; you resend', fixer:'doctor',
+      how:'Doctor picks a valid code; you resend with code X and a note.'},
+  BI:{w:'Fee item and diagnosis do not correspond', p:"Fee code and diagnosis don't match.", who:'Dr. Pannozzo decides; you resend', fixer:'doctor',
+      how:'Doctor reviews the pairing; you resend with code X and a note.'},
+  CF:{w:'Time service was rendered is missing or invalid.', p:'Start or end time missing. 13x38 needs both.', who:'Dr. Pannozzo gives the times; you resend', fixer:'doctor',
+      how:'Doctor gives the times; you resend with code X and a note.'},
+  ED:{w:'There is insufficient medical necessity to process this claim.', p:"Not enough medical reason, per MSP.", who:'Dr. Pannozzo explains; you resend', fixer:'doctor',
+      how:'Doctor writes the reason; you resend with code X and it in the note. Or he accepts the refusal.'},
+  BH:{w:'This claim will be processed on a future remittance statement. Please do not rebill.', p:"MSP decides on a later statement. Don't resend.", who:'Nobody: wait', fixer:'wait',
+      how:"Wait. A resend now is refused as a duplicate."},
+  HC:{w:'This claim has been paid under the indicated fee item.', p:'Paid under a different fee code.', who:'Dr. Pannozzo, if it should be disputed', fixer:'info',
+      how:'Check the code. If the original was right, ask the doctor about disputing.'},
+  HX:{w:'This claim has been paid to you. Computer refusal.', p:'Duplicate of a paid claim; $0 paid.', who:'You', fixer:'agent',
+      how:'If the visit was already paid, close it. If not, query MSP.'},
+  BV:{w:'Service date exceeds allowable claim submission period.', p:'Past MSP’s 90-day first-submission limit.', who:'You; the doctor approves the write-off', fixer:'agent',
+      how:"A resend won't help. Close as not paid, with the doctor's approval."}
 };
 var WRAP = ['YY'];
 function exMain(c){ var l = c.ex || []; var m = l.filter(function(x){ return WRAP.indexOf(x) < 0; }); return EX[m[0] || l[0]] || null; }
@@ -574,7 +586,7 @@ var CLAIMS = [
          H('sent','10 Sep 10:41 AM',DOC,'Sent to MSP'),
          H('adjusted','29 Sep 8:15 AM','MSP','Paid differently on the 29 Sep statement: $38.61 of $41.42 · HC · paid under 13437')]},
   {id:'b17', who:'Frank D.', age:71, date:'2026-09-01', time:'2:05–2:14 PM', fee:'13737', dx:'401.9', billed:48.76, st:'closed', paid:0,
-   ex:['HX'], onStmt:true, closedWhy:'Duplicate: the same visit was paid on the 15 Sep statement',
+   ex:['HX'], onStmt:true, closedWhy:'Duplicate of the 15 Sep payment',
    hist:[H('created','1 Sep 2:20 PM',DOC,'Visit signed off · claim created: 13737 · $48.76 · 401.9'),
          H('sent','1 Sep 2:21 PM',DOC,'Sent to MSP'),
          H('paid','15 Sep 8:15 AM','MSP','Paid $48.76 on the 15 Sep statement'),
@@ -616,10 +628,10 @@ function daysChip(c){
 function fixer(c){ if(c.answer) return 'agent'; var e = exMain(c); return e ? e.fixer : 'agent'; }
 function feeTxt(c){ return c.fee + ' · ' + FEES[c.fee].n; }
 function dxTxt(c){ return c.dx ? c.dx + ' · ' + (DX[c.dx] || '') : 'No diagnosis'; }
-function refusedWhere(c){ return c.src === 'stmt' ? 'on the ' + fd(c.refusedOn) + ' statement' : 'by MSP ' + fd(c.refusedOn) + ', before review'; }
+function refusedWhere(c){ return c.src === 'stmt' ? 'on ' + fd(c.refusedOn) + ' statement' : fd(c.refusedOn) + ', pre-edit'; }
 function stLabel(c){
-  return {refused:'Refused — fix & resend', waiting:'Waiting on the doctor', held:'Held by MSP', resent:'Sent — waiting for MSP',
-          paid:'Paid', adjusted:'Paid ' + (c.paid != null ? money(c.paid) + ' of ' + money(c.billed) : ''), closed:'Closed — not paid', approval:'Waiting on the doctor'}[c.st] || c.st;
+  return {refused:'Refused', waiting:'Waiting on doctor', held:'Held by MSP', resent:'Resent · waiting on MSP',
+          paid:'Paid', adjusted:'Paid ' + (c.paid != null ? money(c.paid) + ' of ' + money(c.billed) : ''), closed:'Closed — not paid', approval:'Waiting on doctor'}[c.st] || c.st;
 }
 function inRun(c){ return c.resentOn ? runFor(c.resentOn) : null; }
 
@@ -630,7 +642,7 @@ var QTAB = 'refused';
 var QT = [
   {k:'refused', label:'Refused', attn:true},
   {k:'held', label:'Held by MSP'},
-  {k:'waiting', label:'Waiting on the doctor'},
+  {k:'waiting', label:'Waiting on doctor'},
   {k:'resent', label:'Resent'}
 ];
 function qList(k){
@@ -646,9 +658,9 @@ function renderStrip(){
   var nextDue = w.length ? w.slice().sort(function(a, b){ return D(a.q.due) - D(b.q.due); })[0].q.due : null;
   var cell = function(tab, k, v, sub){ return '<button type="button" class="cell" onclick="qSet(\'' + tab + '\', true)"><p class="k">' + k + '</p><p class="vs"><span class="v">' + v + '</span><span class="s">' + sub + '</span></p></button>'; };
   document.getElementById('q-strip').innerHTML =
-    cell('refused', 'Refused — fix & resend', r.length, money(sum(r)) + ' not paid') +
+    cell('refused', 'Refused', r.length, money(sum(r)) + ' unpaid') +
     cell('held', 'Held by MSP', h.length, money(sum(h)) + ' · don’t resend') +
-    cell('waiting', 'Waiting on the doctor', w.length, nextDue ? 'next answer by ' + (nextDue === iso(TODAY) ? 'today' : fdw(nextDue)) : 'nothing waiting') +
+    cell('waiting', 'Waiting on doctor', w.length, nextDue ? 'next due ' + (nextDue === iso(TODAY) ? 'today' : fdw(nextDue)) : 'none') +
     cell('resent', 'Resent this cycle', s.length, money(sum(s)) + ' · paid ' + fdw(NEXT_RUN[1]));
   var n = document.getElementById('nav-n-queue'); n.textContent = r.length; n.hidden = !r.length; n.setAttribute('aria-label', r.length + ' refused');
 }
@@ -665,7 +677,7 @@ function cardHead(c, chips){
 }
 function whyLine(c){
   var e = exMain(c);
-  if(!c.refusedOn) return '<p class="why"><span class="code">' + exCode(c) + '</span> · ' + esc(e ? e.p : '') + (c.paid != null ? ' <span style="color:var(--ink-soft)">Paid ' + money(c.paid) + ' of ' + money(c.billed) + ' on the ' + fd(STATEMENT.pay) + ' statement.</span>' : '') + '</p>';
+  if(!c.refusedOn) return '<p class="why"><span class="code">' + exCode(c) + '</span> · ' + esc(e ? e.p : '') + (c.paid != null ? ' <span style="color:var(--ink-soft)">Paid ' + money(c.paid) + ' of ' + money(c.billed) + ', ' + fd(STATEMENT.pay) + ' statement.</span>' : '') + '</p>';
   return '<p class="why"><span class="code">' + exCode(c) + '</span> · ' + esc(e ? e.p : '') + ' <span style="color:var(--ink-soft)">Refused ' + refusedWhere(c) + '.</span></p>';
 }
 function refusedCard(c){
@@ -676,38 +688,39 @@ function refusedCard(c){
   chips += daysChip(c);
   var h = '<div class="card" id="card-' + c.id + '">' + cardHead(c, chips) + whyLine(c);
   if(c.answer) h += '<p class="line2 ans">' + ic('chat') + '<span>' + DOC + ' answered ' + c.answer.on + ': <q>' + esc(c.answer.text) + '</q></span></p>';
-  else h += '<p class="line2">' + ic('user') + '<span>' + (f === 'doctor' ? 'This is a coding question, so ' + DOC + ' decides. You can’t change the fee code, diagnosis or times; you resend once he answers.' : 'Who fixes it: ' + esc(e.who) + '. ' + esc(e.how)) + '</span></p>';
+  /* Ani, 7 Oct copy diet: the chip already says who fixes it; the line only says how */
+  else h += '<p class="line2">' + ic(f === 'doctor' ? 'user' : 'edit') + '<span>' + (f === 'doctor' ? 'Coding is the doctor’s call. Resend after he answers.' : esc(e.how)) + '</span></p>';
   h += '<div class="acts">';
-  if(f === 'doctor') h += '<button type="button" class="btn pri" onclick="openAsk(\'' + c.id + '\')">' + ic('chat') + 'Ask the doctor</button>';
-  else h += '<button type="button" class="btn pri" onclick="openFix(\'' + c.id + '\')">' + ic('reopen') + 'Fix and resend</button>' +
-            '<button type="button" class="btn" onclick="openAsk(\'' + c.id + '\')">' + ic('chat') + 'Ask the doctor</button>';
-  h += '<button type="button" class="btn" onclick="openClose(\'' + c.id + '\')">' + ic('flag') + 'Mark closed — not paid</button>' +
+  if(f === 'doctor') h += '<button type="button" class="btn pri" onclick="openAsk(\'' + c.id + '\')">' + ic('chat') + 'Ask doctor</button>';
+  else h += '<button type="button" class="btn pri" onclick="openFix(\'' + c.id + '\')">' + ic('reopen') + 'Fix & resend</button>' +
+            '<button type="button" class="btn" onclick="openAsk(\'' + c.id + '\')">' + ic('chat') + 'Ask doctor</button>';
+  h += '<button type="button" class="btn" onclick="openClose(\'' + c.id + '\')">' + ic('flag') + 'Close unpaid</button>' +
        '<button type="button" class="btn quiet" onclick="openClaim(\'' + c.id + '\')">' + ic('eye') + 'Details</button></div></div>';
   return h;
 }
 function heldCard(c){
   var e = EX.BH;
   return '<div class="card" id="card-' + c.id + '">' + cardHead(c, '<span class="tag warn">' + ic('clock') + 'Held by MSP</span>') +
-    '<p class="why"><span class="code">BH</span> · ' + esc(e.p) + ' <span style="color:var(--ink-soft)">Held on the ' + fd(c.heldOn) + ' statement.</span></p>' +
+    '<p class="why"><span class="code">BH</span> · Held on ' + fd(c.heldOn) + ' statement.</p>' +
     '<div class="acts"><button type="button" class="btn quiet" onclick="openClaim(\'' + c.id + '\')">' + ic('eye') + 'Details</button></div></div>';
 }
 function waitingCard(c){
   var q = c.q, n = diff(TODAY, D(q.due));
-  var dueTxt = n < 0 ? 'Answer was due ' + fdw(q.due) : n === 0 ? 'Answer by today' : 'Answer by ' + fdw(q.due);
+  var dueTxt = n < 0 ? 'Overdue since ' + fdw(q.due) : n === 0 ? 'Due today' : 'Due ' + fdw(q.due);
   var chips = '<span class="days ' + (n <= 0 ? 'strong' : '') + '">' + ic(n <= 0 ? 'alert' : 'calendar') + dueTxt + '</span>' + daysChip(c);
-  var kind = q.kind === 'writeoff' ? 'Write-off sent for approval ' + q.asked : 'Question sent ' + q.asked;
+  var kind = q.kind === 'writeoff' ? 'Write-off sent ' + q.asked : 'Asked ' + q.asked;
   var h = '<div class="card" id="card-' + c.id + '">' + cardHead(c, chips) + whyLine(c) +
-    '<p class="line2">' + ic(q.kind === 'writeoff' ? 'flag' : 'chat') + '<span>' + kind + ' to ' + DOC + ': <q>' + esc(q.text) + '</q>' + (q.reminded ? ' Reminder sent ' + q.reminded + '.' : '') + '</span></p>' +
-    '<div class="acts"><button type="button" class="btn" onclick="remind(\'' + c.id + '\')"' + (q.reminded ? ' disabled' : '') + '>' + ic('bell') + (q.reminded ? 'Reminder sent' : 'Send a reminder') + '</button>' +
+    '<p class="line2">' + ic(q.kind === 'writeoff' ? 'flag' : 'chat') + '<span>' + kind + ': <q>' + esc(q.text) + '</q>' + (q.reminded ? ' Reminded ' + q.reminded + '.' : '') + '</span></p>' +
+    '<div class="acts"><button type="button" class="btn" onclick="remind(\'' + c.id + '\')"' + (q.reminded ? ' disabled' : '') + '>' + ic('bell') + (q.reminded ? 'Reminded' : 'Remind') + '</button>' +
     '<button type="button" class="btn quiet" onclick="openClaim(\'' + c.id + '\')">' + ic('eye') + 'Details</button></div></div>';
   return h;
 }
 function resentCard(c){
   var run = inRun(c);
-  var chips = '<span class="tag info">' + ic('clock') + 'Sent — waiting for MSP</span>';
-  return '<div class="card" id="card-' + c.id + '">' + cardHead(c, chips) +
-    '<p class="why">Resent ' + fd(c.resentOn) + ' with code X after <span class="code">' + exCode(c) + '</span>. ' +
-    (run ? 'It makes the ' + fdw(run[0]) + ' close-off, so MSP’s answer is on the <b>' + fdw(run[1]) + '</b> statement. A refusal before review can come back the next business day.' : '') + '</p>' +
+  /* Ani, 7 Oct copy diet: the tab already says Resent, so no status chip; the timing detail is a tooltip */
+  return '<div class="card" id="card-' + c.id + '">' + cardHead(c, '') +
+    '<p class="why">Resent ' + fd(c.resentOn) + ' (code X) after <span class="code">' + exCode(c) + '</span>.' +
+    (run ? ' Answer on the <b>' + fdw(run[1]) + '</b> statement ' + tip(fdw(run[0]) + ' close-off. A pre-edit refusal can come back the next business day.') : '') + '</p>' +
     '<p class="line2">' + ic('chartnote') + '<span>Note to MSP: <q>' + esc(c.note) + '</q></span></p>' +
     '<div class="acts"><button type="button" class="btn quiet" onclick="openClaim(\'' + c.id + '\')">' + ic('eye') + 'Details</button></div></div>';
 }
@@ -715,9 +728,9 @@ function renderPanels(){
   var html = '';
   QT.forEach(function(t){
     var l = qList(t.k), body = '';
-    if(t.k === 'held') body += '<p class="panel-note">' + ic('clock') + '<span><b>MSP will decide on a later statement. Don’t resend.</b> A resend while MSP holds a claim is refused as a duplicate.</span></p>';
-    if(t.k === 'waiting') body += '<p class="panel-note info">' + ic('chat') + '<span>Questions and write-offs you’ve sent to ' + DOC + '. When he answers, the claim comes back to Refused for you to resend.</span></p>';
-    if(!l.length) body += '<p class="empty">' + ic('complete') + ({refused:'Nothing refused. Every refused claim has been resent, asked about or closed.', held:'MSP isn’t holding any claims.', waiting:'No questions waiting on the doctor.', resent:'Nothing resent yet this cycle.'}[t.k]) + '</p>';
+    if(t.k === 'held') body += '<p class="panel-note">' + ic('clock') + '<span><b>Don’t resend.</b> MSP decides on a later statement. ' + tip('A resend while MSP holds a claim is refused as a duplicate.') + '</span></p>';
+    if(t.k === 'waiting') body += '<p class="panel-note info">' + ic('chat') + '<span>Answered claims return to Refused.</span></p>';
+    if(!l.length) body += '<p class="empty">' + ic('complete') + ({refused:'Nothing refused.', held:'Nothing held.', waiting:'Nothing waiting.', resent:'Nothing resent this cycle.'}[t.k]) + '</p>';
     body += l.map({refused:refusedCard, held:heldCard, waiting:waitingCard, resent:resentCard}[t.k]).join('');
     html += '<div class="box" role="tabpanel" id="qp-' + t.k + '" aria-labelledby="qt-' + t.k + '"' + (t.k === QTAB ? '' : ' hidden') + '>' + body + '</div>';
   });
@@ -773,28 +786,26 @@ function renderRemit(){
   var gross = sum(all, linePaid);
   var pill = function(icn, b, t){ return '<div class="tb-pill"><span class="tb-ic">' + ic(icn) + '</span><span><b>' + b + '</b><span class="t">' + t + '</span></span></div>'; };
   document.getElementById('r-coming').innerHTML =
-    pill('complete', 'Paid ' + fdw(STATEMENT.pay), 'Latest statement · ' + money(gross) + ' from MSP') +
-    pill('clock', 'Next statement ' + fdw(PENDING_RUN[1]), 'Claims sent by the ' + fdw(PENDING_RUN[0]) + ' close-off') +
-    pill('calendar', 'Next close-off ' + fdw(NEXT_RUN[0]) + ', 7 PM', 'Paid ' + fdw(NEXT_RUN[1]));
+    /* Ani, 7 Oct copy diet: the next close-off is already in the top bar, so that pill is gone */
+    pill('complete', 'Paid ' + fdw(STATEMENT.pay), 'Latest · ' + money(gross)) +
+    pill('clock', 'Next statement ' + fdw(PENDING_RUN[1]), 'Sent by ' + fdw(PENDING_RUN[0]));
   var cell = function(tab, k, v, s){ return '<button type="button" class="cell" onclick="rSet(\'' + tab + '\', true)"><p class="k">' + k + '</p><p class="vs"><span class="v">' + v + '</span><span class="s">' + s + '</span></p></button>'; };
   document.getElementById('r-strip').innerHTML =
-    cell('matched', 'Paid as billed', paid.length, money(sum(paid)) + ' · matched') +
-    cell('attn', 'Paid differently', diffL.length, money(sum(diffL, function(c){ return c.billed - c.paid; })) + ' less than billed') +
-    cell('attn', 'Refused or paid $0', ref.length, money(sum(ref)) + ' not paid') +
-    cell('attn', 'Held by MSP', held.length, money(sum(held)) + ' · on a later statement');
+    cell('matched', 'Paid as billed', paid.length, money(sum(paid))) +
+    cell('attn', 'Paid differently', diffL.length, money(sum(diffL, function(c){ return c.billed - c.paid; })) + ' short') +
+    cell('attn', 'Refused or paid $0', ref.length, money(sum(ref)) + ' unpaid') +
+    cell('attn', 'Held by MSP', held.length, money(sum(held)) + ' · later statement');
   renderRTabs();
   var lines = all.length, attn = all.length - paid.length;
-  var head = '<div class="stmt-head"><h2>MSP statement · paid ' + fdw(STATEMENT.pay) + '</h2><span class="s">Claims sent by the ' + fdw(STATEMENT.cut) + ' close-off · Dr. Daniel Pannozzo</span></div>' +
-    '<p class="recon">' + paid.length + ' of ' + lines + ' lines matched our claims and were paid as billed. ' + attn + ' need attention: ' +
-    ref.filter(function(c){ return lineKind(c) === 'refused'; }).length + ' refused, ' + held.length + ' held, ' + diffL.length + ' paid differently and ' +
-    ref.filter(function(c){ return lineKind(c) === 'dup'; }).length + ' paid $0 as a duplicate. No statement-level adjustments this time.</p>';
+  /* Ani, 7 Oct copy diet: the strip above already gives the counts; the head keeps only what it adds */
+  var head = '<div class="stmt-head"><h2>MSP statement · paid ' + fdw(STATEMENT.pay) + '</h2><span class="s">Sent by ' + fdw(STATEMENT.cut) + ' close-off · no statement-level adjustments</span></div>';
   var html = '';
   RT.forEach(function(t){
     var l = rList(t.k);
     var rows = l.map(lineRow).join('');
     var tb = sum(l), tp = sum(l, linePaid);
     html += '<div class="box" role="tabpanel" id="rp-' + t.k + '" aria-labelledby="rt-' + t.k + '"' + (t.k === RTAB ? '' : ' hidden') + '>' + head +
-      '<table class="lines"><caption class="sr">' + t.label + ', statement paid ' + fdw(STATEMENT.pay) + '</caption><thead><tr><th scope="col">Patient</th><th scope="col" class="num">Billed</th><th scope="col" class="num">Paid</th><th scope="col">MSP said</th><th scope="col">Where it is now</th></tr></thead>' +
+      '<table class="lines"><caption class="sr">' + t.label + ', statement paid ' + fdw(STATEMENT.pay) + '</caption><thead><tr><th scope="col">Patient</th><th scope="col" class="num">Billed</th><th scope="col" class="num">Paid</th><th scope="col">MSP said</th><th scope="col">Status</th></tr></thead>' +
       '<tbody>' + rows + '</tbody><tfoot><tr><td>' + l.length + ' line' + (l.length === 1 ? '' : 's') + '</td><td class="num">' + money(tb) + '</td><td class="num">' + money(tp) + '</td><td colspan="2"></td></tr></tfoot></table></div>';
   });
   document.getElementById('r-panels').innerHTML = html;
@@ -802,13 +813,13 @@ function renderRemit(){
 function nowWhere(c){
   /* where the claim is now in SimpleCare, after this line was applied */
   var k = lineKind(c);
-  if(k === 'paid') return '<span class="r ok">' + ic('complete') + 'Matched · paid as billed</span>';
-  if(c.st === 'refused') return '<span class="r warn">' + ic('alert') + 'In your queue · refused</span><span class="n">' + (daysLeft(c)) + ' days left to resend</span>';
+  if(k === 'paid') return '<span class="r ok">' + ic('complete') + 'Matched</span>';
+  if(c.st === 'refused') return '<span class="r warn">' + ic('alert') + 'In queue</span><span class="n">' + (daysLeft(c)) + ' days left</span>';
   if(c.st === 'held') return '<span class="r warn">' + ic('clock') + 'Held by MSP</span><span class="n">Don’t resend</span>';
-  if(c.st === 'waiting') return '<span class="r warn">' + ic('chat') + 'Waiting on the doctor</span><span class="n">Answer by ' + fdw(c.q.due) + '</span>';
+  if(c.st === 'waiting') return '<span class="r warn">' + ic('chat') + 'Waiting on doctor</span><span class="n">Due ' + fdw(c.q.due) + '</span>';
   if(c.st === 'resent') return '<span class="r">' + ic('reopen') + 'Resent ' + fd(c.resentOn) + '</span>';
   if(c.st === 'closed') return '<span class="r">' + ic('complete') + 'Closed — not paid</span><span class="n">' + esc(c.closedWhy || '') + '</span>';
-  if(c.st === 'adjusted') return '<span class="r warn">' + ic('alert') + 'Paid under ' + c.paidAs + '</span><span class="n">Patient is ' + c.age + ', so ' + c.fee + ' was the code</span>';
+  if(c.st === 'adjusted') return '<span class="r warn">' + ic('alert') + 'Paid under ' + c.paidAs + '</span><span class="n">Age ' + c.age + ': ' + c.fee + ' applies</span>';
   return esc(stLabel(c));
 }
 function lineRow(c){
@@ -816,7 +827,7 @@ function lineRow(c){
   var said = k === 'paid' ? '<span class="msp">Paid as billed</span>' :
     '<span class="msp"><b>' + exCode(c) + '</b> · ' + esc(e ? e.p : '') + '</span>';
   var act = '<button type="button" class="btn quiet" onclick="openClaim(\'' + c.id + '\')" aria-label="Details for ' + esc(c.who) + ', ' + fd(c.date) + '">' + ic('eye') + 'Details</button>';
-  if(c.st === 'adjusted') act = '<button type="button" class="btn" onclick="openAsk(\'' + c.id + '\')">' + ic('chat') + 'Ask the doctor</button>' + act;
+  if(c.st === 'adjusted') act = '<button type="button" class="btn" onclick="openAsk(\'' + c.id + '\')">' + ic('chat') + 'Ask doctor</button>' + act;
   if(c.st === 'refused') act = '<button type="button" class="btn" onclick="go(\'queue\');qSet(\'refused\');flash(\'' + c.id + '\')">' + ic('claims') + 'Open in queue</button>' + act;
   return '<tr><td class="pt"><b>' + esc(c.who) + '</b><span>' + fd(c.date) + ' visit · ' + c.fee + '</span></td><td class="num">' + money(c.billed) + '</td><td class="num">' + money(linePaid(c)) + '</td>' +
     '<td class="said">' + said + '</td><td class="res">' + nowWhere(c) + '<span class="ra">' + act + '</span></td></tr>';
@@ -884,22 +895,22 @@ window.addEventListener('keydown', function(e){
 }, true);
 function drwHead(id, eyebrow, title, c, extra){
   return '<div class="drw-hd"><p class="eyebrow">' + eyebrow + '</p><h2 id="' + id + '-t">' + title + '</h2>' +
-    (c ? '<p class="who"><span><b>' + esc(c.who) + '</b> · ' + fd(c.date) + ' visit' + (c.time ? ' · ' + c.time : '') + '</span>' + (extra || '') + '</p>' : '') +
+    (c ? '<p class="who"><span><b>' + esc(c.who) + '</b> · ' + fd(c.date) + ' visit</span>' + (extra || '') + '</p>' : '') +
     '<button type="button" class="drw-x" aria-label="Close" onclick="drwClose(\'' + id + '\')">' + ic('close') + '</button></div>';
 }
 function row(k, v){ return '<div class="row"><span class="k">' + k + '</span><span class="v">' + v + '</span></div>'; }
 function mspBlock(c, withDeadline){
   var e = exMain(c); if(!e) return '';
-  var title = c.st === 'held' ? 'What MSP said · held on the ' + fd(c.heldOn) + ' statement' :
-              c.st === 'adjusted' || lineKind(c) === 'dup' ? 'What MSP said · 29 Sep statement' :
-              c.refusedOn ? 'What MSP said · refused ' + refusedWhere(c) : 'What MSP said';
-  var h = '<div class="blk"><p class="blk-k">' + title + '</p>' + row('Code', exCode(c)) + row('What it means', esc(e.p)) + row('Who fixes it', esc(e.who)) + row('How', esc(e.how)) +
+  var title = c.st === 'held' ? 'MSP · held on ' + fd(c.heldOn) + ' statement' :
+              c.st === 'adjusted' || lineKind(c) === 'dup' ? 'MSP · 29 Sep statement' :
+              c.refusedOn ? 'MSP · refused ' + refusedWhere(c) : 'MSP';
+  var h = '<div class="blk"><p class="blk-k">' + title + '</p>' + row('Code', exCode(c)) + row('Meaning', esc(e.p)) + row('Who', esc(e.who)) + row('How', esc(e.how)) +
     '<details><summary>MSP’s words</summary>' + (c.ex || []).map(function(x){ return '<p>' + x + ' · ' + esc(EX[x] ? EX[x].w : '') + '</p>'; }).join('') + '</details>';
   if(withDeadline && c.refusedOn && ['refused','waiting'].indexOf(c.st) > -1){
     var n = daysLeft(c);
-    h += '<p style="margin-top:8px">' + (n >= 0 ? n + ' days left to resend · last day ' + fdw(deadline(c)) : 'Past the resend window (last day was ' + fdw(deadline(c)) + ')') + '</p>' +
-      '<details><summary>How we count this</summary><p>MSP lets you resend a refused claim, with code X and a note, within 90 days of the date MSP refused it. ' +
-      'Refused ' + fd(c.refusedOn) + ', so the last day is ' + fdw(deadline(c)) + '.</p></details>';
+    /* Ani, 7 Oct copy diet: the days-left chip is in the header; how the deadline is counted stays one click away */
+    h += '<details style="margin-top:8px"><summary>' + (n >= 0 ? 'Last day to resend: ' + fdw(deadline(c)) : 'Past the resend window') + '</summary><p>MSP allows a resend, with code X and a note, within 90 days of the refusal. ' +
+      'Refused ' + fd(c.refusedOn) + ', so the last day ' + (n >= 0 ? 'is ' : 'was ') + fdw(deadline(c)) + '.</p></details>';
   }
   return h + '</div>';
 }
@@ -909,18 +920,18 @@ function openClaim(id){
   var c = C(id); if(!c) return;
   var st = stLabel(c);
   var amt = c.st === 'paid' ? money(c.paid) + ' paid' : c.st === 'adjusted' ? money(c.paid) + ' paid of ' + money(c.billed) + ' billed' : money(c.billed) + ' billed' + (['closed'].indexOf(c.st) > -1 ? ', not paid' : '');
-  var h = drwHead('drw-claim', 'MSP claim · Dr. Daniel Pannozzo', st, c, ['refused','waiting'].indexOf(c.st) > -1 ? daysChip(c) : '');
+  var h = drwHead('drw-claim', 'MSP claim', st, c, ['refused','waiting'].indexOf(c.st) > -1 ? daysChip(c) : '');
   h += '<div class="drw-bd" tabindex="-1">';
-  if(c.st === 'held') h += '<p class="notice warn">' + ic('clock') + '<span><b>MSP will decide on a later statement. Don’t resend.</b></span></p>';
-  if(c.st === 'resent'){ var run = inRun(c); h += '<p class="notice">' + ic('clock') + '<span>Resent ' + fd(c.resentOn) + ' with code X. MSP’s answer is on the ' + fdw(run[1]) + ' statement (' + fdw(run[0]) + ' close-off).</span></p>'; }
-  if(c.st === 'waiting') h += '<p class="notice">' + ic(c.q.kind === 'writeoff' ? 'flag' : 'chat') + '<span>' + (c.q.kind === 'writeoff' ? 'Write-off sent to ' + DOC + ' for approval ' : 'Question sent to ' + DOC + ' ') + c.q.asked + ' · answer by ' + fdw(c.q.due) + '.</span></p>';
-  if(c.answer && c.st === 'refused') h += '<p class="notice">' + ic('chat') + '<span>' + DOC + ' answered ' + c.answer.on + ': “' + esc(c.answer.text) + '” Ready for you to resend.</span></p>';
+  if(c.st === 'held') h += '<p class="notice warn">' + ic('clock') + '<span><b>Don’t resend.</b></span></p>';
+  if(c.st === 'resent'){ var run = inRun(c); h += '<p class="notice">' + ic('clock') + '<span>Resent ' + fd(c.resentOn) + ' (code X). Answer on the ' + fdw(run[1]) + ' statement.</span></p>'; }
+  if(c.st === 'waiting') h += '<p class="notice">' + ic(c.q.kind === 'writeoff' ? 'flag' : 'chat') + '<span>' + (c.q.kind === 'writeoff' ? 'Write-off sent ' : 'Asked ') + c.q.asked + ' · due ' + fdw(c.q.due) + '</span></p>';
+  if(c.answer && c.st === 'refused') h += '<p class="notice">' + ic('chat') + '<span>' + DOC + ' answered ' + c.answer.on + ': “' + esc(c.answer.text) + '” Ready to resend.</span></p>';
   h += mspBlock(c, true);
   h += '<div class="blk"><p class="blk-k">Claim</p>' +
     row('Doctor', 'Dr. Daniel Pannozzo') +
-    row('Fee code', esc(feeTxt(c)) + '<br><span style="color:var(--ink-soft)">Set from age · ' + c.age + '</span>') +
+    row('Fee code', esc(feeTxt(c)) + '<br><span style="color:var(--ink-soft)">Age ' + c.age + '</span>') +
     row('Diagnosis (ICD-9)', esc(dxTxt(c))) +
-    row('Time', c.answer ? esc(c.answer.nw) : c.time ? c.time + ' · from the call' : 'Not on the claim') +
+    row('Time', c.answer ? esc(c.answer.nw) : c.time ? c.time : 'Missing') +
     row('Amount', amt) +
     (c.billedName ? row('Billed name', esc([c.billedName.f, c.billedName.m, c.billedName.l].filter(Boolean).join(' '))) : '') +
     (c.note ? row('Note to MSP', esc(c.note)) : '') + '</div>';
@@ -932,10 +943,10 @@ function openClaim(id){
   }).join('') + '</ol></div>';
   h += '</div><div class="drw-ft"><button type="button" class="btn" onclick="drwClose(\'drw-claim\')">Close</button>';
   if(c.st === 'refused'){
-    if(fixer(c) === 'doctor') h += '<button type="button" class="btn pri" onclick="openAsk(\'' + c.id + '\')">' + ic('chat') + 'Ask the doctor</button>';
-    else h += '<button type="button" class="btn pri" onclick="openFix(\'' + c.id + '\')">' + ic('reopen') + 'Fix and resend</button>';
+    if(fixer(c) === 'doctor') h += '<button type="button" class="btn pri" onclick="openAsk(\'' + c.id + '\')">' + ic('chat') + 'Ask doctor</button>';
+    else h += '<button type="button" class="btn pri" onclick="openFix(\'' + c.id + '\')">' + ic('reopen') + 'Fix & resend</button>';
   }
-  if(c.st === 'adjusted') h += '<button type="button" class="btn pri" onclick="openAsk(\'' + c.id + '\')">' + ic('chat') + 'Ask the doctor</button>';
+  if(c.st === 'adjusted') h += '<button type="button" class="btn pri" onclick="openAsk(\'' + c.id + '\')">' + ic('chat') + 'Ask doctor</button>';
   h += '</div>';
   drwOpen('drw-claim', h);
 }
@@ -952,50 +963,49 @@ var NOTE = {
 function openFix(id){
   var c = C(id); if(!c) return;
   var main = (c.ex || []).filter(function(x){ return WRAP.indexOf(x) < 0; })[0];
-  var h = drwHead('drw-fix', 'Fix and resend', 'Fix and resend with code X', c, daysChip(c));
+  var h = drwHead('drw-fix', 'Refused claim', 'Fix & resend', c, daysChip(c));
   h += '<div class="drw-bd" tabindex="-1">';
   var e = exMain(c);
-  h += '<div class="blk"><p class="blk-k">What MSP said</p><p><b>' + exCode(c) + '</b> · ' + esc(e.p) + '</p></div>';
+  h += '<div class="blk"><p class="blk-k">MSP said</p><p><b>' + exCode(c) + '</b> · ' + esc(e.p) + '</p></div>';
   var focus = '#fx-note';
   if(main === 'AM' || main === 'AQ'){
     var b = c.billedName, m = c.mspName;
-    h += '<div class="fld"><span class="lbl" id="fx-name-l">Patient’s legal name, exactly as MSP has it</span>' +
+    h += '<div class="fld"><span class="lbl" id="fx-name-l">Legal name, as MSP has it</span>' +
       '<div class="grid3" role="group" aria-labelledby="fx-name-l"><div><label for="fx-f">First name</label><input type="text" id="fx-f" value="' + esc(b.f) + '" oninput="fxNameChanged()"></div>' +
       '<div><label for="fx-m">Middle name</label><input type="text" id="fx-m" value="' + esc(b.m) + '" oninput="fxNameChanged()"></div>' +
       '<div><label for="fx-l">Last name</label><input type="text" id="fx-l" value="' + esc(b.l) + '" oninput="fxNameChanged()"></div></div>' +
-      (m ? '<p class="status">' + ic('usercheck') + '<span>MSP name check answered ' + m.on + ': MSP has <b>' + esc([m.f, m.m, m.l].filter(Boolean).join(' ')) + '</b>. ' +
+      (m ? '<p class="status">' + ic('usercheck') + '<span>MSP name check, ' + m.on + ': <b>' + esc([m.f, m.m, m.l].filter(Boolean).join(' ')) + '</b>. ' +
         '<button type="button" class="btn" style="min-height:36px;margin-top:6px" onclick="fxUseMsp(\'' + c.id + '\')">' + ic('usercheck') + 'Use MSP’s name</button></span></p>' : '') +
-      '<p class="err" id="fx-name-err">The name still doesn’t match what MSP has on file.</p></div>';
+      '<p class="err" id="fx-name-err">Doesn’t match MSP’s name.</p></div>';
     focus = '#fx-f';
   } else if(main === 'BJ'){
     var a = FEES[c.fee].a;
     h += '<div class="fld"><span class="lbl">Amount</span>' + row('Billed', '<s>' + money(c.billed) + '</s>') + row('Corrected', '<b>' + money(a) + '</b> · MSP’s fee for ' + c.fee) +
-      '<span class="hint">The price comes from MSP’s fee file. The fee code doesn’t change.</span></div>';
+      '<span class="hint">From MSP’s fee file. Fee code unchanged.</span></div>';
   } else if(main === 'YA'){
-    h += '<p class="notice">' + ic('chartnote') + '<span>The claim itself was right: MSP confirmed the name on 25 Sep. It was resent without a note, so add the note below.</span></p>';
+    h += '<p class="notice">' + ic('chartnote') + '<span>Claim was right (name confirmed 25 Sep). Add the missing note.</span></p>';
   } else if(main === 'CF' && c.answer){
-    h += '<div class="fld"><span class="lbl">Changed by ' + DOC + ' on ' + c.answer.on + '</span>' + row(c.answer.field, '<s>' + esc(c.answer.old) + '</s> → <b>' + esc(c.answer.nw) + '</b>') +
-      '<span class="hint">Coding stays the doctor’s. You only resend.</span></div>';
+    h += '<div class="fld"><span class="lbl">Changed by ' + DOC + ' on ' + c.answer.on + '</span>' + row(c.answer.field, '<s>' + esc(c.answer.old) + '</s> → <b>' + esc(c.answer.nw) + '</b>') + '</div>';
   } else if(main === 'AF'){
-    h += '<div class="fld"><span class="lbl">Coverage</span><span class="hint">Check with MSP whether the patient had coverage on ' + fd(c.date) + ' before you resend.</span>' +
+    h += '<div class="fld"><span class="lbl">Coverage on ' + fd(c.date) + '</span>' +
       '<button type="button" class="btn" id="fx-elig" onclick="fxElig(\'' + c.id + '\')">' + ic('usercheck') + 'Check coverage with MSP</button><div id="fx-elig-out" aria-live="polite"></div></div>';
     focus = '#fx-elig';
   }
-  h += '<div class="fld">' + row('Submission code', '<b>X</b> · resending a refused claim') + '<details><summary>Why code X</summary><p>MSP needs code X and a note on every resend of a refused claim. A code X claim without a note is refused (YY · YA). The visit date stays the same.</p></details></div>';
-  h += '<div class="fld" id="fx-note-f"><label for="fx-note">Note to MSP</label><span class="hint">MSP reads this with the claim. Say what was wrong and what you changed.</span>' +
-    '<textarea id="fx-note" aria-describedby="fx-note-err">' + esc(NOTE[main] || 'Resubmission of a refused claim.') + '</textarea><p class="err" id="fx-note-err">Write a note for MSP. A code X claim without one is refused.</p></div>';
-  h += '<p class="status warn">' + ic('calendar') + '<span>Resend by ' + fdw(deadline(c)) + '. Sent today, it makes the ' + fdw(NEXT_RUN[0]) + ' close-off and is paid ' + fdw(NEXT_RUN[1]) + '.</span></p>';
+  h += '<div class="fld">' + row('Submission code', '<b>X</b> ' + tip('Every resend of a refused claim needs code X and a note. Without a note MSP refuses it (YY · YA). The visit date stays the same.')) + '</div>';
+  h += '<div class="fld" id="fx-note-f"><label for="fx-note">Note to MSP</label>' +
+    '<textarea id="fx-note" aria-describedby="fx-note-err">' + esc(NOTE[main] || 'Resubmission of a refused claim.') + '</textarea><p class="err" id="fx-note-err">Add a note. Code X without one is refused.</p></div>';
+  h += '<p class="status warn">' + ic('calendar') + '<span>Sent today: ' + fdw(NEXT_RUN[0]) + ' close-off, paid ' + fdw(NEXT_RUN[1]) + '.</span></p>';
   h += '</div><div class="drw-ft"><button type="button" class="btn" onclick="drwClose(\'drw-fix\')">Cancel</button>' +
-    '<button type="button" class="btn pri" id="fx-go" onclick="doResend(\'' + c.id + '\')"' + (main === 'AF' ? ' disabled' : '') + '>' + ic('arrowup') + 'Resend with code X</button></div>';
+    '<button type="button" class="btn pri" id="fx-go" onclick="doResend(\'' + c.id + '\')"' + (main === 'AF' ? ' disabled' : '') + '>' + ic('arrowup') + 'Resend (code X)</button></div>';
   drwOpen('drw-fix', h, focus);
 }
 function fxNameChanged(){ var f = document.getElementById('fx-name-err'); if(f) f.parentNode.classList.remove('bad'); }
 function fxUseMsp(id){ var m = C(id).mspName; document.getElementById('fx-f').value = m.f; document.getElementById('fx-m').value = m.m; document.getElementById('fx-l').value = m.l; fxNameChanged(); document.getElementById('fx-note').focus(); }
 function fxElig(id){
   var c = C(id), out = document.getElementById('fx-elig-out');
-  out.innerHTML = '<p class="status warn">' + ic('alert') + '<span>MSP: no coverage on ' + fd(c.date) + '. Coverage is active up to ' + fd('2026-09-06') + '. Resending won’t be paid. ' +
-    'Close it as not paid and bill the patient privately, or resend once the patient has sorted coverage with MSP.</span></p>' +
-    '<button type="button" class="btn" style="margin-top:8px" onclick="drwClose(\'drw-fix\');openClose(\'' + id + '\', \'coverage\')">' + ic('flag') + 'Mark closed — not paid instead</button>';
+  out.innerHTML = '<p class="status warn">' + ic('alert') + '<span>MSP: no coverage on ' + fd(c.date) + ' (active to ' + fd('2026-09-06') + '). A resend won’t pay. ' +
+    'Close and bill privately, or resend once coverage is fixed.</span></p>' +
+    '<button type="button" class="btn" style="margin-top:8px" onclick="drwClose(\'drw-fix\');openClose(\'' + id + '\', \'coverage\')">' + ic('flag') + 'Close unpaid</button>';
   paint(out);
   if(!c.eligChecked){ c.eligChecked = true; c.hist.push(H('elig', stamp(), ME + ' (billing agent)', 'Coverage checked with MSP: no coverage on ' + fd(c.date))); }
   document.getElementById('fx-elig').disabled = true;
@@ -1023,7 +1033,7 @@ function doResend(id){
   c.note = note.value.trim(); c.resentOn = iso(TODAY); c.st = 'resent';
   c.hist.push(H('resent', t, who, 'Resent with code X', c.note));
   drwCloseAll(); renderAll();
-  toast('Resent to MSP with code X. MSP’s answer is on the ' + fdw(NEXT_RUN[1]) + ' statement.');
+  toast('Resent · answer on the ' + fdw(NEXT_RUN[1]) + ' statement');
   focusQueue();
 }
 
@@ -1039,13 +1049,13 @@ function openAsk(id){
   var c = C(id); if(!c) return;
   var main = (c.ex || []).filter(function(x){ return WRAP.indexOf(x) < 0; })[0];
   var due = [plus(TODAY, 2), plus(TODAY, 3), plus(TODAY, 7)];   /* Thu 8, Fri 9, Tue 13 Oct (Mon 12 Oct is Thanksgiving) */
-  var h = drwHead('drw-ask', 'Ask the doctor', 'Ask ' + DOC, c, ['refused','waiting'].indexOf(c.st) > -1 ? daysChip(c) : '');
+  var h = drwHead('drw-ask', 'MSP claim', 'Ask ' + DOC, c, ['refused','waiting'].indexOf(c.st) > -1 ? daysChip(c) : '');
   h += '<div class="drw-bd" tabindex="-1">' + mspBlock(c, false) +
-    '<p class="notice">' + ic('user') + '<span>Coding is the doctor’s decision. You can’t change the fee code, diagnosis or times. ' + DOC + ' answers on the claim, and it comes back to you to resend.</span></p>' +
-    '<div class="fld" id="ak-q-f"><label for="ak-q">Your question</label><textarea id="ak-q" aria-describedby="ak-q-err">' + esc(ASK[main] || 'Can you check this claim? MSP refused it: ' + exCode(c) + '.') + '</textarea>' +
-    '<p class="err" id="ak-q-err">Write the question for the doctor.</p></div>' +
+    '<p class="notice">' + ic('user') + '<span>Coding is the doctor’s call. His answer sends the claim back to you to resend.</span></p>' +
+    '<div class="fld" id="ak-q-f"><label for="ak-q">Question</label><textarea id="ak-q" aria-describedby="ak-q-err">' + esc(ASK[main] || 'Can you check this claim? MSP refused it: ' + exCode(c) + '.') + '</textarea>' +
+    '<p class="err" id="ak-q-err">Write a question.</p></div>' +
     '<div class="fld"><label for="ak-due">Answer by</label><select id="ak-due">' + due.map(function(d, i){ return '<option value="' + iso(d) + '"' + (i === 0 ? ' selected' : '') + '>' + fdw(d) + (i === 0 ? ' · 2 business days' : '') + '</option>'; }).join('') + '</select>' +
-    (c.refusedOn ? '<span class="hint" style="margin-top:6px">The resend window ends ' + fdw(deadline(c)) + '.</span>' : '') + '</div>' +
+    (c.refusedOn ? '<span class="hint" style="margin-top:6px">Resend window ends ' + fdw(deadline(c)) + '</span>' : '') + '</div>' +
     '</div><div class="drw-ft"><button type="button" class="btn" onclick="drwClose(\'drw-ask\')">Cancel</button><button type="button" class="btn pri" onclick="doAsk(\'' + c.id + '\')">' + ic('chat') + 'Send question</button></div>';
   drwOpen('drw-ask', h, '#ak-q');
 }
@@ -1057,28 +1067,28 @@ function doAsk(id){
   c.prevSt = c.st; c.st = 'waiting';
   c.hist.push(H('question', stamp(), ME + ' (billing agent)', 'Question to ' + DOC, c.q.text));
   drwCloseAll(); renderAll();
-  toast('Question sent to ' + DOC + '. Answer by ' + fdw(due) + '.');
+  toast('Sent to ' + DOC + ' · due ' + fdw(due));
   focusQueue();
 }
 
 /* ---- Mark closed — not paid (a write-off: the doctor approves) ---- */
 var REASONS = [
-  ['dup','MSP already paid this visit (duplicate)'],
+  ['dup','Duplicate (already paid)'],
   ['late','Too late to resend'],
-  ['coverage','The patient had no MSP coverage on the visit date'],
-  ['doctor','The doctor decided not to resend'],
+  ['coverage','No MSP coverage on visit date'],
+  ['doctor','Doctor decided not to resend'],
   ['other','Other']
 ];
 function openClose(id, pre){
   var c = C(id); if(!c) return;
-  var h = drwHead('drw-close', 'Mark closed — not paid', 'Close without payment', c, ['refused','waiting'].indexOf(c.st) > -1 ? daysChip(c) : '');
+  var h = drwHead('drw-close', 'Write-off', 'Close unpaid', c, ['refused','waiting'].indexOf(c.st) > -1 ? daysChip(c) : '');
   h += '<div class="drw-bd" tabindex="-1">' +
-    '<p class="notice warn">' + ic('flag') + '<span><b>Write-offs need the doctor’s approval.</b> This goes to ' + DOC + ' first. The claim closes, and ' + money(c.billed) + ' is written off, only when he approves.</span></p>' +
+    '<p class="notice warn">' + ic('flag') + '<span><b>Needs ' + DOC + '’s approval.</b> The claim closes, and ' + money(c.billed) + ' is written off, only when he approves.</span></p>' +
     mspBlock(c, false) +
-    '<fieldset class="fld" id="cl-r-f" style="border:0;padding:0;margin:0 0 14px"><legend class="lbl" style="font-size:14.5px;font-weight:600;margin:0 0 6px;padding:0">Why it won’t be paid</legend><div class="radios">' +
+    '<fieldset class="fld" id="cl-r-f" style="border:0;padding:0;margin:0 0 14px"><legend class="lbl" style="font-size:14.5px;font-weight:600;margin:0 0 6px;padding:0">Reason</legend><div class="radios">' +
     REASONS.map(function(r){ return '<label><input type="radio" name="cl-r" value="' + r[0] + '"' + (pre === r[0] ? ' checked' : '') + ' onchange="document.getElementById(\'cl-r-f\').classList.remove(\'bad\')">' + r[1] + '</label>'; }).join('') +
     '</div><p class="err">Pick a reason.</p></fieldset>' +
-    '<div class="fld" id="cl-n-f"><label for="cl-n">Note for the doctor</label><span class="hint">Optional, unless you picked Other.</span><textarea id="cl-n" aria-describedby="cl-n-err">' + (pre === 'coverage' ? 'MSP says no coverage on ' + fd(c.date) + '. Suggest billing the patient privately.' : '') + '</textarea><p class="err" id="cl-n-err">Say why, for the doctor.</p></div>' +
+    '<div class="fld" id="cl-n-f"><label for="cl-n">Note for the doctor (required for Other)</label><textarea id="cl-n" aria-describedby="cl-n-err">' + (pre === 'coverage' ? 'MSP says no coverage on ' + fd(c.date) + '. Suggest billing the patient privately.' : '') + '</textarea><p class="err" id="cl-n-err">Say why, for the doctor.</p></div>' +
     '</div><div class="drw-ft"><button type="button" class="btn" onclick="drwClose(\'drw-close\')">Cancel</button><button type="button" class="btn pri" onclick="doClose(\'' + c.id + '\')">' + ic('flag') + 'Send for approval</button></div>';
   drwOpen('drw-close', h, 'input[name=cl-r]');
 }
@@ -1091,7 +1101,7 @@ function doClose(id){
   c.prevSt = c.st; c.st = 'waiting';
   c.hist.push(H('writeoff', stamp(), ME + ' (billing agent)', 'Write-off sent for approval', why));
   drwCloseAll(); renderAll();
-  toast('Sent to ' + DOC + ' for approval. The claim closes when he approves.');
+  toast('Sent to ' + DOC + ' for approval');
   focusQueue();
 }
 
@@ -1126,9 +1136,11 @@ function renderAll(){ renderQueue(); renderRemit(); }
 
 document.getElementById('tb-cut').textContent = 'Next close-off ' + fdw(NEXT_RUN[0]) + ', 7 PM';
 document.getElementById('tb-pay').textContent = 'Paid ' + fdw(NEXT_RUN[1]);
+document.getElementById('h-queue-tip').outerHTML = tip('Refused and held MSP claims, and your questions to the doctor. You fix and resend; ' + DOC + ' decides the coding and approves write-offs.');
 paint();
 renderAll();
 if(location.hash === '#remit') go('remit');
 </script>
+<div class="build-stamp">build 2026-10-06 23:18</div>
 </body>
 </html>
