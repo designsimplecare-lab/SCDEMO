@@ -5511,7 +5511,7 @@
      the left-panel rules) */
   body.cw-on [id^="screen-"]:not(#screen-patientchart){padding-bottom:104px;}
   /* the call's live region is for screen readers only (it showed as text at the bottom left outside the chart) */
-  #cw-live{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  #cw-live{position:absolute!important;top:0;left:0;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
   /* narrower windows: drop the number, keep the name, timer and controls, so it never reaches the chat button */
   @media (max-width:1280px){ #callw .cw-num{display:none;} #callw .cw-l1 b{max-width:180px;display:inline-block;vertical-align:bottom;overflow:hidden;text-overflow:ellipsis;} }
   #callw .cw-who{display:flex;align-items:center;gap:10px;min-width:0;height:48px;padding:0 10px 0 12px;border:0;border-radius:999px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;}
@@ -5582,6 +5582,32 @@
   .t23-namechk{display:grid;grid-template-columns:22px 1fr;gap:4px 10px;padding:10px 0;border-top:1px solid var(--wash);}
   .t23-namechk > .ic,.t23-namechk > .ic svg{width:20px;height:20px;color:var(--tag-warn-ic);}
   #bill-overlay .bl-block > .t23-namechk{border-top:0;padding-top:0;}
+  /* ===== Chart left panel, second pass (Ani, 6 Oct): two independent scroll areas, like a mail app (v2Fit). =====
+     1101 px and wider: the grid fills the window below the crumb line; the left column and the main column each scroll
+     on their own; the page doesn't. The left box has 14 px of inner room on every side (negative margins keep the cards
+     where they were), so no shadow or corner is cut; soft fades top and bottom when there is more to see; a thin
+     scrollbar that shows on hover. The main column keeps its sticky tab bar (now stuck to the column's top, on a solid
+     backdrop so nothing shows through or around its corners) and its 104 px of room at the bottom for the call widget
+     and the MOA chat. Under 1100 px: stacked, the page scrolls (unchanged). */
+  @media (min-width:1101px){
+    #screen-patientchart #pcv-c.cs-v2 .v2{align-items:start;}
+    #screen-patientchart #pcv-c.cs-v2 .v2-side{position:relative;top:auto;box-sizing:border-box;grid-template-columns:minmax(0,1fr);height:calc(var(--v2-h, 640px) + 14px);
+      margin:-14px -14px 0 -14px;padding:14px 14px 24px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;
+      scrollbar-width:thin;scrollbar-color:transparent transparent;scrollbar-gutter:auto;}
+    #screen-patientchart #pcv-c.cs-v2 .v2-side:hover,#screen-patientchart #pcv-c.cs-v2 .v2-side:focus-within{scrollbar-color:rgba(23,24,28,.22) transparent;}
+    #screen-patientchart #pcv-c.cs-v2 .v2-side.v2-ft{-webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 6px,#000 34px,#000 100%);mask-image:linear-gradient(to bottom,transparent 0,transparent 6px,#000 34px,#000 100%);}
+    #screen-patientchart #pcv-c.cs-v2 .v2-side.v2-fb{-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 32px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 32px),transparent 100%);}
+    #screen-patientchart #pcv-c.cs-v2 .v2-side.v2-ft.v2-fb{-webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 6px,#000 34px,#000 calc(100% - 32px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,transparent 6px,#000 34px,#000 calc(100% - 32px),transparent 100%);}
+    body.cw-on #screen-patientchart #pcv-c.cs-v2 .v2-side{padding-bottom:96px;}
+    #screen-patientchart #pcv-c.cs-v2 .v2-main{box-sizing:border-box;height:calc(var(--v2-h, 640px) + 4px);margin:-4px -14px 0 -2px;padding:4px 14px 104px 2px;
+      overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scroll-padding-top:84px;
+      scrollbar-width:thin;scrollbar-color:transparent transparent;align-content:start;}
+    #screen-patientchart #pcv-c.cs-v2 .v2-main:hover,#screen-patientchart #pcv-c.cs-v2 .v2-main:focus-within{scrollbar-color:rgba(23,24,28,.22) transparent;}
+    #screen-patientchart #pcv-c.cs-v2 .v2-top{top:0;}
+    #screen-patientchart #pcv-c.cs-v2 .v2-top::before{content:"";position:absolute;z-index:-1;inset:-4px -14px 0 -2px;pointer-events:none;
+      background:linear-gradient(160deg,#DCE0E4 0%,#FFFAF3 100%);background-attachment:fixed;}
+    #screen-patientchart #pcv-c.cs-v2 .v2-top::after{content:"";position:absolute;z-index:-1;inset:0;border-radius:16px;background:var(--panel);}
+  }
 </style>
 </head>
 <body>
@@ -14954,26 +14980,69 @@ function v2SumEdges(){
   rows.forEach(function(r){ r.classList.remove('v2-last'); if(!r.hidden) last = r; });
   if(last) last.classList.add('v2-last');
 }
-/* Ani, 6 Oct: the left column scrolled on its own and clipped cards. Now it moves with the page: pinned under the top bar
-   while it fits; when it is taller than the window it scrolls with the page until its end (or start) shows, then holds.
-   Opening a row never moves the row you clicked. Under 1100 px it stacks above the work and simply scrolls. */
-var V2S = {y:0, rt:null};
+/* Ani, 6 Oct (second pass): "when the mouse is over the left column, ONLY the left column scrolls; the main area must not
+   move. And scrolling the main area must not move the left column. Two independent scroll areas, like a mail app."
+   At 1101 px and wider the v2 grid fills the window below the crumb line (--v2-h, measured here) and the page itself
+   doesn't scroll: the left column and the main column are each their own scroll box (overscroll contained, and a wheel
+   that can't scroll the box under the mouse does nothing, so it never moves the other one). The tab bar sticks to the
+   top of the main column. Under 1100 px the columns stack and the page scrolls as before. */
+function v2Wide(){ return v2On() && csOnChart() && !(window.matchMedia && window.matchMedia('(max-width:1100px)').matches); }
+function v2Fade(){
+  var sd = v2El('v2-side'); if(!sd) return;
+  var on = v2Wide();
+  sd.classList.toggle('v2-ft', on && sd.scrollTop > 2);
+  sd.classList.toggle('v2-fb', on && sd.scrollTop + sd.clientHeight < sd.scrollHeight - 2);
+}
+function v2Fit(){
+  var v = v2El('v2'); if(!v) return;
+  if(!v2Wide()){ v.style.removeProperty('--v2-h'); v2Fade(); return; }
+  if(window.scrollY) window.scrollTo(0, 0);
+  var h = Math.floor(window.innerHeight - v.getBoundingClientRect().top);
+  v.style.setProperty('--v2-h', Math.max(320, h) + 'px');
+  for(var i = 0; i < 3; i++){   /* the page must not scroll at all: take off whatever still overflows */
+    var over = Math.ceil(document.documentElement.scrollHeight - window.innerHeight); if(over <= 0) break;
+    h -= over; v.style.setProperty('--v2-h', Math.max(320, h) + 'px');
+  }
+  v2Fade();
+}
 function v2Stick(reset){
-  var sd = v2El('v2-side'); if(!sd || !v2On() || !csOnChart()) return;
-  if(window.matchMedia && window.matchMedia('(max-width:1100px)').matches){ sd.style.top = ''; V2S.rt = null; return; }
-  var T = Math.round(csTopbarH() + 4), y = window.scrollY || 0;
-  var min = Math.min(T, window.innerHeight - sd.offsetHeight - 16);
-  if(reset || V2S.rt === null){ V2S.rt = sd.getBoundingClientRect().top; V2S.y = y; }
-  var want = Math.max(min, Math.min(T, V2S.rt - (y - V2S.y)));
-  V2S.y = y;
-  sd.style.top = Math.round(want) + 'px';
-  V2S.rt = sd.getBoundingClientRect().top;
+  var sd = v2El('v2-side'), mn = v2El('v2-main'); if(!sd || !v2On() || !csOnChart()) return;
+  sd.style.top = '';
+  if(reset){ sd.scrollTop = 0; if(mn) mn.scrollTop = 0; }
+  v2Fit();
 }
 (function(){
-  var raf = 0, go = function(){ if(raf) return; raf = requestAnimationFrame(function(){ raf = 0; v2Stick(); }); };
-  window.addEventListener('scroll', go, {passive:true});
+  var raf = 0, go = function(){ if(raf) return; raf = requestAnimationFrame(function(){ raf = 0; v2Fit(); }); };
   window.addEventListener('resize', go);
-  if(window.ResizeObserver){ var sd = document.getElementById('v2-side'); if(sd) new ResizeObserver(go).observe(sd); }
+  /* the page never scrolls under the two columns at this width */
+  window.addEventListener('scroll', function(){ if(window.scrollY && v2Wide()) go(); }, {passive:true});
+  var sd = document.getElementById('v2-side'), mn = document.getElementById('v2-main'), v = document.getElementById('v2');
+  if(sd) sd.addEventListener('scroll', v2Fade, {passive:true});
+  if(window.ResizeObserver){
+    var ro = new ResizeObserver(go);
+    if(v) ro.observe(v);
+    if(sd) Array.prototype.forEach.call(sd.children, function(k){ ro.observe(k); });   /* an opened row changes the fades */
+  }
+  /* a wheel over one column never scrolls the other or the page: if neither the box under the mouse nor a scrollable
+     element inside it can move that way, the wheel does nothing */
+  var canMove = function(el, dy, stop){
+    for(; el && el !== stop.parentNode; el = el.parentNode){
+      if(el.nodeType !== 1) continue;
+      var cs = getComputedStyle(el), oy = cs.overflowY;
+      if((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight + 1){
+        if(dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;
+      }
+      if(el === stop) break;
+    }
+    return false;
+  };
+  [sd, mn].forEach(function(box){
+    if(!box) return;
+    box.addEventListener('wheel', function(e){
+      if(!v2Wide() || e.ctrlKey || !e.deltaY) return;
+      if(!canMove(e.target, e.deltaY, box)) e.preventDefault();
+    }, {passive:false});
+  });
 })();
 
 /* one fact per line: "a · b · c" becomes a value and quiet lines (presentation only; the rows are the chart's own) */
@@ -16020,6 +16089,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 01:30</div>
+  <div class="build-stamp">v2 · build 2026-10-07 01:45</div>
 </body>
 </html>
