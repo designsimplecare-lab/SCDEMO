@@ -5572,6 +5572,10 @@
   /* Dev answers, 6 Oct: the reason under a "Needs info" claim */
   .t23-sub.t23-why2,#bill-overlay .t23-why2{color:var(--ink);}
   #bill-overlay p.t23-why2{margin:-6px 0 12px;font-size:14.5px;}
+  /* Dev answers, 6 Oct: the MSP name check on a claim (same shape as the billing agent's question) */
+  .t23-namechk{display:grid;grid-template-columns:22px 1fr;gap:4px 10px;padding:10px 0;border-top:1px solid var(--wash);}
+  .t23-namechk > .ic,.t23-namechk > .ic svg{width:20px;height:20px;color:var(--tag-warn-ic);}
+  #bill-overlay .bl-block > .t23-namechk{border-top:0;padding-top:0;}
 </style>
 </head>
 <body>
@@ -13747,7 +13751,7 @@ var CLAIMS = [
   /* Needs submission: MSP claims not submitted yet (demo dates; days left count from the demo "today", 3 Oct) */
   {id:'c18', who:'Frank D.', date:'2026-07-09', win:'2-5', fee:'V', dx:'401.9', mins:8, st:'submit'},
   {id:'c21', who:'Owen Brady', date:'2026-07-12', win:'8-10', fee:'V', dx:'724.2', mins:13, st:'submit'},
-  {id:'c22', who:'Gloria McDonald', date:'2026-09-24', win:'8-10', fee:'V', dx:'401.9', mins:11, st:'submit'},
+  {id:'c22', who:'Gloria McDonald', legal:'Gloria Anne McDonald', date:'2026-09-24', win:'8-10', fee:'V', dx:'401.9', mins:11, st:'submit', nameChk:{st:'pending'}},   /* Dev answers, 6 Oct (answer 09): a 3-word name MSP hasn't confirmed yet */
   {id:'c3', who:'Grace Lin', date:'2026-10-01', win:'10-2', fee:'V', dx:'V72.6', mins:8, st:'submit'},
   {id:'c4', who:'Owen Brady', date:'2026-10-01', win:'8-10', fee:'V', dx:'724.2', mins:13, st:'submit'},
   {id:'c1', who:'Behdis Maleki', date:'2026-10-02', win:'10-2', fee:'V', dx:'V67.9', mins:24, st:'submit'},
@@ -13974,11 +13978,29 @@ function t23Row(c, opts){
 }
 
 /* ----- Needs submission: one merged list, one "Submit claim" per claim (no batch, no checkboxes) ----- */
+/* Dev answers, 6 Oct (answer 09): the Teleplan name check. MSP gives a name as one string with no mark where the surname
+   ends, so for a 3+ word name SimpleCare asks MSP (a free eligibility question) which reading is right before billing;
+   MSP answers the next business day and the claim waits (it would be refused AM otherwise). The automatic check runs
+   every weekday morning; "Check with MSP now" sends it at once. */
+function t23NameChkHtml(c){
+  var n = c.nameChk; if(!n || n.st === 'ok') return '';
+  var sent = n.st === 'sent';
+  return '<div class="t23-namechk">' + t23Ic(sent ? 'clock' : 'alert') + '<div><p class="t23-kind">' + (sent ? 'Sent to MSP · answer next business day' : 'Patient name not yet confirmed by MSP') + '</p>' +
+    '<p class="t23-why">' + (sent ? 'Asked ' + n.at + ' whether “' + t23E(c.legal || c.who) + '” is the name MSP has on file. The claim can be sent once MSP answers.'
+      : 'MSP must confirm how “' + t23E(c.legal || c.who) + '” splits into first and last name before this claim can go. SimpleCare asks every weekday morning.') + '</p>' +
+    (sent ? '' : '<div class="t23-acts"><button type="button" class="btn" onclick="t23NameCheck(\'' + c.id + '\')">' + t23Ic('arrowup') + 'Check with MSP now</button></div>') + '</div></div>';
+}
+function t23NameCheck(id){
+  var c = t23C(id); if(!c || !c.nameChk || c.nameChk.st !== 'pending') return;
+  c.nameChk.st = 'sent'; c.nameChk.at = t23Stamp();
+  t23Log(c, 'Dr. Pannozzo', 'Name check sent to MSP: is “' + (c.legal || c.who) + '” the registered name? Answer next business day');
+  t23Refresh(); toast('Sent to MSP · answer next business day');
+}
 function t23SubRow(c){
-  var q = c.flags.map(function(f, i){ return f.k === 'q' ? t23FlagHtml(c, f, i) : ''; }).join('');
+  var q = t23NameChkHtml(c) + c.flags.map(function(f, i){ return f.k === 'q' ? t23FlagHtml(c, f, i) : ''; }).join('');
   return '<div class="t23-card t23-subcard" id="t23-c-' + c.id + '"><div class="t23-srow">' +
     '<div class="cl-who"><b>' + t23E(c.who) + '</b><span>' + t23F(c.date) + ' · ' + winLabel(c.win) + '</span>' +
-      (c.sub ? '<span class="t23-sub">' + t23E(c.sub) + '</span>' : '') + (t23Blocker(c) ? '<span class="t23-sub t23-why2">' + t23E(t23Blocker(c).why) + '</span>' : '') + '</div>' +
+      (c.sub ? '<span class="t23-sub">' + t23E(c.sub) + '</span>' : '') + (t23Blocker(c) && !c.nameChk ? '<span class="t23-sub t23-why2">' + t23E(t23Blocker(c).why) + '</span>' : '') + '</div>' +
     '<div class="cl-fee">' + t23FeeHtml(c) + (c.payer === 'recip' ? '<span class="t23-payer">Reciprocal · ' + c.prov + '</span>' : '') + '</div>' +
     t23AmtHtml(c) +
     '<div class="t23-dcol">' + (t23Blocker(c) ? t23Pill(c) : '') + t23DaysChip(c) + '</div>' +
@@ -14176,6 +14198,7 @@ function t23SubmitOne(id){
   if(t23OpenQ(c)){ toast('Answer the question first.'); return; }
   if(!c.dx){ toast('Add the diagnosis to submit this claim.'); t23OpenPick({claim:id, focus:'dx'}); return; }
   if(t23CounselBlock(c)){ toast(t23CounselBlock(c)); t23OpenPick({claim:id, focus:'time'}); return; }   /* COUNSELLING_TIMES_MISSING */
+  if(c.nameChk && c.nameChk.st !== 'ok'){ toast('Patient name not yet confirmed by MSP · the claim can be sent once MSP answers'); return; }
   closeBilling(); t23Signoff([id], 'one');
 }
 function t23SignOne(id){ t23SubmitOne(id); }
@@ -14203,9 +14226,10 @@ function t23Open(id){
       (ch && focus ? '<button type="button" class="btn xs" onclick="t23OpenPick({claim:\'' + id + '\',focus:\'' + focus + '\'})">' + t23Ic('edit') + 'Change</button>' : '') + '</div>';
   };
   var h = '<p class="bl-eyebrow" id="bl-eyebrow">' + t23Payer(c) + '</p>' +
-    '<p class="defer-ttl" id="bl-title">' + t23Label(c).label + '</p>' + (t23Blocker(c) ? '<p class="bl-v t23-why2">' + t23E(t23Blocker(c).why) + '</p>' : '') +
+    '<p class="defer-ttl" id="bl-title">' + t23Label(c).label + '</p>' + (t23Blocker(c) && !(c.nameChk && c.nameChk.st !== 'ok') ? '<p class="bl-v t23-why2">' + t23E(t23Blocker(c).why) + '</p>' : '') +
     '<p class="bl-who" id="bl-who"><span><b>' + t23E(c.who) + '</b> · ' + t23F(c.date) + ' · ' + winLabel(c.win) + '</span>' + t23DaysChip(c) + '</p>';
   if(c.signed) h += '<p class="bl-v" style="margin:-8px 0 12px">' + soStamp(c.signed) + '</p>';
+  if(c.nameChk && c.nameChk.st !== 'ok') h += '<div class="bl-block">' + t23NameChkHtml(c) + '</div>';
   if(c.payer !== 'private' && c.fee){
     var b = t23Basis(c);
     h += '<div class="bl-block"><p class="bl-k">Your coding</p>' +
@@ -15940,6 +15964,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 01:00</div>
+  <div class="build-stamp">v2 · build 2026-10-07 01:10</div>
 </body>
 </html>
