@@ -834,6 +834,39 @@
   html body .ptlab-dot{width:9px;height:9px;flex-shrink:0;}
   /* the top bar is sticky, as its watermark comment intends (visual bug: it was a tinted band that scrolled away) */
   html body .topbar{position:sticky;top:0;z-index:40;margin:-28px -34px 10px;padding:12px 34px;}
+
+  /* ===== Side drawers (Ani, 6 Oct 2026: "side drawers instead of centred popups"), same pattern as the physician portal.
+     Visit summary (#pp-case) and Give feedback (#pp-fb). Full height from the right; header and footer pinned, the body scrolls;
+     Escape or the backdrop closes; focus moves in, is trapped, and goes back to the button that opened it.
+     "Who is this visit for?" stays a small centred dialog (a quick choice, not content). ===== */
+  html body .pp-ov{display:none;position:fixed;inset:0;z-index:200;background:rgba(23,24,28,.42);align-items:stretch;justify-content:flex-end;}
+  html body .pp-ov.show{display:flex;animation:ppFade 240ms ease-out;}
+  html body .pp-drw{box-sizing:border-box;width:min(520px,100vw);height:100%;background:var(--panel);display:flex;flex-direction:column;overflow:hidden;
+    border-radius:16px 0 0 16px;box-shadow:-18px 0 44px rgba(23,24,28,.16);animation:ppIn 240ms ease-out;}
+  @keyframes ppIn{from{transform:translateX(100%);}to{transform:translateX(0);}}
+  @keyframes ppFade{from{background-color:rgba(23,24,28,0);}}
+  @media (prefers-reduced-motion: reduce){ html body .pp-ov.show, html body .pp-drw{animation:none;} }
+  @media (max-width:639px){ html body .pp-drw{width:100vw;border-radius:0;} }
+  html body .pp-hd{flex:none;position:relative;padding:20px 72px 16px 24px;border-bottom:1px solid var(--line);}
+  html body .pp-eyebrow{margin:0 0 4px;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  html body .pp-hd h2{margin:0 0 6px;font-size:20px;font-weight:800;line-height:1.3;color:var(--ink);}
+  html body .pp-meta{margin:0;font-size:15px;color:var(--ink-soft);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  html body .pp-x{position:absolute;top:14px;right:16px;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;
+    border:0;border-radius:10px;background:none;color:var(--ink-soft);cursor:pointer;padding:0;}
+  html body .pp-x:hover{background:var(--wash);color:var(--ink);}
+  html body .pp-x .ic{width:22px;height:22px;}
+  html body .pp-bd{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:18px 24px 24px;}
+  html body .pp-bd:focus-visible,html body .pp-x:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+  html body .pp-ft{flex:none;display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:14px 24px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--panel);}
+  html body .pp-bd .clin-section:first-child{padding-top:0;}
+  html body #pp-fb textarea{width:100%;min-height:140px;border:1px solid var(--line-strong);border-radius:10px;padding:10px 12px;font-family:inherit;
+    margin:4px 0 10px;resize:vertical;background:var(--paper);box-sizing:border-box;}
+  html body #pp-fb .fp-type-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+  /* the small "Who is this visit for?" dialog: real buttons, keyboard and Escape */
+  html body .modal-card{width:min(360px,calc(100vw - 32px));}
+  html body button.modal-option{width:100%;border:0;background:none;font:inherit;color:inherit;text-align:left;}
+  html body button.modal-option:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+  html body #toast{z-index:400;}
 </style>
 </head>
 <body class="mode-v1">
@@ -1285,10 +1318,7 @@
       <p class="clin-disclaimer">This timeline shows clinical events as they happen, ordered, medications, labs, imaging, referrals, and documents. It does not include clinical notes or physician documentation, those stay in your provider's medical record.</p>
     </div>
 
-    <div class="screen" id="screen-case">
-      <button class="btn ghost" onclick="showScreen('appointments')">&larr; Back to appointments</button>
-      <div id="case-content" style="margin-top:14px;"></div>
-    </div>
+    <!-- the visit summary opens as a side drawer (#pp-case), Ani 6 Oct 2026 -->
 
     <div class="screen" id="screen-family">
       <h1>Family members</h1>
@@ -1640,29 +1670,38 @@
 </div>
 
 <div class="modal-overlay" id="book-modal-overlay" onclick="if(event.target===this) closeBookModal()">
-  <div class="modal-card">
-    <p class="modal-title">Who is this visit for?</p>
-    <div class="modal-option" onclick="selectBookFor('Ani')"><span class="avatar">A</span><div><b>Ani</b><div class="doc-sub">You</div></div></div>
-    <div class="modal-option" onclick="selectBookFor('Karen Walker')"><span class="avatar">K</span><div><b>Karen Walker</b><div class="doc-sub">Mother</div></div></div>
-    <div class="modal-option" onclick="selectBookFor('Leo Walker')"><span class="avatar">L</span><div><b>Leo Walker</b><div class="doc-sub">Son, minor</div></div></div>
-    <div class="modal-option add-new" onclick="closeBookModal(); showScreen('family'); toggleFamForm();"><span class="avatar" style="background:var(--wash);color:var(--ink-soft);">+</span><div><b>Someone new</b><div class="doc-sub">Add a family member first</div></div></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="book-modal-ttl">
+    <p class="modal-title" id="book-modal-ttl">Who is this visit for?</p>
+    <button type="button" class="modal-option" onclick="selectBookFor('Ani')"><span class="avatar">A</span><div><b>Ani</b><div class="doc-sub">You</div></div></button>
+    <button type="button" class="modal-option" onclick="selectBookFor('Karen Walker')"><span class="avatar">K</span><div><b>Karen Walker</b><div class="doc-sub">Mother</div></div></button>
+    <button type="button" class="modal-option" onclick="selectBookFor('Leo Walker')"><span class="avatar">L</span><div><b>Leo Walker</b><div class="doc-sub">Son, minor</div></div></button>
+    <button type="button" class="modal-option add-new" onclick="closeBookModal(); showScreen('family'); toggleFamForm();"><span class="avatar" style="background:var(--wash);color:var(--ink-soft);">+</span><div><b>Someone new</b><div class="doc-sub">Add a family member first</div></div></button>
     <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="closeBookModal()">Cancel</button>
   </div>
 </div>
 
-<div class="feedback-panel" id="feedback-panel">
-  <div class="feedback-head">
-    <b>What's not working?</b>
-    <button class="fp-close" onclick="toggleFeedback()">&times;</button>
+<div class="pp-ov" id="pp-fb">
+  <div class="pp-drw" role="dialog" aria-modal="true" aria-labelledby="pp-fb-ttl">
+    <div class="pp-hd"><p class="pp-eyebrow">Give feedback</p><h2 id="pp-fb-ttl">What's not working?</h2><button type="button" class="pp-x" aria-label="Close" data-pp-close><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 5L5 19m14 0L5 5"/></svg></button></div>
+    <div class="pp-bd" tabindex="-1">
+      <div class="fp-type-row">
+        <button type="button" class="chip fp-type active">Bug</button>
+        <button type="button" class="chip fp-type">Idea</button>
+        <button type="button" class="chip fp-type">Question</button>
+      </div>
+      <textarea aria-label="Your feedback" placeholder="Tell us what happened, we read every one of these"></textarea>
+      <p class="fp-note">This goes straight to the SimpleCare team, not to your doctor's office.</p>
+    </div>
+    <div class="pp-ft"><button type="button" class="btn ghost" data-pp-close>Cancel</button><button type="button" class="btn primary" onclick="submitFeedback()">Send feedback</button></div>
   </div>
-  <div class="fp-type-row">
-    <button class="chip fp-type active">Bug</button>
-    <button class="chip fp-type">Idea</button>
-    <button class="chip fp-type">Question</button>
+</div>
+
+<div class="pp-ov" id="pp-case">
+  <div class="pp-drw" role="dialog" aria-modal="true" aria-labelledby="pp-case-ttl">
+    <div class="pp-hd"><p class="pp-eyebrow">Visit summary</p><h2 id="pp-case-ttl"></h2><p class="pp-meta" id="pp-case-meta"></p><button type="button" class="pp-x" aria-label="Close" data-pp-close><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 5L5 19m14 0L5 5"/></svg></button></div>
+    <div class="pp-bd" id="pp-case-bd" tabindex="-1"></div>
+    <div class="pp-ft"><button type="button" class="btn ghost" data-pp-close>Close</button></div>
   </div>
-  <textarea placeholder="Tell us what happened, we read every one of these"></textarea>
-  <button class="btn primary" style="width:100%;" onclick="submitFeedback()">Send feedback</button>
-  <p class="fp-note">This goes straight to the SimpleCare team, not to your doctor's office.</p>
 </div>
 
 <script>
@@ -1716,13 +1755,12 @@ function openCase(id){
   } else {
     body = '<p style="font-size:14px;color:var(--ink-soft);margin:0;">' + c.note + '</p>';
   }
-  document.getElementById('case-content').innerHTML =
-    '<div class="appt-top" style="margin-bottom:14px;"><div><p class="appt-doc">' + c.doc + '</p><p class="appt-date">' + c.date + '</p></div>' +
-    '<span class="pill" style="background:' + c.statusBg + ';color:' + c.statusColor + ';">' + c.status + '</span></div>' +
-    '<div class="card">' + body + '</div>';
-  showScreen('appointments');
-  document.getElementById('screen-appointments').classList.remove('active');
-  document.getElementById('screen-case').classList.add('active');
+  /* Ani, 6 Oct: a side drawer instead of a separate screen, so the patient stays where they were */
+  document.getElementById('pp-case-ttl').textContent = c.doc;
+  document.getElementById('pp-case-meta').innerHTML = '<span>' + c.date + '</span>' +
+    '<span class="pill" style="background:' + c.statusBg + ';color:' + c.statusColor + ';">' + c.status + '</span>';
+  document.getElementById('pp-case-bd').innerHTML = body;
+  ppOpen('pp-case');
 }
 
 function openPatientLog(id){
@@ -1740,7 +1778,7 @@ function setPTab(name){
 }
 
 function toggleFeedback(){
-  document.getElementById('feedback-panel').classList.toggle('show');
+  if(document.getElementById('pp-fb').classList.contains('show')) ppClose('pp-fb'); else ppOpen('pp-fb');
 }
 document.querySelectorAll('.fp-type').forEach(function(c){
   c.addEventListener('click', function(){
@@ -1749,7 +1787,7 @@ document.querySelectorAll('.fp-type').forEach(function(c){
   });
 });
 function submitFeedback(){
-  var t = document.querySelector('.feedback-panel textarea');
+  var t = document.querySelector('#pp-fb textarea');
   if(!t.value.trim()){ toast('Add a note before sending'); return; }
   t.value = '';
   toggleFeedback();
@@ -1877,8 +1915,8 @@ function handleBookClick(name){
   if(document.body.classList.contains('mode-v2')){ openCareChoice('Ani'); return; }
   if(name){ openCareChoice(name); } else { openBookModal(); }
 }
-function openBookModal(){ document.getElementById('book-modal-overlay').classList.add('show'); }
-function closeBookModal(){ document.getElementById('book-modal-overlay').classList.remove('show'); }
+function openBookModal(){ ppOpen('book-modal-overlay'); }
+function closeBookModal(){ ppClose('book-modal-overlay'); }
 function selectBookFor(name){ closeBookModal(); openCareChoice(name); }
 
 var careChoiceFor = 'Ani';
@@ -2351,9 +2389,54 @@ function handleDashUpload(files, listId){
   toast(files.length + (files.length === 1 ? ' file uploaded' : ' files uploaded') + ', saved to your health records');
 }
 
+/* ===== Layers: side drawers and the small dialog (Ani, 6 Oct 2026), same behaviour as the physician portal.
+   Newest on top; Escape and the backdrop close the top one; focus moves in, Tab stays inside, and focus returns
+   to the button that opened it. ===== */
+var PP_STACK = [];
+var PP_FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+function ppVisible(ov){ return Array.prototype.filter.call(ov.querySelectorAll(PP_FOCUSABLE), function(e){ return e.getClientRects().length > 0; }); }
+function ppOpen(id){
+  var ov = document.getElementById(id); if(!ov || ov.classList.contains('show')) return;
+  var a = document.activeElement;
+  PP_STACK.push({id:id, trigger:(a && a !== document.body) ? a : null});
+  ov.classList.add('show'); ov.style.zIndex = 200 + PP_STACK.length * 10;
+  var bd = ov.querySelector('.pp-bd'); if(bd) bd.scrollTop = 0;
+  setTimeout(function(){
+    if(!ov.classList.contains('show')) return;
+    var f = ov.querySelector('.pp-bd textarea, .pp-bd input') || ov.querySelector('.modal-option') || ov.querySelector('.pp-x') || ppVisible(ov)[0];
+    if(f) f.focus({preventScroll:true});
+  }, 60);
+}
+function ppClose(id){
+  var ov = document.getElementById(id); if(!ov) return;
+  ov.classList.remove('show'); ov.style.zIndex = '';
+  var k = -1; PP_STACK.forEach(function(l, j){ if(l.id === id) k = j; }); if(k < 0) return;
+  var t = PP_STACK.splice(k, 1)[0].trigger;
+  if(t && document.contains(t) && t.getClientRects().length) t.focus({preventScroll:true});
+}
+document.addEventListener('click', function(e){
+  var c = e.target.closest && e.target.closest('[data-pp-close]');
+  var ov = c ? c.closest('.pp-ov') : (e.target.classList && e.target.classList.contains('pp-ov') ? e.target : null);
+  if(ov) ppClose(ov.id);
+});
+window.addEventListener('keydown', function(e){
+  if(!PP_STACK.length){
+    if(e.key === 'Escape'){ var ai = document.getElementById('ai-panel'); if(ai && ai.classList.contains('open')) closeAI(); }
+    return;
+  }
+  var ov = document.getElementById(PP_STACK[PP_STACK.length - 1].id);
+  if(e.key === 'Escape'){ e.preventDefault(); ppClose(ov.id); return; }
+  if(e.key !== 'Tab') return;
+  var f = ppVisible(ov); if(!f.length) return;
+  var first = f[0], last = f[f.length - 1];
+  if(!ov.contains(document.activeElement)){ e.preventDefault(); first.focus(); }
+  else if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+});
+
 renderPtLabWork();
 </script>
 
-  <div class="build-stamp">build 2026-10-06 16:40</div>
+  <div class="build-stamp">build 2026-10-06 17:10</div>
 </body>
 </html>
