@@ -1,5 +1,18 @@
 # T-023 billing: build notes
 
+## Change log, 7 Oct (Batch B)
+
+`ux-designer`, 7 Oct 2026. Lead brief "Change log on each claim". File: `simplecare-physician-portal-v2.html`. Light only. Committed locally as "Batch B (2)"; not pushed or deployed. Reference: Dev answers 04 (claim history) and 13 (change logging: today a doctor's or PA's edit to the fee code, diagnosis, times or amount leaves no record). Where this section and older sections differ, this one wins.
+
+- **What is logged:** every edit to the fee code (with the amount when it changes), the diagnosis, the start time, the stop time and the counselling switch, one entry per field: "Changed diagnosis 786.5 → 413 · Dr. Pannozzo · 3 Oct 9:31 AM". Diagnosis also has "Added diagnosis 786.5 · Chest pain" and "Removed diagnosis 413". Times read "Changed start time 9:12 AM → 9:05 AM" ("none" when a time is cleared). The counselling switch reads "Changed fee code 13437 → 13438 (counselling, 24-min call) · amount $38.61 → $77.24" or "(back to the visit code)". Each entry is `[when, who, what, 'edit']`.
+- **Where edits come from (all logged the same way):** the note's Assessment chip (add, change through the search, remove), Your coding opened from the chart billing row, the Insert menu or a claim, the claim drawer's Change, and Switch to counselling / Back to the visit code on the billing row or the claim drawer. One helper (`t23ChangeList` → `t23LogEdits`).
+- **Before sign-off** the entries sit on the visit's coding; sign-off creates the claim with them, then "Visit signed off; claim created".
+- **Who:** "Dr. Pannozzo" for the doctor; the billing agent's entries read "Japneet · billing agent" (the demo stories; there is no live billing-agent edit path in the physician portal). MSP and SimpleCare unchanged.
+- **Claim drawer History:** each entry is the event first (Dev's event-type labels, unchanged), then "who · when" on a quieter 14 px line; newest first, collapsed after five; the heading shows "N changes" when there are edits. Nadia's 16 Sep counselling claim's seeded edit now reads "Changed fee code 13637 → 13638 (counselling) · amount $43.29 → $86.57 · …" and counts as a change.
+- **Chart billing row:** "Edited · 2 changes" (text link, clock icon) when there has been at least one edit. Before sign-off it opens the same drawer as "Today's claim · Not created yet" (Your coding with Change, then History); after sign-off the claim's own drawer. Both open at History, expanded, with focus on its heading.
+- **The diagnosis is one value.** The note's Assessment chip, the billing row and Your coding all read the visit's coding (`T23.visit[name].dx`); after sign-off the chip shows the claim's diagnosis. Visits no longer start with a diagnosis guessed from the booking reason (see `chart-shell.md`, Batch B).
+- **Not built:** add-ons, the visit date and the billing name (Dev 13 gaps G2, G4, G5) have no edit path in the demo, so nothing to log.
+
 ## Dev answers, 6 Oct
 
 `ux-designer`, 6 Oct 2026. Dev answered our 13 billing questions (6 Oct 2026; the answers stay in `private/`, git-ignored, and are cited here only for public MSP rules and our design choices). Files: `simplecare-physician-portal-v2.html` and `simplecare-moa-portal.html` (same data on the hidden billing screen). Light mode only. Committed locally as "Dev answers (part 1)" … "(part 9)"; not pushed or deployed. Where this section and older sections differ, this one wins.

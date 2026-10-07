@@ -5744,6 +5744,22 @@
   #screen-patientchart #pcv-c #sc-block .sc-prop *,#screen-patientchart #pcv-c #sc-block .sc-consent,#screen-patientchart #pcv-c #sc-block .sc-consent *,
   #screen-patientchart #pcv-c #sc-block .sc-lbl,#screen-patientchart #pcv-c #sc-block .sc-rule,#screen-patientchart #pcv-c #sc-block .sc-rule b{font-size:max(14px, 1em);}
   #screen-patientchart #pcv-c #sc-block .sc-turn .w{font-size:14px;}
+
+  /* ===== Batch B (2): change log. History entries read "what" then "who · when"; edits get a quiet clock mark;
+     the chart billing row has a small "Edited · N changes" link that opens the drawer at History. ===== */
+  #bill-overlay .t23-hist li{display:grid;gap:2px;padding:8px 0;border-top:1px solid var(--wash);}
+  #bill-overlay .t23-hist li:first-child{border-top:0;padding-top:2px;}
+  #bill-overlay .t23-hist .t23-hx-w{font-size:15px;line-height:22px;color:var(--ink);}
+  #bill-overlay .t23-hist .t23-hx-m{font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #bill-overlay .t23-hist li.t23-hx-ed .t23-hx-w{font-weight:500;}
+  #bill-overlay .t23-hx-n{margin-left:auto;font-size:14px;font-weight:500;color:var(--ink-soft);}
+  #bill-overlay #t23-hx-h{width:100%;}
+  #bill-overlay #t23-hx-h:focus{outline:none;}
+  #bill-overlay #t23-hx-h:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px;}
+  .t23-edited{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 8px;border:0;border-radius:8px;background:transparent;
+    font:inherit;font-size:14px;font-weight:600;color:var(--accent-ink);cursor:pointer;white-space:nowrap;}
+  .t23-edited:hover,.t23-edited:focus-visible{background:var(--wash);}
+  .t23-edited .ic,.t23-edited svg{width:16px;height:16px;}
 </style>
 </head>
 <body>
@@ -14014,7 +14030,7 @@ var T23_AGENT_ROLE = 'billing agent';
    meaning, held, paid $ + date, paid a different amount, paid $0 (duplicate), resent with a note, closed. Who: the
    doctor, the billing agent, MSP, or SimpleCare for automatic steps. The demo stories below match each claim's state
    (dates follow MSP's rhythm: a front-door refusal the next business day, statement codes on a payment date). */
-var T23_BA = T23_AGENT + ' (billing agent)';
+var T23_BA = T23_AGENT + ' · ' + T23_AGENT_ROLE;   /* Batch B (2): "Japneet · billing agent" */
 function t23HxRef(ex, pre){ var l = Array.isArray(ex) ? ex : [ex], m = l.filter(function(x){ return T23_EX_WRAP.indexOf(x) < 0; })[0] || l[0];
   return (pre || 'Refused by MSP: ') + l.join(' · ') + ' · ' + (T23_EX[m] ? T23_EX[m].p : ''); }
 var T23_HX = {
@@ -14035,7 +14051,7 @@ var T23_HX = {
   c16: function(c){ return [['2 Sep 5:48 PM','Dr. Pannozzo','Sent to MSP'], ['29 Sep 8:15 AM','MSP','Paid $38.61 on 29 Sep']]; },
   c25: function(c){ return [['21 Sep 5:36 PM','Dr. Pannozzo','Sent to MSP'], ['23 Sep 8:15 AM','MSP',t23HxRef('BJ')],
          ['23 Sep 10:05 AM', T23_BA, 'Re-pricing to MSP’s amount for 13737; will resend with a note']]; },
-  c26: function(c){ return [['16 Sep 2:40 PM','Dr. Pannozzo','Edited: fee code 13637 → 13638 (counselling) · the call was made outside the app, so the claim has no start or end time'],
+  c26: function(c){ return [['16 Sep 2:40 PM','Dr. Pannozzo','Changed fee code 13637 → 13638 (counselling) · amount $43.29 → $86.57 · the call was made outside the app, so the claim has no start or end time', 'edit'],
          ['16 Sep 5:58 PM','Dr. Pannozzo','Sent to MSP'], ['18 Sep 8:15 AM','MSP',t23HxRef('CF')]]; },
   c27: function(c){ return [['8 Sep 6:11 PM','Dr. Pannozzo','Sent to MSP'], ['29 Sep 8:15 AM','MSP','Paid $0 · duplicate of an already-paid claim · HX (29 Sep statement)'],
          ['30 Sep 9:12 AM', T23_BA, 'Closed — not paid: the same visit was already paid']]; },
@@ -14417,6 +14433,39 @@ function updateClaimCount(){
 
 /* ----- decisions (COD-06: every decision is logged on the claim) ----- */
 function t23Log(c, who, what){ c.hist.push([t23Stamp(), who, what]); }
+/* ===== Batch B (2): change log on each claim (lead brief, 6 Oct; Dev answer 13: today a doctor's edit to the fee code,
+   diagnosis, times or amount leaves no record). Every edit writes one entry per field: what changed, old → new, who and
+   when ("Changed diagnosis 786.5 → 413 · Dr. Pannozzo · 3 Oct 9:31 AM"). The same entries go on the visit's coding
+   before sign-off (v.log) and travel onto the claim when it is created. Entry: [when, who, what, 'edit']. ===== */
+var T23_DR = 'Dr. Pannozzo';
+function t23TimeTxt(x){ return x ? t23Clock(x) : 'none'; }
+function t23ChangeList(o, n){
+  var out = [];
+  if((o.fee || null) !== (n.fee || null)){
+    var fa = T23_FEES[o.fee], fb = T23_FEES[n.fee];
+    var why = t23IsCounsel(n.fee) && !t23IsCounsel(o.fee) ? ' (counselling' + (t23CallMins(n) ? ', ' + t23CallMins(n) + '-min call' : '') + ')' : t23IsCounsel(o.fee) && !t23IsCounsel(n.fee) ? ' (back to the visit code)' : '';
+    out.push('Changed fee code ' + (o.fee || 'none') + ' → ' + (n.fee || 'none') + why + (fa && fb && fa.amt !== fb.amt ? ' · amount ' + t23Money(fa.amt) + ' → ' + t23Money(fb.amt) : ''));
+  }
+  if((o.dx || null) !== (n.dx || null)){
+    out.push(!o.dx ? 'Added diagnosis ' + n.dx + ' · ' + t23DxName(n.dx) : !n.dx ? 'Removed diagnosis ' + o.dx : 'Changed diagnosis ' + o.dx + ' → ' + n.dx);
+  }
+  if((o.start || '') !== (n.start || '')) out.push('Changed start time ' + t23TimeTxt(o.start) + ' → ' + t23TimeTxt(n.start));
+  if((o.stop || '') !== (n.stop || '')) out.push('Changed stop time ' + t23TimeTxt(o.stop) + ' → ' + t23TimeTxt(n.stop));
+  return out;
+}
+/* target: a claim (writes c.hist) or the visit's coding (writes v.log) */
+function t23LogEdits(target, who, list, isClaim){
+  if(!list || !list.length) return;
+  var at = t23Stamp(), rows = list.map(function(w){ return [at, who || T23_DR, w, 'edit']; });
+  if(isClaim) target.hist = (target.hist || []).concat(rows); else target.log = (target.log || []).concat(rows);
+}
+function t23EditCount(list){ return (list || []).filter(function(e){ return e[3] === 'edit'; }).length; }
+function t23EditedBtn(n, fn){ return n ? '<button type="button" class="t23-edited" onclick="' + fn + '" aria-label="Edited, ' + n + (n === 1 ? ' change' : ' changes') + '. Open the history">' + t23Ic('clock') + 'Edited · ' + n + (n === 1 ? ' change' : ' changes') + '</button>' : ''; }
+function t23HistHtml(list){
+  return list.map(function(e){
+    return '<li' + (e[3] === 'edit' ? ' class="t23-hx-ed"' : '') + '><span class="t23-hx-w">' + t23E(e[2]) + '</span><span class="t23-hx-m">' + t23E(e[1]) + ' · ' + t23E(e[0]) + '</span></li>';
+  }).join('');
+}
 /* "The diagnosis is right · resubmit as is": the doctor always presses submit himself, so it runs the code check */
 function t23Answer(id, i){
   var c = t23C(id), f = c && c.flags[i]; if(!c || !f) return;
@@ -14513,15 +14562,17 @@ function t23Refresh(){
   if(typeof t23RenderBillRow === 'function') t23RenderBillRow();
   var ov = document.getElementById('bill-overlay');
   if(ov && ov.classList.contains('show') && BL_KIND === 'claim' && T23.open) t23Open(T23.open);
+  else if(ov && ov.classList.contains('show') && BL_KIND === 'visitclaim' && T23.openVisit){ var sv = csRow && csRow(); if(sv && sv.name === T23.openVisit && sv.signed && sv.claimId) t23Open(sv.claimId); else t23OpenVisit(T23.openVisit); }
 }
 
 /* ================= Claim detail (spec part 3; reuses #bill-overlay). Daniel 5 Oct: claim details and history are
    good (Dev to structure them); AI review, health card and disposition blocks are gone. ================= */
 function t23Payer(c){ return c.payer === 'private' ? 'Private pay' : c.payer === 'recip' ? 'Reciprocal claim · ' + c.prov : 'MSP claim'; }
 function t23CanChange(c){ return ['submit','rejected'].indexOf(c.st) > -1 && !t23OpenQ(c); }
-function t23Open(id){
+function t23Open(id, at){
   var c = t23C(id); if(!c) return;
-  T23.open = id; BL_KIND = 'claim'; BL_FOR = null;
+  T23.open = id; T23.openVisit = null; BL_KIND = 'claim'; BL_FOR = null;
+  if(at === 'hist') T23.histAll[id] = true;   /* Batch B (2): "Edited · N changes" opens the whole history */
   var card = document.getElementById('bl-card'); card.classList.add('t23-wide');
   var ch = t23CanChange(c);
   var line = function(k, v, focus, ro){
@@ -14565,12 +14616,41 @@ function t23Open(id){
   if(c.st === 'appeal') h += '<div class="bl-block"><p class="bl-k">Reassessment</p><p class="bl-v">' + (c.sub || '') + ' · Possible recovery ' + t23Money(t23Amt(c)) + ' estimated' + T23_DEMO + '</p></div>';
   h += '<div class="bl-block"><p class="bl-k">Visit</p><p class="bl-v"><button type="button" class="t23-more" onclick="t23Note(\'' + id + '\')">Open the ' + t23F(c.date) + ' visit</button> (read-only)</p></div>';
   var all = T23.histAll[id], hist = c.hist.slice().reverse(), shown = all ? hist : hist.slice(0, 5);   /* Dev answers, 6 Oct: newest first, collapsed after five */
-  h += '<div class="bl-block"><p class="bl-k">History</p><ul class="t23-hist">' + shown.map(function(e){ return '<li>' + e[0] + ' · ' + e[1] + ' · ' + t23E(e[2]) + '</li>'; }).join('') + '</ul>' +
+  h += '<div class="bl-block" id="t23-hx"><p class="bl-k" id="t23-hx-h" tabindex="-1">History' + (t23EditCount(c.hist) ? '<span class="t23-hx-n">' + t23EditCount(c.hist) + (t23EditCount(c.hist) === 1 ? ' change' : ' changes') + '</span>' : '') + '</p><ul class="t23-hist">' + t23HistHtml(shown) + '</ul>' +
     (hist.length > 5 ? '<button type="button" class="t23-more" onclick="T23.histAll[\'' + id + '\']=' + (all ? 'false' : 'true') + ';t23Open(\'' + id + '\')">' + (all ? 'Show fewer' : 'Show all ' + hist.length) + '</button>' : '') + '</div>';
   h += '<div class="defer-acts"><button type="button" class="btn" onclick="closeBilling()">Close</button>' + t23PrimaryBtn(c) + '</div>';
   card.innerHTML = h;
   paintPd(card);
   document.getElementById('bill-overlay').classList.add('show');
+  if(at === 'hist') t23GoHist();
+}
+/* Batch B (2): bring the History block into view and put focus on its heading */
+function t23GoHist(){
+  setTimeout(function(){ var hh = document.getElementById('t23-hx-h'); if(hh){ hh.scrollIntoView({block:'start'}); hh.focus({preventScroll:true}); } }, 60);
+}
+/* Batch B (2): before sign-off the claim isn't created yet; the same drawer shows today's coding and its change log */
+function t23OpenVisit(name, at){
+  var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0]; if(!r) return;
+  var v = t23VisitCode(name); if(v.disp === 'private') return;
+  T23.open = null; T23.openVisit = name; BL_KIND = 'visitclaim'; BL_FOR = null;
+  var card = document.getElementById('bl-card'); card.classList.add('t23-wide');
+  var line = function(k, val, focus){ return '<div class="t23-line"><span class="t23-lk">' + k + '</span><span class="t23-lv">' + val + '</span>' +
+    (focus ? '<button type="button" class="btn xs" onclick="t23OpenPick({visit:\'' + name.replace(/'/g, "\\'") + '\',focus:\'' + focus + '\'})">' + t23Ic('edit') + 'Change</button>' : '') + '</div>'; };
+  var hist = (v.log || []).slice().reverse(), n = t23EditCount(v.log);
+  var h = '<p class="bl-eyebrow" id="bl-eyebrow">' + (v.disp === 'recip' ? 'Reciprocal claim' : 'MSP claim') + '</p>' +
+    '<p class="defer-ttl" id="bl-title">Today&rsquo;s claim</p><p class="bl-v t23-why2">Not created yet. It is created when you sign off, with this coding and its history.</p>' +
+    '<p class="bl-who" id="bl-who"><span><b>' + t23E(firstLast(name)) + '</b> · today · ' + winLabel(r.win) + '</span></p>' +
+    '<div class="bl-block"><p class="bl-k">Your coding</p>' +
+      line('Fee code', t23FeeTxt(v.fee), null) +
+      line('Diagnosis (ICD-9)', v.dx ? v.dx + ' · ' + t23DxName(v.dx) : 'Diagnosis not set', 'dx') +
+      line('Time', t23SpanTxt(v), 'time') +
+      line('Amount', T23_FEES[v.fee] ? t23Money(T23_FEES[v.fee].amt) : '—', null) + '</div>' +
+    '<div class="bl-block" id="t23-hx"><p class="bl-k" id="t23-hx-h" tabindex="-1">History' + (n ? '<span class="t23-hx-n">' + n + (n === 1 ? ' change' : ' changes') + '</span>' : '') + '</p>' +
+      (hist.length ? '<ul class="t23-hist">' + t23HistHtml(hist) + '</ul>' : '<p class="bl-v">No changes yet.</p>') + '</div>' +
+    '<div class="defer-acts"><button type="button" class="btn" onclick="closeBilling()">Close</button></div>';
+  card.innerHTML = h; paintPd(card);
+  document.getElementById('bill-overlay').classList.add('show');
+  if(at === 'hist') t23GoHist();
 }
 function t23PrimaryBtn(c){
   var b = function(label, fn, icon){ return '<button type="button" class="btn dark" onclick="' + fn + '">' + t23Ic(icon || 'complete') + label + '</button>'; };
@@ -14707,9 +14787,8 @@ function t23PickCounsel(on){
 function t23Switch(ctx, key, on){
   var v = ctx === 'claim' ? t23C(key) : t23VisitCode(key); if(!v) return;
   var from = v.fee, to = t23FeeForAge(v.age, on); if(from === to) return;
+  t23LogEdits(v, T23_DR, t23ChangeList(v, {fee:to, dx:v.dx, start:v.start, stop:v.stop, age:v.age}), ctx === 'claim');   /* Batch B (2) */
   v.fee = to;
-  var what = 'Changed fee code ' + from + ' → ' + to + (on ? ' (counselling, ' + t23CallMins(v) + '-min call)' : ' (back to the visit code)');
-  if(ctx === 'claim') t23Log(v, 'Dr. Pannozzo', what); else v.log = (v.log || []).concat([[t23Stamp(), 'Dr. Pannozzo', what]]);
   t23Refresh();
   var block = t23CounselBlock(v);
   toast(block ? block : on ? 'Switched to counselling · ' + to + ' · ' + t23Money(T23_FEES[to].amt) : 'Back to the visit code · ' + to);
@@ -14785,17 +14864,14 @@ function t23PickSave(){
   if((v.start || v.stop) && (m == null || m <= 0)){ P.err = 'The stop time must be after the start time.'; t23RenderPick(); return; }
   v.mins = m > 0 ? m : null;
   if(o.claim){
-    var c = t23C(o.claim), ch = [];
-    if(c.fee !== v.fee) ch.push('fee code ' + (c.fee || '—') + ' → ' + v.fee);
-    if(c.dx !== v.dx) ch.push('diagnosis ' + (c.dx || '—') + ' → ' + (v.dx || '—'));
-    if(c.start !== v.start || c.stop !== v.stop) ch.push('time ' + t23SpanTxt(c) + ' → ' + t23SpanTxt(v));
-    c.fee = v.fee; c.dx = v.dx; c.start = v.start; c.stop = v.stop; c.mins = v.mins;
+    var c = t23C(o.claim), ch = t23ChangeList(c, v);
     if(!ch.length && !o.correct){ t23PickClose(); toast('Nothing changed'); return; }
-    if(ch.length) t23Log(c, 'Dr. Pannozzo', 'Changed ' + ch.join('; '));    /* AUD-02: before and after; every change is logged */
+    t23LogEdits(c, T23_DR, ch, true);    /* AUD-02 / Batch B (2): one entry per field, before → after, who and when */
+    c.fee = v.fee; c.dx = v.dx; c.start = v.start; c.stop = v.stop; c.mins = v.mins;
     var fixed = false;
     if(o.flag != null && c.flags[o.flag] && c.flags[o.flag].k === 'q'){
       /* "Fix it now" on the billing agent's question */
-      c.flags[o.flag].done = 'Answered by Dr. Pannozzo · 3 Oct, ' + t23Now() + ' · fixed: ' + (ch[0] || 'checked');
+      c.flags[o.flag].done = 'Answered by Dr. Pannozzo · 3 Oct, ' + t23Now() + ' · fixed: ' + (ch[0] ? ch[0].replace(/^Changed /, '') : 'checked');
       t23Log(c, 'Dr. Pannozzo', 'Answered ' + c.flags[o.flag].from + ' (billing agent): fixed it');
       fixed = true;
     }
@@ -14808,16 +14884,12 @@ function t23PickSave(){
     toast(c.st === 'submit' && (o.correct || fixed) ? 'Saved · it’s in Needs submission. Submit it when you’re ready.' : 'Saved · the change is logged');
     if(c.st === 'submit' && (o.correct || fixed)) t23Focus(c.id);
   } else {
-    var old = T23.visit[o.visit], vch = [];
-    if(old){
-      if(old.fee !== v.fee) vch.push('fee code ' + old.fee + ' → ' + v.fee);
-      if(old.dx !== v.dx) vch.push('diagnosis ' + (old.dx || '—') + ' → ' + (v.dx || '—'));
-      if(old.start !== v.start || old.stop !== v.stop) vch.push('time ' + t23SpanTxt(old) + ' → ' + t23SpanTxt(v));
-    }
-    v.log = (old && old.log || []).concat(vch.length ? [[t23Stamp(), 'Dr. Pannozzo', 'Changed ' + vch.join('; ')]] : []);
+    var old = T23.visit[o.visit], vch = old ? t23ChangeList(old, v) : [];
+    v.log = (old && old.log || []).slice();
+    t23LogEdits(v, T23_DR, vch, false);   /* Batch B (2): one entry per field on the visit's coding */
     T23.visit[o.visit] = v;
     t23PickClose();
-    if(typeof t23RenderBillRow === 'function') t23RenderBillRow();
+    t23Refresh();   /* Batch B (2): the billing row, the note's chip and an open claim drawer all follow */
     toast(vch.length ? 'Saved · the change is logged' : 'Saved');
   }
 }
@@ -14926,7 +14998,7 @@ function t23RenderBillRow(){
     var c = t23RowClaim(r);
     h += c ? '<span>' + t23Label(c).label + '</span>' + sep + '<span>' + (c.st === 'submit' ? 'in Claims' : c.st === 'submitted' ? 'MSP processes it at 7 PM' : 'recorded') + '</span>' +
       (c.st === 'submit' ? '<button type="button" class="btn xs" onclick="t23SubmitOne(\'' + c.id + '\')">' + t23Ic('arrowup') + 'Submit claim</button>' : '') +
-      '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button>' : '<span>Recorded</span>';
+      '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button>' + t23EditedBtn(t23EditCount(c.hist), 't23Open(\'' + c.id + '\',\'hist\')') : '<span>Recorded</span>';
     el.innerHTML = h; el.hidden = false; if(help) help.hidden = true; paintPd(el); t23SyncFin(); return;
   }
   /* Daniel 5 Oct (step 4): the row is fee code · diagnosis · time; Change opens "Your coding" (no disposition) */
@@ -14941,6 +15013,7 @@ function t23RenderBillRow(){
     h += '<button type="button" class="btn xs" onclick="t23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})">' + t23Ic('edit') + btn + '</button>';
     /* Dev answers, 6 Oct: the call lasted 20+ minutes, so counselling is offered (the doctor decides) */
     if(!t23IsCounsel(v.fee) && cm != null && cm >= T23_COUNSEL_MIN) h += '<button type="button" class="btn xs" onclick="t23Switch(\'visit\',PC_CURRENT,true)">' + t23Ic('clock') + 'Switch to counselling (' + t23FeeForAge(v.age, true) + ')</button>';
+    h += t23EditedBtn(t23EditCount(v.log), 't23OpenVisit(PC_CURRENT,\'hist\')');   /* Batch B (2) */
   }
   el.innerHTML = h; el.hidden = false; if(help) help.hidden = v.disp === 'private'; paintPd(el);
   t23SyncFin();
@@ -16741,7 +16814,7 @@ function nsDxOpen(on){
   NS.dx = {open:!!on, q:'', act:0, res:[]};
   if(on){ t23DxLoad(); if(typeof v2On === 'function' && v2On() && typeof V2 !== 'undefined' && V2.tab !== 'note') v2Tab('note'); }
   nsRenderDx();
-  var f = document.getElementById(on ? 'ns-dx-q' : 'ns-dx-btn'); if(f){ f.focus(); if(on) f.scrollIntoView({block:'nearest'}); }
+  var f = document.getElementById(on ? 'ns-dx-q' : 'ns-dx-btn'); if(f){ f.focus({preventScroll:true}); if(on) f.scrollIntoView({block:'center'}); }
 }
 function nsGoDx(){ if(typeof v2Fin === 'function') v2Fin(false, true); nsDxOpen(true); }
 function nsDxPick(i){
@@ -16767,16 +16840,13 @@ function t23SetVisitDx(name, code){
   if(T23.pick && T23.pick.o && T23.pick.o.visit === name){ T23.pick.v.dx = code; t23RenderPick(); }
   t23Refresh();
 }
-function t23LogVisit(name, oldV, newV){
-  var what = !oldV.dx && newV.dx ? 'Added diagnosis ' + newV.dx : oldV.dx && !newV.dx ? 'Removed diagnosis ' + oldV.dx : 'Changed diagnosis ' + oldV.dx + ' → ' + newV.dx;
-  oldV.log = (oldV.log || []).concat([[t23Stamp(), 'Dr. Pannozzo', what]]);
-}
+function t23LogVisit(name, oldV, newV){ t23LogEdits(oldV, T23_DR, t23ChangeList(oldV, newV), false); }   /* Batch B (2) */
 /* the billing row re-renders on every coding change: the chip follows it (single source of truth) */
 (function(){
   var br0 = t23RenderBillRow;
   t23RenderBillRow = function(){ br0.apply(this, arguments); nsRenderDx(); nsSync(); };
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 04:10 · Batch B</div>
+  <div class="build-stamp">v2 · build 2026-10-07 05:20 · Batch B</div>
 </body>
 </html>
