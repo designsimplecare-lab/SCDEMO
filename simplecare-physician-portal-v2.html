@@ -5367,45 +5367,45 @@
      and Ongoing conditions (#cd-panel). Full height from the right; header and footer pinned, the body scrolls.
      The 6-digit code check (#t23-mfa) stays a small centred dialog: it is a blocking security step.
      JS: drwShape() + the layer stack at the end of the file. ===== */
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel).drw-ov{display:none;position:fixed;inset:0;z-index:200;padding:0;
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay).drw-ov{display:none;position:fixed;inset:0;z-index:200;padding:0;
     background:rgba(23,24,28,.42);align-items:stretch;justify-content:flex-end;overflow:hidden;}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel).drw-ov.show{display:flex;animation:drwFade 240ms ease-out;}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay).drw-ov.show{display:flex;animation:drwFade 240ms ease-out;}
   /* a drawer opened on top of another one dims less, so the page does not go dark twice */
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel).drw-ov.drw-stacked{background:rgba(23,24,28,.16);animation:none;}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) > :is(#bl-card,#t23-pick-card,.tm-card,.defer-card,.cd-card).drw{
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay).drw-ov.drw-stacked{background:rgba(23,24,28,.16);animation:none;}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) > :is(#bl-card,#t23-pick-card,.tm-card,.defer-card,.cd-card).drw{
     position:relative;box-sizing:border-box;margin:0;width:min(560px,100vw) !important;max-width:100vw !important;height:100%;max-height:none !important;
     padding:0 !important;border-radius:16px 0 0 16px;background:var(--panel);display:flex;flex-direction:column;overflow:hidden !important;
     box-shadow:-18px 0 44px rgba(23,24,28,.16);animation:drwIn 240ms ease-out;}
-  :is(#tm-overlay,#ao-overlay) > :is(#tm-card,#ao-card).drw{width:min(480px,100vw) !important;}   /* the two short forms read better narrower */
+  :is(#tm-overlay,#ao-overlay,#kb-overlay) > :is(#tm-card,#ao-card,#kb-card).drw{width:min(480px,100vw) !important;}   /* the two short forms read better narrower */
   @keyframes drwIn{from{transform:translateX(100%);}to{transform:translateX(0);}}
   @keyframes drwFade{from{background-color:rgba(23,24,28,0);}}
   @media (prefers-reduced-motion: reduce){
-    :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel).drw-ov.show,
-    :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) > :is(#bl-card,#t23-pick-card,.tm-card,.defer-card,.cd-card).drw{animation:none;}
+    :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay).drw-ov.show,
+    :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) > :is(#bl-card,#t23-pick-card,.tm-card,.defer-card,.cd-card).drw{animation:none;}
   }
   @media (max-width:639px){
-    :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) > :is(#bl-card,#t23-pick-card,.tm-card,.defer-card,.cd-card).drw{width:100vw !important;border-radius:0;}
+    :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) > :is(#bl-card,#t23-pick-card,.tm-card,.defer-card,.cd-card).drw{width:100vw !important;border-radius:0;}
   }
   /* header: eyebrow, title, patient and visit line (with the days-left chip), close */
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-hd{flex:none;position:relative;padding:20px 72px 16px 24px;border-bottom:1px solid var(--line);}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-hd > :last-child{margin-bottom:0;}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-hd :is(.defer-ttl,.tm-title,h3){font-size:20px;font-weight:800;line-height:1.3;margin:0 0 6px;color:var(--ink);}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-hd .bl-eyebrow{margin:0 0 4px;font-size:14px;font-weight:600;color:var(--ink-soft);text-transform:none;letter-spacing:0;}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-hd :is(.bl-who,.tm-sub,.defer-what,.cd-sub){font-size:14.5px;color:var(--ink-soft);margin:0;line-height:1.5;}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-hd .bl-who{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-hd .cd-hd{margin:0;}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-hd .cd-hd .x{display:none;}   /* the shared close button replaces it */
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-x{position:absolute;top:14px;right:16px;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-hd{flex:none;position:relative;padding:20px 72px 16px 24px;border-bottom:1px solid var(--line);}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-hd > :last-child{margin-bottom:0;}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-hd :is(.defer-ttl,.tm-title,h3){font-size:20px;font-weight:800;line-height:1.3;margin:0 0 6px;color:var(--ink);}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-hd .bl-eyebrow{margin:0 0 4px;font-size:14px;font-weight:600;color:var(--ink-soft);text-transform:none;letter-spacing:0;}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-hd :is(.bl-who,.tm-sub,.defer-what,.cd-sub){font-size:14.5px;color:var(--ink-soft);margin:0;line-height:1.5;}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-hd .bl-who{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-hd .cd-hd{margin:0;}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-hd .cd-hd .x{display:none;}   /* the shared close button replaces it */
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-x{position:absolute;top:14px;right:16px;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;
     border:0;border-radius:10px;background:none;color:var(--ink-soft);cursor:pointer;padding:0;}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-x:hover{background:var(--wash);color:var(--ink);}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-x:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-x svg{width:22px;height:22px;}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-x:hover{background:var(--wash);color:var(--ink);}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-x:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-x svg{width:22px;height:22px;}
   /* body scrolls; footer pinned with the actions (Close + primary) */
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-bd{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:18px 24px 24px;}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-bd:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-ft{flex:none;padding:14px 24px;border-top:1px solid var(--line);background:var(--panel);}
-  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-ft > :is(.defer-acts,.tm-actions){display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;margin:0;}
-  :is(#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel) .drw-ft .btn{min-height:44px;font-size:14px;display:inline-flex;align-items:center;gap:6px;}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-bd{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:18px 24px 24px;}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-bd:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-ft{flex:none;padding:14px 24px;border-top:1px solid var(--line);background:var(--panel);}
+  :is(#bill-overlay,#t23-pick,#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-ft > :is(.defer-acts,.tm-actions){display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;margin:0;}
+  :is(#tm-overlay,#ao-overlay,#cp-overlay,#cd-panel,#kb-overlay) .drw-ft .btn{min-height:44px;font-size:14px;display:inline-flex;align-items:center;gap:6px;}
   /* a toast raised while a drawer is open ("Answer the question first.") shows above it */
   #toast{z-index:400;}
   /* nothing a physician reads under 14 px (Ani's rule) inside the converted forms */
@@ -5661,6 +5661,19 @@
   #nav-tip::before{content:"";position:absolute;left:-5px;top:50%;width:10px;height:10px;margin-top:-5px;background:inherit;transform:rotate(45deg);border-radius:2px;}
   #nav-tip .nt-n{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:rgba(255,255,255,.16);font-size:14px;font-weight:700;}
   @media (prefers-reduced-motion: reduce){ #nav-tip{transition:none;} }
+  /* ===== Batch A (4): keyboard shortcuts drawer (lead brief, 6 Oct). Same side-drawer pattern (#kb-overlay joins the
+     shared selectors above). Keys are 14 px on a grey key cap; descriptions 15 px ink. ===== */
+  #kb-overlay .kb-sec{margin:0 0 20px;}
+  #kb-overlay .kb-sec:last-child{margin-bottom:0;}
+  #kb-overlay .kb-h{margin:0 0 6px;font-size:15px;font-weight:700;color:var(--ink);}
+  #kb-overlay .kb-list{margin:0;padding:0;}
+  #kb-overlay .kb-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid var(--line);}
+  #kb-overlay .kb-row:last-child{border-bottom:0;}
+  #kb-overlay .kb-row dt{order:2;flex:none;display:flex;align-items:center;gap:4px;margin:0;font-size:14px;color:var(--ink-soft);}
+  #kb-overlay .kb-row dd{order:1;margin:0;font-size:15px;color:var(--ink);line-height:1.4;}
+  #kb-overlay kbd{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-width:30px;height:30px;padding:0 8px;
+    border-radius:7px;background:var(--wash);box-shadow:inset 0 -1px 0 var(--line-strong),0 0 0 1px var(--line);font-family:inherit;font-size:14px;font-weight:600;line-height:1;color:var(--ink);}
+  #kb-overlay .kb-note{margin:16px 0 0;font-size:14px;color:var(--ink-soft);line-height:1.5;max-width:66ch;}
 </style>
 </head>
 <body>
@@ -5734,6 +5747,8 @@
           <button class="pd-item" onclick="toggleProfileMenu();showScreen('calendar')"><span class="pd-ic" data-pdic="calendar"></span> Schedule &amp; availability</button>
           <button class="pd-item" onclick="toggleProfileMenu();showScreen('feesettings')"><span class="pd-ic" data-pdic="feesettings"></span> Fee settings</button>
           <button class="pd-item" onclick="toggleProfileMenu();showScreen('profile')"><span class="pd-ic" data-pdic="user"></span> View profile</button>
+          <!-- Batch A (4): a discreet way in to the shortcuts -->
+          <button class="pd-item" id="pd-kb" onclick="toggleProfileMenu();kbOpen()"><span class="pd-ic" data-pdic="keyboard"></span> Keyboard shortcuts</button>
           <div class="pd-divider"></div>
           <button class="pd-item" onclick="toggleProfileMenu();toast('Would sign you out')"><span class="pd-ic" data-pdic="logout"></span> Sign out</button>
         </div>
@@ -6951,6 +6966,16 @@
       <button class="btn" onclick="closeAddOn()">Cancel</button>
       <button class="btn dark" onclick="submitAddOn()">Record appointment</button>
     </div>
+  </div>
+</div>
+
+<!-- Batch A (4): keyboard shortcuts, a side drawer ("?" or the profile menu) -->
+<div class="tm-overlay drw-ov" id="kb-overlay" onclick="if(event.target===this) kbClose()">
+  <div class="tm-card drw" id="kb-card" role="dialog" aria-modal="true" aria-labelledby="kb-ttl">
+    <p class="tm-title" id="kb-ttl">Keyboard shortcuts</p>
+    <p class="tm-sub">They work when you are not typing in a field.</p>
+    <div id="kb-body"></div>
+    <div class="tm-actions"><button type="button" class="btn" onclick="kbClose()">Close</button></div>
   </div>
 </div>
 
@@ -16327,6 +16352,96 @@ function navTip(btn){
   baWrap('syncCollapseBtn', function(){ navRail(); });
   baWrap('toggleSidebarCollapse', function(){ navRail(); });   /* it sets the collapse button's title after syncing */
   navRail();
+})();
+/* ---------- (4) Keyboard shortcuts (lead brief, 6 Oct) ----------
+   Only when focus is not in a text field or editable area, and never with the browser's own modifier combos, except
+   Cmd/Ctrl+S (Save draft) and Cmd/Ctrl+Enter (Sign off & finalize) in a chart, which also work from the note itself.
+   In a chart: 1 / 2 / 3 = Review / Note / Orders; C = Call (or, during a call, focus the call widget).
+   Cmd/Ctrl+Enter only OPENS the Sign off popover: the checks, warnings and code check stay exactly as they are.
+   Anywhere: G then H / C / E / T / I = Home / Claims / Earnings / Tasks / Inbox (within 1.5 s); "?" = this list.
+   Nothing fires while a drawer or the code check is open (Escape still closes the top drawer, as before). */
+ICONS.keyboard = '<svg xmlns="http://www.w3.org/2000/svg" class="ic" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.981 6.583H4.02c-.701 0-1.269.647-1.269 1.444v7.946c0 .797.568 1.444 1.269 1.444h15.96c.701 0 1.269-.647 1.269-1.444V8.027c0-.797-.568-1.444-1.269-1.444M9.357 13.806h5.286m2.748 0h1.058m-11.84 0H5.55m.001-3.612H6.61m2.885 0h1.057m2.896 0h1.057m2.886 0h1.058"/></svg>';   /* Mage "keyboard" */
+var KB = {g:0, mac:/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)};
+function kbMod(){ return KB.mac ? '⌘' : 'Ctrl'; }
+function kbKeys(){ return [].slice.call(arguments).map(function(k){ return '<kbd>' + k + '</kbd>'; }).join(''); }
+function kbRender(){
+  var b = document.getElementById('kb-body'); if(!b) return;
+  var row = function(keys, what){ return '<div class="kb-row"><dt>' + keys + '</dt><dd>' + what + '</dd></div>'; };
+  var then = '<span>then</span>';
+  b.innerHTML =
+    '<section class="kb-sec" aria-labelledby="kb-h1"><h3 class="kb-h" id="kb-h1">In a chart</h3><dl class="kb-list">' +
+      row(kbKeys('1'), 'Review tab') + row(kbKeys('2'), 'Note tab') + row(kbKeys('3'), 'Orders tab') +
+      row(kbKeys('C'), 'Call the patient, or go to the call during a call') +
+      row(kbKeys(kbMod(), 'Enter'), 'Open Sign off &amp; finalize (it never signs by itself)') +
+      row(kbKeys(kbMod(), 'S'), 'Save draft') + row(kbKeys('Esc'), 'Close a drawer or the Sign off panel') +
+    '</dl></section>' +
+    '<section class="kb-sec" aria-labelledby="kb-h2"><h3 class="kb-h" id="kb-h2">Anywhere</h3><dl class="kb-list">' +
+      row(kbKeys('G') + then + kbKeys('H'), 'Home') + row(kbKeys('G') + then + kbKeys('C'), 'Claims') +
+      row(kbKeys('G') + then + kbKeys('E'), 'Earnings') + row(kbKeys('G') + then + kbKeys('T'), 'Tasks') +
+      row(kbKeys('G') + then + kbKeys('I'), 'Inbox') + row(kbKeys('?'), 'This list') +
+    '</dl></section>' +
+    '<p class="kb-note">' + kbMod() + ' + S and ' + kbMod() + ' + Enter also work while you type in the note. The other keys only work when you are not typing.</p>';
+}
+function kbOpen(){ kbRender(); var o = document.getElementById('kb-overlay'); if(o) o.classList.add('show'); }
+function kbClose(){ var o = document.getElementById('kb-overlay'); if(o) o.classList.remove('show'); }
+function kbEditable(t){
+  if(!t || t.nodeType !== 1) return false;
+  if(t.isContentEditable) return true;
+  var tag = t.tagName;
+  if(tag === 'TEXTAREA' || tag === 'SELECT') return true;
+  if(tag === 'INPUT') return !/^(button|submit|reset|checkbox|radio|range|color|file|image)$/i.test(t.type || 'text');
+  return false;
+}
+function kbBlocked(){
+  if(typeof DRW_STACK !== 'undefined' && DRW_STACK.length) return true;
+  return !!document.querySelector('#t23-mfa.show, #copilot-overlay.show, .tm-overlay.show, .defer-overlay.show, .cd-panel.show, #ai-panel.show, #ai-panel.open, #dsw.show');
+}
+function kbCall(){
+  if(PC_ON_CALL){ var w = document.querySelector('#callw:not([hidden]) .cw-who'); if(w){ w.focus(); return; } }
+  var b = document.querySelector('#pcv-c .vc-acts .btn.dark');
+  if(b && b.getClientRects().length && !b.disabled && !b.classList.contains('cw-hide')){ b.click(); return; }
+  var again = [].slice.call(document.querySelectorAll('#pcv-c #cs-ns .btn.dark')).filter(function(x){ return x.getClientRects().length; })[0];
+  if(again){ again.click(); return; }
+  toast('There is no call to start from here');
+}
+document.addEventListener('keydown', function(e){
+  if(e.defaultPrevented || e.isComposing) return;
+  var t = e.target, ed = kbEditable(t), k = e.key || '', mod = e.metaKey || e.ctrlKey;
+  var onChart = v2On() && csOnChart() && !!PC_CURRENT;
+  /* Cmd/Ctrl+S and Cmd/Ctrl+Enter: in a chart only; allowed in the note itself, not in other fields */
+  if(mod && !e.altKey && !e.shiftKey && (k === 's' || k === 'S' || k === 'Enter')){
+    if(!onChart || kbBlocked()) return;
+    if(ed && t.id !== 'vc-note-input') return;
+    e.preventDefault();
+    var r = typeof csRow === 'function' ? csRow() : null;
+    if(k === 'Enter'){ v2Fin(true); return; }
+    if(r && r.signed){ toast('This visit is signed off, so the note is read-only'); return; }
+    csDraft(); toast('Draft saved');
+    return;
+  }
+  if(mod || e.altKey || ed || kbBlocked()) return;
+  if(KB.g && Date.now() - KB.g < 1500){
+    KB.g = 0;
+    var dest = {h:'today', c:'claims', e:'earnings', t:'tasks', i:'inbox'}[k.toLowerCase()];
+    if(dest){ e.preventDefault(); showScreen(dest); return; }
+  }
+  KB.g = 0;
+  if(k === 'g' || k === 'G'){ KB.g = Date.now(); return; }
+  if(k === '?'){ e.preventDefault(); kbOpen(); return; }
+  if(!onChart || V2.fin) return;
+  if(k === '1' || k === '2' || k === '3'){ e.preventDefault(); v2Tab(V2_TABS[+k - 1], true); return; }
+  if(k === 'c' || k === 'C'){ e.preventDefault(); kbCall(); }
+});
+(function(){
+  /* the shortcuts drawer joins the shared drawer stack (focus in, trap, Escape, focus back) */
+  var ov = document.getElementById('kb-overlay'); if(!ov || typeof DRW_CLOSE === 'undefined') return;
+  DRW_CLOSE['kb-overlay'] = kbClose;
+  new MutationObserver(function(){
+    var on = ov.classList.contains('show'), was = DRW_STACK.some(function(l){ return l.id === 'kb-overlay'; });
+    if(on && !was) drwOpened(ov); else if(!on && was) drwClosed(ov);
+  }).observe(ov, {attributes:true, attributeFilter:['class']});
+  kbRender(); drwShape(ov.firstElementChild);
+  paintPd(document.getElementById('profile-dropdown'));
 })();
 </script>
   <div class="build-stamp">v2 · build 2026-10-07 02:30</div>

@@ -309,3 +309,9 @@ Lead brief, 6 Oct. Light only; v2 is the only chart layout. Screenshots (local o
 - **No black slice:** nothing is added in the button's flow, so the buttons stay 46 × 46 and the active highlight stays the dark circle (measured: width 46 on hover, active and focus).
 - **Expanded:** unchanged (badges beside the labels, titles restored on the expand button).
 
+### 4. Keyboard shortcuts
+- **In a chart:** 1 / 2 / 3 = Review / Note / Orders (focus goes to the tab); C = Call (the patient card's Call or Call again, or the no-show banner's Call again; during a call it focuses the floating call widget instead of starting anything); ⌘/Ctrl+Enter = opens the Sign off & finalize popover (focus on the first missing check; it never signs, so every gate and the code check stay); ⌘/Ctrl+S = Save draft (the browser's Save page is prevented only on the chart; a signed-off note says it is read-only). Escape keeps closing drawers and the popover, as before.
+- **Anywhere:** G then H / C / E / T / I (within 1.5 s) = Home / Claims / Earnings / Tasks / Inbox; ? = the shortcuts drawer.
+- **When they fire:** plain keys only when focus is not in a text field, select or editable area, with no ⌘, Ctrl or Alt held, and never while a drawer, the code check or another overlay is open (1 / 2 / 3 and C also wait while the Sign off popover is open). ⌘/Ctrl+S and ⌘/Ctrl+Enter work on the chart from anywhere except other text fields; they also work from the note itself, so the doctor can save or sign off without leaving it. Other browser combos are untouched.
+- **Shortcuts drawer:** the shared side drawer (focus in, trap, Escape, focus back), two lists (In a chart, Anywhere) with key caps (14 px) and plain descriptions (15 px). ⌘ on a Mac, Ctrl elsewhere. A discreet "Keyboard shortcuts" item (Mage keyboard icon) in the profile menu opens it too.
+
