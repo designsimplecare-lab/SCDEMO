@@ -319,6 +319,10 @@
   @media (max-width:1100px){ .pipe{grid-template-columns:repeat(2,minmax(0,1fr));} .grid2{grid-template-columns:minmax(0,1fr);} }
   /* build stamp: which version is loaded */
   .build-stamp{position:fixed;left:8px;bottom:4px;z-index:5;font-size:14px;color:rgba(23,24,28,.28);pointer-events:none;}
+  /* Ani, 7 Oct copy diet: subtitles under page titles are gone, so the title carries the gap */
+  /* say it once: inside the Urgent box the Urgent tag repeats the box title */
+  #urgent-list .chips .tag.crit{display:none;}
+  #screen-tasks h1,#screen-referrals h1,#screen-imaging h1,#screen-callbacks h1,#screen-faxes h1,#screen-directory h1{margin-bottom:18px;}
 </style>
 </head>
 <body>
@@ -336,7 +340,7 @@
       <button type="button" class="nav-btn" data-screen="faxes"><span class="ic" data-ic="inbox"></span><span class="lbl">Fax inbox</span><span class="nav-n neu" id="nav-n-fax"></span></button>
       <button type="button" class="nav-btn" data-screen="directory"><span class="ic" data-ic="encounterlog"></span><span class="lbl">Directory</span></button>
     </nav>
-    <p class="side-foot">Working with Dr. Daniel Pannozzo. MSP claims: Japneet, billing agent.</p>
+    <p class="side-foot">Dr. Daniel Pannozzo · MSP claims: Japneet</p>
   </aside>
 
   <div class="main">
@@ -345,7 +349,7 @@
       <div class="tb-right">
         <div class="tb-pill close-off">
           <span class="tb-ic"><span class="ic" data-ic="usercheck"></span></span>
-          <span><b>Paired with Dr. Pannozzo</b><span class="t">Chat open for today’s call window</span></span>
+          <span><b>Paired with Dr. Pannozzo</b><span class="t">Chat open · call window</span></span>
         </div>
         <div class="profile">
           <button type="button" class="profile-btn" id="profile-btn" aria-haspopup="true" aria-expanded="false" aria-controls="profile-menu" onclick="toggleMenu()">
@@ -354,7 +358,7 @@
             <span class="ic" data-ic="chevrondown"></span>
           </button>
           <div class="menu" id="profile-menu">
-            <div class="mh"><b>Dolly</b><span>Medical office assistant · signed in</span><span>Works with Dr. Daniel Pannozzo. MSP claims go to Japneet, billing agent.</span></div>
+            <div class="mh"><b>Dolly</b><span>Medical office assistant</span><span>MSP claims go to Japneet.</span></div>
             <button type="button" onclick="location.href='simplecare-login.html'"><span class="ic" data-ic="logout"></span>Sign out</button>
           </div>
         </div>
@@ -368,19 +372,17 @@
         <p class="sub" id="today-sub"></p>
         <div class="strip" id="today-strip"></div>
         <div class="box" id="urgent-box">
-          <h2 class="box-title">Needs attention now <span class="tab-n" id="urgent-n"></span></h2>
-          <p class="box-note">Dr. Pannozzo marked these urgent.</p>
+          <!-- Ani, 7 Oct copy diet: box notes removed; the titles, tags and buttons say it -->
+          <h2 class="box-title">Urgent <span class="tab-n" id="urgent-n"></span></h2>
           <div id="urgent-list"></div>
         </div>
         <div class="grid2">
           <div class="box">
             <h2 class="box-title">From Dr. Pannozzo <span class="tab-n neu" id="cf-n"></span></h2>
-            <p class="box-note">Each task says what to do, for whom and why. The clinical decision is already made.</p>
             <div id="cf-list"></div>
           </div>
           <div class="box">
             <h2 class="box-title">Referrals to chase <span class="tab-n neu" id="rf-n"></span></h2>
-            <p class="box-note">Declined referrals go to the next specialist. Unanswered ones get a follow-up call.</p>
             <div id="rf-list"></div>
           </div>
         </div>
@@ -389,12 +391,11 @@
       <!-- ===== Tasks ===== -->
       <section class="screen" id="screen-tasks" aria-labelledby="h-tasks">
         <h1 id="h-tasks">Tasks</h1>
-        <p class="sub">Dr. Pannozzo sends tasks here. You reply, ask him a question on the task, or mark it done.</p>
         <div class="tabs" role="tablist" aria-label="Tasks" id="task-tabs"></div>
         <div class="box" id="task-panel" role="tabpanel"><div id="task-list"></div></div>
         <div class="box">
-          <h2 class="box-title">Need something from Dr. Pannozzo?</h2>
-          <p class="box-note">Ask in chat, by email or by phone. Only Dr. Pannozzo creates tasks.</p>
+          <h2 class="box-title">Ask Dr. Pannozzo</h2>
+          <p class="box-note">Only Dr. Pannozzo creates tasks.</p>
           <div class="ask-row">
             <button type="button" class="btn" onclick="askDoc('chat')"><span class="ic" data-ic="chat"></span>Chat</button>
             <button type="button" class="btn" onclick="askDoc('email')"><span class="ic" data-ic="inbox"></span>Email</button>
@@ -406,35 +407,30 @@
       <!-- ===== Referrals ===== -->
       <section class="screen" id="screen-referrals" aria-labelledby="h-ref">
         <h1 id="h-ref">Referrals</h1>
-        <p class="sub">Every referral from sent to booked. Declined ones come back to you to send to the next specialist.</p>
         <div class="box"><div class="pipe" id="pipe"></div></div>
       </section>
 
       <!-- ===== Imaging ===== -->
       <section class="screen" id="screen-imaging" aria-labelledby="h-img">
-        <h1 id="h-img">Imaging bookings</h1>
-        <p class="sub">Find a facility that can take the patient, then book and confirm. Dr. Pannozzo handles labs himself.</p>
+        <h1 id="h-img">Imaging</h1>
         <div class="box"><div id="img-list"></div></div>
       </section>
 
       <!-- ===== Callbacks ===== -->
       <section class="screen" id="screen-callbacks" aria-labelledby="h-call">
-        <h1 id="h-call">Patient callbacks</h1>
-        <p class="sub">First come, first served. Dr. Pannozzo can move an urgent callback to the top.</p>
+        <h1 id="h-call">Callbacks</h1>
         <div class="box"><div id="call-list"></div></div>
       </section>
 
       <!-- ===== Faxes ===== -->
       <section class="screen" id="screen-faxes" aria-labelledby="h-fax">
         <h1 id="h-fax">Fax inbox</h1>
-        <p class="sub">Incoming documents are matched to a patient and filed. Anything without a sure match waits here for you.</p>
         <div class="box"><div id="fax-list"></div></div>
       </section>
 
       <!-- ===== Directory ===== -->
       <section class="screen" id="screen-directory" aria-labelledby="h-dir">
-        <h1 id="h-dir">Specialist directory</h1>
-        <p class="sub">Who is accepting, who isn’t, and how long the wait is. Keeping it current stops referrals bouncing.</p>
+        <h1 id="h-dir">Directory</h1>
         <div class="box">
           <table class="lines">
             <thead><tr><th>Specialist</th><th>Specialty</th><th>Accepting</th><th>Wait</th><th>Notes</th><th><span class="sr">Actions</span></th></tr></thead>
@@ -499,7 +495,7 @@ var TASKS = [
   {id:'t4', type:'call', label:'Call patient', patient:'Manjit', detail:'Haemoglobin is low. Book a follow-up in the next 48 hours.', at:'2 hrs ago', status:'open', thread:[]},
   /* Daniel, 5 Oct: the MOA follows up an outstanding payment link and can escalate an unpaid one. This is the task the
      physician portal's "Ask the MOA to follow up" sends (Claims > Private pay, K Arli Eyre's form, link sent 29 Sep). */
-  {id:'t8', type:'pay', label:'Follow up payment link', patient:'K Arli Eyre', detail:'The payment link for her form, sent 29 Sep, is still unpaid. The form is released once it’s paid. Remind her, and escalate if it stays unpaid.', at:'2 Oct, 10:05 AM', status:'open', thread:[]},
+  {id:'t8', type:'pay', label:'Follow up payment link', patient:'K Arli Eyre', detail:'Form payment link (sent 29 Sep) still unpaid. Remind her; escalate if it stays unpaid.', at:'2 Oct, 10:05 AM', status:'open', thread:[]},
   {id:'t6', type:'ref', label:'Chase referral', patient:'Owen Brady', detail:'Orthopaedics referral sent 9 days ago, no acknowledgement. Call the office.', at:'yesterday', status:'mine', thread:[{who:'Dolly', kind:'Reply', text:'Left a message with Dr. Sandhu’s office. Calling again tomorrow morning.', at:'yesterday, 3:40 PM'}]},
   {id:'t7', type:'call', label:'Call patient', patient:'Greg', detail:'Confirm his pharmacy for the renewal.', at:'yesterday', status:'done', thread:[{who:'Dolly', kind:'Done', text:'Pharmacy confirmed with the patient.', at:'yesterday, 11:15 AM'}]}
 ];
@@ -543,7 +539,7 @@ var DIRECTORY = [
 function byId(list, id){ return list.filter(function(x){ return x.id === id; })[0]; }
 
 /* ============================================================ shell ============================================================ */
-var TITLES = {today:'Today', tasks:'Tasks', referrals:'Referrals', imaging:'Imaging bookings', callbacks:'Patient callbacks', faxes:'Fax inbox', directory:'Specialist directory'};
+var TITLES = {today:'Today', tasks:'Tasks', referrals:'Referrals', imaging:'Imaging', callbacks:'Callbacks', faxes:'Fax inbox', directory:'Directory'};
 function go(s){
   if(!TITLES[s]) s = 'today';
   document.querySelectorAll('.screen').forEach(function(x){ x.classList.toggle('active', x.id === 'screen-' + s); });
@@ -639,7 +635,7 @@ function taskCard(t){
   return '<div class="card' + (t.urgent && t.status !== 'done' ? ' urgent' : '') + '" id="card-' + t.id + '">' +
     '<div class="chead">' + typeTag(t) + '<b>' + esc(t.patient) + '</b><span class="chips">' + (t.urgent && t.status !== 'done' ? '<span class="tag crit">' + ic('alert') + 'Urgent</span>' : '') + '</span></div>' +
     '<p class="why">' + t.detail + '</p>' +
-    '<p class="from">From ' + DOC + ' · ' + t.at + (last ? ' · ' + (last.kind === 'Question' ? 'You asked: ' : last.kind === 'Escalated' ? 'You escalated: ' : 'Your last reply: ') + esc(last.text) : '') + '</p>' +
+    '<p class="from">From ' + DOC + ' · ' + t.at + (last ? ' · ' + (last.kind === 'Question' ? 'Asked: ' : last.kind === 'Escalated' ? 'Escalated: ' : 'Reply: ') + esc(last.text) : '') + '</p>' +
     '<div class="acts">' + acts + '</div></div>';
 }
 function renderTasks(){
@@ -654,7 +650,7 @@ function renderTasks(){
   document.getElementById('task-panel').setAttribute('aria-labelledby', 'tt-' + TASK_F);
   var rows = TASKS.filter(function(t){ return t.status === TASK_F; });
   document.getElementById('task-list').innerHTML = rows.length ? rows.map(taskCard).join('')
-    : '<p class="empty">' + ic('complete') + (TASK_F === 'done' ? 'Nothing completed yet today.' : 'Nothing here. You’re caught up.') + '</p>';
+    : '<p class="empty">' + ic('complete') + (TASK_F === 'done' ? 'None completed today.' : 'All caught up.') + '</p>';
 
   var open = TASKS.filter(function(t){ return t.status !== 'done'; });
   var urg = open.filter(function(t){ return t.urgent; });
@@ -678,40 +674,40 @@ function tabKey(e){
 function completeTask(id){
   var t = byId(TASKS, id); if(!t) return;
   t.status = 'done'; t.thread.push({who:'Dolly', kind:'Done', text:'Marked done.', at:'Today, ' + nowTime()});
-  toast('Done · ' + t.patient + '. ' + DOC + ' sees it on the task.');
+  toast('Done · ' + t.patient);
   if(STACK.length) drwClose('drw-main');
   renderTasks();
 }
 function openTask(id){
   var t = byId(TASKS, id); if(!t) return;
   var who = '<span><b>' + esc(t.patient) + '</b> · from ' + DOC + ' · ' + t.at + '</span>' + (t.urgent && t.status !== 'done' ? '<span class="tag crit">' + ic('alert') + 'Urgent</span>' : '');
-  var b = '<div class="blk"><p class="blk-k">What ' + DOC + ' asked</p><p>' + t.detail + '</p></div>';
-  if(t.type === 'pay') b += '<div class="blk">' + row('Item', 'Form') + row('Payment link', 'Sent 29 Sep · unpaid') + row('After payment', 'The form is released to the patient') +
-    '<p style="margin-top:8px">Private pay only. MSP claims go to Japneet, billing agent.</p></div>';
+  var b = '<div class="blk"><p>' + t.detail + '</p></div>';
+  if(t.type === 'pay') b += '<div class="blk">' + row('Item', 'Form') + row('Payment link', 'Sent 29 Sep · unpaid') + row('When paid', 'Form released') +
+    '<p style="margin-top:8px">Private pay only. MSP claims go to Japneet.</p></div>';
   if(t.type === 'ref'){ var r = REFERRALS.filter(function(x){ return x.patient === t.patient; })[0];
     if(r) b += '<div class="blk">' + row('Specialty', r.spec) + row('Sent to', r.to + ' · ' + r.sent) + row('Status', esc(stageLabel(r))) + '</div>'; }
-  b += '<div class="blk"><p class="blk-k">On this task</p>' + (t.thread.length
+  b += '<div class="blk"><p class="blk-k">Thread</p>' + (t.thread.length
       ? '<ul class="thread">' + t.thread.map(function(m){ return '<li><span class="w">' + m.who + ' · ' + m.kind + ' · ' + m.at + '</span>' + esc(m.text) + '</li>'; }).join('') + '</ul>'
       : '<p>No replies yet.</p>') + '</div>';
   var f = '';
   if(t.status !== 'done'){
     b += '<div class="fld"><span class="lbl" id="tk-kind-l">Write to ' + DOC + '</span><div class="radios" role="radiogroup" aria-labelledby="tk-kind-l">' +
-      '<label><input type="radio" name="tk-kind" value="Reply" checked> Reply: tell him where it stands</label>' +
-      '<label><input type="radio" name="tk-kind" value="Question"> Ask a question: you need something from him to finish</label></div></div>' +
+      '<label><input type="radio" name="tk-kind" value="Reply" checked> Reply</label>' +
+      '<label><input type="radio" name="tk-kind" value="Question"> Question</label></div></div>' +
       '<div class="fld" id="tk-fld"><label for="tk-msg">Message</label><textarea id="tk-msg" placeholder="' + (EXAMPLES[t.type] || '') + '"></textarea><p class="err">Write a message first.</p></div>' +
-      '<p class="meta">It stays on this task. Only ' + DOC + ' creates tasks.</p>';
+      '<p class="meta">Only ' + DOC + ' creates tasks.</p>';
     var x = '';
     if(t.type === 'call') x += '<button type="button" class="btn" onclick="toast(\'Calling ' + esc(t.patient) + '\')">' + ic('phone') + 'Call patient</button>';
-    if(t.type === 'pay') x += '<button type="button" class="btn" onclick="resendLink(\'' + t.id + '\')">Resend link</button><button type="button" class="btn" onclick="escalateLink(\'' + t.id + '\')">' + ic('flag') + 'Escalate unpaid link</button>';
-    if(t.type === 'ref') x += '<button type="button" class="btn" onclick="drwClose(\'drw-main\');go(\'referrals\')">' + ic('practice') + 'Go to referrals</button>';
-    if(t.type === 'img') x += '<button type="button" class="btn" onclick="drwClose(\'drw-main\');go(\'imaging\')">' + ic('calendar') + 'Go to imaging</button>';
-    if(x) b = b.replace('<div class="blk"><p class="blk-k">On this task', '<div class="ask-row" style="margin:0 0 10px">' + x + '</div><div class="blk"><p class="blk-k">On this task');
+    if(t.type === 'pay') x += '<button type="button" class="btn" onclick="resendLink(\'' + t.id + '\')">Resend link</button><button type="button" class="btn" onclick="escalateLink(\'' + t.id + '\')">' + ic('flag') + 'Escalate</button>';
+    if(t.type === 'ref') x += '<button type="button" class="btn" onclick="drwClose(\'drw-main\');go(\'referrals\')">' + ic('practice') + 'Referrals</button>';
+    if(t.type === 'img') x += '<button type="button" class="btn" onclick="drwClose(\'drw-main\');go(\'imaging\')">' + ic('calendar') + 'Imaging</button>';
+    if(x) b = b.replace('<div class="blk"><p class="blk-k">Thread', '<div class="ask-row" style="margin:0 0 10px">' + x + '</div><div class="blk"><p class="blk-k">Thread');
     f += '<button type="button" class="btn" onclick="sendReply(\'' + t.id + '\')">' + ic('chat') + 'Send</button>' +
       '<button type="button" class="btn pri" onclick="completeTask(\'' + t.id + '\')">' + ic('complete') + 'Mark done</button>';
   } else f = '<button type="button" class="btn" onclick="drwClose(\'drw-main\')">Close</button>';
-  drw(TYPES[t.type] ? TYPES[t.type].l : 'Task', esc(t.label), who, b, f, t.status !== 'done' ? '#tk-msg' : null);
+  drw('Task', esc(t.label), who, b, f, t.status !== 'done' ? '#tk-msg' : null);
 }
-var EXAMPLES = {call:'For example: Reached her. She is coming in at 2 PM with her daughter.', ref:'For example: Sent to the next specialist on the list. Calling their office Thursday.', img:'For example: Booked at Eagle Ridge, Thu 8 Oct, 9:30 AM.', pay:'For example: Reminded her by text today. She will pay this week.'};
+var EXAMPLES = {call:'Reached her. Coming in at 2 PM.', ref:'Sent to the next specialist. Calling Thursday.', img:'Booked at Eagle Ridge, Thu 8 Oct, 9:30 AM.', pay:'Texted a reminder today.'};
 function sendReply(id){
   var t = byId(TASKS, id), m = document.getElementById('tk-msg'), fld = document.getElementById('tk-fld');
   var v = (m.value || '').trim(); if(!v){ fld.classList.add('bad'); m.focus(); return; }
@@ -719,7 +715,7 @@ function sendReply(id){
   t.thread.push({who:'Dolly', kind:k, text:v, at:'Today, ' + nowTime()});
   if(t.status === 'open') t.status = 'mine';
   renderTasks(); openTask(id);
-  toast((k === 'Question' ? 'Question sent to ' : 'Reply sent to ') + DOC + ' on this task');
+  toast((k === 'Question' ? 'Question' : 'Reply') + ' sent to ' + DOC);
 }
 function resendLink(id){
   var t = byId(TASKS, id);
@@ -732,10 +728,10 @@ function resendLink(id){
    other than the doctor (e.g. a SimpleCare collections contact) receives it. */
 function escalateLink(id){
   var t = byId(TASKS, id);
-  confirmDlg('Escalate the unpaid link?', DOC + ' sees it on this task, with the reminders you’ve sent. The link stays open for the patient.', 'Escalate', function(){
+  confirmDlg('Escalate the unpaid link?', DOC + ' sees it on this task. The link stays open.', 'Escalate', function(){
     t.thread.push({who:'Dolly', kind:'Escalated', text:'Payment link still unpaid after reminders.', at:'Today, ' + nowTime()});
     if(t.status === 'open') t.status = 'mine';
-    renderTasks(); openTask(id); toast('Escalated to ' + DOC + ' on this task');
+    renderTasks(); openTask(id); toast('Escalated to ' + DOC);
   });
 }
 function askDoc(how){
@@ -744,7 +740,7 @@ function askDoc(how){
 }
 
 /* ============================================================ referrals ============================================================ */
-var STAGES = [{k:'sent', l:'Sent, waiting for a reply'}, {k:'rejected', l:'Declined, send to the next'}, {k:'accepted', l:'Accepted'}, {k:'booked', l:'Booked'}];
+var STAGES = [{k:'sent', l:'Sent'}, {k:'rejected', l:'Declined'}, {k:'accepted', l:'Accepted'}, {k:'booked', l:'Booked'}];
 function stageLabel(r){ return r.stage === 'rejected' ? 'Declined · ' + r.reason : r.stage === 'sent' ? 'Sent ' + r.sent + ' · ' + r.reason : r.reason; }
 function refTag(r){
   return r.stage === 'rejected' ? '<span class="tag warn">' + ic('alert') + 'Declined</span>'
@@ -774,18 +770,18 @@ function openRef(id){
   var d = DIRECTORY.filter(function(x){ return x.name === r.to; })[0];
   var alt = DIRECTORY.filter(function(x){ return x.spec === r.spec && x.accepting && x.name !== r.to; });
   var b = '<div class="blk">' + row('Specialty', r.spec) + row('Sent to', r.to + ' · ' + r.sent) + row('Status', esc(stageLabel(r))) +
-    (d ? row('Your note', esc(d.note)) : '') + '</div>';
+    (d ? row('Note', esc(d.note)) : '') + '</div>';
   var f = '';
   if(r.stage === 'rejected'){
     b += '<div class="fld" id="rf-fld"><label for="rf-to">Send to</label><span class="hint">' +
-      (alt.length ? 'Accepting in your directory: ' + alt.map(function(x){ return x.name + ' (' + x.wait + ' wks)'; }).join(', ') + '.'
-                  : 'No other ' + r.spec.toLowerCase() + ' specialist in your directory is accepting. Add one in the directory, or ask ' + DOC + ' in chat.') +
-      '</span><input type="text" id="rf-to" value="' + (alt[0] ? alt[0].name : '') + '" placeholder="Specialist or clinic"><p class="err">Say who it goes to.</p></div>' +
-      '<p class="meta">The referral letter and attachments go as they are. ' + DOC + ' stays responsible for the referral.</p>';
+      (alt.length ? 'Accepting: ' + alt.map(function(x){ return x.name + ' (' + x.wait + ' wks)'; }).join(', ')
+                  : 'No other ' + r.spec.toLowerCase() + ' specialist accepting. Add one, or ask ' + DOC + ' in chat.') +
+      '</span><input type="text" id="rf-to" value="' + (alt[0] ? alt[0].name : '') + '" placeholder="Specialist or clinic"><p class="err">Add a recipient.</p></div>' +
+      '<p class="meta">Letter and attachments go unchanged. ' + DOC + ' stays responsible.</p>';
     f = '<button type="button" class="btn" onclick="drwClose(\'drw-main\');go(\'directory\')">' + ic('encounterlog') + 'Directory</button>' +
-        '<button type="button" class="btn pri" onclick="reroute(\'' + r.id + '\')">Send referral</button>';
+        '<button type="button" class="btn pri" onclick="reroute(\'' + r.id + '\')">Send</button>';
   } else if(r.stage === 'sent'){
-    f = '<button type="button" class="btn" onclick="toast(\'Calling ' + esc(r.to) + '’s office\')">' + ic('phone') + 'Call the office</button>' +
+    f = '<button type="button" class="btn" onclick="toast(\'Calling ' + esc(r.to) + '’s office\')">' + ic('phone') + 'Call office</button>' +
         '<button type="button" class="btn pri" onclick="refax(\'' + r.id + '\')">Fax again</button>';
   } else f = '<button type="button" class="btn" onclick="drwClose(\'drw-main\')">Close</button>';
   drw('Referral', esc(r.patient), '<span>' + r.spec + ' · ' + r.to + '</span>' + refTag(r), b, f, r.stage === 'rejected' ? '#rf-to' : null);
@@ -814,13 +810,13 @@ function renderImaging(){
 }
 function openImg(id){
   var x = byId(IMAGING, id); if(!x) return;
-  var b = '<div class="blk">' + row('Test', x.test) + row('Area', x.area) + row('Where it stands', esc(x.note)) + '</div>', f;
-  if(x.status === 'booked') f = '<button type="button" class="btn" onclick="toast(\'Confirmation sent to ' + esc(x.patient) + '\')">Send confirmation again</button><button type="button" class="btn pri" onclick="drwClose(\'drw-main\')">Close</button>';
+  var b = '<div class="blk">' + row('Test', x.test) + row('Area', x.area) + row('Status', esc(x.note)) + '</div>', f;
+  if(x.status === 'booked') f = '<button type="button" class="btn" onclick="toast(\'Confirmation sent to ' + esc(x.patient) + '\')">Resend confirmation</button><button type="button" class="btn pri" onclick="drwClose(\'drw-main\')">Close</button>';
   else {
-    b += '<div class="fld" id="im-fld"><label for="im-where">Facility, date and time</label><span class="hint">For example: Eagle Ridge, Thu 8 Oct, 9:30 AM</span><input type="text" id="im-where"><p class="err">Add where and when.</p></div>' +
-      '<p class="meta">The patient gets the booking by text. ' + DOC + ' sees it in the chart.</p>';
-    f = (x.status === 'blocked' ? '<button type="button" class="btn" onclick="toast(\'Chat opened with ' + DOC + '\')">' + ic('chat') + 'Ask ' + DOC + ' in chat</button>' : '') +
-      '<button type="button" class="btn pri" onclick="saveImg(\'' + x.id + '\')">Save booking</button>';
+    b += '<div class="fld" id="im-fld"><label for="im-where">Facility, date and time</label><input type="text" id="im-where" placeholder="Eagle Ridge, Thu 8 Oct, 9:30 AM"><p class="err">Add where and when.</p></div>' +
+      '<p class="meta">Patient gets it by text; ' + DOC + ' sees it in the chart.</p>';
+    f = (x.status === 'blocked' ? '<button type="button" class="btn" onclick="toast(\'Chat opened with ' + DOC + '\')">' + ic('chat') + 'Ask in chat</button>' : '') +
+      '<button type="button" class="btn pri" onclick="saveImg(\'' + x.id + '\')">Save</button>';
   }
   drw('Imaging', esc(x.patient), '<span>' + x.test + ' · ' + x.area + '</span>' + imgTag(x), b, f, x.status === 'booked' ? null : '#im-where');
 }
@@ -845,15 +841,15 @@ function renderCallbacks(){
 function openCall(id){
   var c = byId(CALLBACKS, id); if(!c) return;
   var b = '<div class="blk">' + row('Why', c.reason) + row('Added', c.added) + '</div>';
-  if(c.billing) b += '<div class="notice">' + ic('claims') + '<span>Japneet, billing agent, handles MSP claims. Pass the question on, and tell the patient Japneet will follow up.</span></div>';
-  b += '<div class="fld"><span class="lbl" id="cb-l">How did it go?</span><div class="radios" role="radiogroup" aria-labelledby="cb-l">' +
-    '<label><input type="radio" name="cb-out" value="reached" checked> Reached the patient</label>' +
-    '<label><input type="radio" name="cb-out" value="vm"> Left a voicemail</label>' +
+  if(c.billing) b += '<div class="notice">' + ic('claims') + '<span>MSP question: pass it to Japneet. Tell the patient Japneet will follow up.</span></div>';
+  b += '<div class="fld"><span class="lbl" id="cb-l">Outcome</span><div class="radios" role="radiogroup" aria-labelledby="cb-l">' +
+    '<label><input type="radio" name="cb-out" value="reached" checked> Reached</label>' +
+    '<label><input type="radio" name="cb-out" value="vm"> Voicemail</label>' +
     '<label><input type="radio" name="cb-out" value="none"> No answer</label></div></div>';
   var f = '<button type="button" class="btn" onclick="toast(\'Calling ' + esc(c.patient) + '\')">' + ic('phone') + 'Call</button>' +
-    (c.billing ? '<button type="button" class="btn" onclick="toast(\'Passed to Japneet, billing agent\')">' + ic('claims') + 'Pass to Japneet</button>' : '') +
+    (c.billing ? '<button type="button" class="btn" onclick="toast(\'Passed to Japneet\')">' + ic('claims') + 'Pass to Japneet</button>' : '') +
     '<button type="button" class="btn pri" onclick="logCall(\'' + c.id + '\')">Save</button>';
-  drw('Patient callback', esc(c.patient), '<span>Added ' + c.added + '</span>' + (c.urgent ? '<span class="tag crit">' + ic('alert') + 'Urgent</span>' : ''), b, f);
+  drw('Callback', esc(c.patient), '<span>Added ' + c.added + '</span>' + (c.urgent ? '<span class="tag crit">' + ic('alert') + 'Urgent</span>' : ''), b, f);
 }
 function logCall(id){
   var c = byId(CALLBACKS, id), v = (document.querySelector('input[name="cb-out"]:checked') || {}).value;
@@ -866,9 +862,9 @@ function logCall(id){
 /* ============================================================ faxes ============================================================ */
 function renderFaxes(){
   document.getElementById('fax-list').innerHTML = FAXES.map(function(f){
-    return '<div class="card"><div class="chead"><b>' + f.doc + '</b><span class="vd">' + f.pages + ' pages · from ' + f.from + '</span><span class="chips">' +
+    return '<div class="card"><div class="chead"><b>' + f.doc + '</b><span class="vd">' + f.from + ' · ' + f.pages + ' pages</span><span class="chips">' +
       (f.ok ? '<span class="tag ok">' + ic('complete') + 'Filed · ' + esc(f.matched) + '</span>' : '<span class="tag warn">' + ic('alert') + 'Needs a patient match</span>') + '</span></div>' +
-      '<p class="meta">Received ' + f.at + '</p><div class="acts"><button type="button" class="btn' + (f.ok ? '' : ' pri') + '" onclick="openFax(\'' + f.id + '\')">' + (f.ok ? 'View' : 'Match patient') + '</button></div></div>';
+      '<p class="meta">' + f.at + '</p><div class="acts"><button type="button" class="btn' + (f.ok ? '' : ' pri') + '" onclick="openFax(\'' + f.id + '\')">' + (f.ok ? 'View' : 'Match patient') + '</button></div></div>';
   }).join('');
   document.getElementById('nav-n-fax').textContent = FAXES.filter(function(f){ return !f.ok; }).length || '';
   paint(document.getElementById('screen-faxes')); renderStrip();
@@ -876,11 +872,11 @@ function renderFaxes(){
 function openFax(id){
   var x = byId(FAXES, id); if(!x) return;
   var b = '<div class="blk">' + row('From', x.from) + row('Document', x.doc + ' · ' + x.pages + ' pages') + row('Received', x.at) + (x.ok ? row('Filed to', esc(x.matched)) : '') + '</div>', f;
-  if(x.ok) f = '<button type="button" class="btn" onclick="toast(\'Opened ' + x.doc.toLowerCase() + ' from ' + esc(x.from) + '\')">' + ic('file') + 'Open document</button><button type="button" class="btn pri" onclick="drwClose(\'drw-main\')">Close</button>';
+  if(x.ok) f = '<button type="button" class="btn" onclick="toast(\'Opened ' + x.doc.toLowerCase() + ' from ' + esc(x.from) + '\')">' + ic('file') + 'Open</button><button type="button" class="btn pri" onclick="drwClose(\'drw-main\')">Close</button>';
   else {
-    b += '<div class="fld" id="fx-fld"><label for="fx-pt">Patient</label><span class="hint">' + (x.hint ? 'The cover page names ' + esc(x.hint) + '. Confirm with a second identifier before filing.' : 'No name on the cover page. Check the report for a second identifier before filing.') + '</span>' +
-      '<input type="text" id="fx-pt" placeholder="Search by name"><p class="err">Choose the patient first.</p></div>';
-    f = '<button type="button" class="btn" onclick="toast(\'Opened ' + x.doc.toLowerCase() + ' from ' + esc(x.from) + '\')">' + ic('file') + 'Open document</button>' +
+    b += '<div class="fld" id="fx-fld"><label for="fx-pt">Patient</label><span class="hint">' + (x.hint ? 'Cover page names ' + esc(x.hint) + ' Confirm a second identifier before filing.' : 'No name on the cover page. Confirm a second identifier before filing.') + '</span>' +
+      '<input type="text" id="fx-pt" placeholder="Search by name"><p class="err">Choose a patient.</p></div>';
+    f = '<button type="button" class="btn" onclick="toast(\'Opened ' + x.doc.toLowerCase() + ' from ' + esc(x.from) + '\')">' + ic('file') + 'Open</button>' +
       '<button type="button" class="btn pri" onclick="fileFax(\'' + x.id + '\')">Match and file</button>';
   }
   drw('Fax', x.doc, '<span>From ' + x.from + ' · ' + x.at + '</span>', b, f, x.ok ? null : '#fx-pt');
@@ -904,13 +900,13 @@ function renderDirectory(){
 }
 function openDir(id){
   var d = byId(DIRECTORY, id); if(!d) return;
-  var b = '<div class="fld"><span class="lbl" id="dr-l">Accepting new referrals?</span><div class="radios" role="radiogroup" aria-labelledby="dr-l">' +
+  var b = '<div class="fld"><span class="lbl" id="dr-l">Accepting referrals?</span><div class="radios" role="radiogroup" aria-labelledby="dr-l">' +
     '<label><input type="radio" name="dr-acc" value="1"' + (d.accepting ? ' checked' : '') + '> Accepting</label>' +
     '<label><input type="radio" name="dr-acc" value="0"' + (d.accepting ? '' : ' checked') + '> Not accepting</label></div></div>' +
-    '<div class="fld"><label for="dr-wait">Wait, in weeks</label><input type="text" id="dr-wait" inputmode="numeric" value="' + (d.wait == null ? '' : d.wait) + '"></div>' +
+    '<div class="fld"><label for="dr-wait">Wait (weeks)</label><input type="text" id="dr-wait" inputmode="numeric" value="' + (d.wait == null ? '' : d.wait) + '"></div>' +
     '<div class="fld"><label for="dr-note">Notes</label><textarea id="dr-note">' + esc(d.note) + '</textarea></div>';
   var f = '<button type="button" class="btn" onclick="drwClose(\'drw-main\')">Cancel</button><button type="button" class="btn pri" onclick="saveDir(\'' + d.id + '\')">Save</button>';
-  drw('Specialist directory', esc(d.name), '<span>' + d.spec + '</span>', b, f);
+  drw('Directory', esc(d.name), '<span>' + d.spec + '</span>', b, f);
 }
 function saveDir(id){
   var d = byId(DIRECTORY, id);
@@ -927,21 +923,22 @@ function renderStrip(){
   var open = TASKS.filter(function(t){ return t.status !== 'done'; }), urg = open.filter(function(t){ return t.urgent; }).length;
   var rej = REFERRALS.filter(function(r){ return r.stage === 'rejected'; }).length;
   var cells = [
-    ['tasks', 'Open tasks', TASKS.filter(function(t){ return t.status === 'open'; }).length, (urg ? urg + ' urgent' : 'none urgent') + ' · ' + TASKS.filter(function(t){ return t.status === 'mine'; }).length + ' in progress'],
-    ['referrals', 'Referrals to send on', rej, 'declined by the specialist'],
-    ['callbacks', 'Callbacks waiting', CALLBACKS.length, 'first come, first served'],
-    ['faxes', 'Faxes to match', FAXES.filter(function(f){ return !f.ok; }).length, 'no sure match']
+    ['tasks', 'Open tasks', TASKS.filter(function(t){ return t.status === 'open'; }).length, (urg ? urg + ' urgent' : '') + (urg ? ' · ' : '') + TASKS.filter(function(t){ return t.status === 'mine'; }).length + ' in progress'],
+    ['referrals', 'Declined referrals', rej, ''],
+    ['callbacks', 'Callbacks', CALLBACKS.length, ''],
+    ['faxes', 'Faxes to match', FAXES.filter(function(f){ return !f.ok; }).length, '']
   ];
   el.innerHTML = cells.map(function(c){
     return '<button type="button" class="cell" onclick="go(\'' + c[0] + '\')"><p class="k">' + c[1] + '</p><p class="vs"><span class="v">' + c[2] + '</span><span class="s">' + c[3] + '</span></p></button>';
   }).join('');
 }
-document.getElementById('today-sub').textContent = TODAY_LABEL + '. What ' + DOC + ' has asked of you, and the referrals and bookings you’re chasing.';
+/* Ani, 7 Oct copy diet: the date only; the boxes below say what the day holds */
+document.getElementById('today-sub').textContent = TODAY_LABEL;
 
 paint();
 renderTasks(); renderReferrals(); renderImaging(); renderCallbacks(); renderFaxes(); renderDirectory();
 if(location.hash) go(location.hash.slice(1));
 </script>
-<div class="build-stamp">build 2026-10-06 22:18</div>
+<div class="build-stamp">build 2026-10-06 23:21</div>
 </body>
 </html>
