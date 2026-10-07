@@ -5630,6 +5630,20 @@
   #screen-patientchart #pcv-c.cs-v2 #vc-alerts .vca-row.crb-flash{animation:crbFlash 1.8s ease-out;}
   @keyframes crbFlash{0%,35%{box-shadow:0 0 0 3px var(--crit-line);}100%{box-shadow:0 0 0 3px transparent;}}
   @media (prefers-reduced-motion: reduce){ #screen-patientchart #pcv-c.cs-v2 #vc-alerts .vca-row.crb-flash{animation:none;box-shadow:0 0 0 3px var(--crit-line);} }
+  /* ===== Batch A (2): next patient after sign-off (lead brief, 6 Oct). A calm card at the top of the main column right
+     after a successful Sign off & finalize: "Visit signed off", the next patient by the queue's own order (qNext) with
+     their window and visit mode, Open chart (primary) and Back to Home. No colour beyond the quiet tick. ===== */
+  #screen-patientchart #pcv-c.cs-v2 #v2-done[hidden]{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-done{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:18px 20px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-done .v2d-ok{width:24px;height:24px;color:var(--good);flex:none;align-self:flex-start;margin-top:2px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-done .v2d-txt{flex:1 1 280px;min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-done h3{margin:0 0 4px;font-size:18px;font-weight:700;color:var(--ink);line-height:1.3;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-done h3:focus{outline:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-done h3:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-done .v2d-next{margin:0;font-size:15px;line-height:1.45;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-done .v2d-next .v2c-dot{color:var(--ink-soft);margin:0 4px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-done .v2d-acts{display:flex;gap:8px;flex-wrap:wrap;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-done .btn{min-height:44px;font-size:15px;display:inline-flex;align-items:center;gap:6px;}
 </style>
 </head>
 <body>
@@ -6086,6 +6100,8 @@
               <!-- Batch A (1): critical result bar, shown on every tab while a critical result is not reviewed -->
               <div id="v2-crit" hidden></div>
             </div>
+            <!-- Batch A (2): "Visit signed off" + the next patient, right after a successful sign-off -->
+            <section class="v2-card" id="v2-done" aria-labelledby="v2-done-h" hidden></section>
             <div id="v2-notices"></div>
             <div class="v2-panel" id="v2p-review" role="tabpanel" aria-labelledby="v2t-review" tabindex="-1">
               <div id="v2-ns-slot"></div>
@@ -16181,6 +16197,53 @@ function crbGo(){
 baWrap('openChart', function(){ crbRender(); });
 window.addEventListener('resize', function(){ if(CRB.html) crbRender(); });
 crbRender();
+/* ---------- (2) Next patient after sign-off (lead brief, 6 Oct) ----------
+   Right after a successful Sign off & finalize (Sign off & submit claim, Finalize, submit later, or private pay's Sign off
+   & finalize visit; all go through finalizeVisit and its gates, unchanged), the Sign off popover closes and a calm card
+   leads the main column: "Visit signed off", then the next patient by the queue's own order (qNext: the "next" row, else
+   the first waiting one; the same rule as the popover's Next patient button) with their window and visit mode, Open chart
+   (primary) and Back to Home. Nobody left: "That's everyone for now" and Back to Home. The card stays on this chart until
+   another chart opens; a signed-off chart opened later shows the usual "Signed off" header instead. */
+var NXD = {for:null};
+function nxdRender(){
+  var el = v2El('v2-done'); if(!el) return;
+  if(!v2On() || !PC_CURRENT || NXD.for !== PC_CURRENT){ el.hidden = true; el.innerHTML = ''; return; }
+  var n = typeof qNext === 'function' ? qNext() : null;
+  if(n && n.name === PC_CURRENT) n = null;
+  var dot = '<span class="v2c-dot" aria-hidden="true">&middot;</span>', h;
+  if(n){
+    var mode = (typeof csVisit === 'function' && csVisit(n.name).mode) || 'Phone';
+    h = '<p class="v2d-next">Next: <b>' + csEsc(n.legal || csBase(n.name)) + '</b>' + dot + csEsc(winLabel(n.win)) + dot + csEsc(mode) + '</p>';
+  } else h = '<p class="v2d-next">That&rsquo;s everyone for now.</p>';
+  el.innerHTML = '<span class="ic v2d-ok" data-pdic="complete"></span>' +
+    '<div class="v2d-txt"><h3 id="v2-done-h" tabindex="-1">Visit signed off</h3>' + h + '</div>' +
+    '<div class="v2d-acts">' +
+      (n ? '<button type="button" class="btn dark" id="v2-done-open"><span class="ic" data-pdic="chevr"></span>Open chart</button>' : '') +
+      '<button type="button" class="btn" id="v2-done-home"><span class="ic" data-pdic="today"></span>Back to Home</button></div>';
+  if(n) v2El('v2-done-open').onclick = function(){ openChart(n.name); var t = v2El('v2t-' + V2.tab); if(t) t.focus({preventScroll:true}); };
+  v2El('v2-done-home').onclick = function(){ showScreen('today'); };
+  el.hidden = false; paintPd(el);
+}
+function nxdFocus(){
+  var mfa = document.getElementById('t23-mfa');
+  if(mfa && mfa.classList.contains('show')) return;   /* the code check comes first; focus comes here when it closes */
+  var h = v2El('v2-done-h'); if(h && !v2El('v2-done').hidden){ var mn = v2El('v2-main'); if(mn) mn.scrollTop = 0; h.focus({preventScroll:true}); }
+}
+(function(){
+  var was = null;
+  baWrap('finalizeVisit', function(){
+    var r = typeof csRow === 'function' ? csRow() : null;
+    if(was && r && r.name === was && r.signed){
+      NXD.for = was;
+      if(typeof v2Fin === 'function') v2Fin(false, true);
+      nxdRender(); setTimeout(nxdFocus, 60);
+    }
+    was = null;
+  }, function(){ var r = typeof csRow === 'function' ? csRow() : null; was = r && !r.signed ? r.name : null; });
+  baWrap('openChart', function(r, name){ if(name !== NXD.for) NXD.for = null; nxdRender(); });
+  ['t23MfaGo','t23MfaClose'].forEach(function(n){ baWrap(n, function(){ setTimeout(function(){ var a = document.activeElement; if(NXD.for === PC_CURRENT && (!a || a === document.body || !a.getClientRects().length)) nxdFocus(); }, 90); }); });
+  baWrap('csLayout', function(){ nxdRender(); });
+})();
 </script>
   <div class="build-stamp">v2 · build 2026-10-07 02:30</div>
 </body>

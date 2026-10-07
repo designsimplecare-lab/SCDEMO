@@ -296,3 +296,10 @@ Lead brief, 6 Oct. Light only; v2 is the only chart layout. Screenshots (local o
 - **Accessibility:** `role="alert"` is set only the first time the bar appears for that chart and its set of criticals (then removed after 4 s), so switching tabs does not re-announce it. The Review button's name says what it reviews ("Review Troponin I").
 - **Measures:** bar 52 px; Review is a 36 px compact outline button (same exception as the toolbar buttons: Needs Ani). Text 15 px.
 
+### 2. Next patient after sign-off
+- **Shows:** right after a successful Sign off & finalize, the Sign off popover closes and a calm card leads the main column (above the tab content, on any tab): a quiet green tick, **Visit signed off**, then "Next: **Andrey Abushakhmanov** · 8:00–10:00 · Phone", with **Open chart** (primary) and **Back to Home** (outline). Nobody left: "That's everyone for now." and Back to Home only.
+- **Paths:** Sign off & submit claim (the card is there under the code check; focus comes to it when the check closes, whether the code is entered or cancelled), Finalize, submit later, and private pay's Sign off & finalize visit. All of them go through `finalizeVisit` and its gates (checks, empty note, template text, undecided AI text, problem-list suggestions), unchanged; the card appears only when the visit actually became signed off.
+- **Who is next:** `qNext()`, the queue's own rule and the same one the popover's Next patient button uses (the row marked "next", else the first waiting row in queue order). Window from `winLabel`, mode from the visit (Phone).
+- **Behaviour:** focus moves to the card's heading. Open chart opens that chart (on its usual start tab); the card goes when another chart opens. A signed-off chart opened later shows only the existing "Signed off" header.
+- **Measures:** buttons 44 px, text 15 px, heading 18 px.
+
