@@ -291,10 +291,12 @@
   .pcard:last-child{margin-bottom:0;}
   .pcard:hover{border-color:var(--accent);}
   .pcard b{display:block;font-size:15px;font-weight:700;}
-  .pcard span{display:block;color:var(--ink-soft);font-size:14px;}
+  .pcard > span:not(.tag){display:block;color:var(--ink-soft);font-size:14px;}
+  .pcard > .tag{display:inline-flex;}   /* fix: the tag icon sat on its own line above the label */
   .pcard .tag{height:32px;font-size:14px;padding:0 11px;margin:8px 0 6px;white-space:normal;line-height:1.3;}
   .pipe .empty{font-size:14.5px;}
   /* directory */
+  #dir-body td{vertical-align:middle;}   /* fix: names and notes sat higher than the tags in the same row */
   table.lines td.note{min-width:240px;max-width:44ch;color:var(--ink-soft);}
   table.lines td.act{text-align:right;white-space:nowrap;}
   table.lines td.act .btn{min-height:40px;padding:0 14px;}
@@ -329,10 +331,10 @@
       <!-- Daniel, 5 Oct: billing is not the MOA's work. Refused and held MSP claims go to the billing agent (Japneet) in
            simplecare-billing-portal.html, so the MOA portal has no Billing screen. -->
       <button type="button" class="nav-btn" data-screen="referrals"><span class="ic" data-ic="practice"></span><span class="lbl">Referrals</span><span class="nav-n neu" id="nav-n-ref"></span></button>
-      <button type="button" class="nav-btn" data-screen="imaging"><span class="ic" data-ic="calendar"></span><span class="lbl">Imaging bookings</span><span class="nav-n neu" id="nav-n-img"></span></button>
-      <button type="button" class="nav-btn" data-screen="callbacks"><span class="ic" data-ic="phone"></span><span class="lbl">Patient callbacks</span><span class="nav-n neu" id="nav-n-call"></span></button>
+      <button type="button" class="nav-btn" data-screen="imaging"><span class="ic" data-ic="calendar"></span><span class="lbl">Imaging</span><span class="nav-n neu" id="nav-n-img"></span></button>
+      <button type="button" class="nav-btn" data-screen="callbacks"><span class="ic" data-ic="phone"></span><span class="lbl">Callbacks</span><span class="nav-n neu" id="nav-n-call"></span></button>
       <button type="button" class="nav-btn" data-screen="faxes"><span class="ic" data-ic="inbox"></span><span class="lbl">Fax inbox</span><span class="nav-n neu" id="nav-n-fax"></span></button>
-      <button type="button" class="nav-btn" data-screen="directory"><span class="ic" data-ic="encounterlog"></span><span class="lbl">Specialist directory</span></button>
+      <button type="button" class="nav-btn" data-screen="directory"><span class="ic" data-ic="encounterlog"></span><span class="lbl">Directory</span></button>
     </nav>
     <p class="side-foot">Working with Dr. Daniel Pannozzo. MSP claims: Japneet, billing agent.</p>
   </aside>
@@ -663,7 +665,7 @@ function renderTasks(){
   document.getElementById('cf-list').innerHTML = cf.length ? cf.map(taskCard).join('') : '<p class="empty">' + ic('complete') + 'All caught up.</p>';
   document.getElementById('cf-n').textContent = cf.length;
   var nn = document.getElementById('nav-n-tasks');
-  nn.textContent = open.length || ''; nn.classList.toggle('neu', !urg.length);
+  var nOpen = TASKS.filter(function(t){ return t.status === 'open'; }); nn.textContent = nOpen.length || ''; nn.classList.toggle('neu', !nOpen.some(function(t){ return t.urgent; }));
   paint(document.getElementById('screen-today')); paint(document.getElementById('screen-tasks'));
   renderStrip();
 }
@@ -696,17 +698,20 @@ function openTask(id){
     b += '<div class="fld"><span class="lbl" id="tk-kind-l">Write to ' + DOC + '</span><div class="radios" role="radiogroup" aria-labelledby="tk-kind-l">' +
       '<label><input type="radio" name="tk-kind" value="Reply" checked> Reply: tell him where it stands</label>' +
       '<label><input type="radio" name="tk-kind" value="Question"> Ask a question: you need something from him to finish</label></div></div>' +
-      '<div class="fld" id="tk-fld"><label for="tk-msg">Message</label><textarea id="tk-msg" placeholder="For example: Reached her, she is coming in at 2 PM with her daughter."></textarea><p class="err">Write a message first.</p></div>' +
+      '<div class="fld" id="tk-fld"><label for="tk-msg">Message</label><textarea id="tk-msg" placeholder="' + (EXAMPLES[t.type] || '') + '"></textarea><p class="err">Write a message first.</p></div>' +
       '<p class="meta">It stays on this task. Only ' + DOC + ' creates tasks.</p>';
-    if(t.type === 'call') f += '<button type="button" class="btn" onclick="toast(\'Calling ' + esc(t.patient) + '\')">' + ic('phone') + 'Call patient</button>';
-    if(t.type === 'pay') f += '<button type="button" class="btn" onclick="resendLink(\'' + t.id + '\')">Resend link</button><button type="button" class="btn" onclick="escalateLink(\'' + t.id + '\')">' + ic('flag') + 'Escalate unpaid link</button>';
-    if(t.type === 'ref') f += '<button type="button" class="btn" onclick="drwClose(\'drw-main\');go(\'referrals\')">' + ic('practice') + 'Referrals</button>';
-    if(t.type === 'img') f += '<button type="button" class="btn" onclick="drwClose(\'drw-main\');go(\'imaging\')">' + ic('calendar') + 'Imaging bookings</button>';
+    var x = '';
+    if(t.type === 'call') x += '<button type="button" class="btn" onclick="toast(\'Calling ' + esc(t.patient) + '\')">' + ic('phone') + 'Call patient</button>';
+    if(t.type === 'pay') x += '<button type="button" class="btn" onclick="resendLink(\'' + t.id + '\')">Resend link</button><button type="button" class="btn" onclick="escalateLink(\'' + t.id + '\')">' + ic('flag') + 'Escalate unpaid link</button>';
+    if(t.type === 'ref') x += '<button type="button" class="btn" onclick="drwClose(\'drw-main\');go(\'referrals\')">' + ic('practice') + 'Go to referrals</button>';
+    if(t.type === 'img') x += '<button type="button" class="btn" onclick="drwClose(\'drw-main\');go(\'imaging\')">' + ic('calendar') + 'Go to imaging</button>';
+    if(x) b = b.replace('<div class="blk"><p class="blk-k">On this task', '<div class="ask-row" style="margin:0 0 10px">' + x + '</div><div class="blk"><p class="blk-k">On this task');
     f += '<button type="button" class="btn" onclick="sendReply(\'' + t.id + '\')">' + ic('chat') + 'Send</button>' +
       '<button type="button" class="btn pri" onclick="completeTask(\'' + t.id + '\')">' + ic('complete') + 'Mark done</button>';
   } else f = '<button type="button" class="btn" onclick="drwClose(\'drw-main\')">Close</button>';
   drw(TYPES[t.type] ? TYPES[t.type].l : 'Task', esc(t.label), who, b, f, t.status !== 'done' ? '#tk-msg' : null);
 }
+var EXAMPLES = {call:'For example: Reached her. She is coming in at 2 PM with her daughter.', ref:'For example: Sent to the next specialist on the list. Calling their office Thursday.', img:'For example: Booked at Eagle Ridge, Thu 8 Oct, 9:30 AM.', pay:'For example: Reminded her by text today. She will pay this week.'};
 function sendReply(id){
   var t = byId(TASKS, id), m = document.getElementById('tk-msg'), fld = document.getElementById('tk-fld');
   var v = (m.value || '').trim(); if(!v){ fld.classList.add('bad'); m.focus(); return; }
@@ -922,7 +927,7 @@ function renderStrip(){
   var open = TASKS.filter(function(t){ return t.status !== 'done'; }), urg = open.filter(function(t){ return t.urgent; }).length;
   var rej = REFERRALS.filter(function(r){ return r.stage === 'rejected'; }).length;
   var cells = [
-    ['tasks', 'Open tasks', open.length, urg ? urg + ' urgent' : 'none urgent'],
+    ['tasks', 'Open tasks', TASKS.filter(function(t){ return t.status === 'open'; }).length, (urg ? urg + ' urgent' : 'none urgent') + ' · ' + TASKS.filter(function(t){ return t.status === 'mine'; }).length + ' in progress'],
     ['referrals', 'Referrals to send on', rej, 'declined by the specialist'],
     ['callbacks', 'Callbacks waiting', CALLBACKS.length, 'first come, first served'],
     ['faxes', 'Faxes to match', FAXES.filter(function(f){ return !f.ok; }).length, 'no sure match']
@@ -937,6 +942,6 @@ paint();
 renderTasks(); renderReferrals(); renderImaging(); renderCallbacks(); renderFaxes(); renderDirectory();
 if(location.hash) go(location.hash.slice(1));
 </script>
-<div class="build-stamp">build 2026-10-06 22:16</div>
+<div class="build-stamp">build 2026-10-06 22:18</div>
 </body>
 </html>
