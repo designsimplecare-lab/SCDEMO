@@ -280,7 +280,7 @@ Patient summary (one card): Medications · History · Pending · Since you last 
 1. "At home in BC" records the place as "At home in BC" (not the last known town, which the demo takes from the pharmacy and may not be home).
 2. Location options stack (three full-width rows) because three choices do not fit side by side in the 312 px column at 14 px.
 3. During this patient's call the card's Call button is hidden (the widget is the call); afterwards it is "Call again" as an outline.
-4. ~~The widget sits in the top bar~~ Moved to the bottom right beside the MOA chat (Ani, 6 Oct, second pass). If the MOA chat panel is opened it can sit over the widget; the chat panel closes back to the button.
+4. ~~The widget sits in the top bar~~ Moved to the bottom right beside the MOA chat (Ani, 6 Oct, second pass). ~~If the MOA chat panel is opened it can sit over the widget~~ Fixed in Batch A (5b): the widget moves beside the open panel.
 
 
 ## Batch A, 7 Oct
@@ -314,4 +314,17 @@ Lead brief, 6 Oct. Light only; v2 is the only chart layout. Screenshots (local o
 - **Anywhere:** G then H / C / E / T / I (within 1.5 s) = Home / Claims / Earnings / Tasks / Inbox; ? = the shortcuts drawer.
 - **When they fire:** plain keys only when focus is not in a text field, select or editable area, with no ⌘, Ctrl or Alt held, and never while a drawer, the code check or another overlay is open (1 / 2 / 3 and C also wait while the Sign off popover is open). ⌘/Ctrl+S and ⌘/Ctrl+Enter work on the chart from anywhere except other text fields; they also work from the note itself, so the doctor can save or sign off without leaving it. Other browser combos are untouched.
 - **Shortcuts drawer:** the shared side drawer (focus in, trap, Escape, focus back), two lists (In a chart, Anywhere) with key caps (14 px) and plain descriptions (15 px). ⌘ on a Mac, Ctrl elsewhere. A discreet "Keyboard shortcuts" item (Mage keyboard icon) in the profile menu opens it too.
+
+### 5. Small fixes
+- **(a) Refused claim dates.** Checked every claim with an MSP response (refused, disputed, adjusted, held, closed) and every claim waiting for submission: the Claims list (each tab and All), the claim drawer (header chip, MSP response, deadline line, "How we count this") and the chips all read the same refusal date and days left from one source (`c.msp.on` through `t23LastDay` / `t23DaysLeft`). Behdis Maleki's refused claim (12 Sep visit) reads **Refused 29 Sep · 86 days left** (last day Mon 28 Dec) in the list, the drawer and the chip. No change was needed in the portal. The "Refused 26 Sep · 83 days left (to 25 Dec)" wording is in `product/specs/billing-redesign.md` (lines 358–359, 719, 753), not in the portal; the billing portal (`b06`) also uses 29 Sep. The spec needs its owner to update it (Needs lead).
+- **(b) MOA chat panel and the call widget.** While the chat panel is open and would overlap the floating call widget, the widget moves to the panel's left, bottom-aligned as before (1440: widget 542–1004, panel 1016–1416; 1280: 382–844 vs 856–1256); when the panel is dragged so there is no room beside the rail, the widget sits 12 px above it. It slides back when the panel closes (0.18 s; none with reduced motion). Re-placed on open, close, drag and resize.
+
+### Proof (headless Chrome, light, 1440 × 900 and 1280 × 800, `?nologin=1`)
+All inline scripts pass `node --check`; the console was clean in every run. Gloria: the bar on Note, Orders and Review, still in place with the main column scrolled 400–500 px; Review from the Note tab → Review tab, focus on "Review result" for Troponin I (in view); Accept & assign and back → the bar is gone. Sign-off: Andrey (Finalize, submit later), Carol-Anne (Sign off & submit claim, code check, then the card with focus), Greg (private pay), Gloria end to end (critical reviewed from the bar, checks, note, problem-list suggestions dismissed) → "Next: Andrey Abushakhmanov · 8:00–10:00 · Phone", Open chart opens Andrey; with no one waiting → "That's everyone for now", Back to Home. Rail: badges Claims 13, Tasks 1 (and they follow a changed count), floating label on hover and keyboard focus, buttons 46 px on hover, active and focus, no black slice. Shortcuts: 1/2/3, C (call starts; during a call focus moves to the widget), ⌘S (Draft saved), ⌘Enter (popover opens on the first missing check, nothing signed), Escape, G then C/E/T/I/H, ?, the profile menu item; typing "1cgh" in the note only types. Screenshots: `batchA-critical-note.png`, `batchA-next-patient.png`, `batchA-rail.png`, `batchA-shortcuts.png` (plus `-1280` versions).
+
+### Needs Ani
+1. The bar's Review button and the compact buttons are 36 px (the bar is meant to be slim); 44 px would make the bar 60 px.
+2. The bar shows only "not reviewed" criticals. A critical that is reviewed but not signed off stays in Needs attention only. OK?
+3. Single-key C starts a call straight away (calls go outward only). Keep, or ask first?
+4. The "Visit signed off" card stays at the top of that chart until another chart opens (no close button). OK?
 
