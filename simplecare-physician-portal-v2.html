@@ -5934,6 +5934,23 @@
   #screen-patientchart .v2-team .v2-tk{font-size:14px;color:var(--ink-soft);}
   #screen-patientchart .v2-team .v2-tv{font-size:14px;color:var(--ink);}
   #screen-patientchart .v2-team .v2-you{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:10px;background:var(--wash);color:var(--ink-soft);font-size:14px;}
+
+  /* Lab orders in the Orders tab (Ani, 7 Oct) */
+  #screen-patientchart .v2-lo{margin-top:16px;}
+  #screen-patientchart .v2-loh{margin:0 0 8px;font-size:15px;font-weight:600;color:var(--ink);}
+  .lo2{padding:12px 0;border-top:1px solid var(--line);}
+  .lo2:first-child{border-top:0;}
+  .lo2-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:15px;}
+  .lo2-d,.lo2-q{color:var(--ink-soft);font-size:14px;}
+  .lo2-q{margin:4px 0 0;}
+  .lo2-n{font-size:14px;padding:2px 8px;border-radius:10px;background:var(--wash);color:var(--ink-soft);}
+  .lo2-s{margin-left:auto;font-size:14px;padding:3px 10px;border-radius:12px;background:var(--wash);color:var(--ink-soft);}
+  .lo2-s.ok{color:var(--ink);} .lo2-s.warn{background:var(--tag-warn-bg,#FBF3E3);color:var(--ink);}
+  .lo2-rv{margin-top:4px;font-size:14px;}
+  .lo2-t{margin-top:4px;font-size:14px;color:var(--ink-soft);}
+  .lo2-t summary{cursor:pointer;}
+  .lo2-t ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px;}
+  .lo2-t li{display:flex;justify-content:space-between;gap:10px;color:var(--ink);}
 </style>
 </head>
 <body>
@@ -6430,6 +6447,7 @@
                   <button type="button" class="v2-orow" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pdic="taskmoa"></span><span class="v2-ot"><b>Task</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="toast('Message to the patient started')"><span class="ic" data-pdic="chat"></span><span class="v2-ot"><b>Message</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                 </div>
+                <section class="v2-lo" aria-labelledby="v2-lo-h"><h4 class="v2-loh" id="v2-lo-h">Lab orders</h4><div class="lab-orders-mount" data-v2="1"></div></section>
                 <p class="v2-ord-done" id="v2-ord-done" hidden>This visit is signed off, so its orders are closed.</p>
               </section>
               <div id="v2-rx-slot"></div>
@@ -6505,9 +6523,6 @@
               <div class="vc-block" id="vc-resrail" hidden></div>
               <!-- Daniel, 26 Sep: "I get my patient's to work." Hidden when the patient has reported nothing. -->
               <div class="vc-block" id="vc-pr" hidden></div>
-              <h4 class="cs-h4">Orders</h4>
-              <p class="lo-legend">What was ordered and where each test stands.</p>
-              <div class="lab-orders-mount"></div>
             </div>
             <div class="cs-pane" id="csp-medications" role="tabpanel" aria-labelledby="cst-medications" tabindex="-1" hidden>
               <div class="vc-block" id="vc-medrail"></div>
@@ -11323,37 +11338,35 @@ var LAB_PANELS = [
 
 function renderLabOrders(){
   var mounts = document.querySelectorAll('.lab-orders-mount'); if(!mounts.length) return;
-  var html = LAB_ORDERS.map(function(o){
-    var head = '<div class="lo-hd">'+
-      '<div><p class="lo-label">'+o.label+(o.standing?' <span class="lo-standing">Standing order</span>':'')+'</p>'+
-      '<p class="lo-sub">Ordered '+o.ordered+(o.collection?' &middot; '+o.collection:'')+'</p></div>'+
-      (o.standing?'<div class="lo-prog"><b>'+o.progress.done+' of '+o.progress.total+'</b><span>received</span></div>':'')+
+  /* Ani, 7 Oct: compact, current style, this patient's orders only (it used to list every patient's orders in every chart).
+     One plain status per order; tests behind a toggle; chips only where a test differs. */
+  var who = (typeof PC_CURRENT !== 'undefined' && PC_CURRENT) ? PC_CURRENT : null;
+  var first = function(s){ return String(s || '').split(/[ ,]/)[0].toLowerCase(); };
+  var mine = LAB_ORDERS.filter(function(o){ return !who || o.patient === who || first(o.patient) === first(who); });
+  var yr = function(d){ return String(d || '').replace(/, 2026$/, ''); };
+  var status = function(o){
+    if(o.lapsed) return ['Expired · new requisition needed', 'warn'];
+    if(o.fulfilmentTone === 'bad') return ['Not sent · resend', 'warn'];
+    if(o.fulfilmentTone === 'warn') return ['With patient · receipt unconfirmed', 'neutral'];
+    return ['Sent to lab' + (o.validUntil && o.validUntil !== '—' ? ' · valid to ' + yr(o.validUntil).replace(/, 2027$/, ' 2027') : ''), 'ok'];
+  };
+  var html = mine.length ? mine.map(function(o){
+    var st = status(o), rev = o.tests.filter(function(t){ return t.st === 'await_review'; }).length;
+    var common = o.tests.length && o.tests.every(function(t){ return t.st === o.tests[0].st; }) ? o.tests[0].st : null;
+    var tests = '<details class="lo2-t"><summary>' + o.tests.length + (o.tests.length === 1 ? ' test' : ' tests') + '</summary><ul>' +
+      o.tests.map(function(t){ var s = TEST_STATE[t.st] || {label:'', tone:''};
+        return '<li><span>' + t.n + '</span>' + (common ? '' : '<span class="st st-' + s.tone + '">' + s.label + '</span>') + '</li>'; }).join('') +
+      '</ul>' + (common && TEST_STATE[common] && common !== 'await_review' ? '<p class="lo2-q">All: ' + TEST_STATE[common].label.toLowerCase() + '</p>' : '') + '</details>';
+    return '<div class="lo2' + (st[1] === 'warn' ? ' warn' : '') + '">' +
+      '<div class="lo2-h"><b>' + o.label + '</b><span class="lo2-d">' + yr(o.ordered) + '</span>' +
+        (o.standing ? '<span class="lo2-n">' + o.progress.done + '/' + o.progress.total + ' received</span>' : '') +
+        '<span class="lo2-s ' + st[1] + '">' + st[0] + '</span></div>' +
+      (o.window ? '<p class="lo2-q">' + String(o.window).replace(/^Collection window /, 'Collect ') + '</p>' : '') +
+      (rev ? '<button type="button" class="cs-link lo2-rv" onclick="if(typeof v2Tab===\'function\')v2Tab(\'review\',true)">' + rev + ' to review</button>' : '') +
+      tests +
+      ((o.unmapped || []).length ? '<p class="lo2-q">Also received: ' + o.unmapped.map(function(u){ return u.n; }).join(', ') + ' (not ordered)</p>' : '') +
     '</div>';
-
-    // fulfilment + validity are order-level facts, kept separately legible
-    var facts = '<div class="lo-facts">'+
-      '<span class="lo-fact '+o.fulfilmentTone+'"><i>Requisition</i>'+o.fulfilment+'</span>'+
-      '<span class="lo-fact'+(o.lapsed?' bad':'')+'"><i>Valid until</i>'+o.validUntil+'</span>'+
-      (o.window?'<span class="lo-fact"><i>Collection</i>'+o.window+'</span>':'')+
-    '</div>';
-
-    var cond = o.orderCondition ? '<p class="lo-cond">'+o.orderCondition+'</p>' : '';
-    var note = o.note ? '<p class="lo-note">'+o.note+'</p>' : '';
-
-    var tests = '<div class="lo-tests">'+ o.tests.map(function(t){
-      var st = TEST_STATE[t.st];
-      return '<div class="lo-test"><span class="lo-tn">'+t.n+'</span>'+
-        '<span class="st st-'+st.tone+'">'+st.label+'</span>'+
-        (t.why?'<span class="lo-why">'+t.why+'</span>':'')+'</div>';
-    }).join('') +'</div>';
-
-    var unmapped = (o.unmapped||[]).length
-      ? '<div class="lo-unmapped"><b>Unmapped in this delivery</b>'+
-        o.unmapped.map(function(u){ return '<span>'+u.n+' &mdash; '+u.why+'</span>'; }).join('')+'</div>'
-      : '';
-
-    return '<div class="lo'+(o.lapsed||o.fulfilmentTone==='bad'?' flagged':'')+'">'+head+facts+cond+note+tests+unmapped+'</div>';
-  }).join('');
+  }).join('') : '<p class="lo2-q">No lab orders.</p>';
   mounts.forEach(function(m){ m.innerHTML = html; });
 }
 function renderLabPanels(){
@@ -15510,7 +15523,8 @@ function v2Tab(tab, focus){
   var root = v2El('pcv-c');
   if(tab === 'orders' && root.classList.contains('cs-ns-on')) tab = 'review';
   V2.tab = tab;
-  root.setAttribute('data-v2tab', tab);   /* Ani, 7 Oct: the critical bar hides on Review, where the card itself is */
+  root.setAttribute('data-v2tab', tab);
+  if(tab === 'orders' && typeof renderLabOrders === 'function') renderLabOrders();   /* Ani, 7 Oct: the critical bar hides on Review, where the card itself is */
   V2_TABS.forEach(function(k){
     var b = v2El('v2t-' + k), p = v2El('v2p-' + k), on = k === tab;
     if(b){ b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; }
@@ -17505,6 +17519,6 @@ baWrap('showScreen', function(r, name){ if(name === 'today') hsdRender(); });
 hsdRender();
 setInterval(function(){ var s = document.getElementById('screen-today'); if(s && s.classList.contains('active')) hsdRender(); }, 60000);   /* the next window moves with the clock */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 10:20</div>
+  <div class="build-stamp">v2 · build 2026-10-07 11:00</div>
 </body>
 </html>
