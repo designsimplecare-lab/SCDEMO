@@ -5458,6 +5458,39 @@
   #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sb .v2-q,#screen-patientchart #pcv-c.cs-v2 #v2-sum #slv .cs-since li{font-size:14px;line-height:20px;}
   #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-src-l{border-top-color:var(--line-strong);}
   #screen-patientchart #pcv-c.cs-v2 #v2-sum #slv .cs-since li + li{border-top-color:var(--line-strong);}
+  /* This visit (Ani, 6 Oct): mode and callback on one line; checks as compact rows answered inline, one tap each */
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit h3:focus{outline:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit h3:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-vline{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;margin:0;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-vk{font-size:14px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-dot{color:var(--ink-faint);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-checks{display:grid;gap:0;margin:12px 0 0;padding:4px 0 0;border-top:1px solid var(--line);list-style:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-checks .v2-ckr{display:grid;grid-template-columns:18px minmax(0,1fr) auto;align-items:start;gap:0 10px;min-height:0;padding:8px 0;font-size:15px;line-height:22px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-ckr > .ic,#screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-ckr > .ic svg{width:18px;height:18px;margin-top:2px;flex:none;color:var(--ink-faint);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-ckr.todo > .ic{color:var(--tag-warn-ic);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-ckb{display:grid;min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-ckr .v2-ck{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-ckr.todo .v2-ck{font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-ckr .v2-cv{display:block;flex:none;font-size:15px;line-height:22px;color:var(--ink);text-align:left;white-space:normal;overflow:visible;overflow-wrap:anywhere;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-hint{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-opts{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-opt{display:inline-flex;align-items:center;height:40px;padding:0 12px;border:0;border-radius:10px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line-strong);
+    font:inherit;font-size:14px;font-weight:500;line-height:18px;color:var(--ink);white-space:nowrap;cursor:pointer;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-opt:hover{background:var(--wash);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-opt[aria-pressed="true"]{background:var(--accent-wash);box-shadow:inset 0 0 0 1px var(--accent);color:var(--accent-ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-fld{display:grid;gap:4px;margin:8px 0 2px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-fld label{font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-fldr{display:flex;gap:6px;min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-fldr > *{margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-opts.v2-stack{display:grid;justify-items:stretch;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-opts.v2-stack .v2-opt{justify-content:flex-start;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-fldr input{flex:1 1 0;width:0;min-width:0;height:44px;box-sizing:border-box;padding:0 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--panel);
+    font:inherit;font-size:15px;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-fldr input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-save{flex:none;height:44px;min-width:0;padding:0 14px;font-size:15px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-chg{align-self:center;margin:0 -6px 0 0;font-size:14px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-chg:hover{color:var(--ink);}
   @media (max-width:1360px){
     #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sb{padding-left:16px;}
   }
@@ -12617,24 +12650,42 @@ function csPop(key){
   });
 }
 function csConfirm(key){
-  var v = csVisit(PC_CURRENT), msg = '';
+  var a = {};
   if(key === 'loc'){
     var i = document.getElementById('cs-p-loc'), t = (i.value || '').trim(); if(!t){ i.focus(); return; }
-    /* a place outside BC raises the notice that can't be dismissed */
-    if(/\bBC\b|British Columbia/i.test(t)){ v.place = t; v.outside = false; } else { v.placeOut = t; v.outside = true; }
-    v.location = true; msg = 'Location confirmed: ' + t;
+    a = {text:t};
   } else if(key === 'oth'){
-    var rb = document.querySelector('input[name=cs-oth]:checked'), who = 'None, patient alone';
+    var rb = document.querySelector('input[name=cs-oth]:checked'), who = '';
     if(rb && rb.value === 'someone'){ var w = document.getElementById('cs-p-who'); who = (w.value || '').trim(); if(!who){ w.focus(); return; } }
+    a = {who:who};
+  } else if(key === 'id'){
+    var m = document.querySelector('input[name=cs-id]:checked'); a = {method: m ? m.value.replace('&rsquo;','’') : 'Verified'};
+  }
+  csApplyCheck(key, a);
+  var next = document.querySelector('#cs-finwhy li.todo button') || document.getElementById('vc-finalize');
+  if(next && !next.hidden) next.focus();
+}
+/* Ani, 6 Oct: the one place a visit check is recorded. The Sign off popover's forms and the inline answers in v2's
+   This visit card both call it, so the state, the outside-BC notice, "N checks left" and the Finalize gate are shared.
+   loc: {text, kind: 'home' | 'bc' | 'out'} (no kind: a typed place, BC or not by its words, as before);
+   oth: {who} (empty = the patient is alone); id: {method}; con: {}. */
+function csApplyCheck(key, a){
+  var v = csVisit(PC_CURRENT), msg = '';
+  a = a || {};
+  if(key === 'loc'){
+    var t = a.text, k = a.kind || (/\bBC\b|British Columbia/i.test(t) ? 'bc' : 'out');
+    /* a place outside BC raises the notice that can't be dismissed */
+    if(k === 'out'){ v.placeOut = t; v.outside = true; } else { v.place = t; v.outside = false; }
+    v.locKind = k; v.location = true; msg = 'Location confirmed: ' + t;
+  } else if(key === 'oth'){
+    var who = a.who || 'None, patient alone';
     v.others = true; v.othersText = who; msg = 'Others present: ' + who;
   } else if(key === 'id'){
-    var m = document.querySelector('input[name=cs-id]:checked'); v.id = (m ? m.value.replace('&rsquo;','’') : 'Verified') + ', today ' + csNow(); msg = 'Identity verified';
+    v.id = (a.method || 'Verified') + ', today ' + csNow(); msg = 'Identity verified';
   } else { v.consent = 'Verbal, today ' + csNow(); msg = 'Consent recorded'; }
   CS.pop = null;
   csAfterStrip();
   csSay(msg + (csStripDone(PC_CURRENT) ? '. This visit is complete.' : '.'));
-  var next = document.querySelector('#cs-finwhy li.todo button') || document.getElementById('vc-finalize');
-  if(next && !next.hidden) next.focus();
 }
 function csAfterStrip(){ csRenderStrip(PC_CURRENT); csRenderNotices(PC_CURRENT); csFinState(); }
 
@@ -14688,21 +14739,93 @@ function v2RenderSide(name){
   }
 }
 
-/* ---------- This visit: mode and callback, the checks as a short list ---------- */
+/* ---------- This visit: mode and callback on one line, the checks as compact rows ----------
+   Ani, 6 Oct: answer the checks right here, one tap each, instead of chips that open a popover. Done = a quiet tick with
+   its value on its own line (no truncation). Answers go through csApplyCheck, the same function the Sign off popover's
+   forms use, so "N checks left" and the Finalize gate update at once and stay exactly as they were. */
+V2.pick = {};
+var V2_ID = [['BC Services Card','BC Services Card'], ['Driver’s licence','Driver’s licence'], ['Name, DOB and PHN','Name, date of birth and PHN confirmed']];
+function v2Dot(t){ return csEsc(String(t || '').replace(/, (?=[^,]*$)/, ' · ')); }
+function v2Opt(label, on, pressed){
+  return '<button type="button" class="v2-opt"' + (pressed === undefined ? '' : ' aria-pressed="' + pressed + '"') + ' onclick="' + on + '">' + label + '</button>';
+}
+function v2CheckRow(name, k, signed){
+  var v = csVisit(name), lab = {loc:'Location', id:'ID verified', con:'Consent', oth:'Others present'}[k];
+  var val = k === 'loc' ? (v.location ? (v.outside ? 'Outside BC · ' + csEsc(v.placeOut) : csEsc(v.place)) : '')
+    : k === 'id' ? (v.id ? v2Dot(v.id) : '') : k === 'con' ? (v.consent ? v2Dot(v.consent) : '')
+    : (v.others ? csEsc(v.othersText === 'None, patient alone' ? 'No one, patient alone' : v.othersText) : '');
+  if(val){
+    /* asked on every call, so a mis-tap can be changed until sign-off */
+    var chg = !signed && (k === 'loc' || k === 'oth') ? '<button type="button" class="cs-link v2-chg" onclick="v2Undo(\'' + k + '\')" aria-label="Change ' + lab.toLowerCase() + '">Change</button>' : '';
+    return '<li class="v2-ckr ok">' + csIc('complete') + '<span class="v2-ckb"><span class="v2-ck">' + lab + '</span><span class="v2-cv">' + val + '</span></span>' + chg + '</li>';
+  }
+  var pick = V2.pick[k], h = '', fld = '';
+  if(k === 'loc'){
+    h = (v.lastPlace ? '<span class="v2-hint">Last known: ' + csEsc(v.lastPlace) + '</span>' : '<span class="v2-hint">Ask on every call.</span>') +
+      '<span class="v2-opts v2-stack" role="group" aria-labelledby="v2-ckl-loc">' + v2Opt('At home in BC', "v2Ans('loc','home')") +
+      v2Opt('Elsewhere in BC', "v2Pick('loc','bc')", pick === 'bc') + v2Opt('Outside BC', "v2Pick('loc','out')", pick === 'out') + '</span>';
+    if(pick) fld = v2Field('loc', pick === 'bc' ? 'Where in BC?' : 'Where is the patient?', pick === 'out' ? v.placeOut : '');
+  } else if(k === 'oth'){
+    h = '<span class="v2-hint">Is anyone else on the call?</span><span class="v2-opts" role="group" aria-labelledby="v2-ckl-oth">' +
+      v2Opt('No one', "v2Ans('oth','alone')") + v2Opt('Someone', "v2Pick('oth','someone')", pick === 'someone') + '</span>';
+    if(pick) fld = v2Field('oth', 'Who, and their relationship', '');
+  } else if(k === 'id'){
+    h = '<span class="v2-opts" role="group" aria-labelledby="v2-ckl-id">' + V2_ID.map(function(m, i){ return v2Opt(m[0], "v2Ans('id'," + i + ")"); }).join('') + '</span>';
+  } else {
+    h = '<span class="v2-hint">The patient agrees to a virtual visit today.</span><span class="v2-opts">' + v2Opt('Record verbal consent', "v2Ans('con')") + '</span>';
+  }
+  return '<li class="v2-ckr todo" id="v2-ck-' + k + '">' + csIc('alert') + '<span class="v2-ckb"><span class="v2-ck" id="v2-ckl-' + k + '">' + lab +
+    '<span class="vh">, not done</span></span>' + h + fld + '</span></li>';
+}
+function v2Field(k, label, val){
+  return '<span class="v2-fld"><label for="v2-in-' + k + '">' + label + '</label><span class="v2-fldr"><input type="text" id="v2-in-' + k + '" autocomplete="off" value="' + csEsc(val || '') + '" onkeydown="v2Key(event,\'' + k + '\')">' +
+    '<button type="button" class="btn dark v2-save" onclick="v2Save(\'' + k + '\')">Save</button></span></span>';
+}
+function v2Pick(k, val){
+  V2.pick[k] = V2.pick[k] === val ? null : val;
+  v2RenderVisit(PC_CURRENT);
+  var i = v2El('v2-in-' + k); if(i){ i.focus(); i.select(); }
+}
+function v2Key(e, k){
+  if(e.key === 'Enter'){ e.preventDefault(); v2Save(k); }
+  if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); V2.pick[k] = null; v2RenderVisit(PC_CURRENT); csFocus('#v2-ck-' + k + ' .v2-opt'); }
+}
+function v2Save(k){
+  var i = v2El('v2-in-' + k), t = i ? (i.value || '').trim() : '';
+  if(!t){ if(i) i.focus(); return; }
+  if(k === 'loc'){
+    var kind = V2.pick.loc;
+    if(kind === 'bc' && !/\bBC\b|British Columbia/i.test(t)) t += ', BC';
+    v2Ans('loc', kind, t);
+  } else v2Ans('oth', 'someone', t);
+}
+function v2Ans(k, val, text){
+  var v = csVisit(PC_CURRENT), a = {};
+  if(k === 'loc') a = {kind:val, text: val === 'home' ? 'At home in BC' : text};
+  else if(k === 'oth') a = {who: val === 'alone' ? '' : text};
+  else if(k === 'id') a = {method: V2_ID[val][1]};
+  V2.pick[k] = null;
+  csApplyCheck(k, a);
+  v2NextCheck(k);
+}
+function v2Undo(k){
+  var v = csVisit(PC_CURRENT);
+  if(k === 'loc'){ v.location = false; v.outside = false; v.locKind = null; }
+  else { v.others = false; v.othersText = ''; }
+  csAfterStrip();
+  csFocus('#v2-ck-' + k + ' .v2-opt');
+}
+/* after an answer, focus moves to the next open check, or to the card title once all are done */
+function v2NextCheck(){
+  var n = document.querySelector('#v2-visit .v2-ckr.todo .v2-opt');
+  if(n) n.focus(); else { var h = v2El('v2-visit-h'); if(h) h.focus(); }
+}
 function v2RenderVisit(name){
   var el = v2El('v2-visit'); if(!v2On() || !el || !name) return;
   var v = csVisit(name), r = csRow(), ns = csNoShow(name), signed = !!(r && r.signed);
-  var all = [['loc','Location', v.location ? csPlace(name) : ''], ['id','ID verified', v.id], ['con','Consent', v.consent],
-             ['oth','Others present', v.others ? (v.othersText || 'None, patient alone') : '']];
-  var h = '<div class="v2-ch">' + csIc('phone') + '<h3 id="v2-visit-h">This visit</h3></div>' +
-    '<dl class="v2-pair"><div><dt>Visit</dt><dd>' + csEsc(v.mode) + '</dd></div><div><dt>Callback</dt><dd class="pc-mono">' + csEsc(v.callback) + '</dd></div></dl>';
-  if(!ns){
-    /* done = a quiet tick; missing = one tonal chip, which opens its form by Finalize (the one checklist) */
-    h += '<ul class="v2-checks" aria-label="Visit checks">' + all.map(function(x){
-      if(x[2]) return '<li class="ok">' + csIc('complete') + '<span class="v2-ck">' + x[1] + '</span><span class="v2-cv" title="' + csEsc(x[2]) + '">' + csEsc(x[2]) + '</span></li>';
-      return '<li><button type="button" class="v2-chip warn v2-chipbtn" aria-haspopup="dialog" aria-label="' + x[1] + ': not done. Complete it" onclick="csGoStrip(\'' + x[0] + '\')">' + csIc('alert') + x[1] + '</button></li>';
-    }).join('') + '</ul>';
-  }
+  var h = '<div class="v2-ch">' + csIc('phone') + '<h3 id="v2-visit-h" tabindex="-1">This visit</h3></div>' +
+    '<p class="v2-vline"><span>' + csEsc(v.mode) + '</span><span class="v2-dot" aria-hidden="true">&middot;</span><span><span class="v2-vk">Callback</span> <span class="pc-mono">' + csEsc(v.callback) + '</span></span></p>';
+  if(!ns) h += '<ul class="v2-checks" aria-label="Visit checks">' + ['loc','id','con','oth'].map(function(k){ return v2CheckRow(name, k, signed); }).join('') + '</ul>';
   el.innerHTML = h; paintPd(el);
 }
 
@@ -14839,7 +14962,7 @@ function v2RxFocus(){
      signed-off visit on Review. Review keeps its badge. */
   var open0 = window.openChart;
   window.openChart = function(name){
-    v2Fin(false, true); V2.open = {};
+    v2Fin(false, true); V2.open = {}; V2.pick = {};
     V2.booting = true;
     try { open0.apply(this, arguments); } finally { V2.booting = false; }
     if(v2On()){ v2Secs(); V2.tabFor = name; v2Tab(v2StartTab(name)); v2Render(); v2Stick(true); }
@@ -15387,6 +15510,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 23:10</div>
+  <div class="build-stamp">v2 · build 2026-10-06 23:20</div>
 </body>
 </html>
