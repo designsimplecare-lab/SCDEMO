@@ -1,6 +1,6 @@
 # Chart shell: the core encounter view (T-021)
 
-Owner: `ux-designer` · Ani approves · Built into `simplecare-physician-portal-v2.html` (the chart, `#pcv-c`) · Build 2026-10-07 05:20 (declutter, Layout v2, Daniel review, Left panel and call widget, Batch A, then Batch B; see the end)
+Owner: `ux-designer` · Ani approves · Built into `simplecare-physician-portal-v2.html` (the chart, `#pcv-c`) · Build 2026-10-07 06:10 (declutter, Layout v2, Daniel review, Left panel and call widget, Batch A, Batch B, then Chart tab; see the end)
 Source: Physician Chart View Requirements v2.5 (B-006), delivery step 1 · ECG Critical Result Requirements v2.0 · Daniel, 30 Sep (`from-daniel/2026-09-30-chart-workflow.md`, `2026-09-30-ecg-and-result-flags.md`).
 Scope: light theme, 1440 px, the demo patient. Dark theme not checked (Ani, 4 Oct). The Figma "SC – Design System" is not used yet (Ani, 3 Oct); the chart uses v2's own variables, buttons, tags and Mage icons.
 
@@ -88,6 +88,8 @@ Full chart replaces the context column: Timeline · Results · Medications · Pr
 - **Open:** Order, Refer and Message are still the v2 demo toasts, not flows. Message goes to the patient portal (not decided).
 
 ### 8. Full chart (v2.5 §3, §7)
+> Superseded on 7 Oct: the full chart is now the visit's 4th tab, **Chart**. See "Chart tab, 7 Oct" at the end.
+
 - **Shows:** a "Full chart" button in the banner opens, in place of the context column, nine tabs: Timeline, Results, Medications, Problems, Care plan, Consults, Documents, Messages, Search. A search box searches all of them. "Back to the visit" (or Escape) returns.
 - **Preserved:** the note text, the draft, the scroll position and the visit state. Focus returns to the control that opened it. Every "source" line in Relevant context and every Needs attention action opens the right tab.
 - **Care plan:** it lives here, still separate from the task list (rule 13). Daniel, 30 Sep: "this is more comprehensive care, so don't worry about that just yet."
@@ -367,3 +369,43 @@ All 11 inline scripts pass `node --check`; the console was clean in every run. G
 - Should the scribe's BACKGROUND block go in Findings (as built) or in Reason?
 - Should the history name a physician assistant who edits a claim, or the supervising doctor? (Dev's open question 11; the demo has no PA edit path.)
 
+
+## Chart tab, 7 Oct
+
+Ani, 7 Oct: the separate **Full chart** page ("Full chart", "Search the chart", "Back to the visit", nine tabs) "feels awkward because it replaces the whole visit". It is now the visit's 4th tab: **Review · Note · Orders · Chart**. Light only. Screenshots (local only): `product/reports/shots/charttab-results.png`, `charttab-timeline.png`, `charttab-seeall.png`, `charttab-icd-suggest.png` (plus `-1280` versions).
+
+### 1. The Chart tab
+- **Shows:** "Search the chart" (a full-width field, 44 px) at the top, then the chart's sections as a compact pill row (36 px, 15 px/500; 14 px at 1360 px and below so the eight fit on one line at 1280; the current section is the barely tinted blue pill, smaller than the main tabs' underline): **Timeline, Results, Medications, Problems, Care plan, Consults, Documents, Messages**. Under it, the section itself.
+- **Same content, same functions:** the tab holds the full chart's own node (`#cs-fc`, moved into `#v2p-chart` by `v2Mount`), so Results keeps its trend lines, PDF links, "Not cleared" and **Add an expected result**; the care plan keeps Review & assign, Chase their office, Add plan item; Problems keeps Open list; Consults, Documents and Messages are rendered by `csRenderConsults` / `csRenderDocs` / `csRenderMsgs` as before. No clinical logic was copied or changed.
+- **Search** (the old Search sub-tab merged into the field): two letters or more searches the text of every section and shows the results **in place** of the section ("N results for "x" across the chart", section name beside each hit, **Clear search**); no pill is selected while results show. A result opens its section, brings the matching line into view with a short ring (static with reduced motion) and puts focus on it. Enter in the field moves to the first result; Escape (or Clear search, or picking a pill) goes back to the section. Nothing matching: "Nothing in this chart matches. Try another word." A polite live region says the count. A search never carries over to another chart.
+- **Remembers its section per chart** (`CS.fcTabBy[name]`): Timeline the first time; switching charts and coming back opens the section that chart was last on.
+- **Older content brought to 14 px inside the tab:** the timeline pills (13 px), lab orders (legend, facts, labels 10.5–13.5 px), care plan "Why this is ours" (12.5 px) and problem goals (13 px). Only inside the Chart tab; their other screens are unchanged.
+
+### 2. The doctor never leaves the visit
+- The patient card, This visit, Patient summary, the floating call widget, the critical result bar, Save draft and Sign off stay on the Chart tab exactly as on the other three (all in the same frame). The critical bar's Review goes to the Review tab as before. Sign off opens its popover from the Chart tab.
+- **Keyboard:** 4 = Chart (and it is in the shortcuts drawer: "Chart tab (the full chart)"). Same rules as 1/2/3: never while typing (note, search field, any field), with a drawer or the Sign off popover open, or with a modifier. On a no-show, 3 does nothing (Orders is hidden); 4 still opens Chart. Left/Right/Home/End move across all four tabs.
+- **Fit:** with four tabs, Save draft is icon-only up to 1500 px (its name stays for screen readers and on hover; it was icon-only at 1360 px and below), and at 1360 px and below the tabs are tighter and Sign off reads "Sign off · N checks left" (the button's name and the popover heading keep "Sign off & finalize"). Measured gap between the last tab and Save draft: 73 px at 1440, 63 px at 1280 (49 / 39 px with the Orders badge).
+
+### 3. Entry points
+- The patient card's **Full chart** button is now **Chart** and opens the Chart tab on the section that chart was last on (focus on the Chart tab).
+- Each **Patient summary** row ends with a small **See all** (14 px/600, blue, chevron; inside the opened row, at its end) that opens the Chart tab on the matching section, focus on that section's pill: Medications → Medications; History → Problems; Pending → where most of its lines point (Care plan for the demo patients, since the pending items are care-plan items; the rule picks another section only if most lines open it); Since you last saw → Timeline; Previous visits → Timeline (it holds the visit notes and consults in date order).
+- Every other path that opened the full chart now opens the Chart tab on the right section: each line in Medications, History, Pending, Previous visits and Relevant investigations (`v2Line`, Home BP → Results), **Read the Jun 25 note** → Documents, **Full care plan** (`slvToCarePlan`) → Care plan, "Review them in the care plan" in Consults → Care plan. They all go through `csOpenFull(tab)`, which in v2 now means "Chart tab, this section".
+- **Not changed:** Needs attention's Review result / Review ECG / Open result and the critical bar's Review open the **review screen** (`openReview`), not the full chart, as before. The Assistant has no link into the full chart. Open intake still opens the intake brief.
+
+### 4. The separate screen is gone
+- No "Full chart" page, title or **Back to the visit** button. `csOpenFull` is kept (re-pointed to the tab); `csCloseFull` is kept for its old callers (opening a chart, the layout switch, Go to needs attention) and does nothing in v2, because there is nothing to close. Escape on the Chart tab no longer "goes back" (it clears a search, closes drawers and the popover as before). `?chart=current` still works with its old full chart (Escape returns), not checked further.
+- No-show visits (K Arli Eyre, Korynn) get the Chart tab too, read-only context like the rest of their chart.
+
+### 5. Suggested diagnosis (Batch B, Needs Ani 1)
+- When the booking reason maps to an obvious code, Assessment offers it above Add diagnosis: a tag "**Suggested: 786.5 · Chest pain**" (15 px/500, 40 px, grey tint, no stroke), **Use** (44 px outline with an icon) and "From the booking reason". **Never pre-filled:** the claim has no diagnosis until the doctor presses Use (or picks another). Use sets the claim's diagnosis through the same `t23SetVisitDx` as the search (so the chip, billing row, Your coding and the change log all follow) and focus goes to Change. Removing the diagnosis brings the suggestion back. Signed-off, private-pay and no-show visits show none.
+- **Map (existing data):** T-023's old pre-fill (`dxBy`, removed in Batch B), kept only where the reason names the problem: "Follow up — chest pressure noted" → 786.5 Chest pain (Gloria), "Yeast infection" → 112.1 Candidiasis of vulva and vagina (Carol-Anne), "Rx renewal" → V68.1 Issue of repeat prescriptions (Greg; private pay, so not shown). Generic reasons ("Follow up appointment" → V67.9, "Lab follow-up" → V72.6, "Standard visit") get no suggestion. All three codes are in `assets/data/bc-msp-diagnostic-codes.json` (checked 7 Oct).
+
+### Proof (headless Chrome, light, 1440 × 900 and 1280 × 800, `?nologin=1`)
+All 11 inline scripts pass `node --check`; the console was clean in every run. All eight queue charts: the Chart tab and each of the eight sections render (one section visible at a time), no text under 14 px in the chart screen, no horizontal scroll (page, main or left column); search "mg" shows results in place with no pill selected, a result opens its section with focus on the line, "zzqx" shows the empty line, Clear search returns; every visible See all lands on its section with focus on the pill. Gloria: card Chart → Chart tab; a Relevant investigations line → Results; Read the note → Documents (Visit note · Jun 25); a medication line → Medications; Full care plan → Care plan; `csCloseFull()` leaves the tab; no Back to the visit and no "Full chart" heading anywhere; section memory (Gloria Results, Andrey Timeline then Problems, each kept on return); key 4 → Chart, 2 → Note, 4 typed in Findings and 1 in the search field do nothing; shortcuts drawer lists 4; critical bar shown on Chart, its Review → Review tab; call widget on the Chart tab, not over the MOA chat; Sign off popover opens inside the window; suggestion "Suggested: 786.5 · Chest pain" with no diagnosis set, Use → chip, billing row 786.5, focus on Change; remove → suggestion back; Carol-Anne 112.1, Andrey and Behdis none. `?chart=current`: its full chart opens, search works, Escape closes, switching layouts both ways keeps the node in place.
+
+### Needs Ani
+1. **See all** sits at the end of each opened Patient summary row, not in the row header: at 280–312 px the header (icon, title, count, overdue chip, chevron) has no room for it without truncating. OK, or always visible?
+2. Pills are 36 px (compact, like the toolbar exception), 15 px, and 14 px at 1360 px and below so the eight sections fit one line at 1280.
+3. To fit four tabs, Save draft is icon-only up to 1500 px, and at 1360 px and below Sign off reads "Sign off · N checks left".
+4. Pending's See all opens Care plan (where the demo's pending items live), not Results.
+5. The suggestion uses the old booking-reason map for three reasons only; "Follow up appointment" → V67.9 is not offered (not "obvious"). Daniel may want a different list (Needs Daniel if it grows).

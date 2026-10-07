@@ -5807,6 +5807,12 @@
     #screen-patientchart #pcv-c.cs-v2 .v2-top{gap:8px;}
     #screen-patientchart #pcv-c.cs-v2 #v2-fin .v2-fin-x{display:none;}
   }
+  /* ===== Chart tab (5): Batch B "Needs Ani 1" answered: the booking reason's code is offered, never pre-filled ===== */
+  #screen-patientchart #pcv-c .ns-dxsug{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0 0 8px;}
+  #screen-patientchart #pcv-c .ns-dxsug .ns-sugchip{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:999px;background:var(--wash);
+    font-size:15px;font-weight:500;line-height:20px;color:var(--ink);}
+  #screen-patientchart #pcv-c .ns-dxsug .ns-sugchip .ic,#screen-patientchart #pcv-c .ns-dxsug .ns-sugchip svg{width:16px;height:16px;color:var(--ink-faint);}
+  #screen-patientchart #pcv-c .ns-dxsug .ns-sugk{color:var(--ink-soft);}
 </style>
 </head>
 <body>
@@ -16940,6 +16946,12 @@ function nsRenderDx(){
       (signed || D.open ? '' : '<button type="button" class="btn xs" id="ns-dx-btn" onclick="nsDxOpen(true)">' + csIc('edit') + 'Change</button>') +
       '<span class="ns-dxk">' + (signed ? 'The claim&rsquo;s diagnosis' : 'The claim&rsquo;s diagnosis &middot; also in Billing') + '</span></div>';
   } else if(!signed && !D.open){
+    /* Chart tab (5), Ani 7 Oct (Batch B, Needs Ani 1): when the booking reason maps to an obvious code, offer it as one tap.
+       Never pre-filled: the claim has no diagnosis until the doctor presses Use (or picks another one). */
+    var sug = nsDxSuggest(r);
+    if(sug) h += '<div class="ns-dxsug"><span class="ns-sugchip" id="ns-dxsug-t">' + csIc('claims') + '<span><span class="ns-sugk">Suggested:</span> <b>' + t23E(sug) + '</b> &middot; ' + t23E(t23DxName(sug)) + '</span></span>' +
+      '<button type="button" class="btn xs" id="ns-dxsug-use" onclick="nsDxUse(\'' + sug + '\')" aria-describedby="ns-dxsug-t" aria-label="Use ' + t23E(sug + ' ' + t23DxName(sug)) + ' as the claim\u2019s diagnosis">' + csIc('complete') + 'Use</button>' +
+      '<span class="ns-dxk">From the booking reason</span></div>';
     h += '<div class="ns-dxline"><button type="button" class="btn xs" id="ns-dx-btn" onclick="nsDxOpen(true)">' + csIc('plus') + 'Add diagnosis</button>' +
       '<span class="ns-dxk">ICD-9, for the claim</span></div>';
   }
@@ -16951,6 +16963,17 @@ function nsRenderDx(){
   }
   el.innerHTML = h; paintPd(el);
   if(D.open) nsRenderDxRes();
+}
+/* Chart tab (5): the booking reason's obvious code. The map is T-023's old pre-fill (dxBy, removed in Batch B), kept only
+   where the reason names the problem; generic reasons ("Follow up appointment", "Standard visit", "Lab follow-up") get no
+   suggestion. Each code is in the BC MSP list (assets/data/bc-msp-diagnostic-codes.json, checked 7 Oct). */
+var NS_DX_SUGGEST = {'Follow up — chest pressure noted':'786.5', 'Yeast infection':'112.1', 'Rx renewal':'V68.1'};
+function nsDxSuggest(r){ return r && !r.signed ? NS_DX_SUGGEST[r.concern] || null : null; }
+function nsDxUse(code){
+  if(!PC_CURRENT || !code) return;
+  t23SetVisitDx(PC_CURRENT, code);
+  csSay('Diagnosis ' + code + ' · ' + t23DxName(code) + ' added. It is the claim’s diagnosis.');
+  var b = document.getElementById('ns-dx-btn'); if(b) b.focus();
 }
 function nsRenderDxRes(){
   var el = document.getElementById('ns-dxres'); if(!el) return;
