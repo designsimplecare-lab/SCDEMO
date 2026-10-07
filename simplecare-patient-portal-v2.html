@@ -933,6 +933,11 @@
   html body .avatar{font-size:14px;}
   html body .bell-btn .badge{font-size:14px;line-height:20px;padding:0 6px;}
   html body .check-box{font-size:14px;width:22px;height:22px;}
+  /* Ani, 7 Oct copy diet: titles that lost their subtitle keep the gap the subtitle gave */
+  html body :is(#screen-dashboard,#screen-appointments,#screen-documents,#screen-activity,#screen-family,#screen-carechoice) > h1{margin-bottom:24px;}
+  @media (max-width:760px){ html body :is(#screen-dashboard,#screen-appointments,#screen-documents,#screen-activity,#screen-family,#screen-carechoice) > h1{margin-bottom:18px;} }
+  /* nothing a patient reads is under 14px: the notification titles were 13px */
+  html body #notif-dropdown .notif-item b{font-size:14px;}
 </style>
 </head>
 <body class="mode-v1">
@@ -1023,16 +1028,16 @@
         </button>
       </div>
 
+      <!-- Ani, 7 Oct copy diet: subtitles under page titles removed across the portal -->
       <h1>Good afternoon, Ani</h1>
-      <p class="sub">Everything that needs your attention today, in one place.</p>
 
       <div class="critical-banner" id="critical-banner">
         <span class="critical-ico">&#9888;</span>
         <div class="critical-body">
           <p class="critical-title">Dr. Pannozzo has reviewed your August 14 bloodwork</p>
-          <p class="critical-text">He'd like to go over one of the results with you. <b>Our office will call you within 24 hours to book a time</b> &mdash; there's nothing you need to do right now.</p>
+          <p class="critical-text">He'd like to go over one result with you. <b>Our office will call you within 24 hours to book a time.</b> Nothing to do now.</p>
           <div class="critical-actions">
-            <button class="btn primary" style="padding:7px 12px;font-size:14px;" onclick="openCase('aug14')">View your results</button>
+            <button class="btn primary" style="padding:7px 12px;font-size:14px;" onclick="openCase('aug14')">View results</button>
             <button class="btn ghost" style="padding:7px 12px;font-size:14px;background:transparent;" onclick="toast('Would call the office directly')">Call the office</button>
           </div>
         </div>
@@ -1046,8 +1051,9 @@
             <p class="today-eyebrow">Today<span class="v1-only">, for Ani</span> &middot; Dr. Daniel Pannozzo</p>
             <span class="pill wait">Waiting</span>
           </div>
-          <p class="today-hero">11:40 <span class="today-hero-sep">&ndash;</span> 12:10 PM</p>
-          <p class="today-sub">Estimated call time &middot; #6 in line, 5 ahead &middot; Pacific time</p>
+          <!-- rule 11 (Ani, 7 Oct): no wait estimate; the call window and the place in line only -->
+          <p class="today-hero">10:00 AM <span class="today-hero-sep">&ndash;</span> 2:00 PM</p>
+          <p class="today-sub">Your call window &middot; #6 in line &middot; Pacific time</p>
 
           <div class="today-bar"><div class="today-bar-fill"></div></div>
 
@@ -1061,10 +1067,10 @@
               <span class="today-link-sep">&middot;</span>
               <a href="#" class="today-link" onclick="openCase('today');return false;">Case details</a>
               <span class="today-link-sep">&middot;</span>
-              <a href="#" class="today-link disabled" onclick="toast('Too close to your visit to change online, call 778 949 APPT instead');return false;">Reschedule</a>
+              <a href="#" class="today-link disabled" onclick="toast('Within 24 hours: call 778 949 APPT');return false;">Reschedule</a>
             </div>
           </div>
-          <p class="cutoff-note">Inside 24 hours of your visit, cancel or reschedule by phone only, <b>778 949 APPT</b>.</p>
+          <p class="cutoff-note">Within 24 hours, cancel or reschedule by phone: <b>778 949 APPT</b></p>
         </div>
       </div>
 
@@ -1072,8 +1078,8 @@
       <div class="dash-grid v1-only">
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <p class="section-title" style="margin:0;">Upcoming, whole family</p>
-            <button class="btn primary" style="padding:6px 12px;font-size:14px;" onclick="handleBookClick()">Book new</button>
+            <p class="section-title" style="margin:0;">Upcoming</p>
+            <button class="btn primary" style="padding:6px 12px;font-size:14px;" onclick="handleBookClick()">Book</button>
           </div>
           <div class="dash-mini-row-wrap" data-person="ani">
             <div class="dash-mini-row" style="border-bottom:none;padding-bottom:2px;" onclick="showScreen('appointments')">
@@ -1081,8 +1087,8 @@
               <span class="pill" style="background:var(--wash);color:var(--ink-soft);">Booked</span>
             </div>
             <div class="dash-mini-actions">
-              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Reschedule sent, more than 24 hours out so it\'s handled online')">Reschedule</button>
-              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Cancelled, no fee since it\'s more than 24 hours out')">Cancel</button>
+              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Reschedule request sent')">Reschedule</button>
+              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Cancelled · no fee')">Cancel</button>
             </div>
           </div>
           <div class="dash-mini-row-wrap" data-person="leo">
@@ -1091,23 +1097,22 @@
               <span class="pill" style="background:var(--wash);color:var(--ink-soft);">Booked</span>
             </div>
             <div class="dash-mini-actions">
-              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Reschedule sent, more than 24 hours out so it\'s handled online')">Reschedule</button>
-              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Cancelled, no fee since it\'s more than 24 hours out')">Cancel</button>
+              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Reschedule request sent')">Reschedule</button>
+              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Cancelled · no fee')">Cancel</button>
             </div>
           </div>
-          <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="showScreen('appointments')">See all appointments</button>
+          <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="showScreen('appointments')">See all</button>
         </div>
 
         <div class="card">
-          <p class="section-title" style="margin-top:0;">Add a document</p>
           <div class="upload-zone" id="dash-upload-zone" onclick="document.getElementById('dash-file-input').click()">
             <div class="uz-ico">&#128206;</div>
             <div class="uz-t">Add a document</div>
-            <div class="uz-s">Lab result from elsewhere, insurance form, ID, or a photo &middot; PDF, JPG, PNG</div>
+            <div class="uz-s">PDF, JPG or PNG</div>
           </div>
           <input type="file" id="dash-file-input" style="display:none" multiple onchange="handleDashUpload(this.files)">
           <div id="dash-upload-list" style="margin-top:6px;"></div>
-          <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="showScreen('documents')">See all health records</button>
+          <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="showScreen('documents')">Health records</button>
         </div>
       </div>
 
@@ -1115,7 +1120,7 @@
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
             <p class="section-title" style="margin:0;">Upcoming</p>
-            <button class="btn primary" style="padding:6px 12px;font-size:14px;" onclick="handleBookClick()">Book new</button>
+            <button class="btn primary" style="padding:6px 12px;font-size:14px;" onclick="handleBookClick()">Book</button>
           </div>
           <div class="dash-mini-row-wrap">
             <div class="dash-mini-row" style="border-bottom:none;padding-bottom:2px;" onclick="showScreen('appointments')">
@@ -1123,23 +1128,22 @@
               <span class="pill" style="background:var(--wash);color:var(--ink-soft);">Booked</span>
             </div>
             <div class="dash-mini-actions">
-              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Reschedule sent, more than 24 hours out so it\'s handled online')">Reschedule</button>
-              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Cancelled, no fee since it\'s more than 24 hours out')">Cancel</button>
+              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Reschedule request sent')">Reschedule</button>
+              <button class="btn ghost sm" onclick="event.stopPropagation(); toast('Cancelled · no fee')">Cancel</button>
             </div>
           </div>
-          <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="showScreen('appointments')">See all appointments</button>
+          <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="showScreen('appointments')">See all</button>
         </div>
 
         <div class="card">
-          <p class="section-title" style="margin-top:0;">Add a document</p>
           <div class="upload-zone" id="dash-upload-zone2" onclick="document.getElementById('dash-file-input2').click()">
             <div class="uz-ico">&#128206;</div>
             <div class="uz-t">Add a document</div>
-            <div class="uz-s">Lab result from elsewhere, insurance form, ID, or a photo &middot; PDF, JPG, PNG</div>
+            <div class="uz-s">PDF, JPG or PNG</div>
           </div>
           <input type="file" id="dash-file-input2" style="display:none" multiple onchange="handleDashUpload(this.files,'dash-upload-list2')">
           <div id="dash-upload-list2" style="margin-top:6px;"></div>
-          <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="showScreen('documents')">See all health records</button>
+          <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="showScreen('documents')">Health records</button>
         </div>
       </div>
 
@@ -1148,7 +1152,7 @@
           <span style="font-size:22px;">&#128101;</span>
           <div style="flex:1;">
             <p style="font-weight:600;font-size:14px;margin:0 0 2px;">Booking for someone else too?</p>
-            <p style="font-size:14px;color:var(--ink-soft);margin:0;">Add a partner, parent, or child and manage their visits from this same account.</p>
+            <p style="font-size:14px;color:var(--ink-soft);margin:0;">Add a partner, parent or child.</p>
           </div>
           <button class="btn ghost" style="flex-shrink:0;" onclick="showScreen('family')">Add family</button>
         </div>
@@ -1156,17 +1160,16 @@
 
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
-          <p class="section-title" style="margin:0;">Your lab work</p>
-          <button class="btn ghost" style="padding:5px 10px;font-size:14px;" onclick="showScreen('documents')">Open in health records</button>
+          <p class="section-title" style="margin:0;">Lab work</p>
+          <button class="btn ghost" style="padding:5px 10px;font-size:14px;" onclick="showScreen('documents')">View all</button>
         </div>
-        <p class="muted" style="margin:0 0 12px;font-size:14px;">Exactly what was ordered, what has come back, and what is still with the lab.</p>
         <div id="dash-lab-list"></div>
       </div>
 
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-          <p class="section-title" style="margin:0;">Latest clinical activity</p>
-          <button class="btn ghost" style="padding:5px 10px;font-size:14px;" onclick="showScreen('activity')">View full timeline</button>
+          <p class="section-title" style="margin:0;">Recent activity</p>
+          <button class="btn ghost" style="padding:5px 10px;font-size:14px;" onclick="showScreen('activity')">View all</button>
         </div>
         <div class="activity-snap">
           <div class="activity-snap-item"><span class="tl-ico">&#129514;</span><div><b>Laboratory results reviewed</b><div class="doc-sub">July 30, 2026</div></div></div>
@@ -1178,11 +1181,10 @@
 
     <div class="screen" id="screen-appointments">
       <h1>Visit history</h1>
-      <p class="sub">Everything you've been in for. Today's visit and anything upcoming live on your dashboard.</p>
 
       <div class="toolbar">
-        <input class="search-input" placeholder="Search by physician or date">
-        <button class="btn primary" onclick="handleBookClick()">Book new</button>
+        <input class="search-input" placeholder="Search by doctor or date">
+        <button class="btn primary" onclick="handleBookClick()">Book</button>
       </div>
 
       <div class="profile-switch v1-only">
@@ -1209,7 +1211,6 @@
         <button class="chip">Cancelled</button>
         <button class="chip">No show</button>
       </div>
-      <p style="font-size:14px;color:var(--ink-faint);margin:0 0 16px;">Today's appointment lives on your dashboard. This is history only.</p>
 
       <p class="section-title" style="margin-top:0;">2026</p>
       <table class="hist-table">
@@ -1225,7 +1226,7 @@
 
       <div class="year-accordion" id="year-history" style="margin-top:16px;">
         <button class="year-toggle" onclick="toggleYearHistory()">
-          <span>Earlier visits, 2021 to 2025 &middot; 24 visits</span>
+          <span>2021&ndash;2025 &middot; 24 visits</span>
           <span id="year-toggle-arrow">&#9660;</span>
         </button>
         <div class="year-body" id="year-body">
@@ -1250,75 +1251,73 @@
               <tr class="clickable-row" onclick="toast('Visit summary would open here')"><td class="v1-only"><span class="who-tag">Ani</span></td><td>Mar 11, 2021</td><td>Dr. Daniel Pannozzo</td><td><span class="pill" style="background:var(--wash);color:var(--ink-faint);">First visit</span></td><td><button class="btn ghost" onclick="toast('Visit summary would open here')">View</button></td></tr>
             </tbody>
           </table>
-          <button class="btn ghost" style="width:100%;margin-top:10px;" onclick="toast('Would load the remaining 12 rows')">Show 12 more rows</button>
+          <button class="btn ghost" style="width:100%;margin-top:10px;" onclick="toast('Would load the remaining 12 rows')">Show 12 more</button>
         </div>
       </div>
     </div>
 
     <div class="screen" id="screen-documents">
       <h1>Health records</h1>
-      <p class="sub">Everything tied to a visit, grouped by what it's for, with the newest first.</p>
 
       <div class="card" id="pt-labwork">
-        <h3 style="margin-top:0;">Your lab work</h3>
-        <p class="muted" style="margin-top:-6px;">Exactly what was ordered, what has come back, and what is still with the lab.</p>
+        <h3 style="margin-top:0;">Lab work</h3>
         <div id="pt-lab-list"></div>
       </div>
 
       <div class="toolbar">
-        <input class="search-input" placeholder="Search documents by physician or date">
+        <input class="search-input" placeholder="Search records">
         <button class="btn primary" onclick="document.getElementById('doc-file-input').click()">Upload</button>
       </div>
 
-      <p class="section-title" style="margin-top:0;">Your uploads</p>
+      <p class="section-title" style="margin-top:0;">Uploads</p>
       <div class="card">
         <div class="upload-zone" id="doc-upload-zone" onclick="document.getElementById('doc-file-input').click()">
           <div class="uz-ico">&#128206;</div>
           <div class="uz-t">Add a document</div>
-          <div class="uz-s">Lab result, insurance form, ID, or a photo &middot; PDF, JPG, PNG</div>
+          <div class="uz-s">PDF, JPG or PNG</div>
         </div>
         <input type="file" id="doc-file-input" style="display:none" multiple onchange="handleDocUpload(this.files)">
         <div id="doc-upload-list" style="margin-top:6px;"></div>
       </div>
 
-      <p class="section-title">Prescriptions &middot; 9 total</p>
+      <p class="section-title">Prescriptions &middot; 9</p>
       <div class="card">
         <div class="doc-item">
-          <div class="doc-left"><span class="doc-ico">&#128138;</span><div><b>Amoxicillin 500mg</b><div class="doc-sub">Sent to Main Street Pharmacy, June 25 2026</div></div></div>
+          <div class="doc-left"><span class="doc-ico">&#128138;</span><div><b>Amoxicillin 500mg</b><div class="doc-sub">Main Street Pharmacy &middot; June 25, 2026</div></div></div>
           <div class="doc-actions"><span class="pill" style="background:var(--good-wash);color:var(--good);">Active</span></div>
         </div>
         <div class="doc-item">
-          <div class="doc-left"><span class="doc-ico">&#128138;</span><div><b>Atorvastatin 20mg</b><div class="doc-sub">Sent to Main Street Pharmacy, November 3 2025</div></div></div>
+          <div class="doc-left"><span class="doc-ico">&#128138;</span><div><b>Atorvastatin 20mg</b><div class="doc-sub">Main Street Pharmacy &middot; November 3, 2025</div></div></div>
           <div class="doc-actions"><span class="pill" style="background:var(--wash);color:var(--ink-faint);">Expired</span></div>
         </div>
-        <button class="btn ghost" style="width:100%;" onclick="toast('Would load the remaining 7 prescriptions')">Show all 9 prescriptions</button>
+        <button class="btn ghost" style="width:100%;" onclick="toast('Would load the remaining 7 prescriptions')">Show all 9</button>
       </div>
 
-      <p class="section-title">Lab results &middot; 4 total</p>
+      <p class="section-title">Lab results &middot; 4</p>
       <div class="card">
         <div class="doc-item">
           <div class="doc-left"><span class="doc-ico">&#128203;</span><div><b>Bloodwork panel, August 14 2026</b><div class="doc-sub">Ordered by Dr. Daniel Pannozzo</div></div></div>
           <div class="doc-actions"><button class="btn ghost" onclick="openCase('aug14')">View</button></div>
         </div>
-        <button class="btn ghost" style="width:100%;" onclick="toast('Would load the remaining 3 results')">Show all 4 results</button>
+        <button class="btn ghost" style="width:100%;" onclick="toast('Would load the remaining 3 results')">Show all 4</button>
       </div>
 
-      <p class="section-title">Imaging reports &middot; 2 total</p>
+      <p class="section-title">Imaging reports &middot; 2</p>
       <div class="card">
         <div class="doc-item">
-          <div class="doc-left"><span class="doc-ico">&#127909;</span><div><b>Chest X-ray report, July 2 2026</b><div class="doc-sub">Ordered by Dr. Daniel Pannozzo &middot; Radiologist report</div></div></div>
+          <div class="doc-left"><span class="doc-ico">&#127909;</span><div><b>Chest X-ray report, July 2 2026</b><div class="doc-sub">Dr. Daniel Pannozzo</div></div></div>
           <div class="doc-actions"><button class="btn ghost" onclick="toast('Would open the radiologist report')">View</button><button class="btn ghost" onclick="toast('Would download the PDF')">Download</button></div>
         </div>
         <div class="doc-item">
-          <div class="doc-left"><span class="doc-ico">&#127909;</span><div><b>Abdominal ultrasound report, March 9 2026</b><div class="doc-sub">Ordered by Dr. Sarah Okonkwo &middot; Radiologist report</div></div></div>
+          <div class="doc-left"><span class="doc-ico">&#127909;</span><div><b>Abdominal ultrasound report, March 9 2026</b><div class="doc-sub">Dr. Sarah Okonkwo</div></div></div>
           <div class="doc-actions"><button class="btn ghost" onclick="toast('Would open the radiologist report')">View</button><button class="btn ghost" onclick="toast('Would download the PDF')">Download</button></div>
         </div>
       </div>
 
-      <p class="section-title">Consult reports &middot; 1 total</p>
+      <p class="section-title">Consult reports &middot; 1</p>
       <div class="card">
         <div class="doc-item">
-          <div class="doc-left"><span class="doc-ico">&#128232;</span><div><b>Cardiology consultation, July 28 2026</b><div class="doc-sub">Dr. M. Ferreira &middot; Sent back to Dr. Pannozzo</div></div></div>
+          <div class="doc-left"><span class="doc-ico">&#128232;</span><div><b>Cardiology consultation, July 28 2026</b><div class="doc-sub">Dr. M. Ferreira</div></div></div>
           <div class="doc-actions"><button class="btn ghost" onclick="toast('Would open the consultant letter')">View</button><button class="btn ghost" onclick="toast('Would download the PDF')">Download</button></div>
         </div>
       </div>
@@ -1327,15 +1326,14 @@
       <div class="empty">
         <div class="ico">&#128203;</div>
         <h3>No referrals yet</h3>
-        <p>If a physician refers you to a specialist, the referral letter and the specialist's contact details will show up here.</p>
+        <p>Referral letters and specialist contacts show here.</p>
       </div>
 
-      <p class="clin-disclaimer">Prescriptions, lab results, imaging reports, and consult reports are shared with you here. Your physician's own visit notes and clinical documentation stay in the medical record at their office &mdash; ask them directly if you need a copy.</p>
+      <p class="clin-disclaimer">Your doctor's visit notes and clinical documentation stay in the medical record at their office. Ask them if you need a copy.</p>
     </div>
 
     <div class="screen" id="screen-activity">
       <h1>Clinical activity</h1>
-      <p class="sub">Everything happening across your care, in order, not grouped by which visit caused it.</p>
 
       <div class="chip-row">
         <button class="chip cat-chip active" data-cat="all">All</button>
@@ -1373,25 +1371,23 @@
             <span class="pill" style="background:var(--good-wash);color:var(--good);font-size:14px;">Appointment</span>
             <span>Dr. Daniel Pannozzo, completed</span>
           </div>
-          <p class="tl-caused-by">Clinical actions from this visit</p>
+          <p class="tl-caused-by">From this visit</p>
           <div class="tl-event" data-cat="medication"><span class="tl-ico">&#128138;</span><span>Prescription sent, Amoxicillin 500mg</span></div>
           <div class="tl-event" data-cat="laboratory"><span class="tl-ico">&#129514;</span><span>Laboratory ordered, CBC, Ferritin, HbA1c</span></div>
           <div class="tl-event" data-cat="imaging"><span class="tl-ico">&#127909;</span><span>Imaging ordered, Chest X-ray</span></div>
           <div class="tl-event" data-cat="referral"><span class="tl-ico">&#128232;</span><span>Referral sent, Cardiology</span></div>
           <div class="tl-event" data-cat="document"><span class="tl-ico">&#128196;</span><span>Sick note released</span></div>
-          <button class="btn ghost" style="margin-top:4px;" onclick="openCase('jun25')">View this appointment</button>
+          <button class="btn ghost" style="margin-top:4px;" onclick="openCase('jun25')">View visit</button>
         </div>
       </div>
 
-      <p class="clin-disclaimer">This timeline shows clinical events as they happen, ordered, medications, labs, imaging, referrals, and documents. It does not include clinical notes or physician documentation, those stay in your provider's medical record.</p>
+      <p class="clin-disclaimer">Clinical notes and physician documentation aren't shown here; they stay in your provider's medical record.</p>
     </div>
 
     <!-- the visit summary opens as a side drawer (#pp-case), Ani 6 Oct 2026 -->
 
     <div class="screen" id="screen-family">
       <h1>Family members</h1>
-      <p class="sub v1-only">Each person keeps their own record and history. You can book or manage a visit for any of them from here.</p>
-      <p class="sub v2-only">Right now it's just your own account. Add someone and you'll be able to book or manage their visits from here too.</p>
 
       <div class="card">
         <div class="fam-list-item clickable" onclick="openPatientLog('ani')">
@@ -1418,12 +1414,12 @@
         <div id="fam-added"></div>
       </div>
 
-      <p class="clin-disclaimer v1-only" style="margin-bottom:16px;">You manage Leo's record fully since he's under 19, BC's age of majority. Karen has authorized you to manage hers. Both switches happen automatically as needed, Leo's account becomes his own at 19, and Karen's access can be revoked by her at any time.</p>
+      <p class="clin-disclaimer v1-only" style="margin-bottom:16px;">You manage Leo's record until he turns 19 (BC's age of majority); then it becomes his own. Karen authorized you to manage hers and can revoke that at any time.</p>
 
       <div class="empty" id="fam-empty">
         <div class="ico">+</div>
         <h3>Add someone you manage</h3>
-        <p>Book and manage visits for a parent, spouse, or child from this account. Each person keeps their own record.</p>
+        <p>Book visits for a parent, spouse or child. Each keeps their own record.</p>
         <button class="btn primary" onclick="toggleFamForm()">Add family member</button>
       </div>
 
@@ -1439,8 +1435,8 @@
         </div>
         <label>Date of birth</label>
         <input id="fam-dob" type="date">
-        <p id="fam-minor-note" class="clin-disclaimer" style="display:none;">Since this person is under 19, you'll manage their full record until they turn 19, no separate authorization needed.</p>
-        <p id="fam-adult-note" class="clin-disclaimer">Since this person is 19 or older, they'll get an email to authorize you to manage their care. Until they accept, you can still book on their behalf.</p>
+        <p id="fam-minor-note" class="clin-disclaimer" style="display:none;">Under 19: you manage their full record until they turn 19. No separate authorization needed.</p>
+        <p id="fam-adult-note" class="clin-disclaimer">19 or older: they'll get an email to authorize you to manage their care. Until they accept, you can still book for them.</p>
         <button class="btn primary" onclick="addFamilyMember()">Save</button>
         <button class="btn ghost" onclick="toggleFamForm()">Cancel</button>
       </div>
@@ -1450,7 +1446,6 @@
       <div class="profile-head">
         <div>
           <h1 style="margin-bottom:2px;">Profile</h1>
-          <p class="sub" style="margin:0;">Locked clinical fields look different from fields you can edit.</p>
         </div>
         <button class="btn primary" onclick="toast('Editable fields would open inline here')">&#9998; Edit profile</button>
       </div>
@@ -1465,7 +1460,7 @@
       <div class="ptab-view active" id="ptab-personal">
         <div class="dash-grid">
           <div class="card">
-            <p class="section-title" style="margin-top:0;">Identity information</p>
+            <p class="section-title" style="margin-top:0;">Identity</p>
             <div class="field locked"><label>Legal name</label><div class="val">Julia Marie Sample</div></div>
             <div class="field editable"><label>Preferred name</label><div class="val">Julia</div></div>
             <div class="field-group">
@@ -1474,7 +1469,7 @@
             </div>
           </div>
           <div class="card">
-            <p class="section-title" style="margin-top:0;">Contact information</p>
+            <p class="section-title" style="margin-top:0;">Contact</p>
             <div class="field editable">
               <label>Email</label>
               <div class="val">julia.walker@example.com <span class="verified-badge">&#10003; Verified</span></div>
@@ -1489,7 +1484,7 @@
 
       <div class="ptab-view" id="ptab-medical">
         <div class="card">
-          <p class="section-title" style="margin-top:0;">Health information</p>
+          <p class="section-title" style="margin-top:0;">Health</p>
           <div class="field locked"><label>MSP verification</label><div class="val">Verified, July 18, 2026, 3:29 PM</div></div>
           <div class="field-group">
             <div class="field locked"><label>Personal health number</label><div class="val">9000 000 001</div></div>
@@ -1500,7 +1495,7 @@
 
       <div class="ptab-view" id="ptab-pharmacy">
         <div class="card">
-          <p class="section-title" style="margin-top:0;">Pharmacy information</p>
+          <p class="section-title" style="margin-top:0;">Pharmacy</p>
           <div class="field editable"><label>Pharmacy name</label><div class="val">Main Street Pharmacy</div></div>
           <div class="field editable"><label>Address</label><div class="val">100 Main Street, Vancouver, BC V5T 0A1</div></div>
           <div class="field-group">
@@ -1521,8 +1516,8 @@
         </div>
         <div class="card">
           <p class="section-title" style="margin-top:0;">Authorized persons</p>
-          <p style="font-size:14px;color:var(--ink-soft);margin:0 0 10px;">No one else is authorized to manage this account yet.</p>
-          <button class="btn ghost" onclick="toast('Would start the authorized person flow')">Add an authorized person</button>
+          <p style="font-size:14px;color:var(--ink-soft);margin:0 0 10px;">None yet.</p>
+          <button class="btn ghost" onclick="toast('Would start the authorized person flow')">Add person</button>
         </div>
       </div>
     </div>
@@ -1531,20 +1526,19 @@
     <div class="screen" id="screen-carechoice">
       <button class="btn ghost" onclick="showScreen('dashboard')">&larr; Cancel</button>
       <h1 style="margin-top:12px;">How do you want to use SimpleCare?</h1>
-      <p class="sub">This decides whether you're matched with whoever's available, or paired with the same doctor going forward.</p>
       <button class="opt-card selected" onclick="chooseCareMode('episodic')">
         <span class="oc-ico">&#9889;</span>
-        <span><b>Just stopping by</b><span class="oc-sub">One-off care for something specific right now. Matched with whichever doctor is available. No ongoing relationship.</span></span>
+        <span><b>Just stopping by</b><span class="oc-sub">One-off care with the next available doctor</span></span>
       </button>
       <button class="opt-card" onclick="chooseCareMode('family')">
         <span class="oc-ico">&#128257;</span>
-        <span><b>Family medicine &mdash; ongoing care</b><span class="oc-sub">Paired with the same doctor for every visit, going forward. Best if you want continuity of care.</span></span>
+        <span><b>Family medicine &mdash; ongoing care</b><span class="oc-sub">The same doctor for every visit</span></span>
       </button>
     </div>
 
     <!-- ===== BOOKING + INTAKE ===== -->
     <div class="screen" id="screen-booking">
-      <button class="btn ghost" onclick="showScreen('dashboard')">&larr; Cancel booking</button>
+      <button class="btn ghost" onclick="showScreen('dashboard')">&larr; Cancel</button>
       <h1 style="margin-top:12px;">Book a visit</h1>
       <p class="sub" id="booking-who-line">For Ani</p>
 
@@ -1559,18 +1553,17 @@
       <div class="step-panel" id="bstep-1">
         <p class="step-label">Step 1 of 4</p>
         <p class="step-h">What kind of visit?</p>
-        <p class="step-sub">Same-day care joins today's queue. A scheduled visit picks a future window.</p>
         <button class="opt-card selected" data-type="sameday" onclick="bookingSelectType(this,'sameday')">
           <span class="oc-ico">&#9889;</span>
-          <span><b>Same-day care</b><span class="oc-sub">Join today's queue now &middot; typical wait 60&ndash;90 min</span></span>
+          <span><b>Same-day care</b><span class="oc-sub">Join today's queue</span></span>
         </button>
         <button class="opt-card" data-type="scheduled" onclick="bookingSelectType(this,'scheduled')">
           <span class="oc-ico">&#128197;</span>
-          <span><b>Scheduled visit</b><span class="oc-sub">Pick a future day and a 4-hour call window</span></span>
+          <span><b>Scheduled visit</b><span class="oc-sub">Pick a day and a call window</span></span>
         </button>
         <button class="opt-card" data-type="followup" onclick="bookingSelectType(this,'followup')">
           <span class="oc-ico">&#128257;</span>
-          <span><b>Follow-up with my doctor</b><span class="oc-sub">Continue care with Dr. Pannozzo for an existing issue</span></span>
+          <span><b>Follow-up with my doctor</b><span class="oc-sub">Dr. Pannozzo, for an existing issue</span></span>
         </button>
         <div class="step-nav">
           <span></span>
@@ -1582,8 +1575,8 @@
       <div class="step-panel" id="bstep-2">
         <p class="step-label">Step 2 of 4</p>
         <p class="step-h">What's going on?</p>
-        <p class="step-sub">This goes to the physician before your call so they can prepare.</p>
-        <textarea class="intake-field" id="intake-reason" rows="3" placeholder="Describe your main concern in your own words"></textarea>
+        <p class="step-sub">Your doctor reads this before the call.</p>
+        <textarea class="intake-field" id="intake-reason" rows="3" placeholder="Your main concern, in your own words"></textarea>
         <p class="step-label" style="margin-top:6px;">Any of these right now?</p>
         <div class="check-row redflag" onclick="toggleCheck(this)"><span class="check-box">&#10003;</span> Chest pain or pressure</div>
         <div class="check-row redflag" onclick="toggleCheck(this)"><span class="check-box">&#10003;</span> Trouble breathing</div>
@@ -1604,7 +1597,7 @@
       <div class="step-panel" id="bstep-3">
         <p class="step-label">Step 3 of 4</p>
         <p class="step-h">Anything to attach?</p>
-        <p class="step-sub">Optional. Add a photo of a rash, a past result, or a form. You can skip this.</p>
+        <p class="step-sub">Optional: a photo, past result or form.</p>
         <div class="upload-zone" id="intake-upload-zone" onclick="document.getElementById('intake-file-input').click()">
           <div class="uz-ico">&#128247;</div>
           <div class="uz-t">Add a photo or file</div>
@@ -1622,7 +1615,6 @@
       <div class="step-panel" id="bstep-4">
         <p class="step-label">Step 4 of 4</p>
         <p class="step-h">Review and confirm</p>
-        <p class="step-sub">Check the details before you join the queue.</p>
         <div class="card" id="booking-review"></div>
         <p class="cutoff-note">By confirming, you agree that a no-show or a cancel inside 24 hours may carry a fee.</p>
         <div class="step-nav">
@@ -1636,11 +1628,11 @@
         <div class="confirm-hero">
           <div class="confirm-check">&#10003;</div>
           <p class="step-h" id="confirm-title">You're in the queue</p>
-          <p class="step-sub" id="confirm-sub">We'll text you as your turn gets close.</p>
+          <p class="step-sub" id="confirm-sub">We'll text you when your turn is close.</p>
         </div>
         <div class="step-nav" style="justify-content:center;">
-          <button class="btn primary" onclick="showScreen('queue')">Track my place live</button>
-          <button class="btn ghost" onclick="showScreen('dashboard')">Back to dashboard</button>
+          <button class="btn primary" onclick="showScreen('queue')">Track live</button>
+          <button class="btn ghost" onclick="showScreen('dashboard')">Dashboard</button>
         </div>
       </div>
     </div>
@@ -1718,11 +1710,11 @@
 <div class="ai-panel" id="ai-panel">
   <div class="ai-head">
     <span class="spark">&#10024;</span>
-    <span><b>SimpleCare Assistant</b><span class="sub">Book &middot; refills &middot; records &middot; questions</span></span>
+    <span><b>SimpleCare Assistant</b></span>
     <button class="close" onclick="closeAI()">&times;</button>
   </div>
   <div class="ai-body" id="ai-body">
-    <div class="ai-msg bot">Hi Ani &#128075; I'm your SimpleCare assistant. I can book a visit, refill a medication, pull up your results, or answer a question. What do you need?</div>
+    <div class="ai-msg bot">Hi Ani &#128075; What do you need?</div>
     <div class="ai-chips" id="ai-chips">
       <button class="ai-chip" onclick="aiSend('I need to book a visit')">Book a visit</button>
       <button class="ai-chip" onclick="aiSend('Refill my medication')">Refill a medication</button>
@@ -1731,7 +1723,7 @@
     </div>
   </div>
   <div class="ai-foot">
-    <input id="ai-input" placeholder="Type what you need&hellip;" onkeydown="if(event.key==='Enter')aiSend()">
+    <input id="ai-input" placeholder="Type here&hellip;" onkeydown="if(event.key==='Enter')aiSend()">
     <button class="mic" title="Voice" aria-label="Voice">&#127908;</button>
     <button class="send" onclick="aiSend()">&#10148;</button>
   </div>
@@ -1757,8 +1749,8 @@
         <button type="button" class="chip fp-type">Idea</button>
         <button type="button" class="chip fp-type">Question</button>
       </div>
-      <textarea aria-label="Your feedback" placeholder="Tell us what happened, we read every one of these"></textarea>
-      <p class="fp-note">This goes straight to the SimpleCare team, not to your doctor's office.</p>
+      <textarea aria-label="Your feedback" placeholder="What happened?"></textarea>
+      <p class="fp-note">Goes to the SimpleCare team, not your doctor's office.</p>
     </div>
     <div class="pp-ft"><button type="button" class="btn ghost" data-pp-close>Cancel</button><button type="button" class="btn primary" onclick="submitFeedback()">Send feedback</button></div>
   </div>
@@ -1790,24 +1782,25 @@ document.querySelectorAll('.nav-btn').forEach(b => {
 var CASES = {
   today: {
     doc: 'Dr. Daniel Pannozzo', date: 'Saturday, July 18, 2026', status: 'Waiting', statusBg: 'var(--accent-wash)', statusColor: 'var(--accent-ink)',
-    note: 'This visit is still in progress. Clinical actions from this encounter will appear here once the visit is complete.',
+    note: 'Visit in progress. Clinical actions appear here once it\'s complete.',
     sections: []
   },
   jun25: {
     doc: 'Dr. Daniel Pannozzo', date: 'Thursday, June 25, 2026', status: 'Completed', statusBg: 'var(--good-wash)', statusColor: 'var(--good)',
     sections: [
-      {icon:'&#128203;', title:'Clinical intake', items:['Patient responses completed prior to the visit']},
-      {icon:'&#128138;', title:'Medications', items:['Prescription sent, Amoxicillin 500mg']},
-      {icon:'&#129514;', title:'Laboratory', items:['Laboratory ordered, CBC', 'Laboratory ordered, Ferritin', 'Laboratory ordered, HbA1c']},
-      {icon:'&#127909;', title:'Diagnostic imaging', items:['Imaging ordered, Chest X-ray']},
-      {icon:'&#128232;', title:'Referrals', items:['Referral sent, Cardiology']},
-      {icon:'&#128196;', title:'Documents', items:['Sick note, released']}
+      /* Ani, 7 Oct copy diet: the section title says what kind of action, so each item is just the item */
+      {icon:'&#128203;', title:'Intake', items:['Completed before the visit']},
+      {icon:'&#128138;', title:'Prescription sent', items:['Amoxicillin 500mg']},
+      {icon:'&#129514;', title:'Lab tests ordered', items:['CBC', 'Ferritin', 'HbA1c']},
+      {icon:'&#127909;', title:'Imaging ordered', items:['Chest X-ray']},
+      {icon:'&#128232;', title:'Referral sent', items:['Cardiology']},
+      {icon:'&#128196;', title:'Document released', items:['Sick note']}
     ]
   },
   aug14: {
     doc: 'Dr. Daniel Pannozzo', date: 'Thursday, August 14, 2025', status: 'Completed', statusBg: 'var(--good-wash)', statusColor: 'var(--good)',
     sections: [
-      {icon:'&#129514;', title:'Laboratory', items:['Laboratory ordered, CBC', 'Laboratory ordered, Lipid panel']}
+      {icon:'&#129514;', title:'Lab tests ordered', items:['CBC', 'Lipid panel']}
     ]
   }
 };
@@ -1820,7 +1813,7 @@ function openCase(id){
       var items = s.items.map(function(i){ return '<li>' + i + '</li>'; }).join('');
       return '<div class="clin-section"><p class="clin-section-title"><span>' + s.icon + '</span>' + s.title + '</p><ul class="clin-list">' + items + '</ul></div>';
     }).join('');
-    body += '<p class="clin-disclaimer">This shows the clinical actions from this visit. Clinical notes, assessments, and physician documentation stay in your provider\'s medical record and are not shown here.</p>';
+    body += '<p class="clin-disclaimer">Clinical notes, assessments and physician documentation stay in your provider\'s medical record and aren\'t shown here.</p>';
   } else {
     body = '<p style="font-size:14px;color:var(--ink-soft);margin:0;">' + c.note + '</p>';
   }
@@ -1836,7 +1829,7 @@ function openPatientLog(id){
   if(id === 'ani'){
     showScreen('activity');
   } else {
-    toast('Karen\'s clinical activity would open the same way, once she has her own login-linked record');
+    toast('Karen\'s activity opens once her record is linked');
   }
 }
 
@@ -1997,7 +1990,7 @@ function chooseCareMode(mode){
   if(mode === 'family'){
     startBooking(careChoiceFor, 'followup');
     bookingGoTo(2);
-    toast("You're paired with Dr. Daniel Pannozzo — continuing your ongoing care");
+    toast("Paired with Dr. Daniel Pannozzo");
   } else {
     startBooking(careChoiceFor, 'sameday');
   }
@@ -2053,14 +2046,14 @@ function bookingReviewFill(){
   var symptoms = [];
   document.querySelectorAll('#screen-booking .check-row.on').forEach(function(r){ symptoms.push(r.textContent.trim()); });
   var typeLabel = TYPE_LABELS[bookingState.type];
-  var when = bookingState.type === 'sameday' ? "Today, joins the queue now" :
+  var when = bookingState.type === 'sameday' ? "Today, in the queue" :
              (bookingState.type === 'followup' ? "Today, Dr. Pannozzo's queue" : "Wed Jul 29, 9:00 AM – 1:00 PM");
   var rows = [
     ['For', bookingState.who],
-    ['Visit type', typeLabel],
+    ['Type', typeLabel],
     ['When', when],
     ['Reason', reason],
-    ['Flagged symptoms', symptoms.length ? symptoms.join(', ') : 'None'],
+    ['Symptoms', symptoms.length ? symptoms.join(', ') : 'None'],
     ['Attachments', bookingState.attachments + (bookingState.attachments === 1 ? ' file' : ' files')]
   ];
   document.getElementById('booking-review').innerHTML = rows.map(function(r){
@@ -2072,12 +2065,12 @@ function bookingConfirm(){
   var scheduled = (bookingState.type === 'scheduled');
   document.getElementById('confirm-title').textContent = scheduled ? "Visit booked" : "You're in the queue";
   document.getElementById('confirm-sub').textContent = scheduled
-    ? "We've booked your window. It's now on your dashboard."
-    : "We'll text you as your turn gets close. You're #6 in line right now.";
+    ? "It's on your dashboard."
+    : "#6 in line. We'll text you when your turn is close.";
   // scheduled visits don't have a live queue button
   document.querySelector('#bstep-done .step-nav').innerHTML = scheduled
-    ? '<button class="btn primary" onclick="showScreen(\'appointments\')">See my appointments</button><button class="btn ghost" onclick="showScreen(\'dashboard\')">Back to dashboard</button>'
-    : '<button class="btn primary" onclick="showScreen(\'queue\')">Track my place live</button><button class="btn ghost" onclick="showScreen(\'dashboard\')">Back to dashboard</button>';
+    ? '<button class="btn primary" onclick="showScreen(\'appointments\')">See visits</button><button class="btn ghost" onclick="showScreen(\'dashboard\')">Dashboard</button>'
+    : '<button class="btn primary" onclick="showScreen(\'queue\')">Track live</button><button class="btn ghost" onclick="showScreen(\'dashboard\')">Dashboard</button>';
   if(!scheduled){
     setQueueState('waiting');
     notifyPhysicianDemo();
@@ -2129,31 +2122,32 @@ function attachUpload(files){
 
 /* ===== live queue with edge-case states ===== */
 var QUEUE = {
-  waiting: { cls:'waiting', eyebrow:'You are in the queue', pos:'#6 in line', posBig:true,
-    msg:'5 patients ahead &middot; estimated call 11:40 AM – 12:10 PM. We\'ll text you when it\'s close.',
+  /* Ani, 7 Oct: rule 11, no wait estimates. The place in line and the call window (in the header) only. */
+  waiting: { cls:'waiting', eyebrow:'In the queue', pos:'#6 in line', posBig:true,
+    msg:'Your call window: 10:00 AM – 2:00 PM. We\'ll text you when it\'s close.',
     actions:'' },
   next: { cls:'next', eyebrow:'You\'re next', pos:'#1', posBig:true,
-    msg:'The doctor will call you within a few minutes. Please stay near your phone with a signal.',
+    msg:'Please stay near your phone, with a signal.',
     actions:'<button class="btn primary" onclick="toast(\'Answering the call…\')">I\'m ready</button>' },
   progress: { cls:'progress', eyebrow:'In your visit', pos:'<span class="q-spinner"></span>Connected', posBig:false,
-    msg:'You\'re with Dr. Pannozzo now. Clinical actions will appear in your record afterward.',
+    msg:'You\'re with Dr. Pannozzo now.',
     actions:'<button class="btn ghost" onclick="setQueueState(\'done\')">End visit</button>' },
   delayed: { cls:'delayed', eyebrow:'Running behind', pos:'#4 in line', posBig:true,
-    msg:'The doctor is running about 25 minutes behind. Your spot is held &mdash; no need to do anything.',
-    actions:'<button class="btn ghost" onclick="toast(\'We\\\'ll text you a fresh estimate\')">Notify me of changes</button>' },
+    msg:'The doctor is running behind. Your spot is held.',
+    actions:'<button class="btn ghost" onclick="toast(\'We\\\'ll text you if anything changes\')">Text me changes</button>' },
   missed: { cls:'missed', eyebrow:'We couldn\'t reach you', pos:'Call missed', posBig:false,
-    msg:'The doctor tried to call and couldn\'t connect. You have a short grace window to rejoin before losing your spot.',
+    msg:'Rejoin before the timer ends to keep your spot.',
     countdown:true,
-    actions:'<button class="btn primary" onclick="setQueueState(\'next\')">Rejoin now</button><button class="btn ghost" onclick="setQueueState(\'noshow\')">I can\'t take the call</button>' },
+    actions:'<button class="btn primary" onclick="setQueueState(\'next\')">Rejoin now</button><button class="btn ghost" onclick="setQueueState(\'noshow\')">Can\'t talk now</button>' },
   dropped: { cls:'dropped', eyebrow:'Call dropped', pos:'Reconnecting', posBig:false,
-    msg:'Your call disconnected. We\'re holding your place at the front while we try to reconnect.',
-    actions:'<button class="btn primary" onclick="setQueueState(\'progress\')">Reconnect now</button>' },
+    msg:'We\'re holding your place at the front.',
+    actions:'<button class="btn primary" onclick="setQueueState(\'progress\')">Reconnect</button>' },
   done: { cls:'done', eyebrow:'Visit complete', pos:'&#10003; Done', posBig:false,
-    msg:'Your visit summary and any prescriptions or orders are on the way to your records.',
-    actions:'<button class="btn primary" onclick="openCase(\'jun25\')">View visit summary</button>' },
+    msg:'Your summary and any orders are on their way to your records.',
+    actions:'<button class="btn primary" onclick="openCase(\'jun25\')">View summary</button>' },
   noshow: { cls:'noshow', eyebrow:'Marked as no-show', pos:'Missed', posBig:false,
-    msg:'This visit was closed because we couldn\'t connect. A no-show fee may apply. You can book again anytime.',
-    actions:'<button class="btn primary" onclick="handleBookClick()">Book a new visit</button>' }
+    msg:'We couldn\'t connect, so this visit was closed. A no-show fee may apply.',
+    actions:'<button class="btn primary" onclick="handleBookClick()">Book again</button>' }
 };
 var queueState = 'waiting';
 
@@ -2198,7 +2192,7 @@ function startGrace(){
 
 /* ===== chronic care ===== */
 function requestRefill(med){
-  toast('Refill request sent for ' + med + '. Your pharmacy will be notified once approved.');
+  toast('Refill requested: ' + med + '. Your pharmacy hears once it\'s approved.');
 }
 
 function toast(msg){
@@ -2241,49 +2235,49 @@ function aiReply(text){
     typing.remove();
     var t=text.toLowerCase();
     if(/(cover|msp|cost|price|pay|insur|bill|fee)/.test(t)){
-      aiAppend("Your virtual visits are covered by <b>BC MSP</b> at no cost with your valid card. The only charges you'd see are for uninsured services (like some forms), and those are always shown before you confirm.",'bot');
+      aiAppend("Visits are covered by <b>BC MSP</b> with a valid card. Uninsured services (like some forms) always show their cost before you confirm.",'bot');
       aiActionBtn('&#128197;','Book a covered visit',null,function(){aiDo(function(){handleBookClick();});});
     }
     else if(/(metformin)/.test(t)){
-      aiAppend("I can send a refill request for <b>Metformin 500mg</b> to a physician for review — once approved it goes straight to your pharmacy.",'bot');
+      aiAppend("I can request a <b>Metformin 500mg</b> refill. Once a physician approves it, it goes to your pharmacy.",'bot');
       aiActionBtn('&#128138;','Refill Metformin 500mg','Sends to physician for approval',function(){aiDo(function(){requestRefill('Metformin 500mg');});});
     }
     else if(/(amlodipine)/.test(t)){
-      aiAppend("I can send a refill request for <b>Amlodipine 5mg</b> for review — once approved it's sent to your pharmacy.",'bot');
+      aiAppend("I can request an <b>Amlodipine 5mg</b> refill. Once approved, it goes to your pharmacy.",'bot');
       aiActionBtn('&#128138;','Refill Amlodipine 5mg','Sends to physician for approval',function(){aiDo(function(){requestRefill('Amlodipine 5mg');});});
     }
     else if(/(refill|prescription|medication|meds|renew)/.test(t)){
-      aiAppend("You have two active medications on file. Which would you like to refill?",'bot');
+      aiAppend("Which one?",'bot');
       aiActionBtn('&#128138;','Refill Metformin 500mg',null,function(){aiDo(function(){requestRefill('Metformin 500mg');});});
       aiActionBtn('&#128138;','Refill Amlodipine 5mg',null,function(){aiDo(function(){requestRefill('Amlodipine 5mg');});});
     }
     else if(/(result|lab|bloodwork|report|x-ray|imaging|latest)/.test(t)){
-      aiAppend("Your most recent result is <b>bloodwork ordered by Dr. Pannozzo</b>. I can open that visit's clinical summary, or take you to all your health records.",'bot');
+      aiAppend("Your latest is <b>bloodwork ordered by Dr. Pannozzo</b>.",'bot');
       aiActionBtn('&#129514;','Open latest result','Jun 25 visit · Dr. Pannozzo',function(){aiDo(function(){openCase('jun25');});});
       aiActionBtn('&#128193;','All health records',null,function(){aiDo(function(){showScreen('documents');});});
     }
     else if(/(record|document|upload|file)/.test(t)){
-      aiAppend("Your lab results, documents, and uploads all live in Health records.",'bot');
+      aiAppend("Results, documents and uploads are in Health records.",'bot');
       aiActionBtn('&#128193;','Open Health records',null,function(){aiDo(function(){showScreen('documents');});});
     }
     else if(/(today|live|queue|track|waiting|call|in line)/.test(t)){
-      aiAppend("Your visit with <b>Dr. Pannozzo</b> is in progress today. I can take you to the live tracker so you can watch your place in line.",'bot');
+      aiAppend("Your visit with <b>Dr. Pannozzo</b> is today.",'bot');
       aiActionBtn('&#128337;','Track today&#39;s visit','Live queue',function(){aiDo(function(){showScreen('queue');});});
     }
     else if(/(history|past visit|previous|appointment)/.test(t)){
-      aiAppend("Here's your full visit history across the family account.",'bot');
+      aiAppend("Here's your visit history.",'bot');
       aiActionBtn('&#128203;','Open Visit history',null,function(){aiDo(function(){showScreen('appointments');});});
     }
     else if(/(condition|diagnos|chronic|manage)/.test(t)){
-      aiAppend("Your medications, lab work, and reports all live in Health records. For anything about how a condition is being managed, that's a conversation for your physician.",'bot');
+      aiAppend("Medications, labs and reports are in Health records. How a condition is managed is a question for your physician.",'bot');
       aiActionBtn('&#128193;','Open Health records',null,function(){aiDo(function(){showScreen('documents');});});
     }
     else if(/(book|see|doctor|visit|sick|appointment|throat|cold|fever|pain|cough|rash)/.test(t)){
-      aiAppend("I can get you booked. You can continue ongoing care with <b>Dr. Pannozzo</b>, or start a same-day visit with the next available doctor.",'bot');
+      aiAppend("Continue with <b>Dr. Pannozzo</b>, or a same-day visit with the next available doctor?",'bot');
       aiActionBtn('&#128197;','Book a visit','Choose care type next',function(){aiDo(function(){handleBookClick();});});
     }
     else {
-      aiAppend("I can help you <b>book a visit</b>, <b>refill a medication</b>, <b>find your results</b>, or answer questions about your care. Which would you like?",'bot');
+      aiAppend("I can <b>book a visit</b>, <b>refill a medication</b> or <b>find your results</b>.",'bot');
       aiActionBtn('&#128197;','Book a visit',null,function(){aiDo(function(){handleBookClick();});});
       aiActionBtn('&#128138;','Refill a medication',null,function(){aiSend('Refill my medication');});
     }
@@ -2336,8 +2330,8 @@ var PT_LABWORK = [
       {name:'Sodium', state:'reviewed'},
       {name:'Potassium', state:'reviewed'}
     ],
-    outcome:'All 5 tests are back and Dr. Pannozzo has reviewed them. He wants to talk one of them through with you.',
-    book:'Our office will call you today between 4:00 and 5:30 pm to book a follow-up. Nothing for you to do.',
+    outcome:'All back and reviewed. Dr. Pannozzo wants to go over one with you.',
+    book:'Our office will call you today, 4:00–5:30 PM, to book a follow-up. Nothing to do.',
     tone:'act'
   },
   {
@@ -2350,7 +2344,7 @@ var PT_LABWORK = [
       {name:'Platelets', state:'waiting'},
       {name:'MCV', state:'waiting'}
     ],
-    outcome:'3 reviewed by Dr. Pannozzo, no action needed. Still waiting on 2 from the lab.',
+    outcome:'3 reviewed, no action needed. 2 still at the lab.',
     tone:'ok'
   },
   {
@@ -2362,7 +2356,7 @@ var PT_LABWORK = [
       {name:'Vitamin B12', state:'waiting'},
       {name:'Vitamin D', state:'waiting'}
     ],
-    outcome:'1 result is in and waiting for Dr. Pannozzo to review it. 3 still to come from the lab.',
+    outcome:'1 waiting for Dr. Pannozzo to review. 3 still at the lab.',
     tone:'wait'
   },
   {
@@ -2373,7 +2367,7 @@ var PT_LABWORK = [
       {name:'Prothrombin time', state:'back'},
       {name:'aPTT', state:'waiting'}
     ],
-    outcome:'1 reviewed, no action needed. 1 waiting on Dr. Pannozzo. 1 still to come from the lab.',
+    outcome:'1 reviewed, no action needed. 1 waiting for Dr. Pannozzo. 1 still at the lab.',
     tone:'wait'
   },
   {
@@ -2384,7 +2378,7 @@ var PT_LABWORK = [
       {name:'Ferritin', state:'reviewed'},
       {name:'Transferrin saturation', state:'reviewed'}
     ],
-    outcome:'All 3 reviewed by Dr. Pannozzo, no action needed.',
+    outcome:'All reviewed, no action needed.',
     tone:'ok'
   },
   {
@@ -2394,7 +2388,7 @@ var PT_LABWORK = [
       {name:'TSH', state:'waiting'},
       {name:'Free T4', state:'waiting'}
     ],
-    outcome:'Nothing back from the lab yet. If you have not had your blood drawn, your requisition is still open.',
+    outcome:'Nothing back yet. Not had blood drawn? Your requisition is still open.',
     tone:'wait'
   }
 ];
@@ -2418,10 +2412,10 @@ function ptLabHTML(){
   var out =
     /* Ani, 6 Oct: one slim strip instead of big stat tiles; the dots double as the legend for the test chips */
     '<div class="ptlab-strip">' +
-      '<span><b>'+t.total+'</b> tests ordered</span>' +
-      '<span><i class="ptlab-dot reviewed"></i><b>'+t.reviewed+'</b> reviewed by your doctor</span>' +
-      '<span><i class="ptlab-dot back"></i><b>'+t.back+'</b> in, awaiting review</span>' +
-      '<span><i class="ptlab-dot waiting"></i><b>'+t.waiting+'</b> still with the lab</span>' +
+      '<span><b>'+t.total+'</b> tests</span>' +
+      '<span><i class="ptlab-dot reviewed"></i><b>'+t.reviewed+'</b> reviewed</span>' +
+      '<span><i class="ptlab-dot back"></i><b>'+t.back+'</b> awaiting review</span>' +
+      '<span><i class="ptlab-dot waiting"></i><b>'+t.waiting+'</b> at the lab</span>' +
     '</div>';
 
   out += PT_LABWORK.map(function(o){
@@ -2439,8 +2433,8 @@ function ptLabHTML(){
     '</div>';
   }).join('');
 
-  out += '<p class="ptlab-note">A result arriving does not mean something is wrong, and it does not mean you need to book. ' +
-    'If your doctor wants to see you, our office contacts you to arrange it.</p>';
+  out += '<p class="ptlab-note">A new result doesn\'t mean something is wrong or that you need to book. ' +
+    'If your doctor wants to see you, our office will contact you.</p>';
   return out;
 }
 
@@ -2455,7 +2449,7 @@ function renderPtLabWork(){
 function handleDashUpload(files, listId){
   listId = listId || 'dash-upload-list';
   for(var i=0;i<files.length;i++){ renderUpload(files[i], listId); }
-  toast(files.length + (files.length === 1 ? ' file uploaded' : ' files uploaded') + ', saved to your health records');
+  toast(files.length + (files.length === 1 ? ' file' : ' files') + ' saved to health records');
 }
 
 /* ===== Layers: side drawers and the small dialog (Ani, 6 Oct 2026), same behaviour as the physician portal.
@@ -2517,6 +2511,6 @@ window.addEventListener('resize', function(){ if(window.innerWidth > 760 && docu
 renderPtLabWork();
 </script>
 
-  <div class="build-stamp">build 2026-10-06 18:00</div>
+  <div class="build-stamp">build 2026-10-06 23:24</div>
 </body>
 </html>
