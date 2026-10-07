@@ -14630,6 +14630,14 @@ function v2Sec(k, open){
   s.classList.toggle('v2-open', !!open);   /* Ani, 6 Oct: the open row gets a soft background */
 }
 function v2Secs(){ ['meds','hist','pend','since','prev'].forEach(function(k){ v2Sec(k, !!V2.open[k]); }); }
+/* Ani, 6 Oct: open the one section that matters most for this visit, and only one: Pending when something is overdue;
+   Medications for a prescription renewal visit (e.g. "Rx renewal"). Otherwise all rows start closed. */
+function v2AutoOpen(name){
+  var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0], pend = v2Rows(name)['Pending'];
+  if(pend && pend[1].some(function(x){ return x[4] === 'Overdue'; })) return 'pend';
+  if(r && /\bRx\b|renew|refill|prescription/i.test(r.concern || '')) return 'meds';
+  return null;
+}
 /* the last visible row takes the card's bottom corners (rows can hide: display by exception) */
 function v2SumEdges(){
   var rows = [].slice.call(document.querySelectorAll('#v2-sum .v2-sec')), last = null;
@@ -14965,7 +14973,7 @@ function v2RxFocus(){
     v2Fin(false, true); V2.open = {}; V2.pick = {};
     V2.booting = true;
     try { open0.apply(this, arguments); } finally { V2.booting = false; }
-    if(v2On()){ v2Secs(); V2.tabFor = name; v2Tab(v2StartTab(name)); v2Render(); v2Stick(true); }
+    if(v2On()){ v2Secs(); V2.tabFor = name; v2Tab(v2StartTab(name)); v2Render(); var ao = v2AutoOpen(name); if(ao) v2Sec(ao, true); v2Stick(true); }
   };
 })();
 
@@ -15510,6 +15518,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 23:20</div>
+  <div class="build-stamp">v2 · build 2026-10-06 23:30</div>
 </body>
 </html>
