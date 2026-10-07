@@ -13628,13 +13628,13 @@ function t23CounselBlock(v){
   return '';
 }
 /* Real data (Ani, 6 Oct 2026): BC MSP diagnostic codes (ICD-9 plus MSP's additional codes), public data from
-   gov.bc.ca, "Diagnostic Code Descriptions (ICD-9)". The full list (6,168 leaf codes) is in
-   assets/data/bc-msp-diagnostic-codes.json and loads the first time "Your coding" opens (t23DxLoad).
+   gov.bc.ca, "Diagnostic Code Descriptions (ICD-9)". Regenerated 6 Oct 2026 from Dev's list (MSP's Teleplan list
+   plus Dr. Pannozzo's 4 Oct list, 7,196 codes with our plain-English search words): 6,226 leaf codes in
+   assets/data/bc-msp-diagnostic-codes.json, loaded the first time "Your coding" opens (t23DxLoad).
+   MSP has no suicide code; Dev's search words make "suicide" find 311, 50B, 300.4 and V62.8 (whether these are the
+   right codes is an open question for Daniel; see product/specs/billing-build-notes.md).
    T23_DX holds only the codes the demo claims and visits use, so Claims and the chart can name them before
-   the full list has loaded. Old demo codes → real codes: DX-D1 → 786.5, DX-D2 → V67.9, DX-D3 → 112.1, DX-D4 → 280,
-   DX-D5 → 724.2, DX-D6 → V72.6, DX-D7 → V68.1, DX-D8 → 401.9, DX-D9 → 782.1, DX-D10 → 599.0, DX-D11 → 054.9,
-   DX-D12 → 461.9, DX-D13 → 460, DX-D14 → 300.0, DX-D15 → 311 (DX-D16 "Suicidal thoughts" has no code in this list:
-   which code to use, and which search words to add, Needs Daniel; see product/specs/billing-build-notes.md). */
+   the full list has loaded (the old placeholder codes map one to one to these real codes; see the build notes). */
 var T23_DX = {
   '786.5':'Chest pain', 'V67.9':'Follow-up examination, unspecified', '112.1':'Candidiasis of vulva and vagina',
   '280':'Iron deficiency anaemias', '724.2':'Lumbago', 'V72.6':'Special investigations and examinations, laboratory examination', 'V68.1':'Issue of repeat prescriptions',
@@ -15896,6 +15896,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 00:20</div>
+  <div class="build-stamp">v2 · build 2026-10-07 00:30</div>
 </body>
 </html>
