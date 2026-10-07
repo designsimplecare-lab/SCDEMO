@@ -5556,6 +5556,16 @@
   #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts > .btn.dark.cw-again:hover{background:var(--wash);opacity:1;}
   #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts > .btn.dark.cw-again .ic{color:var(--ink-soft);}
   #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-calllog{margin:2px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);font-variant-numeric:tabular-nums;}
+  /* Dev answers, 6 Oct: fee amount next to the code, and the counselling offer (Switch to counselling at 20+ min) */
+  #t23-pick .t23-feeamt{font-size:14.5px;color:var(--ink-soft);}
+  #t23-pick .t23-feeline:focus{outline:2px solid var(--accent);outline-offset:4px;border-radius:6px;}
+  .t23-cnsl{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;margin:10px 0 0;padding:10px 12px;border-radius:10px;background:var(--wash);font-size:14.5px;color:var(--ink);}
+  .t23-cnsl > .ic,.t23-cnsl > .ic svg{width:18px;height:18px;color:var(--accent);flex:none;}
+  .t23-cnsl > span:not(.ic){flex:1 1 220px;min-width:0;}
+  .t23-cnsl .btn{flex:none;}
+  #bill-overlay .t23-err,#t23-pick .t23-cnsl + .t23-err{margin:8px 0 0;}
+  #t23-billrow .t23-berr{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink);}
+  #t23-billrow .t23-berr .ic,#t23-billrow .t23-berr svg{width:16px;height:16px;color:var(--warn, #B7791F);}
 </style>
 </head>
 <body>
@@ -13534,7 +13544,7 @@ function csDemoSync(){
    how he did, new way." PRD refs (IDs only): CNF-09/10, COD-01..07, TAIL-04, CLM-01..06, ELT-01..09.
    Revised after Daniel's review, 5 Oct (product/specs/billing-redesign.md, "Daniel review, 5 Oct"): the doctor submits
    one claim at a time (at sign-off, or later from Claims, Needs submission); the system batches them to MSP at the end
-   of the day. Every code and amount here is a demo value (REQ-BIL-07, OQ-24). Red in billing only at 2 days left or
+   of the day. Fee codes and amounts are MSP's real telehealth codes since Dev's answers (6 Oct). Red in billing only at 2 days left or
    fewer (critical, rule 21).
    ===================================================================================================== */
 var T23_TODAY = new Date(2026, 9, 3);   /* the spec's demo "today": Sat 3 Oct 2026, so its day counts hold */
@@ -13573,17 +13583,47 @@ function t23Money(n){ return '$' + n.toFixed(2); }
 function t23Now(){ return new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'}); }
 function t23Stamp(){ return '3 Oct ' + t23Now(); }
 
-/* Spec part 0: values that can't be mistaken for real MSP ones. The real list Needs Daniel (N1, OQ-24). */
-/* Daniel 5 Oct (step 4): fee codes are deterministic by the patient's age (about 5 codes). These codes, names, age
-   bands and amounts are DEMO values invented for the prototype; the real fee codes and bands Need Daniel. */
+/* Dev answers, 6 Oct 2026 (answer 05, fee-codes.csv): the real MSP telehealth codes SimpleCare bills. The patient's
+   age ON THE VISIT DATE picks the code automatically; the doctor never picks a visit code. Six visit codes (13x37) and
+   six counselling codes (13x38), one per age band. Source: MSC Payment Schedule (31 May 2026) p.7-6/7-7 and MSP's fee
+   file (1 Jul 2026). 13637 is printed $43.27 in the schedule but MSP pays $43.29 (MSP's own fee file), so $43.29.
+   Counselling (Preamble D.3.3): at least 20 minutes, start AND end time on the claim (else MSP refuses it, code CF),
+   at most 4 per patient per year. Every claim starts as the visit code; when the call lasted 20 minutes or more the
+   doctor is offered "Switch to counselling (13x38)". The system never switches on its own. */
 var T23_FEES = {
-  'DEMO-1': {name:'Visit, under 2',     amt:32, min:0,  max:1},
-  'DEMO-2': {name:'Visit, 2 to 49',     amt:30, min:2,  max:49},
-  'DEMO-3': {name:'Visit, 50 to 59',    amt:31, min:50, max:59},
-  'DEMO-4': {name:'Visit, 60 to 69',    amt:33, min:60, max:69},
-  'DEMO-5': {name:'Visit, 70 and over', amt:35, min:70, max:200}
+  '13237': {name:'Telehealth visit, age 0–1',   amt:41.42, min:0,  max:1,   kind:'visit'},
+  '13437': {name:'Telehealth visit, age 2–49',  amt:38.61, min:2,  max:49,  kind:'visit'},
+  '13537': {name:'Telehealth visit, age 50–59', amt:41.42, min:50, max:59,  kind:'visit'},
+  '13637': {name:'Telehealth visit, age 60–69', amt:43.29, min:60, max:69,  kind:'visit'},
+  '13737': {name:'Telehealth visit, age 70–79', amt:48.76, min:70, max:79,  kind:'visit'},
+  '13837': {name:'Telehealth visit, age 80+',   amt:56.47, min:80, max:200, kind:'visit'},
+  '13238': {name:'Telehealth counselling, age 0–1',   amt:82.84,  min:0,  max:1,   kind:'counsel'},
+  '13438': {name:'Telehealth counselling, age 2–49',  amt:77.24,  min:2,  max:49,  kind:'counsel'},
+  '13538': {name:'Telehealth counselling, age 50–59', amt:82.84,  min:50, max:59,  kind:'counsel'},
+  '13638': {name:'Telehealth counselling, age 60–69', amt:86.57,  min:60, max:69,  kind:'counsel'},
+  '13738': {name:'Telehealth counselling, age 70–79', amt:97.52,  min:70, max:79,  kind:'counsel'},
+  '13838': {name:'Telehealth counselling, age 80+',   amt:112.93, min:80, max:200, kind:'counsel'}
 };
-function t23FeeForAge(age){ age = parseInt(age, 10); if(isNaN(age)) return 'DEMO-2'; for(var k in T23_FEES){ if(age >= T23_FEES[k].min && age <= T23_FEES[k].max) return k; } return 'DEMO-2'; }
+var T23_COUNSEL_MIN = 20, T23_COUNSEL_YEAR = 4;
+/* the code for an age: the visit code, or the counselling code of the same band when counsel is true */
+function t23FeeForAge(age, counsel){
+  age = parseInt(age, 10); var kind = counsel ? 'counsel' : 'visit';
+  if(isNaN(age)) return counsel ? '13438' : '13437';
+  for(var k in T23_FEES){ var f = T23_FEES[k]; if(f.kind === kind && age >= f.min && age <= f.max) return k; }
+  return counsel ? '13438' : '13437';
+}
+function t23IsCounsel(code){ return !!(T23_FEES[code] && T23_FEES[code].kind === 'counsel'); }
+function t23FeeTxt(code){ return T23_FEES[code] ? code + ' · ' + T23_FEES[code].name : (code || 'No fee code'); }
+/* the submit check for counselling (Dev: COUNSELLING_TIMES_MISSING blocks; MSP refuses with CF). One wording, used by
+   Your coding, the chart billing row, Needs submission and Submit. */
+var T23_MSG_CF = 'Counselling needs the call’s start and end time on the claim. Add both to submit it.';
+function t23CounselBlock(v){
+  if(!v || !t23IsCounsel(v.fee)) return '';
+  if(!v.start || !v.stop) return T23_MSG_CF;
+  var m = t23Mins(v.start, v.stop);
+  if(m == null || m < T23_COUNSEL_MIN) return 'Counselling needs at least ' + T23_COUNSEL_MIN + ' minutes. This call was ' + (m > 0 ? m : 0) + ' min: bill the visit code instead.';
+  return '';
+}
 /* Real data (Ani, 6 Oct 2026): BC MSP diagnostic codes (ICD-9 plus MSP's additional codes), public data from
    gov.bc.ca, "Diagnostic Code Descriptions (ICD-9)". The full list (6,168 leaf codes) is in
    assets/data/bc-msp-diagnostic-codes.json and loads the first time "Your coding" opens (t23DxLoad).
@@ -13661,33 +13701,33 @@ function t23Hist(c){
 }
 var CLAIMS = [
   /* Needs submission: MSP claims not submitted yet (demo dates; days left count from the demo "today", 3 Oct) */
-  {id:'c18', who:'Frank D.', date:'2026-07-09', win:'2-5', fee:'DEMO-A', dx:'401.9', mins:8, st:'submit'},
-  {id:'c21', who:'Owen Brady', date:'2026-07-12', win:'8-10', fee:'DEMO-A', dx:'724.2', mins:13, st:'submit'},
-  {id:'c22', who:'Gloria McDonald', date:'2026-09-24', win:'8-10', fee:'DEMO-A', dx:'401.9', mins:11, st:'submit'},
-  {id:'c3', who:'Grace Lin', date:'2026-10-01', win:'10-2', fee:'DEMO-B', dx:'V72.6', mins:8, st:'submit'},
-  {id:'c4', who:'Owen Brady', date:'2026-10-01', win:'8-10', fee:'DEMO-A', dx:'724.2', mins:13, st:'submit'},
-  {id:'c1', who:'Behdis Maleki', date:'2026-10-02', win:'10-2', fee:'DEMO-A', dx:'V67.9', mins:14, st:'submit'},
-  {id:'c2', who:'Andrey Abushakhmanov', date:'2026-10-02', win:'8-10', fee:'DEMO-A', dx:'V67.9', mins:11, st:'submit', payer:'recip', prov:'Alberta'},
-  {id:'c5', who:'Carol-Anne Feldman', date:'2026-10-02', win:'8-10', fee:'DEMO-A', dx:'112.1', mins:12, start:'09:12', stop:'09:24', st:'submit'},
+  {id:'c18', who:'Frank D.', date:'2026-07-09', win:'2-5', fee:'V', dx:'401.9', mins:8, st:'submit'},
+  {id:'c21', who:'Owen Brady', date:'2026-07-12', win:'8-10', fee:'V', dx:'724.2', mins:13, st:'submit'},
+  {id:'c22', who:'Gloria McDonald', date:'2026-09-24', win:'8-10', fee:'V', dx:'401.9', mins:11, st:'submit'},
+  {id:'c3', who:'Grace Lin', date:'2026-10-01', win:'10-2', fee:'V', dx:'V72.6', mins:8, st:'submit'},
+  {id:'c4', who:'Owen Brady', date:'2026-10-01', win:'8-10', fee:'V', dx:'724.2', mins:13, st:'submit'},
+  {id:'c1', who:'Behdis Maleki', date:'2026-10-02', win:'10-2', fee:'V', dx:'V67.9', mins:24, st:'submit'},
+  {id:'c2', who:'Andrey Abushakhmanov', date:'2026-10-02', win:'8-10', fee:'V', dx:'V67.9', mins:11, st:'submit', payer:'recip', prov:'Alberta'},
+  {id:'c5', who:'Carol-Anne Feldman', date:'2026-10-02', win:'8-10', fee:'V', dx:'112.1', mins:12, start:'09:12', stop:'09:24', st:'submit'},
   /* Rejected by MSP */
-  {id:'c6', who:'Nadia Hassan', date:'2026-07-15', win:'2-5', fee:'DEMO-A', dx:'V68.1', mins:9, st:'rejected',
+  {id:'c6', who:'Nadia Hassan', date:'2026-07-15', win:'2-5', fee:'V', dx:'V68.1', mins:9, st:'rejected',
    msp:{on:'2026-10-02', ex:'EX-D4', src:'Teleplan'},
    flags:[{k:'q', from:T23_AGENT, ex:'EX-D4', ask:'Can you check the diagnosis on this claim?', due:'Tue 6 Oct'}],
    hist:[['15 Jul 2:41 PM','Dr. Pannozzo','Visit signed off; claim created'],
          ['16 Jul 7:02 PM','Dr. Pannozzo','Submitted'],
          ['2 Oct 9:10 AM','Teleplan','Returned: EX-D4 (demo)'],
          ['2 Oct 9:31 AM', T23_AGENT + ' (billing agent)','Question: Can you check the diagnosis on this claim?']]},
-  {id:'c9', who:'Behdis Maleki', date:'2026-09-12', win:'10-2', fee:'DEMO-A', dx:'280', mins:12, st:'rejected',
+  {id:'c9', who:'Behdis Maleki', date:'2026-09-12', win:'10-2', fee:'V', dx:'280', mins:12, st:'rejected',
    msp:{on:'2026-09-26', ex:'EX-D1'}},
-  {id:'c10', who:'Andrey Abushakhmanov', date:'2026-09-05', win:'8-10', fee:'DEMO-A', dx:'V67.9', mins:10, st:'dispute',
+  {id:'c10', who:'Andrey Abushakhmanov', date:'2026-09-05', win:'8-10', fee:'V', dx:'V67.9', mins:10, st:'dispute',
    msp:{on:'2026-09-19', ex:'EX-D2', reason:'Refused as billed; the claim looks correctly billed'}},
-  {id:'c11', who:'Grace Lin', date:'2026-09-10', win:'10-2', fee:'DEMO-A', dx:'V72.6', mins:11, st:'adjusted', paid:25, paidOn:'2026-09-29', msp:{on:'2026-09-29', ex:'EX-D3'}},
+  {id:'c11', who:'Grace Lin', date:'2026-09-10', win:'10-2', fee:'V', dx:'V72.6', mins:11, st:'adjusted', paid:38.61, paidOn:'2026-09-29', msp:{on:'2026-09-29', ex:'EX-D3'}},
   /* Submitted (with MSP) and paid: reachable from the Submitted, Paid and All tabs */
-  {id:'c12', who:'Andrey Abushakhmanov', date:'2026-09-28', win:'8-10', fee:'DEMO-A', dx:'V67.9', mins:10, st:'submitted', sub:'Acknowledged by MSP'},
-  {id:'c13', who:'Owen Brady', date:'2026-08-25', win:'8-10', fee:'DEMO-A', dx:'724.2', mins:12, st:'held', msp:{ex:'EX-D5'}},
-  {id:'c14', who:'Carol-Anne Feldman', date:'2026-09-29', win:'10-2', fee:'DEMO-A', dx:'112.1', mins:10, st:'rejmoa', msp:{on:'2026-10-01', ex:'EX-D2', src:'Teleplan'}},
-  {id:'c15', who:'Nadia Hassan', date:'2026-08-20', win:'2-5', fee:'DEMO-A', dx:'V68.1', mins:9, st:'appeal', sub:'Reassessment requested 15 Sep'},
-  {id:'c16', who:'Behdis Maleki', date:'2026-09-02', win:'10-2', fee:'DEMO-A', dx:'280', mins:12, st:'paid', paid:30, paidOn:'2026-09-29', sub:'Paid 29 Sep'},
+  {id:'c12', who:'Andrey Abushakhmanov', date:'2026-09-28', win:'8-10', fee:'V', dx:'V67.9', mins:10, st:'submitted', sub:'Acknowledged by MSP'},
+  {id:'c13', who:'Owen Brady', date:'2026-08-25', win:'8-10', fee:'V', dx:'724.2', mins:12, st:'held', msp:{ex:'EX-D5'}},
+  {id:'c14', who:'Carol-Anne Feldman', date:'2026-09-29', win:'10-2', fee:'V', dx:'112.1', mins:10, st:'rejmoa', msp:{on:'2026-10-01', ex:'EX-D2', src:'Teleplan'}},
+  {id:'c15', who:'Nadia Hassan', date:'2026-08-20', win:'2-5', fee:'V', dx:'V68.1', mins:9, st:'appeal', sub:'Reassessment requested 15 Sep'},
+  {id:'c16', who:'Behdis Maleki', date:'2026-09-02', win:'10-2', fee:'V', dx:'280', mins:12, st:'paid', paid:38.61, paidOn:'2026-09-29', sub:'Paid 29 Sep'},
   /* Private pay (its own view; never mixed with MSP). how: 'card' = card on file, charged after the visit;
      'link' = payment link sent; a form is released once it's paid. All demo values. */
   {id:'c19', who:'Greg', date:'2026-09-30', win:'2-5', st:'pri-due', payer:'private', item:'visit', how:'link', sent:'30 Sep'},
@@ -13700,8 +13740,8 @@ var T23_AGES = {'Frank D.':71, 'Owen Brady':38, 'Gloria McDonald':74, 'Grace Lin
 CLAIMS.forEach(function(c){
   if(!c.hist) c.hist = t23Hist(c); c.flags = c.flags || [];
   c.age = T23_AGES[c.who];
-  if(c.fee) c.fee = t23FeeForAge(c.age);
-  if(c.mins && !c.start){ c.start = '09:10'; var e = 10 + c.mins; c.stop = (e >= 60 ? '10:' : '09:') + ((e % 60) < 10 ? '0' : '') + (e % 60); }   /* demo times */
+  if(c.fee) c.fee = t23FeeForAge(c.age, c.fee === 'C');   /* 'V' visit, 'C' counselling: the code follows the age */
+  if(c.mins && !c.start && !c.notimes){ c.start = '09:10'; var e = 10 + c.mins; c.stop = (e >= 60 ? '10:' : '09:') + ((e % 60) < 10 ? '0' : '') + (e % 60); }   /* demo times */
 });
 /* the question on Nadia's claim keeps its demo codes in its text */
 function t23C(id){ return CLAIMS.filter(function(c){ return c.id === id; })[0]; }
@@ -13760,7 +13800,7 @@ function t23Pill(c, btn){
 function t23FeeHtml(c){
   if(c.payer === 'private') return '<b>' + (c.item === 'form' ? 'Form' : 'Private visit fee') + T23_DEMO + '</b>';
   if(!c.fee) return '<b>No fee code</b>';
-  return '<b>' + c.fee + ' · ' + T23_FEES[c.fee].name + T23_DEMO + '</b>' +
+  return '<b>' + t23FeeTxt(c.fee) + '</b>' +
          '<span>' + (c.dx ? c.dx + ' · ' + t23DxName(c.dx) : 'Diagnosis not set') + '</span>';
 }
 function t23AmtHtml(c){
@@ -13869,7 +13909,7 @@ function t23FlagHtml(c, f, i){
   var id = c.id;
   var btn = function(label, fn, icon, dark){ return '<button type="button" class="btn ' + (dark ? 'dark' : '') + '" onclick="' + fn + '">' + (icon ? t23Ic(icon) : '') + label + '</button>'; };
   var head = t23Ic('chat') + '<div><p class="t23-kind">Question from ' + t23E(f.from) + ' · ' + T23_AGENT_ROLE + '</p>';
-  var body = (f.ex ? '<p class="t23-why">' + t23F(c.date) + ' visit · ' + c.fee + ' · ' + c.dx + T23_DEMO + ' Teleplan returned the claim because of the diagnosis code (' + f.ex + ').</p>' : '') +
+  var body = (f.ex ? '<p class="t23-why">' + t23F(c.date) + ' visit · ' + c.fee + ' · ' + c.dx + ' Teleplan returned the claim because of the diagnosis code (' + f.ex + ').</p>' : '') +
          '<p class="t23-find">“' + t23E(f.ask) + '”</p>' +
          (f.done ? '' : (f.overdue ? '<p class="t23-why"><span class="t23-days warn">' + t23Ic('alert') + 'Overdue since ' + f.due + '</span></p>' : '<p class="t23-why">Answer by ' + f.due + '</p>'));
   var acts = f.done ? '' : '<div class="t23-acts">' + btn('Fix it now', 't23OpenPick({claim:\'' + id + '\',focus:\'dx\',flag:' + i + '})', 'edit', true) +
@@ -13890,7 +13930,7 @@ function t23RejHtml(c){
   var when = c.msp.on ? (c.msp.src === 'Teleplan' ? 'Returned by Teleplan ' : c.st === 'adjusted' ? 'Paid, adjusted ' : 'Refused ') + t23F(c.msp.on) + ' · ' : '';
   var q = c.flags.map(function(f, i){ return f.k === 'q' ? t23FlagHtml(c, f, i) : ''; }).join('');
   var openQ = t23OpenQ(c);
-  return '<div class="t23-card" id="t23-c-' + c.id + '"><div class="t23-chead"><b>' + t23E(c.who) + '</b><span class="t23-meta">' + t23F(c.date) + ' visit · ' + c.fee + ' · ' + T23_FEES[c.fee].name + '</span>' + T23_DEMO + '<span class="t23-chips">' + t23Pill(c) + t23DaysChip(c) + '</span></div>' +
+  return '<div class="t23-card" id="t23-c-' + c.id + '"><div class="t23-chead"><b>' + t23E(c.who) + '</b><span class="t23-meta">' + t23F(c.date) + ' visit · ' + t23FeeTxt(c.fee) + '</span>' + T23_DEMO + '<span class="t23-chips">' + t23Pill(c) + t23DaysChip(c) + '</span></div>' +
     '<p class="t23-reason">' + when + reason + '</p>' + q +
     '<div class="t23-cfoot">' + (openQ ? '' : '<button type="button" class="btn dark" onclick="' + p[1] + '">' + t23Ic(p[2]) + p[0] + '</button><button type="button" class="btn" onclick="' + s[1] + '">' + s[0] + '</button>') +
     '<button type="button" class="btn xs" onclick="t23Note(\'' + c.id + '\')">' + t23Ic('file') + 'Open the visit</button>' +
@@ -14051,6 +14091,7 @@ function t23SubmitOne(id){
   var c = t23C(id); if(!c) return;
   if(t23OpenQ(c)){ toast('Answer the question first.'); return; }
   if(!c.dx){ toast('Add the diagnosis to submit this claim.'); t23OpenPick({claim:id, focus:'dx'}); return; }
+  if(t23CounselBlock(c)){ toast(t23CounselBlock(c)); t23OpenPick({claim:id, focus:'time'}); return; }   /* COUNSELLING_TIMES_MISSING */
   closeBilling(); t23Signoff([id], 'one');
 }
 function t23SignOne(id){ t23SubmitOne(id); }
@@ -14084,10 +14125,11 @@ function t23Open(id){
   if(c.payer !== 'private' && c.fee){
     var b = t23Basis(c);
     h += '<div class="bl-block"><p class="bl-k">Your coding</p>' +
-      line('Fee code', c.fee + ' · ' + T23_FEES[c.fee].name + T23_DEMO + (c.fee === t23FeeForAge(c.age) ? '<span class="t23-auto">Set from age · ' + c.age + '</span>' : ''), 'fee') +
+      line('Fee code', t23FeeTxt(c.fee) + (c.fee === t23FeeForAge(c.age, t23IsCounsel(c.fee)) ? '<span class="t23-auto">Set from age · ' + c.age + '</span>' : ''), null, true) +
       line('Diagnosis (ICD-9)', c.dx ? c.dx + ' · ' + t23DxName(c.dx) + T23_DEMO : 'Diagnosis not set', 'dx') +
       line('Time', (c.start ? t23SpanTxt(c) : (c.mins || '—') + ' min') + ' · from the call', 'time') +
-      line('Amount', b ? t23Money(b[0]) + ' ' + b[1] + T23_DEMO : '—', null, true) + '</div>';
+      line('Amount', b ? t23Money(b[0]) + ' ' + b[1] + T23_DEMO : '—', null, true) +
+      (ch ? t23CnslHtml(c, 'claim', id) : (t23CounselBlock(c) ? '<p class="t23-err" role="alert">' + t23CounselBlock(c) + '</p>' : '')) + '</div>';
   } else if(c.payer === 'private'){
     h += '<div class="bl-block"><p class="bl-k">Payment</p>' +
       line('Item', (c.item === 'form' ? 'Form' : 'Private visit fee') + ' · ' + t23Money(t23Amt(c)) + T23_DEMO, null, true) +
@@ -14168,7 +14210,7 @@ closeBilling = function(){ t23CloseBilling0(); T23.open = null; var c = document
    - Time: start and stop, filled from the call (demo values), editable; every change is logged. */
 function t23Clock(hhmm){ var p = String(hhmm || '').split(':'), h = +p[0], m = +p[1]; if(isNaN(h) || isNaN(m)) return '—'; var ap = h >= 12 ? 'PM' : 'AM'; var h12 = h % 12 || 12; return h12 + ':' + (m < 10 ? '0' : '') + m + ' ' + ap; }
 function t23Mins(a, b){ var x = String(a).split(':'), y = String(b).split(':'); var d = (+y[0] * 60 + +y[1]) - (+x[0] * 60 + +x[1]); return isNaN(d) ? null : d; }
-function t23SpanTxt(v){ var m = t23Mins(v.start, v.stop); var a = t23Clock(v.start), b = t23Clock(v.stop); if(a.slice(-2) === b.slice(-2)) a = a.slice(0, -3); return a + '–' + b + (m != null && m > 0 ? ' (' + m + ' min)' : ''); }
+function t23SpanTxt(v){ if(!v.start || !v.stop) return 'No start or end time'; var m = t23Mins(v.start, v.stop); var a = t23Clock(v.start), b = t23Clock(v.stop); if(a.slice(-2) === b.slice(-2)) a = a.slice(0, -3); return a + '–' + b + (m != null && m > 0 ? ' (' + m + ' min)' : ''); }
 function t23VisitCode(name){
   T23.visit = T23.visit || {};
   if(T23.visit[name]) return T23.visit[name];
@@ -14178,6 +14220,7 @@ function t23VisitCode(name){
   var age = parseInt(r.age, 10);
   /* start and stop come from the call log; these are demo values */
   var v = {age:age, fee:t23FeeForAge(age), dx:dxBy[r.concern] || null, start:'09:12', stop:'09:24', disp:disp};
+  if(r.legal === 'Behdis Maleki'){ v.start = '10:20'; v.stop = '10:44'; }   /* a 24-minute call: shows "Switch to counselling" */
   v.mins = t23Mins(v.start, v.stop);
   T23.visit[name] = v; return v;
 }
@@ -14199,17 +14242,12 @@ function t23RenderPick(){
   var who = c ? c.who + ' · ' + t23F(c.date) : (o.visit ? firstLast(o.visit) + ' · today’s visit' : '');
   var auto = t23FeeForAge(v.age);
   var h = '<p class="bl-eyebrow">' + (c ? t23Payer(c) : (v.disp === 'recip' ? 'Reciprocal claim' : 'MSP claim')) + '</p><p class="defer-ttl" id="t23-pick-ttl">Your coding</p><p class="bl-who"><span>' + t23E(who) + '</span>' + (c && c.st !== 'paid' ? t23DaysChip(c) : '') + '</p>';   /* drawer header carries the days-left chip (Ani, 6 Oct) */
-  /* Fee code: set from age, changeable from the short list */
+  /* Fee code (Dev answers, 6 Oct): set from the age on the visit date, never picked from a list (MSP refuses a code
+     that doesn't match the age). The only choice is visit or counselling, offered when the call lasted 20+ minutes. */
   h += '<div class="bl-block"><p class="bl-k">Fee code</p>' +
-    '<div class="t23-feeline"><b>' + v.fee + ' · ' + T23_FEES[v.fee].name + '</b>' + T23_DEMO +
-    (v.fee === auto && !isNaN(v.age) ? '<span class="t23-auto">' + t23Ic('complete') + 'Set from age · ' + v.age + '</span>' : '<span class="t23-auto">Changed by you</span>') +
-    '<button type="button" class="t23-more" data-focus="fee" aria-expanded="' + !!P.feeOpen + '" onclick="T23.pick.feeOpen=!T23.pick.feeOpen;t23RenderPick();var b=document.querySelector(\'#t23-pick [data-focus=fee]\');if(b)b.focus()">' + (P.feeOpen ? 'Done' : 'Change') + '</button></div>';
-  if(P.feeOpen){
-    h += '<div class="t23-feelist" role="radiogroup" aria-label="Fee code">' + Object.keys(T23_FEES).map(function(k){
-      return '<label class="t23-opt"><input type="radio" name="t23fee" value="' + k + '"' + (v.fee === k ? ' checked' : '') + ' onchange="T23.pick.v.fee=this.value;t23RenderPick()">' +
-        k + ' · ' + T23_FEES[k].name + (k === auto ? ' · matches age ' + v.age : '') + '</label>'; }).join('') + '</div>';
-  }
-  h += '</div>';
+    '<div class="t23-feeline" tabindex="-1" data-focus="feeline"><b>' + t23FeeTxt(v.fee) + '</b><span class="t23-feeamt">' + t23Money(T23_FEES[v.fee].amt) + '</span>' +
+    (!isNaN(v.age) ? '<span class="t23-auto">' + t23Ic('complete') + 'Set from age · ' + v.age + '</span>' : '') + '</div>' +
+    '<div id="t23-cnsl-pick">' + t23CnslHtml(v, 'pick') + '</div></div>';
   /* Diagnosis: search only */
   h += '<div class="bl-block"><p class="bl-k">Diagnosis (ICD-9)</p>' +
     '<p class="t23-dxcur">' + (v.dx ? t23Ic('complete') + '<b>' + v.dx + ' · ' + t23DxName(v.dx) + '</b>' + T23_DEMO : 'No diagnosis yet') + '</p>' +
@@ -14217,8 +14255,8 @@ function t23RenderPick(){
     '<div id="t23-dxres" class="t23-dxres" aria-live="polite"></div></div>';
   /* Time: start and stop from the call */
   h += '<div class="bl-block"><p class="bl-k">Time</p><div class="t23-row2">' +
-    '<label>Start<input class="t23-in" type="time" data-focus="time" value="' + v.start + '" onchange="T23.pick.v.start=this.value;t23RenderMins()"></label>' +
-    '<label>Stop<input class="t23-in" type="time" value="' + v.stop + '" onchange="T23.pick.v.stop=this.value;t23RenderMins()"></label>' +
+    '<label>Start<input class="t23-in" type="time" data-focus="time" value="' + (v.start || '') + '" onchange="T23.pick.v.start=this.value;t23RenderMins()"></label>' +
+    '<label>Stop<input class="t23-in" type="time" value="' + (v.stop || '') + '" onchange="T23.pick.v.stop=this.value;t23RenderMins()"></label>' +
     '<span class="t23-mins" id="t23-mins"></span></div>' +
     '<p class="t23-hint">Filled from the call.' + t23Ph('Demo values') + ' You can change it. Changes are logged.</p></div>';
   if(P.err) h += '<p class="t23-err" role="alert">' + P.err + '</p>';
@@ -14226,7 +14264,41 @@ function t23RenderPick(){
   card.innerHTML = h; paintPd(card);
   t23RenderDx(); t23RenderMins();
 }
-function t23RenderMins(){ var el = document.getElementById('t23-mins'); if(!el || !T23.pick) return; var m = t23Mins(T23.pick.v.start, T23.pick.v.stop); el.textContent = m != null && m > 0 ? m + ' min' : 'Stop must be after start'; }
+function t23RenderMins(){
+  var el = document.getElementById('t23-mins'); if(!el || !T23.pick) return; var v = T23.pick.v;
+  var m = t23Mins(v.start, v.stop); v.mins = m != null && m > 0 ? m : null;
+  el.textContent = !v.start && !v.stop ? 'No times' : m != null && m > 0 ? m + ' min' : 'Stop must be after start';
+  var cn = document.getElementById('t23-cnsl-pick'); if(cn){ cn.innerHTML = t23CnslHtml(v, 'pick'); paintPd(cn); }   /* the counselling offer and its check follow the time */
+}
+/* Dev answers, 6 Oct (answer 05): "Switch to counselling" when the call lasted 20 minutes or more; the doctor decides.
+   ctx: 'pick' (inside Your coding, saved with Save), 'claim' (a claim's drawer) or 'visit' (the chart billing row). */
+function t23CallMins(v){ var m = v.start && v.stop ? t23Mins(v.start, v.stop) : null; return m != null && m > 0 ? m : (v.start || v.stop ? null : null); }
+function t23CnslHtml(v, ctx, key){
+  var cn = t23IsCounsel(v.fee), m = t23CallMins(v), to = t23FeeForAge(v.age, !cn);
+  var fn = ctx === 'pick' ? 't23PickCounsel(' + !cn + ')' : 't23Switch(\'' + ctx + '\',\'' + key + '\',' + !cn + ')';
+  var block = t23CounselBlock(v);
+  if(!cn && (m == null || m < T23_COUNSEL_MIN)) return '';
+  var h = '<div class="t23-cnsl">' + t23Ic('clock') + '<span>' + (cn ? 'Counselling · at least ' + T23_COUNSEL_MIN + ' min, start and end time on the claim, up to ' + T23_COUNSEL_YEAR + ' per patient per year'
+      : 'This call lasted ' + m + ' min · counselling eligible') + '</span>' +
+    '<button type="button" class="btn xs" data-focus="fee" onclick="' + fn + '">' + (cn ? 'Back to the visit code (' + to + ')' : 'Switch to counselling (' + to + ')') + '</button></div>';
+  if(block) h += '<p class="t23-err" role="alert">' + block + '</p>';
+  return h;
+}
+function t23PickCounsel(on){
+  var P = T23.pick; if(!P) return;
+  P.v.fee = t23FeeForAge(P.v.age, on); t23RenderPick();
+  var b = document.querySelector('#t23-pick [data-focus="fee"]') || document.querySelector('#t23-pick [data-focus="feeline"]'); if(b) b.focus();
+}
+function t23Switch(ctx, key, on){
+  var v = ctx === 'claim' ? t23C(key) : t23VisitCode(key); if(!v) return;
+  var from = v.fee, to = t23FeeForAge(v.age, on); if(from === to) return;
+  v.fee = to;
+  var what = 'Changed fee code ' + from + ' → ' + to + (on ? ' (counselling, ' + t23CallMins(v) + '-min call)' : ' (back to the visit code)');
+  if(ctx === 'claim') t23Log(v, 'Dr. Pannozzo', what); else v.log = (v.log || []).concat([[t23Stamp(), 'Dr. Pannozzo', what]]);
+  t23Refresh();
+  var block = t23CounselBlock(v);
+  toast(block ? block : on ? 'Switched to counselling · ' + to + ' · ' + t23Money(T23_FEES[to].amt) : 'Back to the visit code · ' + to);
+}
 /* Ani, 6 Oct (real data): results only after typing; a word matches the start of a code ("599") or of a word in the
    description, its parent headings or the plain-language search words ("uti", "cold sore"). Ranking: the exact code,
    then common codes, then the rest; within each, code matches, then the search words (a search word equal to the query
@@ -14286,8 +14358,9 @@ function t23PickClose(){ document.getElementById('t23-pick').classList.remove('s
 function t23PickSave(){
   var P = T23.pick; if(!P) return; var v = P.v, o = P.o;
   var m = t23Mins(v.start, v.stop);
-  if(m == null || m <= 0){ P.err = 'The stop time must be after the start time.'; t23RenderPick(); return; }
-  v.mins = m;
+  /* times may be left empty (then a counselling claim can't be submitted: t23CounselBlock); if given, stop after start */
+  if((v.start || v.stop) && (m == null || m <= 0)){ P.err = 'The stop time must be after the start time.'; t23RenderPick(); return; }
+  v.mins = m > 0 ? m : null;
   if(o.claim){
     var c = t23C(o.claim), ch = [];
     if(c.fee !== v.fee) ch.push('fee code ' + (c.fee || '—') + ' → ' + v.fee);
@@ -14436,10 +14509,14 @@ function t23RenderBillRow(){
   var v = t23VisitCode(r.name), btn = 'Change', focus = 'dx';
   if(v.disp === 'private') h += '<span>Private pay</span>' + sep + '<span>Private visit fee</span>' + T23_DEMO;
   else {
-    h += '<span>' + v.fee + ' ' + T23_FEES[v.fee].name + '</span>' + T23_DEMO + sep +
+    h += '<span>' + t23FeeTxt(v.fee) + '</span>' + sep +
          (v.dx ? '<span>' + v.dx + ' · ' + t23DxName(v.dx) + '</span>' : '<span>Diagnosis not set</span>') + sep + '<span>' + t23SpanTxt(v) + '</span>';
     if(!v.dx) btn = 'Add diagnosis';
+    var cb = t23CounselBlock(v), cm = t23CallMins(v);
+    if(cb){ btn = 'Add time'; focus = 'time'; h += '<span class="t23-berr">' + t23Ic('alert') + cb + '</span>'; }
     h += '<button type="button" class="btn xs" onclick="t23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})">' + t23Ic('edit') + btn + '</button>';
+    /* Dev answers, 6 Oct: the call lasted 20+ minutes, so counselling is offered (the doctor decides) */
+    if(!t23IsCounsel(v.fee) && cm != null && cm >= T23_COUNSEL_MIN) h += '<button type="button" class="btn xs" onclick="t23Switch(\'visit\',PC_CURRENT,true)">' + t23Ic('clock') + 'Switch to counselling (' + t23FeeForAge(v.age, true) + ')</button>';
   }
   el.innerHTML = h; el.hidden = false; if(help) help.hidden = v.disp === 'private'; paintPd(el);
   t23SyncFin();
@@ -14464,6 +14541,7 @@ function t23Fin(mode){
       toast('Add the diagnosis to submit the claim, or choose Finalize, submit later');
       t23OpenPick({visit:PC_CURRENT, focus:'dx'}); return;
     }
+    if(v.disp !== 'private' && t23CounselBlock(v)){ toast(t23CounselBlock(v)); t23OpenPick({visit:PC_CURRENT, focus:'time'}); return; }
   }
   T23.finMode = mode === 'now' ? 'now' : 'later';
   finalizeVisit();
@@ -15248,12 +15326,12 @@ function cwSwitch(yes){
    Caveats live here and in the spec only (Ani, 6 Oct: no demo tags in the UI):
    - The history below is GENERATED (seeded, so every load is the same). Real figures need the MSP remittance feed
      (Teleplan remittance) from Dev; see the spec's open questions.
-   - Fee amounts are the T23_FEES demo values (real fee codes and amounts Need Daniel, OQ-24).
+   - Fee amounts are the real MSP telehealth fees in T23_FEES (Dev answers, 6 Oct; MSC schedule 31 May 2026).
    - Pay periods: 2026 close-off / payment pairs are real (T23_MSP_2026, gov.bc.ca). The 2025 pairs below are
      APPROXIMATED (semi-monthly, paid about the 15th and the month end, close-off 10 to 12 days before).
    - Totals are the doctor's TOTAL for each payment date (all his claims). The demo claims in Claims are a subset of
-     them: the two claims Claims shows as paid 29 Sep (c11 $25, c16 $30) are inside the 29 Sep payment here, so Claims'
-     "Paid this cycle" ($55, 2 claims) is a slice of Earnings' "Last MSP payment", not the same number.
+     them: the two claims Claims shows as paid 29 Sep (c11 $38.61 of $41.42, c16 $38.61) are inside the 29 Sep payment here,
+     so Claims' "Paid this cycle" ($77.22, 2 claims) is a slice of Earnings' "Last MSP payment", not the same number.
    - Money at risk and private pay read CLAIMS directly, so they match Claims exactly.
    ===================================================================================================== */
 var ERN_MSP_2025 = [['2025-09-17','2025-09-29'],['2025-10-03','2025-10-15'],['2025-10-20','2025-10-31'],['2025-11-03','2025-11-14'],
@@ -15264,8 +15342,9 @@ var ERN_OFF = ['2025-09-30','2025-10-13','2025-11-11','2025-12-25','2025-12-26',
                '2026-07-20','2026-07-21','2026-07-22','2026-07-23','2026-07-24'].concat(T23_MSP_2026.holidays);
 /* average visits by weekday (Sun..Sat): short visits, Tuesday visibly lower, Saturday light, Sunday closed. Generated. */
 var ERN_BASE = [0, 34, 21, 33, 32, 30, 5];
-/* share of visits by fee code (age-based, Daniel 5 Oct); generated mix: mostly 2 to 49 */
-var ERN_MIX = [['DEMO-1', .04], ['DEMO-2', .56], ['DEMO-3', .14], ['DEMO-4', .12], ['DEMO-5', .14]];
+/* share of visits by fee code (age-based, Daniel 5 Oct; real MSP telehealth codes, Dev answers 6 Oct); generated mix,
+   mostly 13437 (Dev: "mostly 13437", the rest follow the age mix), plus a little counselling */
+var ERN_MIX = [['13237', .02], ['13437', .54], ['13537', .14], ['13637', .12], ['13737', .09], ['13837', .04], ['13438', .03], ['13638', .02]];
 var ERN_START = '2025-09-18';   /* the day after the close-off that feeds the first payment in the 12 months (15 Oct 2025) */
 /* private pay before 28 Sep 2026 is generated; from 28 Sep on, Claims' private list is the whole record */
 var ERN_PRIV_TO = '2026-09-27';
@@ -15288,7 +15367,7 @@ var ERN_DAYS = (function(){
       var grow = 0.92 + 0.08 * (i / 380);   /* a practice slowly growing over the year */
       n = wd === 6 ? Math.floor(rnd() * 9) : Math.max(0, Math.round(ERN_BASE[wd] * grow + (rnd() - 0.5) * 8));
       for(var k = 0; k < n; k++){
-        var r = rnd(), acc = 0, fee = 'DEMO-2';
+        var r = rnd(), acc = 0, fee = '13437';
         for(var j = 0; j < ERN_MIX.length; j++){ acc += ERN_MIX[j][1]; if(r < acc){ fee = ERN_MIX[j][0]; break; } }
         amt += T23_FEES[fee].amt;
       }
@@ -15773,6 +15852,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-06 23:40</div>
+  <div class="build-stamp">v2 · build 2026-10-07 00:05</div>
 </body>
 </html>
