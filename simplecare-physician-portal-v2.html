@@ -13809,26 +13809,41 @@ function t23Basis(c){
   return null;
 }
 
-/* ----- days left. Daniel 5 Oct: every claim not submitted yet counts down 90 days from the date of service (the visit
-   day is day 90, the next day 89...); sort fewest days left first. A rejected claim counts about 90 days from the
-   rejection date. Both rules Need Daniel (he will double-check the 90-day rule; the rejection window is "about 3 months").
-   Chip tones (proposal, Needs Daniel): neutral; amber at 10 days or fewer; stronger amber at 5 or fewer; critical red
-   only at 2 days or fewer (48 hours), the one red in billing (rule 21: red is critical only). ----- */
-var T23_REJ_DAYS = 90;   /* Needs Daniel */
-var T23_AMBER = 10, T23_STRONG = 5, T23_CRIT = 2;   /* proposal, Needs Daniel */
+/* ----- days left. Dev answers, 6 Oct (answer 03): MSP's rule is "within 90 days of the date of service". Under BC's
+   Interpretation Act the visit day is day 0, so the LAST day to submit is the visit date + 90 days (8 Jul → 6 Oct).
+   A claim MSP refused can be resent with a note within 90 days of the STATEMENT date that refused it (MSP rule), so
+   a refused claim counts from its refusal date (c.msp.on), and a corrected refusal keeps that clock (c.dl).
+   Whether the visit day is day 0 and which date starts the clock for a front-door refusal are open questions for
+   HIBC (build notes). Sort fewest days left first.
+   Chip tones (proposal): neutral; amber at 10 days or fewer; stronger amber at 5 or fewer; critical red only at 2 days
+   or fewer (48 hours), the one red in billing (rule 21: red is critical only). ----- */
+var T23_DAYS = 90, T23_REJ_DAYS = 90;
+var T23_AMBER = 10, T23_STRONG = 5, T23_CRIT = 2;
+/* the last allowed day, and what it counts from */
+function t23LastDay(c){
+  if(c.st === 'submit') return c.dl ? {d:c.dl, from:'rej', on:c.dlFrom} : {d:t23Plus(c.date, T23_DAYS), from:'sub', on:c.date};
+  if(c.msp && c.msp.on) return {d:t23Plus(c.msp.on, T23_REJ_DAYS), from:'rej', on:c.msp.on};
+  return null;
+}
+function t23FDWd(d){ return T23_DOW[d.getDay()] + ' ' + t23FD(d); }
+function t23CountTxt(c){
+  var L = t23LastDay(c); if(!L) return '';
+  if(L.from === 'sub') return 'The visit day is day 0. The last day to submit is 90 days later (a visit on 8 Jul can be submitted until 6 Oct). This visit: ' + t23F(c.date) + ', so the last day is ' + t23FDWd(L.d) + '.';
+  return 'MSP lets you resend a refused claim, with a note, within 90 days of the statement date that refused it.' + (L.on ? ' Refused ' + t23F(L.on) + ', so the last day is ' + t23FDWd(L.d) + '.' : '');
+}
 function t23DaysLeft(c){
   if(c.st === 'submit'){ return c.dl ? t23Diff(T23_TODAY, c.dl) : t23SubLeft(c); }
   if(c.msp && c.msp.on && ['rejected','dispute','adjusted'].indexOf(c.st) > -1) return T23_REJ_DAYS - t23Diff(t23D(c.msp.on), T23_TODAY);
   return null;
 }
-function t23LeftChip(n, from){
+function t23LeftChip(n, from, last){
   if(n == null) return '';
-  var w = n < 0 ? 'Past the deadline' : n + (n === 1 ? ' day left' : ' days left');
+  var w = n < 0 ? 'Past the deadline' : n === 0 ? 'Last day today' : n + (n === 1 ? ' day left' : ' days left');
   var cls = n <= T23_CRIT ? 'crit' : n <= T23_STRONG ? 'warn strong' : n <= T23_AMBER ? 'warn' : '';
-  var tip = from === 'rej' ? 'About 90 days from the rejection date' : '90 days from the date of service; the visit day is day 90';
+  var tip = (last ? 'Last day ' + t23FDWd(last) + '. ' : '') + (from === 'rej' ? '90 days from the statement date that refused it' : '90 days after the visit; the visit day is day 0');
   return '<span class="t23-days ' + cls + '" title="' + tip + '">' + t23Ic(n <= T23_STRONG ? 'alert' : 'clock') + w + '</span>';
 }
-function t23DaysChip(c){ return t23LeftChip(t23DaysLeft(c), c.st === 'submit' && !c.dl ? 'sub' : 'rej'); }
+function t23DaysChip(c){ var L = t23LastDay(c); return t23LeftChip(t23DaysLeft(c), c.st === 'submit' && !c.dl ? 'sub' : 'rej', L && L.d); }
 /* demo hook: t23DemoDays('c18', 2) sets a claim's days left, to see the 48-hour tone */
 function t23DemoDays(id, n){ var c = t23C(id); if(!c) return; c.dl = new Date(T23_TODAY.getTime() + n * 86400000); t23Refresh(); }
 
@@ -14186,13 +14201,14 @@ function t23Open(id){
       : c.st === 'closed' && c.msp.ex === 'HX' ? 'Paid $0.00 ' + t23F(c.msp.on) + ' · ' + t23ExCode(c)
       : 'Refused ' + (c.msp.on ? t23F(c.msp.on) + ' · ' : '') + t23ExCode(c);
     h += '<div class="bl-block"><p class="bl-k">MSP response</p><p class="bl-v">' + refused + '</p>' + t23ExBlock(c) +
-      (left != null ? '<p class="bl-v">' + left + ' days left to fix it</p>' +
-      '<details><summary>How we count this</summary><p>About 90 days from the rejection date to fix and resubmit.</p></details>' : '') + '</div>';
+      (left != null ? '<p class="bl-v">' + (left < 0 ? 'Past the deadline' : left === 0 ? 'Last day to fix and resend: today' : left + ' days left to fix and resend · last day ' + t23FDWd(t23LastDay(c).d)) + '</p>' +
+      '<details><summary>How we count this</summary><p>' + t23CountTxt(c) + '</p></details>' : '') + '</div>';
   } else if(c.st === 'held'){
     h += '<div class="bl-block"><p class="bl-k">MSP response</p><p class="bl-v">Held by MSP ' + (c.msp.on ? t23F(c.msp.on) + ' ' : '') + '· ' + t23ExCode(c) + '</p>' + t23ExBlock(c) + '<p class="bl-v">' + T23_AGENT + ' (billing agent) is watching it. Nothing for you.</p></div>';
   }
-  if(c.st === 'submit') h += '<div class="bl-block"><p class="bl-k">Deadline</p><p class="bl-v">' + t23DaysLeft(c) + ' days left to submit</p>' +
-      '<details><summary>How we count this</summary><p>90 days from the date of service. The visit day is day 90 and the next day is day 89.</p></details></div>';
+  if(c.st === 'submit'){ var dl = t23DaysLeft(c), L = t23LastDay(c);
+    h += '<div class="bl-block"><p class="bl-k">Deadline</p><p class="bl-v">' + (dl < 0 ? 'Past the deadline' : dl === 0 ? 'Last day today' : dl + ' days left to ' + (L.from === 'rej' ? 'resend' : 'submit') + ' · last day ' + t23FDWd(L.d)) + '</p>' +
+      '<details><summary>How we count this</summary><p>' + t23CountTxt(c) + '</p></details></div>'; }
   if(c.st === 'appeal') h += '<div class="bl-block"><p class="bl-k">Reassessment</p><p class="bl-v">' + (c.sub || '') + ' · Possible recovery ' + t23Money(t23Amt(c)) + ' estimated' + T23_DEMO + '</p></div>';
   h += '<div class="bl-block"><p class="bl-k">Visit</p><p class="bl-v"><button type="button" class="t23-more" onclick="t23Note(\'' + id + '\')">Open the ' + t23F(c.date) + ' visit</button> (read-only)</p></div>';
   var all = T23.histAll[id], hist = c.hist.slice().reverse(), shown = all ? hist : hist.slice(0, 2);
@@ -14423,7 +14439,7 @@ function t23PickSave(){
     }
     if(o.correct || fixed || c.st === 'rejected'){
       /* a corrected rejection goes back to Needs submission; it keeps the rejection's countdown, and he submits it himself */
-      if(c.msp && c.msp.on) c.dl = t23Plus(c.msp.on, T23_REJ_DAYS);
+      if(c.msp && c.msp.on){ c.dl = t23Plus(c.msp.on, T23_REJ_DAYS); c.dlFrom = c.msp.on; }
       c.st = 'submit'; c.msp = null; c.sub = 'Corrected by you · submit it when you’re ready';
     }
     t23PickClose(); t23Refresh();
@@ -14675,10 +14691,10 @@ t23SyncQueue();
    Daniel, 5 Oct: remove "Billing today" from Home; Home Needs attention is clinical only. The exception is an MSP
    claim not submitted yet that is about to go stale-dated: it appears as ONE item in Home Needs attention, amber
    (not red, not critical), and opens that claim in Claims.
-   Days left: 90 days from the date of service, the visit day is day 90 (Daniel's rule; he will double-check it).
+   Days left: the last day is the visit date + 90 days, the visit day is day 0 (Dev answers, 6 Oct, answer 03).
    T23_STALE_HOME = 5 days left: threshold Needs Daniel (his proposed tiers: amber, then 5 days, then 48 hours). */
 var T23_STALE_HOME = 5;   /* threshold Needs Daniel */
-function t23SubLeft(c){ return 90 - t23Diff(t23D(c.date), T23_TODAY); }   /* the 90-day rule: Needs Daniel */
+function t23SubLeft(c){ return T23_DAYS - t23Diff(t23D(c.date), T23_TODAY); }   /* last day = visit + 90 (visit day is day 0; Dev answers, 6 Oct) */
 function t23StaleList(){
   return CLAIMS.filter(function(c){ return c.st === 'submit' && c.payer !== 'private' && t23DaysLeft(c) <= T23_STALE_HOME; })
                .sort(function(a, b){ return t23DaysLeft(a) - t23DaysLeft(b); });
@@ -15897,6 +15913,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 00:40</div>
+  <div class="build-stamp">v2 · build 2026-10-07 00:50</div>
 </body>
 </html>
