@@ -5924,6 +5924,16 @@
   #bl-card .t23-more-d p{margin:6px 0 0;}
   #bl-card .t23-mspw{font-style:italic;}
   #bl-card .t23-dl{color:var(--ink-soft);margin:0 0 12px;}
+
+  /* Ani, 7 Oct copy diet: no repeat of what the screen already shows */
+  #screen-patientchart #pcv-c.cs-v2[data-v2tab="review"] #v2-crit{display:none;}
+  #screen-patientchart #pcv-c .cs-stage{display:none;}
+
+  #screen-patientchart .v2-team{list-style:none;margin:0;padding:0;display:grid;gap:10px;}
+  #screen-patientchart .v2-team li{display:grid;gap:2px;}
+  #screen-patientchart .v2-team .v2-tk{font-size:14px;color:var(--ink-soft);}
+  #screen-patientchart .v2-team .v2-tv{font-size:14px;color:var(--ink);}
+  #screen-patientchart .v2-team .v2-you{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:10px;background:var(--wash);color:var(--ink-soft);font-size:14px;}
 </style>
 </head>
 <body>
@@ -6188,7 +6198,7 @@
       <!-- Ani, 5 Oct (chart declutter): "too much text and noise". One name on the screen (the patient card);
            back and the visit status are one small line. The h1 stays for screen readers only. -->
       <div class="cs-crumb"><button class="pc-back" onclick="showScreen('today')"><span class="ic" data-pcic="back"></span> Home</button><span aria-hidden="true">&middot;</span>
-      <p class="sub" data-f="visitline">Open visit &middot; today</p>
+      <p class="sub" data-f="visitline"></p>
       <!-- Ani, 5 Oct ("Chart layout v2"): v2 lives in this one file as a switchable layout. Default stays Current;
            ?chart=v2 or this control turns it on, and the choice is remembered in this browser. -->
       <!-- Ani, 6 Oct: we work in v2 from now on. The switch is hidden; ?chart=current still opens the old layout for comparison. -->
@@ -6363,6 +6373,7 @@
             <section class="v2-sec" id="v2s-hist" data-k="hist"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-hist-b" onclick="v2Sec('hist')"><span class="ic" data-pdic="tasks"></span><span class="v2-st">History</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-hist-b" hidden></div></section>
             <section class="v2-sec" id="v2s-pend" data-k="pend"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-pend-b" onclick="v2Sec('pend')"><span class="ic" data-pdic="clock"></span><span class="v2-st">Pending</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-pend-b" hidden></div></section>
             <section class="v2-sec" id="v2s-since" data-k="since"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-since-b" onclick="v2Sec('since')"><span class="ic" data-pdic="reassign"></span><span class="v2-st">Since you last saw</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-since-b" hidden></div></section>
+            <section class="v2-sec" id="v2s-team" data-k="team"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-team-b" onclick="v2Sec('team')"><span class="ic" data-pdic="user"></span><span class="v2-st">Care team</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-team-b" hidden></div></section>
             <section class="v2-sec" id="v2s-prev" data-k="prev"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-prev-b" onclick="v2Sec('prev')"><span class="ic" data-pdic="calendar"></span><span class="v2-st">Previous visits</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-prev-b" hidden></div></section>
             </section>
           </aside>
@@ -6403,7 +6414,7 @@
             </div>
             <div class="v2-panel" id="v2p-note" role="tabpanel" aria-labelledby="v2t-note" tabindex="-1" hidden>
               <section class="v2-card v2-notecard" aria-labelledby="v2-note-h">
-                <div class="v2-ch"><span class="ic" data-pdic="edit"></span><h3 id="v2-note-h">Today&rsquo;s note</h3><span id="v2-saved-slot"></span>
+                <div class="v2-ch"><span class="ic" data-pdic="edit"></span><h3 id="v2-note-h" class="vh">Note</h3><span id="v2-saved-slot"></span>
                   <span class="v2-cr" id="v2-note-acts"></span></div>
                 <div id="v2-note-b"></div>
                 <div class="v2-notefoot" id="v2-notefoot"></div>
@@ -6411,13 +6422,13 @@
             </div>
             <div class="v2-panel" id="v2p-orders" role="tabpanel" aria-labelledby="v2t-orders" tabindex="-1" hidden>
               <section class="v2-card" aria-labelledby="v2-ord-h">
-                <div class="v2-ch"><span class="ic" data-pdic="addon"></span><h3 id="v2-ord-h">Orders and actions</h3></div>
+                <div class="v2-ch"><span class="ic" data-pdic="addon"></span><h3 id="v2-ord-h" class="vh">Orders</h3></div>
                 <div class="v2-ord" id="v2-ord">
-                  <button type="button" class="v2-orow" onclick="rxOpen();v2RxFocus()"><span class="ic" data-pdic="chartnote"></span><span class="v2-ot"><b>Prescribe</b><span>Renew or start a medication</span></span><span class="ic v2-go" data-pdic="chevr"></span></button>
-                  <button type="button" class="v2-orow" onclick="toast('Lab requisition started (demo)')"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order</b><span>Lab work or imaging</span></span><span class="ic v2-go" data-pdic="chevr"></span></button>
-                  <button type="button" class="v2-orow" onclick="toast('Referral started (demo)')"><span class="ic" data-pdic="practice"></span><span class="v2-ot"><b>Refer</b><span>To a specialist or service</span></span><span class="ic v2-go" data-pdic="chevr"></span></button>
-                  <button type="button" class="v2-orow" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pdic="taskmoa"></span><span class="v2-ot"><b>Task</b><span>Ask your MOA to do something</span></span><span class="ic v2-go" data-pdic="chevr"></span></button>
-                  <button type="button" class="v2-orow" onclick="toast('Message to the patient portal (demo)')"><span class="ic" data-pdic="chat"></span><span class="v2-ot"><b>Message</b><span>To the patient portal</span></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="rxOpen();v2RxFocus()"><span class="ic" data-pdic="chartnote"></span><span class="v2-ot"><b>Prescribe</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="toast('Lab requisition started')"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="toast('Referral started')"><span class="ic" data-pdic="practice"></span><span class="v2-ot"><b>Refer</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pdic="taskmoa"></span><span class="v2-ot"><b>Task</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="toast('Message to the patient started')"><span class="ic" data-pdic="chat"></span><span class="v2-ot"><b>Message</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                 </div>
                 <p class="v2-ord-done" id="v2-ord-done" hidden>This visit is signed off, so its orders are closed.</p>
               </section>
@@ -6445,7 +6456,7 @@
               <span class="pc-callstrip" id="pc-callstrip-c"><span class="dot"></span> <span id="pc-timer-c">00:00</span> <button class="hang" onclick="pcEndCall()">End</button></span>
               <!-- shadowing 3: "the timer restarts from 0:00, so the screen no longer shows how long he has been with the patient" -->
               <span class="pc-callsum" id="pc-callsum" hidden></span>
-              <button class="btn" id="cs-fc-btn" onclick="csOpenFull()" aria-controls="v2p-chart"><span class="ic" data-pdic="file"></span>Chart</button>
+              
             </div>
           </div>
           <!-- v2.5 §3 This-visit strip: location, ID verified, consent, others present, video or phone,
@@ -6507,7 +6518,6 @@
                   <span class="right"><button class="vc-more" onclick="openConditions()">Open list</button></span></div>
                 <div id="cond-rail"></div>
               </div>
-              <p class="cs-cap">Clinical threads (status, treatment, monitoring, last decision, next step) come in delivery step 3.</p>
             </div>
             <div class="cs-pane" id="csp-careplan" role="tabpanel" aria-labelledby="cst-careplan" tabindex="-1" hidden>
               <div class="vc-block cp-block care-plan-mount"></div>
@@ -6553,10 +6563,10 @@
               </span>
               <span class="cs-tsep" aria-hidden="true"></span>
               <button type="button" class="cs-tb" onclick="rxOpen()"><span class="ic" data-pdic="chartnote"></span>Prescribe</button>
-              <button type="button" class="cs-tb" onclick="toast('Lab requisition started (demo)')"><span class="ic" data-pdic="addon"></span>Order</button>
-              <button type="button" class="cs-tb" onclick="toast('Referral started (demo)')"><span class="ic" data-pdic="practice"></span>Refer</button>
+              <button type="button" class="cs-tb" onclick="toast('Lab requisition started')"><span class="ic" data-pdic="addon"></span>Order</button>
+              <button type="button" class="cs-tb" onclick="toast('Referral started')"><span class="ic" data-pdic="practice"></span>Refer</button>
               <button type="button" class="cs-tb" onclick="openTaskMoa(PC_CURRENT)" aria-label="Task the MOA"><span class="ic" data-pcic="task"></span>Task</button>
-              <button type="button" class="cs-tb" onclick="toast('Message to the patient portal (demo)')"><span class="ic" data-pdic="chat"></span>Message</button>
+              <button type="button" class="cs-tb" onclick="toast('Message to the patient started')"><span class="ic" data-pdic="chat"></span>Message</button>
             </div>
             <!-- Batch B (1), lead brief 6 Oct: "replace the single empty textarea with four sections: Reason, Findings,
                  Assessment, Plan". One compact card, label beside each field, hairlines between rows; each field grows
@@ -6648,7 +6658,7 @@
                 </button>
                 <div class="vd-callalt">
                   <button onclick="vdCall('headset')"><span class="ic" data-pcic="headset"></span> Headset</button>
-                  <button onclick="toast('Calling back on file number (demo)')"><span class="ic" data-pcic="transfer"></span> Callback</button>
+                  <button onclick="toast('Calling back on file number')"><span class="ic" data-pcic="transfer"></span> Callback</button>
                 </div>
                 <p class="vd-callnum" data-f="callnum">&#8226; (604) 555&#8209;0142</p>
               </div>
@@ -6658,7 +6668,7 @@
                 <p class="vd-calltime" id="vd-calltime">00:00</p>
                 <div class="vd-callctrl">
                   <button id="vd-mute" onclick="vdToggleMute()" title="Mute">&#127908;</button>
-                  <button onclick="toast('Keypad (demo)')" title="Keypad">&#9783;</button>
+                  <button onclick="toast('Keypad')" title="Keypad">&#9783;</button>
                   <button onclick="toast('Call put on hold')" title="Hold">&#10074;&#10074;</button>
                 </div>
                 <button class="vd-hangbtn" onclick="vdEndCall()">End call</button>
@@ -6688,9 +6698,9 @@
           <div class="vd-mid">
             <div class="vd-bar">
               <h3>Patient chart</h3>
-              <button class="btn xs" onclick="toast('Transferred to Dolly (demo)')"><span class="ic" data-pcic="transfer"></span> Transfer to Dolly</button>
+              <button class="btn xs" onclick="toast('Transferred to Dolly')"><span class="ic" data-pcic="transfer"></span> Transfer to Dolly</button>
               <button class="btn xs" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pcic="task"></span> Send task</button>
-              <button class="btn xs" onclick="toast('Templates (demo)')"><span class="ic" data-pcic="meds"></span> Templates</button>
+              <button class="btn xs" onclick="toast('Templates')"><span class="ic" data-pcic="meds"></span> Templates</button>
             </div>
 
             <div class="vd-tabs" id="vd-tabs">
@@ -6727,7 +6737,7 @@
               </div>
 
               <div class="vd-pane" id="vdt-meds">
-                <div class="vd-secttl"><h4>Medications</h4><button class="btn dark xs" onclick="toast('Prescription started (demo)')">+ New prescription</button></div>
+                <div class="vd-secttl"><h4>Medications</h4><button class="btn dark xs" onclick="toast('Prescription started')">+ New prescription</button></div>
                 <div class="vd-subtabs"><button class="active">Active</button><button>Prescriptions sent</button><button>Past</button></div>
                 <div class="vd-list">
                   <div class="vd-item"><span><b>Metformin 500 mg</b><i>1 tablet twice daily with meals &middot; started Mar 2021</i></span><span class="pc-pill mut">Ongoing</span></div>
@@ -6737,7 +6747,7 @@
               </div>
 
               <div class="vd-pane" id="vdt-labs">
-                <div class="vd-secttl"><h4>Labs</h4><button class="btn dark xs" onclick="toast('Lab requisition started (demo)')">+ Order labs</button></div>
+                <div class="vd-secttl"><h4>Labs</h4><button class="btn dark xs" onclick="toast('Lab requisition started')">+ Order labs</button></div>
                 <div class="vd-subtabs"><button class="active">Results</button><button>Requisitions</button></div>
                 <div class="vd-subhead">Lab Work &mdash; ordered tests and current state</div>
                 <p class="lo-legend">What was ordered, how the requisition was fulfilled, and where each test stands. A requisition that failed says so; one whose receipt was never confirmed says that; a collection that is not due yet says that rather than implying a result is on its way.</p>
@@ -6749,13 +6759,13 @@
               </div>
 
               <div class="vd-pane" id="vdt-imaging">
-                <div class="vd-secttl"><h4>Imaging</h4><button class="btn dark xs" onclick="toast('Imaging requisition started (demo)')">+ Order imaging</button></div>
+                <div class="vd-secttl"><h4>Imaging</h4><button class="btn dark xs" onclick="toast('Imaging requisition started')">+ Order imaging</button></div>
                 <div class="vd-subtabs"><button class="active">Reports</button><button>Requisitions</button></div>
                 <div class="vd-list"><p class="pc-empty">No imaging on file for this patient.</p></div>
               </div>
 
               <div class="vd-pane" id="vdt-referrals">
-                <div class="vd-secttl"><h4>Referrals</h4><button class="btn dark xs" onclick="toast('Referral started (demo)')">+ New referral</button></div>
+                <div class="vd-secttl"><h4>Referrals</h4><button class="btn dark xs" onclick="toast('Referral started')">+ New referral</button></div>
                 <div class="vd-list"><p class="pc-empty">No active referrals.</p></div>
               </div>
 
@@ -6775,7 +6785,7 @@
 
           <!-- Copilot panel -->
           <aside class="vd-cop">
-            <div class="vd-cophd"><span class="sp">&#10022;</span><b>SimpleCare Assistant</b><button class="x" onclick="toast('Assistant hidden (demo)')">&times;</button></div>
+            <div class="vd-cophd"><span class="sp">&#10022;</span><b>SimpleCare Assistant</b><button class="x" onclick="toast('Assistant hidden')">&times;</button></div>
             <div class="vd-copbody" id="vd-copbody">
               <div class="vd-msg bot" data-f="note">--</div>
               <div class="vd-msg bot">No known drug allergies on file.</div>
@@ -7317,7 +7327,7 @@
   </div>
   <div class="ai-foot">
     <input id="ai-input" placeholder="Ask SimpleCare Assistant&hellip;" onkeydown="if(event.key==='Enter')aiSend()">
-    <button class="mic" title="Voice (demo)">&#127908;</button>
+    <button class="mic" title="Voice">&#127908;</button>
     <button class="send" onclick="aiSend()">&#10148;</button>
   </div>
 </div>
@@ -10145,7 +10155,7 @@ function openInboxItem(i){
     renderInboxList();
     toast('Opened '+item.type.toLowerCase()+' for '+item.patient+' — marked reviewed');
   } else {
-    toast('Viewing '+item.type.toLowerCase()+' for '+item.patient+' (demo)');
+    toast('Viewing '+item.type.toLowerCase()+' for '+item.patient+'');
   }
 }
 function signOffInbox(i){
@@ -10511,7 +10521,7 @@ function aiReply(text){
       var who2 = nameMatch || qNext();
       var nm = who2 ? firstLast(who2.name) : 'the visit';
       aiAppend('I&#39;ve drafted a starter note for <b>'+nm+'</b> from the intake and last visit. Review and edit before signing — Assistant output is never auto-filed.','bot');
-      aiActionBtn('&#128221;','Review draft note',nm,function(){aiDo(function(){toast('Draft note ready for '+nm+' (demo)');});});
+      aiActionBtn('&#128221;','Review draft note',nm,function(){aiDo(function(){toast('Draft note ready for '+nm+'');});});
     }
     else if(/(day|behind|running|how.?s|status|overview|summary|going)/.test(t)){
       var seen=QUEUE_DATA.filter(function(r){return r.status==='done';}).length;
@@ -11443,7 +11453,7 @@ function openChart(name){
     concern: r.concern,
     window: WIN_TEXT[r.win] || r.win,
     statuslbl: STATUS_LABEL[r.status],
-    visitline: (r.signed ? 'Visit completed \u00b7 today \u00b7 signed off ' + r.signed.at : 'Open visit \u00b7 today \u00b7 ' + STATUS_LABEL[r.status]),
+    visitline: (r.signed ? 'Signed ' + r.signed.at : STATUS_LABEL[r.status]),
     twh: '0'+Math.max(0, 2), twm: (r.wait && /min/.test(r.wait)) ? r.wait.replace(/\D/g,'').padStart(2,'0') : '00',
     acuitychip: r.redflag ? 'Urgent' : 'Routine',
     reason: base + ' booked a virtual visit for ' + r.concern.toLowerCase() + '.' + (r.redflag ? ' Pre-visit intake flagged concerning symptoms.' : ''),
@@ -11747,7 +11757,7 @@ function cpItemHTML(it){
       (it.detail ? '<p class="cp-det">'+it.detail+'</p>' : '')+
       '<p class="cp-meta">'+it.src+
         (it.due ? ' &middot; <span class="due'+(od?' od':'')+'">'+(it.status==='Completed'?'Done ':'Due ')+it.due+'</span>' : '')+
-        (it.quote ? '<button class="cp-why" onclick="cpWhy(this)">Why this is '+(it.owner==='GP'?'ours':'theirs')+'</button>' : '')+
+        (it.quote ? ' · <button class="cp-why" onclick="cpWhy(this)">Source</button>' : '')+
       '</p>'+
       (it.quote ? '<p class="cp-quote">'+it.quote+'</p>' : '');
 
@@ -11771,7 +11781,7 @@ function renderCarePlan(name){
   var sp   = open.filter(function(x){ return x.owner==='Specialist'; }).length;
   var od   = open.filter(function(x){ return x.status==='Overdue'; }).length;
 
-  var h = '<div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Care plan &mdash; what are we doing?</h4>'+
+  var h = '<div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Care plan</h4>'+
     '<span class="right"><button class="vc-more" onclick="cpAddItem()">+ Add plan item</button></span></div>'+
     /* one line of the counts that are not zero; four tiles of mostly 0 were
        decoration on the normal case */
@@ -11847,7 +11857,7 @@ function cpChase(id){
   toast('Sent to your MOA to chase ' + it.service.split('·')[0].trim() + ' — stays their item');
 }
 function cpAddItem(){
-  toast('New plan item — pick specialty, action, owner and due date (demo)');
+  toast('New plan item — pick specialty, action, owner and due date');
 }
 
 /* ---- specialist recommendation triage ---- */
@@ -12821,7 +12831,7 @@ function renderResults(name){
             }).join(' &middot; ') + '</span>' : '') + '</div>' +
         '<div class="rs-t">' + trend + '</div>' +
         rsVal(p, t, true) +
-        '<button type="button" class="vc-more rs-pdf" onclick="toast(\'Opens the ' + (p[3] === 'patient' ? 'uploaded' : p[3]) + ' report for ' + t.n + ' (demo)\')"><span class="ic" data-pdic="file"></span>PDF</button>' +
+        '<button type="button" class="vc-more rs-pdf" onclick="toast(\'Opening the ' + (p[3] === 'patient' ? 'uploaded' : p[3]) + ' report for ' + t.n + '\')"><span class="ic" data-pdic="file"></span>PDF</button>' +
       '</div>';
     }).join('') : '<p class="pc-empty">No lab results on file.</p>';
     h += RS_ADD
@@ -13073,7 +13083,7 @@ function csRenderSnap(name){
   /* Ani, 5 Oct: "Since you last saw: No previous visit" is gone; a small tag by the name says it instead */
   var np = document.getElementById('cs-newpt'); if(np) np.hidden = !!PT_LAST[name];
   var fd = document.getElementById('cs-fd');
-  if(fd) fd.innerHTML = v2 ? '<span class="cs-k">Family doctor</span><span class="cs-v">' + (PT_LAST[name] ? 'Dr. D. Pannozzo' : 'Not recorded') + '</span>'
+  if(fd && v2){ fd.innerHTML = ''; fd.hidden = true; } else if(fd) fd.innerHTML = v2 ? '<span class="cs-k">Family doctor</span><span class="cs-v">' + (PT_LAST[name] ? 'Dr. D. Pannozzo' : 'Not recorded') + '</span>'
     : csIc('usercheck') + '<span><span class="cs-k">Family doctor</span> ' + (PT_LAST[name] ? '<b>Dr. D. Pannozzo</b>' : 'Not recorded') + '</span>';
   paintPd(document.getElementById('cs-banner'));
 }
@@ -13382,11 +13392,10 @@ function csRenderToday(name){
     /* layout v2 (Ani, 5 Oct): one card, icon + title + one status chip + action; label above value, one fact per line */
     var when = f && f.when ? f.when.charAt(0).toUpperCase() + f.when.slice(1) : '';
     el.innerHTML = '<div class="v2-ch">' + csIc('today') + '<h3 id="cs-today-h">Today</h3>' +
-      (f ? '<span class="v2-chip warn">' + csIc('alert') + 'Flagged at intake</span><span class="v2-cr"><button type="button" class="cs-link" onclick="openBrief(PC_CURRENT)">Open intake</button></span>' : '') + '</div>' +
-      '<dl class="v2-kv"><dt>Reason for visit</dt><dd class="v2-big">' + csEsc(r.concern) + '</dd>' +
-      (r.words ? '<dt>In the patient&rsquo;s words, from booking</dt><dd>&ldquo;' + csEsc(r.words) + '&rdquo;</dd>' : '') +
-      (sum ? '<dt>Intake summary</dt><dd>' + csEsc(sum) + '</dd>' : '') +
-      (f && f.words ? '<dt>What they flagged</dt><dd><b>&ldquo;' + csEsc(f.words) + '&rdquo;</b><span class="v2-q">Patient&rsquo;s words' + (when ? '. ' + csEsc(when) : '') + '</span></dd>' : '') + '</dl>';
+      (f ? '<span class="v2-chip warn" title="' + (f.words ? 'Patient: &ldquo;' + csEsc(f.words) + '&rdquo;' + (when ? ' · ' + csEsc(when) : '') : '') + '">' + csIc('alert') + 'Flagged</span><span class="v2-cr"><button type="button" class="cs-link" onclick="openBrief(PC_CURRENT)">Intake</button></span>' : '') + '</div>' +
+      /* Ani, 7 Oct: one line, not Reason + Summary + What they flagged (it said the same thing three times) */
+      '<p class="v2-big">' + csEsc(sum || r.concern) + '</p>' +
+      (r.words ? '<p class="v2-q">&ldquo;' + csEsc(r.words) + '&rdquo;</p>' : '');
     paintPd(el); return;
   }
   var words = r.words ? '<p class="cs-sum">&ldquo;' + csEsc(r.words) + '&rdquo; <span class="cs-cap">&middot; patient&rsquo;s words, from booking</span></p>' : '';
@@ -13577,9 +13586,9 @@ function nsAIHtml(k, x){
   if(x.state === 'pending' && x.text){
     return '<div class="cs-ai" role="group" aria-labelledby="ns-aik-' + k + '">' +
       '<p class="cs-ai-k" id="ns-aik-' + k + '"><span class="cs-ai-ic">' + AI_MARK.replace('url(#aiGrad)','currentColor') + '</span>' +
-        (scribe ? 'AI draft from the call' : 'AI suggestion') + ' &middot; not in your note until you accept</p>' +
+        (scribe ? 'AI draft from the call' : 'AI suggestion') + '</p>' +
       '<p class="cs-ai-t">' + csEsc(x.text) + '</p>' +
-      '<div class="cs-ai-a"><span class="cs-cap">' + (scribe ? 'From the ambient scribe' : 'From today&rsquo;s intake') + '</span>' +
+      '<div class="cs-ai-a"><span class="cs-cap">' + (scribe ? 'Scribe' : 'Intake') + '</span>' +
       '<span class="cs-ai-b"><button type="button" class="btn xs" onclick="csAIAccept(\'' + k + '\')"><span class="ic" data-pdic="complete"></span>Accept</button>' +
       (scribe ? '<button type="button" class="btn xs" onclick="nsAIEdit(\'' + k + '\')"><span class="ic" data-pdic="edit"></span>Edit</button>' : '') +
       '<button type="button" class="btn xs" onclick="csAIReject(\'' + k + '\')"><span class="ic" data-pdic="reopen"></span>Reject</button></span></div></div>';
@@ -14019,7 +14028,7 @@ function csNsMark(){
   var n = PC_CURRENT, r = csRow(); if(!n || !r) return;
   if(PC_ON_CALL && PC_CALL_WHO === PC_CURRENT) pcEndCall();
   r.status = 'noshow'; CS.nsResumed[n] = false;
-  document.querySelectorAll('[data-f="visitline"]').forEach(function(e){ e.textContent = 'Open visit \u00b7 today \u00b7 ' + (STATUS_LABEL.noshow || 'No-show'); });
+  document.querySelectorAll('[data-f="visitline"]').forEach(function(e){ e.textContent = (STATUS_LABEL.noshow || 'No-show'); });
   if(typeof t23SyncQueue === 'function') t23SyncQueue(); else if(typeof renderQueue === 'function') renderQueue();
   csRefresh();
   csSay('Marked as a no-show. Billing for no-shows is not decided yet.');
@@ -15501,6 +15510,7 @@ function v2Tab(tab, focus){
   var root = v2El('pcv-c');
   if(tab === 'orders' && root.classList.contains('cs-ns-on')) tab = 'review';
   V2.tab = tab;
+  root.setAttribute('data-v2tab', tab);   /* Ani, 7 Oct: the critical bar hides on Review, where the card itself is */
   V2_TABS.forEach(function(k){
     var b = v2El('v2t-' + k), p = v2El('v2p-' + k), on = k === tab;
     if(b){ b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; }
@@ -15694,6 +15704,15 @@ function v2RenderSide(name){
   var prevBody = (prev ? v2Lines(prev, name) : '') +
     (L ? '<button type="button" class="cs-link v2-readnote" onclick="csOpenFull(\'documents\',this)">Read the ' + csShort(L.date) + ' note</button>' : '');
   v2SetSec('prev', v2Count(prev), '', prevBody, !!(prev || L));
+  /* Ani, 7 Oct: doctors get their own section. Family doctor (you), the specialists from the care plan and consults, the MOA, the pharmacy */
+  var team = [['Family doctor', PT_LAST[name] ? 'Dr. D. Pannozzo' : 'Not recorded', PT_LAST[name] ? 'you' : '']], seen = {};
+  var addSpec = function(spec, svc){ if(!svc || /Pannozzo/.test(svc)) return; var s = String(svc).replace(/&rsquo;/g, '’'); if(seen[s]) return; seen[s] = 1; team.push([spec || 'Specialist', s, '']); };
+  (CARE_PLAN[name] || []).forEach(function(g){ (g.items || [g]).forEach(function(it){ addSpec(it.specialty || g.specialty, it.service || g.service); }); });
+  if(CP_PENDING[name]) (CP_PENDING[name].recs || []).forEach(function(r){ addSpec(r.specialty, r.service); });
+  team.push(['MOA', 'Dolly', '']);
+  if(PT_CHART[name] && PT_CHART[name].pharm) team.push(['Pharmacy', PT_CHART[name].pharm, '']);
+  v2SetSec('team', team.length, '', '<ul class="v2-team">' + team.map(function(t){
+    return '<li><span class="v2-tk">' + t[0] + '</span><span class="v2-tv">' + csEsc(t[1]) + (t[2] ? ' <span class="v2-you">' + t[2] + '</span>' : '') + '</span></li>'; }).join('') + '</ul>', true);
   /* Chart tab (Ani, 7 Oct): each Patient summary row ends with a small "See all" that opens the Chart tab on its section.
      Pending goes where its items live (the care plan for most; the section most of its lines open) */
   var most = function(row, dflt){
@@ -15737,12 +15756,12 @@ function v2CheckRow(name, k, signed){
   }
   var pick = V2.pick[k], h = '', fld = '';
   if(k === 'loc'){
-    h = (v.lastPlace ? '<span class="v2-hint">Last known: ' + csEsc(v.lastPlace) + '</span>' : '<span class="v2-hint">Ask on every call.</span>') +
+    h = (v.lastPlace ? '<span class="v2-hint">Last: ' + csEsc(v.lastPlace) + '</span>' : '<span class="v2-hint">Ask on every call.</span>') +
       '<span class="v2-opts v2-stack" role="group" aria-labelledby="v2-ckl-loc">' + v2Opt('At home in BC', "v2Ans('loc','home')") +
       v2Opt('Elsewhere in BC', "v2Pick('loc','bc')", pick === 'bc') + v2Opt('Outside BC', "v2Pick('loc','out')", pick === 'out') + '</span>';
     if(pick) fld = v2Field('loc', pick === 'bc' ? 'Where in BC?' : 'Where is the patient?', pick === 'out' ? v.placeOut : '');
   } else if(k === 'oth'){
-    h = '<span class="v2-hint">Is anyone else on the call?</span><span class="v2-opts" role="group" aria-labelledby="v2-ckl-oth">' +
+    h = '<span class="v2-opts" role="group" aria-labelledby="v2-ckl-oth">' +
       v2Opt('No one', "v2Ans('oth','alone')") + v2Opt('Someone', "v2Pick('oth','someone')", pick === 'someone') + '</span>';
     if(pick) fld = v2Field('oth', 'Who, and their relationship', '');
   } else if(k === 'id'){
@@ -15853,7 +15872,7 @@ function v2SyncHead(){
   if(card) card.hidden = !al || al.hidden;
   if(chip){
     chip.className = 'v2-chip' + (na.n ? (na.crit ? ' crit' : ' warn') : '');
-    chip.innerHTML = na.n ? csIc(na.crit ? 'crit' : 'alert') + na.n + ' to review' : na.total ? csIc('complete') + 'Reviewed' : '';
+    chip.innerHTML = !na.n && na.total ? csIc('complete') + 'Reviewed' : '';
     chip.hidden = !na.total; paintPd(chip);
   }
 }
@@ -17314,9 +17333,9 @@ function nsRenderDx(){
     var sug = nsDxSuggest(r);
     if(sug) h += '<div class="ns-dxsug"><span class="ns-sugchip" id="ns-dxsug-t">' + csIc('claims') + '<span><span class="ns-sugk">Suggested:</span> <b>' + t23E(sug) + '</b> &middot; ' + t23E(t23DxName(sug)) + '</span></span>' +
       '<button type="button" class="btn xs" id="ns-dxsug-use" onclick="nsDxUse(\'' + sug + '\')" aria-describedby="ns-dxsug-t" aria-label="Use ' + t23E(sug + ' ' + t23DxName(sug)) + ' as the claim\u2019s diagnosis">' + csIc('complete') + 'Use</button>' +
-      '<span class="ns-dxk">From the booking reason</span></div>';
+      '</div>';
     h += '<div class="ns-dxline"><button type="button" class="btn xs" id="ns-dx-btn" onclick="nsDxOpen(true)">' + csIc('plus') + 'Add diagnosis</button>' +
-      '<span class="ns-dxk">ICD-9, for the claim</span></div>';
+      '</div>';
   }
   if(!signed && D.open){
     h += '<div class="ns-dxs"><div class="ns-dxs-hd"><label class="ns-dxk" for="ns-dx-q">' + (dx ? 'Change the diagnosis (ICD-9)' : 'Add a diagnosis (ICD-9)') + '</label>' +
@@ -17486,6 +17505,6 @@ baWrap('showScreen', function(r, name){ if(name === 'today') hsdRender(); });
 hsdRender();
 setInterval(function(){ var s = document.getElementById('screen-today'); if(s && s.classList.contains('active')) hsdRender(); }, 60000);   /* the next window moves with the clock */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 09:40</div>
+  <div class="build-stamp">v2 · build 2026-10-07 10:20</div>
 </body>
 </html>
