@@ -17432,11 +17432,7 @@ function hsdRender(){
   hsdSet(el, '<div class="hsd-strip">' +
     sec('visits', 'Visits today: ' + visitsWords + '. ' + win + '. Go to the live queue', 'phone', '', 'Visits today', c.booked,
         'booked · ' + c.done + ' done · ' + c.open + ' in queue', t23E(win)) +
-    sec('crit', c.crit.length ? 'Critical results: ' + c.crit.length + ' not reviewed. Review ' + critWho : 'Critical results: none waiting. Open the Inbox',
-        c.crit.length ? 'crit' : 'complete', c.crit.length ? 'crit' : '', 'Critical results', c.crit.length,
-        c.crit.length ? 'not reviewed' : 'none waiting', c.crit.length ? t23E(critWho) + (c.crit.length > 1 ? ' and ' + (c.crit.length - 1) + ' more' : '') : '') +
-    sec('claims', 'Claims near deadline: ' + c.near + ' with ' + T23_STALE_HOME + ' days or fewer left. Open Claims, Needs submission', 'clock', c.near ? 'warn' : '',
-        'Claims near deadline', c.near, c.near ? 'with ' + T23_STALE_HOME + ' days or fewer left' : 'none within ' + T23_STALE_HOME + ' days', '') +
+    /* Ani, 7 Oct: critical results and near-deadline claims are not repeated here; Needs attention right below lists them */
     sec('inbox', 'Inbox: ' + c.recv + ' to review. Open the Inbox', 'inbox', '', 'Inbox', c.recv, c.recv ? 'to review' : 'nothing to review', '', msg) +
   '</div>');
 }
@@ -17471,6 +17467,6 @@ baWrap('showScreen', function(r, name){ if(name === 'today') hsdRender(); });
 hsdRender();
 setInterval(function(){ var s = document.getElementById('screen-today'); if(s && s.classList.contains('active')) hsdRender(); }, 60000);   /* the next window moves with the clock */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 07:05 · Batch C</div>
+  <div class="build-stamp">v2 · build 2026-10-07 07:15</div>
 </body>
 </html>
