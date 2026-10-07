@@ -303,3 +303,9 @@ Lead brief, 6 Oct. Light only; v2 is the only chart layout. Screenshots (local o
 - **Behaviour:** focus moves to the card's heading. Open chart opens that chart (on its usual start tab); the card goes when another chart opens. A signed-off chart opened later shows only the existing "Signed off" header.
 - **Measures:** buttons 44 px, text 15 px, heading 18 px.
 
+### 3. Collapsed sidebar (every screen)
+- **Badges:** with the rail collapsed, each count shows again as a small red badge on the icon's top-right (Claims, Tasks, and Inbox when it has one): 22 px, 14 px bold, ringed in the page colour. It mirrors the label's own badge (hidden with the label) through a MutationObserver, so any screen that changes a count changes both. Display by exception: no badge when the count is hidden.
+- **Floating label:** the browser tooltip (`title`) is gone in the collapsed rail. One dark label (`#nav-tip`, `position: fixed`, outside the rail, 14 px/600, with the count in a pill) appears beside the icon on hover and on keyboard focus, for the nav items, the expand button ("Expand sidebar") and the demo walkthrough button. Leaving, a click, Escape or scrolling hides it. It is `aria-hidden`; the button's accessible name carries the name and count ("Claims, 13").
+- **No black slice:** nothing is added in the button's flow, so the buttons stay 46 × 46 and the active highlight stays the dark circle (measured: width 46 on hover, active and focus).
+- **Expanded:** unchanged (badges beside the labels, titles restored on the expand button).
+

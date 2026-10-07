@@ -5644,6 +5644,23 @@
   #screen-patientchart #pcv-c.cs-v2 #v2-done .v2d-next .v2c-dot{color:var(--ink-soft);margin:0 4px;}
   #screen-patientchart #pcv-c.cs-v2 #v2-done .v2d-acts{display:flex;gap:8px;flex-wrap:wrap;}
   #screen-patientchart #pcv-c.cs-v2 #v2-done .btn{min-height:44px;font-size:15px;display:inline-flex;align-items:center;gap:6px;}
+  /* ===== Batch A (3): collapsed sidebar (lead brief, 6 Oct). The counts come back as small badges on each icon's top-right
+     (mirrors of the label's own badge, which is hidden with the label), and the browser tooltip is replaced by a dark
+     label that FLOATS outside the rail (#nav-tip, position fixed, appended to body). Nothing is added inside the button's
+     flow, so the button never widens (the 6 Oct black-slice bug came from the label widening it) and the active
+     highlight stays the 46 px circle. ===== */
+  #sidebar .nav-rb{display:none;}
+  #sidebar.collapsed .nav-rb:not([hidden]){display:inline-flex;position:absolute;top:-6px;right:-8px;z-index:2;box-sizing:border-box;
+    min-width:22px;height:22px;padding:0 6px;border-radius:11px;align-items:center;justify-content:center;
+    background:var(--badge);color:#fff;font-size:14px;font-weight:700;line-height:1;box-shadow:0 0 0 2px var(--paper);pointer-events:none;}
+  #sidebar.collapsed .nav-rb.nav-rb-dot:not([hidden]){min-width:12px;width:12px;height:12px;padding:0;top:-1px;right:-1px;}
+  #nav-tip{position:fixed;left:0;top:0;z-index:250;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;
+    background:var(--ink-dark);color:#fff;font-size:14px;font-weight:600;line-height:1.2;white-space:nowrap;pointer-events:none;
+    box-shadow:0 6px 16px rgba(23,24,28,.22);transform:translateY(-50%);opacity:0;visibility:hidden;transition:opacity .12s ease-out;}
+  #nav-tip.on{opacity:1;visibility:visible;}
+  #nav-tip::before{content:"";position:absolute;left:-5px;top:50%;width:10px;height:10px;margin-top:-5px;background:inherit;transform:rotate(45deg);border-radius:2px;}
+  #nav-tip .nt-n{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:rgba(255,255,255,.16);font-size:14px;font-weight:700;}
+  @media (prefers-reduced-motion: reduce){ #nav-tip{transition:none;} }
 </style>
 </head>
 <body>
@@ -16243,6 +16260,73 @@ function nxdFocus(){
   baWrap('openChart', function(r, name){ if(name !== NXD.for) NXD.for = null; nxdRender(); });
   ['t23MfaGo','t23MfaClose'].forEach(function(n){ baWrap(n, function(){ setTimeout(function(){ var a = document.activeElement; if(NXD.for === PC_CURRENT && (!a || a === document.body || !a.getClientRects().length)) nxdFocus(); }, 90); }); });
   baWrap('csLayout', function(){ nxdRender(); });
+})();
+/* ---------- (3) Collapsed sidebar: badges on the icons, a floating label (lead brief, 6 Oct) ----------
+   Each nav item's count badge lives inside its label, which is hidden when the rail is collapsed. A mirror badge
+   (.nav-rb, aria-hidden) sits on the icon's top-right and follows the real one (text, shown or hidden) through a
+   MutationObserver, so every screen that updates a count updates both. The accessible name carries the count
+   ("Claims, 13"). The browser tooltip (title) is replaced by #nav-tip: one dark label, position fixed beside the rail,
+   on hover and on keyboard focus; Escape, a click, scrolling or leaving hides it. */
+var NAVT = {el:null, on:null};
+function navItems(){ return [].slice.call(document.querySelectorAll('#sidebar .nav-btn, #sidebar .nav-btn-parent')); }
+function navName(n){ var l = n.querySelector('.nav-label'); if(!l) return ''; return (l.firstChild && l.firstChild.nodeType === 3 ? l.firstChild.textContent : l.textContent).trim(); }
+function navFlagOf(n){ return n.querySelector('.nav-label .nav-flag, .nav-msg-count'); }
+function navFlagShown(f){ return !!f && f.style.display !== 'none' && !f.hidden; }
+function navRail(){
+  var sb = document.getElementById('sidebar'); if(!sb) return;
+  var col = sb.classList.contains('collapsed');
+  navItems().forEach(function(n){
+    var f = navFlagOf(n), rb = n.querySelector(':scope > .nav-rb'), name = navName(n);
+    if(f && f.parentNode === n) f = null;   /* a count that already sits on the button itself (outside the label) needs no mirror */
+    if(f){
+      if(!rb){ rb = document.createElement('span'); rb.className = 'nav-rb'; rb.setAttribute('aria-hidden', 'true'); n.appendChild(rb); }
+      var txt = f.textContent.trim();
+      rb.textContent = txt; rb.hidden = !navFlagShown(f); rb.classList.toggle('nav-rb-dot', !txt);
+    } else if(rb) rb.remove();
+    if(col && name){
+      var cnt = f && navFlagShown(f) ? f.textContent.trim() : '';
+      n.setAttribute('aria-label', name + (cnt ? ', ' + cnt : ''));
+      n.setAttribute('data-tip', name); if(cnt) n.setAttribute('data-tip-n', cnt); else n.removeAttribute('data-tip-n');
+      n.removeAttribute('title');
+    } else { n.removeAttribute('data-tip'); n.removeAttribute('data-tip-n'); }
+  });
+  /* the rail's other icon buttons: their title becomes the floating label too */
+  ['collapse-btn','dsw-fab'].forEach(function(id){
+    var b = document.getElementById(id); if(!b) return;
+    if(col){ var t = b.title || b.getAttribute('data-tip') || b.getAttribute('aria-label') || ''; if(b.title){ b.setAttribute('data-tt', b.title); b.removeAttribute('title'); } if(id === 'collapse-btn') t = 'Expand sidebar'; b.setAttribute('data-tip', t); if(!b.getAttribute('aria-label')) b.setAttribute('aria-label', t); }
+    else { if(b.getAttribute('data-tt')){ b.title = id === 'collapse-btn' ? 'Collapse sidebar' : b.getAttribute('data-tt'); b.removeAttribute('data-tt'); } b.removeAttribute('data-tip'); if(id === 'collapse-btn') b.removeAttribute('aria-label'); }
+  });
+  if(!col) navTip(null);
+}
+function navTip(btn){
+  var t = NAVT.el; if(!t) return;
+  if(!btn || !btn.getAttribute('data-tip') || !document.getElementById('sidebar').classList.contains('collapsed')){ t.classList.remove('on'); NAVT.on = null; return; }
+  var n = btn.getAttribute('data-tip-n');
+  t.textContent = btn.getAttribute('data-tip');
+  if(n){ var s = document.createElement('span'); s.className = 'nt-n'; s.textContent = n; t.appendChild(s); }
+  var r = btn.getBoundingClientRect(), sb = document.getElementById('sidebar').getBoundingClientRect();
+  t.style.left = Math.round(Math.max(r.right, sb.right) + 10) + 'px';
+  t.style.top = Math.round(r.top + r.height / 2) + 'px';
+  t.classList.add('on'); NAVT.on = btn;
+}
+(function(){
+  var sb = document.getElementById('sidebar'); if(!sb) return;
+  var t = document.createElement('div'); t.id = 'nav-tip'; t.setAttribute('aria-hidden', 'true'); document.body.appendChild(t); NAVT.el = t;
+  var SEL = '.nav-btn, .nav-btn-parent, .sidebar-collapse-btn, .dsw-fab';
+  sb.addEventListener('mouseover', function(e){ var b = e.target.closest && e.target.closest(SEL); if(b && b !== NAVT.on) navTip(b); });
+  sb.addEventListener('mouseout', function(e){ var b = e.target.closest && e.target.closest(SEL); if(b && !(e.relatedTarget && b.contains(e.relatedTarget))) navTip(null); });
+  sb.addEventListener('focusin', function(e){ var b = e.target.closest && e.target.closest(SEL); navTip(b || null); });
+  sb.addEventListener('focusout', function(){ navTip(null); });
+  sb.addEventListener('click', function(){ navTip(null); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && NAVT.on) navTip(null); });
+  window.addEventListener('scroll', function(){ if(NAVT.on) navTip(null); }, {passive:true, capture:true});
+  window.addEventListener('resize', function(){ if(NAVT.on) navTip(null); });
+  /* counts change on many screens: follow the real badges */
+  var mo = new MutationObserver(function(){ navRail(); });
+  navItems().forEach(function(n){ var f = navFlagOf(n); if(f) mo.observe(f, {attributes:true, attributeFilter:['style','hidden','class'], childList:true, characterData:true, subtree:true}); });
+  baWrap('syncCollapseBtn', function(){ navRail(); });
+  baWrap('toggleSidebarCollapse', function(){ navRail(); });   /* it sets the collapse button's title after syncing */
+  navRail();
 })();
 </script>
   <div class="build-stamp">v2 · build 2026-10-07 02:30</div>
