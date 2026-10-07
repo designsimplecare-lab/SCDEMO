@@ -5914,6 +5914,16 @@
     #screen-today .hsd-sec:nth-child(3){border-left:0;}
     #screen-today .hsd-sec:nth-child(n+3){border-top:1px solid var(--line);}
   }
+
+  /* claim drawer, copy diet (Ani, 7 Oct) */
+  #bl-card .t23-openv{margin-left:auto;}
+  #bl-card .bl-who{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  #bl-card .t23-sum .t23-do{margin-top:6px;}
+  #bl-card .t23-more-d{margin-top:6px;font-size:14px;color:var(--ink-soft);}
+  #bl-card .t23-more-d summary{cursor:pointer;color:var(--accent-ink,var(--accent));font-weight:600;}
+  #bl-card .t23-more-d p{margin:6px 0 0;}
+  #bl-card .t23-mspw{font-style:italic;}
+  #bl-card .t23-dl{color:var(--ink-soft);margin:0 0 12px;}
 </style>
 </head>
 <body>
@@ -7020,7 +7030,6 @@
     <!-- T-023 (spec part 2): Claims is the one place the doctor signs off his claims. PRD CNF-09, CNF-10, TAIL-04. -->
     <div class="screen" id="screen-claims">
       <h1>Claims</h1>
-      <p class="sub">Every completed visit, billed and accounted for.</p>
       <!-- Daniel 5 Oct (step 3): "MSP | Private pay", organised separately and never mixed -->
       <div id="t23-seg"></div>
 
@@ -10489,7 +10498,7 @@ function aiReply(text){
       aiAppend('<b>' + t23n[0] + '</b> claims were rejected by MSP and <b>' + t23n[1] + '</b> need submission. You submit each one in Claims.','bot');
       /* each answer lands on its own Claims tab (Ani, 6 Oct); "unsubmitted" asks lead with Needs submission */
       var aiTab = function(k){ return function(){ aiDo(function(){ T23.view = 'msp'; CL_ON = k; showScreen('claims'); }); }; };
-      var aiTabs = [['rej', 'Open Rejected by MSP', t23n[0] + ' rejected', t23n[0]], ['ns', 'Open Needs submission', t23n[1] + ' to submit', t23n[1]]];
+      var aiTabs = [['rej', 'Open Refused by MSP', t23n[0] + ' refused', t23n[0]], ['ns', 'Open Needs submission', t23n[1] + ' to submit', t23n[1]]];
       if(/(unsubmit|not submitted|submission|submit)/.test(t)) aiTabs.reverse();
       aiTabs.forEach(function(b){ if(b[3]) aiActionBtn('&#36;', b[1], b[2], aiTab(b[0])); });
       if(!t23n[0] && !t23n[1]) aiActionBtn('&#36;','Open Claims',null,aiTab('all'));
@@ -14215,12 +14224,20 @@ function t23ExList(c){ var e = c && c.msp && c.msp.ex; return !e ? [] : Array.is
 function t23ExCode(c){ return t23ExList(c).join(' · '); }
 function t23ExMain(c){ var l = t23ExList(c), m = l.filter(function(x){ return T23_EX_WRAP.indexOf(x) < 0; }); return T23_EX[m[0] || l[0]] || null; }
 function t23ExMeaning(c){ var e = t23ExMain(c); return e ? e.p : ''; }
+/* Ani, 7 Oct: list rows say the code + a 3-6 word meaning; the full sentence lives in the drawer */
+var T23_EX_SHORT = {AM:'Name doesn’t match MSP', AF:'No MSP coverage that day', BJ:'Fee doesn’t match the code', BI:'Fee code and diagnosis don’t match',
+  CF:'Start/end time missing', VN:'Diagnosis missing or invalid', HX:'Duplicate · paid $0', BH:'Held for a later statement', BV:'Past the 90-day limit',
+  YA:'Resend note missing', ED:'Medical necessity questioned', HC:'Paid under another code'};
+function t23ExShort(c){ var l = t23ExList(c), m = l.filter(function(x){ return T23_EX_WRAP.indexOf(x) < 0; }), k = m[0] || l[0]; return T23_EX_SHORT[k] || t23ExMeaning(c); }
 /* the claim drawer: plain meaning, who fixes it and how, MSP's own words one click away */
 function t23ExBlock(c){
   var e = t23ExMain(c); if(!e) return '';
-  var ln = function(k, v){ return '<div class="t23-line ro"><span class="t23-lk">' + k + '</span><span class="t23-lv">' + t23E(v) + '</span></div>'; };
-  return ln('What it means', e.p) + ln('Who fixes it', e.who) + ln('How', e.how) +
-    '<details><summary>MSP’s words</summary>' + t23ExList(c).map(function(x){ return '<p>' + x + ' · ' + t23E(T23_EX[x] ? T23_EX[x].w : '') + '</p>'; }).join('') + '</details>';
+  /* Ani, 7 Oct (copy diet): one action sentence; meaning, owner and MSP's words behind one Details toggle */
+  var act = c.st === 'adjusted' ? 'Accept, or dispute if ' + c.fee + ' was right.' : e.how;
+  return '<p class="bl-v t23-do">' + t23E(act) + '</p>' +
+    '<details class="t23-more-d"><summary>Details</summary><p>' + t23E(e.p) + '</p><p>Fixes it: ' + t23E(e.who) + '</p>' +
+    t23ExList(c).map(function(x){ return '<p class="t23-mspw">' + x + ' · “' + t23E(T23_EX[x] ? T23_EX[x].w : '') + '”</p>'; }).join('') +
+    (t23DaysLeft(c) != null ? '<p>' + t23CountTxt(c) + '</p>' : '') + '</details>';
 }
 var T23_PRIVATE_FEE = 100;  /* the private visit fee (V2 Fee Settings); unsourced, so a demo value (N17) */
 
@@ -14456,7 +14473,7 @@ function t23OpenQ(c){ return c.flags.filter(function(f){ return f.k === 'q' && !
 /* ================= Claims screen ================= */
 /* Ani, 6 Oct: one row of tabs instead of pills over tabs. Rejected by MSP is the default (Daniel's top priority).
    CL_ON is the open tab: rej, ns, sub, paid or all. Red count badges only where the doctor has work to do. */
-var CL_TABS = [['rej','Rejected by MSP',true],['ns','Needs submission',true],['sub','Submitted'],['paid','Paid'],['all','All']];
+var CL_TABS = [['rej','Refused by MSP',true],['ns','Needs submission',true],['sub','Submitted'],['paid','Paid'],['all','All']];
 var CL_ON = 'rej';
 var CL_OLD = {'Needs attention':'rej', 'Submitted':'sub', 'Paid':'paid', 'All':'all'};
 function clSet(f){ CL_ON = CL_OLD[f] || f; renderClaims(); var b = document.getElementById('t23-tab-' + CL_ON); if(b) b.focus(); }
@@ -14510,7 +14527,7 @@ function t23Stats(){
   var paidSum = paid.reduce(function(t, c){ return t + (c.paid || 0); }, 0);
   sw.innerHTML = '<div class="cl-stats t23-stats3">' +
     st('Needs submission', ns.length, t23Money(sum(ns)) + ' expected' + T23_DEMO) +
-    st('Rejected by MSP', rej.length, t23Money(rejSum) + ' not paid' + T23_DEMO) +
+    st('Refused by MSP', rej.length, t23Money(rejSum) + ' not paid' + T23_DEMO) +
     st('Paid this cycle', paid.length, t23Money(paidSum) + (lastPay ? ' · Paid ' + t23F(lastPay) : ' paid')) +
   '</div>';
 }
@@ -14582,15 +14599,15 @@ function t23RejHtml(c){
   if(c.st === 'dispute'){ p = ['Sign off &amp; ask MSP to reassess', 't23Reassess(\'' + c.id + '\')', 'complete']; s = ['Correct instead', 't23Correct(\'' + c.id + '\')']; }
   if(c.st === 'adjusted'){ p = ['Accept', 't23SetSt(\'' + c.id + '\',\'paid\',\'Adjustment accepted\')', 'complete']; s = ['Dispute', 't23SetSt(\'' + c.id + '\',\'dispute\',\'Marked as a potential dispute\')']; }
   var reason = c.st === 'adjusted'
-    ? t23Money(c.paid) + ' paid of ' + t23Money(t23Amt(c)) + ' · ' + t23ExCode(c) + ' · ' + t23ExMeaning(c)
-    : t23ExCode(c) + ' · ' + t23ExMeaning(c);
+    ? t23Money(c.paid) + ' of ' + t23Money(t23Amt(c)) + ' · ' + t23ExCode(c) + ' · ' + t23ExShort(c)
+    : t23ExCode(c) + ' · ' + t23ExShort(c);
   var when = c.msp.on ? (c.st === 'adjusted' ? 'Paid ' : 'Refused ') + t23F(c.msp.on) + ' · ' : '';
   var q = c.flags.map(function(f, i){ return f.k === 'q' ? t23FlagHtml(c, f, i) : ''; }).join('');
   var openQ = t23OpenQ(c);
-  return '<div class="t23-card" id="t23-c-' + c.id + '"><div class="t23-chead"><b>' + t23E(c.who) + '</b><span class="t23-meta">' + t23F(c.date) + ' visit · ' + t23FeeTxt(c.fee) + '</span>' + T23_DEMO + '<span class="t23-chips">' + t23Pill(c) + t23DaysChip(c) + '</span></div>' +
-    '<p class="t23-reason">' + when + t23E(reason) + '</p>' + (c.sub && c.st === 'dispute' ? '<p class="t23-reason">' + t23E(c.sub) + '</p>' : '') + q +
+  return '<div class="t23-card" id="t23-c-' + c.id + '"><div class="t23-chead"><b>' + t23E(c.who) + '</b><span class="t23-meta">' + t23F(c.date) + ' · ' + c.fee + '</span>' + T23_DEMO + '<span class="t23-chips">' + t23DaysChip(c) + '</span></div>' +
+    '<p class="t23-reason">' + when + t23E(reason) + '</p>' + '' + q +
     '<div class="t23-cfoot">' + (openQ ? '' : '<button type="button" class="btn dark" onclick="' + p[1] + '">' + t23Ic(p[2]) + p[0] + '</button><button type="button" class="btn" onclick="' + s[1] + '">' + s[0] + '</button>') +
-    '<button type="button" class="btn xs" onclick="t23Note(\'' + c.id + '\')">' + t23Ic('file') + 'Open the visit</button>' +
+    '<button type="button" class="btn xs" onclick="t23Note(\'' + c.id + '\')">' + t23Ic('file') + 'Open visit</button>' +
     '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button></div></div>';
 }
 
@@ -14812,17 +14829,20 @@ function t23Open(id, at){
       (ch && focus ? '<button type="button" class="btn xs" onclick="t23OpenPick({claim:\'' + id + '\',focus:\'' + focus + '\'})">' + t23Ic('edit') + 'Change</button>' : '') + '</div>';
   };
   var h = '<p class="bl-eyebrow" id="bl-eyebrow">' + t23Payer(c) + '</p>' +
-    '<p class="defer-ttl" id="bl-title">' + t23Label(c).label + '</p>' + (t23Blocker(c) && !(c.nameChk && c.nameChk.st !== 'ok') ? '<p class="bl-v t23-why2">' + t23E(t23Blocker(c).why) + '</p>' : '') +
-    '<p class="bl-who" id="bl-who"><span><b>' + t23E(c.who) + '</b> · ' + t23F(c.date) + ' · ' + winLabel(c.win) + '</span>' + t23DaysChip(c) + '</p>';
+    '<p class="defer-ttl" id="bl-title">' + (c.st === 'adjusted' ? 'Paid less than billed' : t23Label(c).label) + '</p>' + (t23Blocker(c) && !(c.nameChk && c.nameChk.st !== 'ok') ? '<p class="bl-v t23-why2">' + t23E(t23Blocker(c).why) + '</p>' : '') +
+    '<p class="bl-who" id="bl-who"><span><b>' + t23E(c.who) + '</b> · ' + t23F(c.date) + '</span>' + t23DaysChip(c) +
+    '<button type="button" class="t23-more t23-openv" onclick="t23Note(\'' + id + '\')">Open visit</button></p>';
+  var msph = '';
   if(c.signed) h += '<p class="bl-v" style="margin:-8px 0 12px">' + soStamp(c.signed) + '</p>';
   if(c.nameChk && c.nameChk.st !== 'ok') h += '<div class="bl-block">' + t23NameChkHtml(c) + '</div>';
+  var MSPH_AT = h.length;
   if(c.payer !== 'private' && c.fee){
     var b = t23Basis(c);
     h += '<div class="bl-block"><p class="bl-k">Your coding</p>' +
-      line('Fee code', t23FeeTxt(c.fee) + (c.fee === t23FeeForAge(c.age, t23IsCounsel(c.fee)) ? '<span class="t23-auto">Set from age · ' + c.age + '</span>' : ''), null, true) +
+      line('Fee code', t23FeeTxt(c.fee), null, true) +
       line('Diagnosis (ICD-9)', c.dx ? c.dx + ' · ' + t23DxName(c.dx) + T23_DEMO : 'Diagnosis not set', 'dx') +
-      line('Time', (c.start ? t23SpanTxt(c) : (c.mins || '—') + ' min') + ' · from the call', 'time') +
-      line('Amount', b ? t23Money(b[0]) + ' ' + b[1] + T23_DEMO : '—', null, true) +
+      line('Time', (c.start ? t23SpanTxt(c) : (c.mins || '—') + ' min'), 'time') +
+      (c.msp ? '' : line('Amount', b ? t23Money(b[0]) + ' ' + b[1] + T23_DEMO : '—', null, true)) +
       (ch ? t23CnslHtml(c, 'claim', id) : (t23CounselBlock(c) ? '<p class="t23-err" role="alert">' + t23CounselBlock(c) + '</p>' : '')) + '</div>';
   } else if(c.payer === 'private'){
     h += '<div class="bl-block"><p class="bl-k">Payment</p>' +
@@ -14836,18 +14856,17 @@ function t23Open(id, at){
     var refused = c.st === 'adjusted' || (c.st === 'paid' && c.msp.ex) ? 'Paid ' + t23F(c.msp.on) + ' · ' + t23Money(c.paid) + ' of ' + t23Money(t23Amt(c)) + (c.msp.paidAs ? ' · paid as ' + c.msp.paidAs : '') + ' · ' + t23ExCode(c)
       : c.st === 'closed' && c.msp.ex === 'HX' ? 'Paid $0.00 ' + t23F(c.msp.on) + ' · ' + t23ExCode(c)
       : 'Refused ' + (c.msp.on ? t23F(c.msp.on) + ' · ' : '') + t23ExCode(c);
-    h += '<div class="bl-block"><p class="bl-k">MSP response</p><p class="bl-v">' + refused + '</p>' + t23ExBlock(c) +
-      (left != null ? '<p class="bl-v">' + (left < 0 ? 'Past the deadline' : left === 0 ? 'Last day to fix and resend: today' : left + ' days left to fix and resend · last day ' + t23FDWd(t23LastDay(c).d)) + '</p>' +
-      '<details><summary>How we count this</summary><p>' + t23CountTxt(c) + '</p></details>' : '') + '</div>';
+    msph = '<div class="bl-block t23-sum"><p class="bl-v"><b>' + refused + '</b>' + (left != null && left < 0 ? ' · past the deadline' : '') + '</p>' + t23ExBlock(c) + '</div>';
   } else if(c.st === 'held'){
-    h += '<div class="bl-block"><p class="bl-k">MSP response</p><p class="bl-v">Held by MSP ' + (c.msp.on ? t23F(c.msp.on) + ' ' : '') + '· ' + t23ExCode(c) + '</p>' + t23ExBlock(c) + '<p class="bl-v">' + T23_AGENT + ' (billing agent) is watching it. Nothing for you.</p></div>';
+    msph = '<div class="bl-block t23-sum"><p class="bl-v"><b>Held by MSP ' + (c.msp.on ? t23F(c.msp.on) + ' ' : '') + '· ' + t23ExCode(c) + '</b></p>' + t23ExBlock(c) + '</div>';
   }
   if(c.st === 'submit'){ var dl = t23DaysLeft(c), L = t23LastDay(c);
-    h += '<div class="bl-block"><p class="bl-k">Deadline</p><p class="bl-v">' + (dl < 0 ? 'Past the deadline' : dl === 0 ? 'Last day today' : dl + ' days left to ' + (L.from === 'rej' ? 'resend' : 'submit') + ' · last day ' + t23FDWd(L.d)) + '</p>' +
-      '<details><summary>How we count this</summary><p>' + t23CountTxt(c) + '</p></details></div>'; }
+    h += '<p class="bl-v t23-dl" title="' + t23E(t23CountTxt(c)) + '">' + (dl < 0 ? 'Past the deadline' : 'Last day to ' + (L.from === 'rej' ? 'resend' : 'submit') + ' ' + t23FDWd(L.d)) + '</p>'; }
   if(c.st === 'appeal') h += '<div class="bl-block"><p class="bl-k">Reassessment</p><p class="bl-v">' + (c.sub || '') + ' · Possible recovery ' + t23Money(t23Amt(c)) + ' estimated' + T23_DEMO + '</p></div>';
-  h += '<div class="bl-block"><p class="bl-k">Visit</p><p class="bl-v"><button type="button" class="t23-more" onclick="t23Note(\'' + id + '\')">Open the ' + t23F(c.date) + ' visit</button> (read-only)</p></div>';
-  var all = T23.histAll[id], hist = c.hist.slice().reverse(), shown = all ? hist : hist.slice(0, 5);   /* Dev answers, 6 Oct: newest first, collapsed after five */
+  if(msph) h = h.slice(0, MSPH_AT) + msph + h.slice(MSPH_AT);
+  var all = T23.histAll[id], hist = c.hist.slice().reverse();
+  if(msph && hist.length && /^MSP/.test(hist[0][1] || '')) hist = hist.slice(1);   /* the summary above already says it */
+  var shown = all ? hist : hist.slice(0, 5);   /* Dev answers, 6 Oct: newest first, collapsed after five */
   h += '<div class="bl-block" id="t23-hx"><p class="bl-k" id="t23-hx-h" tabindex="-1">History' + (t23EditCount(c.hist) ? '<span class="t23-hx-n">' + t23EditCount(c.hist) + (t23EditCount(c.hist) === 1 ? ' change' : ' changes') + '</span>' : '') + '</p><ul class="t23-hist">' + t23HistHtml(shown) + '</ul>' +
     (hist.length > 5 ? '<button type="button" class="t23-more" onclick="T23.histAll[\'' + id + '\']=' + (all ? 'false' : 'true') + ';t23Open(\'' + id + '\')">' + (all ? 'Show fewer' : 'Show all ' + hist.length) + '</button>' : '') + '</div>';
   h += '<div class="defer-acts"><button type="button" class="btn" onclick="closeBilling()">Close</button>' + t23PrimaryBtn(c) + '</div>';
@@ -16538,7 +16557,7 @@ function ernRisk(){
       '<p class="vs"><span class="v">' + t23Money(amt) + '</span><span class="s">' + n + (n === 1 ? ' claim' : ' claims') + ' · ' + what + '</span></p></div>' +
       (n ? '<button type="button" class="btn xs" aria-label="' + btn + '" onclick="ernOpenClaims(\'' + tab + '\')">Open in Claims' + t23Ic('chevr') + '</button>' : '') + '</div>';
   };
-  el.innerHTML = row('alert', 'Rejected by MSP', rej.length, rejSum, 'not paid', 'rej', 'Open Rejected by MSP in Claims') +
+  el.innerHTML = row('alert', 'Refused by MSP', rej.length, rejSum, 'not paid', 'rej', 'Open Refused by MSP in Claims') +
                  row('clock', 'Near the 90-day limit', near.length, nearSum, T23_AMBER + ' days or fewer left', 'ns', 'Open Needs submission in Claims');
   paintPd(el);
 }
@@ -17467,6 +17486,6 @@ baWrap('showScreen', function(r, name){ if(name === 'today') hsdRender(); });
 hsdRender();
 setInterval(function(){ var s = document.getElementById('screen-today'); if(s && s.classList.contains('active')) hsdRender(); }, 60000);   /* the next window moves with the clock */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 07:15</div>
+  <div class="build-stamp">v2 · build 2026-10-07 09:40</div>
 </body>
 </html>
