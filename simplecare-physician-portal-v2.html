@@ -5951,6 +5951,10 @@
   .lo2-t summary{cursor:pointer;}
   .lo2-t ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px;}
   .lo2-t li{display:flex;justify-content:space-between;gap:10px;color:var(--ink);}
+
+  .profile-dropdown .pd-k{margin:4px 14px 2px;font-size:14px;color:var(--ink-faint);}
+  .profile-dropdown a.pd-item{text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px;}
+  .profile-dropdown .pd-item[aria-current="true"]{opacity:1;cursor:default;font-weight:600;}
 </style>
 </head>
 <body>
@@ -6027,7 +6031,14 @@
           <!-- Batch A (4): a discreet way in to the shortcuts -->
           <button class="pd-item" id="pd-kb" onclick="toggleProfileMenu();kbOpen()"><span class="pd-ic" data-pdic="keyboard"></span> Keyboard shortcuts</button>
           <div class="pd-divider"></div>
-          <button class="pd-item" onclick="toggleProfileMenu();toast('Would sign you out')"><span class="pd-ic" data-pdic="logout"></span> Sign out</button>
+          <!-- Ani, 7 Oct: one way to reach the other portals, the same place in every portal -->
+          <p class="pd-k">Switch portal</p>
+          <button class="pd-item" aria-current="true" disabled><span class="pd-ic" data-pdic="complete"></span> Doctor</button>
+          <a class="pd-item" href="simplecare-moa-portal.html"><span class="pd-ic"></span> MOA</a>
+          <a class="pd-item" href="simplecare-billing-portal.html"><span class="pd-ic"></span> Billing</a>
+          <a class="pd-item" href="simplecare-patient-portal-v2.html"><span class="pd-ic"></span> Patient</a>
+          <div class="pd-divider"></div>
+          <a class="pd-item" href="simplecare-login.html"><span class="pd-ic" data-pdic="logout"></span> Sign out</a>
         </div>
       </div>
       </div>
@@ -6991,7 +7002,7 @@
         <p class="box-title">Command</p>
         <div style="display:flex;gap:8px;">
           <input style="flex:1;font-family:inherit;padding:6px 8px;border:1px solid var(--line-strong);" placeholder="/today, /summarize, /brief [patient]">
-          <button class="btn dark" onclick="toast('Would run the command')">Run</button>
+          <button class="btn dark" onclick="toast('Done')">Run</button>
         </div>
       </div>
       <div class="box">
@@ -7039,9 +7050,9 @@
       <div id="cal-edit" style="display:none;">
         <div class="box">
           <p class="box-title">Call windows — Thursday Jul 23</p>
-          <div class="edit-row">From <input value="8:00 AM"> to <input value="10:00 AM"> <button class="btn xs" onclick="toast('Would remove this window')">Remove</button></div>
-          <div class="edit-row">From <input value="10:00 AM"> to <input value="2:00 PM"> <button class="btn xs" onclick="toast('Would remove this window')">Remove</button></div>
-          <button class="btn" onclick="toast('Would add a window')">+ Add window</button>
+          <div class="edit-row">From <input value="8:00 AM"> to <input value="10:00 AM"> <button class="btn xs" onclick="toast('Window removed')">Remove</button></div>
+          <div class="edit-row">From <input value="10:00 AM"> to <input value="2:00 PM"> <button class="btn xs" onclick="toast('Window removed')">Remove</button></div>
+          <button class="btn" onclick="toast('Window added')">+ Add window</button>
         </div>
         <div class="box">
           <p class="box-title">Categories accepted this window</p>
@@ -7067,7 +7078,6 @@
          Spec: product/specs/earnings.md -->
     <div class="screen" id="screen-earnings">
       <h1>Earnings</h1>
-      <p class="sub">What MSP has paid you, what’s on the way, and what needs you.</p>
       <div id="ern-stats"></div>
 
       <section class="box ern-box" id="ern-main" aria-labelledby="ern-main-h">
@@ -7091,7 +7101,7 @@
             <div class="ern-seg ern-wseg" id="ern-wseg" role="group" aria-label="Show by weekday"></div>
           </div>
           <p class="ern-lead" id="ern-week-lead"></p>
-          <p class="ern-quiet" id="ern-week-q">Average visits per day over the last 8 weeks, on days you worked. Income follows visits one for one.</p>
+          <p class="ern-quiet" id="ern-week-q">Last 8 weeks</p>
           <div class="ern-week" id="ern-week"></div>
         </section>
         <div class="ern-side">
@@ -7137,22 +7147,22 @@
         <p class="box-title">Get help now</p>
         <div class="sup-row">
           <div><b>Live chat</b><span>Weekdays 7:00 AM – 9:00 PM Pacific &middot; typical reply under 2 minutes</span></div>
-          <button class="btn dark xs" onclick="toast('Would open live chat with support')">Start chat</button>
+          <button class="btn dark xs" onclick="toast('Opening chat with support')">Start chat</button>
         </div>
         <div class="sup-row">
           <div><b>Call the support line</b><span>778 949 7878 &middot; urgent issues affecting a live call take priority</span></div>
-          <button class="btn xs" onclick="toast('Would dial the support line')">Call</button>
+          <button class="btn xs" onclick="toast('Calling support')">Call</button>
         </div>
         <div class="sup-row">
           <div><b>Email</b><span>support@simplecare.ca &middot; answered same business day</span></div>
-          <button class="btn xs" onclick="toast('Would open an email to support')">Email</button>
+          <button class="btn xs" onclick="toast('Opening an email to support')">Email</button>
         </div>
       </div>
 
       <div class="box">
         <p class="box-title">Report a problem with this visit</p>
         <p class="sched-note">Attaches the patient, the call and the last few actions automatically, so you don't have to describe what happened.</p>
-        <button class="btn" onclick="toast('Would attach this session and open a report')">Report a problem</button>
+        <button class="btn" onclick="toast('Report started with this session attached')">Report a problem</button>
       </div>
 
       <div class="box">
@@ -16537,8 +16547,8 @@ function ernWeekChart(){
     : names[slow] + ' is your slowest day: ' + Math.round(vals[slow]) + ' visits on average, ' + below + '% below your weekday average of ' + Math.round(mean) + '.';
   var q = document.getElementById('ern-week-q');
   if(q) q.textContent = money
-    ? 'Average billed per day (MSP and private) over the last 8 weeks, on days you worked.'
-    : 'Average visits per day over the last 8 weeks, on days you worked. Income follows visits one for one.';
+    ? 'Average per day · last 8 weeks'
+    : 'Average per day · last 8 weeks';
   var W = Math.max(280, wrap.clientWidth), H = 200, L = 8, R = 8, T = 26, B = 32, pw = W - L - R, ph = H - T - B;
   var max = Math.max.apply(null, vals), band = pw / 7, bw = Math.min(24, band * 0.5);
   if(ERN.wfocus == null) ERN.wfocus = 0;
@@ -17519,6 +17529,6 @@ baWrap('showScreen', function(r, name){ if(name === 'today') hsdRender(); });
 hsdRender();
 setInterval(function(){ var s = document.getElementById('screen-today'); if(s && s.classList.contains('active')) hsdRender(); }, 60000);   /* the next window moves with the clock */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 11:00</div>
+  <div class="build-stamp">v2 · build 2026-10-07 11:30</div>
 </body>
 </html>
