@@ -9,7 +9,9 @@
 (function(){
   try{
     var q = new URLSearchParams(location.search);
-    if(q.get('nologin') === '1' || sessionStorage.getItem('sc.signedIn') === '1') return;
+    if(q.get('nologin') === '1') return;
+    /* Ani, 6 Oct: every refresh starts from the splash and sign-in, so the sign-in is used once */
+    if(sessionStorage.getItem('sc.signedIn') === '1'){ sessionStorage.removeItem('sc.signedIn'); return; }
     var here = location.pathname.split('/').pop() + location.search;
     location.replace('simplecare-login.html?next=' + encodeURIComponent(here));
   }catch(e){}
@@ -5497,13 +5499,21 @@
   @media (max-width:1100px){
     #screen-patientchart #pcv-c.cs-v2 .v2-side{position:static;}
   }
-  /* ===== Floating call widget (Ani, 6 Oct). Lives in the top bar: visible on every screen and while scrolling, never over
-     the tabs, Sign off or the MOA chat. Dark ink pill, white text; End call is the only red. ===== */
-  .topbar > #callw[hidden]{display:none;}
-  .topbar > #callw{flex:0 1 auto;min-width:0;display:flex;align-items:center;gap:10px;height:56px;box-sizing:border-box;padding:0 8px 0 6px;border-radius:999px;
+  /* ===== Floating call widget (Ani, 6 Oct; moved 6 Oct: "floats bottom right, beside the MOA chat"). Fixed at the bottom
+     of the screen, 12 px left of the "Dolly · Your MOA" button and centred on it (cwPlace sets --cw-right / --cw-bottom
+     from the button), so it stays put while scrolling and across screens. Dark ink pill, white text; End call is the
+     only red. The top bar keeps its page title. ===== */
+  #callw[hidden]{display:none;}
+  #callw{position:fixed;z-index:204;right:var(--cw-right, 242px);bottom:var(--cw-bottom, 24px);max-width:calc(100vw - var(--cw-right, 242px) - 24px);
+    min-width:0;display:flex;align-items:center;gap:10px;height:56px;box-sizing:border-box;padding:0 8px 0 6px;border-radius:999px;
     background:#17181C;color:#fff;box-shadow:0 10px 28px rgba(23,24,28,.22),0 1px 3px rgba(23,24,28,.14);font-size:14px;line-height:18px;}
-  .topbar:has(> #callw:not([hidden])) > .tb-left{flex:1 1 0;}
-  .topbar:has(> #callw:not([hidden])) > .topbar-right{flex:1 1 0;justify-content:flex-end;}
+  /* nothing hides behind it: room at the bottom of every screen while a call is on (the chart's columns get theirs in
+     the left-panel rules) */
+  body.cw-on [id^="screen-"]:not(#screen-patientchart){padding-bottom:104px;}
+  /* the call's live region is for screen readers only (it showed as text at the bottom left outside the chart) */
+  #cw-live{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  /* narrower windows: drop the number, keep the name, timer and controls, so it never reaches the chat button */
+  @media (max-width:1280px){ #callw .cw-num{display:none;} #callw .cw-l1 b{max-width:180px;display:inline-block;vertical-align:bottom;overflow:hidden;text-overflow:ellipsis;} }
   #callw .cw-who{display:flex;align-items:center;gap:10px;min-width:0;height:48px;padding:0 10px 0 12px;border:0;border-radius:999px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;}
   #callw .cw-who:hover{background:rgba(255,255,255,.08);}
   #callw :is(.cw-who,.cw-b,.cw-pill):focus-visible{outline:2px solid #fff;outline-offset:2px;}
@@ -5541,12 +5551,6 @@
   .cw-pad .cw-k{height:44px;border:0;border-radius:12px;background:rgba(255,255,255,.12);color:#fff;font:inherit;font-size:17px;font-weight:600;cursor:pointer;}
   .cw-pad .cw-k:hover{background:rgba(255,255,255,.22);}
   .cw-pad .cw-k:focus-visible{outline:2px solid #fff;outline-offset:2px;}
-  /* narrower windows: while a call is on, the widget takes the page title's place */
-  @media (max-width:1360px){
-    .topbar:has(> #callw:not([hidden])) > .tb-left{display:none;}
-    .topbar:has(> #callw:not([hidden])) > .topbar-right{flex:0 0 auto;}
-    .topbar > #callw{margin:0 auto;}
-  }
   /* the patient card no longer carries the call: no strip or summary there; Call hides during this patient's call
      and reads "Call again" as an outline after; the quiet log line sits under This visit */
   #screen-patientchart #pcv-c.cs-v2 #v2-pt :is(#pc-callstrip-c,#pc-callsum){display:none !important;}
@@ -5627,8 +5631,6 @@
   <div class="main">
     <div class="topbar">
       <div class="tb-left"><span class="tb-title" id="tb-title">Today</span><span class="tb-date" id="tb-date"></span></div>
-      <!-- Ani, 6 Oct: the floating call widget (filled by cwRender while a call is on) -->
-      <div class="callw" id="callw" role="region" aria-label="Ongoing call" hidden></div>
       <div class="topbar-right">
       <!-- Ani, 30 Sep: the time sits in its own pill, before the theme button, styled like the profile
            pill, with a clock where the photo would be -->
@@ -6826,6 +6828,10 @@
     </div>
   </div>
 </div>
+
+<!-- Ani, 6 Oct (second pass): the floating call widget sits at the bottom right, just left of the MOA chat button
+     (filled by cwRender while a call is on; cwPlace keeps it 12 px from the chat button) -->
+<div class="callw" id="callw" role="region" aria-label="Ongoing call" hidden></div>
 
 <!-- Floating MOA chat -->
 <div class="chat-panel" id="chat-panel">
@@ -15344,14 +15350,23 @@ function cwRender(){
       '<span class="cw-l2"><span class="cw-time">' + pcFmt(c.secs) + '</span>' +
       '<span class="cw-hl"' + (CW.hold ? '' : ' hidden') + '> &middot; hold <span class="cw-ht">' + pcFmt(CW.holdSecs) + '</span></span>' +
       (CW.muted ? '<span> &middot; muted</span>' : '') +
-      (v.callback ? ' &middot; <span class="pc-mono">' + csEsc(v.callback) + '</span>' : '') + '</span></span></button>' +
+      (v.callback ? '<span class="cw-num"> &middot; <span class="pc-mono">' + csEsc(v.callback) + '</span></span>' : '') + '</span></span></button>' +
     '<span class="cw-ctl" role="group" aria-label="Call controls">' +
       cwBtn('cw-mute', CW.muted ? 'micoff' : 'mic', 'Mute', 'cwMute()') + cwBtn('cw-hold', 'pause', 'Hold', 'cwHold()') +
       cwBtn('cw-kp', 'keypad', 'Keypad', 'cwKeypad()') + cwBtn('cw-end', 'hangup', 'End call', 'pcEndCall()', ' cw-end') + '</span>';
   cwEl('cw-mute').setAttribute('aria-pressed', String(CW.muted));
   cwEl('cw-hold').setAttribute('aria-pressed', String(CW.hold));
   cwEl('cw-kp').setAttribute('aria-expanded', String(CW.pad)); cwEl('cw-kp').setAttribute('aria-controls', 'cw-pad');
-  w.hidden = false;
+  w.hidden = false; cwPlace();
+}
+/* Ani, 6 Oct: 12 px left of the MOA chat button, vertically centred on it; without the button, 24 px from the corner */
+function cwPlace(){
+  var w = cwEl('callw'); if(!w) return;
+  document.body.classList.toggle('cw-on', !w.hidden);
+  var l = document.getElementById('chat-fab'), r = l && getComputedStyle(l).display !== 'none' ? l.getBoundingClientRect() : null;   /* fixed: no offsetParent */
+  var right = r && r.width ? Math.round(window.innerWidth - r.left + 12) : 24;
+  var bottom = r && r.height ? Math.round(window.innerHeight - (r.top + r.height / 2) - 28) : 24;
+  w.style.setProperty('--cw-right', right + 'px'); w.style.setProperty('--cw-bottom', Math.max(8, bottom) + 'px');
 }
 function cwTick(){
   var c = PC_CALL[CW.who]; if(!c) return;
@@ -15362,9 +15377,9 @@ function cwRenderEnded(){
   var w = cwEl('callw'), e = CW.ended; if(!w || !e) return;
   w.className = 'callw cw-ended';
   w.innerHTML = '<span class="cw-dot" aria-hidden="true"></span><span class="cw-l1">' + (e.dropped ? 'Call dropped' : 'Call ended') + ' &middot; <span class="cw-time">' + pcFmt(e.secs) + '</span></span>';
-  w.hidden = false;
+  w.hidden = false; cwPlace();
 }
-function cwHide(){ var w = cwEl('callw'); if(w && !PC_ON_CALL && !CW.pending){ w.hidden = true; w.innerHTML = ''; } CW.ended = null; }
+function cwHide(){ var w = cwEl('callw'); if(w && !PC_ON_CALL && !CW.pending){ w.hidden = true; w.innerHTML = ''; } CW.ended = null; cwPlace(); }
 function cwKeepFocus(id){ var b = cwEl(id); if(b) b.focus(); }
 function cwMute(){ CW.muted = !CW.muted; cwRender(); cwKeepFocus('cw-mute'); cwSay(CW.muted ? 'Muted' : 'Unmuted'); }
 function cwHold(){
@@ -15373,7 +15388,7 @@ function cwHold(){
   cwRender(); cwKeepFocus('cw-hold');
   cwSay(CW.hold ? 'Call on hold' : 'Call resumed after ' + cwSpoken(CW.holdSecs) + ' on hold');
 }
-/* Keypad: a small dark panel under the widget (outside the top bar, whose fade would hide it) */
+/* Keypad: a small dark panel that opens upward from the widget (Ani, 6 Oct: the widget sits at the bottom) */
 function cwKeypad(open){
   var pad = cwEl('cw-pad'), kb = cwEl('cw-kp');
   CW.pad = open === undefined ? !CW.pad : !!open;
@@ -15384,9 +15399,10 @@ function cwKeypad(open){
   pad.innerHTML = '<p class="cw-pd" aria-live="polite">Tones</p><div class="cw-keys">' + ['1','2','3','4','5','6','7','8','9','*','0','#'].map(function(k){
     return '<button type="button" class="cw-k" onclick="cwKey(\'' + k + '\')" aria-label="' + (k === '*' ? 'Star' : k === '#' ? 'Pound' : k) + '">' + k + '</button>'; }).join('') + '</div>';
   var r = kb.getBoundingClientRect();
-  pad.style.top = Math.round(r.bottom + 12) + 'px';
+  pad.style.visibility = 'hidden'; pad.hidden = false;
+  pad.style.top = Math.round(Math.max(16, r.top - 12 - pad.offsetHeight)) + 'px';
   pad.style.left = Math.round(Math.max(16, Math.min(window.innerWidth - 16 - 196, r.left + r.width / 2 - 98))) + 'px';
-  pad.hidden = false;
+  pad.style.visibility = '';
   var f = pad.querySelector('.cw-k'); if(f) f.focus();
 }
 function cwKey(k){ CW.digits = (CW.digits + k).slice(-16); var d = document.querySelector('#cw-pad .cw-pd'); if(d) d.textContent = 'Sent ' + CW.digits; }
@@ -15405,7 +15421,7 @@ function cwAskSwitch(target){
   w.innerHTML = '<span class="cw-q" id="cw-q">End the call with ' + csEsc(cwFirst(CW.who)) + ' to call ' + csEsc(cwFirst(target)) + '?</span>' +
     '<span class="cw-ctl"><button type="button" class="cw-pill cw-end" id="cw-yes" onclick="cwSwitch(true)">End and call</button>' +
     '<button type="button" class="cw-pill" id="cw-no" onclick="cwSwitch(false)">Keep call</button></span>';
-  w.setAttribute('aria-describedby', 'cw-q'); w.hidden = false;
+  w.setAttribute('aria-describedby', 'cw-q'); w.hidden = false; cwPlace();
   cwSay('You are on a call with ' + cwName(CW.who) + '. End it to call ' + cwName(target) + '?');
   cwEl('cw-yes').focus();
 }
@@ -15425,7 +15441,7 @@ function cwSwitch(yes){
     else if(CW.pending && e.target.closest && e.target.closest('#callw')){ e.stopPropagation(); cwSwitch(false); }
   }, true);
   document.addEventListener('click', function(e){ if(CW.pad && e.target.closest && !e.target.closest('#cw-pad,#cw-kp')) cwKeypad(false); });
-  window.addEventListener('resize', function(){ if(CW.pad) cwKeypad(false); });
+  window.addEventListener('resize', function(){ if(CW.pad) cwKeypad(false); cwPlace(); });
 
   var start0 = pcStartCall;
   pcStartCall = function(){
@@ -16004,6 +16020,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 01:20</div>
+  <div class="build-stamp">v2 · build 2026-10-07 01:30</div>
 </body>
 </html>
