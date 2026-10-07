@@ -5569,6 +5569,9 @@
   /* Dev answers, 6 Oct: the explanatory code's meaning, who fixes it and how, in the claim drawer */
   #bill-overlay .bl-block .t23-line.ro + details,#bill-overlay .bl-block > .t23-line.ro:first-of-type{margin-top:6px;}
   #bill-overlay .bl-block details p{font-size:14.5px;color:var(--ink-soft);margin:4px 0 0;max-width:66ch;}
+  /* Dev answers, 6 Oct: the reason under a "Needs info" claim */
+  .t23-sub.t23-why2,#bill-overlay .t23-why2{color:var(--ink);}
+  #bill-overlay p.t23-why2{margin:-6px 0 12px;font-size:14.5px;}
 </style>
 </head>
 <body>
@@ -13710,17 +13713,24 @@ var T23_PRIVATE_FEE = 100;  /* the private visit fee (V2 Fee Settings); unsource
    gone: a visit is MSP or private pay, decided before the visit. Health-card problems, the duplicate check and the
    AI "fee item may not match" review are removed from claims (card problems are caught before the visit; the AI's
    audit help belongs in the chart note, a later discussion). */
+/* Dev answers, 6 Oct (answer 02 §5): the 7 user-facing states, used as the chip labels everywhere (Claims tabs, the
+   queue billing column, the claim drawer, the chart billing row, Earnings). Our internal states map onto them:
+   submit → "Needs info" (+ who, when a submit check blocks it) or "Ready to send"; submitted and appeal (resent with a
+   note) → "Sent — waiting for MSP"; held → "Held by MSP"; rejected, dispute (refused, looks correctly billed) and
+   rejmoa (the billing agent fixes it) → "Refused — fix & resend"; paid and adjusted → "Paid" ("Paid $x of $y" when
+   they differ); closed → "Closed — not paid". Colour rule kept: amber for the needs-attention states (Dev suggests red
+   for Refused; red stays only on the 2-days-left chip and tab count badges). t23Label(c) is the one source. */
 var T23_ST = {
-  submit:     {label:'Needs submission',  tone:'warn', icon:'clock'},
-  submitted:  {label:'Claim submitted',   tone:'info', icon:'arrowup'},
-  held:       {label:'Claim submitted',   tone:'info', icon:'clock'},
-  rejmoa:     {label:'Claim rejected',    tone:'warn', icon:'alert'},      /* the billing agent fixes the patient's details */
-  rejected:   {label:'Rejected by MSP',   tone:'warn', icon:'alert'},
-  dispute:    {label:'Potential dispute', tone:'warn', icon:'reopen'},     /* N3 */
-  appeal:     {label:'Under appeal',      tone:'info', icon:'clock'},      /* N3 */
-  adjusted:   {label:'Paid, adjusted',    tone:'warn', icon:'alert'},      /* N3 */
-  paid:       {label:'Claim paid',        tone:'ok',   icon:'complete'},
-  closed:     {label:'Closed — not paid', tone:'',     icon:'complete'},
+  submit:     {label:'Ready to send',             tone:'info', icon:'arrowup'},
+  submitted:  {label:'Sent — waiting for MSP',    tone:'info', icon:'clock'},
+  held:       {label:'Held by MSP',               tone:'warn', icon:'clock'},
+  rejmoa:     {label:'Refused — fix & resend',    tone:'warn', icon:'alert'},      /* the billing agent fixes it */
+  rejected:   {label:'Refused — fix & resend',    tone:'warn', icon:'alert'},
+  dispute:    {label:'Refused — fix & resend',    tone:'warn', icon:'alert'},      /* looks correctly billed: ask MSP to reassess */
+  appeal:     {label:'Sent — waiting for MSP',    tone:'info', icon:'clock'},      /* resent with a note, asking MSP to reassess */
+  adjusted:   {label:'Paid',                      tone:'warn', icon:'alert'},      /* paid less than billed: Accept or Dispute */
+  paid:       {label:'Paid',                      tone:'ok',   icon:'complete'},
+  closed:     {label:'Closed — not paid',         tone:'',     icon:'complete'},
   'pri-due':  {label:'Outstanding',       tone:'warn', icon:'clock'},
   'pri-paid': {label:'Paid',              tone:'ok',   icon:'complete'}
 };
@@ -13847,8 +13857,24 @@ function t23DaysChip(c){ var L = t23LastDay(c); return t23LeftChip(t23DaysLeft(c
 /* demo hook: t23DemoDays('c18', 2) sets a claim's days left, to see the 48-hour tone */
 function t23DemoDays(id, n){ var c = t23C(id); if(!c) return; c.dl = new Date(T23_TODAY.getTime() + n * 86400000); t23Refresh(); }
 
+/* what stops a claim from being sent (Dev's submit checks), and who acts: Doctor or Billing */
+function t23Blocker(c){
+  if(!c || c.st !== 'submit' || c.payer === 'private') return null;
+  if(t23OpenQ(c)) return {who:'Doctor', why:'Answer ' + T23_AGENT + '’s question'};
+  if(!c.dx) return {who:'Doctor', why:'Add the diagnosis'};
+  if(t23CounselBlock(c)) return {who:'Doctor', why:t23CounselBlock(c)};
+  if(c.nameChk && c.nameChk.st !== 'ok') return {who:'Billing', why:'Patient name not yet confirmed by MSP'};
+  return null;
+}
+function t23Label(c){
+  var s = T23_ST[c.st] || {label:c.st, tone:''}, b = t23Blocker(c);
+  if(b) return {label:'Needs info · ' + b.who, tone:'warn', icon:'alert', why:b.why};
+  if((c.st === 'paid' || c.st === 'adjusted') && c.paid != null && Math.abs(c.paid - t23Amt(c)) > 0.004)
+    return {label:'Paid ' + t23Money(c.paid) + ' of ' + t23Money(t23Amt(c)), tone:s.tone, icon:s.icon};
+  return s;
+}
 function t23Pill(c, btn){
-  var s = T23_ST[c.st] || {label:c.st, tone:''};
+  var s = t23Label(c);
   var ic = s.icon ? t23Ic(s.icon) : '';
   if(btn) return '<button type="button" class="bill-pill ' + s.tone + ' go" onclick="t23Open(\'' + c.id + '\')">' + ic + s.label + '</button>';
   return '<span class="bill-pill ' + s.tone + '">' + ic + s.label + '</span>';
@@ -13952,11 +13978,11 @@ function t23SubRow(c){
   var q = c.flags.map(function(f, i){ return f.k === 'q' ? t23FlagHtml(c, f, i) : ''; }).join('');
   return '<div class="t23-card t23-subcard" id="t23-c-' + c.id + '"><div class="t23-srow">' +
     '<div class="cl-who"><b>' + t23E(c.who) + '</b><span>' + t23F(c.date) + ' · ' + winLabel(c.win) + '</span>' +
-      (c.sub ? '<span class="t23-sub">' + t23E(c.sub) + '</span>' : '') + '</div>' +
+      (c.sub ? '<span class="t23-sub">' + t23E(c.sub) + '</span>' : '') + (t23Blocker(c) ? '<span class="t23-sub t23-why2">' + t23E(t23Blocker(c).why) + '</span>' : '') + '</div>' +
     '<div class="cl-fee">' + t23FeeHtml(c) + (c.payer === 'recip' ? '<span class="t23-payer">Reciprocal · ' + c.prov + '</span>' : '') + '</div>' +
     t23AmtHtml(c) +
-    '<div class="t23-dcol">' + t23DaysChip(c) + '</div>' +
-    '<div class="t23-sacts"><button type="button" class="btn dark" onclick="t23SubmitOne(\'' + c.id + '\')"' + (t23OpenQ(c) ? ' disabled title="Answer the question first"' : '') + '>' + t23Ic('arrowup') + 'Submit claim</button>' +
+    '<div class="t23-dcol">' + (t23Blocker(c) ? t23Pill(c) : '') + t23DaysChip(c) + '</div>' +
+    '<div class="t23-sacts"><button type="button" class="btn dark" onclick="t23SubmitOne(\'' + c.id + '\')"' + (t23OpenQ(c) ? ' disabled title="Answer the question first"' : t23Blocker(c) && t23Blocker(c).who === 'Billing' ? ' disabled title="Waiting for MSP to confirm the patient’s name"' : '') + '>' + t23Ic('arrowup') + 'Submit claim</button>' +
     '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button></div>' +
   '</div>' + q + '</div>';
 }
@@ -14177,7 +14203,7 @@ function t23Open(id){
       (ch && focus ? '<button type="button" class="btn xs" onclick="t23OpenPick({claim:\'' + id + '\',focus:\'' + focus + '\'})">' + t23Ic('edit') + 'Change</button>' : '') + '</div>';
   };
   var h = '<p class="bl-eyebrow" id="bl-eyebrow">' + t23Payer(c) + '</p>' +
-    '<p class="defer-ttl" id="bl-title">' + (T23_ST[c.st] || {label:c.st}).label + '</p>' +
+    '<p class="defer-ttl" id="bl-title">' + t23Label(c).label + '</p>' + (t23Blocker(c) ? '<p class="bl-v t23-why2">' + t23E(t23Blocker(c).why) + '</p>' : '') +
     '<p class="bl-who" id="bl-who"><span><b>' + t23E(c.who) + '</b> · ' + t23F(c.date) + ' · ' + winLabel(c.win) + '</span>' + t23DaysChip(c) + '</p>';
   if(c.signed) h += '<p class="bl-v" style="margin:-8px 0 12px">' + soStamp(c.signed) + '</p>';
   if(c.payer !== 'private' && c.fee){
@@ -14478,8 +14504,8 @@ renderClaims();
 /* Daniel 5 Oct: the queue's billing status stays as the shortcut into Claims; it never submits. */
 BILL_STATUS = {
   'msp-none':      {label:'No claim yet', tone:'', open:false},
-  'msp-submit':    {label:'Needs submission', tone:'warn', open:true},
-  'msp-submitted': {label:'Claim submitted', tone:'info', open:false},
+  'msp-submit':    {label:'Ready to send', tone:'warn', open:true},
+  'msp-submitted': {label:'Sent — waiting for MSP', tone:'info', open:false},
   'noshow':        {label:'No-show billing: not decided', tone:'', open:false},
   'pri-due':       {label:'Payment outstanding', tone:'warn', open:true},
   'pri-paid':      {label:'Payment paid', tone:'ok', open:false}
@@ -14490,13 +14516,14 @@ function t23RowClaim(r){ return r && r.claimId ? t23C(r.claimId) : null; }
 function t23RowKey(r){
   if(r.status === 'noshow') return 'noshow';
   var c = t23RowClaim(r); if(!c) return 'msp-none';
-  return ({submit:'msp-submit', submitted:'msp-submitted', held:'msp-submitted', 'pri-due':'pri-due', 'pri-paid':'pri-paid'})[c.st] || 'msp-submitted';
+  return ({submit:'msp-submit', submitted:'msp-submitted', held:'msp-submitted', appeal:'msp-submitted', 'pri-due':'pri-due', 'pri-paid':'pri-paid'})[c.st] || 'msp-submitted';
 }
 function t23BillCell(r){
   var k = t23RowKey(r), b = BILL_STATUS[k];
   r.bill = k;
   if(k === 'msp-none') return '<span class="t23-none" aria-label="No claim yet. The visit isn’t finished." title="No claim yet. The visit isn’t finished.">—</span>';
   if(k === 'noshow') return '<span class="t23-ns">No-show</span>';
+  var c0 = t23RowClaim(r); if(c0 && c0.payer !== 'private'){ var L0 = t23Label(c0); b = {label:L0.label, tone:L0.tone, open:b.open}; }   /* Dev's 7 states (6 Oct) */
   if(b.open) return '<button class="bill-pill ' + b.tone + ' go" aria-haspopup="menu" onclick="event.stopPropagation();openBillMenu(this,\'' + esc1(r.name) + '\')"><span>' + b.label + '</span><span class="q-caret" data-pdic="chevdown" aria-hidden="true"></span></button>';
   return '<span class="bill-pill ' + b.tone + '">' + b.label + '</span>';
 }
@@ -14561,7 +14588,7 @@ function t23RenderBillRow(){
   var h = t23Ic('claims') + '<span>Billing</span>' + sep;
   if(r.signed){
     var c = t23RowClaim(r);
-    h += c ? '<span>' + (T23_ST[c.st] || {}).label + '</span>' + sep + '<span>' + (c.st === 'submit' ? 'in Claims' : c.st === 'submitted' ? 'MSP processes it at 7 PM' : 'recorded') + '</span>' +
+    h += c ? '<span>' + t23Label(c).label + '</span>' + sep + '<span>' + (c.st === 'submit' ? 'in Claims' : c.st === 'submitted' ? 'MSP processes it at 7 PM' : 'recorded') + '</span>' +
       (c.st === 'submit' ? '<button type="button" class="btn xs" onclick="t23SubmitOne(\'' + c.id + '\')">' + t23Ic('arrowup') + 'Submit claim</button>' : '') +
       '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button>' : '<span>Recorded</span>';
     el.innerHTML = h; el.hidden = false; if(help) help.hidden = true; paintPd(el); t23SyncFin(); return;
@@ -15913,6 +15940,6 @@ function drwClosed(ov){
   });
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 00:50</div>
+  <div class="build-stamp">v2 · build 2026-10-07 01:00</div>
 </body>
 </html>
