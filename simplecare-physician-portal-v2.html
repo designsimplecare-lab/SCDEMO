@@ -5057,11 +5057,11 @@
   #screen-patientchart #pcv-c.cs-v2 .v2-top{position:sticky;top:calc(var(--cs-top,0px) + 4px);z-index:45;display:flex;align-items:center;gap:12px;min-height:64px;padding:0 12px 0 10px;
     border-radius:16px;background:var(--panel);box-shadow:var(--shadow-card);}
   #screen-patientchart #pcv-c.cs-v2 .v2-tabs{display:flex;align-self:stretch;gap:2px;min-width:0;}
-  #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab]{display:inline-flex;align-items:center;gap:8px;min-height:64px;padding:3px 14px 0;border:0;border-bottom:3px solid transparent;border-radius:0;
+  #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab],#screen-patientchart #pcv-c.cs-v2 .v2-steps > button{display:inline-flex;align-items:center;gap:8px;min-height:64px;padding:3px 14px 0;border:0;border-bottom:3px solid transparent;border-radius:0;
     background:none;font:inherit;font-size:16px;font-weight:600;color:var(--ink-soft);cursor:pointer;white-space:nowrap;}
-  #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab]:hover{color:var(--ink);background:var(--wash);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab]:hover,#screen-patientchart #pcv-c.cs-v2 .v2-steps > button:hover{color:var(--ink);background:var(--wash);}
   #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab][aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);}
-  #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab]:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab]:focus-visible,#screen-patientchart #pcv-c.cs-v2 .v2-steps > button:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;}
   #screen-patientchart #pcv-c.cs-v2 .v2-tm{display:inline-flex;align-items:center;}
   #screen-patientchart #pcv-c.cs-v2 .v2-tick,#screen-patientchart #pcv-c.cs-v2 .v2-tick svg{width:18px;height:18px;color:var(--ink);}
   #screen-patientchart #pcv-c.cs-v2 .v2-badge{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 7px;border-radius:999px;
@@ -5178,7 +5178,7 @@
   /* narrower windows: the sidebar steps down to 288 px; under 1100 px it stacks above the work */
   @media (max-width:1360px){
     #screen-patientchart #pcv-c.cs-v2 .v2{grid-template-columns:280px minmax(0,1fr);}
-    #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab]{padding:3px 10px 0;}
+    #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab],#screen-patientchart #pcv-c.cs-v2 .v2-steps > button{padding:3px 10px 0;}
     /* Save draft keeps its name for screen readers and on hover; only the word is hidden to fit the bar */
     #screen-patientchart #pcv-c.cs-v2 #vc-savedraft{width:44px;padding:0;justify-content:center;gap:0;font-size:0;}
   }
@@ -5803,7 +5803,7 @@
   @media (max-width:1360px){
     #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-tabs{gap:2px;}
     #screen-patientchart #pcv-c.cs-v2 #v2p-chart .cs-tabs [role=tab]{padding:0 10px;font-size:14px;}
-    #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab]{padding:3px 8px 0;}
+    #screen-patientchart #pcv-c.cs-v2 .v2-tabs [role=tab],#screen-patientchart #pcv-c.cs-v2 .v2-steps > button{padding:3px 8px 0;}
     #screen-patientchart #pcv-c.cs-v2 .v2-top{gap:8px;}
     #screen-patientchart #pcv-c.cs-v2 #v2-fin .v2-fin-x{display:none;}
   }
@@ -5955,6 +5955,33 @@
   .profile-dropdown .pd-k{margin:4px 14px 2px;font-size:14px;color:var(--ink-faint);}
   .profile-dropdown a.pd-item{text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px;}
   .profile-dropdown .pd-item[aria-current="true"]{opacity:1;cursor:default;font-weight:600;}
+
+  /* Daniel, 8 Oct: one continuous encounter page */
+  #screen-patientchart #pcv-c.cs-v2 .v2-steps button[aria-current="step"]{color:var(--ink);border-bottom-color:var(--accent);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-steps button[aria-selected]{border-bottom-color:transparent;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-steps .v2-stepsep{width:1px;align-self:center;height:22px;background:var(--line);margin:0 6px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-step{display:grid;gap:12px;scroll-margin-top:96px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-step[hidden]{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-stepH{margin:14px 2px 0;font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-.005em;}
+  #screen-patientchart #pcv-c.cs-v2 #v2p-review .v2-stepH{margin-top:2px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-signcard{padding:16px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-signcard:empty{display:none;}
+  /* the chart drawer */
+  #screen-patientchart #pcv-c.cs-v2 .v2-chartbd{position:fixed;inset:0;z-index:290;background:rgba(23,24,28,.28);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-chartbd[hidden],#screen-patientchart #pcv-c.cs-v2 .v2-chartx[hidden]{display:none;}
+  #screen-patientchart #pcv-c.cs-v2.v2-chart-open #v2p-chart{position:fixed;top:0;right:0;bottom:0;z-index:300;width:min(900px,94vw);box-sizing:border-box;
+    overflow:auto;background:var(--paper,#F1F1EF);padding:64px 20px 32px;box-shadow:-12px 0 40px rgba(23,24,28,.16);display:block;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-chartx{position:fixed;z-index:310;top:14px;right:20px;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;
+    border-radius:20px;border:1px solid var(--line-strong);background:var(--panel);font:inherit;font-size:14px;font-weight:600;cursor:pointer;}
+  @media (prefers-reduced-motion: no-preference){ #screen-patientchart #pcv-c.cs-v2.v2-chart-open #v2p-chart{animation:v2chartin .24s cubic-bezier(.2,.7,.2,1);} }
+  @keyframes v2chartin{from{transform:translateX(24px);opacity:.6;}to{transform:none;opacity:1;}}
+
+  /* the stacked steps: hidden headings and absolute children stay inside the main scroll box */
+  #screen-patientchart #pcv-c.cs-v2 .v2-main{position:relative;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-steps > button .ic{width:18px;height:18px;}
+
+  #screen-patientchart #pcv-c.cs-v2 .v2-finwrap{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2t-sign .v2-tm:not(:empty){display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:var(--tag-warn-bg,#FBF3E3);color:var(--ink);font-size:14px;font-weight:600;}
 </style>
 </head>
 <body>
@@ -6407,13 +6434,14 @@
           </aside>
           <div class="v2-main" id="v2-main">
             <div class="v2-top" id="v2-top">
-              <div class="v2-tabs" role="tablist" aria-label="This visit" id="v2-tabs">
-                <button type="button" role="tab" id="v2t-review" aria-controls="v2p-review" aria-selected="true" tabindex="0" onclick="v2Tab('review')"><span class="v2-tl">Review</span><span class="v2-tm"></span></button>
-                <button type="button" role="tab" id="v2t-note" aria-controls="v2p-note" aria-selected="false" tabindex="-1" onclick="v2Tab('note')"><span class="v2-tl">Note</span><span class="v2-tm"></span></button>
-                <button type="button" role="tab" id="v2t-orders" aria-controls="v2p-orders" aria-selected="false" tabindex="-1" onclick="v2Tab('orders')"><span class="v2-tl">Orders</span><span class="v2-tm"></span></button>
-                <!-- Chart tab (Ani, 7 Oct): the separate Full chart page "feels awkward because it replaces the whole visit"; it is now the 4th tab -->
-                <button type="button" role="tab" id="v2t-chart" aria-controls="v2p-chart" aria-selected="false" tabindex="-1" onclick="v2Tab('chart')"><span class="v2-tl">Chart</span><span class="v2-tm"></span></button>
-              </div>
+              <!-- Daniel, 8 Oct: one continuous encounter page, Review -> Note -> Action -> Sign off, sections of the same workspace, not tabs.
+                   The bar is a step bar: a click scrolls to the section, and the section in view is marked as you scroll. -->
+              <nav class="v2-tabs v2-steps" aria-label="This visit" id="v2-tabs">
+                <button type="button" id="v2t-review" aria-controls="v2p-review" onclick="v2Tab('review',true)"><span class="v2-tl">Review</span><span class="v2-tm"></span></button>
+                <button type="button" id="v2t-note" aria-controls="v2p-note" onclick="v2Tab('note',true)"><span class="v2-tl">Note</span><span class="v2-tm"></span></button>
+                <button type="button" id="v2t-orders" aria-controls="v2p-orders" onclick="v2Tab('orders',true)"><span class="v2-tl">Action</span><span class="v2-tm"></span></button>
+                <button type="button" id="v2t-sign" aria-controls="v2p-sign" onclick="v2Tab('sign',true)"><span class="v2-tl">Sign off</span><span class="v2-tm"></span></button>
+              </nav>
               <div class="v2-acts" id="v2-acts">
                 <span id="v2-draft-slot"></span>
                 <span class="v2-finwrap">
@@ -6431,7 +6459,8 @@
             <!-- Batch A (2): "Visit signed off" + the next patient, right after a successful sign-off -->
             <section class="v2-card" id="v2-done" aria-labelledby="v2-done-h" hidden></section>
             <div id="v2-notices"></div>
-            <div class="v2-panel" id="v2p-review" role="tabpanel" aria-labelledby="v2t-review" tabindex="-1">
+            <div class="v2-panel v2-step" id="v2p-review" aria-labelledby="v2h-review" tabindex="-1">
+              <h2 class="v2-stepH" id="v2h-review">Review</h2>
               <div id="v2-ns-slot"></div>
               <section class="v2-card v2-na" id="v2-na" aria-labelledby="v2-na-h">
                 <div class="v2-ch"><span class="ic" data-pdic="alert"></span><h3 id="v2-na-h">Needs attention</h3><span class="v2-chip" id="v2-na-chip"></span></div>
@@ -6440,7 +6469,8 @@
               <div id="v2-today-slot"></div>
               <section class="v2-card" id="v2-inv" aria-labelledby="v2-inv-h"></section>
             </div>
-            <div class="v2-panel" id="v2p-note" role="tabpanel" aria-labelledby="v2t-note" tabindex="-1" hidden>
+            <div class="v2-panel v2-step" id="v2p-note" aria-labelledby="v2h-note" tabindex="-1">
+              <h2 class="v2-stepH" id="v2h-note">Note</h2>
               <section class="v2-card v2-notecard" aria-labelledby="v2-note-h">
                 <div class="v2-ch"><span class="ic" data-pdic="edit"></span><h3 id="v2-note-h" class="vh">Note</h3><span id="v2-saved-slot"></span>
                   <span class="v2-cr" id="v2-note-acts"></span></div>
@@ -6448,7 +6478,8 @@
                 <div class="v2-notefoot" id="v2-notefoot"></div>
               </section>
             </div>
-            <div class="v2-panel" id="v2p-orders" role="tabpanel" aria-labelledby="v2t-orders" tabindex="-1" hidden>
+            <div class="v2-panel v2-step" id="v2p-orders" aria-labelledby="v2h-orders" tabindex="-1">
+              <h2 class="v2-stepH" id="v2h-orders">Action</h2>
               <section class="v2-card" aria-labelledby="v2-ord-h">
                 <div class="v2-ch"><span class="ic" data-pdic="addon"></span><h3 id="v2-ord-h" class="vh">Orders</h3></div>
                 <div class="v2-ord" id="v2-ord">
@@ -6463,8 +6494,14 @@
               </section>
               <div id="v2-rx-slot"></div>
             </div>
-            <!-- Chart tab (Ani, 7 Oct): the full chart's own sections, inside the visit (the doctor never leaves it) -->
-            <div class="v2-panel" id="v2p-chart" role="tabpanel" aria-labelledby="v2t-chart" tabindex="-1" hidden></div>
+            <div class="v2-panel v2-step" id="v2p-sign" aria-labelledby="v2h-sign" tabindex="-1">
+              <h2 class="v2-stepH" id="v2h-sign">Sign off</h2>
+              <section class="v2-card v2-signcard" id="v2-sign-b"></section>
+            </div>
+            <!-- the full chart: a wide drawer over the workspace (reference while you work) -->
+            <div class="v2-chartbd" id="v2-chartbd" hidden onclick="v2Tab(V2.flowTab || 'review')"></div>
+            <div class="v2-panel" id="v2p-chart" role="dialog" aria-modal="true" aria-label="Chart" tabindex="-1" hidden></div>
+            <button type="button" class="v2-chartx" id="v2-chartx" hidden onclick="v2Tab(V2.flowTab || 'review')" aria-label="Close chart"><span class="ic" data-pdic="close"></span>Close</button>
           </div>
         </div>
         <!-- v2.5 §3 Patient snapshot (persistent): name, age, gender as recorded, masked PHN, photo,
@@ -6482,6 +6519,8 @@
             </div>
             <div class="vc-acts">
               <button class="btn dark" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call</button>
+              <!-- Daniel, 8 Oct: the chart is reference, not a step of the visit: it opens as a wide drawer -->
+              <button class="btn" id="v2t-chart" aria-controls="v2p-chart" aria-expanded="false" onclick="v2Tab('chart')"><span class="ic" data-pdic="file"></span> Chart</button>
               <span class="pc-callstrip" id="pc-callstrip-c"><span class="dot"></span> <span id="pc-timer-c">00:00</span> <button class="hang" onclick="pcEndCall()">End</button></span>
               <!-- shadowing 3: "the timer restarts from 0:00, so the screen no longer shows how long he has been with the patient" -->
               <span class="pc-callsum" id="pc-callsum" hidden></span>
@@ -15458,7 +15497,7 @@ t23RenderDigest();
    ============================================================ */
 var V2 = {tab:'review', open:{}, moved:[], fin:false, booting:false, justOpened:false};
 var V2_KEY = 'sc-chart-layout';
-var V2_TABS = ['review','note','orders','chart'];   /* Chart tab (Ani, 7 Oct): the full chart is the 4th tab */
+var V2_TABS = ['review','note','orders','sign','chart'];   /* Chart tab (Ani, 7 Oct): the full chart is the 4th tab */
 function v2On(){ return CS.layout === 'v2'; }
 /* Daniel 5 Oct (step 6): which tab a chart opens on in v2 */
 function v2StartTab(name){
@@ -15502,7 +15541,7 @@ function v2Mount(){
   v2Move(v2El('rx-card'), v2El('v2-rx-slot'));
   v2Move(v2El('vc-savedraft'), v2El('v2-draft-slot'));
   /* checklist, warnings, the T-023 billing line, Finalize, Next patient and the claim helper: the finalize popover */
-  v2Move(q('.cs-foot'), v2El('v2-finpop-b'));
+  v2Move(q('.cs-foot'), v2El('v2-sign-b'));
   v2Move(v2El('cs-fc'), v2El('v2p-chart'));   /* Chart tab (Ani, 7 Oct): the full chart's sections live in the 4th tab */
 }
 
@@ -15521,33 +15560,76 @@ function csLayout(mode){
   if(PC_CURRENT && was !== mode){
     /* the patient card, Today and Needs attention have layout-specific markup: render them again */
     csRefresh();
-    if(mode === 'v2'){ v2Tab(V2.tabFor === PC_CURRENT ? V2.tab : v2StartTab(PC_CURRENT)); V2.tabFor = PC_CURRENT; v2Render(); }
+    if(mode === 'v2'){ v2Tab(V2.tabFor === PC_CURRENT ? (V2.flowTab || 'review') : 'review', false, true); V2.tabFor = PC_CURRENT; v2Render(); }
     if(typeof vcGrow === 'function') vcGrow();
   }
   csMeasure();
 }
 
 /* ---------- tabs: Review, Note, Orders (role=tablist, arrow keys, Home, End) ---------- */
-function v2Tab(tab, focus){
-  var root = v2El('pcv-c');
-  if(tab === 'orders' && root.classList.contains('cs-ns-on')) tab = 'review';
-  V2.tab = tab;
-  root.setAttribute('data-v2tab', tab);
-  if(tab === 'orders' && typeof renderLabOrders === 'function') renderLabOrders();   /* Ani, 7 Oct: the critical bar hides on Review, where the card itself is */
-  V2_TABS.forEach(function(k){
-    var b = v2El('v2t-' + k), p = v2El('v2p-' + k), on = k === tab;
-    if(b){ b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; }
-    if(p) p.hidden = !on;
-  });
-  if(tab === 'note' && typeof vcGrow === 'function') vcGrow();
-  /* Chart tab (Ani, 7 Oct): it opens on the section this chart was last on (Timeline the first time) */
-  if(tab === 'chart' && PC_CURRENT && typeof csTab === 'function'){
-    var sp = v2El('csp-search'), q = v2El('cs-q');
-    if(!(sp && !sp.hidden && q && q.value.trim().length > 1)) csTab(CS.fcTabBy[PC_CURRENT] || 'timeline', true);
-  }
-  var cb = v2El('cs-fc-btn'); if(cb) cb.setAttribute('aria-expanded', String(tab === 'chart'));
-  if(focus){ var t = v2El('v2t-' + tab); if(t) t.focus(); }
+var V2_FLOW = ['review','note','orders','sign'];
+function v2Scroller(){ var m = v2El('v2-main'); return (m && getComputedStyle(m).overflowY !== 'visible' && m.scrollHeight > m.clientHeight + 4) ? m : null; }
+function v2Step(tab){
+  V2.flowTab = tab;
+  var root = v2El('pcv-c'); if(root && !root.classList.contains('v2-chart-open')) root.setAttribute('data-v2tab', tab);
+  V2_FLOW.forEach(function(k){ var b = v2El('v2t-' + k); if(b){ if(k === tab) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); } });
 }
+function v2Tab(tab, focus, noScroll){
+  var root = v2El('pcv-c'); if(!root) return;
+  if(tab === 'orders' && root.classList.contains('cs-ns-on')) tab = 'review';
+  var chart = v2El('v2p-chart'), bd = v2El('v2-chartbd'), cx = v2El('v2-chartx'), cb = v2El('v2t-chart');
+  if(tab === 'chart'){
+    V2.tab = 'chart';
+    root.classList.add('v2-chart-open'); root.setAttribute('data-v2tab', 'chart');
+    if(chart) chart.hidden = false; if(bd) bd.hidden = false; if(cx) cx.hidden = false; if(cb) cb.setAttribute('aria-expanded', 'true');
+    if(PC_CURRENT && typeof csTab === 'function'){
+      var sp = v2El('csp-search'), q = v2El('cs-q');
+      if(!(sp && !sp.hidden && q && q.value.trim().length > 1)) csTab(CS.fcTabBy[PC_CURRENT] || 'timeline', true);
+    }
+    if(chart && !focus) chart.focus({preventScroll:true});
+    return;
+  }
+  /* any step: close the chart drawer, every step stays on the page */
+  if(root.classList.contains('v2-chart-open')){
+    root.classList.remove('v2-chart-open');
+    if(chart) chart.hidden = true; if(bd) bd.hidden = true; if(cx) cx.hidden = true; if(cb){ cb.setAttribute('aria-expanded', 'false'); }
+  }
+  if(V2_FLOW.indexOf(tab) < 0) tab = 'review';
+  V2.tab = tab;
+  V2_FLOW.forEach(function(k){ var p = v2El('v2p-' + k); if(p) p.hidden = false; });
+  if(typeof renderLabOrders === 'function') renderLabOrders();
+  if(typeof vcGrow === 'function') vcGrow();
+  v2Step(tab);
+  if(!noScroll){
+    var sec = v2El('v2p-' + tab), sc = v2Scroller();
+    if(sec){
+      var cb2 = v2El('v2-crit'), critH = cb2 && !cb2.hidden && getComputedStyle(cb2).display !== 'none' && tab !== 'review' ? cb2.offsetHeight : 0;
+      if(sc){ sc.scrollTo({top: Math.max(0, sec.offsetTop - (v2El('v2-top') ? v2El('v2-top').offsetHeight : 0) - critH - 12), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}); }
+      else sec.scrollIntoView({block:'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+    }
+  }
+  if(focus){ var hh = v2El('v2h-' + tab); if(hh){ hh.tabIndex = -1; hh.focus({preventScroll:true}); } }
+}
+/* scroll spy: the section at the top of the workspace is the current step */
+(function(){
+  var tick = null;
+  var spy = function(){
+    if(typeof v2On === 'function' && !v2On()) return;
+    var root = v2El('pcv-c'); if(!root || root.classList.contains('v2-chart-open')) return;
+    var sc = v2Scroller(), top = sc ? sc.getBoundingClientRect().top : 0, off = (v2El('v2-top') ? v2El('v2-top').getBoundingClientRect().bottom : 120) + 24;
+    var cur = 'review';
+    V2_FLOW.forEach(function(k){ var p = v2El('v2p-' + k); if(p && !p.hidden && p.getBoundingClientRect().top <= off) cur = k; });
+    if(sc && sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 4) cur = 'sign';
+    if(cur !== V2.flowTab){ V2.tab = cur; v2Step(cur); }
+  };
+  var on = function(){ if(tick) return; tick = requestAnimationFrame(function(){ tick = null; spy(); }); };
+  document.addEventListener('scroll', on, true);
+})();
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape' || typeof V2 === 'undefined' || V2.tab !== 'chart') return;
+  var t = e.target; if(t && t.closest && t.closest('.drawer, [role=dialog]:not(#v2p-chart)')) return;
+  v2Tab(V2.flowTab || 'review'); var cb = v2El('v2t-chart'); if(cb) cb.focus();
+});
 document.addEventListener('keydown', function(e){
   var t = e.target;
   if(!t || !t.closest || !t.closest('#v2-tabs') || t.getAttribute('role') !== 'tab') return;
@@ -15878,6 +15960,7 @@ function v2SyncHead(){
     fin.querySelector('.v2-fin-l').innerHTML = signed ? 'Signed off' : 'Sign off<span class="v2-fin-x"> &amp; finalize</span>';
     var left = !signed && miss.length ? miss.length + (miss.length === 1 ? ' check left' : ' checks left') : '';
     n.textContent = left; n.hidden = !left;
+    var st = v2El('v2t-sign'); if(st){ var tm = st.querySelector('.v2-tm'); if(tm){ tm.textContent = signed ? '✓' : (miss.length ? String(miss.length) : ''); } st.setAttribute('aria-label', 'Sign off' + (signed ? ', signed' : left ? ', ' + left : '')); }
     fin.setAttribute('aria-label', signed ? 'Signed off. Show billing and the next patient' : 'Sign off and finalize' + (left ? ', ' + left : ''));
   }
   var na = v2NA(PC_CURRENT);
@@ -15905,22 +15988,17 @@ function v2Render(){ if(!v2On() || !PC_CURRENT) return; v2RenderVisit(PC_CURRENT
 
 /* ---------- Sign off & finalize: one primary, opening the checklist, billing line and the real Finalize ---------- */
 function v2Fin(open, noFocus){
-  var pop = v2El('v2-finpop'), b = v2El('v2-fin'); if(!pop || !b) return;
-  if(open === undefined) open = pop.hidden;
-  open = !!open;
-  if(!open && pop.hidden){ V2.fin = false; return; }
-  pop.hidden = !open; V2.fin = open; b.setAttribute('aria-expanded', String(open));
-  if(!open){
-    if(CS.pop){ CS.pop = null; csRenderChecks(PC_CURRENT); }
-    if(!noFocus) b.focus();
-    return;
-  }
-  V2.justOpened = true; setTimeout(function(){ V2.justOpened = false; }, 0);
+  /* Daniel, 8 Oct: sign-off is the last section of the page, not a popover. Opening it scrolls there. */
+  V2.fin = false;
+  if(open === false) return;
   csFinState();
+  v2Tab('sign', false);
   if(noFocus) return;
-  var fz = v2El('vc-finalize'), nx = v2El('vc-nextpt');
-  var f = pop.querySelector('#cs-finwhy li.todo button') || (fz && !fz.hidden ? fz : null) || (nx && !nx.hidden ? nx : null) || v2El('v2-finpop-h');
-  f.focus();
+  setTimeout(function(){
+    var sec = v2El('v2-sign-b'), fz = v2El('vc-finalize'), nx = v2El('vc-nextpt');
+    var f = (sec && sec.querySelector('#cs-finwhy li.todo button')) || (fz && !fz.hidden ? fz : null) || (nx && !nx.hidden ? nx : null) || v2El('v2h-sign');
+    if(f){ if(f === v2El('v2h-sign')) f.tabIndex = -1; f.focus({preventScroll:true}); }
+  }, 350);
 }
 document.addEventListener('click', function(e){
   if(!V2.fin || V2.justOpened) return;
@@ -16006,7 +16084,7 @@ function v2RxFocus(){
     var cq = v2El('cs-q'); if(cq) cq.value = '';   /* Chart tab: a search never carries over to another chart */
     V2.booting = true;
     try { open0.apply(this, arguments); } finally { V2.booting = false; }
-    if(v2On()){ v2Secs(); V2.tabFor = name; v2Tab(v2StartTab(name)); v2Render(); var ao = v2AutoOpen(name); if(ao) v2Sec(ao, true); v2Stick(true); }
+    if(v2On()){ v2Secs(); V2.tabFor = name; v2Tab('review', false, true); var sc0 = v2Scroller && v2Scroller(); if(sc0) sc0.scrollTop = 0; v2Render(); var ao = v2AutoOpen(name); if(ao) v2Sec(ao, true); v2Stick(true); }
   };
 })();
 
@@ -17530,6 +17608,6 @@ baWrap('showScreen', function(r, name){ if(name === 'today') hsdRender(); });
 hsdRender();
 setInterval(function(){ var s = document.getElementById('screen-today'); if(s && s.classList.contains('active')) hsdRender(); }, 60000);   /* the next window moves with the clock */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-07 12:00</div>
+  <div class="build-stamp">v2 · build 2026-10-08 10:00</div>
 </body>
 </html>
