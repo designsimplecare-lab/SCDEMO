@@ -6724,8 +6724,8 @@
               <!-- Daniel, 11 Oct: "Replace Findings with separate Subjective and Objective sections." Reason (chief complaint), Subjective (HPI,
                    symptoms, relevant history), Objective (examination findings, vitals, investigations), Assessment (clinical impressions and
                    ICD-9 diagnoses), Plan. -->
-              <div class="ns-row" id="ns-r-reason"><label class="ns-k" for="ns-reason">Reason</label>
-                <div class="ns-f"><textarea class="ns-ta" id="ns-reason" data-sec="reason" rows="1" placeholder="Chief complaint: why the patient is seen today"></textarea>
+              <div class="ns-row" id="ns-r-reason"><label class="ns-k" for="ns-reason">Clinical concern</label>
+                <div class="ns-f"><textarea class="ns-ta" id="ns-reason" data-sec="reason" rows="1" placeholder="Why the patient is seen today"></textarea>
                   <div class="ns-ai" id="ns-ai-reason"></div></div></div>
               <div class="ns-row" id="ns-r-subjective"><label class="ns-k" for="ns-subjective" id="ns-k-subjective">Subjective</label>
                 <div class="ns-f"><textarea class="ns-ta" id="ns-subjective" data-sec="subjective" rows="1" placeholder="History of present illness, symptoms, relevant history"></textarea>
@@ -6741,7 +6741,7 @@
                 <div class="ns-f"><textarea class="ns-ta" id="ns-plan" data-sec="plan" rows="1" placeholder="Treatment, follow-up, safety netting"></textarea>
                   <div class="ns-ai" id="ns-ai-plan"></div></div></div>
             </div>
-            <!-- the five sections, composed ("Reason: ...", "Subjective: ...") for the gates, the signed record and the tick -->
+            <!-- the five sections, composed ("Clinical concern: ...", "Subjective: ...") for the gates, the signed record and the tick -->
             <textarea class="vc-note" id="vc-note-input" tabindex="-1" aria-hidden="true" hidden></textarea>
             <p class="vc-signed" id="vc-signed" hidden></p>
               <!-- Renewal in one flow, from the shadowed visit: "send along a
@@ -13961,7 +13961,7 @@ function csRenderDocs(name){
   var el = document.getElementById('cs-docs'); if(!el) return;
   var r = csRow(), L = PT_LAST[name], f = csIntakeFlag(r), h = '';
   h += '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>Intake &middot; today</h4></div><dl class="cs-kv">' +
-    '<dt>Reason</dt><dd>' + csEsc(r ? r.concern : '') + '</dd>' +
+    '<dt>Clinical concern</dt><dd>' + csEsc(r ? r.concern : '') + '</dd>' +
     (AI_SUMMARY[name] ? '<dt>Summary</dt><dd>' + csEsc(csIntakeSummary(name)) + '</dd>' : '') +
     (f && f.words ? '<dt>Flagged</dt><dd>&ldquo;' + csEsc(f.words) + '&rdquo;' + (f.when ? ' &middot; ' + csEsc(f.when) : '') + '</dd>' : '') + '</dl></div>';
   if(L) h += '<div class="vc-block cs-doc" id="cs-doc-last"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>Visit note &middot; ' + csShort(L.date) + '</h4></div>' +
@@ -15668,8 +15668,16 @@ function v2Tab(tab, focus, noScroll){
       else sec.scrollIntoView({block:'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
     }
   }
-  if(focus){ var hh = v2El('v2h-' + tab); if(hh){ hh.tabIndex = -1; hh.focus({preventScroll:true}); } }
+  if(focus){
+    /* Daniel, 11 Oct (9:02 PM): "no separate clicking to toggle from one section to next". The Note step puts the cursor straight in the
+       first open section; every other step still takes focus on its heading. */
+    var first = tab === 'note' ? nsFirstField() : null;
+    if(first) first.focus({preventScroll:true});
+    else { var hh = v2El('v2h-' + tab); if(hh){ hh.tabIndex = -1; hh.focus({preventScroll:true}); } }
+  }
 }
+function nsFirstField(){ var l = nsFields(); return l.length ? l[0] : null; }
+function nsFields(){ return NS_SECS.map(nsTa).filter(function(t){ return t && t.offsetParent; }); }
 /* scroll spy: the section at the top of the workspace is the current step */
 (function(){
   var tick = null;
@@ -17417,7 +17425,8 @@ baWrap('cwPlace', function(){
    existing gates (template text), the signed record and the review screen read one string. Writers go through nsAppend.
    ============================================================ */
 var NS_SECS = ['reason', 'subjective', 'objective', 'assessment', 'plan'];
-var NS_LBL = {reason:'Reason', subjective:'Subjective', objective:'Objective', assessment:'Assessment', plan:'Plan'};
+/* Daniel, 11 Oct (9:02 PM): "Clinical Concern not reason". The section key stays 'reason' (drafts and signed records use it); only the words change. */
+var NS_LBL = {reason:'Clinical concern', subjective:'Subjective', objective:'Objective', assessment:'Assessment', plan:'Plan'};
 var NS = {last:null, dx:{open:false, q:'', act:0, res:[]}};
 function nsTa(k){ return document.getElementById('ns-' + k); }
 function nsGet(){ var o = {}; NS_SECS.forEach(function(k){ var t = nsTa(k); o[k] = t ? t.value : ''; }); return o; }
@@ -17473,6 +17482,20 @@ function nsAIPending(){
   return l.length === 1 ? (l[0] === 'reason' ? 'suggestion' : 'draft') + ' in ' + NS_LBL[l[0]] : 'text in ' + l.map(function(k){ return NS_LBL[k]; }).join(', ').replace(/, ([^,]*)$/, ' and $1');
 }
 document.addEventListener('focusin', function(e){ var t = e.target; if(t && t.classList && t.classList.contains('ns-ta')) NS.last = t.getAttribute('data-sec'); });
+/* Daniel, 11 Oct (9:02 PM): the five sections are all open at once as one continuous note (nothing needs a click to type in it).
+   Tab goes to the next section and Shift+Tab to the one before, scrolling smoothly. The exception: while Cedar has a draft waiting in
+   the section you are in, Tab goes to its Accept first (Edit, Reject), so a suggestion is never skipped by accident. */
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Tab' || e.altKey || e.ctrlKey || e.metaKey) return;
+  var t = e.target; if(!t || !t.classList || !t.classList.contains('ns-ta')) return;
+  var k = t.getAttribute('data-sec');
+  if(!e.shiftKey && nsAIList().indexOf(k) > -1) return;
+  var l = nsFields(), i = l.indexOf(t), n = l[i + (e.shiftKey ? -1 : 1)];
+  if(i < 0 || !n) return;                       /* first or last section: the browser moves on as usual */
+  e.preventDefault();
+  n.focus({preventScroll:true});
+  n.scrollIntoView({block:'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+});
 document.addEventListener('input', function(e){
   var t = e.target; if(!t || !t.classList || !t.classList.contains('ns-ta')) return;
   nsSync(); vcGrow(); csDraft();
@@ -17675,6 +17698,6 @@ baWrap('showScreen', function(r, name){ if(name === 'today') hsdRender(); });
 hsdRender();
 setInterval(function(){ var s = document.getElementById('screen-today'); if(s && s.classList.contains('active')) hsdRender(); }, 60000);   /* the next window moves with the clock */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-11 21:00</div>
+  <div class="build-stamp">v2 · build 2026-10-11 21:30</div>
 </body>
 </html>
