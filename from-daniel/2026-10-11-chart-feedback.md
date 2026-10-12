@@ -62,3 +62,13 @@ categories as a default) beside Today; the note becomes Reason, Subjective, Obje
 
 ## Follow-up, 11 Oct 2026
 The PDF text arrived as a screenshot and is now filed: bulletin B-007, task T-024. The "couldn't be opened" note above no longer applies; the Review and Note messages that were cut off are partly covered by it (SOAP drafting, section-specific assist), and the rest stays as stated.
+
+## Follow-up, 11 Oct 2026 (9:02 PM): on the note, after seeing the build
+Screenshot of the Note section, with:
+> "Clinical Concern not reason and no separate clicking to toggle from one section to next."
+
+- **Rename "Reason" to "Clinical concern."** This supersedes his earlier "Reason: chief complaint" outline.
+- **No separate clicking between sections:** the doctor should move from one section of the note to the
+  next without clicking to toggle each one. The lead's reading: all five sections (Clinical concern,
+  Subjective, Objective, Assessment, Plan) open and editable at once as one continuous note, with Tab to
+  move on. His exact meaning is not certain; **ask him** if the build doesn't match what he meant.
