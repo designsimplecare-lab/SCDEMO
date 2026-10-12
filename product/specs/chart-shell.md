@@ -409,3 +409,64 @@ All 11 inline scripts pass `node --check`; the console was clean in every run. A
 3. To fit four tabs, Save draft is icon-only up to 1500 px, and at 1360 px and below Sign off reads "Sign off · N checks left".
 4. Pending's See all opens Care plan (where the demo's pending items live), not Results.
 5. The suggestion uses the old booking-reason map for three reasons only; "Follow up appointment" → V67.9 is not offered (not "obvious"). Daniel may want a different list (Needs Daniel if it grows).
+
+
+## 11 Oct changes (Daniel's chart feedback)
+
+Source: `from-daniel/2026-10-11-chart-feedback.md` (WhatsApp, 11 Oct; Ani: "apply it"). Build 2026-10-11 21:00. Light only, 1440 px. Screenshots (local): `product/reports/shots/oct11-*.png`. Requirements touched: REQ-CH-33 (note), REQ-CH-34 and REQ-CH-35 (snapshot, allergies in view), REQ-CH-36 (this-visit strip, overridden by Daniel), REQ-CH-38 (Today and Relevant). The product-manager owns updating those requirements; this section is the design record.
+
+### One-screen summary
+
+1. **This visit** keeps only the phone (or video) line, the callback number and consent, as one compact line. Location, Others present and ID verified are gone from the chart, with their forms, the "Patient outside BC" demo toggle and notice, and every Finalize block tied to them. Sign off is blocked only while consent is missing (as today).
+2. **Allergies** are the most prominent item in the patient banner: a full-width band with the label "Allergies" and the content at 18 px bold, an icon and its own fill. The banner is sticky at the top of the left column, so it stays when that column scrolls (the main column never moves it). Three states: *No known drug allergies* (tick, barely tinted green), a named allergy (alert icon, strong amber tint, e.g. "Penicillin, anaphylaxis"), *Not recorded* (alert icon, lighter amber, the words "Not recorded"). Red stays for critical results.
+3. **Review** keeps Needs attention and Today as they were. The old "Relevant investigations" card is now **Cedar · Key clinical findings**, in the space beside Today. Order: Relevant medical history, Medications (current, previous treatments, PharmaNet), then Investigations, Prior related care and Pending (v2.5's other three categories, as a default until Daniel's full text arrives; folded, one click each). Every line shows its source and opens it in the Chart drawer. Nothing is added to the note.
+4. **Note** is Reason, Subjective, Objective, Assessment, Plan (Findings is gone). Cedar suggestions per section with Accept, Edit and Reject, the shared diagnosis (ICD-9 chip is still the claim's diagnosis), the claim change log, the Assessment + Plan gate and the draft behaviour are unchanged. An older draft's Findings text opens in Subjective.
+
+**Not built (waiting for text):** the cut-off Review and Note texts and the AI Chart Assist PDF (full-encounter and section-specific AI modes, Regenerate). **Proof:** 12 inline scripts pass `node --check`; console clean (chart, both allergy and consent states, all eight charts, sign-off, scribe, Home, Claims, MOA chat).
+
+### 1. This visit (REQ-CH-36 overridden)
+- **Daniel:** "Location is not relevant to us - can be removed. If someone else is present it is documented by the doctor - not something we would need in the doctor chart. ID Verified, already presumed verified. The chart is primarily clinical."
+- **Shows:** a quiet line under the patient card: phone icon, "Phone · Callback 604-555-01xx" (demo number), then a tick and "Consent on file" (or "Consent recorded" once taken in the visit). Consent missing: an amber icon, "Consent not recorded" and one 44 px button, **Record verbal consent**. A no-show chart shows only the phone and callback.
+- **Gate:** `csMissing` returns consent only, so the Sign off step shows "1 check left", the Finalize button is `aria-disabled` and a press says "Complete this visit first: consent". `csApplyCheck('con')` is the one place consent is recorded (the line's button and the Sign off section's form both call it). Cedar's "start with the call when consent is on file, otherwise ask" is unchanged.
+- **Removed:** the location, ID and others-present rows, forms and "Change" links; `v.location / others / id / place / outside` from the visit state; the outside-BC notice; the "Patient outside BC" switcher button (the "Complete this visit" switcher button is now "Consent on file" and toggles consent). The dropped-call notice now shows the callback only.
+- **Leftover:** the old CSS for those rows and forms is still in the file, unused.
+
+### 2. Allergies (REQ-CH-35, REQ-CH-34)
+- **Daniel:** "Alleriges are especially important - make it more prominent."
+- **Shows:** one band directly under the name, above Call and Chart: icon 28 px, "Allergies" 15 px/600, the content 18 px/700, ink text on every state. Fills: none `#EDF6F0`, named `#FBDF9B` (strong amber), not recorded `#FDF0CB`; icons green, dark amber, dark amber. Words carry the state, not colour alone. The group has an aria-label ("Allergies: penicillin, anaphylaxis").
+- **Stays in view:** at 1101 px and wider the patient card is `position: sticky` in the left column's own scroll box (measured: top 140 px, equal to the column's top, after scrolling the column 500 px; the main column scrolling leaves it untouched). The column's top fade is off at that width (the banner is the anchor).
+- **Same in `?chart=current`.** Demo switcher "Next allergy state" cycles the three.
+- **Not done:** under 1100 px the columns stack and the page scrolls, so the banner scrolls away there (not in the brief's sizes, same as before).
+
+### 3. Cedar · Key clinical findings (REQ-CH-38)
+- **Daniel:** "This area represents good real estate to present the patient the Doctor - the key findings. And the AI can also help by tailoring the information towards the clinical concern." Keep Needs attention and Today; "Cedar — Key Clinical Findings" analyses the raw intake and the longitudinal chart for relevant medical history and medications (the rest is cut off).
+- **Layout:** Today (300 px) and the Cedar card side by side at 1360 px and wider; stacked below that. Today and Needs attention are unchanged in content.
+- **Header:** the hummingbird mark, "Cedar · Key clinical findings", "For today's concern: <the intake's first sentence, or the booking reason>" and "From today's intake and the chart. Nothing here goes into your note without you."
+- **Sections:** *Relevant medical history* (existing diagnoses, the earlier visit, related conditions) and *Medications* (current list, then two honest lines: "Previous treatments: none recorded in Simple Care" and "PharmaNet dispensing: not checked: no dispensing records connected yet"; the list's own source and last renewal date under it). Then *Investigations*, *Prior related care*, *Pending* as folded rows with a count (and "1 overdue"), expanded with one click (`aria-expanded`). A category with nothing is left out. The card is hidden when a chart holds nothing.
+- **Every line:** the finding, its date or detail, and "Source: Problem list | Medications | Care plan | Visit note | Consults | Results", and the whole line opens that source in the Chart drawer (`csOpenFull`). The cardiology quotes still expand in place.
+- **Data:** the same lists as the Patient summary (`CS_REL` for the demo patient, `csRelGeneric` for the others); nothing new inferred or invented. Cedar's tailoring today is the concern line and the selection those lists already make; the real selection and feedback control are delivery step 2.
+- **Legacy:** the old "Relevant to chest pain" block stays in `?chart=current` only, unchanged.
+
+### 4. Note: Reason, Subjective, Objective, Assessment, Plan (REQ-CH-33)
+- **Daniel:** "Replace Findings with separate Subjective and Objective sections." Reason: chief complaint. Subjective: HPI, symptoms, relevant history. Objective: examination findings, vitals, investigations. Assessment: clinical impressions and ICD-9 diagnoses.
+- **Placeholders:** Reason "Chief complaint: why the patient is seen today"; Subjective "History of present illness, symptoms, relevant history"; Objective "Examination findings, vitals, investigations"; Assessment "Clinical impressions and diagnoses"; Plan unchanged.
+- **Cedar per section:** intake suggestion in Reason; the scribe's SUBJECTIVE and BACKGROUND blocks now go to Subjective; Assessment and Plan as before, still held back while a critical result is unreviewed. Cedar drafts nothing for Objective (the scripted call has no examination or vitals). Accept, Edit (Add to note, Cancel) and Reject, "Accept all N from Cedar" and the Note step's count all follow the new section list (`nsAIList`).
+- **Insert:** Normal exam and "Reading from patient" go to Objective (or the section the doctor was in), Follow-up template to Plan, "Medication started elsewhere" to Subjective, "Expected result" to Objective. A renewal still goes to Plan.
+- **Unchanged:** the Assessment diagnosis chip (the claim's diagnosis, one value), the suggested diagnosis, the claim change log, the Assessment + Plan gate (`nsDone`, `nsMissing`), the Note tick, template-text and undecided-AI warnings, save and restore of drafts, the signed note read-only.
+- **Migration:** `nsSet` maps `findings` to `subjective` (a saved draft, a signed record or a one-string draft). The composed text for the gates and the record reads "Reason, Subjective, Objective, Assessment (with the diagnosis line), Plan". No-show: one field, "Note", in the Subjective row; the other four rows are hidden.
+
+### Proof (headless Chrome, light, 1440 × 1000; 1280 × 900 spot check)
+12 inline scripts pass `node --check`; console clean in every run. Demo patient: sticky banner (top 140 px after the column scrolled 500 px, unchanged when the main column scrolls); allergy band measured in all three states (15 px/600 label, 18 px/700 content); consent off → Sign off "1 check left", Finalize `aria-disabled`, press → "Complete this visit first: consent", Record verbal consent → unblocked, focus on the card's title; no "Location", "Others present", "ID verified" or "outside BC" text and no switcher button left. Note: five rows in order; a draft saved with Findings (and a one-string draft) opens in Subjective; Normal exam → Objective, Follow-up → Plan; typing saves all five sections; the tick needs Assessment and Plan; Add diagnosis 786.5 updates the chip, the billing row and the change log ("Edited · 1 change") and the composed text; scribe → Subjective suggestion, Edit → Add to note, Reject (Reason), Assessment and Plan held with the critical; sign-off on another patient keeps the five sections read-only. All eight charts open with the Cedar card (or hidden when empty), the compact line and no horizontal scroll; one other chart (the no-show) shows one Note field. `?chart=current` opens with the new band and five rows. Home, Claims and the MOA chat (a message sent) work. Screenshots: `oct11-final-gloria-1440`, `oct11-allergy-named`, `oct11-final-allergy-not-recorded`, `oct11-final-consent-missing`, `oct11-gloria-key-open`, `oct11-gloria-note`, `oct11-note-scribe-subjective`, `oct11-banner-sticky-left-scrolled`, `oct11-andrey-review`, `oct11-k-arli-review`, `oct11-gloria-1280`.
+
+### Needs Daniel
+1. **Location and the BC standard** (his own flag, `from-daniel/2026-10-11-chart-feedback.md`): removing location from the chart is consistent with the CPSBC virtual-care standard only if intake captures it (Emergency Safeguards v3 §8, "Are you in BC right now?"). Confirm with `clinical-safety`. Also what the doctor does if the patient says they are outside BC, since the notice is gone.
+2. The full Review text: the three categories after history and medications are a default (Investigations, Prior related care, Pending, folded).
+3. PharmaNet: "relevant dispensing records" needs PharmaNet access (limited to a physician located in BC, companion spec not written). The card says "not checked" until then.
+4. Previous treatments need a medication-history source; the demo has none.
+5. The Plan text and the AI Chart Assist PDF (needs a readable copy).
+
+### Needs Ani
+1. The named allergy uses a strong amber fill (`#FBDF9B`) with ink text and a dark amber icon, the one place a tint is this strong; red stays for critical results. OK, or softer?
+2. Today and Cedar sit side by side, so Today's card is short next to a tall Cedar card (top-aligned, not stretched). OK, or stack them?
+3. Under 1100 px the banner is not sticky (the page scrolls).
+4. The "Consent on file" line shows no date (it is in the tooltip). Add it?

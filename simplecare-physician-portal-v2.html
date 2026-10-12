@@ -5704,9 +5704,9 @@
   #screen-patientchart #pcv-c #ns-wrap .ns-held{background:var(--wash);}
   #screen-patientchart #pcv-c #ns-wrap .ns-aie{display:block;width:100%;box-sizing:border-box;min-height:96px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;
     background:var(--panel);font:inherit;font-size:15px;line-height:22px;color:var(--ink);resize:vertical;}
-  #screen-patientchart #pcv-c #ns-wrap.ns-min #ns-r-reason,#screen-patientchart #pcv-c #ns-wrap.ns-min #ns-r-assessment,
+  #screen-patientchart #pcv-c #ns-wrap.ns-min #ns-r-reason,#screen-patientchart #pcv-c #ns-wrap.ns-min #ns-r-objective,#screen-patientchart #pcv-c #ns-wrap.ns-min #ns-r-assessment,
   #screen-patientchart #pcv-c #ns-wrap.ns-min #ns-r-plan{display:none;}
-  #screen-patientchart #pcv-c #ns-wrap.ns-min #ns-r-findings{border-top:0;}
+  #screen-patientchart #pcv-c #ns-wrap.ns-min #ns-r-subjective{border-top:0;}
   #screen-patientchart #pcv-c #vc-note-input{display:none !important;}
   /* diagnosis in Assessment: the claim's diagnosis, same search as Your coding */
   #screen-patientchart #pcv-c #ns-dx{display:grid;gap:8px;padding:0 0 4px;}
@@ -5987,6 +5987,81 @@
   #cedar-all{display:inline-flex;align-items:center;gap:6px;}
   #cedar-all .cs-ai-ic svg,.cs-ai-ic svg{width:18px;height:16px;}
   .ai-fab-ic svg{width:24px;height:21px;}
+  /* ===== 11 Oct (Daniel's chart feedback): this-visit line, allergies, Cedar key findings, Subjective + Objective ===== */
+  /* (1) This visit: phone or video, callback and consent as one compact line (Daniel: "The chart is primarily clinical") */
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit{padding:12px 16px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-vline{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;font-size:14px;line-height:22px;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-vline > .ic,#screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-vline > .ic svg{width:16px;height:16px;flex:none;color:var(--ink-faint);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-vcon{display:inline-flex;align-items:center;gap:4px;margin-left:6px;font-weight:500;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-vcon .ic,#screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-vcon svg{width:16px;height:16px;flex:none;color:var(--good);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-vmiss{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:8px 0 0;font-size:14px;line-height:20px;font-weight:600;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-vmiss > .ic,#screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-vmiss > .ic svg{width:18px;height:18px;flex:none;color:var(--tag-warn-ic);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-vmiss .v2-opt{margin:0;height:44px;gap:6px;}   /* buttons are 44 px with an icon */
+  #screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-vmiss .v2-opt .ic,#screen-patientchart #pcv-c.cs-v2 #v2-visit .v2-vmiss .v2-opt svg{width:18px;height:18px;}
+
+  /* (2) Allergies: the most prominent item in the banner, and the banner stays put while the column scrolls (Daniel: "Alleriges are
+     especially important - make it more prominent"). A named allergy is a strong amber tint, never red (red is for critical results). */
+  /* top:-14px = flush with the column's top edge, so scrolled cards never show in a gap above the banner; the top fade is off
+     (the banner is the anchor), the bottom fade stays */
+  @media (min-width:1101px){
+    #screen-patientchart #pcv-c.cs-v2 #v2-pt{position:sticky;top:-14px;z-index:6;}
+    #screen-patientchart #pcv-c.cs-v2 .v2-side.v2-ft{-webkit-mask-image:none;mask-image:none;}
+    #screen-patientchart #pcv-c.cs-v2 .v2-side.v2-ft.v2-fb{-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 32px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 32px),transparent 100%);}
+  }
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-facts{grid-column:1 / -1;display:block;margin:2px 0 0;padding:0;border:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .cs-fd:empty,#screen-patientchart #pcv-c.cs-v2 #v2-pt #cs-fd{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt #cs-allergy.cs-al{display:flex;align-items:center;gap:12px;margin:0;padding:12px 14px;border-radius:12px;background:#EDF6F0;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt #cs-allergy .cs-al-ic,#screen-patientchart #pcv-c.cs-v2 #v2-pt #cs-allergy .cs-al-ic svg{width:28px;height:28px;flex:none;color:var(--good);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt #cs-allergy .cs-al-b{display:grid;gap:0;min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt #cs-allergy .cs-k{display:block;margin:0;font-size:15px;line-height:20px;font-weight:600;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt #cs-allergy .cs-v{display:block;font-size:18px;line-height:26px;font-weight:700;color:var(--ink);overflow-wrap:anywhere;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt #cs-allergy.cs-al-named{background:#FBDF9B;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt #cs-allergy.cs-al-named .cs-al-ic,#screen-patientchart #pcv-c.cs-v2 #v2-pt #cs-allergy.cs-al-named .cs-al-ic svg{color:#7A4F00;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt #cs-allergy.cs-al-none{background:#FDF0CB;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt #cs-allergy.cs-al-none .cs-al-ic,#screen-patientchart #pcv-c.cs-v2 #v2-pt #cs-allergy.cs-al-none .cs-al-ic svg{color:#8A5C00;}
+  /* the Current layout's banner (?chart=current) shows the same band */
+  #screen-patientchart #pcv-c:not(.cs-v2) .cs-snap #cs-allergy.cs-al{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:#EDF6F0;}
+  #screen-patientchart #pcv-c:not(.cs-v2) .cs-snap #cs-allergy .cs-al-ic,#screen-patientchart #pcv-c:not(.cs-v2) .cs-snap #cs-allergy .cs-al-ic svg{width:24px;height:24px;color:var(--good);}
+  #screen-patientchart #pcv-c:not(.cs-v2) .cs-snap #cs-allergy .cs-al-b{display:grid;}
+  #screen-patientchart #pcv-c:not(.cs-v2) .cs-snap #cs-allergy .cs-k{font-size:14px;line-height:18px;font-weight:600;}
+  #screen-patientchart #pcv-c:not(.cs-v2) .cs-snap #cs-allergy .cs-v{font-size:17px;line-height:24px;font-weight:700;}
+  #screen-patientchart #pcv-c:not(.cs-v2) .cs-snap #cs-allergy.cs-al-named{background:#FBDF9B;}
+  #screen-patientchart #pcv-c:not(.cs-v2) .cs-snap #cs-allergy.cs-al-none{background:#FDF0CB;}
+  #screen-patientchart #pcv-c:not(.cs-v2) .cs-snap #cs-allergy.cs-al-named .cs-al-ic,#screen-patientchart #pcv-c:not(.cs-v2) .cs-snap #cs-allergy.cs-al-named .cs-al-ic svg{color:#7A4F00;}
+  #screen-patientchart #pcv-c:not(.cs-v2) .cs-snap #cs-allergy.cs-al-none .cs-al-ic,#screen-patientchart #pcv-c:not(.cs-v2) .cs-snap #cs-allergy.cs-al-none .cs-al-ic svg{color:#8A5C00;}
+
+  /* (3) Review: Today and Cedar's key findings side by side (Daniel: the empty space beside Today) */
+  #screen-patientchart #pcv-c.cs-v2 #v2-rv2{display:grid;grid-template-columns:minmax(230px,300px) minmax(0,1fr);gap:12px;align-items:stretch;min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-rv2:has(#v2-today-slot:empty){grid-template-columns:minmax(0,1fr);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-rv2 #v2-today-slot{display:grid;min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-rv2{align-items:start;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-rv2 #v2-today-slot > #cs-today{box-sizing:border-box;min-width:0;}
+  @media (max-width:1360px){
+    #screen-patientchart #pcv-c.cs-v2 #v2-rv2{grid-template-columns:minmax(0,1fr);}
+  }
+  #screen-patientchart #pcv-c.cs-v2 #v2-key[hidden]{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key{min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-hd{margin:0 0 6px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-mark{display:inline-flex;width:24px;height:22px;flex:none;color:var(--brand);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-mark svg{width:24px;height:22px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-for{margin:0 0 2px;font-size:15px;line-height:22px;color:var(--ink);max-width:66ch;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-note{margin:0 0 12px;font-size:14px;line-height:20px;color:var(--ink-soft);max-width:66ch;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-sec{padding:12px 0 0;border-top:1px solid var(--line);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-sec + .kf-sec{margin-top:10px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-h{margin:0 0 2px;font-size:15px;line-height:22px;font-weight:700;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-lines .v2-line{padding-top:6px;padding-bottom:6px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-src{display:inline-block;color:var(--ink-faint);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-q{margin:6px 0 0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-fold{padding-top:2px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-fold .kf-h{margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-btn{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;padding:0;border:0;border-radius:8px;background:none;font:inherit;font-size:15px;line-height:22px;font-weight:700;text-align:left;color:var(--ink);cursor:pointer;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-btn:hover{background:var(--wash);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-btn > .ic,#screen-patientchart #pcv-c.cs-v2 #v2-key .kf-btn > .ic svg{width:18px;height:18px;flex:none;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-n{font-weight:500;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-btn .kf-chev{margin-left:auto;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-btn[aria-expanded="true"] .kf-chev{transform:rotate(180deg);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-b[hidden]{display:none;}
 </style>
 </head>
 <body>
@@ -6471,8 +6546,11 @@
                 <div class="v2-ch"><span class="ic" data-pdic="alert"></span><h3 id="v2-na-h">Needs attention</h3><span class="v2-chip" id="v2-na-chip"></span></div>
                 <div id="v2-na-b"></div>
               </section>
-              <div id="v2-today-slot"></div>
-              <section class="v2-card" id="v2-inv" aria-labelledby="v2-inv-h"></section>
+              <!-- Daniel, 11 Oct: the empty space beside Today holds "Cedar - Key Clinical Findings" (was the Relevant investigations card) -->
+              <div class="v2-rv2" id="v2-rv2">
+                <div id="v2-today-slot"></div>
+                <section class="v2-card v2-key" id="v2-key" aria-labelledby="v2-key-h"></section>
+              </div>
             </div>
             <div class="v2-panel v2-step" id="v2p-note" aria-labelledby="v2h-note" tabindex="-1">
               <h2 class="v2-stepH" id="v2h-note">Note</h2>
@@ -6532,8 +6610,8 @@
               
             </div>
           </div>
-          <!-- v2.5 §3 This-visit strip: location, ID verified, consent, others present, video or phone,
-               callback. Incomplete items flagged with a word; Finalize waits for it; re-expands on a dropped call. -->
+          <!-- This-visit strip: phone or video, callback and consent. Daniel, 11 Oct: location, ID verified and others present are removed
+               (the chart is primarily clinical). Finalize waits for consent; re-expands on a dropped call. -->
           <section class="cs-strip" id="cs-strip" aria-labelledby="cs-strip-h"></section>
           <div class="cs-notices" id="cs-notices"></div>
           <div class="cs-cond" id="cs-cond" hidden></div>
@@ -6643,21 +6721,27 @@
                  with its text. AI suggestions sit inside their section and enter the note only on Accept. The
                  diagnosis is picked in Assessment and IS the claim's diagnosis (same search as Your coding). -->
             <div class="ns" id="ns-wrap" role="group" aria-label="Today&rsquo;s note">
+              <!-- Daniel, 11 Oct: "Replace Findings with separate Subjective and Objective sections." Reason (chief complaint), Subjective (HPI,
+                   symptoms, relevant history), Objective (examination findings, vitals, investigations), Assessment (clinical impressions and
+                   ICD-9 diagnoses), Plan. -->
               <div class="ns-row" id="ns-r-reason"><label class="ns-k" for="ns-reason">Reason</label>
-                <div class="ns-f"><textarea class="ns-ta" id="ns-reason" data-sec="reason" rows="1" placeholder="Why the patient is seen today"></textarea>
+                <div class="ns-f"><textarea class="ns-ta" id="ns-reason" data-sec="reason" rows="1" placeholder="Chief complaint: why the patient is seen today"></textarea>
                   <div class="ns-ai" id="ns-ai-reason"></div></div></div>
-              <div class="ns-row" id="ns-r-findings"><label class="ns-k" for="ns-findings" id="ns-k-findings">Findings</label>
-                <div class="ns-f"><textarea class="ns-ta" id="ns-findings" data-sec="findings" rows="1" placeholder="History, exam, readings"></textarea>
-                  <div class="ns-ai" id="ns-ai-findings"></div></div></div>
+              <div class="ns-row" id="ns-r-subjective"><label class="ns-k" for="ns-subjective" id="ns-k-subjective">Subjective</label>
+                <div class="ns-f"><textarea class="ns-ta" id="ns-subjective" data-sec="subjective" rows="1" placeholder="History of present illness, symptoms, relevant history"></textarea>
+                  <div class="ns-ai" id="ns-ai-subjective"></div></div></div>
+              <div class="ns-row" id="ns-r-objective"><label class="ns-k" for="ns-objective">Objective</label>
+                <div class="ns-f"><textarea class="ns-ta" id="ns-objective" data-sec="objective" rows="1" placeholder="Examination findings, vitals, investigations"></textarea>
+                  <div class="ns-ai" id="ns-ai-objective"></div></div></div>
               <div class="ns-row" id="ns-r-assessment"><label class="ns-k" for="ns-assessment">Assessment</label>
-                <div class="ns-f"><textarea class="ns-ta" id="ns-assessment" data-sec="assessment" rows="1" placeholder="Your assessment"></textarea>
+                <div class="ns-f"><textarea class="ns-ta" id="ns-assessment" data-sec="assessment" rows="1" placeholder="Clinical impressions and diagnoses"></textarea>
                   <div class="ns-ai" id="ns-ai-assessment"></div>
                   <div class="ns-dx" id="ns-dx"></div></div></div>
               <div class="ns-row" id="ns-r-plan"><label class="ns-k" for="ns-plan">Plan</label>
                 <div class="ns-f"><textarea class="ns-ta" id="ns-plan" data-sec="plan" rows="1" placeholder="Treatment, follow-up, safety netting"></textarea>
                   <div class="ns-ai" id="ns-ai-plan"></div></div></div>
             </div>
-            <!-- the four sections, composed ("Reason: ...", "Findings: ...") for the gates, the signed record and the tick -->
+            <!-- the five sections, composed ("Reason: ...", "Subjective: ...") for the gates, the signed record and the tick -->
             <textarea class="vc-note" id="vc-note-input" tabindex="-1" aria-hidden="true" hidden></textarea>
             <p class="vc-signed" id="vc-signed" hidden></p>
               <!-- Renewal in one flow, from the shadowed visit: "send along a
@@ -7425,14 +7509,13 @@
     <p>Simulate</p>
     <div class="dsw-grid"><button onclick="pcDropCall()" style="width:100%;">Drop the current call</button></div>
   </div>
-  <!-- T-021: chart-shell states for the demo (v2.5 §3: empty Needs attention, patient outside BC, the three allergy states, a complete strip) -->
+  <!-- T-021: chart-shell states for the demo (empty Needs attention, the three allergy states, consent on file or not) -->
   <div class="dsw-sec">
     <p>Chart states</p>
     <div class="dsw-grid">
       <button id="dsw-cs-empty" aria-pressed="false" onclick="csDemo('empty')">Nothing needs attention</button>
-      <button id="dsw-cs-out" aria-pressed="false" onclick="csDemo('outside')">Patient outside BC</button>
       <button onclick="csDemo('allergy')">Next allergy state</button>
-      <button id="dsw-cs-strip" aria-pressed="false" onclick="csDemo('strip')">Complete this visit</button>
+      <button id="dsw-cs-strip" aria-pressed="false" onclick="csDemo('strip')">Consent on file</button>
     </div>
   </div>
   <div class="dsw-sec">
@@ -9706,7 +9789,7 @@ function renderScribe(){
     props+
     ((accepted||dropped) ? '<p class="sc-rule"><b>'+accepted+'</b> accepted &middot; <b>'+dropped+'</b> dismissed this call.</p>' : '')+
     (chartCritical(PC_CURRENT) ? '<p class="sc-rule sc-held"><b>Held back:</b> the assessment, the plan, &ldquo;Code as stable angina&rdquo; and &ldquo;Telephone review in 4 weeks&rdquo;. They were drafted without today&rsquo;s critical result.</p>' : '')+
-    '<p class="sc-rule">The scribe suggests text for Findings, Assessment and Plan, and what follows from it. Nothing enters your note until you accept it. It cannot create a task, send a requisition, prescribe, or release anything to the patient &mdash; <b>you press the button, every time</b>.</p>';
+    '<p class="sc-rule">The scribe suggests text for Subjective, Assessment and Plan, and what follows from it. Nothing enters your note until you accept it. It cannot create a task, send a requisition, prescribe, or release anything to the patient &mdash; <b>you press the button, every time</b>.</p>';
 
   var tx = document.getElementById('sc-tx');
   if(tx) tx.scrollTop = tx.scrollHeight;
@@ -11482,8 +11565,8 @@ function vcToggle(grp, btn){
 function vcInsert(t){
   var n=document.getElementById('vc-note-input'); if(!n) return;
   if(n.readOnly) return;
-  /* Batch B (1): goes into the section the doctor was last in (exam → Findings, template → Plan when none yet) */
-  var sec = nsTarget(t === 'Normal exam' ? 'findings' : t === 'Follow-up template' ? 'plan' : 'findings');
+  /* Batch B (1): goes into the section the doctor was last in (exam → Objective, template → Plan when none yet; Daniel 11 Oct: Findings is now Subjective and Objective) */
+  var sec = nsTarget(t === 'Normal exam' ? 'objective' : t === 'Follow-up template' ? 'plan' : 'subjective');
   var ta = nsTa(sec);
   ta.value = (ta.value ? ta.value.replace(/\s*$/,'') + '\n' : '') + t + ': ';
   nsSync(); vcGrow(); csDraft();
@@ -12576,7 +12659,7 @@ function vcNoteState(row){
   var n = document.getElementById('vc-note-input'), stamp = document.getElementById('vc-signed');
   var signed = !!(row && row.signed);
   if(n){ n.readOnly = signed; n.classList.toggle('signed', signed); if(signed) n.value = row.signed.note; }
-  if(typeof nsReadOnly === 'function'){ if(signed) nsSet(row.signed.secs || {findings: row.signed.note}); nsReadOnly(signed); }
+  if(typeof nsReadOnly === 'function'){ if(signed) nsSet(row.signed.secs || {subjective: row.signed.note}); nsReadOnly(signed); }
   if(stamp){
     stamp.hidden = !signed;
     /* Daniel, 26 Sep: "The Doctor has approved this, meaning my a** is on the line." The name and time are the point. */
@@ -12647,7 +12730,7 @@ function mxSave(){
   var m = {drug:drug, dose:dose, freq:g('mx-freq') || 'once daily', form:'tablets', last:'', src:{where:g('mx-where'), when:g('mx-when')}};
   (RX_MEDS[PC_CURRENT] = RX_MEDS[PC_CURRENT] || []).push(m);
   var n = document.getElementById('vc-note-input');
-  if(n && !n.readOnly) nsAppend('findings', 'Medication started elsewhere: ' + drug + ' ' + dose + ' ' + m.freq + ', started ' + m.src.where + (m.src.when ? ' (' + m.src.when + ')' : '') + ', patient-reported.');
+  if(n && !n.readOnly) nsAppend('subjective', 'Medication started elsewhere: ' + drug + ' ' + dose + ' ' + m.freq + ', started ' + m.src.where + (m.src.when ? ' (' + m.src.when + ')' : '') + ', patient-reported.');
   MX_FORM = false; renderMedRail(PC_CURRENT);
   var c = document.getElementById('rx-card'); if(c && !c.hidden) rxRender();
   toast(drug + ' ' + dose + ' added to the medication list');
@@ -12797,7 +12880,7 @@ function prSave(){
     line = 'Patient-reported weight ' + w.toFixed(1) + ' kg today, given on the call.';
   }
   var n = document.getElementById('vc-note-input');
-  if(n && !n.readOnly) nsAppend(nsTarget('findings'), line);   /* Batch B (1): Insert → Reading goes to the focused section */
+  if(n && !n.readOnly) nsAppend(nsTarget('objective'), line);   /* Batch B (1): Insert → Reading goes to the focused section, else Objective (readings are objective) */
   PR_FORM = false; renderPtReadings(PC_CURRENT);
   toast('Reading saved and added to today’s note');
 }
@@ -12942,7 +13025,7 @@ function rsSaveExp(){
   var x = {what:what, when:g('rs-when') ? 'booked ' + g('rs-when') : 'date not known', by:g('rs-by') ? 'by ' + g('rs-by') : 'elsewhere'};
   (PT_EXPECT[PC_CURRENT] = PT_EXPECT[PC_CURRENT] || []).push(x);
   var n = document.getElementById('vc-note-input');
-  if(n && !n.readOnly) nsAppend('findings', 'Expected result: ' + what + ', ' + x.when + ', ordered ' + x.by + ' (outside SimpleCare).');
+  if(n && !n.readOnly) nsAppend('objective', 'Expected result: ' + what + ', ' + x.when + ', ordered ' + x.by + ' (outside SimpleCare).');
   RS_ADD = false; renderResults(PC_CURRENT); renderSinceLast(PC_CURRENT);
   toast('Expected result added · shows under Pending until it arrives');
 }
@@ -13100,32 +13183,23 @@ function csFocus(sel){ var e = document.querySelector(sel); if(e && e.focus) e.f
 function csOnChart(){ var s = document.getElementById('screen-patientchart'); return !!(s && s.classList.contains('active')); }
 
 /* ---------- this-visit state, per patient ----------
-   DEMO VALUES: v2 has no location, ID, consent or callback data, so these are invented for the demo.
-   Last known place follows the patient's pharmacy town; 555-01xx is a fictional number range. */
+   DEMO VALUES: v2 has no consent or callback data, so these are invented for the demo (555-01xx is a fictional number range). */
 function csVisit(name){
   if(CS.visit[name]) return CS.visit[name];
   var i = Math.max(0, QUEUE_DATA.map(function(x){ return x.name; }).indexOf(name));
-  var town = (ptChart(name).pharm || '').split(', ')[1] || '';
   var L = PT_LAST[name];
+  /* Daniel, 11 Oct: "Location is not relevant to us ... Others present ... ID Verified, already presumed verified. The chart is
+     primarily clinical." Only the phone line, the callback and consent are kept. Consent is the one check that gates Sign off. */
   return (CS.visit[name] = {
-    location:false, others:false, othersText:'', outside:false,
-    place: town ? town + ', BC' : '', placeOut:'Calgary, AB',
-    lastPlace: town ? town + ', BC' + (L ? ' on ' + csShort(L.date) : '') : '',
-    id: L ? 'BC Services Card, ' + csShort(L.date) : '',
     consent: L ? 'On file, ' + csShort(L.date) : '',
     mode:'Phone', callback:'604-555-01' + String(10 + i)
   });
 }
-function csStripDone(name){ var v = csVisit(name); return v.location && v.others && !!v.id && !!v.consent; }
+function csStripDone(name){ return !!csVisit(name).consent; }
 function csMissing(name){
-  var v = csVisit(name), m = [];
-  if(!v.location) m.push(['loc','location']);
-  if(!v.id) m.push(['id','ID verified']);
-  if(!v.consent) m.push(['con','consent']);
-  if(!v.others) m.push(['oth','others present']);
-  return m;
+  /* Finalize stays blocked only when consent is missing (Daniel, 11 Oct) */
+  return csVisit(name).consent ? [] : [['con','consent']];
 }
-function csPlace(name){ var v = csVisit(name); return v.outside ? v.placeOut : v.place; }
 /* a missed call or a no-show, before the doctor reaches the patient (Ani, 5 Oct: a simple no-show state) */
 function csNoShow(name){
   var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0];
@@ -13145,16 +13219,15 @@ function csRenderSnap(name){
   /* v2.5 §3: allergies in three distinct states. Named is ink with a symbol (an allergy is not a critical
      result, so not red); "Not recorded" is amber with its word. The named example is v2.5 §8's, demo only. */
   var a = CS.allergy[name] || 'nkda', el = document.getElementById('cs-allergy'), v2 = CS.layout === 'v2';
-  if(el && v2){
-    /* layout v2 (Ani, 5 Oct): label above value, one fact per line. Same three states. */
-    el.className = 'cs-fact cs-al-' + a;
-    el.innerHTML = '<span class="cs-k">Allergies</span><span class="cs-v">' + (a === 'nkda' ? csIc('complete') + 'No known drug allergies'
-      : a === 'named' ? csIc('alert') + '<b>Penicillin &mdash; anaphylaxis</b>' : '<span class="cs-tag warn">' + csIc('alert') + 'Not recorded</span>') + '</span>';
-  } else if(el){
-    el.className = 'cs-fact cs-al-' + a;
-    el.innerHTML = a === 'nkda' ? csIc('complete') + '<span>No known drug allergies</span>'
-      : a === 'named' ? csIc('alert') + '<span><span class="cs-k">Allergy</span> <b>Penicillin &mdash; anaphylaxis</b></span>'
-      : '<span class="cs-tag warn">' + csIc('alert') + 'Allergies not recorded</span>';
+  /* Daniel, 11 Oct: "Alleriges are especially important - make it more prominent". One band, the most prominent item in the banner,
+     the same in both layouts: the label "Allergies", then the content in larger bold type, with an icon and its own fill.
+     Named allergy = a strong amber tint (red is reserved for critical results); "Not recorded" = amber with the word; none = a calm tick. */
+  if(el){
+    el.className = 'cs-fact cs-al cs-al-' + a;
+    el.setAttribute('role', 'group');
+    el.setAttribute('aria-label', 'Allergies: ' + (a === 'nkda' ? 'no known drug allergies' : a === 'named' ? 'penicillin, anaphylaxis' : 'not recorded'));
+    el.innerHTML = csIc(a === 'nkda' ? 'complete' : 'alert', 'cs-al-ic') + '<span class="cs-al-b"><span class="cs-k">Allergies</span><span class="cs-v">' +
+      (a === 'nkda' ? 'No known drug allergies' : a === 'named' ? 'Penicillin &mdash; anaphylaxis' : 'Not recorded') + '</span></span>';
   }
   /* Ani, 5 Oct: "Since you last saw: No previous visit" is gone; a small tag by the name says it instead */
   var np = document.getElementById('cs-newpt'); if(np) np.hidden = !!PT_LAST[name];
@@ -13174,8 +13247,7 @@ function csRenderStrip(name){
   var v = csVisit(name), r = csRow(), miss = csMissing(name);
   var signed = !!(r && r.signed), sep = '<span class="cs-dot" aria-hidden="true">&middot;</span>';
   var h = '<h3 class="vh" id="cs-strip-h">This visit</h3><p class="cs-vline">' + csIc('phone') + '<span>' + v.mode + '</span>' + sep +
-    '<span><span class="cs-k">Callback</span> <b class="pc-mono">' + v.callback + '</b></span>' +
-    (v.location ? sep + '<span><span class="cs-k">Location</span> <b>' + csEsc(csPlace(name)) + '</b></span>' : '');
+    '<span><span class="cs-k">Callback</span> <b class="pc-mono">' + v.callback + '</b></span>';
   if(signed) h += sep + '<span class="cs-done">' + csIc('complete') + 'Signed off</span>';
   else if(csNoShow(name)) h += '';
   else if(miss.length) h += sep + '<button type="button" class="cs-link cs-chk" onclick="csGoStrip(\'' + miss[0][0] + '\')">' + csIc('alert') +
@@ -13190,8 +13262,7 @@ function csRenderChecks(name){
   var el = document.getElementById('cs-finwhy'); if(!el) return;
   var r = csRow(), v = csVisit(name), miss = csMissing(name);
   if(!r || r.signed || csNoShow(name)){ el.hidden = true; el.innerHTML = ''; return; }
-  var all = [['loc','Location','Not confirmed','flag', v.location ? csPlace(name) : ''], ['id','ID verified','Not verified','usercheck', v.id],
-             ['con','Consent','Not recorded','cardok', v.consent], ['oth','Others present','Not asked','user', v.others ? (v.othersText || 'None, patient alone') : '']];
+  var all = [['con','Consent','Not recorded','cardok', v.consent]];   /* Daniel, 11 Oct: consent is the only check left */
   var todo = all.filter(function(x){ return !x[4]; }), done = all.filter(function(x){ return !!x[4]; });
   var h;
   if(todo.length){
@@ -13213,20 +13284,9 @@ function csTodo(icon, k, word, key){
     csIc('alert') + k + '</button>' + (CS.pop === key ? csPopHtml(key) : '') + '</li>';
 }
 function csPopHtml(key){
-  var v = csVisit(PC_CURRENT);
+  /* Daniel, 11 Oct: only consent is asked (the location, others present and ID verified forms are gone) */
   var acts = function(label){ return '<div class="cs-pacts"><button type="button" class="btn dark" onclick="csConfirm(\'' + key + '\')"><span class="ic" data-pdic="complete"></span>' + label + '</button>' +
     '<button type="button" class="btn" onclick="csPop(null)"><span class="ic" data-pdic="chevl"></span>Cancel</button></div>'; };
-  if(key === 'loc') return '<div class="cs-pop" role="dialog" aria-label="Confirm location">' +
-    '<label class="cs-pl">Where is the patient right now?<input type="text" id="cs-p-loc" autocomplete="off" value="' + csEsc(csPlace(PC_CURRENT)) + '"></label>' +
-    '<p class="cs-cap">' + (v.lastPlace ? 'Last known: ' + csEsc(v.lastPlace) + '. ' : '') + 'Ask on every call.</p>' + acts('Confirm location') + '</div>';
-  if(key === 'oth') return '<div class="cs-pop" role="dialog" aria-label="Others present"><fieldset><legend>Is anyone else on the call?</legend>' +
-    '<label class="cs-opt"><input type="radio" name="cs-oth" value="alone" checked> No, the patient is alone</label>' +
-    '<label class="cs-opt"><input type="radio" name="cs-oth" value="someone"> Yes, someone is with them</label>' +
-    '<label class="cs-pl" id="cs-p-who-l" hidden>Who, and their relationship<input type="text" id="cs-p-who" autocomplete="off"></label></fieldset>' + acts('Confirm') + '</div>';
-  if(key === 'id') return '<div class="cs-pop" role="dialog" aria-label="Verify identity"><fieldset><legend>How did you verify identity?</legend>' +
-    ['BC Services Card','Driver&rsquo;s licence','Name, date of birth and PHN confirmed'].map(function(m, i){
-      return '<label class="cs-opt"><input type="radio" name="cs-id" value="' + m + '"' + (i ? '' : ' checked') + '> ' + m + '</label>'; }).join('') +
-    '</fieldset>' + acts('Record') + '</div>';
   return '<div class="cs-pop" role="dialog" aria-label="Record consent"><p>The patient agrees to a virtual visit today.</p>' + acts('Record verbal consent') + '</div>';
 }
 function csPop(key){
@@ -13236,53 +13296,29 @@ function csPop(key){
   if(p.scrollIntoView) p.scrollIntoView({block:'nearest'});
   var f = p.querySelector('input[type=text]') || p.querySelector('input') || p.querySelector('button');
   if(f){ f.focus(); if(f.select) f.select(); }
-  p.querySelectorAll('input[name=cs-oth]').forEach(function(rb){ rb.addEventListener('change', function(){ document.getElementById('cs-p-who-l').hidden = !(rb.value === 'someone' && rb.checked); }); });
   p.addEventListener('keydown', function(e){
     if(e.key === 'Escape'){ e.stopPropagation(); csPop(null); }
     if(e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.type === 'text'){ e.preventDefault(); csConfirm(key); }
   });
 }
 function csConfirm(key){
-  var a = {};
-  if(key === 'loc'){
-    var i = document.getElementById('cs-p-loc'), t = (i.value || '').trim(); if(!t){ i.focus(); return; }
-    a = {text:t};
-  } else if(key === 'oth'){
-    var rb = document.querySelector('input[name=cs-oth]:checked'), who = '';
-    if(rb && rb.value === 'someone'){ var w = document.getElementById('cs-p-who'); who = (w.value || '').trim(); if(!who){ w.focus(); return; } }
-    a = {who:who};
-  } else if(key === 'id'){
-    var m = document.querySelector('input[name=cs-id]:checked'); a = {method: m ? m.value.replace('&rsquo;','’') : 'Verified'};
-  }
-  csApplyCheck(key, a);
+  csApplyCheck('con', {});
   var next = document.querySelector('#cs-finwhy li.todo button') || document.getElementById('vc-finalize');
   if(next && !next.hidden) next.focus();
 }
-/* Ani, 6 Oct: the one place a visit check is recorded. The Sign off popover's forms and the inline answers in v2's
-   This visit card both call it, so the state, the outside-BC notice, "N checks left" and the Finalize gate are shared.
-   loc: {text, kind: 'home' | 'bc' | 'out'} (no kind: a typed place, BC or not by its words, as before);
-   oth: {who} (empty = the patient is alone); id: {method}; con: {}. */
+/* Ani, 6 Oct: the one place a visit check is recorded. The Sign off section's form (csConfirm) and the This visit line's
+   button (v2Ans) both call it, so the state, "N checks left" on Sign off and the Finalize gate are shared.
+   Daniel, 11 Oct: consent is the only check left (location, others present and ID verified are removed). */
 function csApplyCheck(key, a){
-  var v = csVisit(PC_CURRENT), msg = '';
-  a = a || {};
-  if(key === 'loc'){
-    var t = a.text, k = a.kind || (/\bBC\b|British Columbia/i.test(t) ? 'bc' : 'out');
-    /* a place outside BC raises the notice that can't be dismissed */
-    if(k === 'out'){ v.placeOut = t; v.outside = true; } else { v.place = t; v.outside = false; }
-    v.locKind = k; v.location = true; msg = 'Location confirmed: ' + t;
-  } else if(key === 'oth'){
-    var who = a.who || 'None, patient alone';
-    v.others = true; v.othersText = who; msg = 'Others present: ' + who;
-  } else if(key === 'id'){
-    v.id = (a.method || 'Verified') + ', today ' + csNow(); msg = 'Identity verified';
-  } else { v.consent = 'Verbal, today ' + csNow(); msg = 'Consent recorded'; }
+  var v = csVisit(PC_CURRENT);
+  v.consent = 'Verbal, today ' + csNow();
   CS.pop = null;
   csAfterStrip();
-  csSay(msg + (csStripDone(PC_CURRENT) ? '. This visit is complete.' : '.'));
+  csSay('Consent recorded.');
 }
 function csAfterStrip(){ csRenderStrip(PC_CURRENT); csRenderNotices(PC_CURRENT); csFinState(); }
 
-/* ---------- notices: outside BC (can't be dismissed) and a dropped call ---------- */
+/* ---------- notices: a dropped call (the outside-BC notice is gone, Daniel 11 Oct) ---------- */
 function csRenderNotices(name){
   var host = document.getElementById('cs-notices'); if(!host) return;
   var v = csVisit(name), h = '', c = PC_CALL[name];
@@ -13290,14 +13326,8 @@ function csRenderNotices(name){
     /* v2.5 §3: the strip re-expands on a dropped call; the callback is one action away, the draft is kept.
        Calls go outward only: the doctor phones the patient back. */
     h += '<div class="cs-notice" role="alert">' + csIc('phone') + '<div class="cs-grow"><p><b>Call dropped' + (c ? ' at ' + pcFmt(c.secs) : '') + '.</b> Your note is kept.</p>' +
-      '<p class="cs-cap">' + csEsc(csPlace(name) || 'Location not confirmed') + ' &middot; callback <b class="pc-mono">' + v.callback + '</b></p></div>' +
+      '<p class="cs-cap">Callback <b class="pc-mono">' + v.callback + '</b></p></div>' +
       '<button type="button" class="btn dark" id="cs-redial" onclick="pcStartCall()"><span class="ic" data-pdic="patientview"></span>Call back ' + v.callback + '</button></div>';
-  }
-  if(v.outside){
-    /* v2.5 §3: a patient outside BC gets a notice that can't be dismissed. No close button, by design.
-       Its wording, and whether it blocks Finalize, is Needs Daniel (Virtual Care Compliance companion, TBD). */
-    h += '<div class="cs-notice" id="cs-outside">' + csIc('alert') + '<div class="cs-grow"><p><b>The patient is outside BC: ' + csEsc(v.placeOut) + '.</b></p>' +
-      '<p class="cs-cap">Confirm you can provide care where the patient is before you go on. This stays while they are outside BC.</p></div></div>';
   }
   host.innerHTML = h; host.hidden = !h; paintPd(host);
   /* one display of the dropped call: the notice replaces v2's "Call dropped at" text (v2.5 §7 no duplicate display) */
@@ -13642,7 +13672,7 @@ function csAI(name){
   return (CS.ai[name] = s ? {mode:'intake', text:s, src:'From today&rsquo;s intake: an AI summary of the patient&rsquo;s answers', state:'pending'} : {state:'none'});
 }
 function csRenderAI(){
-  /* Batch B (1): the intake suggestion sits in Reason; the scribe's suggestions arrive in Findings, Assessment and Plan.
+  /* Batch B (1): the intake suggestion sits in Reason; the scribe's suggestions arrive in Subjective, Assessment and Plan (Daniel, 11 Oct).
      Same rule as before: nothing enters the note until the doctor accepts (or edits and adds) it. */
   var el = document.getElementById('cs-ai'); if(!el || !PC_CURRENT) return;
   var r = csRow(), signed = !!(r && r.signed);
@@ -13734,8 +13764,9 @@ scStart = function(){
   scTimer = setInterval(scTick, 1100);
   toast('Recording. ' + csPref(csRow()) + ' consented at the start of the call.');
 };
-/* SC_NOTE blocks → sections: SUBJECTIVE and BACKGROUND are Findings, ASSESSMENT is Assessment, PLAN is Plan */
-function nsScSec(t){ return /^\s*ASSESSMENT/.test(t) ? 'assessment' : /^\s*PLAN/.test(t) ? 'plan' : 'findings'; }
+/* SC_NOTE blocks → sections: SUBJECTIVE and BACKGROUND are Subjective (was Findings, Daniel 11 Oct), ASSESSMENT is Assessment, PLAN is Plan.
+   The call has no examination or vitals, so Cedar drafts nothing for Objective. */
+function nsScSec(t){ return /^\s*ASSESSMENT/.test(t) ? 'assessment' : /^\s*PLAN/.test(t) ? 'plan' : 'subjective'; }
 scStep = function(){
   SC_PROPOSALS.forEach(function(p){
     if(p.after === scIdx && scSeen.indexOf(p.id) === -1 && !scHeld(p)) scSeen.push(p.id);
@@ -13764,7 +13795,7 @@ renderScribe = function(){
   if(blk) blk.hidden = scState === 'off';
   if(sb) sb.hidden = scState !== 'off' || !!(rr && rr.signed) || (PC_CURRENT && csNoShow(PC_CURRENT));
   var sub = document.getElementById('sc-sub');
-  if(sub && scState === 'live') sub.textContent = 'Recording with consent. Suggestions appear in Findings, Assessment and Plan, marked as AI, until you accept them.';
+  if(sub && scState === 'live') sub.textContent = 'Recording with consent. Suggestions appear in Subjective, Assessment and Plan, marked as AI, until you accept them.';
   csRenderAI();
 };
 
@@ -13792,7 +13823,7 @@ document.addEventListener('keydown', function(e){
 function csDraft(){
   var n = document.getElementById('vc-note-input'); if(!n || !PC_CURRENT || n.readOnly) return;
   nsSync();
-  CS.draft[PC_CURRENT] = nsGet();   /* Batch B (1): {reason, findings, assessment, plan} */
+  CS.draft[PC_CURRENT] = nsGet();   /* {reason, subjective, objective, assessment, plan}; an older draft with findings migrates in nsSet */
   try { sessionStorage.setItem('sc-cs-draft', JSON.stringify(CS.draft)); } catch(e){}
   var s = document.getElementById('cs-saved'); if(s){ s.innerHTML = csIc('complete') + 'Draft saved &middot; ' + csNow(); paintPd(s); }
 }
@@ -14083,10 +14114,10 @@ function csRenderNoShow(name){
   var resumed = !!(r && !r.signed && (r.status === 'missed' || r.status === 'noshow') && CS.nsResumed[name]);
   root.classList.toggle('cs-ns-on', on);
   /* Batch B (1): a no-show keeps one field for an optional attempt note */
-  var nw = document.getElementById('ns-wrap'), nf = document.getElementById('ns-findings'), nk = document.getElementById('ns-k-findings');
+  var nw = document.getElementById('ns-wrap'), nf = document.getElementById('ns-subjective'), nk = document.getElementById('ns-k-subjective');
   if(nw) nw.classList.toggle('ns-min', on);
-  if(nf) nf.placeholder = on ? 'Note the attempt (optional).' : 'History, exam, readings';
-  if(nk) nk.textContent = on ? 'Note' : 'Findings';
+  if(nf) nf.placeholder = on ? 'Note the attempt (optional).' : 'History of present illness, symptoms, relevant history';
+  if(nk) nk.textContent = on ? 'Note' : 'Subjective';
   if(typeof nsRenderDx === 'function') nsRenderDx();
   if(bill){
     bill.hidden = !(on && r.status === 'noshow');
@@ -14142,8 +14173,8 @@ openChart = function(name){
   if(PC_CURRENT !== name) return;
   csCloseFull(true); csView('chart');
   var r = csRow(), n = document.getElementById('vc-note-input');
-  /* Batch B (1): a draft from before the sections (one string) goes into Findings, so nothing is lost */
-  if(n && r && !r.signed && CS.draft[name] !== undefined){ nsSet(typeof CS.draft[name] === 'string' ? {findings: CS.draft[name]} : CS.draft[name]); vcGrow(); }
+  /* Batch B (1): a draft from before the sections (one string) goes into Subjective, and a draft with Findings too (Daniel, 11 Oct), so nothing is lost */
+  if(n && r && !r.signed && CS.draft[name] !== undefined){ nsSet(typeof CS.draft[name] === 'string' ? {subjective: CS.draft[name]} : CS.draft[name]); vcGrow(); }
   var s = document.getElementById('cs-saved'); if(s) s.innerHTML = '';
   csRefresh();
   window.scrollTo({top:0});
@@ -14154,12 +14185,10 @@ function csDemo(k){
   if(!PC_CURRENT){ toast('Open a chart first'); return; }
   var v = csVisit(PC_CURRENT);
   if(k === 'empty') CS.empty = !CS.empty;
-  if(k === 'outside'){ v.outside = !v.outside; if(v.outside) v.location = true; }
   if(k === 'allergy'){ var o = ['nkda','named','none'], a = CS.allergy[PC_CURRENT] || 'nkda'; CS.allergy[PC_CURRENT] = o[(o.indexOf(a) + 1) % 3]; }
   if(k === 'strip'){
-    var done = csStripDone(PC_CURRENT);
-    if(done){ v.location = false; v.others = false; }
-    else { v.location = true; v.others = true; v.othersText = v.othersText || 'None, patient alone'; if(!v.id) v.id = 'BC Services Card, today'; if(!v.consent) v.consent = 'Verbal, today'; }
+    /* Daniel, 11 Oct: consent is the only visit check left; this toggles it */
+    v.consent = v.consent ? '' : 'Verbal, today';
     CS.stripOpen[PC_CURRENT] = false;
   }
   csRefresh(); csDemoSync();
@@ -14167,7 +14196,7 @@ function csDemo(k){
 function csDemoSync(){
   var v = PC_CURRENT ? csVisit(PC_CURRENT) : {};
   var set = function(id, on){ var b = document.getElementById(id); if(b){ b.classList.toggle('on', !!on); b.setAttribute('aria-pressed', String(!!on)); } };
-  set('dsw-cs-empty', CS.empty); set('dsw-cs-out', v.outside); set('dsw-cs-strip', PC_CURRENT && csStripDone(PC_CURRENT));
+  set('dsw-cs-empty', CS.empty); set('dsw-cs-strip', PC_CURRENT && csStripDone(PC_CURRENT));
 }
 </script>
 <script>
@@ -15862,107 +15891,109 @@ function v2RenderSide(name){
   v2SeeAll('meds', 'medications'); v2SeeAll('hist', 'problems'); v2SeeAll('pend', most(pend, 'careplan'));
   v2SeeAll('since', 'timeline'); v2SeeAll('prev', 'timeline');
   v2SumEdges();
-  var inv = by['Investigations'], el = v2El('v2-inv');
-  if(el){
-    var lines = v2Lines(inv, name);
-    el.hidden = !lines;
-    el.innerHTML = lines ? '<div class="v2-ch">' + csIc('chartup') + '<h3 id="v2-inv-h">' + (CS_REL[name] ? 'Relevant investigations' : 'Investigations') + '</h3></div>' +
-      '<div class="v2-lines">' + lines + '</div>' + (inv[2] ? '<p class="v2-q">' + inv[2] + '</p>' : '') : '';
-    paintPd(el);
-  }
+  var el = v2El('v2-key');
+  if(el) v2RenderKey(el, name, by);
 }
 
-/* ---------- This visit: mode and callback on one line, the checks as compact rows ----------
-   Ani, 6 Oct: answer the checks right here, one tap each, instead of chips that open a popover. Done = a quiet tick with
-   its value on its own line (no truncation). Answers go through csApplyCheck, the same function the Sign off popover's
-   forms use, so "N checks left" and the Finalize gate update at once and stay exactly as they were. */
+/* ---------- Cedar · Key clinical findings (Daniel, 11 Oct) ----------
+   "This area represents good real estate to present the patient the Doctor - the key findings. And the AI can also help by
+   tailoring the information towards the clinical concern." Cedar reads the intake and the chart. Relevant medical history and
+   Medications come first (Daniel's text), then Chart View v2.5's other three categories (Investigations, Prior related care,
+   Pending) as a default until his full text arrives. Every line says where it comes from and opens that source in the Chart
+   drawer. It is read-only: nothing here goes into the note without the doctor. Same data as the Patient summary (CS_REL / csRelGeneric),
+   nothing new is inferred or invented. */
+var KF_SRC = {problems:'Problem list', medications:'Medications', careplan:'Care plan', documents:'Visit note', consults:'Consults', results:'Results'};
+function kfLine(x){
+  /* v2Line's markup, with the source added to the last quiet line so a finding takes two lines, not three */
+  var lab = v2Parts(x[0]), sub = v2Parts(x[1]), src = 'Source: ' + (KF_SRC[x[2]] || 'Chart');
+  var top = lab.length > 1 ? '<span class="v2-l0">' + lab[0] + '</span>' : '';
+  var main = lab.length > 1 ? v2Cap(lab.slice(1).join(', ')) : lab[0];
+  var l2 = sub.length > 1 ? v2Cap(sub[0]) : '', l3 = sub.length > 1 ? v2Cap(sub.slice(1).join(', ')) : sub.length ? v2Cap(sub[0]) : '';
+  return '<button type="button" class="v2-line" onclick="csOpenFull(\'' + x[2] + '\',this)">' + top +
+    '<span class="v2-l1">' + main + (x[4] ? '<span class="v2-chip warn">' + csIc('clock') + x[4] + '</span>' : '') + '</span>' +
+    (l2 ? '<span class="v2-l2">' + l2 + '</span>' : '') +
+    '<span class="v2-l2">' + (l3 ? l3 + '&ensp;' : '') + '<span class="kf-src">' + src + '</span></span>' +
+    '<span class="vh"> &mdash; open the source</span>' + csIc('chevr', 'v2-go') + '</button>';
+}
+function kfLines(row, name){
+  return (row ? row[1] : []).map(function(x){
+    if(x[0] === '@na') return '';            /* Needs attention is directly above */
+    if(x[0] === '@bp') return v2BP(name).replace('<span class="v2-l2">Home cuff</span>', '<span class="v2-l2"><span class="kf-src">Source: Results &middot; patient-reported, home cuff</span></span>');
+    var h = kfLine(x);
+    if(x[3] && CS_QUOTES[x[3]]){
+      var k = x[3], open = !!CS.relOpen[k];
+      h += '<button type="button" class="cs-exp" id="kf-qb-' + k + '" aria-expanded="' + open + '" aria-controls="kf-q-' + k + '" onclick="CS.relOpen[\'' + k + '\']=!CS.relOpen[\'' + k + '\'];v2RenderSide(PC_CURRENT);csFocus(\'#kf-qb-' + k + '\')">' +
+        csIc('chevdown') + (open ? 'Hide' : 'Show') + ' what they wrote</button>' +
+        '<div class="cs-quote" id="kf-q-' + k + '"' + (open ? '' : ' hidden') + '>' + CS_QUOTES[k].map(function(q){ return '<p>&ldquo;' + q + '&rdquo;</p>'; }).join('') + '</div>';
+    }
+    return h;
+  }).join('');
+}
+function kfToggle(k){
+  CS.keyOpen = CS.keyOpen || {};
+  var key = PC_CURRENT + '|' + k; CS.keyOpen[key] = !CS.keyOpen[key];
+  v2RenderSide(PC_CURRENT); csFocus('#kf-btn-' + k);
+}
+function v2RenderKey(el, name, by){
+  var r = csRow(), sum = csIntakeSummary(name), concern = sum || (r && r.concern) || '';
+  var hist = by['History'], meds = by['Medications'], inv = by['Investigations'], prev = by['Prior related care'], pend = by['Pending'];
+  if(!hist && !meds && !inv && !prev && !pend){ el.hidden = true; el.innerHTML = ''; return; }
+  el.hidden = false;
+  CS.keyOpen = CS.keyOpen || {};
+  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Cedar &middot; Key clinical findings</h3></div>' +
+    (concern ? '<p class="kf-for">For today&rsquo;s concern: <b>' + csEsc(concern) + '</b></p>' : '') +
+    '<p class="kf-note">From today&rsquo;s intake and the chart. Nothing here goes into your note without you.</p>';
+  /* 1. Relevant medical history: existing diagnoses, previous episodes, related conditions */
+  h += '<section class="kf-sec" aria-labelledby="kf-h-hist"><h4 class="kf-h" id="kf-h-hist">Relevant medical history</h4>' +
+    (hist ? '<div class="kf-lines">' + kfLines(hist, name) + '</div>' + (hist[2] ? '<p class="v2-q kf-q">' + hist[2] + '</p>' : '') : '<p class="v2-q kf-q">None recorded in Simple Care.</p>') + '</section>';
+  /* 2. Medications: current, previous treatments, PharmaNet dispensing records, each with source and date. The demo holds no
+        previous-treatment history and no PharmaNet feed, so Cedar says so instead of showing nothing (needs PharmaNet access, BC). */
+  var msrc = meds && meds[2] ? meds[2].replace(/^Source:\s*/, '').replace(/\s*&middot;\s*not checked against PharmaNet/, '') : '';
+  h += '<section class="kf-sec" aria-labelledby="kf-h-meds"><h4 class="kf-h" id="kf-h-meds">Medications</h4><div class="kf-lines">' +
+    (meds ? kfLines(meds, name) : '<p class="v2-q kf-q">No current medications recorded in Simple Care.</p>') +
+    kfLine(['Previous treatments', 'none recorded in Simple Care', 'medications']) +
+    kfLine(['PharmaNet dispensing', 'not checked: no dispensing records connected yet', 'medications']) + '</div>' +
+    (msrc ? '<p class="v2-q kf-q">Current list: ' + msrc + '</p>' : '') + '</section>';
+  /* 3. to 5.: Chart View v2.5's other categories, one click away */
+  [['inv', 'Investigations', 'chartup', inv], ['prev', 'Prior related care', 'calendar', prev], ['pend', 'Pending', 'clock', pend]].forEach(function(c){
+    var lines = kfLines(c[3], name); if(!lines) return;
+    var n = v2Count(c[3]), open = !!CS.keyOpen[name + '|' + c[0]];
+    var over = c[0] === 'pend' && c[3] ? c[3][1].filter(function(x){ return x[4] === 'Overdue'; }).length : 0;
+    h += '<section class="kf-sec kf-fold"><h4 class="kf-h"><button type="button" class="kf-btn" id="kf-btn-' + c[0] + '" aria-expanded="' + open + '" aria-controls="kf-b-' + c[0] + '" onclick="kfToggle(\'' + c[0] + '\')">' +
+      csIc(c[2]) + '<span class="kf-t">' + c[1] + '</span><span class="kf-n">' + n + '</span>' +
+      (over ? '<span class="v2-chip warn">' + csIc('clock') + over + ' overdue</span>' : '') + csIc('chevdown', 'kf-chev') + '</button></h4>' +
+      '<div class="kf-b" id="kf-b-' + c[0] + '"' + (open ? '' : ' hidden') + '><div class="kf-lines">' + lines + '</div></div></section>';
+  });
+  el.innerHTML = h; paintPd(el);
+}
+
+/* ---------- This visit: phone or video, callback and consent as one compact line ----------
+   Daniel, 11 Oct: "Location is not relevant to us - can be removed. If someone else is present it is documented by the doctor ...
+   ID Verified, already presumed verified. The chart is primarily clinical." Those three checks and their forms are gone.
+   Consent stays: done = a tick in the line; missing = one button that records verbal consent through csApplyCheck, the same
+   function the Sign off section's form uses, so "N checks left" and the Finalize gate (consent only) update at once. */
 V2.pick = {};
-var V2_ID = [['BC Services Card','BC Services Card'], ['Driver’s licence','Driver’s licence'], ['Name, DOB and PHN','Name, date of birth and PHN confirmed']];
-function v2Dot(t){ return csEsc(String(t || '').replace(/, (?=[^,]*$)/, ' · ')); }
 function v2Opt(label, on, pressed){
   return '<button type="button" class="v2-opt"' + (pressed === undefined ? '' : ' aria-pressed="' + pressed + '"') + ' onclick="' + on + '">' + label + '</button>';
 }
-function v2CheckRow(name, k, signed){
-  var v = csVisit(name), lab = {loc:'Location', id:'ID verified', con:'Consent', oth:'Others present'}[k];
-  var val = k === 'loc' ? (v.location ? (v.outside ? 'Outside BC · ' + csEsc(v.placeOut) : csEsc(v.place)) : '')
-    : k === 'id' ? (v.id ? v2Dot(v.id) : '') : k === 'con' ? (v.consent ? v2Dot(v.consent) : '')
-    : (v.others ? csEsc(v.othersText === 'None, patient alone' ? 'No one, patient alone' : v.othersText) : '');
-  if(val){
-    /* asked on every call, so a mis-tap can be changed until sign-off */
-    var chg = !signed && (k === 'loc' || k === 'oth') ? '<button type="button" class="cs-link v2-chg" onclick="v2Undo(\'' + k + '\')" aria-label="Change ' + lab.toLowerCase() + '">Change</button>' : '';
-    return '<li class="v2-ckr ok">' + csIc('complete') + '<span class="v2-ckb"><span class="v2-ck">' + lab + '</span><span class="v2-cv">' + val + '</span></span>' + chg + '</li>';
-  }
-  var pick = V2.pick[k], h = '', fld = '';
-  if(k === 'loc'){
-    h = (v.lastPlace ? '<span class="v2-hint">Last: ' + csEsc(v.lastPlace) + '</span>' : '<span class="v2-hint">Ask on every call.</span>') +
-      '<span class="v2-opts v2-stack" role="group" aria-labelledby="v2-ckl-loc">' + v2Opt('At home in BC', "v2Ans('loc','home')") +
-      v2Opt('Elsewhere in BC', "v2Pick('loc','bc')", pick === 'bc') + v2Opt('Outside BC', "v2Pick('loc','out')", pick === 'out') + '</span>';
-    if(pick) fld = v2Field('loc', pick === 'bc' ? 'Where in BC?' : 'Where is the patient?', pick === 'out' ? v.placeOut : '');
-  } else if(k === 'oth'){
-    h = '<span class="v2-opts" role="group" aria-labelledby="v2-ckl-oth">' +
-      v2Opt('No one', "v2Ans('oth','alone')") + v2Opt('Someone', "v2Pick('oth','someone')", pick === 'someone') + '</span>';
-    if(pick) fld = v2Field('oth', 'Who, and their relationship', '');
-  } else if(k === 'id'){
-    h = '<span class="v2-opts" role="group" aria-labelledby="v2-ckl-id">' + V2_ID.map(function(m, i){ return v2Opt(m[0], "v2Ans('id'," + i + ")"); }).join('') + '</span>';
-  } else {
-    h = '<span class="v2-hint">The patient agrees to a virtual visit today.</span><span class="v2-opts">' + v2Opt('Record verbal consent', "v2Ans('con')") + '</span>';
-  }
-  return '<li class="v2-ckr todo" id="v2-ck-' + k + '">' + csIc('alert') + '<span class="v2-ckb"><span class="v2-ck" id="v2-ckl-' + k + '">' + lab +
-    '<span class="vh">, not done</span></span>' + h + fld + '</span></li>';
+function v2Ans(k){
+  csApplyCheck('con', {});
+  v2NextCheck();
 }
-function v2Field(k, label, val){
-  return '<span class="v2-fld"><label for="v2-in-' + k + '">' + label + '</label><span class="v2-fldr"><input type="text" id="v2-in-' + k + '" autocomplete="off" value="' + csEsc(val || '') + '" onkeydown="v2Key(event,\'' + k + '\')">' +
-    '<button type="button" class="btn dark v2-save" onclick="v2Save(\'' + k + '\')">Save</button></span></span>';
-}
-function v2Pick(k, val){
-  V2.pick[k] = V2.pick[k] === val ? null : val;
-  v2RenderVisit(PC_CURRENT);
-  var i = v2El('v2-in-' + k); if(i){ i.focus(); i.select(); }
-}
-function v2Key(e, k){
-  if(e.key === 'Enter'){ e.preventDefault(); v2Save(k); }
-  if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); V2.pick[k] = null; v2RenderVisit(PC_CURRENT); csFocus('#v2-ck-' + k + ' .v2-opt'); }
-}
-function v2Save(k){
-  var i = v2El('v2-in-' + k), t = i ? (i.value || '').trim() : '';
-  if(!t){ if(i) i.focus(); return; }
-  if(k === 'loc'){
-    var kind = V2.pick.loc;
-    if(kind === 'bc' && !/\bBC\b|British Columbia/i.test(t)) t += ', BC';
-    v2Ans('loc', kind, t);
-  } else v2Ans('oth', 'someone', t);
-}
-function v2Ans(k, val, text){
-  var v = csVisit(PC_CURRENT), a = {};
-  if(k === 'loc') a = {kind:val, text: val === 'home' ? 'At home in BC' : text};
-  else if(k === 'oth') a = {who: val === 'alone' ? '' : text};
-  else if(k === 'id') a = {method: V2_ID[val][1]};
-  V2.pick[k] = null;
-  csApplyCheck(k, a);
-  v2NextCheck(k);
-}
-function v2Undo(k){
-  var v = csVisit(PC_CURRENT);
-  if(k === 'loc'){ v.location = false; v.outside = false; v.locKind = null; }
-  else { v.others = false; v.othersText = ''; }
-  csAfterStrip();
-  csFocus('#v2-ck-' + k + ' .v2-opt');
-}
-/* after an answer, focus moves to the next open check, or to the card title once all are done */
-function v2NextCheck(){
-  var n = document.querySelector('#v2-visit .v2-ckr.todo .v2-opt');
-  if(n) n.focus(); else { var h = v2El('v2-visit-h'); if(h) h.focus(); }
-}
+/* after consent is recorded, focus moves to the card's heading */
+function v2NextCheck(){ var h = v2El('v2-visit-h'); if(h) h.focus(); }
 function v2RenderVisit(name){
   var el = v2El('v2-visit'); if(!v2On() || !el || !name) return;
-  var v = csVisit(name), r = csRow(), ns = csNoShow(name), signed = !!(r && r.signed);
-  var h = '<div class="v2-ch">' + csIc('phone') + '<h3 id="v2-visit-h" tabindex="-1">This visit</h3></div>' +
-    '<p class="v2-vline"><span>' + csEsc(v.mode) + '</span><span class="v2-dot" aria-hidden="true">&middot;</span><span><span class="v2-vk">Callback</span> <span class="pc-mono">' + csEsc(v.callback) + '</span></span></p>';
+  var v = csVisit(name), ns = csNoShow(name), sep = '<span class="v2-dot" aria-hidden="true">&middot;</span>';
+  var h = '<h3 class="vh" id="v2-visit-h" tabindex="-1">This visit</h3>' +
+    '<p class="v2-vline">' + csIc('phone') + '<span>' + csEsc(v.mode) + '</span>' + sep +
+    '<span><span class="v2-vk">Callback</span> <span class="pc-mono">' + csEsc(v.callback) + '</span></span>' +
+    (!ns && v.consent ? '<span class="v2-vcon" title="' + csEsc(v.consent) + '">' + csIc('complete') + (/^On file/.test(v.consent) ? 'Consent on file' : 'Consent recorded') + '</span>' : '') + '</p>';
   /* Ani, 6 Oct: the call log stays here in a quiet form once a call ends (the live call is the floating widget) */
   var cl = PC_CALL[name];
   if(cl && cl.calls && !(PC_ON_CALL && PC_CALL_WHO === name))
     h += '<p class="v2-calllog">' + (cl.calls === 1 ? '1 call &middot; ' + pcFmt(cl.secs) : cl.calls + ' calls &middot; ' + pcFmt(cl.secs) + ' total') + (cl.dropped ? ' &middot; dropped' : '') + '</p>';
-  if(!ns) h += '<ul class="v2-checks" aria-label="Visit checks">' + ['loc','id','con','oth'].map(function(k){ return v2CheckRow(name, k, signed); }).join('') + '</ul>';
+  if(!ns && !v.consent) h += '<div class="v2-vmiss" id="v2-ck-con" role="group" aria-label="Consent, not done">' + csIc('alert') + '<span>Consent not recorded</span>' + v2Opt(csIc('complete') + 'Record verbal consent', "v2Ans('con')") + '</div>';
   el.innerHTML = h; paintPd(el);
 }
 
@@ -17385,13 +17416,15 @@ baWrap('cwPlace', function(){
    textarea. #vc-note-input stays as a hidden mirror holding the composed text ("Reason: ...\n\nFindings: ..."), so the
    existing gates (template text), the signed record and the review screen read one string. Writers go through nsAppend.
    ============================================================ */
-var NS_SECS = ['reason', 'findings', 'assessment', 'plan'];
-var NS_LBL = {reason:'Reason', findings:'Findings', assessment:'Assessment', plan:'Plan'};
+var NS_SECS = ['reason', 'subjective', 'objective', 'assessment', 'plan'];
+var NS_LBL = {reason:'Reason', subjective:'Subjective', objective:'Objective', assessment:'Assessment', plan:'Plan'};
 var NS = {last:null, dx:{open:false, q:'', act:0, res:[]}};
 function nsTa(k){ return document.getElementById('ns-' + k); }
 function nsGet(){ var o = {}; NS_SECS.forEach(function(k){ var t = nsTa(k); o[k] = t ? t.value : ''; }); return o; }
 function nsSet(o){
   o = o || {};
+  /* Daniel, 11 Oct: Findings became Subjective and Objective. A draft or signed record saved with Findings opens it in Subjective, so nothing is lost. */
+  if(o.findings && !o.subjective){ o = JSON.parse(JSON.stringify(o)); o.subjective = o.findings; delete o.findings; }
   NS_SECS.forEach(function(k){ var t = nsTa(k); if(t) t.value = o[k] || ''; });
   NS.last = null; NS.dx = {open:false, q:'', act:0, res:[]};
   nsSync(); nsRenderDx(); if(typeof vcGrow === 'function') vcGrow();
@@ -17402,7 +17435,10 @@ function nsSync(){
   NS_SECS.forEach(function(k){ var t = (v[k] || '').trim(); if(t) parts.push(NS_LBL[k] + ':\n' + t); });
   var dx = nsDxCode();
   if(dx){ var line = 'Diagnosis (ICD-9): ' + dx + ' ' + t23DxName(dx); var ai = parts.findIndex(function(p){ return p.indexOf('Assessment:') === 0; });
-    if(ai > -1) parts[ai] += '\n' + line; else parts.splice(Math.min(parts.length, v.reason.trim() ? (v.findings.trim() ? 2 : 1) : (v.findings.trim() ? 1 : 0)), 0, 'Assessment:\n' + line); }
+    if(ai > -1) parts[ai] += '\n' + line;
+    else { /* no assessment text yet: the diagnosis line sits after whatever comes before Assessment */
+      var before = ['reason', 'subjective', 'objective'].filter(function(k){ return (v[k] || '').trim(); }).length;
+      parts.splice(Math.min(parts.length, before), 0, 'Assessment:\n' + line); } }
   n.value = parts.join('\n\n');
 }
 function nsAppend(k, text, sep){
@@ -17428,7 +17464,7 @@ function nsAIList(){
   if(!PC_CURRENT) return [];
   var out = [], a = csAI(PC_CURRENT), S = CS.sc[PC_CURRENT] || {};
   if(a.state === 'pending' && a.text) out.push('reason');
-  ['findings', 'assessment', 'plan'].forEach(function(k){ var x = S[k]; if(x && !x.held && (x.state === 'pending' || x.state === 'editing') && x.text) out.push(k); });
+  ['subjective', 'objective', 'assessment', 'plan'].forEach(function(k){ var x = S[k]; if(x && !x.held && (x.state === 'pending' || x.state === 'editing') && x.text) out.push(k); });
   return out;
 }
 function nsAICount(){ return nsAIList().length; }
@@ -17639,6 +17675,6 @@ baWrap('showScreen', function(r, name){ if(name === 'today') hsdRender(); });
 hsdRender();
 setInterval(function(){ var s = document.getElementById('screen-today'); if(s && s.classList.contains('active')) hsdRender(); }, 60000);   /* the next window moves with the clock */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-08 11:00</div>
+  <div class="build-stamp">v2 · build 2026-10-11 21:00</div>
 </body>
 </html>
