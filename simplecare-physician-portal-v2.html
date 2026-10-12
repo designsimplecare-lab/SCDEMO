@@ -6062,6 +6062,14 @@
   #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-btn .kf-chev{margin-left:auto;}
   #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-btn[aria-expanded="true"] .kf-chev{transform:rotate(180deg);}
   #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-b[hidden]{display:none;}
+  /* ===== 12 Oct (Daniel): Call and Chart front and centre ("i like the call chart function - we need to make that front and center") =====
+     The two buttons are the largest controls on the page, full width of the patient card right under the allergy band, and the card is
+     sticky, so they stay in view. Behaviour unchanged. */
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts{margin:12px 0 0;gap:10px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts > .btn{height:52px;min-height:52px;font-size:17px;font-weight:700;gap:8px;border-radius:12px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts > .btn .ic,#screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts > .btn .ic svg{width:22px;height:22px;}
+  /* with Call hidden (no-show banner, or a call in progress) Chart takes the full width */
+  #screen-patientchart #pcv-c.cs-v2.cs-ns-on #v2-pt .vc-acts > #v2t-chart,#screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts:has(> .btn.dark.cw-hide) > #v2t-chart{grid-column:1 / -1;}
 </style>
 </head>
 <body>
@@ -6500,16 +6508,13 @@
         <div class="v2" id="v2" hidden>
           <aside class="v2-side" id="v2-side" aria-label="Patient and context">
             <section class="v2-card v2-pt" id="v2-pt" aria-label="Patient"></section>
-            <section class="v2-card v2-visit" id="v2-visit" aria-labelledby="v2-visit-h"></section>
             <!-- Ani, 6 Oct: "too many separate big cards". One Patient summary card; its sections are accordion rows. -->
             <section class="v2-card v2-sum" id="v2-sum" aria-labelledby="v2-sum-h">
             <h3 class="v2-sum-h" id="v2-sum-h">Patient summary</h3>
             <section class="v2-sec" id="v2s-meds" data-k="meds"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-meds-b" onclick="v2Sec('meds')"><span class="ic" data-pdic="encounterlog"></span><span class="v2-st">Medications</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-meds-b" hidden></div></section>
-            <section class="v2-sec" id="v2s-hist" data-k="hist"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-hist-b" onclick="v2Sec('hist')"><span class="ic" data-pdic="tasks"></span><span class="v2-st">History</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-hist-b" hidden></div></section>
+            <section class="v2-sec" id="v2s-hist" data-k="hist"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-hist-b" onclick="v2Sec('hist')"><span class="ic" data-pdic="tasks"></span><span class="v2-st">Past Medical History (PMHx)</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-hist-b" hidden></div></section>
             <section class="v2-sec" id="v2s-pend" data-k="pend"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-pend-b" onclick="v2Sec('pend')"><span class="ic" data-pdic="clock"></span><span class="v2-st">Pending</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-pend-b" hidden></div></section>
             <section class="v2-sec" id="v2s-since" data-k="since"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-since-b" onclick="v2Sec('since')"><span class="ic" data-pdic="reassign"></span><span class="v2-st">Since you last saw</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-since-b" hidden></div></section>
-            <section class="v2-sec" id="v2s-team" data-k="team"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-team-b" onclick="v2Sec('team')"><span class="ic" data-pdic="user"></span><span class="v2-st">Care team</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-team-b" hidden></div></section>
-            <section class="v2-sec" id="v2s-prev" data-k="prev"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-prev-b" onclick="v2Sec('prev')"><span class="ic" data-pdic="calendar"></span><span class="v2-st">Previous visits</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-prev-b" hidden></div></section>
             </section>
           </aside>
           <div class="v2-main" id="v2-main">
@@ -7515,7 +7520,6 @@
     <div class="dsw-grid">
       <button id="dsw-cs-empty" aria-pressed="false" onclick="csDemo('empty')">Nothing needs attention</button>
       <button onclick="csDemo('allergy')">Next allergy state</button>
-      <button id="dsw-cs-strip" aria-pressed="false" onclick="csDemo('strip')">Consent on file</button>
     </div>
   </div>
   <div class="dsw-sec">
@@ -11700,8 +11704,8 @@ function pcStartCall(){
   clearInterval(pcInt); pcInt=setInterval(function(){ pcSecs++; c.secs = pcSecs; paint(); },1000);
   /* Ani, 8 Oct: lots of AI for notes. Cedar starts listening with the call when consent is on file; otherwise it asks. */
   try{
-    if(typeof scState !== 'undefined' && scState === 'off' && PC_CURRENT && typeof csMissing === 'function'){
-      var noCon = csMissing(PC_CURRENT).some(function(m){ return m[0] === 'con'; });
+    if(typeof scState !== 'undefined' && scState === 'off' && PC_CURRENT && typeof csVisit === 'function'){
+      var noCon = !csVisit(PC_CURRENT).consent;   /* Daniel, 12 Oct: consent lives only here now, where Cedar starts listening */
       setTimeout(function(){ if(PC_ON_CALL && scState === 'off'){ if(noCon) scAskConsent(); else scStart(); } }, 1300);
     }
   }catch(e){}
@@ -13195,11 +13199,11 @@ function csVisit(name){
     mode:'Phone', callback:'604-555-01' + String(10 + i)
   });
 }
-function csStripDone(name){ return !!csVisit(name).consent; }
-function csMissing(name){
-  /* Finalize stays blocked only when consent is missing (Daniel, 11 Oct) */
-  return csVisit(name).consent ? [] : [['con','consent']];
-}
+/* Daniel, 12 Oct: "we can remove all of this" (the This visit block: phone, callback, consent). "We would know this information."
+   Nothing about the visit blocks Finalize any more. Consent is asked only where Cedar needs it: when the doctor starts Cedar's
+   listening and consent is not on file (pcStartCall / scAskConsent). */
+function csStripDone(name){ return true; }
+function csMissing(name){ return []; }
 /* a missed call or a no-show, before the doctor reaches the patient (Ani, 5 Oct: a simple no-show state) */
 function csNoShow(name){
   var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0];
@@ -13243,79 +13247,12 @@ function csRenderSnap(name){
    and "N checks before finalize"), and the checklist itself lives only by Finalize (csRenderChecks).
    Done items are not pills. Finalize still waits for every check (csFinState / finalizeVisit, unchanged). */
 function csRenderStrip(name){
-  var host = document.getElementById('cs-strip'); if(!host) return;
-  var v = csVisit(name), r = csRow(), miss = csMissing(name);
-  var signed = !!(r && r.signed), sep = '<span class="cs-dot" aria-hidden="true">&middot;</span>';
-  var h = '<h3 class="vh" id="cs-strip-h">This visit</h3><p class="cs-vline">' + csIc('phone') + '<span>' + v.mode + '</span>' + sep +
-    '<span><span class="cs-k">Callback</span> <b class="pc-mono">' + v.callback + '</b></span>';
-  if(signed) h += sep + '<span class="cs-done">' + csIc('complete') + 'Signed off</span>';
-  else if(csNoShow(name)) h += '';
-  else if(miss.length) h += sep + '<button type="button" class="cs-link cs-chk" onclick="csGoStrip(\'' + miss[0][0] + '\')">' + csIc('alert') +
-    miss.length + (miss.length === 1 ? ' check' : ' checks') + ' before finalize</button>';
-  else h += sep + '<span class="cs-done">' + csIc('complete') + 'Checks complete</span>';
-  host.innerHTML = h + '</p>'; paintPd(host);
+  /* Daniel, 12 Oct: the This visit strip, its checklist and its consent forms are removed */
+  var host = document.getElementById('cs-strip'); if(host){ host.innerHTML = ''; host.hidden = true; }
   csRenderChecks(name);
   csMeasure();
 }
-/* the full checklist, only by Finalize. Incomplete = an amber tag that is the button that completes it. */
-function csRenderChecks(name){
-  var el = document.getElementById('cs-finwhy'); if(!el) return;
-  var r = csRow(), v = csVisit(name), miss = csMissing(name);
-  if(!r || r.signed || csNoShow(name)){ el.hidden = true; el.innerHTML = ''; return; }
-  var all = [['con','Consent','Not recorded','cardok', v.consent]];   /* Daniel, 11 Oct: consent is the only check left */
-  var todo = all.filter(function(x){ return !x[4]; }), done = all.filter(function(x){ return !!x[4]; });
-  var h;
-  if(todo.length){
-    /* only what is left, as tags; done items are not repeated here (their values show under Details once all are done) */
-    h = '<p class="cs-ck-h">' + csIc('alert') + 'To finalize:</p><ul class="cs-ck">' + todo.map(function(x){ return csTodo(x[3], x[1], x[2], x[0]); }).join('') + '</ul>';
-  } else {
-    var open = !!CS.stripOpen[name];
-    h = '<p class="cs-ck-done">' + csIc('complete') + '<span>Visit checks complete</span>' +
-      '<button type="button" class="cs-link" aria-expanded="' + open + '" onclick="CS.stripOpen[PC_CURRENT]=!CS.stripOpen[PC_CURRENT];csRenderChecks(PC_CURRENT);csFocus(\'#cs-finwhy .cs-link\')">' + (open ? 'Hide details' : 'Details') + '</button></p>' +
-      (open ? '<p class="cs-ck-det">' + done.map(function(x){ return '<span><span class="cs-k">' + x[1] + '</span> ' + csEsc(x[4]) + '</span>'; }).join('<span class="cs-dot" aria-hidden="true">&middot;</span>') + '</p>' : '');
-  }
-  el.innerHTML = h; el.hidden = false; paintPd(el);
-}
-function csLi(icon, k, v){ return '<li>' + csIc(icon) + '<span><span class="cs-k">' + k + '</span><span class="cs-v">' + v + '</span></span></li>'; }
-function csTodo(icon, k, word, key){
-  /* incomplete is amber with a word, and the tag is the button that completes it */
-  return '<li class="todo" id="cs-todo-' + key + '">' +
-    '<button type="button" class="cs-tag warn" aria-haspopup="dialog" aria-expanded="' + (CS.pop === key) + '" aria-label="' + k + ': ' + word + '. Complete it" title="' + word + '" onclick="csPop(\'' + key + '\')">' +
-    csIc('alert') + k + '</button>' + (CS.pop === key ? csPopHtml(key) : '') + '</li>';
-}
-function csPopHtml(key){
-  /* Daniel, 11 Oct: only consent is asked (the location, others present and ID verified forms are gone) */
-  var acts = function(label){ return '<div class="cs-pacts"><button type="button" class="btn dark" onclick="csConfirm(\'' + key + '\')"><span class="ic" data-pdic="complete"></span>' + label + '</button>' +
-    '<button type="button" class="btn" onclick="csPop(null)"><span class="ic" data-pdic="chevl"></span>Cancel</button></div>'; };
-  return '<div class="cs-pop" role="dialog" aria-label="Record consent"><p>The patient agrees to a virtual visit today.</p>' + acts('Record verbal consent') + '</div>';
-}
-function csPop(key){
-  var prev = CS.pop; CS.pop = key; csRenderChecks(PC_CURRENT);
-  if(!key){ csFocus('#cs-todo-' + prev + ' button'); return; }
-  var p = document.querySelector('#cs-finwhy .cs-pop'); if(!p) return;
-  if(p.scrollIntoView) p.scrollIntoView({block:'nearest'});
-  var f = p.querySelector('input[type=text]') || p.querySelector('input') || p.querySelector('button');
-  if(f){ f.focus(); if(f.select) f.select(); }
-  p.addEventListener('keydown', function(e){
-    if(e.key === 'Escape'){ e.stopPropagation(); csPop(null); }
-    if(e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.type === 'text'){ e.preventDefault(); csConfirm(key); }
-  });
-}
-function csConfirm(key){
-  csApplyCheck('con', {});
-  var next = document.querySelector('#cs-finwhy li.todo button') || document.getElementById('vc-finalize');
-  if(next && !next.hidden) next.focus();
-}
-/* Ani, 6 Oct: the one place a visit check is recorded. The Sign off section's form (csConfirm) and the This visit line's
-   button (v2Ans) both call it, so the state, "N checks left" on Sign off and the Finalize gate are shared.
-   Daniel, 11 Oct: consent is the only check left (location, others present and ID verified are removed). */
-function csApplyCheck(key, a){
-  var v = csVisit(PC_CURRENT);
-  v.consent = 'Verbal, today ' + csNow();
-  CS.pop = null;
-  csAfterStrip();
-  csSay('Consent recorded.');
-}
+function csRenderChecks(name){ var el = document.getElementById('cs-finwhy'); if(el){ el.hidden = true; el.innerHTML = ''; } }
 function csAfterStrip(){ csRenderStrip(PC_CURRENT); csRenderNotices(PC_CURRENT); csFinState(); }
 
 /* ---------- notices: a dropped call (the outside-BC notice is gone, Daniel 11 Oct) ---------- */
@@ -13326,8 +13263,8 @@ function csRenderNotices(name){
     /* v2.5 §3: the strip re-expands on a dropped call; the callback is one action away, the draft is kept.
        Calls go outward only: the doctor phones the patient back. */
     h += '<div class="cs-notice" role="alert">' + csIc('phone') + '<div class="cs-grow"><p><b>Call dropped' + (c ? ' at ' + pcFmt(c.secs) : '') + '.</b> Your note is kept.</p>' +
-      '<p class="cs-cap">Callback <b class="pc-mono">' + v.callback + '</b></p></div>' +
-      '<button type="button" class="btn dark" id="cs-redial" onclick="pcStartCall()"><span class="ic" data-pdic="patientview"></span>Call back ' + v.callback + '</button></div>';
+      '</div>' +
+      '<button type="button" class="btn dark" id="cs-redial" onclick="pcStartCall()"><span class="ic" data-pdic="patientview"></span>Call back</button></div>';
   }
   host.innerHTML = h; host.hidden = !h; paintPd(host);
   /* one display of the dropped call: the notice replaces v2's "Call dropped at" text (v2.5 §7 no duplicate display) */
@@ -13757,6 +13694,7 @@ function nsAIEditDone(k, add){
 
 /* the scribe drafts into per-section suggestions, never straight into the doctor's note (was: n.value += ...) */
 scStart = function(){
+  var cv = PC_CURRENT && csVisit(PC_CURRENT); if(cv && !cv.consent) cv.consent = 'Verbal, today ' + csNow();   /* consent given at the start of listening */
   scState = 'live'; scIdx = 0; scSeen = []; scDone = {};
   CS.sc[PC_CURRENT] = {};
   renderScribe(); csRenderAI();
@@ -13839,19 +13777,9 @@ function csFinState(){
   /* aria-disabled, not disabled: it stays focusable and explains itself (the checklist above it names what is missing) */
   b.setAttribute('aria-disabled','true'); b.setAttribute('aria-describedby','cs-finwhy');
 }
-/* "N checks before finalize" in the banner and a blocked Finalize both open the check by Finalize */
-function csGoStrip(key){
-  if(document.getElementById('pcv-c').classList.contains('cs-narrow')) csView('note');
-  csPop(key);
-}
+function csGoStrip(key){}
 var csFinalize0 = finalizeVisit;
 finalizeVisit = function(force){
-  if(PC_CURRENT && !csStripDone(PC_CURRENT)){
-    var m = csMissing(PC_CURRENT);
-    toast('Complete this visit first: ' + m.map(function(x){ return x[1]; }).join(', '));
-    csGoStrip(m[0][0]);
-    return;
-  }
   var aiw = PC_CURRENT ? nsAIPending() : null;
   if(!force && aiw && !(csRow() || {}).signed){
     vcFinWarn('The AI ' + aiw + ' you haven&rsquo;t accepted will not be filed. Sign off and finalize anyway?');
@@ -13934,7 +13862,6 @@ document.addEventListener('keydown', function(e){
     csTab(ids[i]); e.preventDefault();
   }
   if(e.key === 'Escape' && csOnChart()){
-    if(CS.pop){ csPop(null); return; }
     var fc = document.getElementById('cs-fc');
     if(fc && !fc.hidden && !document.querySelector('.cd-panel.show, .tm-overlay.show, #copilot-overlay.show')) csCloseFull();
   }
@@ -14186,17 +14113,12 @@ function csDemo(k){
   var v = csVisit(PC_CURRENT);
   if(k === 'empty') CS.empty = !CS.empty;
   if(k === 'allergy'){ var o = ['nkda','named','none'], a = CS.allergy[PC_CURRENT] || 'nkda'; CS.allergy[PC_CURRENT] = o[(o.indexOf(a) + 1) % 3]; }
-  if(k === 'strip'){
-    /* Daniel, 11 Oct: consent is the only visit check left; this toggles it */
-    v.consent = v.consent ? '' : 'Verbal, today';
-    CS.stripOpen[PC_CURRENT] = false;
-  }
   csRefresh(); csDemoSync();
 }
 function csDemoSync(){
   var v = PC_CURRENT ? csVisit(PC_CURRENT) : {};
   var set = function(id, on){ var b = document.getElementById(id); if(b){ b.classList.toggle('on', !!on); b.setAttribute('aria-pressed', String(!!on)); } };
-  set('dsw-cs-empty', CS.empty); set('dsw-cs-strip', PC_CURRENT && csStripDone(PC_CURRENT));
+  set('dsw-cs-empty', CS.empty);
 }
 </script>
 <script>
@@ -15412,7 +15334,7 @@ function t23SyncFin(){
 }
 function t23Fin(mode){
   var r = (typeof csRow === 'function') ? csRow() : null;
-  if(mode === 'now' && r && !r.signed && csStripDone(PC_CURRENT)){
+  if(mode === 'now' && r && !r.signed){
     var v = t23VisitCode(r.name);
     if(v.disp !== 'private' && !v.dx){
       /* a claim can't be submitted without a diagnosis; "Finalize, submit later" still closes the visit */
@@ -15718,7 +15640,7 @@ function v2Sec(k, open){
   if(body) body.hidden = !open;
   s.classList.toggle('v2-open', !!open);   /* Ani, 6 Oct: the open row gets a soft background */
 }
-function v2Secs(){ ['meds','hist','pend','since','prev'].forEach(function(k){ v2Sec(k, !!V2.open[k]); }); }
+function v2Secs(){ ['meds','hist','pend','since'].forEach(function(k){ v2Sec(k, !!V2.open[k]); }); }
 /* Ani, 6 Oct: open the one section that matters most for this visit, and only one: Pending when something is overdue;
    Medications for a prescription renewal visit (e.g. "Rx renewal"). Otherwise all rows start closed. */
 function v2AutoOpen(name){
@@ -15876,18 +15798,8 @@ function v2RenderSide(name){
   /* Since you last saw: the chart's own section (renderSinceLast), moved here; hidden when it is */
   var slv = v2El('slv'), list = L ? (CS_SINCE[name] || csSinceGeneric(name)) : [];
   v2SetSec('since', list.length, '', null, !!(slv && !slv.hidden));
-  var prevBody = (prev ? v2Lines(prev, name) : '') +
-    (L ? '<button type="button" class="cs-link v2-readnote" onclick="csOpenFull(\'documents\',this)">Read the ' + csShort(L.date) + ' note</button>' : '');
-  v2SetSec('prev', v2Count(prev), '', prevBody, !!(prev || L));
-  /* Ani, 7 Oct: doctors get their own section. Family doctor (you), the specialists from the care plan and consults, the MOA, the pharmacy */
-  var team = [['Family doctor', PT_LAST[name] ? 'Dr. D. Pannozzo' : 'Not recorded', PT_LAST[name] ? 'you' : '']], seen = {};
-  var addSpec = function(spec, svc){ if(!svc || /Pannozzo/.test(svc)) return; var s = String(svc).replace(/&rsquo;/g, '’'); if(seen[s]) return; seen[s] = 1; team.push([spec || 'Specialist', s, '']); };
-  (CARE_PLAN[name] || []).forEach(function(g){ (g.items || [g]).forEach(function(it){ addSpec(it.specialty || g.specialty, it.service || g.service); }); });
-  if(CP_PENDING[name]) (CP_PENDING[name].recs || []).forEach(function(r){ addSpec(r.specialty, r.service); });
-  team.push(['MOA', 'Dolly', '']);
-  if(PT_CHART[name] && PT_CHART[name].pharm) team.push(['Pharmacy', PT_CHART[name].pharm, '']);
-  v2SetSec('team', team.length, '', '<ul class="v2-team">' + team.map(function(t){
-    return '<li><span class="v2-tk">' + t[0] + '</span><span class="v2-tv">' + csEsc(t[1]) + (t[2] ? ' <span class="v2-you">' + t[2] + '</span>' : '') + '</span></li>'; }).join('') + '</ul>', true);
+  /* Daniel, 12 Oct: Care team (family doctor, MOA, pharmacy) and Previous visits are gone from this list; past visits live in Cedar's key findings,
+     the pharmacy stays on the Prescribe card (rxPharm) */
   /* Chart tab (Ani, 7 Oct): each Patient summary row ends with a small "See all" that opens the Chart tab on its section.
      Pending goes where its items live (the care plan for most; the section most of its lines open) */
   var most = function(row, dflt){
@@ -15897,7 +15809,7 @@ function v2RenderSide(name){
     return best;
   };
   v2SeeAll('meds', 'medications'); v2SeeAll('hist', 'problems'); v2SeeAll('pend', most(pend, 'careplan'));
-  v2SeeAll('since', 'timeline'); v2SeeAll('prev', 'timeline');
+  v2SeeAll('since', 'timeline');
   v2SumEdges();
   var el = v2El('v2-key');
   if(el) v2RenderKey(el, name, by);
@@ -15942,10 +15854,32 @@ function kfToggle(k){
   var key = PC_CURRENT + '|' + k; CS.keyOpen[key] = !CS.keyOpen[key];
   v2RenderSide(PC_CURRENT); csFocus('#kf-btn-' + k);
 }
+/* Past visits (Daniel, 12 Oct: "The Doctor will always want to look at past visits and it shouldn't be buried at the bottom"): the
+   doctor's own earlier visits from the demo's visit data (PT_LAST: date, why, what was decided), the ones that relate to today's
+   concern first. Each opens the visit note in the Chart drawer. */
+var KF_STOP = ['follow','appointment','visit','standard','noted','with','from','that','this','pain'];
+function kfWords(t){ return String(t || '').toLowerCase().replace(/[^a-z ]/g, ' ').split(/\s+/).filter(function(w){ return w.length > 3 && KF_STOP.indexOf(w) < 0; }); }
+function kfVisits(name, concern){
+  var L = PT_LAST[name]; if(!L) return [];
+  var cw = kfWords(concern + ' ' + ((csRow() || {}).concern || ''));
+  var list = [L].map(function(v){ var related = kfWords(v.why).some(function(w){ return cw.indexOf(w) > -1; }); return {v:v, related:related}; });
+  list.sort(function(a, b){ return (b.related ? 1 : 0) - (a.related ? 1 : 0); });
+  return list;
+}
+function kfVisitLine(x){
+  var v = x.v;
+  return '<button type="button" class="v2-line" onclick="csOpenFull(\'documents\',this)"><span class="v2-l0">' + csEsc(csShort(v.date)) + '</span>' +
+    '<span class="v2-l1">' + csEsc(v.why) + (x.related ? '<span class="v2-chip">Related to today</span>' : '') + '</span>' +
+    '<span class="v2-l2">Decided: ' + csEsc((v.plan || []).slice(0, 2).join('; ')) + '</span>' +
+    '<span class="v2-l2"><span class="kf-src">Source: Visit note</span></span>' +
+    '<span class="vh"> &mdash; open the visit note</span>' + csIc('chevr', 'v2-go') + '</button>';
+}
 function v2RenderKey(el, name, by){
   var r = csRow(), sum = csIntakeSummary(name), concern = sum || (r && r.concern) || '';
-  var hist = by['History'], meds = by['Medications'], inv = by['Investigations'], prev = by['Prior related care'], pend = by['Pending'];
-  if(!hist && !meds && !inv && !prev && !pend){ el.hidden = true; el.innerHTML = ''; return; }
+  var hist = by['History'], meds = by['Medications'], inv = by['Investigations'], pend = by['Pending'];
+  /* the doctor's own visits are in Past visits above; Prior related care keeps the specialists and other care */
+  var prev = by['Prior related care'];
+  if(prev) prev = [prev[0], prev[1].filter(function(x){ return !/&middot;\s*you$/.test(x[0]); })].concat(prev.slice(2));
   el.hidden = false;
   CS.keyOpen = CS.keyOpen || {};
   var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Cedar &middot; Key clinical findings</h3></div>' +
@@ -15962,7 +15896,11 @@ function v2RenderKey(el, name, by){
     kfLine(['Previous treatments', 'none recorded in Simple Care', 'medications']) +
     kfLine(['PharmaNet dispensing', 'not checked: no dispensing records connected yet', 'medications']) + '</div>' +
     (msrc ? '<p class="v2-q kf-q">Current list: ' + msrc + '</p>' : '') + '</section>';
-  /* 3. to 5.: Chart View v2.5's other categories, one click away */
+  /* 3. Past visits: the doctor always wants them, so they sit right after history and medications */
+  var pv = kfVisits(name, concern);
+  h += '<section class="kf-sec" aria-labelledby="kf-h-visits"><h4 class="kf-h" id="kf-h-visits">Past visits</h4>' +
+    (pv.length ? '<div class="kf-lines">' + pv.map(kfVisitLine).join('') + '</div>' : '<p class="v2-q kf-q">No previous visits in Simple Care.</p>') + '</section>';
+  /* 4. to 6.: Chart View v2.5's other categories, one click away */
   [['inv', 'Investigations', 'chartup', inv], ['prev', 'Prior related care', 'calendar', prev], ['pend', 'Pending', 'clock', pend]].forEach(function(c){
     var lines = kfLines(c[3], name); if(!lines) return;
     var n = v2Count(c[3]), open = !!CS.keyOpen[name + '|' + c[0]];
@@ -15975,35 +15913,11 @@ function v2RenderKey(el, name, by){
   el.innerHTML = h; paintPd(el);
 }
 
-/* ---------- This visit: phone or video, callback and consent as one compact line ----------
-   Daniel, 11 Oct: "Location is not relevant to us - can be removed. If someone else is present it is documented by the doctor ...
-   ID Verified, already presumed verified. The chart is primarily clinical." Those three checks and their forms are gone.
-   Consent stays: done = a tick in the line; missing = one button that records verbal consent through csApplyCheck, the same
-   function the Sign off section's form uses, so "N checks left" and the Finalize gate (consent only) update at once. */
+/* ---------- This visit: removed (Daniel, 12 Oct: "we can remove all of this") ----------
+   The block (phone, callback, consent) is gone from the chart. The function stays as a no-op because the call widget and the
+   shared render hooks still call it. */
 V2.pick = {};
-function v2Opt(label, on, pressed){
-  return '<button type="button" class="v2-opt"' + (pressed === undefined ? '' : ' aria-pressed="' + pressed + '"') + ' onclick="' + on + '">' + label + '</button>';
-}
-function v2Ans(k){
-  csApplyCheck('con', {});
-  v2NextCheck();
-}
-/* after consent is recorded, focus moves to the card's heading */
-function v2NextCheck(){ var h = v2El('v2-visit-h'); if(h) h.focus(); }
-function v2RenderVisit(name){
-  var el = v2El('v2-visit'); if(!v2On() || !el || !name) return;
-  var v = csVisit(name), ns = csNoShow(name), sep = '<span class="v2-dot" aria-hidden="true">&middot;</span>';
-  var h = '<h3 class="vh" id="v2-visit-h" tabindex="-1">This visit</h3>' +
-    '<p class="v2-vline">' + csIc('phone') + '<span>' + csEsc(v.mode) + '</span>' + sep +
-    '<span><span class="v2-vk">Callback</span> <span class="pc-mono">' + csEsc(v.callback) + '</span></span>' +
-    (!ns && v.consent ? '<span class="v2-vcon" title="' + csEsc(v.consent) + '">' + csIc('complete') + (/^On file/.test(v.consent) ? 'Consent on file' : 'Consent recorded') + '</span>' : '') + '</p>';
-  /* Ani, 6 Oct: the call log stays here in a quiet form once a call ends (the live call is the floating widget) */
-  var cl = PC_CALL[name];
-  if(cl && cl.calls && !(PC_ON_CALL && PC_CALL_WHO === name))
-    h += '<p class="v2-calllog">' + (cl.calls === 1 ? '1 call &middot; ' + pcFmt(cl.secs) : cl.calls + ' calls &middot; ' + pcFmt(cl.secs) + ' total') + (cl.dropped ? ' &middot; dropped' : '') + '</p>';
-  if(!ns && !v.consent) h += '<div class="v2-vmiss" id="v2-ck-con" role="group" aria-label="Consent, not done">' + csIc('alert') + '<span>Consent not recorded</span>' + v2Opt(csIc('complete') + 'Record verbal consent', "v2Ans('con')") + '</div>';
-  el.innerHTML = h; paintPd(el);
-}
+function v2RenderVisit(name){}
 
 /* ---------- header and tab marks: what is left, in one place ---------- */
 function v2NA(name){
@@ -16139,12 +16053,6 @@ function v2RxFocus(){
     var top = csTopbarH(), bar = v2El('v2-top'), h = bar ? bar.getBoundingClientRect().height : 0;
     document.documentElement.style.scrollPaddingTop = Math.round(top + h + 20) + 'px';
   });
-  /* a blocked Finalize, a missing-check chip or "N checks" opens the checklist inside the finalize popover */
-  var go0 = window.csGoStrip;
-  window.csGoStrip = function(key){
-    if(!v2On()) return go0.apply(this, arguments);
-    v2Fin(true, true); csPop(key);
-  };
   /* a new chart starts with the sidebar sections collapsed. Daniel 5 Oct (step 6): during an open visit it starts on
      the Note tab (on Review he asked "where do I do the note taking?"); a no-show starts on Review (its banner), and a
      signed-off visit on Review. Review keeps its badge. */
@@ -16278,7 +16186,8 @@ function cwGo(){
   var who = CW.who; if(!who) return;
   cwKeypad(false);
   if(PC_CURRENT !== who) openChart(who); else showScreen('patientchart');
-  var h = v2On() ? v2El('v2-visit-h') : null; if(h) h.focus({preventScroll:true});
+  /* Daniel, 12 Oct: the This visit card is gone; focus goes to the patient's name on the card */
+  var h = v2On() ? document.querySelector('#v2-pt .vc-nm') : null; if(h){ h.tabIndex = -1; h.focus({preventScroll:true}); }
 }
 /* one call at a time: calling another patient asks to end the first, in the widget itself */
 function cwAskSwitch(target){
@@ -17698,6 +17607,6 @@ baWrap('showScreen', function(r, name){ if(name === 'today') hsdRender(); });
 hsdRender();
 setInterval(function(){ var s = document.getElementById('screen-today'); if(s && s.classList.contains('active')) hsdRender(); }, 60000);   /* the next window moves with the clock */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-11 21:30</div>
+  <div class="build-stamp">v2 · build 2026-10-12 09:00</div>
 </body>
 </html>

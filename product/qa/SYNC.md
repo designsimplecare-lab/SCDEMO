@@ -8,6 +8,7 @@ the start of every task, and adds its own entries under "From QA".
 Newest first. Each entry: the date, what changed, where the source is, and what QA should do.
 
 ## From the lead
+- **12 Oct 2026: Daniel's second chart round is built** (build 2026-10-12 09:00; `from-daniel/2026-10-12-chart-and-bus-ad-feedback.md`; spec `chart-shell.md`, "12 Oct changes"). This visit is gone entirely (consent is asked only when Cedar starts listening); Call and Chart are large and prominent; the summary list is Medications, Past Medical History (PMHx), Pending, Since you last saw; Past visits is part of Cedar's key findings. Light mode only.
 - **11 Oct 2026: Daniel's chart changes are built** (build 2026-10-11 21:00, committed, NOT deployed; spec `product/specs/chart-shell.md`, "11 Oct changes"). This visit is now only phone, callback and consent; allergies are a prominent band; Review has Cedar · Key clinical findings; the note is Reason, Subjective, Objective, Assessment, Plan. Test it in light mode after Ani deploys.
 - **11 Oct 2026: AI Chart Assist requirements arrived** (B-007; task T-024 queued). Phase 1 covers the transcript panel with expiry states, source links, AI markers and Regenerate. Flags: audio for model improvement and staff listening need a privacy decision. Nothing built yet; don't test its modes.
 - **11 Oct 2026: Daniel's chart feedback** (`from-daniel/2026-10-11-chart-feedback.md`).
