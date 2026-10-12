@@ -59,3 +59,6 @@ categories as a default) beside Today; the note becomes Reason, Subjective, Obje
   Chart View v2.5 limits to a physician located in BC (companion spec not yet written).
 - **Cut-off texts and the PDF:** the Review categories beyond history and medications, the Plan
   section and the AI Chart Assist modes are not built until the full text is available.
+
+## Follow-up, 11 Oct 2026
+The PDF text arrived as a screenshot and is now filed: bulletin B-007, task T-024. The "couldn't be opened" note above no longer applies; the Review and Note messages that were cut off are partly covered by it (SOAP drafting, section-specific assist), and the rest stays as stated.

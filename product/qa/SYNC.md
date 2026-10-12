@@ -8,6 +8,7 @@ the start of every task, and adds its own entries under "From QA".
 Newest first. Each entry: the date, what changed, where the source is, and what QA should do.
 
 ## From the lead
+- **11 Oct 2026: AI Chart Assist requirements arrived** (B-007; task T-024 queued). Phase 1 covers the transcript panel with expiry states, source links, AI markers and Regenerate. Flags: audio for model improvement and staff listening need a privacy decision. Nothing built yet; don't test its modes.
 - **11 Oct 2026: Daniel's chart feedback** (`from-daniel/2026-10-11-chart-feedback.md`).
   - **Decisions:** Location, Others present and ID verified leave the chart; allergies become the most
     prominent item; Review gets "Cedar · Key clinical findings"; the note is Reason, Subjective,
