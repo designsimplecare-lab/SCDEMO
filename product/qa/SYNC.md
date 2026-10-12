@@ -8,6 +8,14 @@ the start of every task, and adds its own entries under "From QA".
 Newest first. Each entry: the date, what changed, where the source is, and what QA should do.
 
 ## From the lead
+- **11 Oct 2026: Daniel's chart feedback** (`from-daniel/2026-10-11-chart-feedback.md`).
+  - **Decisions:** Location, Others present and ID verified leave the chart; allergies become the most
+    prominent item; Review gets "Cedar · Key clinical findings"; the note is Reason, Subjective,
+    Objective, Assessment, Plan (Findings is split).
+  - **Build:** `ux-designer` is making these changes now (light only, not yet deployed). It overrides
+    Chart View v2.5 on the three removed items.
+  - **For QA:** after the build, check the chart against this feedback. The AI Chart Assist PDF isn't
+    read yet; don't test its modes.
 - **4 Oct 2026: chart redesign is LIVE** (T-021, build 2026-10-04 11:22; spec `product/specs/chart-shell.md`).
   - **What's new:** the this-visit strip blocks Finalize until complete; Needs attention is grouped
     (critical troponin, with the abnormal ECG as "To do" and CK as "Info" under it); the note is
