@@ -947,6 +947,43 @@
   html body #profile-dropdown .sw-cur:hover{background:none;}
   html body #profile-dropdown .sw-tick{width:18px;height:18px;margin-left:auto;color:var(--accent);}
   html body .build-stamp{font-size:14px;}
+
+  /* ===== T-025 (Daniel, 15 Oct; Ani approved: portal AND email, consent given at registration, no new consent screen) =====
+     The doctor's message, "Coming up", and the email preview. Calm: no red. Patient text is 16px. Sentence case. */
+  html body .pp-navn[hidden]{display:none;}
+  html body #screen-dashboard .pp-ic .ic{width:22px;height:22px;color:var(--ink-soft);}
+  html body .pp-navn{display:inline-block;min-width:22px;margin-left:6px;padding:0 6px;border-radius:11px;background:var(--accent);color:#fff;font-size:14px;line-height:22px;font-weight:600;text-align:center;}
+  html body #screen-dashboard .pp-msgcard{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--accent-wash);border-color:transparent;}
+  html body #screen-dashboard .pp-msgcard[hidden],html body #screen-dashboard .pp-coming[hidden]{display:none;}
+  html body #screen-dashboard .pp-ic{font-size:24px;line-height:1;}
+  html body #screen-dashboard .pp-msgb{display:grid;gap:2px;flex:1 1 220px;min-width:0;}
+  html body #screen-dashboard .pp-msgb b{font-size:16px;line-height:24px;font-weight:600;color:var(--ink);}
+  html body #screen-dashboard .pp-msgb span{font-size:16px;line-height:24px;color:var(--ink-soft);}
+  html body .pp-h2{margin:0 0 10px;font-size:18px;line-height:26px;font-weight:600;color:var(--ink);text-transform:none;letter-spacing:0;}
+  html body #screen-dashboard .pp-cu{list-style:none;margin:0;padding:0;}
+  html body #screen-dashboard .pp-cu li{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line);}
+  html body #screen-dashboard .pp-cu li:first-child{border-top:0;padding-top:2px;}
+  html body #screen-dashboard .pp-cu .pp-ic{margin-top:2px;}
+  html body #screen-dashboard .pp-cu b{display:block;font-size:16px;line-height:24px;font-weight:600;color:var(--ink);}
+  html body #screen-dashboard .pp-cu span.t{display:block;font-size:16px;line-height:24px;color:var(--ink);}
+  html body #screen-dashboard .pp-cu span.n{display:block;font-size:16px;line-height:24px;color:var(--ink-soft);}
+  html body .pp-note{margin:10px 0 0;max-width:66ch;font-size:16px;line-height:24px;color:var(--ink-soft);}
+  html body #screen-messages > h1{margin-bottom:24px;}
+  html body #screen-messages .pp-thread[hidden],html body #screen-messages .pp-mailcard[hidden],html body #screen-messages .pp-none[hidden]{display:none;}
+  html body #screen-messages .pp-th-h{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;}
+  html body #screen-messages .pp-th-h > div{display:grid;gap:2px;flex:1;min-width:0;}
+  html body #screen-messages .pp-th-h b{font-size:16px;line-height:24px;font-weight:600;}
+  html body #screen-messages .pp-th-h span{font-size:16px;line-height:24px;color:var(--ink-soft);}
+  html body #screen-messages .pp-th-h time{font-size:16px;line-height:24px;color:var(--ink-soft);white-space:nowrap;}
+  html body #screen-messages .pp-dot{width:10px;height:10px;margin-top:8px;border-radius:50%;background:var(--accent);flex:none;}
+  html body #screen-messages .pp-dot.read{background:var(--line-strong);}
+  html body #screen-messages .pp-letter{max-width:66ch;white-space:pre-wrap;font-size:16px;line-height:26px;color:var(--ink);outline:0;}
+  html body #screen-messages .pp-th-a{margin-top:16px;}
+  html body #screen-messages .pp-none{font-size:16px;color:var(--ink-soft);}
+  html body #screen-messages .pp-mail{max-width:520px;padding:14px 16px;border-radius:12px;background:var(--wash);}
+  html body #screen-messages .pp-mail p{margin:0;font-size:16px;line-height:24px;color:var(--ink);}
+  html body #screen-messages .pp-mail-s span{display:inline-block;min-width:72px;color:var(--ink-soft);}
+  html body #screen-messages .pp-mail-b{margin-top:8px !important;}
 </style>
 </head>
 <body class="mode-v1">
@@ -959,6 +996,8 @@
     <ul class="navlist">
       <li><button class="nav-btn active" data-screen="dashboard">Dashboard</button></li>
       <li><button class="nav-btn" data-screen="queue">Today's visit</button></li>
+      <!-- T-025 (Daniel, 15 Oct; Ani: portal AND email): shown only once the doctor has sent a message -->
+      <li id="pp-nav-msg" hidden><button class="nav-btn" data-screen="messages">Messages <span class="pp-navn" id="pp-nav-msg-n" hidden>1</span></button></li>
       <li><button class="nav-btn" data-screen="appointments">Visit history</button></li>
       <li><button class="nav-btn" data-screen="activity">Clinical activity</button></li>
       <li><button class="nav-btn" data-screen="documents">Health records</button></li>
@@ -1085,6 +1124,19 @@
         </div>
       </div>
 
+
+      <!-- T-025 (Daniel, 15 Oct; Ani approved): the doctor's message, and the dated follow-ups his letter agreed ("Coming up").
+           Both appear only after the doctor approves and sends. Calm tone: no red, each item named, who moves next. -->
+      <div class="card pp-msgcard" id="pp-msgcard" hidden>
+        <span class="pp-ic" aria-hidden="true" data-ppic="messages"></span>
+        <div class="pp-msgb"><b>You have a new message from Dr. Pannozzo</b><span>Your consultation report and next steps</span></div>
+        <button class="btn primary" onclick="showScreen('messages')">Read message</button>
+      </div>
+      <div class="card pp-coming" id="pp-coming" aria-labelledby="pp-coming-h" hidden>
+        <h2 class="pp-h2" id="pp-coming-h">Coming up</h2>
+        <ul class="pp-cu" id="pp-cu"></ul>
+        <p class="pp-note">We email you when there is a new message. You get messages by portal and email because you agreed to this when you registered.</p>
+      </div>
 
       <div class="dash-grid v1-only">
         <div class="card">
@@ -1397,6 +1449,25 @@
 
     <!-- the visit summary opens as a side drawer (#pp-case), Ani 6 Oct 2026 -->
 
+    <div class="screen" id="screen-messages">
+      <h1>Messages</h1>
+      <div class="card pp-thread" id="pp-thread" hidden>
+        <div class="pp-th-h"><span class="pp-dot" aria-hidden="true"></span><div><b>Dr. Daniel Pannozzo</b><span id="pp-th-s">Your consultation report and next steps</span></div><time id="pp-th-t"></time></div>
+        <div class="pp-letter" id="pp-letter" tabindex="-1"></div>
+        <div class="pp-th-a"><button class="btn" onclick="showScreen('dashboard')">Back to dashboard</button></div>
+      </div>
+      <p class="pp-none" id="pp-none">No messages yet.</p>
+      <!-- the email we send: generic on purpose (rule 8: no health information in an email subject or preview) -->
+      <div class="card pp-mailcard" id="pp-mailcard" hidden>
+        <h2 class="pp-h2">The email we send you</h2>
+        <p class="pp-note" style="margin-top:0;">When there is a new message, we email you. The email says only that a message is waiting. It never has health information in it. You get messages by portal and email because you agreed to this when you registered.</p>
+        <div class="pp-mail" role="group" aria-label="Preview of the email">
+          <p class="pp-mail-s"><span>Subject</span>You have a new message from your doctor&rsquo;s office</p>
+          <p class="pp-mail-b">You have a new message from your doctor&rsquo;s office. Sign in to read it.</p>
+        </div>
+      </div>
+    </div>
+
     <div class="screen" id="screen-family">
       <h1>Family members</h1>
 
@@ -1694,6 +1765,13 @@
       <button data-qs="dropped" onclick="dswQs('dropped')">Call dropped</button>
       <button data-qs="done" onclick="dswQs('done')">Done</button>
       <button data-qs="noshow" onclick="dswQs('noshow')">No-show</button>
+    </div>
+  </div>
+  <div class="dsw-sec">
+    <p>Doctor&rsquo;s message</p>
+    <div class="dsw-grid">
+      <button onclick="pprDemo()">Show the doctor&rsquo;s reply</button>
+      <button onclick="pprClear()">Clear</button>
     </div>
   </div>
   <div class="dsw-sec">
@@ -2528,8 +2606,74 @@ window.addEventListener('resize', function(){ if(window.innerWidth > 760 && docu
 (function(){ var src = document.querySelector('.brand-logo svg'), dst = document.querySelector('.pp-tb-brand'); if(src && dst) dst.appendChild(src.cloneNode(true)); })();
 
 renderPtLabWork();
+
+/* ===== T-025 (Daniel, 15 Oct; Ani approved): the doctor's approved message and the dated follow-ups reach the patient =====
+   Demo only: the doctor's portal writes one record under this key when the doctor presses Approve & send, and this page reads it
+   (on load and when it changes). In production this is the message service. The email carries no health information. */
+var PPR_KEY = 'sc-demo-reminder-v1', PPR_READ = 'sc-demo-reminder-read';
+ICONS.messages = '<svg viewBox="0 0 14 14" fill="none" class="ic"><rect x="0.5" y="2.5" width="13" height="9" rx="1.5" stroke="currentColor"/><path d="M1 3.5L7 8L13 3.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+applyIcons();
+function pprEsc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function pprGet(){ try { return JSON.parse(localStorage.getItem(PPR_KEY) || 'null'); } catch(e){ return null; } }
+function pprIsRead(m){ try { return localStorage.getItem(PPR_READ) === (m && m.id + '|' + m.at); } catch(e){ return false; } }
+function pprRender(){
+  var m = pprGet(), has = !!(m && m.body), unread = has && !pprIsRead(m);
+  var $ = function(id){ return document.getElementById(id); };
+  $('pp-nav-msg').hidden = !has;
+  var n = $('pp-nav-msg-n'); n.hidden = !unread;
+  $('pp-msgcard').hidden = !unread;
+  $('pp-thread').hidden = !has; $('pp-mailcard').hidden = !has; $('pp-none').hidden = has;
+  var coming = (has && m.coming) || [];
+  $('pp-coming').hidden = !coming.length;
+  $('pp-cu').innerHTML = coming.map(function(c){
+    return '<li><span class="pp-ic" aria-hidden="true">' + ICONS.appointments + '</span><div><b>' + pprEsc(c.what) + '</b><span class="t">' + pprEsc(c.when.charAt(0).toUpperCase() + c.when.slice(1)) + '</span><span class="n">' + pprEsc(c.next) + '</span></div></li>';
+  }).join('');
+  if(has){
+    $('pp-th-s').textContent = m.subject || 'Message from your doctor';
+    $('pp-th-t').textContent = m.at || '';
+    /* demo: this portal's account holder is Ani, so the letter greets her; the doctor's draft names his own patient */
+  $('pp-letter').textContent = m.body.replace(/^Hello [^,\n]+,/, 'Hello Ani,');
+    var dot = document.querySelector('#pp-thread .pp-dot'); if(dot) dot.classList.toggle('read', !unread);
+  }
+  /* the bell: one more unread notice, and one item at the top of its list */
+  var dd = $('notif-dropdown'), old = $('pp-notif'); if(old) old.remove();
+  var badge = document.querySelector('.bell-btn .badge');
+  if(badge){ if(badge.getAttribute('data-base') == null) badge.setAttribute('data-base', badge.textContent); badge.textContent = String(+badge.getAttribute('data-base') + (unread ? 1 : 0)); }
+  if(has && dd){
+    var d = document.createElement('div'); d.id = 'pp-notif'; d.className = 'notif-item' + (unread ? ' unread' : ''); d.style.cursor = 'pointer';
+    d.setAttribute('onclick', "toggleNotifs();showScreen('messages')");
+    d.innerHTML = '<span class="notif-dot' + (unread ? '' : ' read') + '"></span><div><b>You have a new message from your doctor&rsquo;s office</b><div class="notif-sub">Sign in to read it &middot; ' + pprEsc(m.at || '') + '</div></div>';
+    var t = dd.querySelector('.notif-title'); if(t) t.insertAdjacentElement('afterend', d);
+  }
+}
+/* opening Messages reads it */
+(function(){
+  var f = showScreen;
+  showScreen = function(name){
+    f(name);
+    if(name === 'messages'){
+      var m = pprGet();
+      if(m){ try { localStorage.setItem(PPR_READ, m.id + '|' + m.at); } catch(e){} }
+      pprRender();
+      var l = document.getElementById('pp-letter'); if(l && m) l.focus({preventScroll:true});
+    }
+  };
+})();
+window.addEventListener('storage', function(e){ if(e.key === PPR_KEY || e.key === PPR_READ) pprRender(); });
+/* walkthrough: show what the doctor's approved reply looks like, without the doctor's portal (demo letter, invented) */
+function pprDemo(){
+  var body = 'Hello Gloria,\n\nI have read the report from Dr. R. Calloway, the surgeon you saw on October 13.\n\nWhat the report found: the ultrasound showed a small nodule, about 9 mm, in your thyroid. Dr. Calloway thinks the odd look along one edge is most likely a quirk of the scan, and that the nodule itself looks low-risk.\n\nWhat was recommended: a biopsy (a fine needle takes a tiny sample) is the only test that can give a firm answer. You told Dr. Calloway you would rather not have it now. That is your choice, and I respect it.\n\nWhat we will do instead:\n- A repeat thyroid blood test in about 3 months, around January 2027.\n- A repeat thyroid ultrasound in about 6 months, around April 2027.\nI will send you the requisition for each one. Dr. Calloway’s office will arrange a review after the ultrasound.\n\nA repeat ultrasound cannot fully replace a biopsy. You can change your mind at any time, and I will arrange it.\n\nDr. Daniel Pannozzo';
+  try { localStorage.removeItem(PPR_READ); localStorage.setItem(PPR_KEY, JSON.stringify({v:1, id:'rm-demo', at:'Today, ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}), from:'Dr. Daniel Pannozzo', subject:'Your consultation report and next steps', body:body,
+    coming:[{what:'Repeat thyroid blood test', when:'about January 2027', next:'Your doctor will send the requisition'},
+            {what:'Repeat thyroid ultrasound', when:'about April 2027', next:'Your doctor will send the requisition'},
+            {what:'Review with Dr. Calloway', when:'after the repeat ultrasound', next:'Dr. Calloway’s office will contact you to book it'}]})); } catch(e){}
+  pprRender(); showScreen('dashboard'); if(typeof dswClose === 'function') dswClose();
+}
+function pprClear(){ try { localStorage.removeItem(PPR_KEY); localStorage.removeItem(PPR_READ); } catch(e){} pprRender(); showScreen('dashboard'); }
+(function(){ var e = document.querySelector('#pp-msgcard [data-ppic]'); if(e) e.innerHTML = ICONS.messages; })();
+pprRender();
 </script>
 
-  <div class="build-stamp">build 2026-10-07 08:05</div>
+  <div class="build-stamp">build 2026-10-16 00:47</div>
 </body>
 </html>

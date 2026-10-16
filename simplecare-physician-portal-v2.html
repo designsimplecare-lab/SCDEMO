@@ -6070,6 +6070,116 @@
   #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts > .btn .ic,#screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts > .btn .ic svg{width:22px;height:22px;}
   /* with Call hidden (no-show banner, or a call in progress) Chart takes the full width */
   #screen-patientchart #pcv-c.cs-v2.cs-ns-on #v2-pt .vc-acts > #v2t-chart,#screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts:has(> .btn.dark.cw-hide) > #v2t-chart{grid-column:1 / -1;}
+  /* ===== T-025 (Daniel, 15 Oct: "Reminder workflow"; Ani approved 15 Oct): Cedar reads a specialist report, the doctor approves each piece =====
+     Cedar's block in the review screen, the drafted orders in Action, and the sign-off line. AI content is marked (Cedar mark, a tinted surface,
+     italic text) until the doctor accepts it. Tags are the one spec (15px/500, 40px, no stroke, barely tinted); buttons 44px with an icon;
+     words are ink, colour sits on icons; no red. */
+  :is(#screen-review,#screen-patientchart) .rm-mark{display:inline-flex;width:22px;height:20px;flex:none;color:var(--brand);}
+  :is(#screen-review,#screen-patientchart) .rm-mark svg{width:22px;height:20px;}
+  :is(#screen-review,#screen-patientchart) .rm-tag{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 12px;border:0;border-radius:10px;background:var(--tag-info);color:var(--ink);font:inherit;font-size:15px;font-weight:500;line-height:18px;white-space:nowrap;}
+  :is(#screen-review,#screen-patientchart) .rm-tag .ic,:is(#screen-review,#screen-patientchart) .rm-tag svg{width:18px;height:18px;flex:none;}
+  :is(#screen-review,#screen-patientchart) .rm-tag.warn{background:var(--tag-warn);}
+  :is(#screen-review,#screen-patientchart) .rm-tag.warn .ic{color:var(--tag-warn-ic);}
+  :is(#screen-review,#screen-patientchart) .rm-tag .rm-mark,:is(#screen-review,#screen-patientchart) .rm-tag .rm-mark svg{width:18px;height:16px;}
+  :is(#screen-review,#screen-patientchart) .rm-done{display:inline-flex;align-items:center;gap:8px;font-size:15px;line-height:22px;font-weight:600;color:var(--ink);white-space:nowrap;}
+  :is(#screen-review,#screen-patientchart) .rm-done .ic,:is(#screen-review,#screen-patientchart) .rm-done svg{width:20px;height:20px;color:#3E7D52;flex:none;}
+  :is(#screen-review,#screen-patientchart) .rm-ai-n{font-size:14px;line-height:20px;color:var(--ink-soft);max-width:66ch;}
+
+  /* the block in the review screen */
+  #screen-review #rm-block{margin:0 0 20px;padding:20px;border-radius:14px;background:var(--brand-wash);}
+  #screen-review #rm-block[hidden]{display:none;}
+  #screen-review #rm-block .rm-hd{display:flex;align-items:center;gap:10px;margin:0 0 6px;}
+  #screen-review #rm-block .rm-hd h3{margin:0;font-size:18px;line-height:24px;font-weight:700;color:var(--ink);}
+  #screen-review #rm-block .rm-lead{margin:0 0 14px;max-width:66ch;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-review #rm-block .rm-lead em{font-style:normal;color:var(--ink-soft);}
+  #screen-review #rm-block .rm-sec{padding:14px 0 0;border-top:1px solid rgba(23,24,28,.08);}
+  #screen-review #rm-block .rm-sec + .rm-sec{margin-top:14px;}
+  #screen-review #rm-block .rm-sec h4{margin:0 0 6px;font-size:15px;line-height:22px;font-weight:700;color:var(--ink);}
+  #screen-review #rm-block .rm-p{margin:0;max-width:66ch;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-review #rm-block .rm-keep{display:flex;align-items:center;gap:8px;margin:8px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-review #rm-block .rm-keep .ic,#screen-review #rm-block .rm-keep svg{width:18px;height:18px;flex:none;color:var(--ink-soft);}
+  #screen-review #rm-block .rm-src{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 6px;margin-left:2px;border:0;border-radius:8px;background:none;font:inherit;font-size:14px;line-height:20px;font-weight:600;color:var(--ink);cursor:pointer;vertical-align:middle;text-decoration:underline;text-decoration-color:rgba(23,24,28,.28);text-underline-offset:3px;}
+  #screen-review #rm-block .rm-src:hover{background:rgba(255,255,255,.7);}
+  #screen-review #rm-block .rm-src:focus-visible,#screen-review #rm-block .btn:focus-visible,#screen-review #rm-block textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #screen-review #rm-block .rm-src .ic,#screen-review #rm-block .rm-src svg{width:16px;height:16px;flex:none;color:var(--brand);}
+  #screen-review #rm-block .rm-recs{list-style:none;margin:0;padding:0;display:grid;gap:2px;}
+  #screen-review #rm-block .rm-rec{display:grid;gap:0;padding:8px 0;}
+  #screen-review #rm-block .rm-rec .rm-src{justify-self:start;margin:0 0 0 -6px;white-space:nowrap;}
+  #screen-review #rm-block .rm-rec-t{display:grid;gap:2px;min-width:0;}
+  #screen-review #rm-block .rm-rec-t b{font-size:15px;line-height:22px;font-weight:700;color:var(--ink);}
+  #screen-review #rm-block .rm-rec-m{font-size:15px;line-height:22px;color:var(--ink-soft);}
+  #screen-review #rm-block .rm-rec.gone .rm-rec-t{text-decoration:line-through;text-decoration-color:rgba(23,24,28,.3);}
+  #screen-review #rm-block .rm-sh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 10px;}
+  #screen-review #rm-block .rm-sh h4{margin:0;}
+  #screen-review #rm-block .rm-step{margin:0 0 10px;padding:14px 16px;border-radius:12px;background:var(--panel);}
+  #screen-review #rm-block .rm-step:last-child{margin-bottom:0;}
+  #screen-review #rm-block .rm-step-r{display:flex;align-items:center;gap:14px;}
+  #screen-review #rm-block .rm-step-r > .ic,#screen-review #rm-block .rm-step-r > svg{width:24px;height:24px;flex:none;color:var(--brand);}
+  #screen-review #rm-block .rm-step-b{display:grid;gap:2px;flex:1;min-width:0;}
+  #screen-review #rm-block .rm-step-b b{font-size:16px;line-height:22px;font-weight:700;color:var(--ink);}
+  #screen-review #rm-block .rm-step-s{font-size:15px;line-height:22px;color:var(--ink-soft);max-width:66ch;}
+  #screen-review #rm-block .btn{min-height:44px;flex:none;}
+  /* the AI-drafted letter: tinted surface, the Cedar mark and italic text until the doctor approves it */
+  #screen-review #rm-block .rm-ai{display:grid;gap:10px;margin:12px 0 0;padding:14px;border-radius:12px;background:var(--brand-wash);}
+  #screen-review #rm-block .rm-ai-k{display:flex;align-items:center;gap:8px;margin:0;font-size:14px;line-height:20px;font-weight:600;color:var(--ink-soft);}
+  #screen-review #rm-block .rm-ai textarea{width:100%;max-width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid var(--line-strong);border-radius:10px;background:var(--panel);font:inherit;font-size:15px;line-height:22px;font-style:italic;color:var(--ink);resize:vertical;}
+  #screen-review #rm-block .rm-ai-a,#screen-review #rm-block .rm-conf{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  #screen-review #rm-block .rm-conf{margin:12px 0 0;}
+  #screen-review #rm-block .rm-sent{display:grid;gap:12px;margin:12px 0 0;}
+  #screen-review #rm-block .rm-sent-k{display:flex;align-items:center;gap:8px;margin:0;font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
+  #screen-review #rm-block .rm-sent-k .ic,#screen-review #rm-block .rm-sent-k svg{width:20px;height:20px;color:#3E7D52;flex:none;}
+  #screen-review #rm-block .rm-letter-ro{margin:0;padding:14px;border-radius:12px;background:var(--wash);max-width:66ch;white-space:pre-wrap;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-review #rm-block .rm-mail{max-width:520px;padding:12px 16px;border-radius:12px;background:var(--wash);}
+  #screen-review #rm-block .rm-mail p{margin:0;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-review #rm-block .rm-mail-k{display:flex;align-items:center;gap:8px;margin-bottom:6px !important;font-size:14px !important;font-weight:600;color:var(--ink-soft) !important;}
+  #screen-review #rm-block .rm-mail-k .ic,#screen-review #rm-block .rm-mail-k svg{width:18px;height:18px;flex:none;color:var(--ink-soft);}
+  #screen-review #rm-block .rm-mail-s span{display:inline-block;min-width:64px;color:var(--ink-soft);}
+  #screen-review #rm-block .rm-mail-b{margin-top:6px !important;}
+  #screen-review #rm-block .rm-rlist{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:0;}
+  #screen-review #rm-block .rm-ri{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0;border-top:1px solid var(--line);}
+  #screen-review #rm-block .rm-ri-t{display:grid;gap:2px;min-width:0;}
+  #screen-review #rm-block .rm-ri-t b{font-size:15px;line-height:22px;font-weight:700;color:var(--ink);}
+  #screen-review #rm-block .rm-ri-t span{font-size:15px;line-height:22px;color:var(--ink-soft);}
+  #screen-review #rm-block .rm-ri.gone .rm-ri-t{text-decoration:line-through;text-decoration-color:rgba(23,24,28,.3);}
+  /* the line in the report text that a Source link points at */
+  #screen-review #rv-doc .rm-para{margin:0 0 8px;padding:4px 6px;border-radius:6px;outline:0;}
+  #screen-review #rv-doc .rm-para.rm-hit{background:var(--brand-wash);box-shadow:0 0 0 2px var(--brand);}
+  #screen-review #rv-doc .rm-sig{margin-top:12px;}
+
+  /* drafted orders in Action */
+  #screen-patientchart #rm-drafts{margin:0 0 16px;padding:16px;border-radius:12px;background:var(--brand-wash);}
+  #screen-patientchart #rm-drafts[hidden]{display:none;}
+  #screen-patientchart #rm-drafts .rm-dr-hd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 4px;}
+  #screen-patientchart #rm-drafts .rm-dr-hd h4{margin:0;font-size:16px;line-height:22px;font-weight:700;color:var(--ink);}
+  #screen-patientchart #rm-drafts .rm-dr-hd .rm-tag{margin-left:auto;}
+  #screen-patientchart #rm-drafts .rm-dr-note{margin:0 0 12px;max-width:66ch;font-size:15px;line-height:22px;color:var(--ink-soft);}
+  #screen-patientchart #rm-drafts .rm-dr{display:grid;gap:12px;margin:0 0 10px;padding:14px 16px;border-radius:12px;background:var(--panel);}
+  #screen-patientchart #rm-drafts .rm-dr:last-child{margin-bottom:0;}
+  #screen-patientchart #rm-drafts .rm-dr-t{display:flex;align-items:center;gap:14px;}
+  #screen-patientchart #rm-drafts .rm-dr-t > .ic,#screen-patientchart #rm-drafts .rm-dr-t > svg{width:24px;height:24px;flex:none;color:var(--brand);}
+  #screen-patientchart #rm-drafts .rm-dr-b{display:grid;gap:2px;flex:1;min-width:0;}
+  #screen-patientchart #rm-drafts .rm-dr-b b{font-size:16px;line-height:22px;font-weight:700;color:var(--ink);}
+  #screen-patientchart #rm-drafts .rm-dr-b span{font-size:15px;line-height:22px;color:var(--ink-soft);}
+  #screen-patientchart #rm-drafts .rm-dr.rejected .rm-dr-b b{text-decoration:line-through;text-decoration-color:rgba(23,24,28,.3);}
+  #screen-patientchart #rm-drafts .rm-dr-a{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  #screen-patientchart #rm-drafts .btn{min-height:44px;}
+  #screen-patientchart #rm-drafts .btn:focus-visible,#screen-patientchart #rm-drafts input:focus-visible,#screen-patientchart #rm-drafts .rm-undo:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #screen-patientchart #rm-drafts .rm-dr-s{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0;font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-patientchart #rm-drafts .rm-dr-s .ic,#screen-patientchart #rm-drafts .rm-dr-s svg{width:20px;height:20px;flex:none;color:var(--ink-soft);}
+  #screen-patientchart #rm-drafts .rm-dr-s.ok .ic{color:#3E7D52;}
+  #screen-patientchart #rm-drafts .rm-undo{min-height:32px;padding:0 8px;border:0;border-radius:8px;background:none;font:inherit;font-size:14px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+  #screen-patientchart #rm-drafts .rm-dr-e{display:grid;grid-template-columns:max-content minmax(0,1fr);align-items:center;gap:10px 12px;}
+  #screen-patientchart #rm-drafts .rm-dr-e label{font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
+  #screen-patientchart #rm-drafts .rm-dr-e input{min-height:44px;box-sizing:border-box;padding:0 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--panel);font:inherit;font-size:15px;color:var(--ink);}
+  /* Sign off: one quiet line about the drafts */
+  #screen-patientchart #rm-signline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:10px 12px;border-radius:10px;background:var(--wash);font-size:15px;line-height:22px;color:var(--ink);}
+  #screen-patientchart #rm-signline[hidden]{display:none;}
+  #screen-patientchart #rm-signline > span:not(.ic){flex:1 1 260px;min-width:0;}
+  #screen-patientchart #rm-signline .ic,#screen-patientchart #rm-signline svg{width:20px;height:20px;flex:none;color:var(--tag-warn-ic);}
+  #screen-patientchart #rm-signline .rm-lnk{min-height:32px;margin-left:auto;padding:0 8px;border:0;border-radius:8px;background:none;font:inherit;font-size:14px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+  @media (max-width:1100px){
+    #screen-review #rm-block .rm-step-r,#screen-review #rm-block .rm-rec,#screen-review #rm-block .rm-ri{flex-wrap:wrap;}
+  }
 </style>
 </head>
 <body>
@@ -6268,6 +6378,8 @@
             <div class="rv-results" id="rv-results"></div>
             <div id="rv-unmapped"></div>
             <div class="rv-ai" id="rv-ai"></div>
+            <!-- T-025 (Daniel, 15 Oct): Cedar · What the report recommends (shown only for a specialist report Cedar has read) -->
+            <section id="rm-block" aria-labelledby="rm-h" hidden></section>
             <div class="rv-srchd">
               <h3 class="rv-doclbl">Source document — as received</h3>
               <button type="button" class="btn" id="rv-srcbtn" aria-expanded="true" aria-controls="rv-doc" onclick="rvToggleSource()"><span class="ic" id="rv-srcic" data-pdic="eyeoff"></span><span id="rv-srclbl">Hide source document</span></button>
@@ -6570,6 +6682,8 @@
               <h2 class="v2-stepH" id="v2h-orders">Action</h2>
               <section class="v2-card" aria-labelledby="v2-ord-h">
                 <div class="v2-ch"><span class="ic" data-pdic="addon"></span><h3 id="v2-ord-h" class="vh">Orders</h3></div>
+                <!-- T-025: orders Cedar drafted from a specialist report; the doctor accepts, edits or rejects each and signs at Sign off -->
+                <section class="rm-drafts" id="rm-drafts" aria-labelledby="rm-dr-h" hidden></section>
                 <div class="v2-ord" id="v2-ord">
                   <button type="button" class="v2-orow" onclick="rxOpen();v2RxFocus()"><span class="ic" data-pdic="chartnote"></span><span class="v2-ot"><b>Prescribe</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="toast('Lab requisition started')"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
@@ -6781,6 +6895,7 @@
             <div class="cs-foot">
             <!-- Doctor review ask 4 / shadowing 2: the button says which visit it finalizes and asks first on an
                  empty note. v2.5 §3: Finalize waits until this visit's strip is complete (csFinState). -->
+            <p class="rm-signline" id="rm-signline" role="status" hidden></p>
             <div class="vc-finwarn" id="vc-finwarn" hidden></div>
             <div class="cs-finwhy" id="cs-finwhy" hidden></div>
             <!-- T-023 (spec part 5): one billing line above Finalize; the doctor codes while the visit is fresh (N1, proposal) -->
@@ -9921,6 +10036,38 @@ var INBOX_ITEMS = [
     status:'received', lab:'Eagle Ridge Imaging',
     impression:'No acute cardiopulmonary abnormality.', abnormal:false },
 
+  /* T-025 (Daniel, 15 Oct; Ani: "yes"): an invented specialist report for the demo patient. Cedar reads it (the block in the review screen).
+     Fictional specialist, clinic and text. The recommendations carry their timing and owner (rule 15); one thing the patient decided is kept. */
+  { patient:'Gloria Mcdonald', age:'74F', phn:'9650 115 886', dob:'28-10-1951', type:'Consult', panel:'Endocrine surgery consult', received:'Today, 8:30 AM', ago:'1h',
+    status:'received', lab:'Alderbrook Endocrine Surgery',
+    impression:'Thyroid nodule, 9 mm, low-risk features. Biopsy recommended; the patient prefers repeat tests in about 3 and 6 months.',
+    cedar:{
+      who:'Dr. R. Calloway', org:'Alderbrook Endocrine Surgery', spec:'Endocrine surgery', seen:'Oct 13, 2026', seenLong:'October 13',
+      finding:{t:'A 9 mm nodule in the right thyroid lobe on the Sep 30 ultrasound. The shadowing at one edge is most likely an imaging artifact, and the features are low-risk.', src:2},
+      decided:{t:'The patient would rather not have the biopsy now. The surgeon respects the choice, and it can be revisited at any time.', src:4,
+               short:'The patient has chosen not to have the biopsy for now; it can be revisited at any time.'},
+      letter:{found:'the ultrasound showed a small nodule, about 9 mm, in your thyroid. Dr. Calloway thinks the odd look along one edge is most likely a quirk of the scan, and that the nodule itself looks low-risk.',
+              rec:'a biopsy (a fine needle takes a tiny sample) is the only test that can give a firm answer.'},
+      paras:[
+        {h:'Reason for consultation', t:'Thyroid nodule found on an ultrasound done on Sep 30, 2026. Seen by video on Oct 13, 2026, on referral from Dr. D. Pannozzo.'},
+        {h:'Findings', t:'A 9 mm nodule in the right lobe. The shadowing at one edge is most likely an imaging artifact. The features are low-risk.'},
+        {h:'Opinion', t:'I recommend a fine-needle biopsy. It is the definitive test for a nodule like this.'},
+        {h:'Patient’s decision', t:'The patient would rather not have a biopsy at this time. I explained why I recommend it, and I respect her choice. She may change her mind at any time.'},
+        {h:'Plan agreed with the patient', t:'Repeat the thyroid blood test (TSH) in about 3 months. Repeat the thyroid ultrasound in about 6 months. Please arrange both through your office. A repeat ultrasound cannot fully replace a biopsy.'},
+        {h:'Follow-up', t:'My office will book a surgical review once the repeat ultrasound is reported. I am glad to see her sooner if she changes her mind.'}
+      ],
+      recs:[
+        {id:'r1', text:'Repeat the thyroid blood test (TSH)', timing:'about 3 months', iso:'2027-01-13', owner:'GP', kind:'lab', src:5,
+         letterLine:'A repeat thyroid blood test', patientWhat:'Repeat thyroid blood test', patientNext:'Your doctor will send the requisition',
+         order:{title:'Repeat thyroid blood test (TSH)', kind:'lab', note:'for the patient to take to the lab'}},
+        {id:'r2', text:'Repeat the thyroid ultrasound', timing:'about 6 months', iso:'2027-04-13', owner:'GP', kind:'imaging', src:5,
+         letterLine:'A repeat thyroid ultrasound', patientWhat:'Repeat thyroid ultrasound', patientNext:'Your doctor will send the requisition',
+         order:{title:'Repeat thyroid ultrasound', kind:'imaging', note:'for the patient to take to imaging'}},
+        {id:'r3', text:'Surgical review after the repeat ultrasound', timing:'after the repeat ultrasound', iso:'2027-04-13', owner:'Specialist', kind:'followup', src:6,
+         patientWhat:'Review with Dr. Calloway', patientNext:'Dr. Calloway’s office will contact you to book it'}
+      ]
+    } },
+
   { patient:'Louise ("Chickadee")', age:'33F', phn:'9650 177 746', dob:'07-07-1993', type:'Consult', panel:'EDS specialist consult', received:'Yesterday, 4:40 PM', ago:'1d',
     status:'reviewed', lab:'Dr. Okafor',
     impression:'Confirms hypermobile EDS. Recommends physiotherapy referral and annual echo.' },
@@ -10911,6 +11058,7 @@ function narrDoc(it, body){
 }
 function renderSourceDoc(it){
   var m=document.getElementById('rv-doc'); if(!m) return;
+  if(it.cedar){ m.innerHTML = rmReportDoc(it); m.style.display = 'block'; return; }   /* T-025: each paragraph is a target for Cedar's source links */
   /* the heading lives outside #rv-doc now, so hiding the document keeps it */
   m.innerHTML =
     (it.kind==='trace' ? ecgDoc(it) : ((it.tests||[]).length ? labDoc(it)
@@ -15743,6 +15891,7 @@ function v2BP(name){
 }
 function v2Rows(name){
   var cur = CS_REL[name], rows = cur ? cur.rows : csRelGeneric(name), by = {};
+  rows = rmPendRows(name, rows);   /* T-025: the new report and its reminders show in Pending (display by exception: nothing when there is none) */
   rows.forEach(function(r){ by[r[0]] = r; });
   return by;
 }
@@ -15751,6 +15900,7 @@ function v2Lines(row, name){
   return row[1].map(function(x){
     if(x[0] === '@na') return '';            /* Needs attention is on the same tab, directly above */
     if(x[0] === '@bp') return v2BP(name);
+    if(x[0] === '@rm') return rmPendLine(x);
     var h = v2Line(x);
     if(x[3] && CS_QUOTES[x[3]]){
       var k = x[3], open = !!CS.relOpen[k];
@@ -15838,6 +15988,7 @@ function kfLine(x){
 function kfLines(row, name){
   return (row ? row[1] : []).map(function(x){
     if(x[0] === '@na') return '';            /* Needs attention is directly above */
+    if(x[0] === '@rm') return rmPendLine(x);
     if(x[0] === '@bp') return v2BP(name).replace('<span class="v2-l2">Home cuff</span>', '<span class="v2-l2"><span class="kf-src">Source: Results &middot; patient-reported, home cuff</span></span>');
     var h = kfLine(x);
     if(x[3] && CS_QUOTES[x[3]]){
@@ -17607,6 +17758,468 @@ baWrap('showScreen', function(r, name){ if(name === 'today') hsdRender(); });
 hsdRender();
 setInterval(function(){ var s = document.getElementById('screen-today'); if(s && s.classList.contains('active')) hsdRender(); }, 60000);   /* the next window moves with the clock */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-12 09:00</div>
+<script>
+/* ============================================================
+   T-025 (Daniel, 15 Oct 2026: "Can we extract from these reports - and build this workflow into Simple?" "Reminder workflow".
+   Ani approved 15 Oct: "yes"; patient reminders go by portal AND email, and patients agreed at registration, so no new consent screen).
+   A specialist's report is opened from the Inbox. Cedar reads it and PREPARES three things; the doctor approves each one:
+     1. a plain-language reply to the patient (sent through the patient portal only when the doctor presses Approve & send),
+     2. dated reminders in the care plan (owned as the report says: rule 15; no MOA task is created: rule 13),
+     3. drafted orders in Action (the doctor accepts, edits or rejects each, and signs them at Sign off; nothing is ordered before: rule 18).
+   AI text stays marked (Cedar mark, tinted surface, italic) until the doctor accepts it. Demo data only: the specialist, the patient and the
+   report text are invented. No health information goes in the email: it says only that there is a new message (rule 8).
+   ============================================================ */
+var RM = {KEY:'sc-demo-reminder-v1', S:{}};
+function rmBase(n){ return String(n || '').split(',')[0].trim(); }
+function rmEsc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function rmEl(id){ return document.getElementById(id); }
+function rmReport(base){ return INBOX_ITEMS.filter(function(x){ return x.patient === base && x.cedar; })[0] || null; }
+function rmSt(base){
+  return RM.S[base] || (RM.S[base] = {reply:{state:'none', text:'', at:''}, rem:{state:'none', gone:{}, ids:{}}, ord:{list:null}});
+}
+var RM_MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var RM_MONL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function rmFmt(iso){ var p = String(iso).split('-'); return RM_MON[+p[1] - 1] + ' ' + (+p[2]) + ', ' + p[0]; }
+function rmMonth(iso){ var p = String(iso).split('-'); return RM_MONL[+p[1] - 1] + ' ' + p[0]; }
+function rmChartName(base){
+  var r = (typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : []).filter(function(x){ return rmBase(x.name) === base; })[0];
+  if(r) return r.name;
+  var it = rmReport(base); return base + (it && it.age ? ', ' + it.age : '');
+}
+function rmNow(){ return new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'}); }
+function rmIc(k, cls){ return '<span class="ic' + (cls ? ' ' + cls : '') + '" data-pdic="' + k + '"></span>'; }
+function rmMark(){ return '<span class="rm-mark">' + ((typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '').replace('url(#aiGrad)', 'currentColor')) + '</span>'; }
+
+/* ---------- the report text, as received (each paragraph is a source target) ---------- */
+function rmReportDoc(it){
+  var c = it.cedar;
+  var body = c.paras.map(function(p, i){
+    return '<p class="doc-narr rm-para" id="rm-p-' + (i + 1) + '" tabindex="-1"><b>' + rmEsc(p.h) + '.</b> ' + rmEsc(p.t) + '</p>';
+  }).join('');
+  return narrDoc(it, body +
+    '<p class="doc-narr rm-sig">' + rmEsc(c.who) + ', ' + rmEsc(c.spec) + '<br>' + rmEsc(it.lab) + '</p>');
+}
+/* a source link: opens the report text if it was hidden, scrolls to the paragraph and marks it for a moment */
+function rmSrc(n){
+  var d = rmEl('rv-doc');
+  if(d && d.style.display === 'none') rvToggleSource();
+  var p = rmEl('rm-p-' + n); if(!p) return;
+  [].forEach.call(document.querySelectorAll('#rv-doc .rm-hit'), function(x){ x.classList.remove('rm-hit'); });
+  p.classList.add('rm-hit');
+  p.scrollIntoView({block:'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  p.focus({preventScroll:true});
+  clearTimeout(rmSrc._t); rmSrc._t = setTimeout(function(){ p.classList.remove('rm-hit'); }, 3200);
+}
+function rmSrcBtn(n){
+  return '<button type="button" class="rm-src" onclick="rmSrc(' + n + ')" aria-label="Show the source in the report text, paragraph ' + n + '">' + rmIc('file') + 'Source: report, paragraph ' + n + '</button>';
+}
+
+/* ---------- facts Cedar extracted ---------- */
+function rmOwnerText(r, c){
+  return r.owner === 'GP' ? 'Owner: you (family doctor)' : 'Owner: ' + c.who + '&rsquo;s office. It stays with them';
+}
+function rmDueText(r){
+  return r.owner === 'GP' ? 'Due in ' + r.timing + ' (' + rmFmt(r.iso) + ')' : 'Due ' + r.timing + ' (about ' + rmMonth(r.iso) + ')';
+}
+/* the doctor's own timing, from the report: reminders that were dismissed stay dismissed */
+function rmLive(it){ var st = rmSt(it.patient); return it.cedar.recs.filter(function(r){ return !st.rem.gone[r.id]; }); }
+function rmLetter(it){
+  var c = it.cedar, first = it.patient.split(' ')[0];
+  var gp = c.recs.filter(function(r){ return r.owner === 'GP'; });
+  return 'Hello ' + first + ',\n\n' +
+    'I have read the report from ' + c.who + ', the surgeon you saw on ' + c.seenLong + '.\n\n' +
+    'What the report found: ' + c.letter.found + '\n\n' +
+    'What was recommended: ' + c.letter.rec + ' You told ' + c.who + ' you would rather not have it now. That is your choice, and I respect it.\n\n' +
+    'What we will do instead:\n' + gp.map(function(r){ return '- ' + r.letterLine + ' in ' + r.timing + ', around ' + rmMonth(r.iso) + '.'; }).join('\n') + '\n' +
+    'I will send you the requisition for each one. ' + c.who + '’s office will arrange a review after the ultrasound.\n\n' +
+    'A repeat ultrasound cannot fully replace a biopsy. You can change your mind at any time, and I will arrange it.\n\n' +
+    'Dr. Daniel Pannozzo';
+}
+
+/* ---------- the block in the review screen: Cedar · What the report recommends ---------- */
+function rmCount(it){
+  var st = rmSt(it.patient), n = 0;
+  if(st.reply.state === 'draft') n++;
+  if(st.rem.state === 'proposed') n++;
+  n += rmDrafts(it.patient).filter(function(d){ return d.state === 'pending' || d.state === 'editing'; }).length ? 1 : 0;
+  return n;
+}
+function rmDrafts(base){ var st = rmSt(base); return st.ord.list || []; }
+function rmEmail(){
+  /* generic on purpose: no health information in an email subject or preview (rule 8) */
+  return '<div class="rm-mail" role="group" aria-label="Preview of the email the patient gets">' +
+    '<p class="rm-mail-k">' + rmIc('chat') + 'The patient also gets this email</p>' +
+    '<p class="rm-mail-s"><span>Subject</span>You have a new message from your doctor&rsquo;s office</p>' +
+    '<p class="rm-mail-b">You have a new message from your doctor&rsquo;s office. Sign in to read it.</p></div>';
+}
+function rmRenderBlock(it){
+  var host = rmEl('rm-block'); if(!host) return;
+  var ai = rmEl('rv-ai');
+  if(!it || !it.cedar){ host.hidden = true; host.innerHTML = ''; if(ai) ai.style.display = ''; return; }
+  if(ai) ai.style.display = 'none';          /* one AI block on this screen, not two: Cedar's block replaces the generic summary */
+  var c = it.cedar, base = it.patient, st = rmSt(base), n = rmCount(it), h = '';
+  h += '<div class="rm-hd">' + rmMark() + '<h3 id="rm-h">Cedar &middot; What the report recommends</h3></div>' +
+    '<p class="rm-lead">Read from the report by ' + rmEsc(c.who) + ', ' + rmEsc(c.spec) + ', seen ' + rmEsc(c.seen) + '. Nothing is sent, added or ordered until you approve each piece. <em>Assistive only. The report text remains authoritative.</em></p>';
+  h += '<div class="rm-sec"><h4>What the report found</h4><p class="rm-p">' + rmEsc(c.finding.t) + ' ' + rmSrcBtn(c.finding.src) + '</p></div>';
+  h += '<div class="rm-sec"><h4>Recommendations</h4><ul class="rm-recs">' + c.recs.map(function(r){
+    var gone = st.rem.gone[r.id];
+    return '<li class="rm-rec' + (gone ? ' gone' : '') + '"><div class="rm-rec-t"><b>' + rmEsc(r.text) + '</b>' +
+      '<span class="rm-rec-m">' + rmEsc(r.timing.charAt(0).toUpperCase() + r.timing.slice(1)) + (r.owner === 'GP' ? ', around ' + rmMonth(r.iso) : '') + ' &middot; ' + rmOwnerText(r, c) + '</span></div>' +
+      rmSrcBtn(r.src) + '</li>';
+  }).join('') + '</ul></div>';
+  h += '<div class="rm-sec"><h4>What the patient decided</h4><p class="rm-p">' + rmEsc(c.decided.t) + ' ' + rmSrcBtn(c.decided.src) + '</p>' +
+    '<p class="rm-keep">' + rmIc('flag') + 'This stays visible with the reminders, so the choice is not lost.</p></div>';
+
+  /* the three things Cedar can prepare, and what is waiting for the doctor */
+  h += '<div class="rm-sec rm-steps"><div class="rm-sh"><h4>Cedar can prepare three things</h4>' +
+    (n ? '<span class="rm-tag warn" role="status">' + rmIc('clock') + n + ' waiting for your approval</span>' : '') + '</div>';
+
+  /* 1. the reply */
+  var rp = st.reply;
+  h += '<div class="rm-step" id="rm-step-reply"><div class="rm-step-r">' + rmIc('chat') +
+    '<div class="rm-step-b"><b>Reply to the patient</b><span class="rm-step-s">' +
+    (rp.state === 'none' ? 'A plain-language letter you edit and send. It goes through the patient portal.' :
+     rp.state === 'draft' ? 'Draft waiting for your approval. Not sent.' :
+     'Sent to the patient’s portal at ' + rmEsc(rp.at) + '. The patient is told by email that there is a new message.') + '</span></div>' +
+    (rp.state === 'none' ? '<button type="button" class="btn" id="rm-b-reply" onclick="rmReplyDraft()">' + rmIc('chat') + 'Draft reply to patient</button>' :
+     rp.state === 'draft' ? '<span class="rm-tag warn">' + rmIc('clock') + 'AI-drafted</span>' :
+     '<span class="rm-done">' + rmIc('complete') + 'Sent</span>') + '</div>';
+  if(rp.state === 'draft'){
+    h += '<div class="rm-ai" role="group" aria-labelledby="rm-ai-k"><p class="rm-ai-k" id="rm-ai-k">' + rmMark() + 'Cedar &middot; AI-drafted letter &middot; not sent until you approve</p>' +
+      '<label class="vh" for="rm-letter">Letter to the patient. Edit it before you send</label>' +
+      '<textarea id="rm-letter" rows="15" oninput="rmSt(RM_CUR).reply.text=this.value">' + rmEsc(rp.text) + '</textarea>' +
+      '<div class="rm-ai-a"><button type="button" class="btn dark" id="rm-b-send" onclick="rmReplySend()">' + rmIc('chat') + 'Approve &amp; send</button>' +
+      '<button type="button" class="btn" onclick="rmReplyDiscard()">' + rmIc('reopen') + 'Discard draft</button>' +
+      '<span class="rm-ai-n">Sent as a message in the patient portal. Nothing goes until you press Approve &amp; send.</span></div></div>';
+  } else if(rp.state === 'sent'){
+    h += '<div class="rm-sent"><p class="rm-sent-k" id="rm-sent-h" tabindex="-1">' + rmIc('complete') + 'Letter sent by Dr. Pannozzo &middot; ' + rmEsc(rp.at) + '</p>' +
+      '<p class="rm-letter-ro">' + rmEsc(rp.text) + '</p>' + rmEmail() + '</div>';
+  }
+  h += '</div>';
+
+  /* 2. the reminders */
+  var rm = st.rem, live = rmLive(it);
+  h += '<div class="rm-step" id="rm-step-rem"><div class="rm-step-r">' + rmIc('calendar') +
+    '<div class="rm-step-b"><b>Reminders in the care plan</b><span class="rm-step-s">' +
+    (rm.state === 'none' ? c.recs.length + ' dated reminders: ' + c.recs.filter(function(r){ return r.owner === 'GP'; }).length + ' yours, ' + c.recs.filter(function(r){ return r.owner !== 'GP'; }).length + ' stays with the specialist. They appear in Pending and in the care plan.' :
+     rm.state === 'proposed' ? 'Check each one, then add them. Nothing is in the care plan yet.' :
+     live.length + ' in the care plan and in Pending. No task was created for the MOA.') + '</span></div>' +
+    (rm.state === 'none' ? '<button type="button" class="btn" id="rm-b-rem" onclick="rmRemOpen()">' + rmIc('calendar') + 'Add reminders</button>' :
+     rm.state === 'proposed' ? '<span class="rm-tag warn">' + rmIc('clock') + 'Not added yet</span>' :
+     '<span class="rm-done">' + rmIc('complete') + 'Added</span>') + '</div>';
+  if(rm.state !== 'none'){
+    h += '<ul class="rm-rlist">' + c.recs.map(function(r){
+      var gone = rm.gone[r.id];
+      return '<li class="rm-ri' + (gone ? ' gone' : '') + '"><div class="rm-ri-t"><b>' + rmEsc(r.text) + '</b><span>' + rmDueText(r) + ' &middot; ' + rmOwnerText(r, c) + '</span></div>' +
+        (gone ? '<button type="button" class="btn" onclick="rmRemBack(\'' + r.id + '\')">' + rmIc('reopen') + 'Add back</button>'
+              : '<button type="button" class="btn" onclick="rmRemDismiss(\'' + r.id + '\')" aria-label="Dismiss the reminder: ' + rmEsc(r.text) + '">' + rmIc('close') + 'Dismiss</button>') + '</li>';
+    }).join('') + '</ul>';
+    if(rm.state === 'proposed'){
+      h += '<div class="rm-conf"><button type="button" class="btn dark" id="rm-b-rem-ok" onclick="rmRemConfirm()">' + rmIc('complete') + 'Add ' + live.length + ' to the care plan</button>' +
+        '<button type="button" class="btn" onclick="rmRemCancel()">Cancel</button>' +
+        '<span class="rm-ai-n">The care plan and the task list stay separate. Each keeps the owner the report names.</span></div>';
+    }
+  }
+  h += '</div>';
+
+  /* 3. the drafted orders (they live in Action, where the doctor signs them) */
+  var dr = rmDrafts(base), und = dr.filter(function(d){ return d.state === 'pending' || d.state === 'editing'; }).length,
+      acc = dr.filter(function(d){ return d.state === 'accepted'; }).length, ord = dr.filter(function(d){ return d.state === 'ordered'; }).length;
+  var gpTests = c.recs.filter(function(r){ return r.order; }).length;
+  h += '<div class="rm-step" id="rm-step-ord"><div class="rm-step-r">' + rmIc('addon') +
+    '<div class="rm-step-b"><b>Drafted orders</b><span class="rm-step-s">' +
+    (!st.ord.list ? 'Cedar drafts the ' + gpTests + ' repeat tests. They wait in Action for you to accept, edit or reject, and to sign at Sign off.' :
+      ord ? ord + ' ordered when you signed off.' :
+      und + ' waiting for your decision, ' + acc + ' accepted. Nothing is ordered until you sign off.') + '</span></div>' +
+    (!st.ord.list ? '<button type="button" class="btn" id="rm-b-ord" onclick="rmOrdDraft()">' + rmIc('addon') + 'Draft orders</button>' :
+      ord ? '<span class="rm-done">' + rmIc('complete') + 'Ordered</span>' :
+      '<button type="button" class="btn" id="rm-b-act" onclick="rmGoAction()">' + rmIc('chevr') + 'Open Action</button>') + '</div></div>';
+  h += '</div>';
+  host.hidden = false;
+  host.innerHTML = h;
+  paintPd(host);
+}
+var RM_CUR = '';
+function rmFocus(sel){ var e = document.querySelector(sel); if(e){ e.focus({preventScroll:true}); if(e.scrollIntoView) e.scrollIntoView({block:'nearest'}); } }
+function rmCurIt(){ return INBOX_ITEMS[RV_I] && INBOX_ITEMS[RV_I].cedar ? INBOX_ITEMS[RV_I] : null; }
+function rmAgain(focus){ var it = rmCurIt(); if(it) rmRenderBlock(it); if(focus) rmFocus(focus); }
+
+/* 1. reply: Cedar drafts, the doctor edits, and only Approve & send sends */
+function rmReplyDraft(){
+  var it = rmCurIt(); if(!it) return; var st = rmSt(it.patient);
+  st.reply.state = 'draft'; st.reply.text = rmLetter(it);
+  rmAgain('#rm-letter');
+}
+function rmReplyDiscard(){
+  var it = rmCurIt(); if(!it) return; var st = rmSt(it.patient);
+  st.reply = {state:'none', text:'', at:''};
+  rmAgain('#rm-b-reply'); toast('Draft discarded. Nothing was sent.');
+}
+function rmReplySend(){
+  var it = rmCurIt(); if(!it) return; var st = rmSt(it.patient);
+  var ta = rmEl('rm-letter'); if(ta) st.reply.text = ta.value;
+  if(!String(st.reply.text).trim()){ toast('The letter is empty. Write it, or discard the draft'); if(ta) ta.focus(); return; }
+  st.reply.state = 'sent'; st.reply.at = 'Today, ' + rmNow();
+  rmPublish(it.patient);
+  rmAgain('#rm-sent-h');
+  toast('Sent to the patient’s portal. They are told by email that there is a new message');
+}
+/* the demo "wire" to the patient portal: what the portal would receive from the message service.
+   The email carries no health information; the portal holds the letter and the dated follow-ups. */
+function rmPublish(base){
+  var it = rmReport(base); if(!it) return; var st = rmSt(base);
+  if(st.reply.state !== 'sent') return;
+  var c = it.cedar;
+  var payload = {
+    v:1, id:'rm-' + it.patient.replace(/\s+/g, '').toLowerCase(), at:st.reply.at,
+    from:'Dr. Daniel Pannozzo', subject:'Your consultation report and next steps',
+    body:st.reply.text,
+    coming:rmLive(it).map(function(r){
+      return {what:r.patientWhat, when:(r.owner === 'GP' ? 'about ' + rmMonth(r.iso) : 'after the repeat ultrasound'), next:r.patientNext};
+    })
+  };
+  try { localStorage.setItem(RM.KEY, JSON.stringify(payload)); } catch(e){}
+}
+
+/* 2. reminders: dated care-plan items, owned as the report says */
+function rmRemOpen(){
+  var it = rmCurIt(); if(!it) return; rmSt(it.patient).rem.state = 'proposed';
+  rmAgain('#rm-b-rem-ok');
+}
+function rmRemCancel(){
+  var it = rmCurIt(); if(!it) return; var st = rmSt(it.patient);
+  st.rem.state = 'none'; st.rem.gone = {};
+  rmAgain('#rm-b-rem');
+}
+function rmPlanItem(it, r){
+  var c = it.cedar, gp = r.owner === 'GP';
+  return {id:'rm-' + r.id, specialty:c.spec, service:c.who + ' · ' + c.org, owner:r.owner,
+    action:r.text, kind:r.kind, status:'Awaiting', due:(gp ? rmFmt(r.iso) : 'After ' + rmFmt(r.iso)), reminder:true,
+    detail: gp ? 'Reminder from the ' + c.spec.toLowerCase() + ' report. Due in ' + r.timing + '. ' + c.decided.short
+               : 'Their office books it after the repeat ultrasound. Nothing for us unless it stalls.',
+    src:c.spec + ' consult, ' + c.seen, quote:'&ldquo;' + rmEsc(c.paras[r.src - 1].t) + '&rdquo;'};
+}
+function rmPlanSync(it){
+  /* the care plan holds the live reminders; a dismissed one is removed, an added-back one returns */
+  var st = rmSt(it.patient), cn = rmChartName(it.patient), plan = cpFor(cn);
+  var keep = plan.filter(function(x){ return !(x.reminder && x.id.indexOf('rm-') === 0); });
+  var mine = plan.filter(function(x){ return x.reminder && x.id.indexOf('rm-') === 0; });
+  if(st.rem.state === 'added'){
+    it.cedar.recs.forEach(function(r){
+      if(st.rem.gone[r.id]) return;
+      var old = mine.filter(function(x){ return x.id === 'rm-' + r.id; })[0];
+      keep.push(old || rmPlanItem(it, r));
+    });
+  }
+  CARE_PLAN[cn] = keep;
+  /* a signed order moves its reminder to Ordered */
+  rmDrafts(it.patient).forEach(function(d){
+    var p = CARE_PLAN[cn].filter(function(x){ return x.id === 'rm-' + d.recId; })[0];
+    if(p && d.state === 'ordered'){ p.status = 'Ordered'; p.detail = 'Ordered at sign-off on ' + d.at + '. Due ' + p.due + '.'; }
+  });
+}
+function rmRemConfirm(){
+  var it = rmCurIt(); if(!it) return; var st = rmSt(it.patient);
+  var n = rmLive(it).length; if(!n){ toast('Nothing to add. Cancel, or add one back'); return; }
+  st.rem.state = 'added'; rmPlanSync(it); rmChartRefresh(it.patient);
+  rmAgain('#rm-step-rem .rm-done'); rmPublish(it.patient);
+  toast(n + ' reminders added to the care plan and Pending. No task was created');
+}
+function rmRemDismiss(id){
+  var it = rmCurIt(); if(!it) return; var st = rmSt(it.patient);
+  st.rem.gone[id] = true; if(st.rem.state === 'added'){ rmPlanSync(it); rmChartRefresh(it.patient); }
+  rmPublish(it.patient); rmAgain('#rm-step-rem .rm-ri.gone .btn');
+  toast('Reminder dismissed. It is not in the care plan');
+}
+function rmRemBack(id){
+  var it = rmCurIt(); if(!it) return; var st = rmSt(it.patient);
+  delete st.rem.gone[id]; if(st.rem.state === 'added'){ rmPlanSync(it); rmChartRefresh(it.patient); }
+  rmPublish(it.patient); rmAgain();
+}
+/* dismiss from the care plan itself (the care plan tab and Pending point there) */
+function rmDismissPlan(id){
+  var base = null, it = null;
+  INBOX_ITEMS.forEach(function(x){ if(x.cedar && x.cedar.recs.some(function(r){ return 'rm-' + r.id === id; })){ it = x; } });
+  if(!it) return; var rid = id.replace(/^rm-/, ''), st = rmSt(it.patient);
+  st.rem.gone[rid] = true; rmPlanSync(it); rmChartRefresh(it.patient); rmPublish(it.patient);
+  if(RM_CUR === it.patient && rmCurIt()) rmRenderBlock(it);
+  toast('Reminder dismissed. It is not in the care plan');
+}
+
+/* 3. drafted orders: they live in Action, to accept, edit or reject, and are ordered at Sign off */
+function rmOrdDraft(){
+  var it = rmCurIt(); if(!it) return; var st = rmSt(it.patient);
+  st.ord.list = it.cedar.recs.filter(function(r){ return r.order; }).map(function(r){
+    return {id:'od-' + r.id, recId:r.id, title:r.order.title, kind:r.order.kind, iso:r.iso, state:'pending', edited:false, note:r.order.note};
+  });
+  rmChartRefresh(it.patient); rmAgain('#rm-b-act');
+  toast(st.ord.list.length + ' orders drafted in Action. Nothing is ordered until you sign off');
+}
+function rmGoAction(){
+  var it = rmCurIt(); if(!it) return;
+  var fn = function(){ if(typeof v2Tab === 'function'){ setTimeout(function(){ v2Tab('orders', true); }, 60); } };
+  var rid = rmChartName(it.patient);
+  if(typeof openChart === 'function'){ openChart(rid); fn(); }
+}
+function rmDraftById(id){
+  var base = rmBase(PC_CURRENT), l = rmDrafts(base); return l.filter(function(d){ return d.id === id; })[0] || null;
+}
+function rmOrdSet(id, state){
+  var d = rmDraftById(id); if(!d) return;
+  d.state = state; rmChartRefresh(rmBase(PC_CURRENT));
+  rmFocus('#rm-dr-' + id + ' .rm-undo, #rm-dr-' + id + ' .rm-dr-a .btn');
+}
+function rmOrdEdit(id){ var d = rmDraftById(id); if(!d) return; d.state = 'editing'; rmChartRefresh(rmBase(PC_CURRENT)); rmFocus('#rm-e-t-' + id); }
+function rmOrdSave(id){
+  var d = rmDraftById(id); if(!d) return;
+  var t = rmEl('rm-e-t-' + id), w = rmEl('rm-e-w-' + id);
+  if(t && t.value.trim()){ if(t.value.trim() !== d.title) d.edited = true; d.title = t.value.trim(); }
+  if(w && w.value){ if(w.value !== d.iso) d.edited = true; d.iso = w.value; }
+  d.state = 'pending'; rmChartRefresh(rmBase(PC_CURRENT)); rmFocus('#rm-dr-' + id + ' .rm-dr-a .btn');
+}
+function rmOrdCancel(id){ var d = rmDraftById(id); if(!d) return; d.state = 'pending'; rmChartRefresh(rmBase(PC_CURRENT)); rmFocus('#rm-dr-' + id + ' .rm-dr-a .btn'); }
+
+function rmRenderDrafts(){
+  var host = rmEl('rm-drafts'); if(!host) return;
+  var base = rmBase(PC_CURRENT), it = rmReport(base), l = base ? rmDrafts(base) : [];
+  if(!it || !l.length){ host.hidden = true; host.innerHTML = ''; host._h = ''; return; }
+  var r = typeof csRow === 'function' ? csRow() : null, signed = !!(r && r.signed);
+  var und = l.filter(function(d){ return d.state === 'pending' || d.state === 'editing'; }).length;
+  var h = '<div class="rm-dr-hd">' + rmMark() + '<h4 id="rm-dr-h">Cedar &middot; Drafted orders</h4>' +
+    (und && !signed ? '<span class="rm-tag warn" role="status">' + rmIc('clock') + und + ' waiting for you</span>' : '') + '</div>' +
+    '<p class="rm-dr-note">From the ' + rmEsc(it.cedar.spec.toLowerCase()) + ' report, ' + rmEsc(it.cedar.seen) + '. Nothing is ordered until you accept it and sign off.</p>';
+  h += l.map(function(d){
+    var due = rmFmt(d.iso), cls = 'rm-dr ' + d.state;
+    var head = '<div class="rm-dr-t">' + rmIc(d.kind === 'imaging' ? 'chartup' : 'addon') + '<div class="rm-dr-b"><b>' + rmEsc(d.title) + '</b>' +
+      '<span>Requisition &middot; due about ' + rmEsc(due) + ' &middot; ' + rmEsc(d.note) + '</span></div>' +
+      (d.state === 'ordered' ? '<span class="rm-done">' + rmIc('complete') + 'Ordered</span>' :
+       d.state === 'rejected' ? '' : '<span class="rm-tag">' + rmMark() + (d.edited ? 'Cedar-drafted, edited' : 'Cedar-drafted') + '</span>') + '</div>';
+    var body = '';
+    if(d.state === 'editing'){
+      body = '<div class="rm-dr-e"><label for="rm-e-t-' + d.id + '">What to order</label><input id="rm-e-t-' + d.id + '" type="text" value="' + rmEsc(d.title) + '">' +
+        '<label for="rm-e-w-' + d.id + '">Due around</label><input id="rm-e-w-' + d.id + '" type="date" value="' + rmEsc(d.iso) + '"></div>' +
+        '<div class="rm-dr-a"><button type="button" class="btn dark" onclick="rmOrdSave(\'' + d.id + '\')">' + rmIc('complete') + 'Save changes</button>' +
+        '<button type="button" class="btn" onclick="rmOrdCancel(\'' + d.id + '\')">Cancel</button></div>';
+    } else if(signed && (d.state === 'pending')){
+      body = '<p class="rm-dr-s">' + rmIc('alert') + 'Not ordered. The visit was signed off before you decided.</p>';
+    } else if(d.state === 'pending'){
+      body = '<div class="rm-dr-a"><button type="button" class="btn" onclick="rmOrdSet(\'' + d.id + '\',\'accepted\')">' + rmIc('complete') + 'Accept</button>' +
+        '<button type="button" class="btn" onclick="rmOrdEdit(\'' + d.id + '\')">' + rmIc('edit') + 'Edit</button>' +
+        '<button type="button" class="btn" onclick="rmOrdSet(\'' + d.id + '\',\'rejected\')">' + rmIc('reopen') + 'Reject</button></div>';
+    } else if(d.state === 'accepted'){
+      body = '<p class="rm-dr-s ok">' + rmIc('complete') + 'Accepted. It is ordered when you sign off.' +
+        (signed ? '' : ' <button type="button" class="rm-undo" onclick="rmOrdSet(\'' + d.id + '\',\'pending\')">Undo</button>') + '</p>';
+    } else if(d.state === 'rejected'){
+      body = '<p class="rm-dr-s">' + rmIc('reopen') + 'Rejected. Nothing will be ordered.' +
+        (signed ? '' : ' <button type="button" class="rm-undo" onclick="rmOrdSet(\'' + d.id + '\',\'pending\')">Undo</button>') + '</p>';
+    } else if(d.state === 'ordered'){
+      body = '<p class="rm-dr-s ok">' + rmIc('complete') + 'Ordered at sign-off, ' + rmEsc(d.at) + '. Signed by Dr. Pannozzo.</p>';
+    }
+    return '<div class="' + cls + '" id="rm-dr-' + d.id + '" role="group" aria-label="Drafted order: ' + rmEsc(d.title) + '">' + head + body + '</div>';
+  }).join('');
+  host.hidden = false;
+  if(host._h === h) return;
+  host._h = h; host.innerHTML = h; paintPd(host);
+}
+/* what the Sign off section says about them */
+function rmSignLine(){
+  var el = rmEl('rm-signline'); if(!el) return;
+  var base = rmBase(PC_CURRENT), l = base ? rmDrafts(base) : [], r = typeof csRow === 'function' ? csRow() : null;
+  var und = l.filter(function(d){ return d.state === 'pending' || d.state === 'editing'; }).length, acc = l.filter(function(d){ return d.state === 'accepted'; }).length;
+  if(!l.length || (r && r.signed) || !(und || acc)){ el.hidden = true; el.innerHTML = ''; return; }
+  el.hidden = false;
+  el.innerHTML = rmIc(und ? 'clock' : 'complete') + '<span>Cedar-drafted orders: ' + (acc ? acc + ' accepted, ordered when you sign off' : '') +
+    (acc && und ? '. ' : '') + (und ? und + ' not decided yet, not ordered unless you accept' : '') + '.</span>' +
+    '<button type="button" class="rm-lnk" onclick="v2Tab(\'orders\', true)">Open Action</button>';
+  paintPd(el);
+}
+function rmChartRefresh(base){
+  if(rmBase(PC_CURRENT) !== base) return;
+  try { if(typeof renderCarePlan === 'function') renderCarePlan(PC_CURRENT); } catch(e){ if(window.console) console.error(e); }
+  try { if(typeof v2Render === 'function' && v2On()) v2Render(); } catch(e){ if(window.console) console.error(e); }
+  rmRenderDrafts(); rmSignLine();
+}
+/* the Action tab shows how many Cedar drafts wait for a decision */
+(function(){
+  var h0 = v2SyncHead;
+  v2SyncHead = function(){
+    h0.apply(this, arguments);
+    var base = rmBase(PC_CURRENT), l = base ? rmDrafts(base) : [], r = typeof csRow === 'function' ? csRow() : null;
+    var und = l.filter(function(d){ return d.state === 'pending' || d.state === 'editing'; }).length;
+    var ot = rmEl('v2t-orders'), has = ot && ot.querySelector('.v2-badge');
+    if(und && !(r && r.signed) && !has) v2Mark('orders', {badge:und, label:und + ' drafted orders to decide'});
+    rmRenderDrafts(); rmSignLine();
+  };
+})();
+
+/* signing off: accepted drafts are ordered by the doctor's signature; undecided ones are never ordered (asked first) */
+(function(){
+  var f0 = finalizeVisit;
+  finalizeVisit = function(force){
+    var base = rmBase(PC_CURRENT), l = base ? rmDrafts(base) : [], r0 = typeof csRow === 'function' ? csRow() : null, was = !!(r0 && r0.signed);
+    var und = l.filter(function(d){ return d.state === 'pending' || d.state === 'editing'; }).length;
+    if(!force && !was && und){
+      vcFinWarn('Cedar drafted ' + und + ' order' + (und > 1 ? 's' : '') + ' you haven&rsquo;t decided. Undecided drafts are not ordered. Sign off and finalize anyway?');
+      return;
+    }
+    var res = f0.apply(this, arguments);
+    var r1 = typeof csRow === 'function' ? csRow() : null;
+    if(!was && r1 && r1.signed && l.length){
+      var n = 0, it = rmReport(base);
+      l.forEach(function(d){ if(d.state === 'accepted'){ d.state = 'ordered'; d.at = 'Today, ' + rmNow(); n++; } });
+      if(it) rmPlanSync(it);
+      rmChartRefresh(base);
+      if(n) toast('Signed off · ' + n + ' Cedar-drafted order' + (n > 1 ? 's' : '') + ' ordered under your signature');
+    }
+    return res;
+  };
+})();
+
+/* the consult line in the chart's Pending list opens the report; reminders are plain lines that open the care plan */
+function rmPendRows(name, rows){
+  var base = rmBase(name), it = rmReport(base); if(!it) return rows;
+  var st = rmSt(base), lines = [];
+  if(it.status === 'received') lines.push(['@rm', INBOX_ITEMS.indexOf(it)]);
+  if(st.rem.state === 'added'){
+    it.cedar.recs.forEach(function(r){
+      if(st.rem.gone[r.id]) return;
+      lines.push([(r.owner === 'GP' ? 'Reminder' : 'With the specialist') + ' &middot; ' + rmEsc(r.text),
+        rmDueText(r) + ' &middot; from the ' + rmEsc(it.cedar.spec.toLowerCase()) + ' report', 'careplan']);
+    });
+  }
+  if(!lines.length) return rows;
+  var out = [], done = false;
+  rows.forEach(function(r){ if(r[0] === 'Pending'){ out.push([r[0], lines.concat(r[1])].concat(r.slice(2))); done = true; } else out.push(r); });
+  if(!done) out.push(['Pending', lines]);
+  return out;
+}
+function rmPendLine(x){
+  var it = INBOX_ITEMS[x[1]]; if(!it) return '';
+  return '<button type="button" class="v2-line" onclick="openReview(' + x[1] + ')"><span class="v2-l0">New report</span>' +
+    '<span class="v2-l1">' + rmEsc(it.panel) + '</span><span class="v2-l2">Cedar has read it: ' + it.cedar.recs.length + ' recommendations</span>' +
+    '<span class="v2-l2">Not reviewed &middot; received ' + rmEsc(it.received.replace(/^Today, /, 'today ')) + '</span>' +
+    '<span class="vh"> &mdash; open the report</span>' + csIc('chevr', 'v2-go') + '</button>';
+}
+
+/* the care plan: a reminder can be dismissed there too */
+(function(){
+  var c0 = cpItemHTML;
+  cpItemHTML = function(it){
+    var h = c0(it);
+    if(it.reminder && it.status !== 'Completed' && it.status !== 'Ordered'){
+      h = h.replace(/<\/div><\/div><\/div>$/, '<button type="button" onclick="rmDismissPlan(\'' + it.id + '\')">Dismiss reminder</button></div></div></div>');
+    }
+    return h;
+  };
+})();
+
+/* open the report: show Cedar's block (and hide it on every other result) */
+baWrap('openReview', function(r, i){
+  var it = INBOX_ITEMS[i]; RM_CUR = it ? it.patient : '';
+  rmRenderBlock(it && it.cedar ? it : null);
+});
+baWrap('openChart', function(){ rmRenderDrafts(); rmSignLine(); });
+</script>
+  <div class="build-stamp">v2 · build 2026-10-15 23:45</div>
 </body>
 </html>
