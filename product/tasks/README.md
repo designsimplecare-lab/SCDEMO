@@ -32,6 +32,7 @@ tasks below are **Ready**, and waiting for Ani's go.
 | T-022 | Align v2 billing with the Simple Billing PRD v1.5 (gap report) | Review | P2 | `billing-msp` | `clinical-safety`, `qa-engineer` | In review: report delivered; waiting on Daniel (OQ-87) |
 | T-023 | Rebuild billing the PRD way (batch attestation, claim detail, refusals, health card, MOA billing queue) | Design + build | P1 | `ux-designer` (+ `billing-msp` spec) | `clinical-safety`, `qa-engineer`, `accessibility` | In progress: spec approved 4 Oct; being built |
 | T-024 | AI Chart Assist in the chart, Phase 1 first (Daniel's requirements, 11 Oct) | Design + build | P1 | `ux-designer` | `clinical-safety`, `privacy-security`, `qa-engineer`, `accessibility` | Ready; queued behind the 11 Oct chart changes |
+| T-025 | Specialist report → reminders, patient reply and drafted orders (Daniel, 15 Oct) | Design + build | P1 | `ux-designer` | `clinical-safety`, `privacy-security`, `qa-engineer`, `accessibility` | Ready; waiting for Ani's go |
 
 **Recording files (local, never committed):**
 - `~/Downloads/Fixing Annoying Appointment Chat Flow.mp4`
