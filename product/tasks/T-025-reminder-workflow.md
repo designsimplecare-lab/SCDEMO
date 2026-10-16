@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Ready, waiting for Ani's go |
+| Status | In progress: Ani approved 15 Oct; `ux-designer` is building the doctor side, then the patient side |
 | Type | Design + build |
 | Priority | P1 |
 | Size | M |
@@ -45,3 +45,4 @@ When a specialist report is opened from the Inbox (or the chart's "new consult" 
 
 ## Log
 - 2026-10-15 — created from Daniel's WhatsApp. Waiting for Ani's go and a redacted sample report.
+- 2026-10-15 — Ani: yes. Patient reminders go through the portal and by email; consent was already given at registration, so no new consent screen. The no-health-information-in-email rule (rule 8) still applies.

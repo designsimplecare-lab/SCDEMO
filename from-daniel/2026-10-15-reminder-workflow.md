@@ -53,3 +53,6 @@ From an incoming specialist report, Cedar should:
   The chart should keep that decision visible. Needs `clinical-safety`.
 - **Report content:** we haven't seen the specialist report. Ani, send a copy with the patient's name and
   identifiers removed, or tell us what a typical one looks like.
+
+## Ani's answer, 15 Oct
+The patient is told by the portal **and** by email, and patients already consent to both at registration, so no new consent step. Rule 8 still holds: the email says only that there is a new message.
