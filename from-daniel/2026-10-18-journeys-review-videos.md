@@ -77,3 +77,37 @@ summary.
 3. Which Needs attention colour system does he want, now that labs are all critical?
 4. Is the countdown best in the queue's current-window heading, in the chart header, or both?
 5. What is in the last part of each video?
+
+## Video 5: "Streamlining SOAP Notes and Clinical Actions" (read to about 3:13 of 5:01)
+Link in `private/links/`. The last two minutes are missing.
+- **Same order again.** "This would be the intake, and then this would be the chart review. And then it
+  would be in relation to what the patient came in for." *Certain.*
+- **Screening reminders are separate.** "Another section would be like, hey, your colorectal cancer
+  screening is not up to date … I'll add that on somewhere else." → Preventive reminders are not part of
+  the chart review; he'll say where they go. *Certain; open.*
+- **The Patient summary stays.** "So the patient summary here is still this. So this doesn't necessarily
+  change … you would still have this: medications, past medical history." → **This corrects the lead's
+  reading of video 2.** Keep the left Patient summary list (Medications, Past Medical History, and so on).
+  Streamline the header, but do not remove the list. *Certain.*
+- **Intake is a brief heads-up; the chart review is fleshed out.** "This is just a very brief heads-up. And
+  then we talked about this … and that's all." *Fairly certain.*
+- **The Action area comes from his own chart.** "The actions you would just rip right off of my dirty chart
+  that [a colleague] and I created, that doesn't change. Those are old school actions, and they make a lot of
+  sense. I'll give you that list, and that would just pretty much be the action area of the chart, including
+  billing." → The Action list will come from Daniel; **billing sits in the action area**, as the last item.
+  *Certain; waiting for his list.*
+- **Prescribing needs streamlining.** "We're going to have to streamline this because people can be on 30
+  different drugs. The way I would want this in front of me is … clinical … I'll come up with a document for
+  the prescriptions because I'm going to spend a little bit of time on that." → **Do not redesign
+  prescribing until his document arrives.** *Certain.*
+
+## Correction to the build plan
+The earlier plan said the left Patient summary column would go. **It stays.** The plan for the chart is:
+Needs attention (when something is there), then Intake summary, then Chart review, in one column; the
+Patient summary list keeps Medications, Past Medical History, Pending and Since you last saw; Past visits and
+Cedar's findings live in the Chart review. A more compact header is still wanted.
+
+## Waiting for Daniel
+His list of actions (to replace ours), his document on prescriptions, where screening reminders go, and the
+last part of each video.
+
