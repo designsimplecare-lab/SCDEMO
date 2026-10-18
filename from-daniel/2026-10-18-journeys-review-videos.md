@@ -2,7 +2,7 @@
 
 Source: seven Looms (about 5 minutes each) that Daniel recorded while going over the Figma journeys file
 (demo screenshots of the doctor flows, captured 16 Oct from the demo). **The links are in `private/links/`;
-the videos can show real patients.** The lead read the full transcripts (words only; screens not seen).
+the videos can show real patients.** The lead read the full transcripts and then checked the frames of videos 3 to 6 (and parts of 2) against them; the screens he points at are our own journey screenshots (UC-01 to UC-07), so each remark below maps to a screen we can see.
 Quotes are verbatim; profanity and personal venting are left out. This file **replaces** the earlier partial
 notes in `2026-10-18-portal-walkthrough.md` and `2026-10-18-modular-ai-and-note.md`.
 
@@ -128,13 +128,13 @@ consequences … I'll focus my attention on those things now, and we will leave 
 | 4 | **Ordered and pending moves to the top of the chart summary,** and the lab results go in the chart's lab results section. The Action tab becomes purely actions. | Certain on moving it up; the exact home is Daniel's call |
 | 5 | **Needs attention: lab results are all Critical** (no soft tier). Other urgent items (for example a claim that failed to submit) also appear there, under the criticals, in a different, coordinated colour. Critical is always on top. | Certain; Daniel will send an updated lab list |
 | 6 | **Queue: group by call window,** named first, second and so on (with times), defaulting to the current window and highlighted. **Remove "Live" and "Later today".** Carry-forward stays. | Certain |
-| 7 | **The call-window timer stays and moves where he looks:** into the call window area of the queue instead of the small top-right pill (which he first says to eliminate). | Fairly certain; confirm that the pill goes |
+| 7 | **The call-window timer stays and moves where he looks:** into the current call-window band in the queue ("Current window · 8:00–10:00") instead of the small top-right pill ("11:54 AM New York · 1h 6m left"), which he says to eliminate. In video 5 the cursor is on that pill on Home (UC-01-3) when he says it. | Certain (frames match the words) |
 | 8 | **Home: say "17 to review"** only. | Certain |
 | 9 | **Visit statuses:** add **Administrative cancellation** (cancelled by admin, not the MOA). He will send the full list. | Certain on this one |
-| 10 | **Top of the chart:** more compact; the patient card and summary read as one block; **PHN and identity are not front and center.** The Patient summary list (medications, past medical history …) stays. | Intent certain; the layout is open |
+| 10 | **Top of the chart (UC-03-2, video 4):** today the patient card (name, PHN, allergies, Call, Chart) sits in a left box apart from the Review/Note/Action/Sign off tab bar on the right. He wants these combined into one neat top block, with the PHN line dropped from the front. The left Patient summary list (medications, past medical history …) stays. | Intent certain; exact layout is the designer's call |
 | 11 | **Call: phone or headset** (built). Billing at the end of the chart. Prescribing from favourites. | Certain |
 | 12 | **The AI is modular:** switch Cedar on or off per part (note, prescribing, and so on), and an "AI view" that does everything from the moment the call starts. | Intent certain; the "AI view" and where the switches live are unclear |
-| 13 | **ECG card:** show the report printed on the ECG; something there "is gone." | Unclear |
+| 13 | **ECG card (UC-03-2):** the "Related · To do · Abnormal ECG · Review ECG" row. He wants the report text that is printed at the top of the ECG shown right there, and the "To do" label (and the generic "Abnormal ECG" wording) gone. | Fairly certain |
 | 14 | **Welcome screen with BC photos** (Panorama Ridge). | Low priority |
 
 ## Coming from Daniel (do not build these yet)
@@ -142,10 +142,22 @@ His **Action list** (to replace ours, billing included); a **document on prescri
 drugs); his **chart timeline** work; the updated **lab/critical list**; the **full list of visit statuses**;
 where **preventive-care reminders** go; his own **better wording** for Intake summary and Chart review.
 
+## What the frames added (checked 18 Oct)
+- **Video 4** is on UC-03 step 2 (chart opens with Call ready): his header, ECG and PHN remarks all point at that one screen.
+  UC-04 ("Doctor to call back") is the part he likes.
+- **Video 5** starts on Home (UC-01-3), then UC-02 (filter by call window, status dropdown), then UC-03.
+- **Video 6** stays on UC-01-3 (Home): "Needs your attention" shows three rows today (troponin red; potassium 6.3 yellow;
+  "MSP claim not submitted · 4 days left" yellow). Potassium becomes Critical; the claim row stays below it in another colour.
+  Near the end he moves to UC-01-4 (queue with the "Live" chip, "Current window" and "Later today" bands): that is where
+  Live and Later today go and named call windows come in.
+- **Video 3** is on UC-04/UC-05; the "Today · Intake" card beside "Cedar · Key clinical findings" on the Review tab is the split
+  layout he does not want. **Video 2** was on UC-07 steps 3 and 4 (Note with Add diagnosis; Action with Lab orders).
+- The Action tab (UC-07-4) holds Refer, Task, Message, then Lab orders and results: his "purely action" point removes the lab block from it.
+
 ## Questions for Daniel
-1. Should the top-right time pill be removed, with the countdown shown in the queue's current call window?
+1. (Answered by the frames: the pill goes and the countdown moves into the current call-window band.)
 2. Where does Needs attention sit relative to the Intake summary? (Lead's proposal: first, always, with
    criticals on top.)
-3. ECG: what is "gone", and what should the card show from the report?
+3. ECG: confirm the card should show the printed report line instead of "Abnormal ECG".
 4. Where do the Cedar on/off switches live, and what is the "AI view"?
 5. Which colours for Needs attention (critical vs other urgent)?
