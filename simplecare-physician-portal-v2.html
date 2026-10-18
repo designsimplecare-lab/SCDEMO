@@ -6180,6 +6180,56 @@
   @media (max-width:1100px){
     #screen-review #rm-block .rm-step-r,#screen-review #rm-block .rm-rec,#screen-review #rm-block .rm-ri{flex-wrap:wrap;}
   }
+  /* ===== 18 Oct (Daniel, 17 Oct Loom for Ani: "when you call the patient, it pairs to your cellular device. When you headset call, it pairs to the internet ... the doctor could choose one or the other"):
+     Call is a split button. The main part says "Call" and uses the last route (Phone the first time); the attached 44 px caret opens a short menu: Phone (your cell connection) or
+     Headset (the internet, Wi-Fi). The Headset mini-buttons are gone, so there is one way to choose. Two segments with a 2 px gap, no stroke between them; words are ink, colour on the icons. ===== */
+  #screen-patientchart .pc-split{display:inline-flex;align-items:stretch;gap:2px;vertical-align:middle;max-width:100%;}
+  #screen-patientchart .pc-split > .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;min-height:44px;margin:0;border:0;font-size:15px;font-weight:700;line-height:20px;}
+  #screen-patientchart .pc-split > .btn .ic,#screen-patientchart .pc-split > .btn .ic svg{width:20px;height:20px;flex:none;}
+  #screen-patientchart .pc-split > .pc-split-main{flex:1 1 auto;padding:0 16px;border-radius:999px 6px 6px 999px;white-space:nowrap;}
+  #screen-patientchart .pc-split > .pc-split-caret{flex:none;width:44px;padding:0;border-radius:6px 999px 999px 6px;background:var(--accent);color:#fff;box-shadow:none;}
+  #screen-patientchart .pc-split > .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;position:relative;z-index:1;}
+  #screen-patientchart .pc-split > .pc-split-caret[aria-expanded="true"]{background:var(--accent-ink);opacity:1;}
+  /* after a call (Call again, Redial) the pair is an outline, as the single button was */
+  #screen-patientchart .pc-split > .pc-split-main.cw-again,#screen-patientchart .pc-split:has(> .pc-split-main.cw-again) > .pc-split-caret{background:var(--panel);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-strong);}
+  #screen-patientchart .pc-split > .pc-split-main.cw-again:hover,#screen-patientchart .pc-split:has(> .pc-split-main.cw-again) > .pc-split-caret:hover{background:var(--wash);opacity:1;}
+  #screen-patientchart .pc-split > .pc-split-main.cw-again .ic,#screen-patientchart .pc-split:has(> .pc-split-main.cw-again) > .pc-split-caret .ic{color:var(--ink-soft);}
+  /* the patient card: 52 px, 17px/700, full width (12 Oct: Call and Chart front and centre) */
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts > .pc-split{display:flex;width:100%;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts .pc-split > .btn{height:52px;min-height:52px;font-size:17px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts .pc-split > .btn .ic,#screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts .pc-split > .btn .ic svg{width:22px;height:22px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts .pc-split > .pc-split-main{padding:0 10px;border-radius:12px 4px 4px 12px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts .pc-split > .pc-split-caret{border-radius:4px 12px 12px 4px;}
+  /* "Call again" / "Redial" is longer than "Call": the pair takes the full row and Chart sits below it */
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts > .pc-split:has(> .pc-split-main.cw-again){grid-column:1 / -1;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts:has(> .pc-split > .pc-split-main.cw-again) > #v2t-chart{grid-column:1 / -1;}
+  /* a call in progress (the call widget is the call) or the no-show banner: the pair steps aside, Chart takes the row */
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts > .pc-split:has(> .pc-split-main.cw-hide){display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-pt .vc-acts:has(.pc-split-main.cw-hide) > #v2t-chart{grid-column:1 / -1;}
+  #screen-patientchart #pcv-c.cs-ns-on #v2-pt .vc-acts > .pc-split{display:none;}
+  #screen-patientchart #pcv-c .cs-snap .vc-acts > .pc-split:has(> .pc-split-main.cw-hide){display:none;}
+  #screen-patientchart #pcv-c.cs-ns-on .cs-snap .vc-acts > .pc-split{display:none;}
+  /* the older dock: its green Call */
+  #screen-patientchart #pcv-d .pc-split-vd{display:flex;width:100%;}
+  #screen-patientchart #pcv-d .pc-split-vd > .btn{height:52px;min-height:52px;font-size:16px;font-weight:800;background:#2FA36B;color:#fff;box-shadow:none;}
+  #screen-patientchart #pcv-d .pc-split-vd > .pc-split-main{border-radius:13px 4px 4px 13px;}
+  #screen-patientchart #pcv-d .pc-split-vd > .pc-split-caret{border-radius:4px 13px 13px 4px;}
+  #screen-patientchart #pcv-d .pc-split-vd > .pc-split-caret[aria-expanded="true"]{background:#27935F;}
+  /* the menu: one floating panel, two 56 px rows */
+  #pc-routemenu{position:fixed;z-index:1000;width:344px;max-width:calc(100vw - 16px);padding:6px;border-radius:14px;background:var(--panel);box-shadow:0 2px 6px rgba(23,24,28,.08),0 14px 36px rgba(23,24,28,.16);}
+  #pc-routemenu[hidden]{display:none;}
+  #pc-routemenu .pc-rm-h{margin:0;padding:10px 12px 6px;font-size:14px;line-height:20px;font-weight:500;color:var(--ink-soft);}
+  #pc-routemenu [role="menuitem"]{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:8px 12px;border:0;border-radius:10px;background:none;font:inherit;color:var(--ink);text-align:left;cursor:pointer;}
+  #pc-routemenu [role="menuitem"]:hover{background:var(--wash);}
+  #pc-routemenu [role="menuitem"]:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;background:var(--wash);}
+  #pc-routemenu .pc-rm-ic,#pc-routemenu .pc-rm-ic svg{width:22px;height:22px;flex:none;color:var(--ink-soft);}
+  #pc-routemenu [role="menuitem"].cur .pc-rm-ic{color:var(--accent);}
+  #pc-routemenu .pc-rm-t{display:grid;gap:2px;flex:1;min-width:0;}
+  #pc-routemenu .pc-rm-t b{font-size:16px;line-height:22px;font-weight:600;color:var(--ink);}
+  #pc-routemenu .pc-rm-t span{font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #pc-routemenu .pc-rm-ck,#pc-routemenu .pc-rm-ck svg{width:20px;height:20px;flex:none;color:var(--accent);}
+  #pc-routemenu [role="menuitem"]:not(.cur) .pc-rm-ck{visibility:hidden;}
+  #pc-routemenu .pc-rm-last{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}   /* read aloud ("last used"), never shown */
 </style>
 </head>
 <body>
@@ -6472,10 +6522,10 @@
               <span class="clock"><span class="unit"><b data-f="twh">00</b><span>HRS</span></span><span class="unit"><b data-f="twm">00</b><span>MIN</span></span></span>
             </div>
             <div class="rail-actions">
-              <button class="btn dark xs" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call</button>
-              <button class="btn xs" onclick="pcStartCall()"><span class="ic" data-pcic="headset"></span> Headset</button>
+              <!-- 18 Oct (Daniel, 17 Oct): the Headset mini-button is gone; one split Call chooses the route -->
+              <span class="pc-split pc-split-sm" data-act="start"><button type="button" class="btn dark pc-split-main" onclick="pcSplitGo(this)"><span class="ic pc-split-ic" data-pdic="patientview"></span><span class="pc-calltxt">Call</span></button><button type="button" class="btn pc-split-caret" aria-haspopup="menu" aria-expanded="false" aria-label="Choose how to call" onclick="pcSplitOpen(this)" onkeydown="pcSplitCaretKey(event,this)"><span class="ic" data-pdic="chevdown"></span></button></span>
             </div>
-            <div style="margin-top:10px;"><span class="pc-callstrip" id="pc-callstrip"><span class="dot"></span> Connected &middot; <span id="pc-timer">00:00</span> <button class="hang" onclick="pcEndCall()">Hang up</button></span></div>
+            <div style="margin-top:10px;"><span class="pc-callstrip" id="pc-callstrip"><span class="dot"></span> Connected &middot; <span class="pc-route-t">phone</span> &middot; <span id="pc-timer">00:00</span> <button class="hang" onclick="pcEndCall()">Hang up</button></span></div>
           </div>
 
           <div class="rail-card">
@@ -6720,10 +6770,11 @@
               <p class="cs-fact cs-fd" id="cs-fd"></p>
             </div>
             <div class="vc-acts">
-              <button class="btn dark" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call</button>
+              <!-- 18 Oct (Daniel, 17 Oct Loom: "you can use your cellular data or you can use Wi-Fi ... the doctor could choose one or the other"): Call is a split button; the main part uses the last route, the caret offers Phone or Headset -->
+              <span class="pc-split pc-split-card" data-act="start"><button type="button" class="btn dark pc-split-main" onclick="pcSplitGo(this)"><span class="ic pc-split-ic" data-pdic="patientview"></span><span class="pc-calltxt">Call</span></button><button type="button" class="btn pc-split-caret" aria-haspopup="menu" aria-expanded="false" aria-label="Choose how to call" onclick="pcSplitOpen(this)" onkeydown="pcSplitCaretKey(event,this)"><span class="ic" data-pdic="chevdown"></span></button></span>
               <!-- Daniel, 8 Oct: the chart is reference, not a step of the visit: it opens as a wide drawer -->
               <button class="btn" id="v2t-chart" aria-controls="v2p-chart" aria-expanded="false" onclick="v2Tab('chart')"><span class="ic" data-pdic="file"></span> Chart</button>
-              <span class="pc-callstrip" id="pc-callstrip-c"><span class="dot"></span> <span id="pc-timer-c">00:00</span> <button class="hang" onclick="pcEndCall()">End</button></span>
+              <span class="pc-callstrip" id="pc-callstrip-c"><span class="dot"></span> Connected &middot; <span class="pc-route-t">phone</span> &middot; <span id="pc-timer-c">00:00</span> <button class="hang" onclick="pcEndCall()">End</button></span>
               <!-- shadowing 3: "the timer restarts from 0:00, so the screen no longer shows how long he has been with the patient" -->
               <span class="pc-callsum" id="pc-callsum" hidden></span>
               
@@ -6927,12 +6978,10 @@
             <!-- call widget: idle -> ringing -> connected -->
             <div class="vd-call" id="vd-call">
               <div class="vd-call-idle">
-                <button class="vd-callbtn" onclick="vdCall('phone')">
-                  <span class="ic" data-pcic="call"></span> Call patient
-                </button>
+                <span class="pc-split pc-split-vd" data-act="vd"><button type="button" class="btn dark pc-split-main" onclick="pcSplitGo(this)"><span class="ic pc-split-ic" data-pdic="patientview"></span><span class="pc-calltxt">Call patient</span></button><button type="button" class="btn pc-split-caret" aria-haspopup="menu" aria-expanded="false" aria-label="Choose how to call" onclick="pcSplitOpen(this)" onkeydown="pcSplitCaretKey(event,this)"><span class="ic" data-pdic="chevdown"></span></button></span>
                 <div class="vd-callalt">
-                  <button onclick="vdCall('headset')"><span class="ic" data-pcic="headset"></span> Headset</button>
-                  <button onclick="toast('Calling back on file number')"><span class="ic" data-pcic="transfer"></span> Callback</button>
+                  <!-- 18 Oct (Daniel, 17 Oct): the Headset button is part of the split Call; Callback dials the file number by the same route -->
+                  <button onclick="vdCall(PC_ROUTE)"><span class="ic" data-pcic="transfer"></span> Callback</button>
                 </div>
                 <p class="vd-callnum" data-f="callnum">&#8226; (604) 555&#8209;0142</p>
               </div>
@@ -7089,7 +7138,7 @@
           <span class="m"><p class="k">Window</p><p class="v" data-f="window">--</p></span>
           <span class="sep"></span>
           <span class="m"><p class="k">Status</p><p class="v" data-f="statuslbl">--</p></span>
-          <button class="btn dark xs" onclick="pcStartCall()"><span class="ic" data-pcic="call"></span> Call patient</button>
+          <span class="pc-split pc-split-sm" data-act="start"><button type="button" class="btn dark pc-split-main" onclick="pcSplitGo(this)"><span class="ic pc-split-ic" data-pdic="patientview"></span><span class="pc-calltxt">Call patient</span></button><button type="button" class="btn pc-split-caret" aria-haspopup="menu" aria-expanded="false" aria-label="Choose how to call" onclick="pcSplitOpen(this)" onkeydown="pcSplitCaretKey(event,this)"><span class="ic" data-pdic="chevdown"></span></button></span>
         </div>
 
         <div class="pcv-b-cols">
@@ -11576,6 +11625,7 @@ function renderCareTimeline(){
 var vdInt=null, vdSecs=0, vdMuted=false;
 function vdCall(mode){
   var w=document.getElementById('vd-call'); if(!w) return;
+  mode = pcRouteWord(mode);
   w.classList.add('live'); vdSecs=0; vdMuted=false;
   var mb=document.getElementById('vd-mute'); if(mb) mb.classList.remove('on');
   var st=document.getElementById('vd-callstate');
@@ -11584,7 +11634,7 @@ function vdCall(mode){
   clearInterval(vdInt);
   setTimeout(function(){
     if(!w.classList.contains('live')) return;
-    if(st) st.textContent = (mode==='headset' ? 'Connected \u00b7 headset' : 'Connected');
+    if(st) st.textContent = 'Connected \u00b7 ' + pcRouteWord(mode);   /* 18 Oct: the route in words */
     vdInt=setInterval(function(){ vdSecs++;
       var el=document.getElementById('vd-calltime'); if(el)
         el.textContent = String(Math.floor(vdSecs/60)).padStart(2,'0')+':'+String(vdSecs%60).padStart(2,'0');
@@ -11828,6 +11878,7 @@ function pcCallBtns(txt, on){
     var t = b.querySelector('.pc-calltxt'); if(!t){ t=document.createElement('span'); t.className='pc-calltxt';
       [].slice.call(b.childNodes).forEach(function(n){ if(n.nodeType===3) n.remove(); }); b.appendChild(t); }
     t.textContent = txt; });
+  if(typeof pcSplitSync === 'function') pcSplitSync();   /* 18 Oct: the split's accessible name follows the label */
 }
 /* Shadowing 3: a dropped call, a redial, "and the timer restarts from 0:00, so the screen
    no longer shows how long he has been with the patient". A redial is the same contact:
@@ -11836,18 +11887,26 @@ var PC_CALL = {};
 /* Ani, 6 Oct (floating call widget): the call belongs to one patient (PC_CALL_WHO), not to whichever chart is open,
    so the doctor can look at Home, Claims or another chart while the call carries on. One call at a time. */
 var PC_CALL_WHO = null;
+/* 18 Oct (Daniel, 17 Oct Loom: "the doctor could choose one or the other"): Call is a split button, last route remembered */
+var PC_ROUTE_KEY = 'sc-call-route-v1', PC_ROUTE = 'phone';   /* the first time: Phone */
+try{ if(window.localStorage.getItem(PC_ROUTE_KEY) === 'headset') PC_ROUTE = 'headset'; }catch(e){}   /* storage can be blocked: it still works */
+function pcRouteWord(r){ return r === 'headset' ? 'headset' : 'phone'; }
+function pcSetRoute(r){ PC_ROUTE = pcRouteWord(r); try{ window.localStorage.setItem(PC_ROUTE_KEY, PC_ROUTE); }catch(e){} }
+/* Call back after a dropped call reuses the dropped call's route; every other call uses the last route */
+function pcRouteFor(name){ var c = PC_CALL[name]; return c && c.dropped && c.route ? pcRouteWord(c.route) : PC_ROUTE; }
 function pcFmt(n){ return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0'); }
 function pcCallRec(){ var k = PC_CALL_WHO || PC_CURRENT; return PC_CALL[k] || (PC_CALL[k] = {calls:0, secs:0, dropped:false}); }
 function pcTimerText(c){ return (c.calls > 1 ? c.calls + ' calls \u00b7 ' : '') + pcFmt(c.secs); }
 function pcStartCall(){
   if(PC_ON_CALL) return;
-  var c = pcCallRec(); c.calls++; c.dropped = false;
+  var c = pcCallRec(); c.calls++; c.dropped = false; c.route = pcRouteWord(PC_ROUTE);   /* 18 Oct: the route this call uses */
   PC_ON_CALL = true; PC_CALL_WHO = PC_CURRENT;
   pcCallBtns('Calling…', true);
   setTimeout(function(){ if(PC_ON_CALL && PC_CALL_WHO === PC_CURRENT) pcCallBtns('On call', true); }, 1200);
   document.querySelectorAll('.pc-callstrip').forEach(function(s){ s.classList.add('live'); });
   pcSecs = c.secs;
-  var paint = function(){ ['pc-timer','pc-timer-c'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=pcTimerText(c); }); };
+  var paint = function(){ ['pc-timer','pc-timer-c'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=pcTimerText(c); });
+    document.querySelectorAll('.pc-route-t').forEach(function(e){ e.textContent = pcRouteWord(c.route); }); };
   paint(); pcCallSum();
   clearInterval(pcInt); pcInt=setInterval(function(){ pcSecs++; c.secs = pcSecs; paint(); },1000);
   /* Ani, 8 Oct: lots of AI for notes. Cedar starts listening with the call when consent is on file; otherwise it asks. */
@@ -11863,7 +11922,7 @@ function pcCallSum(){
   var c = PC_CALL[PC_CURRENT];
   if(!c || !c.calls || (PC_ON_CALL && PC_CALL_WHO === PC_CURRENT)){ el.hidden = true; el.innerHTML = ''; return; }
   el.innerHTML = '<span class="ic" data-pdic="phone"></span><span>' +
-    (c.dropped ? 'Call dropped at ' + pcFmt(c.secs) : 'Call ended \u00b7 ' + pcFmt(c.secs) + (c.calls > 1 ? ' total' : '')) +
+    (c.dropped ? 'Call dropped at ' + pcFmt(c.secs) : 'Call ended \u00b7 ' + pcFmt(c.secs) + (c.calls > 1 ? ' total' : '')) + (c.route ? ' \u00b7 ' + pcRouteWord(c.route) : '') +
     (c.calls > 1 ? ' \u00b7 ' + c.calls + ' calls' : '') + '</span>';
   el.hidden = false;
   paintPd(el);
@@ -13410,9 +13469,10 @@ function csRenderNotices(name){
   if(CS.dropped[name] && !PC_ON_CALL){
     /* v2.5 §3: the strip re-expands on a dropped call; the callback is one action away, the draft is kept.
        Calls go outward only: the doctor phones the patient back. */
-    h += '<div class="cs-notice" role="alert">' + csIc('phone') + '<div class="cs-grow"><p><b>Call dropped' + (c ? ' at ' + pcFmt(c.secs) : '') + '.</b> Your note is kept.</p>' +
+    h += '<div class="cs-notice" role="alert">' + csIc('phone') + '<div class="cs-grow"><p><b>Call dropped' + (c ? ' at ' + pcFmt(c.secs) : '') + (c && c.route ? ' \u00b7 ' + pcRouteWord(c.route) : '') + '.</b> Your note is kept.</p>' +
       '</div>' +
-      '<button type="button" class="btn dark" id="cs-redial" onclick="pcStartCall()"><span class="ic" data-pdic="patientview"></span>Call back</button></div>';
+      /* 18 Oct (Daniel, 17 Oct): Call back reuses the dropped call's route; the caret switches it (e.g. the cell line dropped, try the headset) */
+      pcSplitHtml({label:'Call back', act:'start', cls:'pc-split-notice', id:'cs-redial'}) + '</div>';
   }
   host.innerHTML = h; host.hidden = !h; paintPd(host);
   /* one display of the dropped call: the notice replaces v2's "Call dropped at" text (v2.5 §7 no duplicate display) */
@@ -14210,7 +14270,7 @@ function csRenderNoShow(name){
     el.innerHTML = '<div class="cs-ns-box">' + csIc('phone') + '<div class="cs-grow"><h3 class="cs-h3" id="cs-ns-h">No-show</h3>' +
       '<p>' + (marked ? 'Marked as a no-show.' : 'No answer.') + ' Call window ' + csEsc(win) + '.' + (tries ? ' ' + tries : '') + '</p>' +
       '<p class="cs-cap">Queue status: ' + csEsc(STATUS_LABEL[r.status] || r.status) + '</p>' +
-      '<div class="cs-ns-acts"><button type="button" class="btn dark" onclick="csNsCall()"><span class="ic" data-pdic="phone"></span>Call again</button>' +
+      '<div class="cs-ns-acts">' + pcSplitHtml({label:'Call again', act:'ns', cls:'pc-split-ns'}) +   /* 18 Oct (Daniel, 17 Oct): the no-show state offers the same Phone / Headset choice */
       (marked ? '<span class="cs-done">' + csIc('complete') + 'Marked no-show</span>'
               : '<button type="button" class="btn cs-ton" onclick="csNsMark()"><span class="ic" data-pdic="flag"></span>Mark no-show</button>') + '</div></div></div>';
   }
@@ -16273,7 +16333,7 @@ function cwRender(){
   w.className = 'callw' + (CW.hold ? ' cw-onhold' : '');
   w.innerHTML = '<button type="button" class="cw-who" onclick="cwGo()" aria-label="On call with ' + csEsc(cwName(who)) + '. Open the chart">' +
       '<span class="cw-dot" aria-hidden="true"></span><span class="cw-txt"><span class="cw-l1"><span class="cw-st">' + (CW.hold ? 'On hold' : 'On call') + '</span> &middot; <b>' + csEsc(cwName(who)) + '</b></span>' +
-      '<span class="cw-l2"><span class="cw-time">' + pcFmt(c.secs) + '</span>' +
+      '<span class="cw-l2"><span class="cw-rt">' + (CW.hold ? '' : 'Connected &middot; ') + pcRouteWord(c.route) + '</span> &middot; <span class="cw-time">' + pcFmt(c.secs) + '</span>' +   /* 18 Oct: Connected · phone / headset */
       '<span class="cw-hl"' + (CW.hold ? '' : ' hidden') + '> &middot; hold <span class="cw-ht">' + pcFmt(CW.holdSecs) + '</span></span>' +
       (CW.muted ? '<span> &middot; muted</span>' : '') +
       (v.callback ? '<span class="cw-num"> &middot; <span class="pc-mono">' + csEsc(v.callback) + '</span></span>' : '') + '</span></span></button>' +
@@ -16302,7 +16362,7 @@ function cwTick(){
 function cwRenderEnded(){
   var w = cwEl('callw'), e = CW.ended; if(!w || !e) return;
   w.className = 'callw cw-ended';
-  w.innerHTML = '<span class="cw-dot" aria-hidden="true"></span><span class="cw-l1">' + (e.dropped ? 'Call dropped' : 'Call ended') + ' &middot; <span class="cw-time">' + pcFmt(e.secs) + '</span></span>';
+  w.innerHTML = '<span class="cw-dot" aria-hidden="true"></span><span class="cw-l1">' + (e.dropped ? 'Call dropped' : 'Call ended') + ' &middot; <span class="cw-time">' + pcFmt(e.secs) + '</span>' + (e.route ? ' &middot; ' + pcRouteWord(e.route) : '') + '</span>';
   w.hidden = false; cwPlace();
 }
 function cwHide(){ var w = cwEl('callw'); if(w && !PC_ON_CALL && !CW.pending){ w.hidden = true; w.innerHTML = ''; } CW.ended = null; cwPlace(); }
@@ -16380,7 +16440,7 @@ function cwSwitch(yes){
     CW.who = PC_CALL_WHO; CW.muted = false; CW.hold = false; CW.holdSecs = 0; CW.pad = false;
     clearInterval(CW.int); clearInterval(CW.holdInt); CW.int = setInterval(cwTick, 1000);
     cwBill(CW.who, 'start'); cwRender(); cwSyncCard();
-    cwSay('On call with ' + cwName(CW.who));
+    cwSay('On call with ' + cwName(CW.who) + ', by ' + pcRouteWord(PC_CALL[CW.who] && PC_CALL[CW.who].route));
     if(v2On() && PC_CURRENT) v2RenderVisit(PC_CURRENT);
     return r;
   };
@@ -16393,8 +16453,8 @@ function cwSwitch(yes){
     var c = PC_CALL[who] || {secs:0};
     clearInterval(CW.int); clearInterval(CW.holdInt); cwKeypad(false); CW.hold = false; CW.muted = false;
     cwBill(who, 'stop');
-    CW.ended = {who:who, secs:c.secs, dropped:!!c.dropped}; CW.pending = null;
-    cwRenderEnded(); cwSay((c.dropped ? 'Call dropped at ' : 'Call ended, ') + cwSpoken(c.secs));
+    CW.ended = {who:who, secs:c.secs, dropped:!!c.dropped, route:c.route}; CW.pending = null;
+    cwRenderEnded(); cwSay((c.dropped ? 'Call dropped at ' : 'Call ended, ') + cwSpoken(c.secs) + (c.route ? ', by ' + pcRouteWord(c.route) : ''));
     clearTimeout(CW.endT); CW.endT = setTimeout(cwHide, 3000);
     if(v2On() && PC_CURRENT) v2RenderVisit(PC_CURRENT);
     if(inW){ var b = document.querySelector('#pcv-c .vc-acts .btn.dark'); if(b && who === PC_CURRENT && csOnChart()) b.focus({preventScroll:true}); }
@@ -16410,6 +16470,136 @@ function cwSwitch(yes){
       return cp0.apply(this, arguments);
     };
   }
+})();
+</script>
+<script>
+/* =====================================================================================================
+   18 Oct 2026 (Daniel, 17 Oct Loom for Ani: "when you call the patient, it pairs to your cellular device. When you headset call, it pairs to the
+   internet. Wi-Fi voice over IP ... depending on where your internet is the strongest, you can use your cellular data or you can use Wi-Fi ...
+   the doctor could choose one or the other"). Every Call to a patient in the chart is a split button: the main part ("Call") uses the doctor's last
+   route (Phone the first time; remembered in localStorage, which can be blocked), the caret opens a short menu: Phone (your cell connection) or
+   Headset (the internet, Wi-Fi). Choosing one starts the call by that route and closes the menu. The call widget, the call strips and the dropped-call
+   notice say the route in words; Call back after a dropped call reuses that call's route. The queue's Call is unchanged (it uses the last route).
+   Open question for Daniel: should a route chosen in the menu start the call straight away (as built), or only set the default?
+   ===================================================================================================== */
+ICONS.headset = '<svg xmlns="http://www.w3.org/2000/svg" class="ic" aria-hidden="true" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M8.036 15.964a2.643 2.643 0 1 0-5.286 0v2.643a2.643 2.643 0 0 0 5.286 0zm7.928 2.643a2.643 2.643 0 1 0 5.286 0v-2.643a2.643 2.643 0 0 0-5.286 0z"/><path d="M21.25 18.607V12a9.25 9.25 0 1 0-18.5 0v6.607"/></g></svg>';   /* Mage "heaphone" (Mage's own spelling) */
+if(typeof PC_ICONS !== 'undefined') PC_ICONS.headset = ICONS.headset;
+var PCS = {el:null, caret:null, wrap:null};
+var PCS_ROUTES = [
+  {id:'phone',   title:'Phone',   desc:'Calls through your cell connection', ic:'patientview'},
+  {id:'headset', title:'Headset', desc:'Calls over the internet (Wi-Fi)',    ic:'headset'}
+];
+var PCS_ACT = {
+  start:function(){ pcStartCall(); },
+  ns:function(){ csNsCall(); },
+  vd:function(){ vdCall(PC_ROUTE); }
+};
+/* the same markup is written out in the static places of the page; this builds it for the ones the chart draws (dropped-call notice, no-show) */
+function pcSplitHtml(o){
+  return '<span class="pc-split ' + (o.cls || '') + '" data-act="' + (o.act || 'start') + '">' +
+    '<button type="button" class="btn dark pc-split-main"' + (o.id ? ' id="' + o.id + '"' : '') + ' onclick="pcSplitGo(this)"><span class="ic pc-split-ic" data-pdic="patientview"></span><span class="pc-calltxt">' + o.label + '</span></button>' +
+    '<button type="button" class="btn pc-split-caret" aria-haspopup="menu" aria-expanded="false" aria-label="Choose how to call" onclick="pcSplitOpen(this)" onkeydown="pcSplitCaretKey(event,this)"><span class="ic" data-pdic="chevdown"></span></button></span>';
+}
+/* the icon and the accessible names follow the route this button would use (the dropped call's route for Call back, else the last route) */
+function pcSplitSync(){
+  var r = pcRouteFor(typeof PC_CURRENT !== 'undefined' ? PC_CURRENT : null), word = pcRouteWord(r);
+  document.querySelectorAll('.pc-split').forEach(function(w){
+    var main = w.querySelector('.pc-split-main'), caret = w.querySelector('.pc-split-caret'); if(!main || !caret) return;
+    var ic = main.querySelector('.pc-split-ic'), want = r === 'headset' ? 'headset' : 'patientview';
+    if(ic){ ic.setAttribute('data-pdic', want); }
+    paintPd(w);
+    var t = main.querySelector('.pc-calltxt'), txt = t ? t.textContent.trim() : 'Call';
+    main.setAttribute('aria-label', txt + ' by ' + word);
+    caret.setAttribute('aria-label', 'Choose how to call. Last used: ' + word);
+  });
+  if(PCS.el && !PCS.el.hidden) pcsMark();
+}
+function pcsMark(){
+  var cur = pcRouteFor(typeof PC_CURRENT !== 'undefined' ? PC_CURRENT : null);
+  PCS.el.querySelectorAll('[role="menuitem"]').forEach(function(i){
+    var on = i.getAttribute('data-route') === cur; i.classList.toggle('cur', on);
+    i.querySelector('.pc-rm-last').textContent = on ? ', last used' : '';
+  });
+}
+function pcsMenuEl(){
+  if(PCS.el) return PCS.el;
+  var m = document.createElement('div'); m.id = 'pc-routemenu'; m.hidden = true;
+  m.innerHTML = '<p class="pc-rm-h" id="pc-rm-h">Choose how to call</p><div role="menu" aria-labelledby="pc-rm-h">' + PCS_ROUTES.map(function(r){
+    return '<button type="button" role="menuitem" tabindex="-1" data-route="' + r.id + '" onclick="pcSplitPick(\'' + r.id + '\')">' +
+      '<span class="pc-rm-ic" aria-hidden="true">' + ICONS[r.ic] + '</span>' +
+      '<span class="pc-rm-t"><b>' + r.title + '</b><span>' + r.desc + '</span></span>' +
+      '<span class="pc-rm-ck" aria-hidden="true">' + ICONS.complete + '</span><span class="vh pc-rm-last"></span></button>';
+  }).join('') + '</div>';
+  document.body.appendChild(m); PCS.el = m; return m;
+}
+function pcSplitOpen(caret){
+  var m = pcsMenuEl();
+  if(!m.hidden && PCS.caret === caret){ pcSplitClose(true); return; }
+  pcSplitClose(false);
+  PCS.caret = caret; PCS.wrap = caret.parentNode; caret.setAttribute('aria-expanded', 'true');
+  pcsMark();
+  m.style.visibility = 'hidden'; m.hidden = false;
+  var r = PCS.wrap.getBoundingClientRect(), mw = m.offsetWidth, mh = m.offsetHeight;
+  var left = Math.max(8, Math.min(r.left, window.innerWidth - mw - 8));
+  var top = r.bottom + 6; if(top + mh > window.innerHeight - 8) top = Math.max(8, r.top - 6 - mh);
+  m.style.left = Math.round(left) + 'px'; m.style.top = Math.round(top) + 'px'; m.style.visibility = '';
+  var cur = m.querySelector('[role="menuitem"].cur') || m.querySelector('[role="menuitem"]'); if(cur) cur.focus({preventScroll:true});
+}
+function pcSplitClose(refocus){
+  var m = PCS.el; if(!m || m.hidden) return;
+  m.hidden = true;
+  if(PCS.caret){ PCS.caret.setAttribute('aria-expanded', 'false'); if(refocus && PCS.caret.getClientRects().length) PCS.caret.focus({preventScroll:true}); }
+}
+function pcSplitPick(route){
+  var wrap = PCS.wrap; pcSplitClose(false);
+  pcSplitRun(wrap, route);
+}
+function pcSplitGo(btn){ pcSplitRun(btn.closest('.pc-split'), null); }
+function pcSplitRun(wrap, route){
+  var act = (wrap && wrap.getAttribute('data-act')) || 'start';
+  pcSetRoute(route || pcRouteFor(PC_CURRENT));
+  (PCS_ACT[act] || PCS_ACT.start)();
+  pcSplitSync();
+  /* chosen from the menu with the keyboard or the mouse: the pair hides while the call runs, so focus goes to the call widget (as the Call shortcut does) */
+  if(route && act === 'start'){
+    var w = document.querySelector('#callw:not([hidden]) .cw-who'), pend = document.querySelector('#callw:not([hidden]) #cw-yes');
+    if(pend) pend.focus(); else if(w && PC_ON_CALL) w.focus({preventScroll:true});
+  }
+}
+function pcSplitCaretKey(e, caret){
+  if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
+    e.preventDefault();
+    var m = pcsMenuEl();
+    if(m.hidden || PCS.caret !== caret) pcSplitOpen(caret);
+    else { var it = m.querySelectorAll('[role="menuitem"]'); (e.key === 'ArrowDown' ? it[0] : it[it.length - 1]).focus({preventScroll:true}); }
+  }
+}
+/* keyboard inside the menu: arrows (they wrap), Home and End, Escape closes and returns to the caret, Tab closes; Enter and Space activate the focused row */
+document.addEventListener('keydown', function(e){
+  var m = PCS.el; if(!m || m.hidden) return;
+  var inMenu = m.contains(e.target), onCaret = e.target === PCS.caret;
+  if(!inMenu && !onCaret) return;
+  if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); pcSplitClose(true); return; }
+  if(!inMenu) return;
+  var it = [].slice.call(m.querySelectorAll('[role="menuitem"]')), i = it.indexOf(document.activeElement), n = it.length, k = e.key;
+  if(k === 'ArrowDown' || k === 'ArrowUp' || k === 'Home' || k === 'End'){
+    e.preventDefault(); e.stopPropagation();
+    var j = k === 'Home' ? 0 : k === 'End' ? n - 1 : k === 'ArrowDown' ? (i + 1) % n : (i - 1 + n) % n;
+    it[j].focus({preventScroll:true});
+  } else if(k === 'Tab'){ pcSplitClose(true); }
+  else if(k === 'Enter' || k === ' '){ e.stopPropagation(); }
+}, true);
+document.addEventListener('pointerdown', function(e){
+  var m = PCS.el; if(!m || m.hidden) return;
+  if(!e.target.closest('#pc-routemenu') && !e.target.closest('.pc-split-caret')) pcSplitClose(false);
+}, true);
+/* the menu is fixed to the screen, so it closes when the page (or the panel holding the button) scrolls; other panels scrolling by themselves do not close it */
+window.addEventListener('scroll', function(e){ var t = e.target; if(t === document || (PCS.wrap && t.contains && t.contains(PCS.wrap))) pcSplitClose(false); }, true);
+window.addEventListener('resize', function(){ pcSplitClose(false); });
+(function(){
+  var open0 = window.openChart; if(typeof open0 === 'function') window.openChart = function(){ var r = open0.apply(this, arguments); pcSplitSync(); return r; };
+  var end0 = pcEndCall; pcEndCall = function(){ var r = end0.apply(this, arguments); pcSplitSync(); return r; };
+  pcSplitSync();
 })();
 </script>
 <script>
@@ -18220,6 +18410,6 @@ baWrap('openReview', function(r, i){
 });
 baWrap('openChart', function(){ rmRenderDrafts(); rmSignLine(); });
 </script>
-  <div class="build-stamp">v2 · build 2026-10-15 23:45</div>
+  <div class="build-stamp">v2 · build 2026-10-18 18:05</div>
 </body>
 </html>

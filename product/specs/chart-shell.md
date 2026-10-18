@@ -509,3 +509,34 @@ Source: `from-daniel/2026-10-12-chart-and-bus-ad-feedback.md`. Build 2026-10-12 
 ### Needs Ani
 1. Past visits sits below the Medications list, which is long for the demo patient (its two "none recorded" and PharmaNet lines). Move Past visits above Medications, or trim those lines?
 2. "Past Medical History (PMHx)" wraps to two lines in the 312 px list when it has a count.
+
+
+## 18 Oct changes (Call is a split button: Phone or Headset)
+
+Source: `from-daniel/2026-10-18-portal-walkthrough.md` (Daniel's Loom for Ani, 17 Oct: "when you call the patient, it pairs to your cellular device. When you headset call, it pairs to the internet ... the doctor could choose one or the other"). Build 2026-10-18 18:05. Light only, 1440 px. Screenshots (local): `product/reports/shots/oct18-*.png`.
+
+### One-screen summary
+1. **Call is a split button** in the patient card (52 px, 17px/700, under the allergy band). The main part says "Call" and uses the last route; the attached 44 px caret opens a short menu: **Phone** (Calls through your cell connection) and **Headset** (Calls over the internet (Wi-Fi)). Both rows are 56 px, with a title, a plain-words line and a check on the route last used.
+2. **The route is remembered.** First time: Phone. After that, the last route is kept in `localStorage` (`sc-call-route-v1`, every access in try/catch, so it still works with storage blocked). The main button's icon shows a headset when Headset is the default; Phone, the normal case, has no extra mark.
+3. **Choosing a route starts the call** by that route and closes the menu. (Daniel to confirm: should the menu start the call straight away, or only set the default?)
+4. **The call shows its route in words.** The call widget reads "Connected · phone" or "Connected · headset", the call strips the same, the dock "Connected · phone / headset", the dropped-call notice "Call dropped at 00:03 · headset", and the ended pill "Call ended · 00:02 · phone". Screen readers hear "On call with the patient, by headset".
+5. **Call back reuses the route.** After a dropped call, **Call back** (notice) and **Redial** (card) use the dropped call's route, whatever the last route is now; the caret lets the doctor switch (for example when the cell line drops, try the headset).
+6. **Same split everywhere the doctor starts a call to the patient in the chart:** the card Call, the Redial / Call again state, the dropped-call Call back, the no-show **Call again**, and the older layouts (rail, bar, visit dock). The two "Headset" mini-buttons are gone, so there is one way to choose the route. The queue's Call and the keyboard shortcut are unchanged; they use the last route.
+
+### Details
+- **Keyboard.** Tab reaches the main button, then the caret. Enter, Space or Down arrow opens the menu with focus on the route last used; Up and Down move (they wrap), Home and End jump, Enter or Space picks, Escape closes and returns focus to the caret, Tab closes and moves on. The focus ring is the 2 px brand outline on every part. After a pick, focus goes to the call widget, because the pair hides while the call runs (the same as the Call shortcut).
+- **After a call** ("Call again", "Redial") the pair is an outline and takes the full row; Chart sits below it, full width. While this patient is on the call, the pair is hidden, as the single button was.
+- **State and code.** `PC_ROUTE` (last route), `PC_CALL[patient].route` (the route of that patient's call), `pcRouteFor(patient)` (the dropped call's route, else the last route), `pcSetRoute`. `pcSplitHtml` builds the split where the chart draws it; the static places carry the same markup. One body-level menu (`#pc-routemenu`) serves every split. The new Mage icon is `ICONS.headset` ("heaphone", Mage's own spelling).
+- **No red, nothing under 14 px** (smallest text in the split and menu measured at 14 px), no uppercase, no stroke between the two parts (a 2 px gap).
+- **Not done:** the hidden Current layout card keeps its 44 px size (it is not the active layout); dark mode not touched (light only, Ani 4 Oct).
+
+### Proof (headless Chrome, light, 1440 × 1000)
+14 inline scripts pass `node --check`; console clean on every run. Demo patient, storage cleared: default Phone; Call by Phone, widget "Connected · phone · 00:01", strips "Connected · phone"; drop: notice "Call dropped at 00:01 · phone", card "Redial by phone"; with the last route set to Headset, Call back still ran by phone (the dropped call's route); Headset from the menu in the Call again state: widget "Connected · headset", `localStorage` = headset, menu closed, focus on the widget; drop, set last route to Phone, Call back ran by headset. Reload: route headset, main button "Call by headset" with the headset icon. Keyboard (real key events): all keys above behave as described, outside click closes. Storage blocked (property throws): the page loads, Phone default, Headset works for the session. Card: main 89 × 52, caret 44 × 52. Menu rows 332 × 60 (title and line), a 56 px minimum. No-show chart (a callback patient): "Call again" is the split, and the card's Call stays hidden. Older layouts: the rail, bar and dock splits work; the dock reads "Connected · headset" and "Connected · phone". Home, Claims, Earnings, Inbox and the MOA chat open and work. Screenshots: `oct18-call-split-closed`, `oct18-call-menu-open`, `oct18-call-phone-connected`, `oct18-call-dropped-phone`, `oct18-call-menu-again`, `oct18-call-headset-widget`, `oct18-call-dropped-headset`, `oct18-call-remembered-headset`, `oct18-keyboard-menu-focus`, `oct18-noshow-menu`, `oct18-legacy-dock-connected`.
+
+### Needs Daniel
+1. Should choosing Headset or Phone in the menu start the call at once (built), or only change the default for the main button? (From his Loom: both options "call".)
+2. Is the doctor's last choice the right default? (Question 1 in the walkthrough file; the build assumes yes.)
+3. Does the headset route need anything else on screen (for example a mic check before the call, or a Wi-Fi warning)? Not designed; there is no telephony behind the demo.
+
+### Needs Ani
+1. "Call again" and "Redial" are longer than "Call", so after a call the pair takes the full row and Chart moves below it. OK, or keep one row and shorten the label to "Again"?
