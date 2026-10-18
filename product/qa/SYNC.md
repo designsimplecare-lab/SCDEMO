@@ -8,6 +8,7 @@ the start of every task, and adds its own entries under "From QA".
 Newest first. Each entry: the date, what changed, where the source is, and what QA should do.
 
 ## From the lead
+- **18 Oct 2026: all seven of Daniel's journey-review videos read in full** (`from-daniel/2026-10-18-journeys-review-videos.md`, which supersedes the two earlier partial notes). No demo change has been made from them yet; Ani asked to understand the requirements first.
 - **18 Oct 2026: context for Daniel's two Looms.** He was going over the Figma use-case journeys file (demo screenshots from 16 Oct), so the changes he asks for apply to those demo screens.
 - **18 Oct 2026: Daniel's second Loom** (`from-daniel/2026-10-18-modular-ai-and-note.md`, first half only). To be built after the call-route change: remove the ICD-9 "Add diagnosis" from the note (it is billing), move "Ordered and pending" to the top of Review, add per-section AI switches. Not built yet.
 - **18 Oct 2026: Daniel's Loom on calling, billing placement and prescribing** (`from-daniel/2026-10-18-portal-walkthrough.md`). The Call button will offer phone and headset (being built). His words lean towards submitting the claim at the end of the visit; the demo uses batch sign-off, which is still open (OQ-87). Billing is already at the end of the chart and prescribing already starts from favourites.

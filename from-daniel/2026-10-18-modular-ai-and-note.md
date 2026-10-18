@@ -1,3 +1,5 @@
+> **Superseded.** Written from partial transcripts. The full reading of all seven videos, with the changes Daniel wants, is in `from-daniel/2026-10-18-journeys-review-videos.md`; use that.
+
 # Daniel on modular AI, the diagnosis in the note, and putting pending orders on top — 18 Oct 2026
 
 Source: a 4:26 Loom Daniel recorded for Ani, "Modular AI for Clinical Documentation Workflows". **The link

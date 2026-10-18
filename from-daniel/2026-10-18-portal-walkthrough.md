@@ -1,3 +1,5 @@
+> **Superseded.** Written from partial transcripts. The full reading of all seven videos, with the changes Daniel wants, is in `from-daniel/2026-10-18-journeys-review-videos.md`; use that.
+
 # Daniel's walkthrough of his live physician portal: calling, billing at the end, prescribing — 18 Oct 2026
 
 Source: a 4:56 Loom Daniel recorded for Ani ("Physician Portal Workflow and Prescribing Tools"). He walks
