@@ -8,6 +8,7 @@ the start of every task, and adds its own entries under "From QA".
 Newest first. Each entry: the date, what changed, where the source is, and what QA should do.
 
 ## From the lead
+- **18 Oct 2026: context for Daniel's two Looms.** He was going over the Figma use-case journeys file (demo screenshots from 16 Oct), so the changes he asks for apply to those demo screens.
 - **18 Oct 2026: Daniel's second Loom** (`from-daniel/2026-10-18-modular-ai-and-note.md`, first half only). To be built after the call-route change: remove the ICD-9 "Add diagnosis" from the note (it is billing), move "Ordered and pending" to the top of Review, add per-section AI switches. Not built yet.
 - **18 Oct 2026: Daniel's Loom on calling, billing placement and prescribing** (`from-daniel/2026-10-18-portal-walkthrough.md`). The Call button will offer phone and headset (being built). His words lean towards submitting the claim at the end of the visit; the demo uses batch sign-off, which is still open (OQ-87). Billing is already at the end of the chart and prescribing already starts from favourites.
 - **12 Oct 2026: Daniel's second chart round is built** (build 2026-10-12 09:00; `from-daniel/2026-10-12-chart-and-bus-ad-feedback.md`; spec `chart-shell.md`, "12 Oct changes"). This visit is gone entirely (consent is asked only when Cedar starts listening); Call and Chart are large and prominent; the summary list is Medications, Past Medical History (PMHx), Pending, Since you last saw; Past visits is part of Cedar's key findings. Light mode only.

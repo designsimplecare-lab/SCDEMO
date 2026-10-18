@@ -56,3 +56,10 @@ said the number of windows is deliberately limited but he wasn't sure how many (
 whether the live three-window day is the target.** The screenshot itself shows real patients and is not
 stored. The same screen's columns are Number in Queue, Patient, Clinical concern, Visit status, Billing
 status and Action ("Access Chart", "Correct"), which our queue already covers.
+
+## Context (Ani, 18 Oct)
+Daniel recorded these videos while going over **the Figma use-case journeys file** (screenshots of the
+doctor flows from the demo as captured on 16 Oct, including changes that were not yet live). So his
+comments on the note, the Action tab and the call are about those demo screens. The first video also shows
+his own live portal for comparison. If he leaves comments in the Figma file, they are about the same
+screens.

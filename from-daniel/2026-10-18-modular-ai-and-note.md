@@ -47,3 +47,10 @@ list of the last lab orders and what is pending:
   doctor or per visit?
 - Should the AI's ICD-9 suggestion appear only at Sign off (billing), or also as a hint while writing the
   assessment?
+
+## Context (Ani, 18 Oct)
+Daniel recorded these videos while going over **the Figma use-case journeys file** (screenshots of the
+doctor flows from the demo as captured on 16 Oct, including changes that were not yet live). So his
+comments on the note, the Action tab and the call are about those demo screens. The first video also shows
+his own live portal for comparison. If he leaves comments in the Figma file, they are about the same
+screens.
