@@ -47,3 +47,12 @@ Claims. His words here lean towards **submitting at the end of the visit**. Ask 
 2. Billing: submit each claim at the end of the visit, or in a batch from Claims (OQ-87)?
 3. The end of the video was cut off in what we could read. What did he show after "I can choose my
    favorites"?
+
+## One more observation, from the first frame of the video (Ani sent a screenshot)
+His live Daysheet for Saturday 17 Oct shows **three call windows plus Add-On**: 8:00 AM–12:00 PM,
+1:00–7:00 PM and 7:00–9:00 PM. The demo has four shorter windows (8–10, 10–2, 2–5, 5–7). On 29 Sep Daniel
+said the number of windows is deliberately limited but he wasn't sure how many (see
+`from-daniel/2026-09-29-home-feedback.md`, and the open question on window lengths and times). **Ask him
+whether the live three-window day is the target.** The screenshot itself shows real patients and is not
+stored. The same screen's columns are Number in Queue, Patient, Clinical concern, Visit status, Billing
+status and Action ("Access Chart", "Correct"), which our queue already covers.
