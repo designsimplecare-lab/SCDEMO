@@ -33,6 +33,7 @@ tasks below are **Ready**, and waiting for Ani's go.
 | T-023 | Rebuild billing the PRD way (batch attestation, claim detail, refusals, health card, MOA billing queue) | Design + build | P1 | `ux-designer` (+ `billing-msp` spec) | `clinical-safety`, `qa-engineer`, `accessibility` | In progress: spec approved 4 Oct; being built |
 | T-024 | AI Chart Assist in the chart, Phase 1 first (Daniel's requirements, 11 Oct) | Design + build | P1 | `ux-designer` | `clinical-safety`, `privacy-security`, `qa-engineer`, `accessibility` | Ready; queued behind the 11 Oct chart changes |
 | T-025 | Specialist report → reminders, patient reply and drafted orders (Daniel, 15 Oct) | Design + build | P1 | `ux-designer` | `clinical-safety`, `privacy-security`, `qa-engineer`, `accessibility` | In progress: Ani approved 15 Oct |
+| T-026 | Prescribing redesign: Medications and prescribing, three steps (Daniel's Prescription Modal v2, 21 Oct) | Design + build | P1 | `ux-designer` | `clinical-safety`, `privacy-security`, `qa-engineer`, `accessibility` | Proposed: spec in `product/specs/prescribing-redesign.md`, waiting for Ani's go |
 
 **Recording files (local, never committed):**
 - `~/Downloads/Fixing Annoying Appointment Chat Flow.mp4`
