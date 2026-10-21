@@ -540,3 +540,116 @@ Source: `from-daniel/2026-10-18-portal-walkthrough.md` (Daniel's Loom for Ani, 1
 
 ### Needs Ani
 1. "Call again" and "Redial" are longer than "Call", so after a call the pair takes the full row and Chart moves below it. OK, or keep one row and shorten the label to "Again"?
+
+
+## 21 Oct changes (Daniel's journey-review videos, 18 Oct)
+
+Source: `from-daniel/2026-10-18-journeys-review-videos.md` (seven Looms; Ani, 21 Oct: "do all", the lead's brief of 11 changes). Build 2026-10-21 (stamp bottom-left). Light only, 1440 px (1280 and 1024 px spot-checked). Screenshots (local): `product/reports/shots/oct21-*.png`. Use cases touched: UC-01 (Home), UC-02 (queue and call windows), UC-03 (call and chart), UC-04 (call back), UC-05 (intake), UC-07 (note and action). Requirements touched: REQ-HQ-01 and REQ-HQ-03 (windows and the clock), the visit-status line of REQ-HQ-02, REQ-CALL-xx (call opens the chart), REQ-CH-33 (note), REQ-CH-34 and REQ-CH-35 (one scan order, PHN not on the front), REQ-CH-37 (Needs attention), REQ-CH-38 (Today and Relevant, now Intake summary and Chart review). The product-manager owns updating those; this section is the design record.
+
+### One-screen summary
+1. **Call opens the chart.** Already true in the build and verified: the queue row's Call (the row's hover bar, also shown on keyboard focus and always on touch) runs `callPatient`, which opens that chart and starts the call by the last route; the chart's own split Call (Phone or Headset) is unchanged. Nothing changed in code; the proof is below.
+2. **Review is one column:** Needs attention, then **Intake summary**, then **Chart review**. Not side by side.
+3. **Note has no diagnosis field.** The Assessment is the doctor's words; the ICD-9 code is set in the billing row at the end of the chart (Sign off).
+4. **Ordered and pending leads the Chart review.** The Action tab is purely actions; lab orders show in the Chart review and in Chart > Results.
+5. **Needs attention: lab results are all Critical** (Home and chart). Other urgent things stay below, in amber.
+6. **Queue by named call window**, current one highlighted and open, no Live chip, no Later today band.
+7. **The clock pill is gone;** the countdown is in the current window's band and in the chart's top line.
+8. **Home inbox tile** says only "17 to review".
+9. **Visit statuses:** Administrative cancellation added, and the list Daniel named is complete.
+10. **One top block** on the chart: patient card and the Review / Note / Action / Sign off bar. No PHN on the front.
+11. **ECG card** shows the report line printed on the ECG, verbatim, with no "To do" label.
+
+### 1. Call opens the chart (verified, not changed)
+- **Daniel (video 4):** "all I have to do is press the call button, and boom, there's the chart ... you call, and the chart opens up automatically ... or you've entered into the chart and you can call."
+- `callPatient(name)` = `advance(name,'progress')` + `openChart(name)` + `pcStartCall()`. With a call already running it opens the other chart and asks (the existing wrapper). The Call button in the queue is the hover bar's (`QUEUE_ACTIONS`), 44 px high; it exists only on the Next row (nobody skips the line, spec 5.2). The Review screen's "Call now" uses the same function.
+- Measured (headless Chrome, real mouse): hover on the Next row, click Call: active screen `screen-patientchart`, `PC_ON_CALL` true, `PC_CURRENT` the same patient; Cedar's consent line shows as before.
+- **Not done, on purpose:** a Call button that is visible without hovering. Ani signed off the hover bar in September. If Daniel did not find Call in the screenshots (a screenshot has no hover), that is the reason; asking Ani below.
+
+### 2. Review in one column (REQ-CH-38)
+- **Daniel (video 3):** "I don't think I would like it split like that. I like it more sequential." Names: "Intake summary" ("the summary from what the patient said") then "Chart review" ("the AI is pulling data off the various data feeds ... highlight or prioritize at the top the major [points], how it relates to their present concern"). He will "come up with a better verbiage" later.
+- **Order:** Needs attention, Intake summary, Chart review, each a full-width card (`#v2-rv2.v2-one`, one column at every width).
+- **Intake summary** is the old Today card (`csRenderToday`, v2 branch): the intake's first sentence, the Flagged tag when intake flagged something, and **Open intake** (it said "Intake"). The title is also "Intake summary" in the older layout.
+- **Chart review** is the old "Cedar · Key clinical findings" (`v2RenderKey`). The Cedar mark, a "Cedar · AI" tag and the line "Cedar read the data feeds and the chart. What relates to today's concern comes first. Nothing here goes into your note without you." stay; every line still shows "Source: ..." and opens that source. The "For today's concern" line is gone (the Intake summary above says it).
+- **Today's concern first:** inside Relevant medical history, Medications, Investigations and Prior related care, a line that shares a word with today's concern (the same word match that Past visits already used; generic words are ignored) moves to the top and carries "Related to today", only when some lines relate and some do not (`kfLines`). No clinical rule is applied. Needs Daniel: the real selection (he said he will rework it).
+- **Order inside Chart review:** Ordered and pending, Relevant medical history, Medications, Past visits, then Investigations and Prior related care (folded, one click each). Pending is no longer a fold at the bottom.
+
+### 3. No diagnosis in the Note (REQ-CH-33)
+- **Daniel (video 2):** "there's my diagnosis in the chart, that would be my assessment. But this add diagnosis, that's billing. That's the ICD9 code. So we can remove that. All this is just one big note."
+- **Removed from the Note:** the "Add diagnosis" button, the diagnosis chip and its search, the "Suggested: ... Use" line, and the "Diagnosis" item of the Insert menu. `nsRenderDx` is an empty hook (older callers), the Note's diagnosis code and handlers are deleted, and `nsSync` no longer appends a "Diagnosis (ICD-9): ..." line to the composed note (the signed note is the doctor's words only).
+- **Kept in billing:** the billing row at Sign off keeps its code field (`t23RenderBillRow`: "Diagnosis not set" and **Add diagnosis**, or the code and **Change**), `t23OpenPick` ("Your coding") and the claim change log are untouched. The one-tap suggestion from 7 Oct (the booking reason's obvious code, never pre-filled: 786.5, 112.1, V68.1) moved there: "Suggested from the booking reason: 786.5 · Chest pain" and **Use** (`nsDxUse`, same `t23SetVisitDx`). Focus goes to **Change** after Use.
+- **Finalize without a code:** "Sign off & submit claim" with no code now says "Add the diagnosis code to submit the claim, or choose Finalize, submit later" and opens Your coding on the diagnosis field (it used to point at the Note).
+- **Not changed:** Cedar's scribe still lists a "Diagnosis" action ("Code as stable angina", "Suggested only: no coding is applied without you"). It is a scribe suggestion, not the Note's field; Daniel to say if it should go too.
+
+### 4. Ordered and pending; the Action tab is only actions
+- **Daniel (video 2):** "this goes into the chart review ... I'm gonna wanna see right at the top because I need that information to make my assessments. That's a rate limiting step ... not buried down here, it's too important. And this goes into the lab results section of the chart ... This is purely action-oriented."
+- **Chart review > Ordered and pending** (first section, open): **Lab orders** (this patient's orders and where each stands, `renderLabOrders`) then **Pending** (the care-plan and consult items, plus T-025's new report and reminders). Display by exception: no lab orders, no "Lab orders" sub-heading; nothing in either, no section. An overdue pending item shows one amber "N overdue" tag in the heading.
+- **Chart > Results** (the full chart drawer) now starts with a **Lab orders** card above the results list.
+- **Action tab:** Prescribe, Order, Refer, Task, Message only (plus T-025's drafted orders and the prescribing card, as before). The "Lab orders" list is gone from it.
+- **Kept:** the left Patient summary (Medications, Past Medical History, Pending, Since you last saw) is as it was, so Pending shows there too (Daniel: "the patient summary here is still this").
+
+### 5. Needs attention: lab results are all Critical
+- **Daniel (video 6):** "if I'm grabbing your attention for lab work, it should all be critical. There shouldn't be any soft [stuff] in there ... Critical result means you got to move on it." Other urgent things (an MSP claim that fails to submit) "would definitely need my attention, but that's not a critical result ... the critical would always be at the top."
+- **Home** (`renderCriticals`): every lab row is a Critical row (red icon, red value). Potassium 6.3 for the demo patient is now red. The real critical (troponin) stays first. "MSP claim not submitted · 4 days left" stays under them, amber (clock icon, amber text), as before (`#t23-stale`).
+- **Chart** (`csNAItems`): every lab item is tier Critical, the one the LifeLabs table calls critical first. No "High" word and no ", high" after the range. Because the critical bar reads the same items, Behdis's chart now shows the bar ("Critical · Potassium 6.3 mmol/L · not reviewed") on Note, Action and Sign off, and its Review tab badge is the critical one.
+- **Source line:** `attnBasis` drops "LifeLabs BC alert limit" from the text of an elevated item (Home's tooltip, the chart's "Why it is flagged"), so a Critical heading never sits over "alert limit".
+- **Not changed (needs Daniel's updated lab list):** `LAB_RULES` and `labTier`. The Inbox bands, the review screen (it says "High", "LifeLabs BC alert limit" and "No critical values" for the same potassium), Chart > Results (a "High" tag), and Cedar's hold-back of the Assessment and Plan (`chartCritical`) still use the LifeLabs tiers. Until then Home and the chart's card say Critical while the review screen says High for potassium.
+
+### 6. The queue by named call window (UC-02; REQ-HQ-01, REQ-HQ-03)
+- **Daniel (videos 5 and 6):** "I wouldn't say 'later today', I would want to know what call window you are referring to. So there's the first, this would be the second, and so on ... We don't need live ... This is highlighted, that's good. Kind of like the purple, that's nice."
+- **Groups** (`renderQueue`, `qWinBand`): "First call window · 8:00–10:00", "Second call window · 10:00–2:00", Third, Fourth. Carry-forward is unchanged: unfinished work from earlier windows sits in "Carryover from earlier windows" at the top, then the windows.
+- **Current window:** the existing purple band, open. The other windows are closed bands with their count; one click opens them (chevron, `aria-expanded`, Enter and Space; the choice is kept in `QWIN_OPEN`). A search or a filter opens every window, so nobody is hidden. Other days open all windows.
+- **Gone:** the Live chip and the "Later today" band. The four time chips stay as jumps (`winPick`): each opens its window's band and scrolls to it; nothing is filtered out.
+- **Not changed:** the heading "Live queue" above the card. Question for Ani and Daniel below.
+
+### 7. The timer moves to where Daniel looks (REQ-HQ-03)
+- **Daniel (video 5):** "I do like having a timer to tick down ... so I know how much time is left in my call window ... when you finally get off the phone, you're disoriented. And so it's just there to reorient you." On the top-right pill: "we could probably just eliminate that."
+- **Pill removed** (`#tb-now`); the profile menu still carries the date and window line (`#pd-window`).
+- **Queue band:** the current window's band ends "Current window · 55m left · 9:05 AM Vancouver" (the doctor's own clock, small). Outside a window it says "30m until window" or "Next window tomorrow 8 AM".
+- **Chart:** the top line (at the right of "Home · In queue") says "Call window 8:00–10:00 · 55m left", also while on a call.
+- **Home:** the Visits card says "Now in the 8–10 AM window · 55m left".
+- One function (`qClockUpdate`) writes every copy each half minute. It is the window's own time left: no wait estimate, no queue pace.
+
+### 8. Home inbox tile
+- **Daniel (video 6):** "17 to review, two unread messages. I didn't really understand what that meant ... just have ... Seventeen to review." The tile says "17 to review" (`hsdRender`). The MOA chat keeps its own badge on the chat button.
+
+### 9. Visit statuses
+- **Daniel (video 5):** "There should be an administrative cancellation, so that means ... the admin is cancelling, not your MOA per se ... I'll have a list of all the things that we should have."
+- **List** (the menu on each row, and the Visit status filter, from one map `STATUS_LABEL`): In queue, Doctor to call back (sentence case now), Call dropped, Completed, No-show, Patient declined virtual visit, Pending MOA, Needs review, Administrative cancellation. Nothing else is invented.
+- **Behaviour:** Completed, No-show, Patient declined virtual visit and Administrative cancellation close the visit (no Call, not counted as in the queue: `STATUS_CLOSED`, `statusClosed`). The others stay open. Each new status has a Mage icon (`statusIcon`).
+- **Size:** menu rows and filter options are 44 px, 15 px (they were 32 px, 13.5 px).
+- Needs Daniel: his full list (he will send it); what each status does to billing and to the visit; whether "Call dropped" and "Doctor to call back" are two states or one.
+
+### 10. One top block on the chart (REQ-CH-34, REQ-CH-35)
+- **Daniel (video 4):** "this could be a little bit more streamlined up here ... we would just combine all this ... all this would fit in here at the top, nice and neat. Because ... this looks like this is separate from this." And: "it's good to know the PHN, but this is redundant information at this point ... it's not something that should be front and center."
+- **Layout** (`#v2-head`): one card across the top, two rows. Row 1: the patient (name 20 px/700, "74 · Female", a **Details** button), the allergy band, then **Call** (split, Phone or Headset) and **Chart**. Row 2: Review, Note, Action, Sign off (with their marks) and Save draft, under one quiet line. The left Patient summary starts right below it and is as before. The critical bar hangs under the same block off the Review step.
+- **Allergies stay prominent:** the same band and states (none, named, not recorded), now one line high (label 15 px/600, text 18 px/700, 42 px tall, was 62 px). Call and Chart stay 52 px.
+- **PHN:** not on the front. **Details** (one tap, `csDet`) shows the masked PHN ("PHN •••• ••• 886") beside it; the state is kept per chart. It is also on the patient's source documents.
+- **Under 1100 px** (stacked): the patient row scrolls away and only the tab row stays under the top bar (as the tab bar did).
+- **Code:** `#v2-pt` and `#v2-top` moved out of the two columns into `#v2-head` (markup); `csLayout` shows and hides it with the v2 shell; `v2Fit` measures the columns below it (a ResizeObserver re-measures when the critical bar changes its height); the scroll maths in `v2Tab`, the scroll spy, `csMeasure` and `crbRender` no longer subtract a bar that is not in the scrolling column. The reserved space for the critical bar is kept only when the bar shows (it left a blank gap on the Review step before).
+- `?chart=current` (the old layout) keeps its own banner; it also loses the PHN and gains the verbatim ECG line.
+
+### 11. The ECG card (REQ-CH-37)
+- **Daniel (video 4):** "the ECG, we just grab right off the [ECG]. ECGs have a report at the top ... it's got to be right here, and this is gone too." ECG Critical v2.0: the source phrase is shown verbatim and is never reinterpreted.
+- The Related row's title is the report line of the ECG, word for word (`ecgLine`): "Abnormal ECG: atrial fibrillation · left anterior divisional block · nonspecific repolarization abnormality" (the demo item's own `interp`). The "To do" label is gone (and from the other abnormal-result card, "Abnormal · MRI lumbar spine"; the icon's name is "Abnormal"). **Review ECG** stays.
+- The lead's example line ("...with rapid ventricular response...") was not used: the demo ECG's own rate is 92 bpm, and a line the machine did not print would break the verbatim rule.
+
+### Proof (headless Chrome, light, 1440 × 900 with the clock pinned; 1280 × 800 and 1024 × 800 spot checks)
+All 15 inline scripts pass `node --check`; the console was clean in every run (Home, queue, all eight charts, all four steps, the Chart drawer, the older layout). Measured: page does not scroll in the wide layout (scrollHeight 900 = viewport) with the top block (1152 × 133 px) above the two columns; Call 104 + 44 × 52 px, Chart 114 × 52 px, tabs 56 px, Details 63 × 44 px, allergy value 18 px/700; queue bands 44 px, 16 px/600; no text under 14 px and no uppercase in Home's attention list, the queue, the status menu and filter, the chart's top block, Review, Note, Action and Sign off (the 36 px Home crumb, the Insert and Cedar toolbar buttons and the queue's status pills were already so and are not changed). Behaviour: Home shows troponin then potassium (both red) then the claim (amber); Behdis's chart shows Critical potassium and the critical bar; the ECG card shows the printed line with no "To do"; queue at 9:05 (First window open, the rest closed, "Current window · 55m left · 9:05 AM Vancouver"), 11:54 (Carryover 2, Second window current), 7:30 (30m until window) and 20:30 (Next window tomorrow 8 AM); a chip opens and scrolls to its window; search opens every window; tomorrow lists three open windows; Administrative cancellation on a row makes it closed and drops the in-queue count by one; the status menu and the Visit status filter list the nine words; the real mouse over the Next row then Call opens Gloria's chart on a call; dropped call shows "Call dropped at 00:01 · phone" with Call back; Task MOA opens from Action; Finalize with no code opens Your coding on the diagnosis field; "Use" sets 786.5 in the billing row and focus goes to Change; a forced sign-off signs, shows "Signed off" and the next patient. Screenshots: `oct21-home-0905`, `oct21-home-1154`, `oct21-queue-0905`, `oct21-queue-1154-carryover`, `oct21-status-menu`, `oct21-chart-gloria-review`, `oct21-chart-review-ordered-pending`, `oct21-chart-note`, `oct21-chart-action`, `oct21-chart-signoff-billing`, `oct21-chart-behdis-potassium-critical`, `oct21-chart-gloria-1280`.
+
+Regression check: the QA baseline harness (`product/tests/harness/run.mjs`, the 26 Sep baseline, run with `?nologin=1`) gives the same 117 results on the committed file and on this build, except **UC-01 01-4 "Clock and window state are in the top bar on every deep-linked screen"**, which now fails on purpose (Daniel asked for the pill to go); that test needs updating to look for the clock in the queue band and the chart's top line. One real regression was found and fixed on the way: the full-width Chart review ran a line past 66 characters (D-7), so its text lines are capped at 66ch.
+
+### Not built (waiting on Daniel)
+Per-section Cedar on/off switches and the "AI view"; his Action list (billing included) and the prescribing document; preventive-care reminders; the welcome screen with BC photos; the chart timeline; his updated lab list (see 5); his full list of visit statuses (see 9); his own wording for Intake summary and Chart review.
+
+### Needs Daniel
+1. Lab results in Needs attention: confirm that every one should read Critical even where the LifeLabs table says alert, and send the updated list. Then `LAB_RULES`, the Inbox bands, the review screen and Cedar's hold-back can follow (today only Home and the chart's card do).
+2. Chart review: which items relate to today's concern, and what he wants first (the word match is a stand-in).
+3. The ECG line: confirm the card should show the printed report line as the title.
+4. Visit statuses: his full list and what each does; is "Call dropped" a state of its own.
+5. Should Cedar's scribe still list "Code as ..." as an action, now that the code is billing's?
+
+### Needs Ani
+1. The queue's Call is on the row's hover bar (Next row only). Show it on the Next row all the time (it would cover the end of the clinical concern text), or keep hover?
+2. "Live queue" is still the heading above the queue card. Rename to "Queue"?
+3. Other windows are closed until opened; the current one is open. OK, or open all by default?
+4. Home has no clock now, except "Now in the 8–10 AM window · 55m left" in the Visits card. OK?

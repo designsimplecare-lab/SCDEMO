@@ -6230,6 +6230,107 @@
   #pc-routemenu .pc-rm-ck,#pc-routemenu .pc-rm-ck svg{width:20px;height:20px;flex:none;color:var(--accent);}
   #pc-routemenu [role="menuitem"]:not(.cur) .pc-rm-ck{visibility:hidden;}
   #pc-routemenu .pc-rm-last{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}   /* read aloud ("last used"), never shown */
+/* ===== 21 Oct build: Daniel journey review (changes 1-11) ===== */
+  /* --- 6, 7: the queue by named call window; the current band carries the countdown --- */
+  /* Daniel, 18 Oct videos 5 and 6: "this is highlighted, that's good. Kind of like the purple"; no Live chip, no Later today */
+  #queue-body tr[hidden]{display:none !important;}
+  html body #screen-today .q-table tr.q-sep .q-sepbtn{width:100%;margin:0;border:0;font:inherit;font-size:16px !important;font-weight:600 !important;line-height:24px;text-align:left;cursor:pointer;}
+  html body #screen-today .q-table tr.q-sep .q-sepbtn:hover{background:var(--line);}
+  html body #screen-today .q-table tr.q-sep.live .q-sepbtn:hover{filter:brightness(.97);}
+  html body #screen-today .q-table tr.q-sep .q-sepbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  html body #screen-today .q-table tr.q-sep .q-sepchev,html body #screen-today .q-table tr.q-sep .q-sepchev svg{width:18px;height:18px;flex:none;color:var(--ink-soft);transition:transform .15s ease;}
+  html body #screen-today .q-table tr.q-sep.live .q-sepchev,html body #screen-today .q-table tr.q-sep.live .q-sepchev svg{color:var(--brand);}
+  html body #screen-today .q-table tr.q-sep .q-sepbtn[aria-expanded="false"] .q-sepchev{transform:rotate(-90deg);}
+  html body #screen-today .q-table tr.q-sep .q-sepl{min-width:0;}
+  html body #screen-today .q-table tr.q-sep .q-sepclock{margin-left:auto;font-size:15px;font-weight:600;color:var(--ink);white-space:nowrap;}
+  html body #screen-today .q-table tr.q-sep .q-septime{font-size:15px;font-weight:400;color:var(--ink-soft);white-space:nowrap;}
+  html body #screen-today .q-table tr.q-sep .q-septime::before{content:"\00b7";margin:0 10px 0 0;color:var(--ink-faint);}
+  @media (prefers-reduced-motion: reduce){ html body #screen-today .q-table tr.q-sep .q-sepchev{transition:none;} }
+  /* the chart's top line: window time left, so the doctor can reorient after a call */
+  #screen-patientchart .cs-crumb .cs-winclock{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-size:14px;line-height:20px;font-weight:600;color:var(--ink);}
+  #screen-patientchart .cs-crumb .cs-winclock:empty{display:none;}
+  #screen-patientchart .cs-crumb .cs-layout{margin-left:12px;}
+
+  /* --- 10: one top block: the patient card and the Review / Note / Action / Sign off bar read as one piece (Daniel, 18 Oct video 4) --- */
+  #screen-patientchart #pcv-c.cs-v2 #v2-head{position:sticky;top:calc(var(--cs-top,0px) + 4px);z-index:45;margin:0 0 12px;border-radius:16px;background:var(--panel);box-shadow:var(--shadow-card);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head[hidden]{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt{position:static;top:auto;z-index:auto;display:block;margin:0;padding:12px 16px;border-radius:16px 16px 0 0;background:none;box-shadow:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-snap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-photo{width:44px;height:44px;flex:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-who{flex:0 1 auto;min-width:170px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-who .vc-nm{font-size:20px;line-height:26px;font-weight:700;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-who .vc-sub{display:flex;align-items:center;flex-wrap:wrap;margin:0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-facts{flex:1 1 300px;min-width:260px;max-width:560px;margin:0;padding:0;border:0;display:block;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt #cs-allergy.cs-al{padding:8px 14px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt #cs-allergy .cs-al-ic,#screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt #cs-allergy .cs-al-ic svg{width:26px;height:26px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt #cs-allergy .cs-al-b{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 10px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-acts{display:flex;align-items:center;flex:0 0 auto;gap:10px;margin:0 0 0 auto;grid-column:auto;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-acts > .btn{width:auto;min-width:112px;padding:0 18px;margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-acts > .pc-split{display:flex;width:auto;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-acts > .pc-split:has(> .pc-split-main.cw-hide){display:none;}
+  #screen-patientchart #pcv-c.cs-v2.cs-ns-on #v2-head #v2-pt .vc-acts > .pc-split{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-acts .pc-split > .pc-split-main{min-width:104px;}
+  /* Details: the PHN is one tap away, not on the front */
+  #screen-patientchart #pcv-c .cs-det-btn{display:inline-flex;align-items:center;min-height:44px;margin:-12px 0 -12px 6px;padding:0 8px;border:0;border-radius:8px;background:none;font:inherit;font-size:14px;font-weight:600;color:var(--accent-ink);cursor:pointer;}
+  #screen-patientchart #pcv-c .cs-det-btn:hover{background:var(--wash);}
+  #screen-patientchart #pcv-c .cs-det-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #screen-patientchart #pcv-c .cs-det{margin-left:4px;font-size:14px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c .cs-det[hidden]{display:none;}
+  /* the tab row is the second row of the same block: no card of its own, a quiet line between */
+  #screen-patientchart #pcv-c.cs-v2 #v2-head .v2-top{position:relative;top:auto;z-index:auto;min-height:56px;padding:0 12px 0 8px;border-radius:0 0 16px 16px;background:none;box-shadow:none;border-top:1px solid var(--line);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head .v2-top::before,#screen-patientchart #pcv-c.cs-v2 #v2-head .v2-top::after{content:none;display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head .v2-tabs [role=tab],#screen-patientchart #pcv-c.cs-v2 #v2-head .v2-steps > button{min-height:56px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-crit::before{content:none;display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-crit{border-radius:0 0 16px 16px;box-shadow:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head .v2-top.v2-has-crit{border-radius:0;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-main{scroll-padding-top:16px;}
+  @media (max-width:1100px){
+    #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-acts{margin-left:0;flex:1 1 100%;justify-content:flex-start;}
+    #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-facts{max-width:none;flex-basis:100%;}
+    /* stacked: the page scrolls, so only the tab row stays under the top bar (the patient row scrolls away) */
+    #screen-patientchart #pcv-c.cs-v2 #v2-head:not([hidden]){display:contents;}
+    #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt{background:var(--panel);box-shadow:var(--shadow-card);border-radius:16px 16px 0 0;}
+    #screen-patientchart #pcv-c.cs-v2 #v2-head .v2-top{position:sticky;top:calc(var(--cs-top,0px) + 4px);z-index:45;margin-bottom:12px;background:var(--panel);box-shadow:var(--shadow-card);}
+    #screen-patientchart #pcv-c.cs-v2[data-v2tab="review"] #v2-head .v2-top.v2-has-crit{margin-bottom:12px;}
+    #screen-patientchart #pcv-c.cs-v2 #v2-head .v2-top.v2-has-crit{margin-bottom:var(--v2c-h,52px);}
+  }
+
+  /* --- 2, 4: Review is one column (Needs attention, Intake summary, Chart review); Ordered and pending leads the Chart review --- */
+  #screen-patientchart #pcv-c.cs-v2 #v2-rv2.v2-one{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-items:start;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-rv2.v2-one #v2-today-slot{display:grid;min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-rv2.v2-one #v2-today-slot > #cs-today{box-sizing:border-box;min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-rv2.v2-one #v2-today-slot:empty{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #cs-today .v2-big{max-width:66ch;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-hd .kf-ai{margin-left:4px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-h5{margin:12px 0 2px;font-size:15px;line-height:22px;font-weight:600;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-op{border-top:0;padding-top:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-op .kf-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-labs[hidden],#screen-patientchart #pcv-c.cs-v2 #v2-key .kf-op[hidden]{display:none;}
+  #screen-patientchart .cs-lo-card .v2-loh{margin:0 0 4px;}
+  /* the space for the critical bar is kept only when the bar shows (it is hidden on the Review step, where Needs attention says the same) */
+  #screen-patientchart #pcv-c.cs-v2[data-v2tab="review"] #v2-head .v2-top.v2-has-crit{margin-bottom:0;border-radius:0 0 16px 16px;}
+  /* reading text in the full-width Chart review stays within 66 characters (the card is wider than the two-column layout it replaced) */
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .v2-line :is(.v2-l0,.v2-l1,.v2-l2){max-width:66ch;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key :is(.kf-q,.kf-note,.v2-q){max-width:66ch;}
+
+  /* --- 9: the five newer visit statuses (Daniel, 18 Oct video 5); menu rows and filter options reach 44 px --- */
+  .status-pill.calldropped{background:var(--warn-wash);color:var(--ink);}
+  .status-pill.pendingmoa,.status-pill.needsreview{background:var(--accent-wash);color:var(--accent-ink);}
+  .status-pill.declined,.status-pill.admincancel{background:var(--wash);color:var(--ink-soft);}
+  .q-table .status-pill.calldropped .ic{color:var(--warn);}
+  .q-table .status-pill.pendingmoa .ic,.q-table .status-pill.needsreview .ic,.q-table .status-pill.declined .ic,.q-table .status-pill.admincancel .ic{color:var(--ink-faint);}
+  .q-statusmenu button{min-height:44px;}
+  .qf-menu .qf-opt{min-height:44px;}
+  .q-statusmenu button{font-size:15px;}
+  .qf-menu .qf-opt{font-size:15px;}
+  /* sizes in what moved or was added on 21 Oct: nothing under 14 px, buttons 44 px */
+  #screen-patientchart .lo2 .st,#screen-patientchart .lo2-t li .st{font-size:14px;}
+  #screen-patientchart #pcv-c.cs-v2 #cs-today .cs-link{min-height:44px;display:inline-flex;align-items:center;margin:-8px 0;}
+  #screen-patientchart #pcv-c.cs-v2 #t23-billrow .btn.xs{min-height:44px;height:44px;}
+  #screen-patientchart #pcv-c.cs-v2 #vc-alerts .v2-meta .cs-info{width:44px;height:44px;margin:-12px -8px -12px -4px;}
+  #screen-patientchart #pcv-c.cs-v2 .lo2-rv{min-height:44px;display:inline-flex;align-items:center;}
+
+/* ===== end 21 Oct build ===== */
 </style>
 </head>
 <body>
@@ -6280,9 +6381,8 @@
     <div class="topbar">
       <div class="tb-left"><span class="tb-title" id="tb-title">Today</span><span class="tb-date" id="tb-date"></span></div>
       <div class="topbar-right">
-      <!-- Ani, 30 Sep: the time sits in its own pill, before the theme button, styled like the profile
-           pill, with a clock where the photo would be -->
-      <div class="tb-time-pill" id="tb-now" role="timer" aria-live="off"></div>
+      <!-- 21 Oct (Daniel, 18 Oct video 5, on the pill "11:54 AM New York · 1h 6m left": "we could probably just eliminate that"): the pill is gone.
+           The countdown lives where he looks, in the current call-window band of the queue and in the chart's top line (qClockUpdate). -->
       <button class="chat-fab theme-btn" id="theme-btn" onclick="toggleTheme()" title="Switch to dark" aria-label="Switch to dark"><span class="ic" id="theme-icon"></span></button>
       <!-- Ani, 30 Sep: the Cedar sits in the top bar, and the MOA chat is the floating button -->
       <button class="chat-fab ai-fab" id="ai-fab" onclick="openAI()" title="Cedar" aria-label="Cedar"><span class="ic ai-fab-ic"></span></button>
@@ -6504,6 +6604,8 @@
            back and the visit status are one small line. The h1 stays for screen readers only. -->
       <div class="cs-crumb"><button class="pc-back" onclick="showScreen('today')"><span class="ic" data-pcic="back"></span> Home</button><span aria-hidden="true">&middot;</span>
       <p class="sub" data-f="visitline"></p>
+      <!-- 21 Oct (Daniel, video 5): the call-window countdown, here and in the queue band, so the doctor can reorient after a call -->
+      <span class="cs-winclock" id="cs-winclock" data-qclock="chart" role="timer" aria-live="off"></span>
       <!-- Ani, 5 Oct ("Chart layout v2"): v2 lives in this one file as a switchable layout. Default stays Current;
            ?chart=v2 or this control turns it on, and the choice is remembered in this browser. -->
       <!-- Ani, 6 Oct: we work in v2 from now on. The switch is hidden; ?chart=current still opens the old layout for comparison. -->
@@ -6667,9 +6769,37 @@
              This is only a frame. When v2 is on, csLayout() moves the existing chart nodes (patient card, Needs
              attention, Today, the note, the AI block, the scribe, Insert, the checklist, billing and Finalize, the full
              chart) into these slots, and moves them back for Current. Same nodes, same functions, same gates. -->
+        <!-- 21 Oct (Daniel, 18 Oct video 4: "this could be a little bit more streamlined up here ... we would just combine all this ... all this would fit in here at the top,
+             nice and neat. Because ... this looks like this is separate from this."): the patient card (name, age and sex, allergies, Call, Chart) and the Review / Note /
+             Action / Sign off bar are ONE block across the top, above the Patient summary and the work. The PHN is not on the front (Details, one tap, shows it). -->
+        <div class="v2-head" id="v2-head" hidden>
+          <section class="v2-pt" id="v2-pt" aria-label="Patient"></section>
+          <div class="v2-top" id="v2-top">
+            <!-- Daniel, 8 Oct: one continuous encounter page, Review -> Note -> Action -> Sign off, sections of the same workspace, not tabs.
+                 The bar is a step bar: a click scrolls to the section, and the section in view is marked as you scroll. -->
+            <nav class="v2-tabs v2-steps" aria-label="This visit" id="v2-tabs">
+              <button type="button" id="v2t-review" aria-controls="v2p-review" onclick="v2Tab('review',true)"><span class="v2-tl">Review</span><span class="v2-tm"></span></button>
+              <button type="button" id="v2t-note" aria-controls="v2p-note" onclick="v2Tab('note',true)"><span class="v2-tl">Note</span><span class="v2-tm"></span></button>
+              <button type="button" id="v2t-orders" aria-controls="v2p-orders" onclick="v2Tab('orders',true)"><span class="v2-tl">Action</span><span class="v2-tm"></span></button>
+              <button type="button" id="v2t-sign" aria-controls="v2p-sign" onclick="v2Tab('sign',true)"><span class="v2-tl">Sign off</span><span class="v2-tm"></span></button>
+            </nav>
+            <div class="v2-acts" id="v2-acts">
+              <span id="v2-draft-slot"></span>
+              <span class="v2-finwrap">
+                <button type="button" class="btn dark" id="v2-fin" aria-haspopup="dialog" aria-expanded="false" aria-controls="v2-finpop" onclick="v2Fin()"><span class="ic" data-pdic="complete"></span><span class="v2-fin-l">Sign off<span class="v2-fin-x"> &amp; finalize</span></span><span class="v2-fin-n" id="v2-fin-n"></span></button>
+                <div class="v2-finpop" id="v2-finpop" role="dialog" aria-labelledby="v2-finpop-h" hidden>
+                  <div class="v2-fph"><h3 id="v2-finpop-h" tabindex="-1">Sign off &amp; finalize</h3>
+                    <button type="button" class="v2-x" onclick="v2Fin(false)" aria-label="Close">&times;</button></div>
+                  <div id="v2-finpop-b"></div>
+                </div>
+              </span>
+            </div>
+            <!-- Batch A (1): critical result bar, shown on every tab while a critical result is not reviewed -->
+            <div id="v2-crit" hidden></div>
+          </div>
+        </div>
         <div class="v2" id="v2" hidden>
           <aside class="v2-side" id="v2-side" aria-label="Patient and context">
-            <section class="v2-card v2-pt" id="v2-pt" aria-label="Patient"></section>
             <!-- Ani, 6 Oct: "too many separate big cards". One Patient summary card; its sections are accordion rows. -->
             <section class="v2-card v2-sum" id="v2-sum" aria-labelledby="v2-sum-h">
             <h3 class="v2-sum-h" id="v2-sum-h">Patient summary</h3>
@@ -6680,29 +6810,6 @@
             </section>
           </aside>
           <div class="v2-main" id="v2-main">
-            <div class="v2-top" id="v2-top">
-              <!-- Daniel, 8 Oct: one continuous encounter page, Review -> Note -> Action -> Sign off, sections of the same workspace, not tabs.
-                   The bar is a step bar: a click scrolls to the section, and the section in view is marked as you scroll. -->
-              <nav class="v2-tabs v2-steps" aria-label="This visit" id="v2-tabs">
-                <button type="button" id="v2t-review" aria-controls="v2p-review" onclick="v2Tab('review',true)"><span class="v2-tl">Review</span><span class="v2-tm"></span></button>
-                <button type="button" id="v2t-note" aria-controls="v2p-note" onclick="v2Tab('note',true)"><span class="v2-tl">Note</span><span class="v2-tm"></span></button>
-                <button type="button" id="v2t-orders" aria-controls="v2p-orders" onclick="v2Tab('orders',true)"><span class="v2-tl">Action</span><span class="v2-tm"></span></button>
-                <button type="button" id="v2t-sign" aria-controls="v2p-sign" onclick="v2Tab('sign',true)"><span class="v2-tl">Sign off</span><span class="v2-tm"></span></button>
-              </nav>
-              <div class="v2-acts" id="v2-acts">
-                <span id="v2-draft-slot"></span>
-                <span class="v2-finwrap">
-                  <button type="button" class="btn dark" id="v2-fin" aria-haspopup="dialog" aria-expanded="false" aria-controls="v2-finpop" onclick="v2Fin()"><span class="ic" data-pdic="complete"></span><span class="v2-fin-l">Sign off<span class="v2-fin-x"> &amp; finalize</span></span><span class="v2-fin-n" id="v2-fin-n"></span></button>
-                  <div class="v2-finpop" id="v2-finpop" role="dialog" aria-labelledby="v2-finpop-h" hidden>
-                    <div class="v2-fph"><h3 id="v2-finpop-h" tabindex="-1">Sign off &amp; finalize</h3>
-                      <button type="button" class="v2-x" onclick="v2Fin(false)" aria-label="Close">&times;</button></div>
-                    <div id="v2-finpop-b"></div>
-                  </div>
-                </span>
-              </div>
-              <!-- Batch A (1): critical result bar, shown on every tab while a critical result is not reviewed -->
-              <div id="v2-crit" hidden></div>
-            </div>
             <!-- Batch A (2): "Visit signed off" + the next patient, right after a successful sign-off -->
             <section class="v2-card" id="v2-done" aria-labelledby="v2-done-h" hidden></section>
             <div id="v2-notices"></div>
@@ -6713,8 +6820,9 @@
                 <div class="v2-ch"><span class="ic" data-pdic="alert"></span><h3 id="v2-na-h">Needs attention</h3><span class="v2-chip" id="v2-na-chip"></span></div>
                 <div id="v2-na-b"></div>
               </section>
-              <!-- Daniel, 11 Oct: the empty space beside Today holds "Cedar - Key Clinical Findings" (was the Relevant investigations card) -->
-              <div class="v2-rv2" id="v2-rv2">
+              <!-- 21 Oct (Daniel, 18 Oct video 3: "I don't think I would like it split like that. I like it more sequential."): one column, in order: Needs attention,
+                   Intake summary (what the patient said), Chart review (Cedar, from the data feeds; today's concern first). Not side by side. -->
+              <div class="v2-rv2 v2-one" id="v2-rv2">
                 <div id="v2-today-slot"></div>
                 <section class="v2-card v2-key" id="v2-key" aria-labelledby="v2-key-h"></section>
               </div>
@@ -6741,7 +6849,8 @@
                   <button type="button" class="v2-orow" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pdic="taskmoa"></span><span class="v2-ot"><b>Task</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="toast('Message to the patient started')"><span class="ic" data-pdic="chat"></span><span class="v2-ot"><b>Message</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                 </div>
-                <section class="v2-lo" aria-labelledby="v2-lo-h"><h4 class="v2-loh" id="v2-lo-h">Lab orders</h4><div class="lab-orders-mount" data-v2="1"></div></section>
+                <!-- 21 Oct (Daniel, 18 Oct video 2: "this goes into the lab results section of the chart. So not quite here. This is purely action-oriented."):
+                     the Lab orders list is not an action. It moved to the top of Chart review (Ordered and pending) and to Chart > Results. -->
                 <p class="v2-ord-done" id="v2-ord-done" hidden>This visit is signed off, so its orders are closed.</p>
               </section>
               <div id="v2-rx-slot"></div>
@@ -6822,6 +6931,8 @@
             <div class="cs-pane" id="csp-timeline" role="tabpanel" aria-labelledby="cst-timeline" tabindex="-1" hidden><div class="care-tl-mount"></div></div>
             <div class="cs-pane" id="csp-results" role="tabpanel" aria-labelledby="cst-results" tabindex="-1" hidden>
               <!-- Daniel, 26 Sep: "it is madness that I am opening up raw pdf's". Tests with values and a trend. -->
+              <!-- 21 Oct (Daniel, video 2: "this goes into the lab results section of the chart"): lab orders and where each stands, above the results -->
+              <section class="v2-card cs-lo-card" aria-labelledby="cs-lo-h"><h4 class="v2-loh" id="cs-lo-h">Lab orders</h4><div class="lab-orders-mount"></div></section>
               <div id="vcp-results"></div>
               <div class="vc-block" id="vc-resrail" hidden></div>
               <!-- Daniel, 26 Sep: "I get my patient's to work." Hidden when the patient has reported nothing. -->
@@ -6876,7 +6987,6 @@
                   <button type="button" role="menuitem" onclick="csInsMenu(false);vcInsert('Follow-up template')">Follow-up template</button>
                   <button type="button" role="menuitem" onclick="csInsMenu(false);vcInsert('Normal exam')">Normal exam</button>
                   <button type="button" role="menuitem" onclick="csInsMenu(false);prOpenForm()">Reading from patient</button>
-                  <button type="button" role="menuitem" onclick="csInsMenu(false);nsDxOpen(true)">Diagnosis</button>
                 </span>
               </span>
               <span class="cs-tsep" aria-hidden="true"></span>
@@ -6892,8 +7002,9 @@
                  diagnosis is picked in Assessment and IS the claim's diagnosis (same search as Your coding). -->
             <div class="ns" id="ns-wrap" role="group" aria-label="Today&rsquo;s note">
               <!-- Daniel, 11 Oct: "Replace Findings with separate Subjective and Objective sections." Reason (chief complaint), Subjective (HPI,
-                   symptoms, relevant history), Objective (examination findings, vitals, investigations), Assessment (clinical impressions and
-                   ICD-9 diagnoses), Plan. -->
+                   symptoms, relevant history), Objective (examination findings, vitals, investigations), Assessment (the doctor's written
+                   impression), Plan. 21 Oct (Daniel, 18 Oct video 2: "this add diagnosis, that's billing. That's the ICD9 code. So we can remove
+                   that. All this is just one big note."): no diagnosis field here; the code is in the billing row at the end of the chart. -->
               <div class="ns-row" id="ns-r-reason"><label class="ns-k" for="ns-reason">Clinical concern</label>
                 <div class="ns-f"><textarea class="ns-ta" id="ns-reason" data-sec="reason" rows="1" placeholder="Why the patient is seen today"></textarea>
                   <div class="ns-ai" id="ns-ai-reason"></div></div></div>
@@ -6905,8 +7016,7 @@
                   <div class="ns-ai" id="ns-ai-objective"></div></div></div>
               <div class="ns-row" id="ns-r-assessment"><label class="ns-k" for="ns-assessment">Assessment</label>
                 <div class="ns-f"><textarea class="ns-ta" id="ns-assessment" data-sec="assessment" rows="1" placeholder="Clinical impressions and diagnoses"></textarea>
-                  <div class="ns-ai" id="ns-ai-assessment"></div>
-                  <div class="ns-dx" id="ns-dx"></div></div></div>
+                  <div class="ns-ai" id="ns-ai-assessment"></div></div></div>
               <div class="ns-row" id="ns-r-plan"><label class="ns-k" for="ns-plan">Plan</label>
                 <div class="ns-f"><textarea class="ns-ta" id="ns-plan" data-sec="plan" rows="1" placeholder="Treatment, follow-up, safety netting"></textarea>
                   <div class="ns-ai" id="ns-ai-plan"></div></div></div>
@@ -7804,6 +7914,7 @@ function syncTopTitle(){
     el.textContent = scr.id === 'screen-patientchart' ? 'Patient chart' : (t ? t.textContent.trim() : '');
     if(dt){ dt.style.display = 'none'; }
   }
+  if(typeof qClockUpdate === 'function') qClockUpdate();
 }
 function showScreen(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -7893,11 +8004,26 @@ var BILL_OPEN = ['msp-submit','msp-review','msp-rejected','pri-due','pri-review'
    Completed, Doctor to Callback, No-Show."
    A missed or dropped call is not a state the doctor reads and moves on
    from — it is a job. Both now say what has to happen: call them back. */
+/* 21 Oct (Daniel, 18 Oct video 5: "Doctor to call back, completed, no show. We'll have a few more. There should be an administrative cancellation,
+   so that means ... the admin is cancelling, not your MOA per se"). The list is the one in the lead's brief; no others are invented.
+   "Doctor to call back" is sentence case now (it was "Doctor to Callback"). The order here is the order of the menu and of the Visit status filter. */
 var STATUS_LABEL = {
-  waiting:'In queue', next:'In queue', delayed:'In queue', progress:'In queue',
-  missed:'Doctor to Callback', dropped:'Doctor to Callback',
-  done:'Completed', noshow:'No-show', scheduled:'In queue'
+  waiting:'In queue', next:'In queue', delayed:'In queue', progress:'In queue', scheduled:'In queue',
+  missed:'Doctor to call back', dropped:'Doctor to call back',
+  calldropped:'Call dropped',
+  done:'Completed', noshow:'No-show',
+  declined:'Patient declined virtual visit', pendingmoa:'Pending MOA', needsreview:'Needs review',
+  admincancel:'Administrative cancellation'
 };
+/* statuses that close the visit: not in the queue, no Call, not counted as open */
+var STATUS_CLOSED = ['done','noshow','declined','admincancel'];
+function statusClosed(s){ return STATUS_CLOSED.indexOf(s) > -1; }
+/* icons for the five newer statuses come from the Mage map (ICONS is declared further down, so it is read when a row is drawn) */
+var STATUS_ICO2 = {calldropped:'hangup', declined:'close', pendingmoa:'taskmoa', needsreview:'eye', admincancel:'calendar'};
+function statusIcon(k){
+  if(STATUS_ICON[k]) return STATUS_ICON[k];
+  return (typeof ICONS !== 'undefined' && STATUS_ICO2[k] && ICONS[STATUS_ICO2[k]]) || '';
+}
 var AI_SUMMARY = {
   'Gloria Mcdonald, 74F':'Chest pressure on exertion x3 days, eased by rest. Known HTN; no prior cardiac workup.',
   'Andrey Abushakhmanov, 24M':'Routine follow-up after sinus infection; reports symptoms fully resolved.',
@@ -8181,17 +8307,29 @@ function nowPill(now){
   }
   return {head:head, tail:'next window tomorrow ' + hLabel(BC_WINDOWS[0].start), live:false};
 }
+/* 21 Oct (Daniel, 18 Oct video 5: "I do like having a timer to tick down ... so I know how much time is left in my call window ... when you finally get off
+   the phone, you're disoriented. And so it's just there to reorient you."): the countdown and the doctor's own clock now show in the current call-window
+   band of the queue ("First call window · 8:00-10:00 · Current · 1h 6m left · 11:54 AM New York"), and in the chart's top line ("Call window 8:00-10:00 ·
+   1h 6m left"). One function writes every copy, so they never disagree. No wait estimate: it is the call window's own time left. */
+function qClockCap(t){ t = String(t || ''); return t.charAt(0).toUpperCase() + t.slice(1); }
+function qClockText(kind, now){
+  var s = nowPill(now || new Date());
+  if(kind === 'time') return s.head;
+  if(kind === 'chart') return s.live ? 'Call window ' + winLabel(currentWin()) + ' \u00b7 ' + s.tail : qClockCap(s.tail);
+  return s.live ? 'Current window \u00b7 ' + s.tail : qClockCap(s.tail);   /* 'band' */
+}
+function qClockUpdate(now){
+  now = now || new Date();
+  document.querySelectorAll('[data-qclock]').forEach(function(el){
+    var t = qClockText(el.getAttribute('data-qclock'), now);
+    if(el.textContent !== t) el.textContent = t;
+  });
+}
 function renderTopClock(){
-  var pill = document.getElementById('tb-now');
-  if(pill){
-    var n = new Date(), s = nowPill(n), b = zoneParts(n, BC_ZONE);
-    pill.classList.toggle('live', s.live);
-    var pdw = document.getElementById('pd-window');
-    if(pdw) pdw.textContent = b.weekday + ' ' + b.month + ' ' + b.day + ' · ' + bcWindowState(n);
-    pill.innerHTML = '<span class="tbt-ic"><span class="ic" data-pdic="clock"></span></span>' +
-      '<span class="tbt-txt"><b>' + s.head + '</b><span class="tbn-tail">' + s.tail + '</span></span>';
-    if(typeof paintPd === 'function') paintPd(pill);
-  }
+  var n0 = new Date(), b0 = zoneParts(n0, BC_ZONE);
+  var pdw = document.getElementById('pd-window');
+  if(pdw) pdw.textContent = b0.weekday + ' ' + b0.month + ' ' + b0.day + ' · ' + bcWindowState(n0);
+  qClockUpdate(n0);
   var el = document.getElementById('tb-clock'); if(!el) return;
   var now = new Date();
   var zone = localZoneLabel();
@@ -8227,28 +8365,60 @@ function qvToggle(){ QV = (QV === 'current') ? 'all' : 'current'; renderQueue();
    Nothing selected is the resting state and means the queue is following the
    clock -- the live window plus anyone carried over from earlier, which is
    what he asked the default to be. Picking a window pins the queue to it. */
+/* 21 Oct (Daniel, 18 Oct video 6: "I don't really understand [Live]. I think it should just be eliminated. I think it should just be your call windows."):
+   the Live chip is gone. The chips that stay are for jumping to a window: each opens that window's band and scrolls to it. */
 function renderWinBar(){
   var host = document.getElementById('qwin'); if(!host) return;
   var live = shownWin();
-  var pinned = qfAny('win');
-  var html = '<button type="button" class="'+(!pinned ? 'on' : '')+'"'+
-    ' onclick="winPick(null)" title="Follow the call windows as the day moves">'+
-    (!pinned ? '<span class="qwin-now"></span>' : '')+'Live</button>'+
-    '<span class="qwin-sep"></span>';
-  html += WIN_ORDER.map(function(w){
-    var on = qfHas('win', w);
-    return '<button type="button" class="'+(on?'on':'')+'" onclick="winPick(&#39;'+w+'&#39;)">'+
+  host.innerHTML = WIN_ORDER.map(function(w){
+    return '<button type="button" onclick="winPick(&#39;'+w+'&#39;)" aria-label="Go to the '+winName(w).toLowerCase()+', '+winLabel(w)+'">'+
       (w === live ? '<span class="qwin-now" title="The window the clock is in"></span>' : '')+
       winLabel(w)+'</button>';
   }).join('');
-  host.innerHTML = html;
+}
+
+/* 21 Oct (Daniel, video 5: "I wouldn't say 'later today', I would want to know what call window you are referring to. So there's the first, this would be
+   the second, and so on"): the queue is grouped by call window, named First, Second ... with its time. */
+var WIN_ORDINAL = ['First','Second','Third','Fourth','Fifth','Sixth'];
+function winName(w){ var i = WIN_ORDER.indexOf(w); return (WIN_ORDINAL[i] || ('Window ' + (i + 1))) + ' call window'; }
+function winTitle(w){ return winName(w) + ' \u00b7 ' + winLabel(w); }
+/* the doctor's own open or closed choice per window; with none, only the current window is open */
+var QWIN_OPEN = {};
+function qWinOpen(w, today, cw, all){
+  if(all || !today) return true;
+  return Object.prototype.hasOwnProperty.call(QWIN_OPEN, w) ? !!QWIN_OPEN[w] : (w === cw);
+}
+function qWinBand(w, count, open, live){
+  var clock = live ? '<span class="q-sepclock" data-qclock="band">' + qClockText('band') + '</span>' +
+    '<span class="q-septime" data-qclock="time">' + qClockText('time') + '</span>' : '';
+  return '<tr class="q-sep q-win' + (live ? ' live' : '') + '" data-win="' + w + '"><td colspan="6">' +
+    '<button type="button" class="q-sepin q-sepbtn" aria-expanded="' + open + '" onclick="qwinToggle(\'' + w + '\')">' +
+    '<span class="ic q-sepchev" data-pdic="chevdown" aria-hidden="true"></span>' +
+    '<span class="q-sepl">' + winTitle(w) + '</span><span class="q-sepn" aria-label="' + count + (count === 1 ? ' patient' : ' patients') + '">' + count + '</span>' + clock +
+    '</button></td></tr>';
+}
+function qwinSet(w, open){
+  QWIN_OPEN[w] = !!open;
+  var b = document.querySelector('#queue-body tr.q-win[data-win="' + w + '"] .q-sepbtn'); if(b) b.setAttribute('aria-expanded', String(!!open));
+  document.querySelectorAll('#queue-body tr[data-win="' + w + '"]:not(.q-win)').forEach(function(r){ r.hidden = !open; });
+}
+function qwinToggle(w){
+  var b = document.querySelector('#queue-body tr.q-win[data-win="' + w + '"] .q-sepbtn');
+  qwinSet(w, b ? b.getAttribute('aria-expanded') !== 'true' : true);
+  if(typeof qHoverHide === 'function') qHoverHide();
 }
 
 function winPick(w){
-  if(w === null){ QF.win = []; QV = 'current'; }
-  else if(qfHas('win', w)){ QF.win = []; QV = 'current'; }   /* clicking the pinned one releases it */
-  else { QF.win = [w]; QV = 'all'; }                          /* pinned: show that window whole */
-  renderQueue();
+  /* a chip jumps to its window: open it and bring its band into view (nothing is filtered out) */
+  QF.win = []; QV = 'current';
+  var q = (typeof queueSearch === 'string') ? queueSearch.trim() : '';
+  if(!document.querySelector('#queue-body tr.q-win[data-win="' + w + '"]')){
+    if(typeof toast === 'function') toast('No patients in the ' + winName(w).toLowerCase() + ' right now');
+    return;
+  }
+  qwinSet(w, true);
+  var b = document.querySelector('#queue-body tr.q-win[data-win="' + w + '"] .q-sepbtn');
+  if(b){ b.scrollIntoView({block:'start', behavior: (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'auto' : 'smooth'}); b.focus({preventScroll:true}); }
 }
 
 /* Spec 4.3: the window must never change under a doctor who is mid-call or
@@ -8298,32 +8468,36 @@ function renderQueue(){
 
   var today = (dayOffset === 0);
   var cw = shownWin(), cwi = WIN_ORDER.indexOf(cw);
-  var isOpen = function(r){ return r.status !== 'done' && r.status !== 'noshow'; };
+  var isOpen = function(r){ return !statusClosed(r.status); };
   /* whoever the doctor is meant to ring next, in the order the queue shows */
   QUEUE_NEXT = null;
 
   function block(list){ return list.map(rowHTML).join(''); }
 
   var html = '';
+  /* 21 Oct: one grouping for the whole day: Carryover (unfinished work from earlier windows, as before), then every call window by name,
+     the current one highlighted and open, the others closed until opened. A search or a filter opens every window, so nobody is hidden. */
+  var narrowed = !!q || qfAny('visit') || qfAny('bill') || qfAny('card') || qfAny('win');
+  var carry = [], rest = rows;
   if(today && QV === 'current'){
-    var carry = rows.filter(function(r){ return WIN_ORDER.indexOf(r.win) < cwi && isOpen(r); });
-    var now   = rows.filter(function(r){ return r.win === cw; });
-    var rest  = rows.filter(function(r){ return carry.indexOf(r) < 0 && now.indexOf(r) < 0; });
-    QUEUE_NEXT = carry.filter(isOpen)[0] || now.filter(isOpen)[0] || null;
-    if(carry.length) html += qSep('Carryover from earlier windows', carry.length, true) + block(carry);
-    html += qSep('Current window &middot; ' + winLabel(cw), now.length, false) + block(now);
-    if(rest.length) html += qSep('Later today', rest.length, false) + block(rest);
+    carry = rows.filter(function(r){ return WIN_ORDER.indexOf(r.win) < cwi && isOpen(r); });
+    rest  = rows.filter(function(r){ return carry.indexOf(r) < 0; });
+    QUEUE_NEXT = carry.filter(isOpen)[0] || rows.filter(function(r){ return r.win === cw && isOpen(r); })[0] || null;
   } else {
     QUEUE_NEXT = rows.filter(isOpen)[0] || null;
-    WIN_ORDER.forEach(function(w){
-      var g = rows.filter(function(r){ return r.win === w; });
-      if(!g.length) return;
-      html += qSep(winLabel(w), g.length, false) + block(g);
-    });
   }
+  if(carry.length) html += qSep('Carryover from earlier windows', carry.length, true) + block(carry);
+  WIN_ORDER.forEach(function(w){
+    var g = rest.filter(function(r){ return r.win === w; });
+    if(!g.length) return;
+    var open = qWinOpen(w, today, cw, narrowed);
+    html += qWinBand(w, g.length, open, today && w === cw) + g.map(function(r){
+      return rowHTML(r).replace('<tr ', '<tr' + (open ? '' : ' hidden') + ' data-win="' + w + '" ');
+    }).join('');
+  });
 
   function rowHTML(r){
-    var closed = (r.status==='done' || r.status==='noshow');
+    var closed = statusClosed(r.status);
     var isNext = (r === QUEUE_NEXT);
     /* Spec 5.2: only the active patient can be called. The queue mirrors a
        walk-in line — nobody skips it. Doctor-initiated calls go through
@@ -8347,7 +8521,7 @@ function renderQueue(){
     var statusPill = '<button class="status-pill '+r.status+'" type="button"'+
       ' aria-haspopup="true" title="Change visit status"'+
       ' onclick="event.stopPropagation();openStatusMenu(this,\''+esc1(r.name)+'\')">'+
-      (STATUS_ICON[r.status]||'')+'<span>'+STATUS_LABEL[r.status]+'</span>'+
+      statusIcon(r.status)+'<span>'+STATUS_LABEL[r.status]+'</span>'+
       '<span class="q-caret" data-pdic="chevdown" aria-hidden="true"></span></button>';
 
     /* Claims sit on the day sheet, not behind Practice. "Leave no claim behind." */
@@ -8523,6 +8697,14 @@ function renderAttnTasks(){
   syncAttnFold();
 }
 
+/* 21 Oct (Daniel, 18 Oct video 6: "if I'm grabbing your attention for lab work, it should all be critical. There shouldn't be any soft [stuff] in there ...
+   Critical result means you got to move on it."): every lab result that reaches Needs attention is shown as Critical, on Home and on the chart.
+   The LifeLabs BC tiers in LAB_RULES are not changed (the Inbox bands still use them; Daniel will send an updated lab list). The one thing dropped
+   from the display is the source line "LifeLabs BC alert limit", which would say "alert" under a Critical heading. */
+function attnBasis(t){
+  var b = t && t.basis ? t.basis : '';
+  return (t && t.f && t.f.indexOf('alert') === 0) ? b.replace(/\s*·\s*LifeLabs BC alert limit$/, '') : b;
+}
 function renderCriticals(){
   var list=document.getElementById('crit-list');
   if(!list || typeof INBOX_ITEMS === 'undefined') return;
@@ -8555,13 +8737,14 @@ function renderCriticals(){
     /* the inbox's language: a red circle marks the critical row, the words
        stay ink, and the value is the one piece of red text */
     var up = cx.f.indexOf('high') > -1;
-    return '<div class="al-row '+(tier==='alert'?'tier-alert':'')+'" onclick="openReview('+idx+')"'+
-      (cx.basis ? ' title="'+cx.basis+'"' : '')+'>'+
+    /* 21 Oct: every lab row here reads Critical (red icon, red value); the amber rows below are the other urgent things (claims) */
+    return '<div class="al-row" onclick="openReview('+idx+')"'+
+      (attnBasis(cx) ? ' title="'+attnBasis(cx)+'"' : '')+'>'+
       '<span class="al-mark"></span>'+
-      '<span class="al-who"><span class="ic al-tone '+(tier==='critical'?'crit':'warn')+'" role="img" aria-label="'+tier+'" data-pdic="'+(tier==='critical'?'crit':'alert')+'"></span>'+
+      '<span class="al-who"><span class="ic al-tone crit" role="img" aria-label="critical" data-pdic="crit"></span>'+
         '<b>'+c.patient+'</b><i>'+(c.age||'')+'</i></span>'+
       '<span class="al-test">'+cx.n+'</span>'+
-      '<span class="al-val '+tier+'"><b>'+cx.v+'</b> <u>'+cx.u+'</u>'+
+      '<span class="al-val critical"><b>'+cx.v+'</b> <u>'+cx.u+'</u>'+
         '<span class="ic al-dir" role="img" aria-label="'+(up?'high':'low')+'" data-pdic="'+(up?'arrowup':'arrowdown')+'"></span></span>'+
       /* Daniel, 29 Sep markup: the reference range, the diagnosis text and the source are crossed
          off. The row is the icon, the patient, the test and the value with its arrow. The range,
@@ -8913,9 +9096,14 @@ function advance(name, newStatus){
    both read, and both save, as Doctor to Callback. */
 var STATUS_CHOICES = [
   ['waiting','In queue'],
-  ['missed', 'Doctor to Callback'],
+  ['missed', 'Doctor to call back'],
+  ['calldropped','Call dropped'],
   ['done',   'Completed'],
-  ['noshow', 'No-show']
+  ['noshow', 'No-show'],
+  ['declined','Patient declined virtual visit'],
+  ['pendingmoa','Pending MOA'],
+  ['needsreview','Needs review'],
+  ['admincancel','Administrative cancellation']
 ];
 /* single quotes inside an inline handler would end the attribute early */
 function esc1(t){ return String(t).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
@@ -10957,7 +11145,7 @@ var ICONS = {
 function updateWorkCounts(){
   var q=document.getElementById('wt-queue-count');
   if(q && typeof QUEUE_DATA !== 'undefined'){
-    q.textContent = QUEUE_DATA.filter(function(r){ return r.status!=='done' && r.status!=='noshow'; }).length;
+    q.textContent = QUEUE_DATA.filter(function(r){ return !statusClosed(r.status); }).length;
   }
 }
 
@@ -13418,6 +13606,12 @@ function csNoShow(name){
 }
 
 /* ================= patient snapshot ================= */
+function csDet(){
+  CS.detOpen = CS.detOpen || {}; var n = PC_CURRENT; if(!n) return;
+  CS.detOpen[n] = !CS.detOpen[n];
+  csRenderSnap(n);
+  var b = document.getElementById('cs-det-btn'); if(b) b.focus({preventScroll:true});
+}
 function csRenderSnap(name){
   var r = csRow(); if(!r) return;
   var phn = ptChart(name).phn || '';
@@ -13425,8 +13619,13 @@ function csRenderSnap(name){
   /* B-006: v2 showed the full PHN here; v2.5 asks for a masked PHN */
   var masked = phn && phn !== '—' ? '&bull;&bull;&bull;&bull; &bull;&bull;&bull; ' + phn.slice(-3) : 'Not recorded';
   var sub = document.getElementById('cs-sub');
+  /* 21 Oct (Daniel, 18 Oct video 4: "it's good to know the patient, it's good to know the PHN, but this is redundant information at this point ... it's not something
+     that should be front and center."): the front says name, age and sex. The PHN (masked) is one tap away behind Details. */
+  var detOpen = !!(CS.detOpen && CS.detOpen[name]);
   if(sub) sub.innerHTML = ((r.legal && r.pref && r.legal.split(' ')[0] !== r.pref) ? 'Goes by <b>' + csEsc(r.pref) + '</b> &middot; ' : '') +
-    (age ? age + ' &middot; ' : '') + csEsc(r.sex || 'Not recorded') + ' &middot; PHN <span class="pc-mono" aria-label="PHN ending ' + csEsc(phn.slice(-3)) + '">' + masked + '</span>';
+    (age ? age + ' &middot; ' : '') + csEsc(r.sex || 'Not recorded') +
+    '<button type="button" class="cs-det-btn" id="cs-det-btn" aria-expanded="' + detOpen + '" aria-controls="cs-det" onclick="csDet()">Details</button>' +
+    '<span class="cs-det" id="cs-det"' + (detOpen ? '' : ' hidden') + '>PHN <span class="pc-mono" aria-label="PHN ending ' + csEsc(phn.slice(-3)) + '">' + masked + '</span></span>';
   /* v2.5 §3: allergies in three distinct states. Named is ink with a symbol (an allergy is not a critical
      result, so not red); "Not recorded" is amber with its word. The named example is v2.5 §8's, demo only. */
   var a = CS.allergy[name] || 'nkda', el = document.getElementById('cs-allergy'), v2 = CS.layout === 'v2';
@@ -13509,13 +13708,15 @@ function csGoNA(){
 var CS_TIER = {crit:{w:'Critical', ic:'crit'}, todo:{w:'To do', ic:'alert'}, info:{w:'Info', ic:'cardinfo'}};
 function csNAItems(name){
   var alerts = chartAlertsFor(name), abn = chartAbnFor(name), out = [];
+  /* 21 Oct (Daniel, video 6): lab results in Needs attention are all Critical, no soft tier. The result that the LifeLabs table calls critical stays first. */
+  alerts = alerts.map(function(it, i){ return {it:it, i:i}; }).sort(function(a, b){
+    return ((labTier(a.it) === 'critical' ? 0 : 1) - (labTier(b.it) === 'critical' ? 0 : 1)) || (a.i - b.i); }).map(function(x){ return x.it; });
   alerts.forEach(function(it){
-    var crit = labTier(it) === 'critical', pick = crit ? 'crit' : 'alert', idx = INBOX_ITEMS.indexOf(it);
+    var pick = labTier(it) === 'critical' ? 'crit' : 'alert', idx = INBOX_ITEMS.indexOf(it);
     var lead = (it.tests || []).filter(function(x){ return x.f && x.f.indexOf(pick) === 0; })[0]; if(!lead) return;
     var rev = it.status === 'reviewed';
-    out.push({tier: crit ? 'crit' : 'todo', it:it, idx:idx, test:lead, today:/^Today/.test(it.received),
-      /* Daniel 27 and 30 Sep call this band "High"; v2.5 has no High tier, so it is To do with the word kept (OQ-76) */
-      label: crit ? null : 'High',
+    out.push({tier:'crit', it:it, idx:idx, test:lead, today:/^Today/.test(it.received),
+      label: null,
       stage: rev ? 'Reviewed, not signed off' : 'Not reviewed', action:'Review result'});
     /* the rest of the same panel: out of range is identified, not given strong salience (v2.5 §7 "abnormal ≠ actionable") */
     (it.tests || []).forEach(function(x){
@@ -13536,11 +13737,15 @@ function csNAItems(name){
 /* layout v2 (Ani, 5 Oct): the same item, tier, stage and action, as label above value. The tier word is the label,
    the result is the value, the concern is one line, the range one quiet line; panel, lab, doctor and basis sit behind
    one info button instead of a dot-separated line. Nothing is re-tiered here. */
+/* 21 Oct (Daniel, 18 Oct video 4: "the ECG, we just grab right off the [ECG]. ECGs have a report at the top ... it's got to be right here, and this is gone too"):
+   the ECG card's title is the report line printed on the ECG, word for word (ECG Critical v2.0: the source phrase is shown verbatim and never reinterpreted).
+   The demo line is the item's own `interp`; an ECG with none keeps "Abnormal ECG". */
+function ecgLine(it){ return csEsc((it && it.interp) || traceFlag(it)); }
 function csNARowV2(x, related, also){
   var T = CS_TIER[x.tier], it = x.it, t = x.test;
   var mk = x.idx + '-' + (t ? String(t.n).replace(/[^a-z0-9]/gi,'') : 'abn'), open = !!CS.metaOpen[mk];
   var val, up = t && (t.f || '').indexOf('high') > -1, low = t && (t.f || '').indexOf('low') > -1;
-  if(x.abn) val = '<b>' + (x.ecg ? traceFlag(it) : 'Abnormal ' + csEsc(it.panel)) + '</b>';
+  if(x.abn) val = '<b>' + (x.ecg ? ecgLine(it) : 'Abnormal ' + csEsc(it.panel)) + '</b>';
   else val = '<b>' + t.n + '</b> <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span>' +
     (up || low ? '<span class="ic vca-dir" role="img" aria-label="' + (up ? 'high' : 'low') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span>' : '');
   var h = '';
@@ -13555,10 +13760,11 @@ function csNARowV2(x, related, also){
     '<dl class="v2-src" id="cs-md-' + mk + '"' + (open ? '' : ' hidden') + '>' +
       (x.tier === 'info' ? '<dt>Panel</dt><dd>Same panel as ' + csEsc(x.panelOf) + ', reviewed with it</dd>' : '<dt>Panel</dt><dd>' + csEsc(it.panel) + '</dd>') +
       '<dt>Lab</dt><dd>' + csEsc(it.lab) + '</dd>' + (x.tier === 'info' ? '' : '<dt>Responsible</dt><dd>Dr. D. Pannozzo</dd>') +
-      (!x.abn && x.tier !== 'info' && t.basis ? '<dt>Why it is flagged</dt><dd>' + t.basis + '</dd>' : '') + '</dl>';
+      (!x.abn && x.tier !== 'info' && attnBasis(t) ? '<dt>Why it is flagged</dt><dd>' + attnBasis(t) + '</dd>' : '') + '</dl>';
+  /* 21 Oct: an abnormal result that is not a lab (the ECG) has no "To do" label: the printed line is the title */
   return '<div class="vca-row v2-nar cs-' + x.tier + (related ? ' cs-rel' : '') + '">' +
-    '<span class="ic vca-ic" role="img" aria-label="' + T.w + '" data-pdic="' + T.ic + '"></span>' +
-    '<div class="vca-main"><p class="v2-na-k">' + T.w + '</p><p class="vca-t">' + val + '</p>' + h + '</div>' +
+    '<span class="ic vca-ic" role="img" aria-label="' + (x.abn ? 'Abnormal' : T.w) + '" data-pdic="' + T.ic + '"></span>' +
+    '<div class="vca-main">' + (x.abn ? '' : '<p class="v2-na-k">' + T.w + '</p>') + '<p class="vca-t">' + val + '</p>' + h + '</div>' +
     '<div class="cs-side"><p class="cs-stage">' + csIc('clock') + '<span><span class="vh">Stage: </span>' + csEsc(x.stage) + '</span></p>' +
       '<button type="button" class="btn" onclick="openReview(' + x.idx + ')"><span class="ic" data-pdic="eye"></span>' + x.action + '</button></div>' +
   '</div>';
@@ -13568,14 +13774,14 @@ function csNARow(x, related, also){
   var T = CS_TIER[x.tier], it = x.it, t = x.test;
   var title;
   if(x.abn){
-    title = '<b>' + T.w + '</b> &middot; ' + (x.ecg ? '<b>' + traceFlag(it) + '</b>' : '<b>Abnormal</b> &middot; ' + csEsc(it.panel));
+    title = x.ecg ? '<b>' + ecgLine(it) + '</b>' : '<b>Abnormal</b> &middot; ' + csEsc(it.panel);
   } else {
     var up = (t.f || '').indexOf('high') > -1, low = (t.f || '').indexOf('low') > -1;
     title = '<b>' + T.w + '</b> &middot; ' + t.n + ' <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span>' +
       (up || low ? '<span class="ic vca-dir" role="img" aria-label="' + (up ? 'high' : 'low') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span>' : '') +
       ' <span class="vca-ref">ref ' + csEsc(t.ref) + (x.tier === 'info' ? (up ? ' &middot; above range' : ' &middot; below range') : (x.label ? ' &middot; ' + x.label.toLowerCase() : '')) + '</span>';
   }
-  var why = (!x.abn && x.tier !== 'info' && (t.concern || t.basis)) ? '<p class="vca-s">' + (t.concern ? '<b>' + t.concern + '</b>' : '') + (t.concern && t.basis ? ' &middot; ' : '') + (t.basis || '') + '</p>' : '';
+  var why = (!x.abn && x.tier !== 'info' && (t.concern || attnBasis(t))) ? '<p class="vca-s">' + (t.concern ? '<b>' + t.concern + '</b>' : '') + (t.concern && attnBasis(t) ? ' &middot; ' : '') + (attnBasis(t) || '') + '</p>' : '';
   var meta = x.tier === 'info'
     ? 'Same panel as ' + csEsc(x.panelOf) + ', reviewed with it &middot; ' + csEsc(it.lab) + ' &middot; received ' + csEsc(it.received)
     : (x.abn && x.ecg ? csEsc(it.panel) + ' &middot; ' : (x.abn ? '' : csEsc(it.panel) + ' &middot; ')) + csEsc(it.lab) + ' &middot; received ' + csEsc(it.received) + ' &middot; Dr. D. Pannozzo';
@@ -13642,15 +13848,18 @@ function csRenderToday(name){
   if(CS.layout === 'v2'){
     /* layout v2 (Ani, 5 Oct): one card, icon + title + one status chip + action; label above value, one fact per line */
     var when = f && f.when ? f.when.charAt(0).toUpperCase() + f.when.slice(1) : '';
-    el.innerHTML = '<div class="v2-ch">' + csIc('today') + '<h3 id="cs-today-h">Today</h3>' +
-      (f ? '<span class="v2-chip warn" title="' + (f.words ? 'Patient: &ldquo;' + csEsc(f.words) + '&rdquo;' + (when ? ' · ' + csEsc(when) : '') : '') + '">' + csIc('alert') + 'Flagged</span><span class="v2-cr"><button type="button" class="cs-link" onclick="openBrief(PC_CURRENT)">Intake</button></span>' : '') + '</div>' +
+    /* 21 Oct (Daniel, 18 Oct video 3: first "Intake summary": "the summary from what the patient said ... you have to fill out the questionnaire, or you talk to the AI,
+       and then it's just the intake summary."): the Today card is the Intake summary, brief, in one column under Needs attention. */
+    el.innerHTML = '<div class="v2-ch">' + csIc('today') + '<h3 id="cs-today-h">Intake summary</h3>' +
+      (f ? '<span class="v2-chip warn" title="' + (f.words ? 'Patient: &ldquo;' + csEsc(f.words) + '&rdquo;' + (when ? ' · ' + csEsc(when) : '') : '') + '">' + csIc('alert') + 'Flagged</span>' : '') +
+      '<span class="v2-cr"><button type="button" class="cs-link" onclick="openBrief(PC_CURRENT)">Open intake</button></span></div>' +
       /* Ani, 7 Oct: one line, not Reason + Summary + What they flagged (it said the same thing three times) */
       '<p class="v2-big">' + csEsc(sum || r.concern) + '</p>' +
       (r.words ? '<p class="v2-q">&ldquo;' + csEsc(r.words) + '&rdquo;</p>' : '');
     paintPd(el); return;
   }
   var words = r.words ? '<p class="cs-sum">&ldquo;' + csEsc(r.words) + '&rdquo; <span class="cs-cap">&middot; patient&rsquo;s words, from booking</span></p>' : '';
-  el.innerHTML = '<h3 class="vh" id="cs-today-h">Today</h3>' +
+  el.innerHTML = '<h3 class="vh" id="cs-today-h">Intake summary</h3>' +
     '<p class="cs-reason">' + csEsc(r.concern) + '</p>' + words +
     (sum ? '<p class="cs-sum">' + csEsc(sum) + ' <span class="cs-cap">&middot; intake summary</span></p>' : '') +
     (f ? '<p class="cs-flagline"><span class="cs-tag warn">' + csIc('alert') + 'Flagged at intake</span>' +
@@ -14453,7 +14662,7 @@ function t23DxLoad(){
       T23_DXBY[code] = d; return d;
     });
     T23_DXST = 'ready';
-  }).catch(function(){ T23_DXST = 'error'; }).then(function(){ if(T23.pick) t23RenderDx(); if(typeof NS !== 'undefined' && NS.dx.open) nsRenderDxRes(); });
+  }).catch(function(){ T23_DXST = 'error'; }).then(function(){ if(T23.pick) t23RenderDx(); });   /* 21 Oct: the Note has no diagnosis search any more (nsRenderDxRes is gone) */
 }
 /* Dev answers, 6 Oct 2026 (answer 01, msp-explanatory-codes.csv): MSP's real explanatory codes (MSP list dated 1 Jul
    2026). The public columns of the hand-written rows are in assets/data/msp-explanatory-codes.json; the codes the demo
@@ -15521,7 +15730,11 @@ function t23RenderBillRow(){
     if(!v.dx) btn = 'Add diagnosis';
     var cb = t23CounselBlock(v), cm = t23CallMins(v);
     if(cb){ btn = 'Add time'; focus = 'time'; h += '<span class="t23-berr">' + t23Ic('alert') + cb + '</span>'; }
-    h += '<button type="button" class="btn xs" onclick="t23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})">' + t23Ic('edit') + btn + '</button>';
+    /* 21 Oct: the booking reason's obvious code is offered here, never pre-filled (moved from the Note with the diagnosis field) */
+    var dxs = !v.dx && typeof nsDxSuggest === 'function' ? nsDxSuggest(r) : null;
+    if(dxs) h += '<span class="t23-dxsug" id="t23-dxsug">Suggested from the booking reason: <b>' + dxs + ' &middot; ' + t23E(t23DxName(dxs)) + '</b></span>' +
+      '<button type="button" class="btn xs" id="t23-dxuse" onclick="nsDxUse(\'' + dxs + '\')" aria-describedby="t23-dxsug">' + t23Ic('complete') + 'Use</button>';
+    h += '<button type="button" class="btn xs" id="t23-dxbtn" onclick="t23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})">' + t23Ic('edit') + btn + '</button>';
     /* Dev answers, 6 Oct: the call lasted 20+ minutes, so counselling is offered (the doctor decides) */
     if(!t23IsCounsel(v.fee) && cm != null && cm >= T23_COUNSEL_MIN) h += '<button type="button" class="btn xs" onclick="t23Switch(\'visit\',PC_CURRENT,true)">' + t23Ic('clock') + 'Switch to counselling (' + t23FeeForAge(v.age, true) + ')</button>';
     h += t23EditedBtn(t23EditCount(v.log), 't23OpenVisit(PC_CURRENT,\'hist\')');   /* Batch B (2) */
@@ -15546,9 +15759,9 @@ function t23Fin(mode){
     var v = t23VisitCode(r.name);
     if(v.disp !== 'private' && !v.dx){
       /* a claim can't be submitted without a diagnosis; "Finalize, submit later" still closes the visit */
-      /* Batch B (1): the diagnosis lives in Assessment; no separate step when Assessment has one */
-      toast('Add the diagnosis in Assessment to submit the claim, or choose Finalize, submit later');
-      nsGoDx(); return;
+      /* 21 Oct (Daniel, 18 Oct video 2): the code is billing's, set here at the end of the chart, not in the Note */
+      toast('Add the diagnosis code to submit the claim, or choose Finalize, submit later');
+      t23OpenPick({visit:PC_CURRENT, focus:'dx'}); return;
     }
     if(v.disp !== 'private' && t23CounselBlock(v)){ toast(t23CounselBlock(v)); t23OpenPick({visit:PC_CURRENT, focus:'time'}); return; }
   }
@@ -15711,7 +15924,7 @@ function v2Restore(){
 function v2Mount(){
   if(V2.moved.length) return;
   var q = function(sel){ return document.querySelector('#pcv-c ' + sel); };
-  v2Move(q('.cs-snap'), v2El('v2-pt'));
+  v2Move(q('.cs-snap'), v2El('v2-pt'));   /* 21 Oct: #v2-pt now sits in the top block (#v2-head), not in the left column */
   v2Move(v2El('cs-notices'), v2El('v2-notices'));
   v2Move(v2El('cs-ns'), v2El('v2-ns-slot'));
   v2Move(v2El('recall'), v2El('v2-ns-slot'));
@@ -15744,6 +15957,7 @@ function csLayout(mode){
   if(typeof csCloseFull === 'function') csCloseFull(true);
   if(CS.pop){ CS.pop = null; }
   CS.layout = mode;
+  var vh = v2El('v2-head'); if(vh) vh.hidden = (mode !== 'v2');
   if(mode === 'v2'){ v2Mount(); shell.hidden = false; root.classList.add('cs-v2'); root.classList.remove('cs-fc-open'); var fc2 = v2El('cs-fc'); if(fc2) fc2.hidden = false; paintPd(shell); }
   else { v2Restore(); shell.hidden = true; root.classList.remove('cs-v2'); var fc3 = v2El('cs-fc'); if(fc3) fc3.hidden = true; var ctx3 = v2El('cs-ctx'); if(ctx3) ctx3.hidden = false; var ins = document.querySelector('#cs-acts .cs-ins'); if(ins) ins.hidden = false; }
   ['current','v2'].forEach(function(k){ var b = v2El('cs-lay-' + k); if(b) b.setAttribute('aria-pressed', String(k === mode)); });
@@ -15793,8 +16007,10 @@ function v2Tab(tab, focus, noScroll){
   if(!noScroll){
     var sec = v2El('v2p-' + tab), sc = v2Scroller();
     if(sec){
-      var cb2 = v2El('v2-crit'), critH = cb2 && !cb2.hidden && getComputedStyle(cb2).display !== 'none' && tab !== 'review' ? cb2.offsetHeight : 0;
-      if(sc){ sc.scrollTo({top: Math.max(0, sec.offsetTop - (v2El('v2-top') ? v2El('v2-top').offsetHeight : 0) - critH - 12), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}); }
+      /* 21 Oct: the tab bar and the critical bar sit in the top block above the scrolling column, so nothing is subtracted for them */
+      var inMain = function(el){ var mm = v2El('v2-main'); return !!(el && mm && mm.contains(el)); };
+      var cb2 = v2El('v2-crit'), critH = inMain(cb2) && !cb2.hidden && getComputedStyle(cb2).display !== 'none' && tab !== 'review' ? cb2.offsetHeight : 0;
+      if(sc){ sc.scrollTo({top: Math.max(0, sec.offsetTop - (inMain(v2El('v2-top')) ? v2El('v2-top').offsetHeight : 0) - critH - 12), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}); }
       else sec.scrollIntoView({block:'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
     }
   }
@@ -15814,7 +16030,7 @@ function nsFields(){ return NS_SECS.map(nsTa).filter(function(t){ return t && t.
   var spy = function(){
     if(typeof v2On === 'function' && !v2On()) return;
     var root = v2El('pcv-c'); if(!root || root.classList.contains('v2-chart-open')) return;
-    var sc = v2Scroller(), top = sc ? sc.getBoundingClientRect().top : 0, off = (v2El('v2-top') ? v2El('v2-top').getBoundingClientRect().bottom : 120) + 24;
+    var sc = v2Scroller(), top = sc ? sc.getBoundingClientRect().top : 0, off = (sc ? top : (v2El('v2-head') ? v2El('v2-head').getBoundingClientRect().bottom : 120)) + 24;
     var cur = 'review';
     V2_FLOW.forEach(function(k){ var p = v2El('v2p-' + k); if(p && !p.hidden && p.getBoundingClientRect().top <= off) cur = k; });
     if(sc && sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 4) cur = 'sign';
@@ -16033,24 +16249,32 @@ function v2RenderSide(name){
    drawer. It is read-only: nothing here goes into the note without the doctor. Same data as the Patient summary (CS_REL / csRelGeneric),
    nothing new is inferred or invented. */
 var KF_SRC = {problems:'Problem list', medications:'Medications', careplan:'Care plan', documents:'Visit note', consults:'Consults', results:'Results'};
-function kfLine(x){
+function kfLine(x, related){
   /* v2Line's markup, with the source added to the last quiet line so a finding takes two lines, not three */
   var lab = v2Parts(x[0]), sub = v2Parts(x[1]), src = 'Source: ' + (KF_SRC[x[2]] || 'Chart');
   var top = lab.length > 1 ? '<span class="v2-l0">' + lab[0] + '</span>' : '';
   var main = lab.length > 1 ? v2Cap(lab.slice(1).join(', ')) : lab[0];
   var l2 = sub.length > 1 ? v2Cap(sub[0]) : '', l3 = sub.length > 1 ? v2Cap(sub.slice(1).join(', ')) : sub.length ? v2Cap(sub[0]) : '';
   return '<button type="button" class="v2-line" onclick="csOpenFull(\'' + x[2] + '\',this)">' + top +
-    '<span class="v2-l1">' + main + (x[4] ? '<span class="v2-chip warn">' + csIc('clock') + x[4] + '</span>' : '') + '</span>' +
+    '<span class="v2-l1">' + main + (x[4] ? '<span class="v2-chip warn">' + csIc('clock') + x[4] + '</span>' : '') + (related ? '<span class="v2-chip">Related to today</span>' : '') + '</span>' +
     (l2 ? '<span class="v2-l2">' + l2 + '</span>' : '') +
     '<span class="v2-l2">' + (l3 ? l3 + '&ensp;' : '') + '<span class="kf-src">' + src + '</span></span>' +
     '<span class="vh"> &mdash; open the source</span>' + csIc('chevr', 'v2-go') + '</button>';
 }
-function kfLines(row, name){
-  return (row ? row[1] : []).map(function(x){
+/* 21 Oct (Daniel, 18 Oct video 3: the Chart review should "highlight or prioritize at the top the major [points], how it relates to their present concern"):
+   within a section, the lines that share a word with today's concern (the same word match Past visits uses; no clinical rule is applied) come first
+   and carry "Related to today", when some lines relate and some do not. With no concern words the order is the chart's own. */
+function kfLines(row, name, cw){
+  var items = row ? row[1] : [];
+  var rel = items.map(function(x){ return !!(cw && cw.length && x[0].charAt(0) !== '@' && kfWords(x[0] + ' ' + x[1]).some(function(w){ return cw.indexOf(w) > -1; })); });
+  var all = rel.length && rel.every(Boolean);
+  var order = items.map(function(x, i){ return i; }).sort(function(a, b){ return ((rel[b] ? 1 : 0) - (rel[a] ? 1 : 0)) || (a - b); });
+  return order.map(function(i){
+    var x = items[i];
     if(x[0] === '@na') return '';            /* Needs attention is directly above */
     if(x[0] === '@rm') return rmPendLine(x);
     if(x[0] === '@bp') return v2BP(name).replace('<span class="v2-l2">Home cuff</span>', '<span class="v2-l2"><span class="kf-src">Source: Results &middot; patient-reported, home cuff</span></span>');
-    var h = kfLine(x);
+    var h = kfLine(x, rel[i] && !all);
     if(x[3] && CS_QUOTES[x[3]]){
       var k = x[3], open = !!CS.relOpen[k];
       h += '<button type="button" class="cs-exp" id="kf-qb-' + k + '" aria-expanded="' + open + '" aria-controls="kf-q-' + k + '" onclick="CS.relOpen[\'' + k + '\']=!CS.relOpen[\'' + k + '\'];v2RenderSide(PC_CURRENT);csFocus(\'#kf-qb-' + k + '\')">' +
@@ -16093,35 +16317,49 @@ function v2RenderKey(el, name, by){
   if(prev) prev = [prev[0], prev[1].filter(function(x){ return !/&middot;\s*you$/.test(x[0]); })].concat(prev.slice(2));
   el.hidden = false;
   CS.keyOpen = CS.keyOpen || {};
-  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Cedar &middot; Key clinical findings</h3></div>' +
-    (concern ? '<p class="kf-for">For today&rsquo;s concern: <b>' + csEsc(concern) + '</b></p>' : '') +
-    '<p class="kf-note">From today&rsquo;s intake and the chart. Nothing here goes into your note without you.</p>';
-  /* 1. Relevant medical history: existing diagnoses, previous episodes, related conditions */
+  var cw = kfWords(concern + ' ' + ((r || {}).concern || ''));
+  /* 21 Oct (Daniel, 18 Oct video 3): this card is the "Chart review": "the AI is pulling data off the various data feeds ... it would highlight or prioritize
+     at the top the major [points], how it relates to their present concern." Cedar's mark and the AI label stay (rule: AI text is marked); every line still
+     shows its source and opens it. He will "come up with a better verbiage" later. */
+  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Chart review</h3><span class="v2-chip kf-ai">Cedar &middot; AI</span></div>' +
+    '<p class="kf-note">Cedar read the data feeds and the chart. What relates to today&rsquo;s concern comes first. Nothing here goes into your note without you.</p>';
+  /* 1. Ordered and pending, right at the top (Daniel, video 2: "I'm gonna wanna see right at the top because I need that information to make my assessments.
+        That's a rate limiting step ... not buried down here, it's too important."): the lab orders and where each stands, then what is pending */
+  var pl = kfLines(pend, name, null), over = pend ? pend[1].filter(function(x){ return x[4] === 'Overdue'; }).length : 0;
+  h += '<section class="kf-sec kf-op" aria-labelledby="kf-h-op"><h4 class="kf-h" id="kf-h-op">Ordered and pending' +
+      (over ? '<span class="v2-chip warn">' + csIc('clock') + over + ' overdue</span>' : '') + '</h4>' +
+    '<div class="kf-labs"><h5 class="kf-h5">Lab orders</h5><div class="lab-orders-mount"></div></div>' +
+    (pl ? '<div class="kf-pend"><h5 class="kf-h5">Pending</h5><div class="kf-lines">' + pl + '</div></div>' : '') + '</section>';
+  /* 2. Relevant medical history: existing diagnoses, previous episodes, related conditions */
   h += '<section class="kf-sec" aria-labelledby="kf-h-hist"><h4 class="kf-h" id="kf-h-hist">Relevant medical history</h4>' +
-    (hist ? '<div class="kf-lines">' + kfLines(hist, name) + '</div>' + (hist[2] ? '<p class="v2-q kf-q">' + hist[2] + '</p>' : '') : '<p class="v2-q kf-q">None recorded in Simple Care.</p>') + '</section>';
-  /* 2. Medications: current, previous treatments, PharmaNet dispensing records, each with source and date. The demo holds no
+    (hist ? '<div class="kf-lines">' + kfLines(hist, name, cw) + '</div>' + (hist[2] ? '<p class="v2-q kf-q">' + hist[2] + '</p>' : '') : '<p class="v2-q kf-q">None recorded in Simple Care.</p>') + '</section>';
+  /* 3. Medications: current, previous treatments, PharmaNet dispensing records, each with source and date. The demo holds no
         previous-treatment history and no PharmaNet feed, so Cedar says so instead of showing nothing (needs PharmaNet access, BC). */
   var msrc = meds && meds[2] ? meds[2].replace(/^Source:\s*/, '').replace(/\s*&middot;\s*not checked against PharmaNet/, '') : '';
   h += '<section class="kf-sec" aria-labelledby="kf-h-meds"><h4 class="kf-h" id="kf-h-meds">Medications</h4><div class="kf-lines">' +
-    (meds ? kfLines(meds, name) : '<p class="v2-q kf-q">No current medications recorded in Simple Care.</p>') +
+    (meds ? kfLines(meds, name, cw) : '<p class="v2-q kf-q">No current medications recorded in Simple Care.</p>') +
     kfLine(['Previous treatments', 'none recorded in Simple Care', 'medications']) +
     kfLine(['PharmaNet dispensing', 'not checked: no dispensing records connected yet', 'medications']) + '</div>' +
     (msrc ? '<p class="v2-q kf-q">Current list: ' + msrc + '</p>' : '') + '</section>';
-  /* 3. Past visits: the doctor always wants them, so they sit right after history and medications */
+  /* 4. Past visits: the doctor always wants them, so they sit right after history and medications */
   var pv = kfVisits(name, concern);
   h += '<section class="kf-sec" aria-labelledby="kf-h-visits"><h4 class="kf-h" id="kf-h-visits">Past visits</h4>' +
     (pv.length ? '<div class="kf-lines">' + pv.map(kfVisitLine).join('') + '</div>' : '<p class="v2-q kf-q">No previous visits in Simple Care.</p>') + '</section>';
-  /* 4. to 6.: Chart View v2.5's other categories, one click away */
-  [['inv', 'Investigations', 'chartup', inv], ['prev', 'Prior related care', 'calendar', prev], ['pend', 'Pending', 'clock', pend]].forEach(function(c){
-    var lines = kfLines(c[3], name); if(!lines) return;
+  /* 5. and 6.: Chart View v2.5's other categories, one click away (Pending moved to the top, as Ordered and pending) */
+  [['inv', 'Investigations', 'chartup', inv], ['prev', 'Prior related care', 'calendar', prev]].forEach(function(c){
+    var lines = kfLines(c[3], name, cw); if(!lines) return;
     var n = v2Count(c[3]), open = !!CS.keyOpen[name + '|' + c[0]];
-    var over = c[0] === 'pend' && c[3] ? c[3][1].filter(function(x){ return x[4] === 'Overdue'; }).length : 0;
     h += '<section class="kf-sec kf-fold"><h4 class="kf-h"><button type="button" class="kf-btn" id="kf-btn-' + c[0] + '" aria-expanded="' + open + '" aria-controls="kf-b-' + c[0] + '" onclick="kfToggle(\'' + c[0] + '\')">' +
       csIc(c[2]) + '<span class="kf-t">' + c[1] + '</span><span class="kf-n">' + n + '</span>' +
-      (over ? '<span class="v2-chip warn">' + csIc('clock') + over + ' overdue</span>' : '') + csIc('chevdown', 'kf-chev') + '</button></h4>' +
+      csIc('chevdown', 'kf-chev') + '</button></h4>' +
       '<div class="kf-b" id="kf-b-' + c[0] + '"' + (open ? '' : ' hidden') + '><div class="kf-lines">' + lines + '</div></div></section>';
   });
   el.innerHTML = h; paintPd(el);
+  /* the lab orders list paints every mount (here and in Chart > Results); display by exception: no lab orders, no sub-heading, and no section when nothing is pending either */
+  if(typeof renderLabOrders === 'function') renderLabOrders();
+  var labs = el.querySelector('.kf-labs'), mt = labs && labs.querySelector('.lab-orders-mount');
+  if(labs && mt && /^\s*No lab orders\.?\s*$/.test(mt.textContent)) labs.hidden = true;
+  var op = el.querySelector('.kf-op'); if(op && labs && labs.hidden && !op.querySelector('.kf-pend')) op.hidden = true;
 }
 
 /* ---------- This visit: removed (Daniel, 12 Oct: "we can remove all of this") ----------
@@ -16233,7 +16471,7 @@ function v2RxFocus(){
   w('renderChartAlerts', function(){ v2SyncHead(); });
   w('renderSinceLast', function(name){ v2RenderSide(name || PC_CURRENT); });
   w('csRenderRel', function(name){ v2RenderSide(name || PC_CURRENT); });
-  w('csRenderSnap', function(){ paintPd(v2El('v2-pt')); });
+  w('csRenderSnap', function(){ paintPd(v2El('v2-pt')); paintPd(v2El('v2-head')); });
   w('rxOpen', function(){ if(!V2.booting) v2Tab('orders'); v2SyncHead(); });
   w('rxClose', function(){ v2SyncHead(); });
   w('csNsCall', function(){ v2Tab('note'); var n = nsTa('reason'); if(n) n.focus({preventScroll:true}); });
@@ -16261,7 +16499,7 @@ function v2RxFocus(){
   /* focus is never hidden under v2's sticky tab bar */
   w('csMeasure', function(){
     if(!csOnChart()) return;
-    var top = csTopbarH(), bar = v2El('v2-top'), h = bar ? bar.getBoundingClientRect().height : 0;
+    var top = csTopbarH(), bar = v2El('v2-top'), h = bar ? bar.getBoundingClientRect().height : 0;   /* the tab row is what stays under the top bar when the page scrolls (stacked layout) */
     document.documentElement.style.scrollPaddingTop = Math.round(top + h + 20) + 'px';
   });
   /* a new chart starts with the sidebar sections collapsed. Daniel 5 Oct (step 6): during an open visit it starts on
@@ -17413,7 +17651,7 @@ function crbRender(){
   if(CRB.html !== html){ bar.innerHTML = html; CRB.html = html; paintPd(bar); }
   var h = Math.round(bar.getBoundingClientRect().height) || 52;
   top.style.setProperty('--v2c-h', h + 'px');
-  if(mn) mn.style.scrollPaddingTop = (84 + h) + 'px';
+  if(mn) mn.style.scrollPaddingTop = '16px';   /* 21 Oct: the bar is above the scrolling column now */
 }
 function crbGo(){
   var list = crbItems(PC_CURRENT); if(!list.length) return;
@@ -17692,12 +17930,7 @@ function nsSync(){
   var n = document.getElementById('vc-note-input'); if(!n) return;
   var v = nsGet(), parts = [];
   NS_SECS.forEach(function(k){ var t = (v[k] || '').trim(); if(t) parts.push(NS_LBL[k] + ':\n' + t); });
-  var dx = nsDxCode();
-  if(dx){ var line = 'Diagnosis (ICD-9): ' + dx + ' ' + t23DxName(dx); var ai = parts.findIndex(function(p){ return p.indexOf('Assessment:') === 0; });
-    if(ai > -1) parts[ai] += '\n' + line;
-    else { /* no assessment text yet: the diagnosis line sits after whatever comes before Assessment */
-      var before = ['reason', 'subjective', 'objective'].filter(function(k){ return (v[k] || '').trim(); }).length;
-      parts.splice(Math.min(parts.length, before), 0, 'Assessment:\n' + line); } }
+  /* 21 Oct: the note is the doctor's words only; the ICD-9 code is billing's (Daniel, 18 Oct video 2) */
   n.value = parts.join('\n\n');
 }
 function nsAppend(k, text, sep){
@@ -17751,85 +17984,20 @@ document.addEventListener('input', function(e){
   nsSync(); vcGrow(); csDraft();
 });
 
-/* ---------- Diagnosis in Assessment: THE claim's diagnosis (T23.visit[name].dx), same search as Your coding ---------- */
-function nsVisit(){ var r = PC_CURRENT ? csRow() : null; if(!r || typeof t23VisitCode !== 'function') return null; return t23VisitCode(r.name); }
-function nsDxCode(){
-  var r = PC_CURRENT ? csRow() : null; if(!r) return null;
-  if(r.signed){ var c = typeof t23RowClaim === 'function' ? t23RowClaim(r) : null; return c ? c.dx || null : null; }
-  var v = nsVisit(); return v && v.disp !== 'private' ? v.dx || null : null;
-}
-function nsRenderDx(){
-  var el = document.getElementById('ns-dx'); if(!el) return;
-  var r = PC_CURRENT ? csRow() : null, v = nsVisit();
-  if(!r || !v || v.disp === 'private' || (typeof csNoShow === 'function' && csNoShow(PC_CURRENT))){ el.innerHTML = ''; return; }
-  var signed = !!r.signed, dx = nsDxCode(), D = NS.dx;
-  var h = '';
-  if(dx){
-    h += '<div class="ns-dxline"><span class="ns-chip' + (signed ? ' ro' : '') + '" role="group" aria-label="Diagnosis for the claim: ' + t23E(dx + ' ' + t23DxName(dx)) + '">' + csIc('claims') +
-      '<span class="ns-chip-t"><b>' + t23E(dx) + '</b> &middot; ' + t23E(t23DxName(dx)) + '</span>' +
-      (signed ? '' : '<button type="button" class="ns-chip-x" onclick="nsDxRemove()" aria-label="Remove diagnosis ' + t23E(dx) + '">&times;</button>') + '</span>' +
-      (signed || D.open ? '' : '<button type="button" class="btn xs" id="ns-dx-btn" onclick="nsDxOpen(true)">' + csIc('edit') + 'Change</button>') +
-      '<span class="ns-dxk">' + (signed ? 'The claim&rsquo;s diagnosis' : 'The claim&rsquo;s diagnosis &middot; also in Billing') + '</span></div>';
-  } else if(!signed && !D.open){
-    /* Chart tab (5), Ani 7 Oct (Batch B, Needs Ani 1): when the booking reason maps to an obvious code, offer it as one tap.
-       Never pre-filled: the claim has no diagnosis until the doctor presses Use (or picks another one). */
-    var sug = nsDxSuggest(r);
-    if(sug) h += '<div class="ns-dxsug"><span class="ns-sugchip" id="ns-dxsug-t">' + csIc('claims') + '<span><span class="ns-sugk">Suggested:</span> <b>' + t23E(sug) + '</b> &middot; ' + t23E(t23DxName(sug)) + '</span></span>' +
-      '<button type="button" class="btn xs" id="ns-dxsug-use" onclick="nsDxUse(\'' + sug + '\')" aria-describedby="ns-dxsug-t" aria-label="Use ' + t23E(sug + ' ' + t23DxName(sug)) + ' as the claim\u2019s diagnosis">' + csIc('complete') + 'Use</button>' +
-      '</div>';
-    h += '<div class="ns-dxline"><button type="button" class="btn xs" id="ns-dx-btn" onclick="nsDxOpen(true)">' + csIc('plus') + 'Add diagnosis</button>' +
-      '</div>';
-  }
-  if(!signed && D.open){
-    h += '<div class="ns-dxs"><div class="ns-dxs-hd"><label class="ns-dxk" for="ns-dx-q">' + (dx ? 'Change the diagnosis (ICD-9)' : 'Add a diagnosis (ICD-9)') + '</label>' +
-      '<button type="button" class="btn xs" onclick="nsDxOpen(false)">Cancel</button></div>' +
-      '<input class="t23-in" id="ns-dx-q" type="search" placeholder="Search by code or words, e.g. 786.5 or chest pain" value="' + t23E(D.q) + '" oninput="NS.dx.q=this.value;NS.dx.act=0;nsRenderDxRes()" onkeydown="nsDxKey(event)" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ns-dxres" autocomplete="off">' +
-      '<div id="ns-dxres" class="t23-dxres" aria-live="polite"></div></div>';
-  }
-  el.innerHTML = h; paintPd(el);
-  if(D.open) nsRenderDxRes();
-}
-/* Chart tab (5): the booking reason's obvious code. The map is T-023's old pre-fill (dxBy, removed in Batch B), kept only
-   where the reason names the problem; generic reasons ("Follow up appointment", "Standard visit", "Lab follow-up") get no
-   suggestion. Each code is in the BC MSP list (assets/data/bc-msp-diagnostic-codes.json, checked 7 Oct). */
+/* ---------- Diagnosis code: billing only (21 Oct) ----------
+   Daniel, 18 Oct video 2: "there's my diagnosis in the chart, that would be my assessment. But this add diagnosis, that's billing. That's the ICD9 code.
+   So we can remove that. All this is just one big note." The Note has no diagnosis field, chip, search or suggestion any more: the Assessment is the
+   doctor's written impression, and the composed note carries no code line. The ICD-9 code is set in the billing row at the end of the chart (Sign off),
+   the same T23.visit[name].dx the claim reads. The one-tap suggestion built on 7 Oct (the booking reason's obvious code, never pre-filled) moved there with it.
+   Each code is in the BC MSP list (assets/data/bc-msp-diagnostic-codes.json, checked 7 Oct). */
 var NS_DX_SUGGEST = {'Follow up — chest pressure noted':'786.5', 'Yeast infection':'112.1', 'Rx renewal':'V68.1'};
 function nsDxSuggest(r){ return r && !r.signed ? NS_DX_SUGGEST[r.concern] || null : null; }
+function nsRenderDx(){}   /* an empty hook: older callers (note reset, read-only, billing re-render) still call it */
 function nsDxUse(code){
   if(!PC_CURRENT || !code) return;
   t23SetVisitDx(PC_CURRENT, code);
-  csSay('Diagnosis ' + code + ' · ' + t23DxName(code) + ' added. It is the claim’s diagnosis.');
-  var b = document.getElementById('ns-dx-btn'); if(b) b.focus();
-}
-function nsRenderDxRes(){
-  var el = document.getElementById('ns-dxres'); if(!el) return;
-  t23DxList({st:NS.dx, el:el, inp:document.getElementById('ns-dx-q'), pfx:'ns-dxo-', lb:'ns-dxlb', pick:'nsDxPick', redo:'nsRenderDxRes', sel:nsDxCode()});
-}
-function nsDxKey(ev){
-  if(ev.key === 'Escape'){ ev.preventDefault(); ev.stopPropagation(); nsDxOpen(false); return; }
-  t23DxNav(ev, NS.dx, 'ns-dxo-', nsRenderDxRes, nsDxPick);
-}
-function nsDxOpen(on){
-  var r = PC_CURRENT ? csRow() : null, v = nsVisit();
-  if(on && (!r || r.signed)){ toast(r ? 'This visit is signed off. Change the diagnosis on the claim in Claims' : 'Open a chart first'); return; }
-  if(on && v && v.disp === 'private'){ toast('Private pay: no MSP claim, so no claim diagnosis'); return; }
-  NS.dx = {open:!!on, q:'', act:0, res:[]};
-  if(on){ t23DxLoad(); if(typeof v2On === 'function' && v2On() && typeof V2 !== 'undefined' && V2.tab !== 'note') v2Tab('note'); }
-  nsRenderDx();
-  var f = document.getElementById(on ? 'ns-dx-q' : 'ns-dx-btn'); if(f){ f.focus({preventScroll:true}); if(on) f.scrollIntoView({block:'center'}); }
-}
-function nsGoDx(){ if(typeof v2Fin === 'function') v2Fin(false, true); nsDxOpen(true); }
-function nsDxPick(i){
-  var d = NS.dx.res && NS.dx.res[i]; if(!d || !PC_CURRENT) return;
-  NS.dx = {open:false, q:'', act:0, res:[]};
-  t23SetVisitDx(PC_CURRENT, d.c);
-  csSay('Diagnosis ' + d.c + ' · ' + d.t + ' added. It is the claim’s diagnosis.');
-  var b = document.getElementById('ns-dx-btn'); if(b) b.focus();
-}
-function nsDxRemove(){
-  if(!PC_CURRENT) return; var old = nsDxCode(); if(!old) return;
-  t23SetVisitDx(PC_CURRENT, null);
-  csSay('Diagnosis ' + old + ' removed from the claim.');
-  var b = document.getElementById('ns-dx-btn'); if(b) b.focus();
+  csSay('Diagnosis ' + code + ' \u00b7 ' + t23DxName(code) + ' added to the claim.');
+  var b = document.getElementById('t23-dxbtn'); if(b) b.focus();
 }
 /* one place sets the visit's diagnosis from the note; the billing row, Your coding and the chip all read T23.visit */
 function t23SetVisitDx(name, code){
@@ -17879,13 +18047,13 @@ function hsdNextWindow(){
   for(var i = 0; i < BC_WINDOWS.length; i++){
     var w = BC_WINDOWS[i];
     if(mins < w.start * 60) return 'Next window ' + winRange(w);
-    if(mins < w.end * 60) return 'Now in the ' + winRange(w) + ' window';
+    if(mins < w.end * 60) return 'Now in the ' + winRange(w) + ' window \u00b7 ' + shortGap(w.end * 60 - mins) + ' left';   /* 21 Oct: the countdown moved off the top-bar pill (Daniel, video 5) */
   }
   return 'Next window tomorrow ' + hLabel(BC_WINDOWS[0].start);
 }
 function hsdCounts(){
   var q = typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : [];
-  var open = q.filter(function(r){ return r.status !== 'done' && r.status !== 'noshow'; }).length;
+  var open = q.filter(function(r){ return !statusClosed(r.status); }).length;
   var done = q.filter(function(r){ return r.status === 'done'; }).length;
   var items = typeof INBOX_ITEMS !== 'undefined' ? INBOX_ITEMS : [];
   var crit = items.filter(function(it){ return it.status === 'received' && labTier(it) === 'critical'; });
@@ -17908,8 +18076,9 @@ function hsdRender(){
   };
   var first = c.crit[0], critWho = first ? first.patient : '';
   var visitsWords = c.booked + ' booked · ' + c.done + ' done · ' + c.open + ' in queue';
-  var msg = c.msgs ? '<button type="button" class="hsd-msg" onclick="hsdGo(\'msgs\')" aria-label="' + c.msgs + ' unread ' + (c.msgs === 1 ? 'message' : 'messages') + ' from your MOA, open the chat">' +
-    t23Ic('chat') + c.msgs + ' unread ' + (c.msgs === 1 ? 'message' : 'messages') + '</button>' : '';
+  /* Daniel, 18 Oct video 6 ("17 to review, two unread messages. I didn't really understand what that meant ... just have ... Seventeen to review."):
+     the inbox tile says only the count to review. The MOA chat keeps its own badge on the chat button. */
+  var msg = '';
   hsdSet(el, '<div class="hsd-strip">' +
     sec('visits', 'Visits today: ' + visitsWords + '. ' + win + '. Go to the live queue', 'phone', '', 'Visits today', c.booked,
         'booked · ' + c.done + ' done · ' + c.open + ' in queue', t23E(win)) +
@@ -18410,6 +18579,13 @@ baWrap('openReview', function(r, i){
 });
 baWrap('openChart', function(){ rmRenderDrafts(); rmSignLine(); });
 </script>
-  <div class="build-stamp">v2 · build 2026-10-18 18:05</div>
+<script>
+/* 21 Oct: the top block can change height (the critical bar hangs under it off the Review step), so the two columns measure themselves again */
+(function(){
+  var h = document.getElementById('v2-head');
+  if(h && window.ResizeObserver && typeof v2Fit === 'function'){ new ResizeObserver(function(){ v2Fit(); }).observe(h); }
+})();
+</script>
+  <div class="build-stamp">v2 · build 2026-10-21 17:34</div>
 </body>
 </html>
