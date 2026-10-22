@@ -8,9 +8,10 @@ import { launch } from './cdp.mjs';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 
-const ROOT = '/Users/aniharutyunyan/Desktop/SCDEMO';
+const ROOT = new URL('../../../', import.meta.url).pathname.replace(/\/$/, '');
 const FILE = 'simplecare-physician-portal-v2.html';
-const BASE = 'http://localhost:8765/' + FILE;
+const PORT = process.env.PORT || 8765;
+const BASE = `http://localhost:${PORT}/${FILE}?nologin=1`;
 const OUT = process.argv[2]; mkdirSync(OUT + '/shots', { recursive: true });
 const NOW = '2026-09-26T10:30:00';
 const SCAN = readFileSync(new URL('./scan.js', import.meta.url), 'utf8');
@@ -67,9 +68,12 @@ try {
       detail = await E(`({row:${i}, concern: QUEUE_DATA[${i}].concern, same: PC_CURRENT === QUEUE_DATA[${i}].name})`);
       right = right && detail.same;
     }
-    const top = await E(`(()=>{var t=document.querySelector('.topbar'); return t ? t.innerText.replace(/\\s+/g,' ').trim() : ''})()`);
-    detail.clockAndWindow = /\d{1,2}:\d{2}\s?(AM|PM)/.test(top) && /(left|closed|opens|open)/i.test(top);
-    detail.topbar = top.replace(/Dr\. [A-Z][a-z]+/, 'Dr. <name>');
+    // 21 Oct: no clock in the top bar (removed on purpose). The countdown is in the call-window band of Home and in the chart's top line.
+    const band = await E(`JSON.stringify([...document.querySelectorAll('[data-qclock]')].filter(e=>e.checkVisibility()).map(e=>e.innerText.replace(/\\s+/g,' ').trim()))`);
+    const bandTxt = JSON.parse(band);
+    const needsBand = h === '#today' || h.startsWith('#chart:');
+    detail.clockAndWindow = !needsBand || bandTxt.some(t => /window/i.test(t) && /(\d+h \d+m|\d+m|\d+h) left|closed|opens/i.test(t));
+    detail.topbar = bandTxt.join(' | ');
     const shot = await b.shot(`${OUT}/shots/deeplink-${h.slice(1).replace(/:/g, '-')}.png`);
     check('deeplink', h, `${h} opens ${want} with no console errors`, [], right && errs.length === 0, { active: act, errors: errs, ...detail, shot });
   }
@@ -78,7 +82,7 @@ try {
   {
     const dl = R.filter(r => r.suite === 'deeplink' && r.evidence && 'clockAndWindow' in r.evidence);
     const miss = dl.filter(r => !r.evidence.clockAndWindow).map(r => r.id);
-    check('UC-01', '01-4', 'Clock and window state are in the top bar on every deep-linked screen', ['REQ-HQ-02'], miss.length === 0, { screens: dl.length, missing: miss, sample: dl[0] && dl[0].evidence.topbar });
+    check('UC-01', '01-4', 'The call-window countdown is in the queue band (Home) and the chart top line on every deep-linked screen that has one', ['REQ-HQ-02'], miss.length === 0, { screens: dl.length, missing: miss, sample: dl[0] && dl[0].evidence.topbar });
   }
   // a hash change inside an open page (a link clicked in the same tab)
   {
@@ -124,14 +128,14 @@ try {
     let log = await b.open(BASE, 1000);
     check('UC-01', '01-1', 'The portal opens on Home with no hash', ['REQ-HQ-11'], (await active())[0] === 'screen-today' && pageErrors(log).length === 0, { active: await active(), errors: pageErrors(log) });
     const order = await E(`(()=>{var a=document.getElementById('alerts-box'), q=document.getElementById('work-queue'); return {attn: !!(a&&a.checkVisibility()), attnTop: a&&Math.round(a.getBoundingClientRect().top), queueTop: q&&Math.round(q.getBoundingClientRect().top)}})()`);
-    check('UC-01', '01-2', 'Needs your attention sits above the Live queue', ['REQ-HQ-11', 'REQ-HQ-12'], order.attn && order.attnTop < order.queueTop, order);
+    check('UC-01', '01-2', 'Needs your attention sits above the Queue', ['REQ-HQ-11', 'REQ-HQ-12'], order.attn && order.attnTop < order.queueTop, order);
     const rows = await E(`[...document.querySelectorAll('#crit-list > .al-row')].map(r=>({patient: (r.querySelector('b,strong,.al-name')||r).innerText.split('\\n')[0].trim(), hasValue: /\\d/.test(r.innerText), buttons:[...r.querySelectorAll('button')].map(x=>x.innerText.trim())}))`);
     const pts = rows.map(r => r.patient);
     check('UC-01', '01-3', 'One attention row per patient, each naming the finding with its value', ['REQ-HQ-11'], rows.length > 0 && new Set(pts).size === pts.length && rows.every(r => r.hasValue), { rows: rows.length, unique: new Set(pts).size, buttons: rows.map(r => r.buttons) });
     const win = await E(`(()=>{var bs=[...document.querySelectorAll('#qwin button')]; return {windows: bs.filter(x=>/\\d:\\d\\d/.test(x.innerText)).map(x=>x.innerText.trim()), marked: bs.filter(x=>x.querySelector('.qwin-now') && /\\d:\\d\\d/.test(x.innerText)).map(x=>x.innerText.trim())}})()`);
     check('UC-01', '01-5', 'Four call windows show, and the running one (10:00–2:00 at 10:30) is marked', ['REQ-HQ-01'], win.windows.length === 4 && win.marked.length === 1 && /10:00/.test(win.marked[0]), win);
     const cnt = await E(`(()=>{var rows=[...document.querySelectorAll('#queue-body tr')].filter(r=>!r.classList.contains('q-sep') && r.checkVisibility()); return {header: document.getElementById('wt-queue-count').textContent.trim(), rowsShown: rows.length}})()`);
-    check('UC-01', '01-6', 'The Live queue count matches the rows shown', ['REQ-HQ-15'], +cnt.header === cnt.rowsShown, cnt, 'gap');
+    check('UC-01', '01-6', 'The Queue count matches the rows shown', ['REQ-HQ-15'], +cnt.header === cnt.rowsShown, cnt, 'gap');
     const pii = await E(`(()=>{var t=[...document.querySelectorAll('#queue-body tr, #crit-list')].map(r=>r.innerText).join(' '); return {phn: /\\b\\d{4} \\d{3} \\d{3}\\b/.test(t), dob: /\\b\\d{2}-\\d{2}-\\d{4}\\b|\\bDOB\\b/.test(t), phnWord: /\\bPHN\\b/.test(t)}})()`);
     check('UC-01', '01-7', 'No DOB or PHN on queue or attention rows', ['REQ-HQ-10', 'REQ-ID-02'], !pii.phn && !pii.dob && !pii.phnWord, pii);
     await b.shot(`${OUT}/shots/uc01-home.png`);

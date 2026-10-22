@@ -6423,7 +6423,7 @@
     <!-- ===================== TODAY (canonical) ===================== -->
     <div class="screen active" id="screen-today">
       <h1>Today</h1>
-      <div class="ia-note">IA change: merges Dashboard, Daysheet's queue, and Calendar's day-view into a single canonical screen. Reordered by how time-sensitive each thing is: alerts and the live queue first (act now), then your own outstanding tasks, then lower-priority previews and logs pushed to the bottom. MOA online status moved off this screen entirely — it's ambient "peace of mind" info, not something that should compete with clinical content for space, so it now lives as a small dot on the chat button instead.</div>
+      <div class="ia-note">IA change: merges Dashboard, Daysheet's queue, and Calendar's day-view into a single canonical screen. Reordered by how time-sensitive each thing is: alerts and the queue first (act now), then your own outstanding tasks, then lower-priority previews and logs pushed to the bottom. MOA online status moved off this screen entirely — it's ambient "peace of mind" info, not something that should compete with clinical content for space, so it now lives as a small dot on the chat button instead.</div>
 
 
 
@@ -6460,7 +6460,7 @@
       <!-- Live queue + Inbox in one card, switched by tabs -->
       <div class="work-tabs">
           <div class="lq-head">
-            <span class="sect-title">Live queue <span class="wt-count" id="wt-queue-count">0</span></span>
+            <span class="sect-title">Queue <span class="wt-count" id="wt-queue-count">0</span></span>
           </div>
           <button class="wt-new" onclick="showScreen('registerpatient')" title="Register a new patient">
             <span class="ic" data-pcic="newpatient"></span> New patient
@@ -7674,7 +7674,7 @@
 <div class="ao-overlay drw-ov" id="ao-overlay" onclick="if(event.target===this) closeAddOn()">
   <div class="tm-card drw" id="ao-card" role="dialog" aria-modal="true" aria-labelledby="ao-ttl">
     <p class="tm-title" id="ao-ttl">Add On</p>
-    <p class="tm-sub">For patients outside the normal booking flow — you called them, now just record it. Not added to the scheduler or the live queue.</p>
+    <p class="tm-sub">For patients outside the normal booking flow — you called them, now just record it. Not added to the scheduler or the queue.</p>
     <div class="tm-field">
       <label for="ao-name">Patient name</label>
       <input type="text" id="ao-name" placeholder="e.g. Frank Delgado">
@@ -11027,7 +11027,7 @@ function aiReply(text){
         aiAppend('<b>'+firstLast(nx.name)+'</b> is next up ('+nx.concern+')'+fl+'.','bot');
         aiActionBtn('&#128203;','Open '+firstLast(nx.name)+'&#39;s brief',null,function(){aiDo(function(){openBrief(nx.name);});});
         aiActionBtn('&#128222;','Call now',nx.concern,function(){aiDo(function(){advance(nx.name,'progress');});});
-      } else { aiAppend('Your live queue is clear — no one is waiting right now.','bot'); }
+      } else { aiAppend('Your queue is clear — no one is waiting right now.','bot'); }
     }
     else if(/(summar|brief|intake|tell me about|pull up|open)/.test(t)){
       var who = nameMatch || qNext();
@@ -18080,7 +18080,7 @@ function hsdRender(){
      the inbox tile says only the count to review. The MOA chat keeps its own badge on the chat button. */
   var msg = '';
   hsdSet(el, '<div class="hsd-strip">' +
-    sec('visits', 'Visits today: ' + visitsWords + '. ' + win + '. Go to the live queue', 'phone', '', 'Visits today', c.booked,
+    sec('visits', 'Visits today: ' + visitsWords + '. ' + win + '. Go to the queue', 'phone', '', 'Visits today', c.booked,
         'booked · ' + c.done + ' done · ' + c.open + ' in queue', t23E(win)) +
     /* Ani, 7 Oct: critical results and near-deadline claims are not repeated here; Needs attention right below lists them */
     sec('inbox', 'Inbox: ' + c.recv + ' to review. Open the Inbox', 'inbox', '', 'Inbox', c.recv, c.recv ? 'to review' : 'nothing to review', '', msg) +
@@ -18586,6 +18586,6 @@ baWrap('openChart', function(){ rmRenderDrafts(); rmSignLine(); });
   if(h && window.ResizeObserver && typeof v2Fit === 'function'){ new ResizeObserver(function(){ v2Fit(); }).observe(h); }
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-21 17:34</div>
+  <div class="build-stamp">v2 · build 2026-10-21 19:47</div>
 </body>
 </html>
