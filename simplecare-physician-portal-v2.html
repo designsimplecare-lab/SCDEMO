@@ -6452,6 +6452,38 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
 }
 #rx-panel .rp-pwr input{width:150px;}
 #rx-panel .rp-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+/* step 2 */
+#rx-panel .rp-s2{display:grid;gap:12px;}
+#rx-panel .rp-pb{display:grid;gap:8px;}
+#rx-panel .rp-pb h3{margin:0;}
+#rx-panel .rp-pb p{margin:0;max-width:66ch;}
+#rx-panel .rp-seg{display:flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:999px;background:var(--wash);width:fit-content;max-width:100%;}
+#rx-panel .rp-sb{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border:0;border-radius:999px;background:none;font:inherit;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;}
+#rx-panel .rp-sb .ic,#rx-panel .rp-sb svg{width:16px;height:16px;color:var(--brand);}
+#rx-panel .rp-sb.on{background:var(--brand);color:#fff;}
+#rx-panel .rp-sb.on .ic{color:#fff;}
+#rx-panel .rp-aiL{display:flex;gap:8px;align-items:flex-start;font-size:15px;line-height:22px;color:var(--ink);}
+#rx-panel .rp-aiL .ic,#rx-panel .rp-aiL svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--brand);}
+#rx-panel .rp-ord{display:grid;gap:8px;padding:12px;border-radius:12px;background:var(--wash);}
+#rx-panel .rp-ord:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+#rx-panel .rp-ol{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);}
+#rx-panel .rp-ol .ic,#rx-panel .rp-ol svg{width:16px;height:16px;color:var(--brand);vertical-align:-3px;margin-right:4px;}
+#rx-panel .rp-os{display:flex;flex-wrap:wrap;gap:6px;}
+#rx-panel .rp-part{min-height:44px;padding:0 12px;border:0;border-radius:10px;background:var(--panel);font:inherit;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:4px;}
+#rx-panel .rp-part.on{background:var(--brand-wash);}
+#rx-panel .rp-pop{display:grid;gap:8px;padding:10px 12px;border-radius:12px;background:var(--panel);}
+#rx-panel .rp-chips{display:flex;flex-wrap:wrap;gap:6px;}
+#rx-panel .rp-chip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:0;border-radius:999px;background:var(--wash);font:inherit;font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;}
+#rx-panel .rp-chip .ic,#rx-panel .rp-chip svg{width:16px;height:16px;color:var(--brand);}
+#rx-panel .rp-chip[aria-pressed="true"]{background:var(--brand);color:#fff;}
+#rx-panel .rp-more{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 16px;padding:10px 12px;border-radius:12px;background:var(--panel);}
+#rx-panel .rp-more .rp-note,#rx-panel .rp-more .rp-fw{grid-column:1 / -1;}
+#rx-panel .rp-f{display:grid;gap:4px;}
+#rx-panel .rp-f > span{font-size:14px;font-weight:600;color:var(--ink);}
+#rx-panel .rp-ck{display:flex;align-items:center;gap:10px;min-height:44px;font-size:15px;color:var(--ink);}
+#rx-panel .rp-ck input{width:20px;height:20px;}
+#rx-panel .rp-sl{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;}
+#rx-panel .rp-adds{margin-top:2px;}
 /* T-026 prescribing panel: CSS end */
 </style>
 </head>
@@ -12935,7 +12967,10 @@ function rxAiLine(st, p){
   var other = rows.filter(function(r){ return r.otherFills; })[0];
   if(other) return {t:'Another prescriber (' + other.otherFills.by + ') still has ' + other.otherFills.n + ' fills on this. No change is proposed.', src:'PharmaNet prescriptions (demo data)'};
   var due = rows.filter(function(r){ var l = rxLeft(r); return rxRenewable(st, r) && l != null && l <= 14; });
-  if(due.length) return {t:due.map(function(r){ return r.drug; }).join(' and ') + ' ' + (due.length > 1 ? 'have' : 'has') + ' 14 days or fewer left, so a renewal is proposed. It is 90 days plus the standard repeats.', src:'PharmaNet dispense dates (estimated)'};
+  if(due.length){
+    var late = due.every(function(r){ return rxLeft(r) < 0; });
+    return {t:due.map(function(r){ return r.drug; }).join(' and ') + ' ' + (late ? (due.length > 1 ? 'are' : 'is') + ' past the end of the estimated supply' : (due.length > 1 ? 'have' : 'has') + ' 14 days or fewer left') + ', so a renewal is proposed. It is 90 days plus the standard repeats.', src:'PharmaNet dispense dates (estimated)'};
+  }
   return {t:'More than 14 days are left, so No change is proposed.', src:'PharmaNet dispense dates (estimated)'};
 }
 /* ---- patient facts ---- */
@@ -13000,7 +13035,7 @@ function rxSafety(st){
 }
 /* ---- panel shell: open, close, focus, render ---- */
 var RX_ACT = {};
-function rxAct(k, a, b){ var f = RX_ACT[k]; if(f) f(a, b); }
+function rxAct(k, a, b, c){ var f = RX_ACT[k]; if(f) f(a, b, c); }
 function rxIc(k){ return '<span class="ic" data-pdic="' + k + '"></span>'; }
 function rxPharmName(st){ var p = st.pharm != null ? st.pharm : ptChart(PC_CURRENT).pharm; return p || ''; }
 function rxPanel(){ return document.getElementById('rx-panel'); }
@@ -13178,7 +13213,6 @@ RX_ACT.ovsave = function(id){
   var st = rxState(PC_CURRENT); st.overrides[id] = {reason:v, by:RX_DR, at:rxNow()}; RX_UI.ov = null;
   rxLog(st, 'Override saved: ' + v); rxRender();
 };
-RX_ACT.rmord = function(oid){ var st = rxState(PC_CURRENT); st.orders = st.orders.filter(function(o){ return o.id !== oid; }); rxRender(); };
 /* ===== Step 1: Review medications ===== */
 function rxFill(r){ var f = rxFilled(r); return f ? rxIso(f) : ''; }
 function rxOverdue(r){ var l = rxLeft(r); return l != null && l < 0; }
@@ -13328,6 +13362,148 @@ RX_ACT.go2 = function(){
   st.done[1] = true; st.step = 2; rxInitProblems(st, true); RX_UI.edit = RX_UI.adding = RX_UI.link = null; rxRender();
   var m = document.getElementById('rx-main'); if(m) m.scrollTop = 0;
 };
+/* ===== Step 2: Decide, by problem ===== */
+function rxOrdById(st, id){ return st.orders.filter(function(o){ return o.id === id; })[0] || null; }
+function rxOrdSet(id, k, v){ var o = rxOrdById(rxState(PC_CURRENT), id); if(!o) return; if(k.indexOf('more.') === 0) o.more[k.slice(5)] = v; else o[k] = v; if(k === 'more.instr') o.instrEdited = true; }
+function rxInstr(o){ return 'Take ' + o.per + ' ' + rxU(o.form, o.per) + ' ' + o.freq + ' for ' + o.days + ' days.'; }
+function rxPending(st){ return rxProbs(st).filter(function(p){ return st.probs[p.id] && !st.probs[p.id].approved; }); }
+var RX_DAYS = [5, 7, 10, 14, 30, 60, 90], RX_REPS = [0, 1, 2, 3, 5];
+function rxPartBtn(o, part, label){
+  var on = RX_UI.edit && RX_UI.edit.oid === o.id && RX_UI.edit.part === part;
+  return '<button type="button" class="rp-part' + (on ? ' on' : '') + '" data-fk="pt' + o.id + part + '" aria-expanded="' + !!on + '" onclick="rxAct(\'part\',\'' + o.id + '\',\'' + part + '\')">' + csEsc(label) + '</button>';
+}
+function rxChips(oid, field, items, cur, fmt){
+  return '<div class="rp-chips" role="group" aria-label="Choose">' + items.map(function(v, i){
+    var val = typeof v === 'object' ? v.v : v, lab = typeof v === 'object' ? v.l : (fmt ? fmt(v) : v);
+    return '<button type="button" class="rp-chip" data-fk="ch' + oid + field + i + '" aria-pressed="' + (String(val) === String(cur)) + '" onclick="rxAct(\'set\',\'' + oid + '\',\'' + field + '\',' + JSON.stringify(String(val)).replace(/"/g, '&quot;') + ')">' + csEsc(lab) + '</button>';
+  }).join('') + '</div>';
+}
+function rxEditHtml(st, o){
+  var e = RX_UI.edit; if(!e || e.oid !== o.id) return '';
+  var lib = o.key ? rxLib(o.key) : rxLibName(o.drug), h = '<div class="rp-pop" role="group" aria-label="Change ' + e.part + '">';
+  if(e.part === 'drug'){
+    var alts = lib ? RX_LIB.filter(function(x){ return x.ind === lib.ind && x.name !== o.drug; }) : [], seen = {};
+    alts = alts.filter(function(x){ if(seen[x.name]) return false; seen[x.name] = 1; return true; });
+    h += '<p class="rp-note">Other drugs for the same problem. To pick any other drug, use Add a drug for this problem.</p>' +
+      (alts.length ? rxChips(o.id, 'drug', alts.map(function(x){ return {v:x.k, l:x.name + ' ' + x.strength}; }), '') : '<p class="rp-note">No other drug is listed for this problem in the demo library.</p>');
+  } else if(e.part === 'dose'){
+    var ss = lib ? RX_LIB.filter(function(x){ return x.name === o.drug; }) : [];
+    h += '<p class="rp-note">Strength</p>' + rxChips(o.id, 'strength', ss.map(function(x){ return {v:x.k, l:x.strength}; }), o.key) +
+      '<p class="rp-note">Take</p>' + rxChips(o.id, 'per', [1, 2, 3], o.per, function(n){ return n + ' ' + rxU(o.form, n); });
+  } else if(e.part === 'freq') h += rxChips(o.id, 'freq', RXF.map(function(f){ return f[0]; }), o.freq);
+  else if(e.part === 'days') h += '<p class="rp-note">How long. The quantity follows from it.</p>' + rxChips(o.id, 'days', RX_DAYS.indexOf(o.days) > -1 ? RX_DAYS : RX_DAYS.concat([o.days]).sort(function(a, b){ return a - b; }), o.days, function(n){ return n + ' days'; });
+  else if(e.part === 'qty') h += '<p class="rp-note">The quantity is worked out, never typed: ' + csEsc(rxWorking(o)) + '. To change it, change the dose, how often or how long.</p>' +
+    '<div class="rp-row"><button type="button" class="btn" data-fk="qtd" onclick="rxAct(\'part\',\'' + o.id + '\',\'days\')">Change how long</button><button type="button" class="btn" data-fk="qtf" onclick="rxAct(\'part\',\'' + o.id + '\',\'freq\')">Change how often</button></div>';
+  else if(e.part === 'reps') h += rxChips(o.id, 'repeats', RX_REPS, o.repeats, function(n){ return rxRepText(n); });
+  return h + '</div>';
+}
+function rxMoreHtml(st, o, part){
+  var open = !!RX_UI.more[o.id], lib = o.key ? rxLib(o.key) : null, m = o.more;
+  var h = '<button type="button" class="btn" data-fk="more' + o.id + '" aria-expanded="' + open + '" aria-controls="rx-more-' + o.id + '" onclick="rxAct(\'more\',\'' + o.id + '\')">' + rxIc(open ? 'chevdown' : 'chevr') + 'More options</button>';
+  if(part === 'btn' || !open) return part === 'panel' ? '' : h;
+  h = '<div class="rp-more" id="rx-more-' + o.id + '">' +
+    '<label class="rp-f"><span>Route</span><select oninput="rxOrdSet(\'' + o.id + '\',\'more.route\',this.value)">' + ['by mouth', 'under the tongue', 'on the skin', 'by injection'].map(function(x){ return '<option' + (m.route === x ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select></label>' +
+    '<label class="rp-f"><span>Indication</span><input type="text" value="' + csEsc(m.ind || '') + '" placeholder="From the problem above" oninput="rxOrdSet(\'' + o.id + '\',\'more.ind\',this.value)"></label>' +
+    '<p class="rp-note">The PharmaNet indication code is added when PharmaNet is connected. It needs the PharmaNet terminology list.</p>' +
+    '<label class="rp-f rp-fw"><span>Instructions for the patient</span><textarea rows="2" oninput="rxOrdSet(\'' + o.id + '\',\'more.instr\',this.value)">' + csEsc(o.instrEdited ? m.instr : rxInstr(o)) + '</textarea></label>' +
+    '<label class="rp-ck"><input type="checkbox"' + (m.nosub ? ' checked' : '') + ' onchange="rxOrdSet(\'' + o.id + '\',\'more.nosub\',this.checked);rxRender()"><span>Do not substitute</span></label>' +
+    '<label class="rp-ck"><input type="checkbox"' + (m.cp ? ' checked' : '') + ' onchange="rxOrdSet(\'' + o.id + '\',\'more.cp\',this.checked);rxRender()"><span>Compliance packaging</span></label>' +
+    '<label class="rp-f rp-fw"><span>Note to the pharmacist</span><textarea rows="2" oninput="rxOrdSet(\'' + o.id + '\',\'more.notes\',this.value)">' + csEsc(m.notes || '') + '</textarea></label>' +
+    (lib && lib.s1a ? '<label class="rp-f"><span>Dispense interval</span><select oninput="rxOrdSet(\'' + o.id + '\',\'more.interval\',this.value)">' + ['Not set', 'Every 7 days', 'Every 14 days', 'Every 28 days'].map(function(x){ return '<option' + (m.interval === x ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select></label>' : '') +
+    '</div>';
+  return h;
+}
+function rxOrderHtml(st, o){
+  var kind = o.kind === 'new' ? 'New' : o.kind === 'change' ? 'Adjust' : 'Renew';
+  var h = '<div class="rp-ord" data-fk="ord' + o.id + '" data-fp="ord' + o.id + '" tabindex="-1"><p class="rp-ol"><b>' + kind + '</b>' + (o.ai ? ' <span class="rp-src">' + rxIc('copilot') + 'AI draft, not approved</span>' : '') + '</p>' +
+    '<div class="rp-os" role="group" aria-label="The order. Tap a part to change it.">' + rxPartBtn(o, 'drug', o.drug) + rxPartBtn(o, 'dose', o.strength + ' · ' + o.per + ' ' + rxU(o.form, o.per)) + rxPartBtn(o, 'freq', o.freq) +
+    rxPartBtn(o, 'days', o.days + ' days') + rxPartBtn(o, 'qty', rxQtyOf(o) + ' ' + rxU(o.form, rxQtyOf(o))) + rxPartBtn(o, 'reps', rxRepText(o.repeats)) + '</div>';
+  h += rxEditHtml(st, o);
+  h += '<p class="rp-rs">Working: ' + csEsc(rxWorking(o)) + '.' + (o.whyRep ? ' ' + csEsc(o.whyRep) : '') + '</p>';
+  h += '<div class="rp-row">' + rxMoreHtml(st, o, 'btn') + (o.src === 'added' ? '<button type="button" class="btn" data-fk="rm' + o.id + '" onclick="rxAct(\'rmord\',\'' + o.id + '\')">' + rxIc('close') + 'Remove</button>' : '') + '</div>' + rxMoreHtml(st, o, 'panel') + '</div>';
+  return h;
+}
+function rxFavOrders(){
+  return RX_FAVS.map(function(f){ return {drug:f.drug, strength:f.dose, form:f.form.replace(/s$/, ''), freq:f.freq, days:f.days}; });
+}
+function rxAddHtml(st, p){
+  if(RX_UI.adding !== p.id) return '<button type="button" class="btn" data-fk="add' + p.id + '" onclick="rxAct(\'adding\',\'' + p.id + '\')">' + rxIc('plus') + 'Add a drug for this problem</button>';
+  var h = '<div class="rp-pop" role="group" aria-label="Add a drug for ' + csEsc(p.name) + '"><p class="rp-note"><b>Favourites</b></p><div class="rp-chips">' +
+    rxFavOrders().map(function(f, i){ return '<button type="button" class="rp-chip" data-fk="fav' + i + '" onclick="rxAct(\'addfav\',\'' + p.id + '\',' + i + ')">' + rxIc('star') + csEsc(f.drug + ' ' + f.strength) + '</button>'; }).join('') + '</div>' +
+    '<label class="rp-f rp-fw"><span>Or search the drug list</span><input type="search" id="rx-q" data-fk="q" autocomplete="off" value="' + csEsc(RX_UI.q || '') + '" oninput="rxSearch(this.value,\'' + p.id + '\')"></label>' +
+    '<div id="rx-sr">' + rxSearchHtml(p.id) + '</div><button type="button" class="btn" data-fk="addno" onclick="rxAct(\'adding\',null)">Cancel</button></div>';
+  return h;
+}
+function rxSearchHtml(pid){
+  var q = (RX_UI.q || '').trim().toLowerCase(); if(!q) return '';
+  var r = RX_LIB.filter(function(x){ return (x.name + ' ' + x.strength).toLowerCase().indexOf(q) > -1; }).slice(0, 6);
+  if(!r.length) return '<p class="rp-note">No drug in the demo list matches.</p>';
+  return '<ul class="rp-sl">' + r.map(function(x){ return '<li><button type="button" class="btn" data-fk="sr' + x.k + '" onclick="rxAct(\'addlib\',\'' + pid + '\',\'' + x.k + '\')">' + csEsc(x.name + ' ' + x.strength + ' ' + x.form) + (x.s1a ? ', Schedule 1A' : '') + '</button></li>'; }).join('') + '</ul>';
+}
+function rxSearch(v, pid){ RX_UI.q = v; var e = document.getElementById('rx-sr'); if(e) e.innerHTML = rxSearchHtml(pid); }
+function rxProbHtml(st, p){
+  var pr = st.probs[p.id] || {pick:'none', approved:true}, ai = rxAiLine(st, p), rulePick = rxRulePick(st, p);
+  var h = '<section class="rp-card rp-pb" aria-labelledby="rx-p-' + p.id + '"><h3 id="rx-p-' + p.id + '">' + csEsc(p.name) + (p.concern ? ' <span class="rp-src">today’s concern</span>' : '') + '</h3>' +
+    '<p class="rp-rs">' + csEsc(rxStatusLine(st, p)) + '</p>' +
+    '<div class="rp-seg" role="group" aria-label="Decision for ' + csEsc(p.name) + '">' + p.choices.map(function(c){
+      var on = pr.pick === c.k, isAi = c.k === rulePick && c.k !== 'none';
+      return '<button type="button" class="rp-sb' + (on ? ' on' : '') + '" data-fk="pk' + p.id + c.k + '" aria-pressed="' + on + '" onclick="rxAct(\'pick\',\'' + p.id + '\',\'' + c.k + '\')">' + (isAi ? rxIc('copilot') : '') + csEsc(c.label) + '</button>';
+    }).join('') + '</div>';
+  h += '<p class="rp-aiL">' + rxIc('copilot') + '<span><b>AI draft.</b> ' + csEsc(ai.t) + ' <span class="rp-src">Source: ' + csEsc(ai.src) + '</span></span></p>';
+  if(!pr.approved) h += '<div class="rp-row"><button type="button" class="btn dark" data-fk="ap' + p.id + '" onclick="rxAct(\'appr\',\'' + p.id + '\')">' + rxIc('complete') + 'Approve this change</button></div>';
+  else if(pr.by) h += '<p class="rp-done">' + rxIc('usercheck') + 'Decided by ' + RX_DR + ', ' + pr.at + '</p>';
+  var ords = st.orders.filter(function(o){ return o.pid === p.id; });
+  if(pr.pick === 'stop') h += '<p class="rp-rs">Stopping: ' + csEsc(p.rows.map(function(id){ var r = rxRowById(st, id); return r ? rxRowTitle(r) : ''; }).join(', ')) + '. ' + (p.rows.some(function(id){ var r = rxRowById(st, id); return r && r.out; }) ? 'This drug was prescribed elsewhere, so it is recorded in the chart only. Their prescription is never cancelled from here.' : 'The pharmacy gets a note.') + '</p>';
+  ords.forEach(function(o){ h += rxOrderHtml(st, o); });
+  h += '<div class="rp-adds">' + rxAddHtml(st, p) + '</div></section>';
+  return h;
+}
+function rxStep2(st){
+  return '<div class="rp-s2">' + rxProbs(st).map(function(p){ return rxProbHtml(st, p); }).join('') + '</div>';
+}
+/* ---- step 2 actions ---- */
+RX_ACT.pick = function(pid, k){
+  var st = rxState(PC_CURRENT), p = rxProbs(st).filter(function(x){ return x.id === pid; })[0];
+  st.probs[pid] = {pick:k, approved:true, ai:false, touched:true, by:RX_DR, at:rxNow()};
+  rxApplyPick(st, p); RX_UI.edit = null; rxLog(st, 'Decided ' + p.name + ': ' + (rxChoice(p, k) || {}).label);
+  var o = st.orders.filter(function(x){ return x.pid === pid && x.open; })[0]; if(o){ RX_UI.edit = {oid:o.id, part:o.open}; o.open = null; }
+  rxRender();
+};
+RX_ACT.appr = function(pid){
+  var st = rxState(PC_CURRENT), pr = st.probs[pid]; pr.approved = true; pr.by = RX_DR; pr.at = rxNow(); pr.touched = true;
+  st.orders.forEach(function(o){ if(o.pid === pid) o.ai = false; }); rxLog(st, 'Approved the change for ' + pid); rxRender();
+};
+RX_ACT.part = function(oid, part){ var e = RX_UI.edit; RX_UI.edit = (e && e.oid === oid && e.part === part) ? null : {oid:oid, part:part}; rxRender(); };
+RX_ACT.set = function(oid, field, val){
+  var st = rxState(PC_CURRENT), o = rxOrdById(st, oid); if(!o) return;
+  if(field === 'drug' || field === 'strength'){
+    var lib = rxLib(val); if(lib){ o.drug = lib.name; o.key = lib.k; o.strength = lib.strength; o.form = lib.form; if(field === 'drug'){ o.freq = lib.freq; o.per = 1; o.repeats = lib.rep || 0; } }
+  } else if(field === 'per' || field === 'days' || field === 'repeats') o[field] = parseInt(val, 10);
+  else o[field] = val;
+  var pr = st.probs[o.pid]; if(pr){ pr.touched = true; pr.approved = true; pr.by = pr.by || RX_DR; pr.at = pr.at || rxNow(); o.ai = false; }
+  o.whyRep = field === 'repeats' ? '' : o.whyRep; RX_UI.edit = null; rxRender();
+  var b = document.querySelector('#rx-main [data-fk^="pt' + oid + '"]'); if(b) b.focus();
+};
+RX_ACT.more = function(oid){ RX_UI.more[oid] = !RX_UI.more[oid]; rxRender(); };
+RX_ACT.adding = function(pid){ RX_UI.adding = pid; RX_UI.q = ''; rxRender(); var q = document.getElementById('rx-q'); if(q) q.focus(); };
+function rxAddOrder(st, pid, src, extra){
+  var row = rxRows(st).filter(function(r){ return r.drug === src.drug; })[0];
+  var o = rxMkOrder(st, src, {pid:pid, src:'added', kind:row ? 'renew' : 'new', replaces:row ? row.id : null});
+  for(var k in extra) o[k] = extra[k]; st.orders.push(o);
+  var pr = st.probs[pid]; if(pr){ pr.touched = true; }
+  RX_UI.adding = null; RX_UI.edit = null; rxLog(st, 'Added ' + o.drug + ' ' + o.strength + ' for ' + pid); rxRender();
+  var b = document.querySelector('#rx-main [data-fk="pt' + o.id + 'drug"]'); if(b) b.focus();
+}
+RX_ACT.addfav = function(pid, i){ var st = rxState(PC_CURRENT), f = rxFavOrders()[i]; rxAddOrder(st, pid, f, {days:f.days}); };
+RX_ACT.addlib = function(pid, k){ var st = rxState(PC_CURRENT), lib = rxLib(k); rxAddOrder(st, pid, {drug:lib.name, key:lib.k, strength:lib.strength, form:lib.form, freq:lib.freq}, {days:lib.days || 30, repeats:lib.rep || 0}); };
+RX_ACT.rmord = function(oid){ var st = rxState(PC_CURRENT); st.orders = st.orders.filter(function(o){ return o.id !== oid; }); RX_UI.edit = null; rxRender(); };
+function rxBar2(st){
+  var pend = rxPending(st).length;
+  var m = pend ? pend + (pend === 1 ? ' AI suggestion needs' : ' AI suggestions need') + ' your decision. Approve it, or choose another option.' : 'Nothing is sent until you sign in the next step.';
+  return '<button type="button" class="btn" data-fk="back" onclick="rxAct(\'step\',1)">' + rxIc('chevl') + 'Back</button><p class="rp-bm">' + m + '</p>' +
+    '<button type="button" class="btn dark" id="rx-next" data-fk="next"' + (pend ? ' disabled' : '') + ' onclick="rxAct(\'go3\')">Continue to sign' + rxIc('chevr') + '</button>';
+}
+RX_ACT.go3 = function(){ var st = rxState(PC_CURRENT); if(rxPending(st).length) return; st.done[2] = true; st.step = 3; RX_UI.edit = RX_UI.adding = null; rxRender(); var m = document.getElementById('rx-main'); if(m) m.scrollTop = 0; };
 /* bottom bar: Back and the one next action (step 1 and 2 here; step 3 has its own two equal buttons) */
 function rxBar(st){
   if(typeof rxBarFor === 'function') return rxBarFor(st);
@@ -19081,6 +19257,6 @@ baWrap('openChart', function(){ rmRenderDrafts(); rmSignLine(); });
   if(h && window.ResizeObserver && typeof v2Fit === 'function'){ new ResizeObserver(function(){ v2Fit(); }).observe(h); }
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-22 10:41</div>
+  <div class="build-stamp">v2 · build 2026-10-22 10:43</div>
 </body>
 </html>
