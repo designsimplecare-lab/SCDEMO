@@ -193,7 +193,7 @@ try {
     await b.open(BASE + '#chart:0', 1000);
     await E(`rxClose(true); rxOpen(); rxAct('import'); rxAct('confall'); rxAct('go2'); rxPending(rxState(PC_CURRENT)).forEach(p=>rxAct('appr',p.id)); (()=>{var p=rxProbs(rxState(PC_CURRENT))[0]; rxAct('adding',p.id); rxAct('addlib',p.id,'oxycodone-5')})(); rxAct('go3')`); await b.sleep(200);
     const blk = await E(`({fax: document.getElementById('rx-fax').disabled, moa: document.getElementById('rx-moa').disabled, why: document.getElementById('rx-why').innerText, safety: document.getElementById('rx-safety').innerText.replace(/\\s+/g,' ')})`);
-    check('UC-06', '06-13', 'A Schedule 1A drug blocks both send buttons, with the reason (T-026)', ['REQ-RX-12'], blk.fax && blk.moa && /Schedule 1A cannot be sent by fax or electronic prescription/.test(blk.why) && /Schedule 1A/.test(blk.safety), blk);
+    check('UC-06', '06-13', 'A Schedule 1A drug blocks both send buttons, with the reason (T-026)', [], blk.fax && blk.moa && /Schedule 1A cannot be sent by fax or electronic prescription/.test(blk.why) && /Schedule 1A/.test(blk.safety), blk);
     await E(`(()=>{var st=rxState(PC_CURRENT); var o=st.orders.filter(o=>o.drug==='Oxycodone')[0]; rxAct('rmord',o.id); rxAct('step',2); rxAct('pick','q3','renew'); rxAct('go3')})()`); await b.sleep(200);
     const gate1 = await E(`({fax: document.getElementById('rx-fax').disabled, why: document.getElementById('rx-why').innerText})`);
     await E(`rxAct('ov', rxSafety(rxState(PC_CURRENT)).open[0].id)`); await b.sleep(100);
@@ -201,7 +201,7 @@ try {
     const empty = await E(`document.getElementById('rx-fax').disabled`);
     await E(`document.getElementById('rx-ovt').value='Creatinine ordered today'; rxAct('ovsave', rxSafety(rxState(PC_CURRENT)).open[0].id)`); await b.sleep(100);
     const gate2 = await E(`({fax: document.getElementById('rx-fax').disabled, stored: Object.values(rxState(PC_CURRENT).overrides).map(o=>o.reason+' / '+o.by)})`);
-    check('UC-06', '06-14', 'A safety warning on a prescribed drug needs an override with a typed reason before signing, and the reason is stored (T-026)', ['REQ-RX-12'], gate1.fax && /override with a reason/.test(gate1.why) && empty === true && gate2.fax === false && gate2.stored.length === 1, { gate1, emptyReasonStillBlocked: empty, gate2 });
+    check('UC-06', '06-14', 'A safety warning on a prescribed drug needs an override with a typed reason before signing, and the reason is stored (T-026)', [], gate1.fax && /override with a reason/.test(gate1.why) && empty === true && gate2.fax === false && gate2.stored.length === 1, { gate1, emptyReasonStillBlocked: empty, gate2 });
   }
 
   // UC-07 Follow-up where the last plan sets the renewal (row 5: plan titrated the dose)
