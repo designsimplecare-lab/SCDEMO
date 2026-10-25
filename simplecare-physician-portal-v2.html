@@ -13059,7 +13059,8 @@ function rxPanel(){ return document.getElementById('rx-panel'); }
 function rxFocusables(){
   var sel = 'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), summary, [tabindex]:not([tabindex="-1"])';
   var vis = function(e){ return e.getClientRects().length && e.checkVisibility && e.checkVisibility(); };
-  var a = [].slice.call(document.querySelectorAll('#rx-sheet ' + sel)).filter(vis);
+  var scoped = sel.split(', ').map(function(x){ return '#rx-sheet ' + x; }).join(', ');
+  var a = [].slice.call(document.querySelectorAll(scoped)).filter(vis);
   var c = document.querySelector('#callw:not([hidden])');
   if(c) a = a.concat([].slice.call(c.querySelectorAll(sel)).filter(vis));
   return a;
@@ -19407,6 +19408,6 @@ baWrap('openChart', function(){ rmRenderDrafts(); rmSignLine(); });
   if(h && window.ResizeObserver && typeof v2Fit === 'function'){ new ResizeObserver(function(){ v2Fit(); }).observe(h); }
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-22 10:46</div>
+  <div class="build-stamp">v2 · build 2026-10-25 15:05</div>
 </body>
 </html>

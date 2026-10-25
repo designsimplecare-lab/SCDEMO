@@ -7,8 +7,9 @@
 import { launch } from './cdp.mjs';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = new URL('../../../', import.meta.url).pathname.replace(/\/$/, '');
+const ROOT = fileURLToPath(new URL('../../../', import.meta.url)).replace(/\/$/, '');
 const FILE = 'simplecare-physician-portal-v2.html';
 const PORT = process.env.PORT || 8765;
 const BASE = `http://localhost:${PORT}/${FILE}?nologin=1`;
@@ -141,41 +142,66 @@ try {
     await b.shot(`${OUT}/shots/uc01-home.png`);
   }
 
-  // UC-06 Renew a prescription by fax (row 5, "Rx renewal")
+  // UC-06 Renew a prescription by fax or through the MOA (row 5, "Rx renewal"). T-026 (22 Oct): the prescribing panel replaced the renewal card.
   {
+    const norm = s => (s || '').replace(/\s+/g, ' ').trim();
+    const mainText = () => E(`document.getElementById('rx-main').innerText.replace(/\\s+/g,' ').trim()`);
+    // open the renewal chart, load the sample draft, confirm all, decide, approve what the AI proposed, and arrive at step 3
+    const prep = async () => {
+      const lg = await b.open(BASE + '#chart:5', 1000);
+      await E(`rxAct('import'); rxAct('confall')`); await b.sleep(150);
+      const s1 = await mainText();
+      await E(`rxAct('go2')`); await b.sleep(150);
+      const s2 = await mainText();
+      const orders = await E(`rxState(PC_CURRENT).orders.map(o=>rxOrderText(o))`);
+      return { lg, s1, s2, orders };
+    };
+    const toStep3 = async () => { await E(`rxPending(rxState(PC_CURRENT)).forEach(p=>rxAct('appr',p.id)); rxAct('go3')`); await b.sleep(150); };
     let log = await b.open(BASE + '#chart:5', 1000);
-    const card = await E(`(()=>{var c=document.getElementById('rx-card'); var l=document.querySelector('#rx-lines'); return {shown: !!(c && c.checkVisibility()), lines: l ? l.innerText.replace(/\\s+/g,' ').trim() : '', seg: [...document.querySelectorAll('#rx-seg button')].map(x=>x.innerText.trim()+(x.classList.contains('on')?' [on]':'')), to: (document.getElementById('rx-to')||{}).innerText, pharmHeader: (()=>{var p=document.getElementById('vc-pharm-name'); return !!(p && p.checkVisibility() && p.closest('.vc-banner') && p.textContent.trim())})(), also: [...document.querySelectorAll('#rx-also button')].length}})()`);
-    check('UC-06', '06-1', 'A renewal row opens the chart with the renewal card showing', ['REQ-RX-01'], card.shown, { shown: card.shown, errors: pageErrors(log) });
-    check('UC-06', '06-2', 'The pharmacy is in the chart header', ['REQ-RX-01'], card.pharmHeader, { pharmacyInsideChartBanner: card.pharmHeader });
-    check('UC-06', '06-3', 'The intake drug is preselected at the last plan\'s dose, and the card says so', ['REQ-RX-03'], /Metoprolol/.test(card.lines) && /50 mg/.test(card.lines + (await E(`[...document.querySelectorAll('#rx-lines input')].map(i=>i.value).join(' ')`))) && /Dose from the Jun 24 plan \(list says 25 mg\)/.test(card.lines), { lines: card.lines.slice(0, 160) });
-    check('UC-06', '06-4', 'Supply defaults to 3 months, and the quantity is directions × days (twice daily × 90 = 180)', ['REQ-RX-02'], card.seg.some(s => /3 months · 180 tablets \[on\]/.test(s)), { seg: card.seg });
-    check('UC-06', '06-5', 'Other active medications are offered with "Renew too"', ['REQ-RX-06'], card.also >= 2, { renewToo: card.also });
-    const eq = await E(`(()=>{var a=document.getElementById('rx-send'), m=document.getElementById('rx-moa'); var f=e=>{var c=getComputedStyle(e); return {bg:c.backgroundColor, color:c.color, border:c.borderTopWidth+' '+c.borderTopColor, h:Math.round(e.getBoundingClientRect().height), weight:c.fontWeight, cls:e.className}}; return {send: a && f(a), moa: m && f(m), sendText: a && a.innerText.trim(), moaText: m && m.innerText.trim()}})()`);
-    const same = eq.send && eq.moa && eq.send.bg === eq.moa.bg && eq.send.color === eq.moa.color && eq.send.border === eq.moa.border && eq.send.h === eq.moa.h;
-    check('UC-06', '06-6', '"Send it myself" and "Ask <MOA> to send" carry equal weight at rest', ['REQ-RX-10'], !!same, eq);
-    const fav = await E(`(()=>{var b=document.getElementById('rx-favbtn'); if(!b) return {btn:false}; b.click(); var l=document.getElementById('rx-favlist'); return {btn:true, listShown: !!(l && l.checkVisibility()), items: l ? [...l.querySelectorAll('button')].map(x=>x.innerText.trim()).slice(0,6) : []}})()`);
-    check('UC-06', '06-7', 'Favourites open a list of pre-populated scripts on the renewal card', ['REQ-RX-11'], fav.btn && fav.listShown && fav.items.length > 0, fav);
-    await b.open(BASE + '#chart:5', 1000);
-    await click('#rx-send'); await b.sleep(300);
-    const rv = await E(`(()=>{var r=document.getElementById('rx-review'); var c=document.getElementById('rx-confirm'); return {shown: !!(r && r.checkVisibility()), text: r ? r.innerText.replace(/\\s+/g,' ').trim() : '', confirm: c ? c.innerText.trim() : null}})()`);
-    check('UC-06', '06-8', '"Check before it goes" lists drug, dose, directions, quantity, days and last dispensed', ['REQ-RX-04', 'REQ-RX-08'], rv.shown && /Check before it goes/.test(rv.text) && /Metoprolol tartrate 50 mg/.test(rv.text) && /twice daily/.test(rv.text) && /180 tablets/.test(rv.text) && /90 days/.test(rv.text) && /last dispensed/.test(rv.text), { text: rv.text.slice(0, 260) });
-    check('UC-06', '06-9', 'The confirm press reads as a sign-off', ['REQ-UI-06'], /sign/i.test(rv.confirm || ''), { confirm: rv.confirm });
-    await click('#rx-confirm'); await b.sleep(400);
+    const p0 = await E(`(()=>{var p=document.getElementById('rx-panel'), s=document.getElementById('rx-sheet'); return {shown: !!(p && p.classList.contains('show') && p.checkVisibility()), role: s && s.getAttribute('role'), label: !!(s && document.getElementById(s.getAttribute('aria-labelledby'))), trap: RX_UI.trap, inert: document.querySelector('.app').inert, steps: document.getElementById('rx-steps').innerText.replace(/\\s+/g,' ').trim()}})()`);
+    check('UC-06', '06-1', 'A renewal row opens the chart with the prescribing panel showing (a labelled dialog, three steps, no focus trap until it is used)', ['REQ-RX-01'], p0.shown && p0.role === 'dialog' && p0.label && !p0.trap && !p0.inert && /1 Review medications\s*2 Decide\s*3 Sign and send/.test(p0.steps) && pageErrors(log).length === 0, { ...p0, errors: pageErrors(log) });
+    const P = await prep();
+    check('UC-06', '06-3', 'The intake drug is in the list at the last plan\'s dose, and the row says so', ['REQ-RX-03'], /Metoprolol tartrate 50 mg/.test(P.s1) && /The chart list says 25 mg\. The Jun 24 plan says 50 mg/.test(P.s1) && P.orders.some(o => /^Metoprolol tartrate 50 mg/.test(o)), { s1: P.s1.slice(0, 200), orders: P.orders });
+    const wk = await E(`rxState(PC_CURRENT).orders.map(o=>rxWorking(o))`);
+    check('UC-06', '06-4', 'Renewal defaults to 3 months, and the quantity is calculated with its working (twice daily × 90 = 180)', ['REQ-RX-02'], P.orders.some(o => /twice daily · 90 days · 180 tablets/.test(o)) && /1 tablet × 2 a day × 90 days = 180 tablets/.test(P.s2), { orders: P.orders, working: wk });
+    const reg = await E(`document.getElementById('rx-rail').innerText.replace(/\\s+/g,' ')`);
+    check('UC-06', '06-5', 'The other active medications are on the same list (Prescriptions today), not a separate step', ['REQ-RX-06'], /Ramipril/.test(reg) && /Atorvastatin/.test(reg) && /Metoprolol/.test(reg), { rail: reg.slice(0, 220) });
+    const fav = await E(`(()=>{var p=rxProbs(rxState(PC_CURRENT))[0]; rxAct('adding', p.id); var t=document.getElementById('rx-main').innerText; var n=[...document.querySelectorAll('#rx-main .rp-chip')].map(x=>x.innerText.trim()); rxAct('adding', null); return {favFirst: /Favourites/.test(t) && t.indexOf('Favourites') < t.indexOf('search'), items: n.slice(0,6)}})()`);
+    check('UC-06', '06-7', 'Add a drug shows Favourites first, then a search box', ['REQ-RX-11'], fav.favFirst && fav.items.length > 0, fav);
+    await toStep3();
+    const s3 = await E(`(()=>{var q=id=>document.getElementById(id); var f=e=>{var c=getComputedStyle(e); return {bg:c.backgroundColor, color:c.color, border:c.borderTopWidth+' '+c.borderTopColor, h:Math.round(e.getBoundingClientRect().height), weight:c.fontWeight, cls:e.className}}; return {fax:q('rx-fax')&&f(q('rx-fax')), moa:q('rx-moa')&&f(q('rx-moa')), faxText:q('rx-fax')&&q('rx-fax').innerText.trim(), moaText:q('rx-moa')&&q('rx-moa').innerText.trim(), body:q('rx-main').innerText.replace(/\\s+/g,' ').trim()}})()`);
+    check('UC-06', '06-2', 'The pharmacy is shown where the prescription is sent (step 3, Send to, with Change)', ['REQ-RX-01'], /Send to Shoppers Drug Mart, Burnaby/.test(s3.body) && /Change/.test(s3.body), { body: s3.body.slice(0, 260), note: 'the chart header no longer carries the pharmacy (12 Oct); it sits on the send step' });
+    const same = s3.fax && s3.moa && s3.fax.bg === s3.moa.bg && s3.fax.color === s3.moa.color && s3.fax.border === s3.moa.border && s3.fax.h === s3.moa.h;
+    check('UC-06', '06-6', '"Sign and send by fax" and "Sign and ask <MOA> to send" carry equal weight at rest, neither the default', ['REQ-RX-10'], !!same, s3);
+    check('UC-06', '06-8', 'Step 3 lists exactly what will be sent: drug, dose, directions, quantity and days', ['REQ-RX-04', 'REQ-RX-08'], /What will be sent/.test(s3.body) && /Metoprolol tartrate 50 mg/.test(s3.body) && /twice daily/.test(s3.body) && /180 tablets/.test(s3.body) && /90 days/.test(s3.body), { body: s3.body.slice(0, 300) });
+    check('UC-06', '06-9', 'The send buttons read as a sign-off and name the count', ['REQ-UI-06'], /^Sign and send 3 prescriptions by fax$/.test(s3.faxText || '') && /^Sign and ask \w+ to send 3 prescriptions$/.test(s3.moaText || ''), { fax: s3.faxText, moa: s3.moaText });
+    await click('#rx-fax'); await b.sleep(400);
     const st1 = await text('#rx-status');
     const note1 = await E(`document.getElementById('vc-note-input').value`);
     await b.sleep(5600);
     const st2 = await text('#rx-status');
-    check('UC-06', '06-10', 'Fax status goes "Sending to …" then "Delivered to … · patient copy sent"', ['REQ-RX-05'], /Sending to/.test(st1 || '') && /Delivered to .* patient copy sent/.test(st2 || ''), { at400ms: st1, at6s: (st2 || '').slice(0, 200) });
-    check('UC-06', '06-11', 'The note gets the renewal line, and the record says "Signed off by Dr. …" with a time', ['REQ-UI-06', 'REQ-RX-01'], /Rx renewal: .*Signed off by Dr\. \w+ \d{1,2}:\d{2}/.test(note1) && /Signed off by Dr\./.test(st2 || ''), { noteHasLine: /Rx renewal/.test(note1), statusStamp: /Signed off by/.test(st2 || '') });
+    check('UC-06', '06-10', 'Fax status goes "Sending to …" then "Delivered to … · patient copy sent"', ['REQ-RX-05'], /Sending to/.test(st1 || '') && /Delivered to .* patient copy sent/.test(st2 || ''), { at400ms: (st1 || '').slice(0, 120), at6s: (st2 || '').slice(0, 200) });
+    check('UC-06', '06-11', 'The note gets the renewal line, and the record says "Signed by Dr. …" with a time', ['REQ-UI-06', 'REQ-RX-01'], /Rx renewal: .*Signed off by Dr\. \w+ \d{1,2}:\d{2}/.test(note1) && /Signed by Dr\. \w+, \d{1,2}:\d{2}/.test(st2 || ''), { noteHasLine: /Rx renewal/.test(note1), statusStamp: /Signed by/.test(st2 || '') });
     await b.shot(`${OUT}/shots/uc06-after-fax.png`);
     // MOA route
-    await b.open(BASE + '#chart:5', 1000);
-    await click('#rx-moa'); await b.sleep(300);
-    const cm = await text('#rx-confirm');
-    await click('#rx-confirm'); await b.sleep(400);
+    await prep(); await toStep3();
+    await click('#rx-moa'); await b.sleep(400);
     const m1 = await text('#rx-status'); await b.sleep(7400); const m2 = await text('#rx-status');
     const task = await E(`(DOC_TASKS[0]||{}).title + ' → ' + (DOC_TASKS[0]||{}).to`);
-    check('UC-06', '06-12', '"Ask <MOA> to send" files one task and shows "Picked up by <MOA>"', ['REQ-RX-07', 'REQ-TK-03', 'REQ-TK-04'], /Sent to .*waiting/.test(m1 || '') && /Picked up by/.test(m2 || '') && /Fax renewal/.test(task), { confirmLabel: cm, first: m1, after7s: (m2 || '').slice(0, 120), task: task.replace(/→ .*/, '→ <MOA>') });
+    check('UC-06', '06-12', '"Sign and ask <MOA> to send" files one task and shows "Picked up by <MOA>"', ['REQ-RX-07', 'REQ-TK-03', 'REQ-TK-04'], /Sent to .*waiting/.test(m1 || '') && /Picked up by/.test(m2 || '') && /Fax prescriptions/.test(task), { first: (m1 || '').slice(0, 100), after7s: (m2 || '').slice(0, 120), task: task.replace(/→ .*/, '→ <MOA>') });
+    // T-026 safety: Schedule 1A is blocked from fax and electronic send; an override needs a typed reason and is stored
+    await b.open(BASE + '#chart:0', 1000);
+    await E(`rxClose(true); rxOpen(); rxAct('import'); rxAct('confall'); rxAct('go2'); rxPending(rxState(PC_CURRENT)).forEach(p=>rxAct('appr',p.id)); (()=>{var p=rxProbs(rxState(PC_CURRENT))[0]; rxAct('adding',p.id); rxAct('addlib',p.id,'oxycodone-5')})(); rxAct('go3')`); await b.sleep(200);
+    const blk = await E(`({fax: document.getElementById('rx-fax').disabled, moa: document.getElementById('rx-moa').disabled, why: document.getElementById('rx-why').innerText, safety: document.getElementById('rx-safety').innerText.replace(/\\s+/g,' ')})`);
+    check('UC-06', '06-13', 'A Schedule 1A drug blocks both send buttons, with the reason (T-026)', ['REQ-RX-12'], blk.fax && blk.moa && /Schedule 1A cannot be sent by fax or electronic prescription/.test(blk.why) && /Schedule 1A/.test(blk.safety), blk);
+    await E(`(()=>{var st=rxState(PC_CURRENT); var o=st.orders.filter(o=>o.drug==='Oxycodone')[0]; rxAct('rmord',o.id); rxAct('step',2); rxAct('pick','q3','renew'); rxAct('go3')})()`); await b.sleep(200);
+    const gate1 = await E(`({fax: document.getElementById('rx-fax').disabled, why: document.getElementById('rx-why').innerText})`);
+    await E(`rxAct('ov', rxSafety(rxState(PC_CURRENT)).open[0].id)`); await b.sleep(100);
+    await E(`rxAct('ovsave', rxSafety(rxState(PC_CURRENT)).open[0].id)`); await b.sleep(100);
+    const empty = await E(`document.getElementById('rx-fax').disabled`);
+    await E(`document.getElementById('rx-ovt').value='Creatinine ordered today'; rxAct('ovsave', rxSafety(rxState(PC_CURRENT)).open[0].id)`); await b.sleep(100);
+    const gate2 = await E(`({fax: document.getElementById('rx-fax').disabled, stored: Object.values(rxState(PC_CURRENT).overrides).map(o=>o.reason+' / '+o.by)})`);
+    check('UC-06', '06-14', 'A safety warning on a prescribed drug needs an override with a typed reason before signing, and the reason is stored (T-026)', ['REQ-RX-12'], gate1.fax && /override with a reason/.test(gate1.why) && empty === true && gate2.fax === false && gate2.stored.length === 1, { gate1, emptyReasonStillBlocked: empty, gate2 });
   }
 
   // UC-07 Follow-up where the last plan sets the renewal (row 5: plan titrated the dose)
@@ -270,9 +296,10 @@ try {
     check('UC-27', '27-4', 'At a first visit, the expected result also shows under Pending in "Since last visit"', ['REQ-CH-29'], ex.inSinceLast, { inSinceLast: ex.inSinceLast, note: 'renderSinceLast hides the block when there is no previous visit' }, 'gap');
     const norx = await E(`/No renewal today/i.test(document.getElementById('screen-patientchart').innerHTML)`);
     check('UC-27', '27-5', '"No renewal today" with a reason and a supply-until date', ['REQ-RX-09'], norx, { found: norx }, 'gap');
-    await E(`(()=>{var c=[...document.querySelectorAll('#vc-chips button')].find(x=>/Renew prescription/.test(x.innerText)); if(c) c.click()})()`); await b.sleep(300);
-    const rxNew = await E(`(()=>{var c=document.getElementById('rx-card'); var t=c? c.innerText.replace(/\\s+/g,' '):''; return {shown: !!(c && c.checkVisibility()), hasAspirin: /Aspirin/.test(t), text: t.slice(0,140)}})()`);
-    check('UC-27', '27-6', 'For a new patient, the renewal card offers the medication just added from elsewhere', ['REQ-RX-01', 'REQ-CH-27'], rxNew.shown && rxNew.hasAspirin, rxNew);
+    // T-026: the prescribing panel opens from the chart's Medications section and lists the medication just added
+    await E(`rxOpen()`); await b.sleep(300);
+    const rxNew = await E(`(()=>{var c=document.getElementById('rx-panel'); var t=document.getElementById('rx-main').innerText.replace(/\\s+/g,' '); return {shown: !!(c && c.classList.contains('show') && c.checkVisibility()), hasAspirin: /Aspirin/.test(t), text: t.slice(0,160)}})()`);
+    check('UC-27', '27-6', 'For a new patient, the prescribing panel lists the medication just added from elsewhere', ['REQ-RX-01', 'REQ-CH-27'], rxNew.shown && rxNew.hasAspirin, rxNew);
     const cont = await E(`/continuing with/i.test(document.getElementById('screen-patientchart').innerText)`);
     check('UC-27', '27-7', 'A new patient taking up ongoing care can be marked as continuing with the doctor', ['REQ-ID-06'], cont, { found: cont }, 'gap');
     await b.shot(`${OUT}/shots/uc27-chart7.png`, true);
