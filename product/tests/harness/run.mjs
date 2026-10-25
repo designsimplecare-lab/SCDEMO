@@ -354,6 +354,103 @@ try {
     const al = await E(`(()=>{var s=document.getElementById('screen-patientchart'); var b=[...s.querySelectorAll('button')].find(x=>/Review result/.test(x.innerText)&&x.checkVisibility()); return {reviewBtn: !!b, text: b ? b.closest('div').innerText.replace(/\\s+/g,' ').slice(0,100) : ''}})()`);
     check('UC-12', '12-6', 'The critical result sits at the top of that patient\'s chart with "Review result"', ['REQ-CH-13'], al.reviewBtn, { reviewBtn: al.reviewBtn });
   }
+
+  // ---------- 5. Order, Refer and Message drawers (26 Oct 2026; Ani: the three buttons must work) ----------
+  // PLACEHOLDERS built without a Daniel spec (see the note above odOpen in the prototype). These checks test the behaviour that was asked for:
+  // opens from every caller, sign by both routes, Esc closes, focus returns, nothing is sent before the press, no health information in the notice.
+  {
+    const drErrs = []; const grab = () => { drErrs.push(...pageErrors(b.log.slice())); };
+    const keyEsc = async () => { await b.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 }); await b.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape' }); await b.sleep(250); };
+    const CALLERS = {
+      od: [['the Action row', `v2Tab('orders', true)`, '.v2-orow[onclick="odOpen()"]'], ['the note toolbar', `csLayout('current'); csView('note')`, '#cs-acts .cs-tb[onclick="odOpen()"]'],
+           ['the older Labs button', `setChartVer('d'); vdTab('labs')`, '#vdt-labs .btn[onclick="odOpen()"]'], ['the older Imaging button', `setChartVer('d'); vdTab('imaging')`, '#vdt-imaging .btn[onclick="odOpen()"]']],
+      rf: [['the Action row', `v2Tab('orders', true)`, '.v2-orow[onclick="rfOpen()"]'], ['the note toolbar', `csLayout('current'); csView('note')`, '#cs-acts .cs-tb[onclick="rfOpen()"]'],
+           ['the older Referrals button', `setChartVer('d'); vdTab('referrals')`, '#vdt-referrals .btn[onclick="rfOpen()"]']],
+      ms: [['the Action row', `v2Tab('orders', true)`, '.v2-orow[onclick="msOpen()"]'], ['the note toolbar', `csLayout('current'); csView('note')`, '#cs-acts .cs-tb[onclick="msOpen()"]']]
+    };
+    const NAME = { od: 'Order', rf: 'Refer', ms: 'Message' };
+    for (const k of ['od', 'rf', 'ms']) {
+      const rows = [];
+      for (const [label, prep, sel] of CALLERS[k]) {
+        const log = (grab(), await b.open(BASE + '#chart:0', 1000));
+        await E(prep); await b.sleep(350);
+        const vis = await visible(sel);
+        await E(`(()=>{var e=document.querySelector(${JSON.stringify(sel)}); e.focus(); e.click();})()`); await b.sleep(450);
+        const o = await E(`({show:document.getElementById('${k}-overlay').classList.contains('show'), inDialog:document.getElementById('${k}-card').contains(document.activeElement), role:document.getElementById('${k}-card').getAttribute('role'), label:document.getElementById('${k}-card').getAttribute('aria-labelledby'), title:(document.getElementById(document.getElementById('${k}-card').getAttribute('aria-labelledby'))||{}).textContent})`);
+        await keyEsc();
+        const c = await E(`({closed:!document.getElementById('${k}-overlay').classList.contains('show'), back:document.activeElement.matches(${JSON.stringify(sel)})})`);
+        rows.push({ label, vis, ...o, ...c, errors: pageErrors(b.log.slice()).length });
+      }
+      check('drawers', `dr-${k}-1`, `${NAME[k]} opens from every caller as a labelled dialog, Esc closes it and focus returns to the button (${CALLERS[k].map(x => x[0]).join(', ')})`, [],
+        rows.every(r => r.vis && r.show && r.inDialog && r.role === 'dialog' && r.label && r.title && r.closed && r.back && r.errors === 0), rows);
+    }
+    // Order and Refer: sign by both routes
+    for (const route of ['self', 'moa']) {
+      (grab(), await b.open(BASE + '#chart:0', 1000)); await E(`v2Tab('orders', true)`); await b.sleep(300);
+      const t0 = await E(`DOC_TASKS.length`);
+      await E(`document.querySelector('.v2-orow[onclick="odOpen()"]').click()`); await b.sleep(400);
+      const pre = await E(`({dis:document.getElementById('od-self').disabled, ind:document.getElementById('od-ind').value, sentBefore:(SD.out[PC_CURRENT]||{orders:[]}).orders.length})`);
+      await E(`document.querySelector('#od-list input[type=checkbox]').click(); [...document.querySelectorAll('#od-list input')].find(i=>i.parentNode.textContent==='Chest X-ray').click()`);
+      const eq = await E(`(()=>{var a=document.getElementById('od-self').getBoundingClientRect(), c=document.getElementById('od-moa').getBoundingClientRect(); return {hA:a.height,hB:c.height,wA:Math.round(a.width),wB:Math.round(c.width),dflt:document.activeElement.id}})()`);
+      await E(`document.getElementById('od-${route}').click()`); await b.sleep(450);
+      const r = await E(`(()=>{var e=SD.out[PC_CURRENT].orders[0]; return {sent:SD.out[PC_CURRENT].orders.length, route:e.route, tasks:DOC_TASKS.length, task:DOC_TASKS[0].type+' | '+DOC_TASKS[0].title, lab:LAB_ORDERS[0].label, state:LAB_ORDERS[0].tests[0].st}})()`);
+      await keyEsc();
+      const where = await E(`(()=>{var op=document.querySelector('#v2-key .kf-op'); var a=op&&!op.hidden?op.innerText.replace(/\\s+/g,' '):''; csOpenFull('results'); var res=document.querySelector('#csp-results .lab-orders-mount').innerText.replace(/\\s+/g,' '); csTab('documents'); var docs=document.getElementById('cs-docs').innerText.replace(/\\s+/g,' '); return {pending:a.slice(0,160), results:res.slice(0,120), docs:/Requisition ·/.test(docs)}})()`);
+      check('drawers', `dr-od-${route}`, `Order, "${route === 'self' ? 'Sign and send' : 'Sign and ask the MOA to send'}": nothing is sent before the press, it files a document, shows under Ordered and pending and in Results, and ${route === 'moa' ? 'files one MOA task' : 'files no task'}`, [],
+        pre.dis && pre.sentBefore === 0 && /\S/.test(pre.ind) && eq.hA === eq.hB && Math.abs(eq.wA - eq.wB) < 3 && r.sent === 1 && r.route === route && r.tasks === t0 + (route === 'moa' ? 1 : 0) && /Chest X-ray/.test(r.lab) && /Complete blood count/.test(where.pending) && /Chest X-ray/.test(where.results) && where.docs,
+        { pre, eq, r, where });
+    }
+    for (const route of ['self', 'moa']) {
+      (grab(), await b.open(BASE + '#chart:0', 1000)); await E(`v2Tab('orders', true)`); await b.sleep(300);
+      const t0 = await E(`DOC_TASKS.length`);
+      await E(`document.querySelector('.v2-orow[onclick="rfOpen()"]').click()`); await b.sleep(400);
+      const pre = await E(`({dis:document.getElementById('rf-self').disabled, reason:document.getElementById('rf-reason').value, att:[...document.querySelectorAll('#rf-body input[type=checkbox]')].filter(i=>i.checked).length})`);
+      await E(`(()=>{var q=document.getElementById('rf-spec'); q.value='Cardiology'; q.dispatchEvent(new Event('change',{bubbles:true}))})()`);
+      await E(`document.querySelector('#rf-body input[value=results]').click()`);
+      await E(`document.getElementById('rf-${route}').click()`); await b.sleep(450);
+      const r = await E(`(()=>{var e=SD.out[PC_CURRENT].refs[0]; return {sent:SD.out[PC_CURRENT].refs.length, route:e.route, att:e.att.join(','), tasks:DOC_TASKS.length, type:DOC_TASKS[0].type}})()`);
+      await keyEsc();
+      const where = await E(`(()=>{csOpenFull('consults'); var c=document.getElementById('cs-consults').innerText.replace(/\\s+/g,' '); csTab('documents'); var d=document.getElementById('cs-docs').innerText.replace(/\\s+/g,' '); return {consults:/Referral · Cardiology/.test(c), docs:/Referral · Cardiology · /.test(d)}})()`);
+      check('drawers', `dr-rf-${route}`, `Refer, "${route === 'self' ? 'Sign and send' : 'Sign and ask the MOA to send'}": disabled until a specialty is chosen, attaches only what is ticked, files a document and a Consults entry, and ${route === 'moa' ? 'files one Referrals task' : 'files no task'}`, [],
+        pre.dis && /\S/.test(pre.reason) && pre.att === 0 && r.sent === 1 && r.route === route && r.att === 'Recent results' && r.tasks === t0 + (route === 'moa' ? 1 : 0) && (route === 'self' || r.type === 'Referrals') && where.consults && where.docs, { pre, r, where });
+    }
+    // Message: the notice is generic, the preview is the message, Send is a press, one filed item, no task
+    {
+      (grab(), await b.open(BASE + '#chart:0', 1000)); await E(`v2Tab('orders', true)`); await b.sleep(300);
+      const t0 = await E(`DOC_TASKS.length`);
+      await E(`document.querySelector('.v2-orow[onclick="msOpen()"]').click()`); await b.sleep(400);
+      const pre = await E(`({dis:document.getElementById('ms-send').disabled, tpl:[...document.querySelectorAll('.sd-tpl')].map(x=>x.textContent), notice:document.querySelector('#ms-body .sd-pvt').textContent, sent:(SD.out[PC_CURRENT]||{msgs:[]}).msgs.length})`);
+      await E(`document.querySelectorAll('.sd-tpl')[0].click()`);
+      const mid = await E(`({text:document.getElementById('ms-text').value, pv:document.getElementById('ms-pv').textContent, sentYet:(SD.out[PC_CURRENT]||{msgs:[]}).msgs.length})`);
+      await E(`document.getElementById('ms-send').click()`); await b.sleep(450);
+      const r = await E(`({sent:SD.out[PC_CURRENT].msgs.length, tasks:DOC_TASKS.length, toast:document.getElementById('toast').textContent})`);
+      await keyEsc();
+      const where = await E(`(()=>{csOpenFull('messages'); return document.getElementById('cs-msgs').innerText.replace(/\\s+/g,' ')})()`);
+      check('drawers', 'dr-ms-2', 'Message: three templates, the notice is only "You have a new message from your care team", the preview shows exactly the message, nothing is sent until Send, one item in Chart > Messages, no task, a toast',
+        [], pre.dis && pre.tpl.length === 3 && pre.notice === 'You have a new message from your care team' && pre.sent === 0 && mid.text === mid.pv && mid.sentYet === 0 && r.sent === 1 && r.tasks === t0 && /sent/i.test(r.toast) && /Hello/.test(where), { pre, mid, r, where: where.slice(0, 160) });
+    }
+    // design rules inside each open drawer, and the console
+    {
+      const bad = {};
+      for (const [k, open] of [['od', 'odOpen()'], ['rf', 'rfOpen()'], ['ms', 'msOpen()']]) {
+        (grab(), await b.open(BASE + '#chart:0', 1000)); await E(open); await b.sleep(400);
+        bad[k] = await E(`(()=>{var ov=document.getElementById('${k}-overlay'),o={small:[],buttons:[],upper:[],text:[]};ov.querySelectorAll('*').forEach(function(e){if(!e.getClientRects().length)return;var cs=getComputedStyle(e);var own=[].some.call(e.childNodes,function(n){return n.nodeType===3&&n.textContent.trim();});
+          if(own&&parseFloat(cs.fontSize)<14)o.small.push(e.className+' '+cs.fontSize);if(own&&cs.textTransform!=='none')o.upper.push(e.className);if(own&&cs.color!=='rgb(255, 255, 255)'&&!/^rgb\\((23, 24, 28|68, 71, 70|95, 99, 104)\\)$/.test(cs.color))o.text.push(e.className+' '+cs.color);
+          if(e.tagName==='BUTTON'&&e.getBoundingClientRect().height<43.5)o.buttons.push((e.id||e.className)+' '+e.getBoundingClientRect().height);});return o})()`);
+      }
+      check('drawers', 'dr-design', 'The three drawers: no text under 14px, buttons 44px, no uppercase, ink text only', ['REQ-UI-01', 'REQ-UI-02'], Object.values(bad).every(o => !o.small.length && !o.buttons.length && !o.upper.length && !o.text.length), bad);
+    }
+    // the care plan's Order now still works, and Prescribe and Task MOA are untouched
+    {
+      (grab(), await b.open(BASE + '#chart:0', 1000));
+      const cp = await E(`(()=>{var it=cpFor(PC_CURRENT).filter(function(x){return x.owner==='GP'&&x.status!=='Completed'&&/^(lab|imaging|test|order)$/.test(x.kind)})[0]; if(!it) return {none:true}; var before=it.status; cpAct(it.id,'Ordered','x'); return {before:before, after:cpFind(it.id).status}})()`);
+      await E(`openTaskMoa(PC_CURRENT)`); await b.sleep(300); const tm = await visible('#tm-overlay.show #tm-card'); await E(`closeTaskMoa()`);
+      await E(`rxOpen()`); await b.sleep(500); const rx = await visible('#rx-panel.show'); await E(`rxClose()`);
+      check('drawers', 'dr-keep', "The care plan's Order now (cpAct) still sets Ordered; Task MOA and the Prescribe panel still open", [], (cp.none || cp.after === 'Ordered') && tm && rx, { cp, taskMoa: tm, prescribe: rx });
+    }
+    grab();
+    check('drawers', 'dr-console', 'No console errors across the Order, Refer and Message runs', [], drErrs.length === 0, drErrs);
+  }
 } finally {
   await b.close();
 }

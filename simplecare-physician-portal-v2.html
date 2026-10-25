@@ -6463,6 +6463,79 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
 #rx-panel .rp-fax ul{margin:0;padding-left:20px;font-size:15px;line-height:22px;}
 #rx-panel .rp-bar #rx-fax,#rx-panel .rp-bar #rx-moa{white-space:normal;text-align:left;min-height:44px;}
 /* T-026 prescribing panel: CSS end */
+
+  /* ===== Order, Refer and Message drawers (26 Oct 2026; Ani: "they must work now"). PLACEHOLDERS, built without a Daniel spec (see the script note).
+     The side-drawer pattern of #ern-drw and #kb-overlay, repeated for these three ids: full height from the right, header and footer pinned, the body
+     scrolls. Paper page, white card, depth from lightness, ink words, colour on icons, brand blue for the current choice and the primary action.
+     Nothing under 14 px, buttons 44 px, reading text 66ch, no uppercase, light only. ===== */
+  :is(#od-overlay,#rf-overlay,#ms-overlay).drw-ov{display:none;position:fixed;inset:0;z-index:200;padding:0;background:rgba(23,24,28,.42);align-items:stretch;justify-content:flex-end;overflow:hidden;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay).drw-ov.show{display:flex;animation:drwFade 240ms ease-out;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay).drw-ov.drw-stacked{background:rgba(23,24,28,.16);animation:none;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) > .tm-card.drw{position:relative;box-sizing:border-box;margin:0;width:min(560px,100vw) !important;max-width:100vw !important;height:100%;max-height:none !important;
+    padding:0 !important;border-radius:16px 0 0 16px;background:var(--panel);display:flex;flex-direction:column;overflow:hidden !important;
+    box-shadow:-18px 0 44px rgba(23,24,28,.16);animation:drwIn 240ms ease-out;}
+  @media (prefers-reduced-motion: reduce){ :is(#od-overlay,#rf-overlay,#ms-overlay).drw-ov.show,:is(#od-overlay,#rf-overlay,#ms-overlay) > .tm-card.drw{animation:none;} }
+  @media (max-width:639px){ :is(#od-overlay,#rf-overlay,#ms-overlay) > .tm-card.drw{width:100vw !important;border-radius:0;} }
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-hd{flex:none;position:relative;padding:20px 72px 16px 24px;border-bottom:1px solid var(--line);}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-hd .tm-title{font-size:20px;font-weight:800;line-height:1.3;margin:0 0 6px;color:var(--ink);}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-hd .tm-sub{font-size:14.5px;color:var(--ink-soft);margin:0;line-height:1.5;max-width:66ch;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-hd .tm-sub:empty{display:none;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-x{position:absolute;top:14px;right:16px;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;background:none;color:var(--ink-soft);cursor:pointer;padding:0;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-x:hover{background:var(--wash);color:var(--ink);}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-x:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-x svg{width:22px;height:22px;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-bd{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:18px 24px 24px;color:var(--ink);font-size:15px;line-height:22px;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-bd:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-ft{flex:none;padding:14px 24px;border-top:1px solid var(--line);background:var(--panel);}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-ft > .tm-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px;margin:0;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-ft .btn{min-height:44px;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;font-weight:600;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-ft .btn:disabled{opacity:.5;cursor:default;}
+  /* Cancel and the quiet line share the first row; the two sign buttons are equal, side by side (the single Send button of Message takes the full row) */
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-ft .btn.sd-go{order:3;flex:1 1 calc(50% - 4px);min-width:190px;align-self:stretch;padding:8px 14px;white-space:normal;text-align:center;line-height:20px;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-ft .btn[id$="-cancel"]{order:1;flex:none;}
+  #ms-overlay .drw-ft .btn.sd-go{flex-basis:100%;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .drw-ft .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-why{order:2;flex:1 1 0;min-width:180px;margin:0;font-size:14px;line-height:20px;color:var(--ink-soft);max-width:66ch;}
+  /* form parts */
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-f{margin:0 0 20px;padding:0;border:0;min-width:0;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-l{display:block;margin:0 0 6px;padding:0;font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-n{font-weight:400;color:var(--ink-soft);}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) :is(input[type=search],input[type=text],select,textarea){display:block;width:100%;max-width:66ch;box-sizing:border-box;border:1px solid var(--line-strong);border-radius:12px;background:var(--panel);font:inherit;font-size:15px;line-height:22px;color:var(--ink);}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) :is(input[type=search],input[type=text],select){height:44px;padding:0 12px;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) textarea{padding:10px 12px;resize:vertical;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) :is(input[type=search],input[type=text],select,textarea):focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-g{margin:10px 0 2px;font-size:14px;line-height:20px;font-weight:600;color:var(--ink-soft);}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-chk{position:relative;display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:12px;font-size:15px;color:var(--ink);cursor:pointer;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-chk:hover{background:var(--wash);}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-chk:has(input:checked){background:var(--brand-wash);}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-chk:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:-2px;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-chk input{flex:none;width:20px;height:20px;margin:0;accent-color:var(--brand);}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-pills{display:flex;flex-wrap:wrap;gap:8px;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-pill{position:relative;display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:var(--wash);font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-pill input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-pill:has(input:checked){background:var(--brand);color:#fff;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-pill:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-who{background:var(--wash);border-radius:14px;padding:12px 16px;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-who p{margin:0 0 6px;font-size:14.5px;line-height:21px;color:var(--ink);max-width:66ch;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-who p:last-child{margin-bottom:0;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-who .sd-l{font-size:15px;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-note{margin:0 0 6px;font-size:14px;line-height:20px;color:var(--ink-soft);max-width:66ch;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-done{background:var(--wash);border-radius:14px;padding:16px;}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-dh{display:flex;align-items:center;gap:10px;margin:0 0 8px;font-size:17px;line-height:24px;font-weight:700;color:var(--ink);}
+  :is(#od-overlay,#rf-overlay,#ms-overlay) .sd-dh .ic{color:var(--good);width:22px;height:22px;}
+  /* Message drawer: the quick templates (buttons) and the preview of what the patient receives */
+  #ms-overlay .sd-tpl{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:0;border-radius:999px;background:var(--wash);font:inherit;font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;}
+  #ms-overlay .sd-tpl:hover{background:var(--brand-wash);}
+  #ms-overlay .sd-tpl:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #ms-overlay .sd-pv{background:var(--wash);border-radius:14px;padding:14px 16px;}
+  #ms-overlay .sd-pv > .sd-l{margin:0 0 8px;font-size:16px;font-weight:700;}
+  #ms-overlay .sd-pvb{background:var(--panel);border-radius:12px;padding:10px 14px;margin:0 0 8px;}
+  #ms-overlay .sd-pvb:last-child{margin-bottom:0;}
+  #ms-overlay .sd-pvl{margin:0 0 2px;font-size:14px;line-height:20px;font-weight:600;color:var(--ink-soft);}
+  #ms-overlay .sd-pvt{margin:0 0 4px;font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
+  #ms-overlay .sd-pvm{margin:0;font-size:15px;line-height:22px;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere;max-width:66ch;}
+  #ms-overlay .sd-pvm.empty{color:var(--ink-soft);}
+  #cs-msgs .sd-msg{margin:6px 0;font-size:15px;line-height:22px;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere;max-width:66ch;}
 </style>
 </head>
 <body>
@@ -6971,10 +7044,10 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
                 <section class="rm-drafts" id="rm-drafts" aria-labelledby="rm-dr-h" hidden></section>
                 <div class="v2-ord" id="v2-ord">
                   <button type="button" class="v2-orow" onclick="rxOpen();v2RxFocus()"><span class="ic" data-pdic="chartnote"></span><span class="v2-ot"><b>Prescribe</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
-                  <button type="button" class="v2-orow" onclick="toast('Lab requisition started')"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
-                  <button type="button" class="v2-orow" onclick="toast('Referral started')"><span class="ic" data-pdic="practice"></span><span class="v2-ot"><b>Refer</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="odOpen()"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="rfOpen()"><span class="ic" data-pdic="practice"></span><span class="v2-ot"><b>Refer</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pdic="taskmoa"></span><span class="v2-ot"><b>Task</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
-                  <button type="button" class="v2-orow" onclick="toast('Message to the patient started')"><span class="ic" data-pdic="chat"></span><span class="v2-ot"><b>Message</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="msOpen()"><span class="ic" data-pdic="chat"></span><span class="v2-ot"><b>Message</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                 </div>
                 <!-- 21 Oct (Daniel, 18 Oct video 2: "this goes into the lab results section of the chart. So not quite here. This is purely action-oriented."):
                      the Lab orders list is not an action. It moved to the top of Chart review (Ordered and pending) and to Chart > Results. -->
@@ -7058,7 +7131,7 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
             <div class="cs-pane" id="csp-results" role="tabpanel" aria-labelledby="cst-results" tabindex="-1" hidden>
               <!-- Daniel, 26 Sep: "it is madness that I am opening up raw pdf's". Tests with values and a trend. -->
               <!-- 21 Oct (Daniel, video 2: "this goes into the lab results section of the chart"): lab orders and where each stands, above the results -->
-              <section class="v2-card cs-lo-card" aria-labelledby="cs-lo-h"><h4 class="v2-loh" id="cs-lo-h">Lab orders</h4><div class="lab-orders-mount"></div></section>
+              <section class="v2-card cs-lo-card" aria-labelledby="cs-lo-h"><h4 class="v2-loh" id="cs-lo-h">Orders</h4><div class="lab-orders-mount"></div></section>
               <div id="vcp-results"></div>
               <div class="vc-block" id="vc-resrail" hidden></div>
               <!-- Daniel, 26 Sep: "I get my patient's to work." Hidden when the patient has reported nothing. -->
@@ -7117,10 +7190,10 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
               </span>
               <span class="cs-tsep" aria-hidden="true"></span>
               <button type="button" class="cs-tb" onclick="rxOpen()"><span class="ic" data-pdic="chartnote"></span>Prescribe</button>
-              <button type="button" class="cs-tb" onclick="toast('Lab requisition started')"><span class="ic" data-pdic="addon"></span>Order</button>
-              <button type="button" class="cs-tb" onclick="toast('Referral started')"><span class="ic" data-pdic="practice"></span>Refer</button>
+              <button type="button" class="cs-tb" onclick="odOpen()"><span class="ic" data-pdic="addon"></span>Order</button>
+              <button type="button" class="cs-tb" onclick="rfOpen()"><span class="ic" data-pdic="practice"></span>Refer</button>
               <button type="button" class="cs-tb" onclick="openTaskMoa(PC_CURRENT)" aria-label="Task the MOA"><span class="ic" data-pcic="task"></span>Task</button>
-              <button type="button" class="cs-tb" onclick="toast('Message to the patient started')"><span class="ic" data-pdic="chat"></span>Message</button>
+              <button type="button" class="cs-tb" onclick="msOpen()"><span class="ic" data-pdic="chat"></span>Message</button>
             </div>
             <!-- Batch B (1), lead brief 6 Oct: "replace the single empty textarea with four sections: Reason, Findings,
                  Assessment, Plan". One compact card, label beside each field, hairlines between rows; each field grows
@@ -7278,7 +7351,7 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
               </div>
 
               <div class="vd-pane" id="vdt-labs">
-                <div class="vd-secttl"><h4>Labs</h4><button class="btn dark xs" onclick="toast('Lab requisition started')">+ Order labs</button></div>
+                <div class="vd-secttl"><h4>Labs</h4><button class="btn dark xs" onclick="odOpen()">+ Order labs</button></div>
                 <div class="vd-subtabs"><button class="active">Results</button><button>Requisitions</button></div>
                 <div class="vd-subhead">Lab Work &mdash; ordered tests and current state</div>
                 <p class="lo-legend">What was ordered, how the requisition was fulfilled, and where each test stands. A requisition that failed says so; one whose receipt was never confirmed says that; a collection that is not due yet says that rather than implying a result is on its way.</p>
@@ -7290,14 +7363,14 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
               </div>
 
               <div class="vd-pane" id="vdt-imaging">
-                <div class="vd-secttl"><h4>Imaging</h4><button class="btn dark xs" onclick="toast('Imaging requisition started')">+ Order imaging</button></div>
+                <div class="vd-secttl"><h4>Imaging</h4><button class="btn dark xs" onclick="odOpen()">+ Order imaging</button></div>
                 <div class="vd-subtabs"><button class="active">Reports</button><button>Requisitions</button></div>
                 <div class="vd-list"><p class="pc-empty">No imaging on file for this patient.</p></div>
               </div>
 
               <div class="vd-pane" id="vdt-referrals">
-                <div class="vd-secttl"><h4>Referrals</h4><button class="btn dark xs" onclick="toast('Referral started')">+ New referral</button></div>
-                <div class="vd-list"><p class="pc-empty">No active referrals.</p></div>
+                <div class="vd-secttl"><h4>Referrals</h4><button class="btn dark xs" onclick="rfOpen()">+ New referral</button></div>
+                <div class="vd-list" id="vd-ref-list"><p class="pc-empty">No active referrals.</p></div>
               </div>
 
               <div class="vd-pane" id="vdt-consults">
@@ -7805,6 +7878,36 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
     <p class="tm-sub">They work when you are not typing in a field.</p>
     <div id="kb-body"></div>
     <div class="tm-actions"><button type="button" class="btn" onclick="kbClose()">Close</button></div>
+  </div>
+</div>
+
+<!-- Order drawer (26 Oct): tests, imaging, ECG. PLACEHOLDER built without a Daniel spec; see the note above odOpen. -->
+<div class="tm-overlay drw-ov" id="od-overlay" onclick="if(event.target===this) odClose()">
+  <div class="tm-card drw" id="od-card" role="dialog" aria-modal="true" aria-labelledby="od-ttl">
+    <p class="tm-title" id="od-ttl">Order tests</p>
+    <p class="tm-sub" id="od-sub"></p>
+    <div id="od-body"></div>
+    <div class="tm-actions" id="od-acts"></div>
+  </div>
+</div>
+
+<!-- Refer drawer (26 Oct): a specialist or service. PLACEHOLDER built without a Daniel spec; see the note above rfOpen. -->
+<div class="tm-overlay drw-ov" id="rf-overlay" onclick="if(event.target===this) rfClose()">
+  <div class="tm-card drw" id="rf-card" role="dialog" aria-modal="true" aria-labelledby="rf-ttl">
+    <p class="tm-title" id="rf-ttl">Refer</p>
+    <p class="tm-sub" id="rf-sub"></p>
+    <div id="rf-body"></div>
+    <div class="tm-actions" id="rf-acts"></div>
+  </div>
+</div>
+
+<!-- Message drawer (26 Oct): a message to the patient. PLACEHOLDER built without a Daniel spec; see the note above msOpen. -->
+<div class="tm-overlay drw-ov" id="ms-overlay" onclick="if(event.target===this) msClose()">
+  <div class="tm-card drw" id="ms-card" role="dialog" aria-modal="true" aria-labelledby="ms-ttl">
+    <p class="tm-title" id="ms-ttl">Message the patient</p>
+    <p class="tm-sub" id="ms-sub"></p>
+    <div id="ms-body"></div>
+    <div class="tm-actions" id="ms-acts"></div>
   </div>
 </div>
 
@@ -11284,7 +11387,10 @@ var TEST_STATE = {
   reviewed:      {label:'Reviewed',                           tone:'ok'},
   reviewed_act:  {label:'Reviewed — action needed',           tone:'act'},
   not_performed: {label:'Not performed',                      tone:'bad'},
-  not_required:  {label:'No longer required',                 tone:'quiet'}
+  not_required:  {label:'No longer required',                 tone:'quiet'},
+  /* 26 Oct (Ani: the Order drawer must work): an order signed from the Order drawer. Ordered = sent; with_moa = signed, waiting for the MOA to send it */
+  ordered:       {label:'Ordered',                            tone:'quiet'},
+  with_moa:      {label:'With the MOA to send',               tone:'quiet'}
 };
 
 var LAB_ORDERS = [
@@ -11991,6 +12097,7 @@ function renderLabOrders(){
   var mine = LAB_ORDERS.filter(function(o){ return !who || o.patient === who || first(o.patient) === first(who); });
   var yr = function(d){ return String(d || '').replace(/, 2026$/, ''); };
   var status = function(o){
+    if(o.out && typeof sdOrderStatus === 'function') return sdOrderStatus(o);   /* 26 Oct: signed from the Order drawer */
     if(o.lapsed) return ['Expired · new requisition needed', 'warn'];
     if(o.fulfilmentTone === 'bad') return ['Not sent · resend', 'warn'];
     if(o.fulfilmentTone === 'warn') return ['With patient · receipt unconfirmed', 'neutral'];
@@ -12008,11 +12115,12 @@ function renderLabOrders(){
         (o.standing ? '<span class="lo2-n">' + o.progress.done + '/' + o.progress.total + ' received</span>' : '') +
         '<span class="lo2-s ' + st[1] + '">' + st[0] + '</span></div>' +
       (o.window ? '<p class="lo2-q">' + String(o.window).replace(/^Collection window /, 'Collect ') + '</p>' : '') +
+      (o.urgent ? '<p class="lo2-q">Urgent</p>' : '') +
       (rev ? '<button type="button" class="cs-link lo2-rv" onclick="if(typeof v2Tab===\'function\')v2Tab(\'review\',true)">' + rev + ' to review</button>' : '') +
       tests +
       ((o.unmapped || []).length ? '<p class="lo2-q">Also received: ' + o.unmapped.map(function(u){ return u.n; }).join(', ') + ' (not ordered)</p>' : '') +
     '</div>';
-  }).join('') : '<p class="lo2-q">No lab orders.</p>';
+  }).join('') : '<p class="lo2-q">No orders.</p>';
   mounts.forEach(function(m){ m.innerHTML = html; });
 }
 function renderLabPanels(){
@@ -15079,6 +15187,7 @@ function csRenderConsults(name){
   if(P2) h += '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pcic="consult"></span><h4>' + P2.src + '</h4></div>' +
     '<p class="cs-cap">' + P2.recs.length + ' recommendations not yet in your plan &middot; <button type="button" class="vc-more" onclick="csTab(\'careplan\')">Review them in the care plan</button></p>' +
     '<ul class="cs-list">' + P2.recs.map(function(x){ return '<li><b>' + x.action + '</b><p class="cs-quote">' + x.quote + '</p></li>'; }).join('') + '</ul></div>';
+  h = (typeof sdRefsHtml === 'function' ? sdRefsHtml(name) : '') + h;   /* 26 Oct: referrals signed from the Refer drawer */
   el.innerHTML = h || '<p class="pc-empty">No consults on file.</p>';
   paintPd(el);
 }
@@ -15091,6 +15200,7 @@ function csRenderDocs(name){
     (f && f.words ? '<dt>Flagged</dt><dd>&ldquo;' + csEsc(f.words) + '&rdquo;' + (f.when ? ' &middot; ' + csEsc(f.when) : '') + '</dd>' : '') + '</dl></div>';
   /* T-026: prescriptions signed on this visit, named by what they are, then date, then transmission status */
   if(typeof rxDocsHtml === 'function') h += rxDocsHtml(name);
+  if(typeof sdDocsHtml === 'function') h += sdDocsHtml(name);   /* 26 Oct: orders and referrals signed from their drawers */
   if(L) h += '<div class="vc-block cs-doc" id="cs-doc-last"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>Visit note &middot; ' + csShort(L.date) + '</h4></div>' +
     '<p class="slv-ro"><span class="ic" data-pdic="complete"></span>Signed</p><dl class="cs-kv">' +
     ['S','O','A','P'].map(function(k){ return '<dt>' + {S:'Subjective',O:'Objective',A:'Assessment',P:'Plan'}[k] + '</dt><dd>' + L.note[k] + '</dd>'; }).join('') + '</dl></div>';
@@ -15102,9 +15212,11 @@ function csRenderMsgs(name){
   var base = csBase(name).toLowerCase();
   var hits = [];
   (typeof MOA_THREADS !== 'undefined' ? MOA_THREADS : []).forEach(function(th){ th.messages.forEach(function(m){ if(m.text.toLowerCase().indexOf(base) > -1) hits.push({who:th.name, m:m}); }); });
-  el.innerHTML = hits.length ? '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="chat"></span><h4>Dolly</h4></div><ul class="cs-list">' +
+  var sentMsgs = typeof sdMsgsHtml === 'function' ? sdMsgsHtml(name) : '';   /* 26 Oct: messages signed and sent from the Message drawer */
+  el.innerHTML = sentMsgs + (hits.length ? '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="chat"></span><h4>Dolly</h4></div><ul class="cs-list">' +
     hits.map(function(x){ return '<li>&ldquo;' + csEsc(x.m.text) + '&rdquo; <span class="cs-cap">&middot; ' + csEsc(x.who) + ', ' + x.m.time + '</span></li>'; }).join('') + '</ul></div>'
-    : '<p class="pc-empty">No messages about this patient.</p>';
+    : (sentMsgs ? '' : '<p class="pc-empty">No messages about this patient.</p>'));
+  paintPd(el);
 }
 /* v2.5 §7 search everything. Chart tab (Ani, 7 Oct): "Search the chart" sits at the top of the Chart tab; typing searches
    the text of every section and shows the results in place of the section (no separate Search sub-tab). A result opens
@@ -17110,7 +17222,7 @@ function v2RenderKey(el, name, by){
   var pl = kfLines(pend, name, null), over = pend ? pend[1].filter(function(x){ return x[4] === 'Overdue'; }).length : 0;
   h += '<section class="kf-sec kf-op" aria-labelledby="kf-h-op"><h4 class="kf-h" id="kf-h-op">Ordered and pending' +
       (over ? '<span class="v2-chip warn">' + csIc('clock') + over + ' overdue</span>' : '') + '</h4>' +
-    '<div class="kf-labs"><h5 class="kf-h5">Lab orders</h5><div class="lab-orders-mount"></div></div>' +
+    '<div class="kf-labs"><h5 class="kf-h5">Orders</h5><div class="lab-orders-mount"></div></div>' +
     (pl ? '<div class="kf-pend"><h5 class="kf-h5">Pending</h5><div class="kf-lines">' + pl + '</div></div>' : '') + '</section>';
   /* 2. Relevant medical history: existing diagnoses, previous episodes, related conditions */
   h += '<section class="kf-sec" aria-labelledby="kf-h-hist"><h4 class="kf-h" id="kf-h-hist">Relevant medical history</h4>' +
@@ -17140,7 +17252,7 @@ function v2RenderKey(el, name, by){
   /* the lab orders list paints every mount (here and in Chart > Results); display by exception: no lab orders, no sub-heading, and no section when nothing is pending either */
   if(typeof renderLabOrders === 'function') renderLabOrders();
   var labs = el.querySelector('.kf-labs'), mt = labs && labs.querySelector('.lab-orders-mount');
-  if(labs && mt && /^\s*No lab orders\.?\s*$/.test(mt.textContent)) labs.hidden = true;
+  if(labs && mt && /^\s*No (lab )?orders\.?\s*$/.test(mt.textContent)) labs.hidden = true;
   var op = el.querySelector('.kf-op'); if(op && labs && labs.hidden && !op.querySelector('.kf-pend')) op.hidden = true;
 }
 
@@ -19280,6 +19392,357 @@ baWrap('openChart', function(){ rmRenderDrafts(); rmSignLine(); });
   if(h && window.ResizeObserver && typeof v2Fit === 'function'){ new ResizeObserver(function(){ v2Fit(); }).observe(h); }
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-10-25 15:15</div>
+<script>
+/* ============================================================
+   ORDER, REFER and MESSAGE drawers (26 Oct 2026).
+   Ani, 26 Oct: the Order, Refer and Message buttons in the chart only showed a toast ("Lab requisition started" and so on); "they must work now".
+   PLACEHOLDERS: Daniel gave no requirements for these three drawers. The fields below are the lead's assumptions, kept deliberately short, and they
+   are to be replaced when Daniel's Action list arrives. He said on 18 Oct (from-daniel/2026-10-18-journeys-review-videos.md): "the actions you would
+   just rip right off of my dirty chart ... I'll give you that list", and that he is "pretty happy with the imaging and the referrals".
+   Needs Daniel: the order types and fields, the referral fields and what is attached, and whether Message goes through the Inbox thread.
+   Same side-drawer pattern as Task the MOA: the overlays join the drawer stack (focus in, Tab trapped, Escape and the backdrop close the top layer,
+   focus back to the button that opened it). Nothing is sent until the doctor presses a sign or send button; the two sign buttons are equal and neither
+   is the default (Daniel, 26 Sep, on prescribing). The MOA route uses moaTask(), so tasks still go doctor to MOA only.
+   ============================================================ */
+var SD = {out:{}, draft:{}, od:null, rf:null, ms:null};   /* out[patient] = {orders:[], refs:[], msgs:[]}: what was signed and sent from the drawers (demo data, this session) */
+function sdOut(n){ return SD.out[n] || (SD.out[n] = {orders:[], refs:[], msgs:[]}); }
+function sdNeedChart(){ if(typeof PC_CURRENT === 'undefined' || !PC_CURRENT){ toast('Open a patient chart first'); return false; } return true; }
+function sdRow(){ return QUEUE_DATA.filter(function(x){ return x.name === PC_CURRENT; })[0] || null; }
+function sdPref(){ var r = sdRow(); return r ? csPref(r) : 'the patient'; }
+function sdConcern(){ var r = sdRow(); return r && r.concern ? r.concern : ''; }
+function sdDate(){ return new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}); }
+function sdMoa(){ return MOA_ON_SERVICE.split(' ')[0]; }
+function sdEl(id){ return document.getElementById(id); }
+function sdPlain(t){ return String(t || '').replace(/\s+/g, ' ').trim(); }
+/* the footer: one quiet line, then the buttons. kind is od, rf or ms; two = the two equal sign buttons; ok = the buttons are enabled */
+function sdActs(kind, why, ok, two, label){
+  var h = '<p class="sd-why" id="' + kind + '-why" aria-live="polite">' + csEsc(why) + '</p>' +
+    '<button type="button" class="btn" id="' + kind + '-cancel" onclick="' + kind + 'Close()">' + rxIc('close') + 'Cancel</button>';
+  if(two){
+    h += '<button type="button" class="btn dark sd-go" id="' + kind + '-self" onclick="' + kind + 'Sign(\'self\')"' + (ok ? '' : ' disabled') + '>' + rxIc('arrowup') + 'Sign and send</button>' +
+      '<button type="button" class="btn dark sd-go" id="' + kind + '-moa" onclick="' + kind + 'Sign(\'moa\')"' + (ok ? '' : ' disabled') + '>' + rxIc('taskmoa') + 'Sign and ask the MOA to send</button>';
+  } else {
+    h += '<button type="button" class="btn dark sd-go" id="' + kind + '-send" onclick="' + kind + 'Send()"' + (ok ? '' : ' disabled') + '>' + rxIc('arrowup') + label + '</button>';
+  }
+  return h;
+}
+function sdFoot(kind, why, ok, two, label){
+  var el = sdEl(kind + '-acts'); if(!el) return;
+  el.innerHTML = sdActs(kind, why, ok, two, label); paintPd(el);
+}
+function sdDoneFoot(kind){
+  var el = sdEl(kind + '-acts'); if(!el) return;
+  el.innerHTML = '<button type="button" class="btn dark" id="' + kind + '-done" onclick="' + kind + 'Close()">' + rxIc('complete') + 'Close</button>'; paintPd(el);
+  sdEl(kind + '-done').focus({preventScroll:true});
+}
+function sdDone(title, lines){
+  return '<section class="sd-done" role="status"><p class="sd-dh">' + rxIc('complete') + '<span>' + csEsc(title) + '</span></p>' +
+    lines.map(function(l){ return '<p class="sd-note">' + csEsc(l) + '</p>'; }).join('') + '</section>';
+}
+/* a short group of pills: one choice (native radios, so the arrow keys work) */
+function sdPills(name, opts, cur, fn){
+  return '<div class="sd-pills" role="radiogroup">' + opts.map(function(o){
+    return '<label class="sd-pill"><input type="radio" name="' + name + '" value="' + o[0] + '"' + (o[0] === cur ? ' checked' : '') + ' onchange="' + fn + '(this.value)"><span>' + o[1] + '</span></label>';
+  }).join('') + '</div>';
+}
+/* where it shows after sending: Chart review (Ordered and pending), Results, Documents, Consults, Messages, and the older layout's Referrals list */
+function sdRefresh(name){
+  if(typeof renderLabOrders === 'function') renderLabOrders();
+  if(typeof v2On === 'function' && v2On() && typeof v2RenderSide === 'function') v2RenderSide(name);
+  if(typeof csRenderDocs === 'function') csRenderDocs(name);
+  if(typeof csRenderConsults === 'function') csRenderConsults(name);
+  if(typeof csRenderMsgs === 'function') csRenderMsgs(name);
+  sdPaintOld(name);
+}
+function sdPaintOld(name){
+  var el = sdEl('vd-ref-list'); if(!el) return;
+  var refs = (SD.out[name || PC_CURRENT] || {refs:[]}).refs;
+  el.innerHTML = refs.length ? refs.map(function(e){
+    return '<div class="vd-item"><span><b>' + csEsc(e.spec) + '</b><i>' + csEsc(sdPlain(e.reason)) + ' &middot; ' + csEsc(sdStat(e)) + (e.urgent ? ' &middot; Urgent' : '') + '</i></span></div>';
+  }).join('') : '<p class="pc-empty">No active referrals.</p>';
+}
+function sdStat(e){
+  if(e.route === 'self') return 'sent by you, ' + e.at;
+  var tk = e.task && typeof taskFind === 'function' ? taskFind(e.task) : null;
+  return tk && tk.status === 'complete' ? 'sent by ' + sdMoa() : 'with ' + sdMoa() + ' to send';
+}
+/* Chart > Documents: one entry per signed order or referral, named by what it is, then the date, then who sent it (the prescribing entries' rule) */
+function sdDocsHtml(name){
+  var o = SD.out[name]; if(!o) return '';
+  var all = o.orders.map(function(e){ return {e:e, k:'order'}; }).concat(o.refs.map(function(e){ return {e:e, k:'ref'}; }));
+  all.sort(function(a, b){ return b.e.ts - a.e.ts; });
+  return all.map(function(x){
+    var e = x.e, kind, list, cap;
+    if(x.k === 'order'){
+      var g = e.items.map(function(t){ return t.g; }).filter(function(v, i, a){ return a.indexOf(v) === i; });
+      kind = g.length === 1 && g[0] === 'Blood tests' ? 'Lab requisition' : g.length === 1 && g[0] === 'Imaging' ? 'Imaging requisition' : 'Requisition';
+      list = e.items.map(function(t){ return '<li>' + csEsc(t.n) + '</li>'; }).join('');
+      cap = (e.ind ? 'Reason: ' + e.ind + ' \u00b7 ' : '') + (e.urgent ? 'Urgent' : 'Routine');
+    } else {
+      kind = 'Referral \u00b7 ' + e.spec;
+      list = '<li>Reason: ' + csEsc(e.reason) + '</li>' + (e.att.length ? '<li>Attached: ' + csEsc(e.att.join(', ')) + '</li>' : '');
+      cap = e.urgent ? 'Urgent' : 'Routine';
+    }
+    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>' + csEsc(kind + ' \u00b7 ' + e.iso + ' \u00b7 ' + sdStat(e)) + '</h4></div>' +
+      '<ul class="cs-list">' + list + '</ul><p class="cs-cap">' + csEsc(cap) + '</p>' +
+      '<p class="slv-ro"><span class="ic" data-pdic="complete"></span>Signed by ' + RX_DR + ', ' + csEsc(e.at) + '</p></div>';
+  }).join('');
+}
+
+/* ---------- ORDER: tests, imaging and the ECG (placeholder, see the note at the top) ----------
+   A short pick of common orders (a demo list, not a clinical rule), one reason line from today's concern (editable), routine or urgent, and the
+   two equal sign buttons. On sign: Chart > Documents, the order under Ordered and pending in Chart review, and the orders list in Chart > Results
+   (the lab orders list, LAB_ORDERS, shown by renderLabOrders). */
+var OD_CAT = [
+  {g:'Blood tests', items:['Complete blood count (CBC)', 'Electrolytes', 'Kidney function', 'Lipids', 'HbA1c', 'TSH']},
+  {g:'Imaging', items:['Chest X-ray', 'Abdominal ultrasound']},
+  {g:'Heart', items:['ECG']}
+];
+var OD_TESTS = [];
+OD_CAT.forEach(function(c){ c.items.forEach(function(n){ OD_TESTS.push({id:'t' + OD_TESTS.length, n:n, g:c.g}); }); });
+function odOpen(){
+  if(!sdNeedChart()) return;
+  SD.od = {sel:{}, q:'', urg:'routine', ind:sdConcern(), done:null};
+  sdEl('od-sub').textContent = 'For ' + sdPref() + (sdConcern() ? ' · ' + sdConcern() : '');
+  odRenderBody();
+  sdEl('od-overlay').classList.add('show');
+}
+function odClose(){ sdEl('od-overlay').classList.remove('show'); }
+function odRenderBody(){
+  var s = SD.od, el = sdEl('od-body'); if(!s) return;
+  if(s.done){
+    var e = s.done, moa = sdMoa();
+    el.innerHTML = sdDone(e.route === 'moa' ? 'Signed and sent to ' + moa : 'Signed and sent',
+      [e.items.map(function(t){ return t.n; }).join(', ') + (e.urgent ? ' (urgent)' : '') + '.',
+       e.route === 'moa' ? moa + ' has a task to send the requisition. You can follow it in Tasks.' : 'You sent the requisition yourself.',
+       'Filed in Chart > Documents. It shows under Ordered and pending in Chart review, and in Chart > Results.']);
+    paintPd(el); sdDoneFoot('od'); return;
+  }
+  var moa = sdMoa();
+  el.innerHTML =
+    '<div class="sd-f"><label class="sd-l" for="od-q">Find a test</label><input type="search" id="od-q" autocomplete="off" placeholder="Blood test, X-ray, ECG" oninput="odSearch(this.value)"></div>' +
+    '<fieldset class="sd-f"><legend class="sd-l">Tests <span class="sd-n" id="od-n"></span></legend><div id="od-list"></div></fieldset>' +
+    '<div class="sd-f"><label class="sd-l" for="od-ind">Reason</label><textarea id="od-ind" rows="2" oninput="odInd(this.value)"></textarea></div>' +
+    '<fieldset class="sd-f"><legend class="sd-l">Urgency</legend>' + sdPills('od-urg', [['routine', 'Routine'], ['urgent', 'Urgent']], s.urg, 'odUrg') + '</fieldset>' +
+    '<div class="sd-who"><p class="sd-l">Who sends it</p>' +
+      '<p><b>Sign and send:</b> you send the requisition yourself.</p>' +
+      '<p><b>Sign and ask the MOA to send:</b> ' + csEsc(moa) + ', on service for this window, gets a task and faxes the requisition.</p></div>';
+  sdEl('od-ind').value = s.ind;
+  odList(); odState();
+}
+function odList(){
+  var s = SD.od, q = s.q.trim().toLowerCase(), h = '';
+  OD_CAT.forEach(function(c){
+    var rows = OD_TESTS.filter(function(t){ return t.g === c.g && (!q || t.n.toLowerCase().indexOf(q) > -1 || c.g.toLowerCase().indexOf(q) > -1); });
+    if(!rows.length) return;
+    h += '<p class="sd-g">' + csEsc(c.g) + '</p>' + rows.map(function(t){
+      return '<label class="sd-chk"><input type="checkbox" value="' + t.id + '"' + (s.sel[t.id] ? ' checked' : '') + ' onchange="odPick(this)"><span>' + csEsc(t.n) + '</span></label>';
+    }).join('');
+  });
+  sdEl('od-list').innerHTML = h || '<p class="sd-note">No test matches. Clear the search to see them all.</p>';
+}
+function odSearch(v){ SD.od.q = v; odList(); }
+function odInd(v){ SD.od.ind = v; }
+function odUrg(v){ SD.od.urg = v; }
+function odPick(cb){ if(cb.checked) SD.od.sel[cb.value] = 1; else delete SD.od.sel[cb.value]; odState(); }
+function odState(){
+  var n = Object.keys(SD.od.sel).length;
+  sdEl('od-n').textContent = n ? '· ' + n + ' picked' : '';
+  sdFoot('od', n ? 'Both buttons sign it. You choose who sends it.' : 'Pick at least one test.', n > 0, true);
+}
+function odTaskType(items){ return items.some(function(t){ return t.g === 'Blood tests'; }) ? 'Lab Work' : 'Imaging'; }
+/* the Results and Chart review lists show this entry like any lab order: one status line, the tests behind a toggle */
+function odLabOrder(e){
+  var n = e.items.length, nm = e.items.map(function(t){ return t.n; });
+  return {id:e.id, patient:e.pt, out:e, urgent:e.urgent, ordered:e.date, fulfilment:'', fulfilmentTone:'ok', validUntil:'—',
+    label: n <= 2 ? nm.join(' and ') : nm[0] + ' and ' + (n - 1) + ' more',
+    tests:e.items.map(function(t){ return {n:t.n, st:'ordered'}; })};
+}
+function sdOrderStatus(o){
+  var e = o.out, moa = sdMoa(), tk = e.task && typeof taskFind === 'function' ? taskFind(e.task) : null;
+  var sent = e.route === 'self' || (tk && tk.status === 'complete');
+  o.tests.forEach(function(t){ t.st = sent ? 'ordered' : 'with_moa'; });
+  return e.route === 'self' ? ['Sent by you · ' + e.at, 'ok'] : sent ? ['Sent by ' + moa, 'ok'] : ['With ' + moa + ' to send', 'neutral'];
+}
+function odSign(route){
+  var s = SD.od; if(!s || s.done) return;
+  var items = OD_TESTS.filter(function(t){ return s.sel[t.id]; }); if(!items.length) return;
+  var name = PC_CURRENT, moa = sdMoa(), at = rxNow(), names = items.map(function(t){ return t.n; }), ind = sdPlain(s.ind), urgent = s.urg === 'urgent';
+  var e = {id:'od' + Date.now(), ts:Date.now(), pt:name, items:items.map(function(t){ return {n:t.n, g:t.g}; }), ind:ind, urgent:urgent, route:route, at:at, iso:rxIso(new Date()), date:sdDate()};
+  if(route === 'moa'){
+    var t = moaTask({patient:name, type:odTaskType(items), prio:urgent ? 'urgent' : 'routine', title:'Send requisition: ' + names.join(', '),
+      note:'Fax the requisition for ' + names.join(', ') + '.' + (ind ? ' Reason: ' + ind + '.' : '') + (urgent ? ' Marked urgent.' : '') + ' Signed by ' + RX_DR + ' ' + at + '.'});
+    e.task = t.id;
+  }
+  sdOut(name).orders.unshift(e);
+  LAB_ORDERS.unshift(odLabOrder(e));
+  s.done = e; odRenderBody();
+  sdRefresh(name);
+  toast(route === 'moa' ? 'Signed · sent to ' + moa : 'Signed · requisition sent');
+}
+
+/* the three overlays join the drawer stack once they exist */
+(function(){
+  [['od-overlay', 'odClose'], ['rf-overlay', 'rfClose'], ['ms-overlay', 'msClose']].forEach(function(p){
+    var ov = document.getElementById(p[0]); if(!ov || typeof DRW_CLOSE === 'undefined') return;
+    DRW_CLOSE[p[0]] = function(){ window[p[1]](); };
+    new MutationObserver(function(){
+      var on = ov.classList.contains('show'), was = DRW_STACK.some(function(l){ return l.id === p[0]; });
+      if(on && !was) drwOpened(ov); else if(!on && was) drwClosed(ov);
+    }).observe(ov, {attributes:true, attributeFilter:['class']});
+    drwShape(ov.firstElementChild);
+  });
+})();
+var sdOpenChart0 = openChart;
+openChart = function(name){ sdOpenChart0.apply(this, arguments); sdPaintOld(PC_CURRENT); };
+/* ---------- REFER: a specialist or service (placeholder, see the note at the top) ----------
+   Needs Daniel: the referral fields, who it goes to (a named specialist or clinic is not asked here), and what is attached. "He is pretty happy with
+   the imaging and the referrals" (18 Oct), so this is to be replaced by his own referral form. A demo list of specialties, the reason from today's
+   concern (editable), routine or urgent, three things to attach from the chart (none ticked: the doctor chooses), and the two equal sign buttons.
+   On sign: Chart > Documents and Chart > Consults ("Referral · <specialty>"; the older layout's Referrals list too). */
+var RF_SPEC = ['Cardiology', 'Dermatology', 'Gastroenterology', 'Neurology', 'Ophthalmology', 'Orthopedics', 'Physiotherapy', 'Psychiatry'];
+var RF_ATT = [{k:'results', n:'Recent results'}, {k:'meds', n:'Medications'}, {k:'note', n:'Today’s note'}];
+function rfOpen(){
+  if(!sdNeedChart()) return;
+  SD.rf = {spec:'', reason:sdConcern(), urg:'routine', att:{}, done:null, key:''};
+  sdEl('rf-sub').textContent = 'For ' + sdPref() + (sdConcern() ? ' · ' + sdConcern() : '');
+  rfRenderBody();
+  sdEl('rf-overlay').classList.add('show');
+}
+function rfClose(){ sdEl('rf-overlay').classList.remove('show'); }
+function rfRenderBody(){
+  var s = SD.rf, el = sdEl('rf-body'); if(!s) return;
+  if(s.done){
+    var e = s.done, moa = sdMoa();
+    el.innerHTML = sdDone(e.route === 'moa' ? 'Signed and sent to ' + moa : 'Signed and sent',
+      ['Referral to ' + e.spec + (e.urgent ? ' (urgent)' : '') + (e.att.length ? ', with ' + e.att.join(', ').toLowerCase() : '') + '.',
+       e.route === 'moa' ? moa + ' has a task to send the referral. You can follow it in Tasks.' : 'You sent the referral yourself.',
+       'Filed in Chart > Documents and listed in Chart > Consults.']);
+    paintPd(el); sdDoneFoot('rf'); return;
+  }
+  var moa = sdMoa();
+  el.innerHTML =
+    '<div class="sd-f"><label class="sd-l" for="rf-spec">Specialty</label><select id="rf-spec" onchange="rfSet(\'spec\', this.value)"><option value="">Choose a specialty</option>' +
+      RF_SPEC.map(function(n){ return '<option value="' + n + '">' + n + '</option>'; }).join('') + '</select></div>' +
+    '<div class="sd-f"><label class="sd-l" for="rf-reason">Reason for referral</label><textarea id="rf-reason" rows="3" oninput="rfSet(\'reason\', this.value)"></textarea></div>' +
+    '<fieldset class="sd-f"><legend class="sd-l">Urgency</legend>' + sdPills('rf-urg', [['routine', 'Routine'], ['urgent', 'Urgent']], s.urg, 'rfUrg') + '</fieldset>' +
+    '<fieldset class="sd-f"><legend class="sd-l">Attach from the chart</legend>' + RF_ATT.map(function(a){
+      return '<label class="sd-chk"><input type="checkbox" value="' + a.k + '" onchange="rfAtt(this)"><span>' + csEsc(a.n) + '</span></label>'; }).join('') + '</fieldset>' +
+    '<div class="sd-who"><p class="sd-l">Who sends it</p>' +
+      '<p><b>Sign and send:</b> you send the referral yourself.</p>' +
+      '<p><b>Sign and ask the MOA to send:</b> ' + csEsc(moa) + ', on service for this window, gets a task and sends the referral.</p></div>';
+  sdEl('rf-reason').value = s.reason;
+  rfState();
+}
+function rfSet(k, v){ SD.rf[k] = v; rfState(); }
+function rfUrg(v){ SD.rf.urg = v; }
+function rfAtt(cb){ if(cb.checked) SD.rf.att[cb.value] = 1; else delete SD.rf.att[cb.value]; }
+function rfState(){
+  var s = SD.rf, why = !s.spec ? 'Choose a specialty.' : !sdPlain(s.reason) ? 'Write a reason for the referral.' : 'Both buttons sign it. You choose who sends it.';
+  if(s.key === why) return;   /* only redraw the footer when its words change, so typing in Reason keeps its place */
+  s.key = why; sdFoot('rf', why, !!s.spec && !!sdPlain(s.reason), true);
+}
+function rfSign(route){
+  var s = SD.rf; if(!s || s.done || !s.spec || !sdPlain(s.reason)) return;
+  var name = PC_CURRENT, moa = sdMoa(), at = rxNow(), urgent = s.urg === 'urgent', reason = sdPlain(s.reason);
+  var att = RF_ATT.filter(function(a){ return s.att[a.k]; }).map(function(a){ return a.n; });
+  var e = {id:'rf' + Date.now(), ts:Date.now(), pt:name, spec:s.spec, reason:reason, urgent:urgent, att:att, route:route, at:at, iso:rxIso(new Date()), date:sdDate()};
+  if(route === 'moa'){
+    var t = moaTask({patient:name, type:'Referrals', prio:urgent ? 'urgent' : 'routine', title:'Send referral: ' + s.spec,
+      note:'Send the referral to ' + s.spec + '. Reason: ' + reason + '.' + (att.length ? ' Attach: ' + att.join(', ').toLowerCase() + '.' : '') + (urgent ? ' Marked urgent.' : '') + ' Signed by ' + RX_DR + ' ' + at + '.'});
+    e.task = t.id;
+  }
+  sdOut(name).refs.unshift(e);
+  s.done = e; rfRenderBody();
+  sdRefresh(name);
+  toast(route === 'moa' ? 'Signed · sent to ' + moa : 'Signed · referral sent');
+}
+/* Chart > Consults: referrals sent, above the consult reports (the chart has no Referrals section of its own in the v2 layout) */
+function sdRefsHtml(name){
+  var o = SD.out[name]; if(!o || !o.refs.length) return '';
+  return o.refs.map(function(e){
+    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="practice"></span><h4>' + csEsc('Referral · ' + e.spec) + '</h4></div>' +
+      '<p class="cs-cap">' + csEsc(e.iso + ' · ' + sdStat(e) + (e.urgent ? ' · Urgent' : '')) + '</p>' +
+      '<ul class="cs-list"><li>Reason: ' + csEsc(e.reason) + '</li>' + (e.att.length ? '<li>Attached: ' + csEsc(e.att.join(', ')) + '</li>' : '') + '</ul></div>';
+  }).join('');
+}
+
+/* ---------- MESSAGE: to the patient (placeholder, see the note at the top) ----------
+   Needs Daniel: whether a message to the patient goes through the Inbox thread (today the Inbox holds results, and the thread panel is the chat with the MOA, so
+   there is no patient thread to add to). Until then the sent message is filed in Chart > Messages. Rules held here: no health information in the email subject or
+   the text preview (the notice is always the same generic line), the doctor presses Send every time, and the preview shows exactly what the patient receives.
+   No AI text is drafted in this drawer; if it ever is, it stays an "AI draft" until the doctor edits or accepts it. */
+var MS_NOTICE = 'You have a new message from your care team';
+var MS_TPL = [
+  {k:'normal', l:'Results are normal', t:function(p){ return 'Hello ' + p + ', I have reviewed your results and they are normal. Please get in touch if you have any questions.'; }},
+  {k:'book', l:'Please book a follow-up', t:function(p){ return 'Hello ' + p + ', I would like to see you for a follow-up. Please book a call window that suits you.'; }},
+  {k:'call', l:'Please call us', t:function(p){ return 'Hello ' + p + ', please call our office when you can, and the team will help with the next step.'; }}
+];
+function msOpen(){
+  if(!sdNeedChart()) return;
+  SD.ms = {text:SD.draft[PC_CURRENT] || '', done:null, key:''};   /* a message not sent is kept for this patient until it is sent, so Escape does not lose it */
+  sdEl('ms-sub').textContent = 'To ' + sdPref();
+  msRenderBody();
+  sdEl('ms-overlay').classList.add('show');
+}
+function msClose(){ sdEl('ms-overlay').classList.remove('show'); }
+function msRenderBody(){
+  var s = SD.ms, el = sdEl('ms-body'); if(!s) return;
+  if(s.done){
+    el.innerHTML = sdDone('Message sent', ['It is in the patient portal, and filed in Chart > Messages.', 'The email and the text say only: ' + MS_NOTICE + '.']);
+    paintPd(el); sdDoneFoot('ms'); return;
+  }
+  var p = sdPref();
+  el.innerHTML =
+    '<div class="sd-f"><p class="sd-l" id="ms-tl">Quick templates</p><div class="sd-pills" role="group" aria-labelledby="ms-tl">' + MS_TPL.map(function(t){
+      return '<button type="button" class="sd-tpl" onclick="msTpl(\'' + t.k + '\')">' + csEsc(t.l) + '</button>'; }).join('') + '</div></div>' +
+    '<div class="sd-f"><label class="sd-l" for="ms-text">Message to ' + csEsc(p) + '</label><textarea id="ms-text" rows="6" oninput="msText(this.value)"></textarea></div>' +
+    '<section class="sd-pv" aria-labelledby="ms-pv-h"><h3 class="sd-l" id="ms-pv-h">What ' + csEsc(p) + ' receives</h3>' +
+      '<div class="sd-pvb"><p class="sd-pvl">Email and text message</p><p class="sd-pvt">' + MS_NOTICE + '</p>' +
+        '<p class="sd-note">Nothing else is in the email subject or the text. The message is read in the patient portal, after sign-in.</p></div>' +
+      '<div class="sd-pvb"><p class="sd-pvl">In the patient portal</p><p class="sd-note">From Dr. Daniel Pannozzo, SimpleCare</p><p class="sd-pvm" id="ms-pv"></p></div></section>';
+  sdEl('ms-text').value = s.text;
+  msPreview(); msState();
+}
+function msPreview(){
+  var s = SD.ms, el = sdEl('ms-pv'); if(!el) return;
+  var t = s.text.trim();
+  el.textContent = t || 'Your message shows here as you write it.';
+  el.classList.toggle('empty', !t);
+}
+function msState(){
+  var s = SD.ms, ok = !!s.text.trim(), why = ok ? 'Nothing is sent until you press Send.' : 'Write a message first. Nothing is sent until you press Send.';
+  if(s.key === why) return;
+  s.key = why; sdFoot('ms', why, ok, false, 'Send message');
+}
+function msText(v){ SD.ms.text = v; SD.draft[PC_CURRENT] = v; msPreview(); msState(); }
+function msTpl(k){
+  var t = MS_TPL.filter(function(x){ return x.k === k; })[0], ta = sdEl('ms-text'); if(!t || !ta) return;
+  var add = t.t(sdPref()), more = !!ta.value.trim();
+  if(more) add = add.replace(/^Hello [^,]+, (.)/, function(m, c){ return c.toUpperCase(); });   /* under the doctor's own text there is no second greeting */
+  ta.value = more ? ta.value.replace(/\s+$/, '') + '\n\n' + add : add;   /* a template is only a starting text; the doctor edits it */
+  msText(ta.value); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+}
+function msSend(){
+  var s = SD.ms; if(!s || s.done) return;
+  var text = s.text.trim(); if(!text) return;
+  var name = PC_CURRENT, e = {id:'ms' + Date.now(), ts:Date.now(), pt:name, text:text, at:rxNow(), iso:rxIso(new Date())};
+  sdOut(name).msgs.unshift(e); delete SD.draft[name];
+  s.done = e; msRenderBody();
+  sdRefresh(name);
+  toast('Message sent to ' + sdPref() + '’s portal');
+}
+/* Chart > Messages: what was sent to the patient, above the chat lines that mention them */
+function sdMsgsHtml(name){
+  var o = SD.out[name]; if(!o || !o.msgs.length) return '';
+  return o.msgs.map(function(e){
+    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="chat"></span><h4>' + csEsc('Message to the patient · ' + e.iso + ' · ' + e.at) + '</h4></div>' +
+      '<p class="sd-msg">' + csEsc(e.text) + '</p><p class="cs-cap">Sent by ' + RX_DR + '. The patient was told by email and text that there is a new message, with no details.</p></div>';
+  }).join('');
+}
+
+/* SD:END (more drawers are added above this line) */
+</script>
+  <div class="build-stamp">v2 · build 2026-10-25 17:24</div>
 </body>
 </html>

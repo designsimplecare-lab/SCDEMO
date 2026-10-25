@@ -663,3 +663,39 @@ Build 2026-10-25 15:15. Light only. 1440, 1280 and 1024 px checked; screenshots 
 
 **QA.** `product/tests/harness/run.mjs` now finds its own folder, skips the sign-in (`?nologin=1`) and takes `PORT`; UC-01 `01-4` looks for the countdown in the queue band and the chart's top line; UC-06 and `27-6` test the panel, with two new checks (`06-13` Schedule 1A block, `06-14` override). Run on this build: 119 checks, 69 pass, 50 fail (12 are documented gaps), against 117 checks, 63 pass, 54 fail on the 21 Oct build. The 21 Oct build's `01-4`, `06-2` and `27-6` and the Chart "no stroked tags" check now pass; no check that passed before fails now. The rest were failing before this work.
 
+
+## Order, Refer, Message drawers (26 Oct)
+
+**These three drawers are PLACEHOLDERS.** Daniel gave no requirements for them. The field lists were the lead's assumptions, and they are kept short on purpose. They are to be replaced when Daniel's Action list arrives. He said on 18 Oct (`from-daniel/2026-10-18-journeys-review-videos.md`): "the actions you would just rip right off of my dirty chart ... I'll give you that list", and that he is "pretty happy with the imaging and the referrals". Nothing in the drawers states a clinical rule; the test and specialty lists are demo data.
+
+Build 2026-10-25 17:24 (stamp bottom-left). Light only; 1440, 1280 and 1024 px checked. Ani, 26 Oct: the Order, Refer and Message buttons only showed a toast ("Lab requisition started", "Referral started", "Message to the patient started"); "they must work now". Use cases touched: UC-03 and UC-07 (chart, note and action) in the 21 Oct numbering above. No requirement IDs are claimed; the product-manager decides whether these need their own.
+
+### What was built
+Three side drawers, the same pattern and accessibility as Task the MOA: `role="dialog"` with a label, they join the drawer stack (focus moves in, Tab stays inside, Esc and the backdrop close the top layer, focus returns to the button that opened it), 44 px buttons, 560 px wide, nothing under 14 px, no uppercase, ink text, brand blue only for the current choice and the primary action. Prescribe (T-026) and Task MOA were not touched.
+
+- **Order** (`odOpen`, `odSign`): a short search and pick of nine demo orders (blood tests: complete blood count, electrolytes, kidney function, lipids, HbA1c, TSH; imaging: chest X-ray, abdominal ultrasound; heart: ECG), one Reason line pre-filled from today's concern and editable, Routine or Urgent, and the two equal buttons "Sign and send" and "Sign and ask the MOA to send" (neither is the default; both are disabled until a test is picked). One reason for the whole order, not one per test (fewer fields).
+- **Refer** (`rfOpen`, `rfSign`): a specialty (demo list of eight, native select), Reason for referral pre-filled from the concern, Routine or Urgent, three things to attach (Recent results, Medications, Today's note; none ticked, the doctor chooses), and the same two equal buttons (disabled until a specialty and a reason exist).
+- **Message** (`msOpen`, `msSend`): three templates (Results are normal, Please book a follow-up, Please call us) that only fill the box (a second one is added under the doctor's own text), a free text box, and a live preview of exactly what the patient receives: the notice for email and text, which is always "You have a new message from your care team" (no health information in a subject or an SMS preview), and the message as it will read in the patient portal. One Send button, disabled while the box is empty; nothing is sent before the press. An unsent message is kept for that patient, so Esc does not lose it. No AI text is drafted in this drawer (if it ever is, it stays an "AI draft" until the doctor edits or accepts it).
+- **After a sign or send** each drawer shows a short done view (focus on Close) and a toast.
+
+### Callers (all wired)
+The Action tab rows (`.v2-orow` Order, Refer, Message); the note toolbar (`.cs-tb`: the classic layout, `?chart=current` or the layout switch); the older chart's "+ Order labs", "+ Order imaging" and "+ New referral" buttons. The care plan's "Order now" (`cpAct`) is unchanged: it still sets the item to Ordered and shows its toast; it does not open the drawer (Needs Ani or Daniel: should it?).
+
+### Where it files
+- **Order:** an entry in the chart's orders list (`LAB_ORDERS`, shown by `renderLabOrders`), so it appears under **Ordered and pending** at the top of Chart review and in **Chart > Results**; a **Chart > Documents** entry ("Lab requisition", "Imaging requisition" or "Requisition", then the date, then who sent it, "Signed by Dr. Pannozzo"). The new test states are "Ordered" (sent) and "With the MOA to send" (signed, not yet sent); the order line reads "Sent by you" or "With Japneet to send", and "Sent by Japneet" once the MOA's task is complete. An urgent order says "Urgent". The list's headings changed from "Lab orders" to "Orders", because imaging and the ECG are in the same list.
+- **Refer:** a **Chart > Documents** entry ("Referral · <specialty>") and a "Referral · <specialty>" card at the top of **Chart > Consults** (the v2 chart has no Referrals section; the older layout's Referrals list shows it too).
+- **Message:** a card in **Chart > Messages**. The Inbox holds results, and the thread panel is the chat with the MOA, so there is no patient thread to add to.
+- **MOA route:** one task through `moaTask()` (type Lab Work, Imaging or Referrals; priority from Routine or Urgent; the note says what to send), doctor to MOA only. The signed time is "Signed by Dr. Pannozzo, <time>".
+
+### Needs Daniel (to replace the placeholders)
+1. **Order:** the order types and the fields each needs; whether a reason is asked per test; whether imaging, labs and ECG are separate orders; what "Urgent" means for each; the requisition's recipient (the lab or imaging site).
+2. **Refer:** the referral fields and what is attached; who it goes to (a named specialist or clinic is not asked here); his own referral form ("pretty happy with the imaging and the referrals").
+3. **Message:** whether a message to the patient goes through the Inbox thread; the real templates and their wording; the real notification text.
+4. His full Action list ("including billing"), which replaces these rows.
+
+### Not done
+- Cedar-drafted text in these drawers (none was asked for here); a note line in the Plan when an order or referral is signed (prescribing adds one; left out to keep the drawers short); a patient-portal side for the sent message (the patient portal prototype does not read it); a real fax or e-fax (the sign press is the demo's send).
+- The care plan's "Order now" still does not open the Order drawer.
+
+### QA
+`product/tests/harness/run.mjs` has 11 new checks (suite `drawers`, `dr-*`): every caller opens a labelled dialog, Esc closes it and focus returns; both routes for Order and Refer; Message's generic notice, preview and single press; the design rules inside each drawer; the console. Run on this build: 130 checks, 80 pass, 50 fail (12 are documented gaps), against 119 checks, 69 pass, 50 fail before this work. No check that passed before fails now.
