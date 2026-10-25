@@ -653,3 +653,13 @@ Per-section Cedar on/off switches and the "AI view"; his Action list (billing in
 2. "Live queue" is still the heading above the queue card. Rename to "Queue"?
 3. Other windows are closed until opened; the current one is open. OK, or open all by default?
 4. Home has no clock now, except "Now in the 8–10 AM window · 55m left" in the Visits card. OK?
+
+## 21 Oct prescribing (T-026) and Home (25 Oct)
+Build 2026-10-25 15:15. Light only. 1440, 1280 and 1024 px checked; screenshots (local): `product/reports/shots/final-*.png`. Full design record: `product/specs/prescribing-redesign.md` ("What was built").
+
+**Prescribing.** The "Renew a prescription" card in the Orders tab is gone. **Prescribe** now opens one full-height panel over the chart with three steps (Review medications, Decide, Sign and send), the patient facts band on top, and "Prescriptions today" and the safety check always visible on the right. Callers: the Orders row, the Medications section of the chart (new "New prescription" button), and a renewal visit (opens by itself, without taking focus until the doctor uses it). The note toolbar's Prescribe button is in a section the v2 chart hides, so it is not an entry point here. The Orders tab shows a count when prescriptions are started and not sent; the chart's allergy banner shows an allergy added from PharmaNet; Chart > Documents lists each signed prescription; Chart > Medications labels a drug added from PharmaNet. Use cases and requirements touched (the product-manager updates the statuses): UC-06 and REQ-RX-01 to REQ-RX-12, REQ-CH-27.
+
+**Home.** The top summaries ("Visits today" and "Inbox, 17 to review") were removed at Ani's request, 25 Oct; this supersedes the "17 to review" wording above. Home starts at Needs your attention, then the Queue. The current call-window countdown is part of the Queue (the "Current window" band row), so it stays. The heading is now "Queue", so Needs Ani items 2 and 4 above are closed: the rename is done and the Visits card is gone.
+
+**QA.** `product/tests/harness/run.mjs` now finds its own folder, skips the sign-in (`?nologin=1`) and takes `PORT`; UC-01 `01-4` looks for the countdown in the queue band and the chart's top line; UC-06 and `27-6` test the panel, with two new checks (`06-13` Schedule 1A block, `06-14` override). Run on this build: 119 checks, 69 pass, 50 fail (12 are documented gaps), against 117 checks, 63 pass, 54 fail on the 21 Oct build. The 21 Oct build's `01-4`, `06-2` and `27-6` and the Chart "no stroked tags" check now pass; no check that passed before fails now. The rest were failing before this work.
+
