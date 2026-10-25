@@ -1,7 +1,7 @@
 # Daniel's "Prescription Modal — Requirements v2 (PharmaNet and Electronic Prescribing)" — 18 Oct 2026, read 21 Oct
 
 Source: PDF (9 pages) attached to "Simple Chart: PharmaNet & Medication Reconciliation" in his Notion; read in the browser pane
-(not kept in the repo). It is the written spec behind the two Claude prototypes (`2026-10-21-prescribing-claude-prototypes.md`) and
+(not kept in the repo). It is the written spec behind the two prototypes (`2026-10-21-prescribing-prototypes.md`) and
 replaces his version 1. It is built to the PharmaNet electronic prescribing standard (Conformance Standards v3.7, Volume 4C, Table 4).
 
 ## Phases

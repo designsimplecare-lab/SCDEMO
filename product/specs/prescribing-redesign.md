@@ -1,7 +1,7 @@
 # Prescribing redesign: Medications and prescribing (design decisions, 21 Oct 2026)
 
 Status: **Built** in `simplecare-physician-portal-v2.html` (Ani, 21 Oct: "do all"; first build 22 Oct, see "What was built" at the end). Gates still to run: `clinical-safety`, `privacy-security`, `qa-engineer`, `accessibility`. Sources: Daniel's two prototypes and his Prescription Modal Requirements v2
-(`from-daniel/2026-10-21-prescribing-claude-prototypes.md`, `…-prescription-modal-requirements-v2.md`). His screens show the **fields and rules**;
+(`from-daniel/2026-10-21-prescribing-prototypes.md`, `…-prescription-modal-requirements-v2.md`). His screens show the **fields and rules**;
 this is our design, in the portal's own design system (light mode, no uppercase, ≥14px, 44px buttons, red only for critical, Mage icons).
 Replaces the "Renew a prescription" card (`rx-card`); keeps what it does: favourites, directions × days = quantity, send by fax myself or ask the MOA.
 

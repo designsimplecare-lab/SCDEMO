@@ -1,6 +1,6 @@
-# Daniel's two prescribing prototypes (built in Claude): the fields — 21 Oct 2026
+# Daniel's two prescribing prototypes (built with an AI tool): the fields — 21 Oct 2026
 
-Source: two Claude artifacts Daniel built and sent through Ani (links in `private/links/`). Ani's brief: **they show the
+Source: two web prototypes Daniel built and sent through Ani (links in `private/links/`). Ani's brief: **they show the
 fields and the content he needs; they are not the design.** We redesign them to be simple and intuitive in our own
 design system. Both use an invented demo patient (name omitted here). Read through screenshots and clicks (the pages are
 framed and read-only); the right edge of the second one is cut off in the narrow pane, so the last columns are not seen.
