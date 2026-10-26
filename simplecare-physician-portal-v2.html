@@ -7266,7 +7266,7 @@ body:has(#callw:not([hidden])) #op-panel .op-sheet{height:calc(100% - 84px);}
                   <!-- T-028 (Ani, 26 Oct): two entries, not one Order with a chooser: one tap fewer, and Daniel's lab and imaging requisitions are two separate Ministry forms -->
                   <button type="button" class="v2-orow" onclick="labOpen()"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order labs</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="imgOpen()"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order imaging</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
-                  <button type="button" class="v2-orow" onclick="rfOpen()"><span class="ic" data-pdic="practice"></span><span class="v2-ot"><b>Refer</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="refOpen()"><span class="ic" data-pdic="practice"></span><span class="v2-ot"><b>Refer</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pdic="taskmoa"></span><span class="v2-ot"><b>Task</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="msOpen()"><span class="ic" data-pdic="chat"></span><span class="v2-ot"><b>Message</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                 </div>
@@ -7413,7 +7413,7 @@ body:has(#callw:not([hidden])) #op-panel .op-sheet{height:calc(100% - 84px);}
               <button type="button" class="cs-tb" onclick="rxOpen()"><span class="ic" data-pdic="chartnote"></span>Prescribe</button>
               <button type="button" class="cs-tb" onclick="labOpen()"><span class="ic" data-pdic="addon"></span>Order labs</button>
               <button type="button" class="cs-tb" onclick="imgOpen()"><span class="ic" data-pdic="addon"></span>Order imaging</button>
-              <button type="button" class="cs-tb" onclick="rfOpen()"><span class="ic" data-pdic="practice"></span>Refer</button>
+              <button type="button" class="cs-tb" onclick="refOpen()"><span class="ic" data-pdic="practice"></span>Refer</button>
               <button type="button" class="cs-tb" onclick="openTaskMoa(PC_CURRENT)" aria-label="Task the MOA"><span class="ic" data-pcic="task"></span>Task</button>
               <button type="button" class="cs-tb" onclick="msOpen()"><span class="ic" data-pdic="chat"></span>Message</button>
             </div>
@@ -7591,7 +7591,7 @@ body:has(#callw:not([hidden])) #op-panel .op-sheet{height:calc(100% - 84px);}
               </div>
 
               <div class="vd-pane" id="vdt-referrals">
-                <div class="vd-secttl"><h4>Referrals</h4><button class="btn dark xs" onclick="rfOpen()">+ New referral</button></div>
+                <div class="vd-secttl"><h4>Referrals</h4><button class="btn dark xs" onclick="refOpen()">+ New referral</button></div>
                 <div class="vd-list" id="vd-ref-list"><p class="pc-empty">No active referrals.</p></div>
               </div>
 
@@ -8104,16 +8104,7 @@ body:has(#callw:not([hidden])) #op-panel .op-sheet{height:calc(100% - 84px);}
 </div>
 
 <!-- T-028 (26 Oct): the placeholder Order drawer was replaced by the lab and imaging requisitions in #op-panel -->
-<!-- Refer drawer (26 Oct): a specialist or service. PLACEHOLDER built without a Daniel spec; see the note above rfOpen. -->
-<div class="tm-overlay drw-ov" id="rf-overlay" onclick="if(event.target===this) rfClose()">
-  <div class="tm-card drw" id="rf-card" role="dialog" aria-modal="true" aria-labelledby="rf-ttl">
-    <p class="tm-title" id="rf-ttl">Refer</p>
-    <p class="tm-sub" id="rf-sub"></p>
-    <div id="rf-body"></div>
-    <div class="tm-actions" id="rf-acts"></div>
-  </div>
-</div>
-
+<!-- T-029 (26 Oct): the placeholder Refer drawer was replaced by the referral in #op-panel -->
 <!-- Message drawer (26 Oct): a message to the patient. PLACEHOLDER built without a Daniel spec; see the note above msOpen. -->
 <div class="tm-overlay drw-ov" id="ms-overlay" onclick="if(event.target===this) msClose()">
   <div class="tm-card drw" id="ms-card" role="dialog" aria-modal="true" aria-labelledby="ms-ttl">
@@ -19686,7 +19677,7 @@ function sdPaintOld(name){
   var el = sdEl('vd-ref-list'); if(!el) return;
   var refs = (SD.out[name || PC_CURRENT] || {refs:[]}).refs;
   el.innerHTML = refs.length ? refs.map(function(e){
-    return '<div class="vd-item"><span><b>' + csEsc(e.spec) + '</b><i>' + csEsc(sdPlain(e.reason)) + ' &middot; ' + csEsc(sdStat(e)) + (e.urgent ? ' &middot; Urgent' : '') + '</i></span></div>';
+    return '<div class="vd-item"><span><b>' + csEsc(e.spec + (e.to ? ' · ' + e.to : '')) + '</b><i>' + csEsc(sdPlain(e.reason)) + ' &middot; ' + csEsc(sdStat(e)) + (e.urgent ? ' &middot; Urgent' : '') + '</i></span></div>';
   }).join('') : '<p class="pc-empty">No active referrals.</p>';
 }
 function sdStat(e){
@@ -19708,7 +19699,7 @@ function sdDocsHtml(name){
       list = e.items.map(function(t){ return '<li>' + csEsc(t.n) + '</li>'; }).join('');
       cap = (e.ind ? (e.kind === 'lab' ? 'Diagnosis: ' : 'Reason: ') + e.ind + ' \u00b7 ' : '') + (e.stat ? 'STAT' : e.prio === 'stat' ? 'Stat' : e.urgent ? 'Urgent' : 'Routine');
     } else {
-      kind = 'Referral \u00b7 ' + e.spec;
+      kind = 'Referral \u00b7 ' + e.spec + (e.to ? ' \u00b7 ' + e.to : '');   /* T-029: the specialist's name too */
       list = '<li>Reason: ' + csEsc(e.reason) + '</li>' + (e.att.length ? '<li>Attached: ' + csEsc(e.att.join(', ')) + '</li>' : '');
       cap = e.urgent ? 'Urgent' : 'Routine';
     }
@@ -19747,73 +19738,12 @@ function sdOrderStatus(o){
 })();
 var sdOpenChart0 = openChart;
 openChart = function(name){ sdOpenChart0.apply(this, arguments); sdPaintOld(PC_CURRENT); };
-/* ---------- REFER: a specialist or service (placeholder, see the note at the top) ----------
-   Needs Daniel: the referral fields, who it goes to (a named specialist or clinic is not asked here), and what is attached. "He is pretty happy with
-   the imaging and the referrals" (18 Oct), so this is to be replaced by his own referral form. A demo list of specialties, the reason from today's
-   concern (editable), routine or urgent, three things to attach from the chart (none ticked: the doctor chooses), and the two equal sign buttons.
-   On sign: Chart > Documents and Chart > Consults ("Referral · <specialty>"; the older layout's Referrals list too). */
-var RF_SPEC = ['Cardiology', 'Dermatology', 'Gastroenterology', 'Neurology', 'Ophthalmology', 'Orthopedics', 'Physiotherapy', 'Psychiatry'];
-var RF_ATT = [{k:'results', n:'Recent results'}, {k:'meds', n:'Medications'}, {k:'note', n:'Today’s note'}];
-function rfOpen(){
-  if(!sdNeedChart()) return;
-  SD.rf = {spec:'', reason:sdConcern(), urg:'routine', att:{}, done:null, key:''};
-  sdEl('rf-sub').textContent = 'For ' + sdPref() + (sdConcern() ? ' · ' + sdConcern() : '');
-  rfRenderBody();
-  sdEl('rf-overlay').classList.add('show');
-}
-function rfClose(){ sdEl('rf-overlay').classList.remove('show'); }
-function rfRenderBody(){
-  var s = SD.rf, el = sdEl('rf-body'); if(!s) return;
-  if(s.done){
-    var e = s.done, moa = sdMoa();
-    el.innerHTML = sdDone(e.route === 'moa' ? 'Signed and sent to ' + moa : 'Signed and sent',
-      ['Referral to ' + e.spec + (e.urgent ? ' (urgent)' : '') + (e.att.length ? ', with ' + e.att.join(', ').toLowerCase() : '') + '.',
-       e.route === 'moa' ? moa + ' has a task to send the referral. You can follow it in Tasks.' : 'You sent the referral yourself.',
-       'Filed in Chart > Documents and listed in Chart > Consults.']);
-    paintPd(el); sdDoneFoot('rf'); return;
-  }
-  var moa = sdMoa();
-  el.innerHTML =
-    '<div class="sd-f"><label class="sd-l" for="rf-spec">Specialty</label><select id="rf-spec" onchange="rfSet(\'spec\', this.value)"><option value="">Choose a specialty</option>' +
-      RF_SPEC.map(function(n){ return '<option value="' + n + '">' + n + '</option>'; }).join('') + '</select></div>' +
-    '<div class="sd-f"><label class="sd-l" for="rf-reason">Reason for referral</label><textarea id="rf-reason" rows="3" oninput="rfSet(\'reason\', this.value)"></textarea></div>' +
-    '<fieldset class="sd-f"><legend class="sd-l">Urgency</legend>' + sdPills('rf-urg', [['routine', 'Routine'], ['urgent', 'Urgent']], s.urg, 'rfUrg') + '</fieldset>' +
-    '<fieldset class="sd-f"><legend class="sd-l">Attach from the chart</legend>' + RF_ATT.map(function(a){
-      return '<label class="sd-chk"><input type="checkbox" value="' + a.k + '" onchange="rfAtt(this)"><span>' + csEsc(a.n) + '</span></label>'; }).join('') + '</fieldset>' +
-    '<div class="sd-who"><p class="sd-l">Who sends it</p>' +
-      '<p><b>Sign and send:</b> you send the referral yourself.</p>' +
-      '<p><b>Sign and ask the MOA to send:</b> ' + csEsc(moa) + ', on service for this window, gets a task and sends the referral.</p></div>';
-  sdEl('rf-reason').value = s.reason;
-  rfState();
-}
-function rfSet(k, v){ SD.rf[k] = v; rfState(); }
-function rfUrg(v){ SD.rf.urg = v; }
-function rfAtt(cb){ if(cb.checked) SD.rf.att[cb.value] = 1; else delete SD.rf.att[cb.value]; }
-function rfState(){
-  var s = SD.rf, why = !s.spec ? 'Choose a specialty.' : !sdPlain(s.reason) ? 'Write a reason for the referral.' : 'Both buttons sign it. You choose who sends it.';
-  if(s.key === why) return;   /* only redraw the footer when its words change, so typing in Reason keeps its place */
-  s.key = why; sdFoot('rf', why, !!s.spec && !!sdPlain(s.reason), true);
-}
-function rfSign(route){
-  var s = SD.rf; if(!s || s.done || !s.spec || !sdPlain(s.reason)) return;
-  var name = PC_CURRENT, moa = sdMoa(), at = rxNow(), urgent = s.urg === 'urgent', reason = sdPlain(s.reason);
-  var att = RF_ATT.filter(function(a){ return s.att[a.k]; }).map(function(a){ return a.n; });
-  var e = {id:'rf' + Date.now(), ts:Date.now(), pt:name, spec:s.spec, reason:reason, urgent:urgent, att:att, route:route, at:at, iso:rxIso(new Date()), date:sdDate()};
-  if(route === 'moa'){
-    var t = moaTask({patient:name, type:'Referrals', prio:urgent ? 'urgent' : 'routine', title:'Send referral: ' + s.spec,
-      note:'Send the referral to ' + s.spec + '. Reason: ' + reason + '.' + (att.length ? ' Attach: ' + att.join(', ').toLowerCase() + '.' : '') + (urgent ? ' Marked urgent.' : '') + ' Signed by ' + RX_DR + ' ' + at + '.'});
-    e.task = t.id;
-  }
-  sdOut(name).refs.unshift(e);
-  s.done = e; rfRenderBody();
-  sdRefresh(name);
-  toast(route === 'moa' ? 'Signed · sent to ' + moa : 'Signed · referral sent');
-}
+/* ---------- REFER: replaced (T-029, 26 Oct) by the referral (refOpen in the OP script below). sdRefsHtml and sdPaintOld stay: they show what was signed. ---------- */
 /* Chart > Consults: referrals sent, above the consult reports (the chart has no Referrals section of its own in the v2 layout) */
 function sdRefsHtml(name){
   var o = SD.out[name]; if(!o || !o.refs.length) return '';
   return o.refs.map(function(e){
-    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="practice"></span><h4>' + csEsc('Referral · ' + e.spec) + '</h4></div>' +
+    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="practice"></span><h4>' + csEsc('Referral · ' + e.spec + (e.to ? ' · ' + e.to : '')) + '</h4></div>' +
       '<p class="cs-cap">' + csEsc(e.iso + ' · ' + sdStat(e) + (e.urgent ? ' · Urgent' : '')) + '</p>' +
       '<ul class="cs-list"><li>Reason: ' + csEsc(e.reason) + '</li>' + (e.att.length ? '<li>Attached: ' + csEsc(e.att.join(', ')) + '</li>' : '') + '</ul></div>';
   }).join('');
@@ -20724,8 +20654,215 @@ function imgOpen(){ opOpen('img'); }
 /* the old single Order entry (any caller left over) asks for the lab requisition; imaging has its own entry */
 function odOpen(kind){ if(kind === 'img') imgOpen(); else labOpen(); }
 
+/* ============================================================
+   REFERRAL (T-029). Daniel's current screen (spec 1c): Search specialist (by name, specialty, or city) or Enter manually; Referral details
+   (URGENT, Reason for referral, Clinical summary, Request: "What you specifically want the specialist to do"); Supporting documents (up to 5);
+   the letter preview on the right. Ours (spec 2): the same two columns with the letter updating live; the reason pre-filled from today's
+   concern; Clinical summary and Request drafted by the AI with the sources it used, marked AI draft until accepted or edited; Urgent as a
+   clear switch (the letter shows "Urgent" above the greeting, red, bold, underlined, as in his letter); the AI suggests supporting documents
+   with a reason but ticks none.
+   DEMO DIRECTORY: invented names and 555 fax numbers (Needs Daniel: the directory's real source). Dr. M. Ferreira is the demo chart's own
+   cardiologist (care plan).
+   ============================================================ */
+var RF_DIR = [
+  {n:'Dr. M. Ferreira', s:'Cardiology', c:'St. Paul’s Cardiology, Vancouver', city:'Vancouver', f:'604-555-0119'},
+  {n:'Dr. Amara Okafor', s:'Cardiology', c:'Burnaby Heart Clinic', city:'Burnaby', f:'604-555-0141'},
+  {n:'Dr. Mei Tanaka', s:'Gastroenterology', c:'Tri-Cities Digestive Health', city:'Coquitlam', f:'604-555-0118'},
+  {n:'Dr. Rafael Ortiz', s:'Gastroenterology', c:'Fraser GI Associates', city:'Surrey', f:'604-555-0163'},
+  {n:'Dr. Hannah Weiss', s:'Dermatology', c:'West Side Skin Clinic', city:'Vancouver', f:'604-555-0127'},
+  {n:'Dr. Samuel Adeyemi', s:'Neurology', c:'Metrotown Neurology', city:'Burnaby', f:'604-555-0185'},
+  {n:'Dr. Clara Jensen', s:'Endocrinology', c:'Surrey Endocrine Centre', city:'Surrey', f:'604-555-0139'},
+  {n:'Dr. Priya Natarajan', s:'Gynecology', c:'Coquitlam Women’s Health', city:'Coquitlam', f:'604-555-0192'},
+  {n:'Dr. Victor Laine', s:'Orthopedics', c:'Thompson Orthopedic Clinic', city:'Kamloops', f:'250-555-0154'},
+  {n:'Dr. Owen McAllister', s:'Psychiatry', c:'Downtown Psychiatry Group', city:'Vancouver', f:'604-555-0108'},
+  {n:'Coastal Physiotherapy', s:'Physiotherapy', c:'Coastal Physiotherapy', city:'Burnaby', f:'604-555-0177'}
+];
+/* DEMO: a specialty the chart already points to, shown as a search shortcut (never chosen for the doctor) */
+var RF_HINT = {
+  'Gloria Mcdonald, 74F': {q:'Ferreira', why:'Cardiology is already following (consult, Jul 28).'},
+  'Behdis Maleki, 35F': {q:'Gastroenterology', why:'The Aug 4 plan says to refer to GI if ferritin stays low.'},
+  'Carol-Anne Feldman, 44F': {q:'Gynecology', why:'Third episode this year (intake today).'}
+};
+/* DEMO: what the AI asks the specialist to do, where the chart says it; otherwise a plain default the doctor edits */
+var RF_REQ = {
+  'Behdis Maleki, 35F': 'Please assess for a source of iron loss and advise on investigation. Ferritin has stayed low on oral iron.'
+};
+function rfDocs(name){
+  /* the chart's documents the letter can carry: visit notes, the intake, lab reports, consult letters, uploads (T-030) */
+  var L = PT_LAST[name], out = [];
+  if(L) out.push({id:'note', n:'Visit note · ' + L.date, t:'Note', k:'note'});
+  out.push({id:'intake', n:'Intake · today', t:'Form', k:'intake'});
+  var by = {};
+  (PT_RESULTS[name] || []).forEach(function(t){ var d = rsLast(t)[0]; (by[d] = by[d] || []).push(t.n); });
+  Object.keys(by).forEach(function(d, i){ out.push({id:'lab' + i, n:'Lab report · ' + by[d].join(', ') + ' · ' + d, t:'Lab report', k:'lab', d:d}); });
+  var seen = {};
+  (CARE_PLAN[name] || []).forEach(function(x){ if(x.specialty === 'Family practice' || seen[x.src]) return; seen[x.src] = 1; out.push({id:'cons' + Object.keys(seen).length, n:x.src, t:'Consult letter', k:'cons', spec:x.specialty}); });
+  ((SD.out[name] || {}).docs || []).forEach(function(d){ out.push({id:d.id, n:(d.kind === 'upload' ? d.n : d.type) + ' · ' + d.iso, t:d.kind === 'upload' ? 'Uploaded' : 'Letter', k:d.kind}); });
+  return out;
+}
+/* the AI suggests documents with a reason; it never ticks them (spec 2) */
+function rfSuggest(name, s){
+  var docs = rfDocs(name), spec = rfWho(s).s, sug = {};
+  var note = docs.filter(function(d){ return d.k === 'note'; })[0]; if(note) sug[note.id] = 'History and plan from the last visit.';
+  var labs = docs.filter(function(d){ return d.k === 'lab'; }); if(labs.length) sug[labs[0].id] = 'The most recent results.';
+  docs.forEach(function(d){ if(d.k === 'cons' && spec && d.spec === spec) sug[d.id] = 'The earlier letter from ' + spec.toLowerCase() + '.'; });
+  return sug;
+}
+function rfWho(s){ return s.manual ? s.man : (s.who != null ? RF_DIR[s.who] : {n:'', s:'', c:'', city:'', f:''}); }
+/* DEMO: where the generic draft would repeat itself, the chart's own story (last visit, care plan) is written out */
+var RF_SUM = {
+  'Gloria Mcdonald, 74F': {t:'74-year-old woman with chest pressure on exertion for 3 days, eased by rest. Known hypertension and type 2 diabetes. Seen on Jun 25 for exertional chest pressure, cause not yet established; cardiology saw her on Jul 28 and booked an exercise stress test (report not back).',
+    src:['Intake, today', 'Visit note, Jun 25', 'Cardiology consult, Jul 28']}
+};
+function rfSumDraft(name){
+  var r = sdRow(), a = opAge(), L = PT_LAST[name], src = ['Intake, today'], o = RF_SUM[name];
+  var t = o ? o.t : (a ? a + '-year-old ' : '') + opWoman() + '. ' + String(AI_SUMMARY[name] || (r ? r.concern : '')).replace(/ x(\d+)/g, ' for $1').replace(/\bHTN\b/g, 'hypertension').replace(/\.?$/, '.');
+  if(o) src = o.src.slice();
+  else if(L){ t += ' Seen on ' + L.date.replace(/, 2026$/, '') + ': ' + L.note.A.replace(/\.?$/, '.'); src.push('Visit note, ' + L.date.replace(/, 2026$/, '')); }
+  var flagged = (PT_RESULTS[name] || []).filter(function(x){ return rsLast(x)[2]; }).slice(0, 3);
+  if(flagged.length){ t += ' Recent results: ' + flagged.map(function(x){ var p = rsLast(x); return x.n + ' ' + p[1] + ' ' + x.u + ' (' + p[0] + ')'; }).join(', ') + '.'; src.push('Results'); }
+  t += ' Medications: ' + opMedsText(name) + '. Allergies: ' + opAllergy(name).text + '.';
+  src.push('Medication list');
+  return {t:t, src:src};
+}
+function rfFresh(name){
+  var d = rfSumDraft(name);
+  return {who:null, q:'', manual:false, man:{n:'', s:'', c:'', city:'', f:''}, urg:false, reason:(sdRow() || {}).concern || '', reasonFrom:true,
+    sum:d.t, sumSrc:d.src, sumSt:'draft', req:RF_REQ[name] || 'Please assess and advise on investigation and management.', reqSt:'draft', att:{}, note:true};
+}
+function rfQ(v){ OP.st.q = v; var el = document.getElementById('rf-who'); if(el){ el.innerHTML = rfWhoList(); paintPd(el); } }
+function rfPickWho(i){ var s = OP.st; s.who = i; s.manual = false; s.q = ''; OP.focusNext = 'whochg'; opRender(); }
+function rfChange(){ var s = OP.st; s.who = null; s.manual = false; OP.focusNext = 'rfq'; opRender(); }
+function rfManual(){ var s = OP.st; s.manual = true; s.who = null; OP.focusNext = 'man-n'; opRender(); }
+function rfManIn(k, v){ OP.st.man[k] = v; opSoft(); }
+function rfUrg(){ OP.st.urg = !OP.st.urg; opRender(); }
+function rfIn(k, v){
+  var s = OP.st; s[k] = v;
+  if(k === 'reason') s.reasonFrom = false;
+  if(k === 'sum' && s.sumSt === 'draft'){ s.sumSt = 'edited'; rfMk('sum'); }
+  if(k === 'req' && s.reqSt === 'draft'){ s.reqSt = 'edited'; rfMk('req'); }
+  opSoft();
+}
+function rfMk(k){ var el = document.getElementById('rf-' + k + '-mk'); if(el){ el.innerHTML = opMk('ok', 'Edited by you'); paintPd(el); } }
+function rfOk(k){ OP.st[k + 'St'] = 'ok'; OP.focusNext = k; opRender(); }
+function rfAtt(id, on){
+  var s = OP.st;
+  if(on && Object.keys(s.att).length >= 5){ opRender(); return; }
+  if(on) s.att[id] = 1; else delete s.att[id];
+  opRender();
+}
+function rfWhoList(){
+  var q = OP.st.q.trim().toLowerCase(); if(!q) return '';
+  var hits = RF_DIR.map(function(d, i){ return {d:d, i:i}; }).filter(function(x){ return (x.d.n + ' ' + x.d.s + ' ' + x.d.city + ' ' + x.d.c).toLowerCase().indexOf(q) > -1; });
+  if(!hits.length) return '<p class="op-note">No one in the directory matches. Enter the specialist manually.</p>';
+  return '<ul class="op-who" aria-label="Specialists found">' + hits.map(function(x){
+    return '<li><button type="button" data-fk="who-' + x.i + '" onclick="rfPickWho(' + x.i + ')"><b>' + csEsc(x.d.n) + ' · ' + csEsc(x.d.s) + '</b><span>' + csEsc(x.d.c + ' · fax ' + x.d.f) + '</span></button></li>';
+  }).join('') + '</ul>';
+}
+function rfMissing(){
+  var s = OP.st, w = rfWho(s), out = [];
+  if(!w.n.trim()) out.push(s.manual ? 'Write the specialist’s name.' : 'Choose a specialist, or enter one manually.');
+  else if(!w.s.trim()) out.push('Write the specialty.');
+  if(!sdPlain(s.reason)) out.push('Write the reason for referral.');
+  if(!sdPlain(s.sum)) out.push('Write a clinical summary.');
+  else if(s.sumSt === 'draft') out.push('Accept or edit the AI draft clinical summary.');
+  if(!sdPlain(s.req)) out.push('Write what you want the specialist to do.');
+  else if(s.reqSt === 'draft') out.push('Accept or edit the AI draft request.');
+  return out;
+}
+function rfMain(){
+  var s = OP.st, name = PC_CURRENT, w = rfWho(s), hint = RF_HINT[name], h = '';
+  h += '<section class="op-card" aria-labelledby="rf-sp-h"><h3 id="rf-sp-h">Specialist</h3>';
+  if(s.who != null){
+    h += '<div class="op-chosen"><div><b>' + csEsc(w.n + ' · ' + w.s) + '</b><span>' + csEsc(w.c + ' · fax ' + w.f) + '</span></div><button type="button" class="btn" data-fk="whochg" onclick="rfChange()">' + rxIc('edit') + 'Change</button></div>';
+  } else if(s.manual){
+    h += '<div class="op-grid">' + [['n', 'Name'], ['s', 'Specialty'], ['c', 'Clinic and address'], ['f', 'Fax number']].map(function(f){
+      return '<div class="op-f"><label for="rf-man-' + f[0] + '">' + f[1] + '</label><input type="' + (f[0] === 'f' ? 'tel' : 'text') + '" id="rf-man-' + f[0] + '" data-fk="man-' + f[0] + '" value="' + csEsc(s.man[f[0]]) + '" oninput="rfManIn(\'' + f[0] + '\', this.value)"></div>'; }).join('') + '</div>' +
+      '<div style="margin-top:8px"><button type="button" class="btn op-q" data-fk="mansearch" onclick="rfChange()">' + rxIc('search') + 'Search the directory instead</button></div>';
+  } else {
+    h += '<div class="op-f"><label for="rf-q">Search by name, specialty or city</label><input type="search" id="rf-q" data-fk="rfq" autocomplete="off" value="' + csEsc(s.q) + '" oninput="rfQ(this.value)"></div>' +
+      (hint ? '<p class="op-src" style="margin-top:6px">' + opMk('ai', 'Suggested') + ' ' + csEsc(hint.why) + ' <button type="button" class="btn op-q" data-fk="hint" onclick="rfQ(' + csEsc(JSON.stringify(hint.q)) + ');document.getElementById(\'rf-q\').value=' + csEsc(JSON.stringify(hint.q)) + '">' + rxIc('search') + 'Search ' + csEsc(hint.q) + '</button></p>' : '') +
+      '<div id="rf-who">' + rfWhoList() + '</div>' +
+      '<div style="margin-top:8px"><button type="button" class="btn" data-fk="manual" onclick="rfManual()">' + rxIc('edit') + 'Enter manually</button></div>';
+  }
+  h += '</section>';
+  h += '<section class="op-card" aria-labelledby="rf-dt-h"><h3 id="rf-dt-h">Referral details</h3>' +
+    '<button type="button" class="op-sw" role="switch" data-fk="urg" aria-checked="' + s.urg + '" aria-describedby="rf-urg-h" onclick="rfUrg()"><span class="op-swt" aria-hidden="true"></span>Urgent</button>' +
+    '<p class="op-note" id="rf-urg-h">Adds “Urgent” above the greeting in the letter.</p>' +
+    '<div class="op-f" style="margin-top:12px"><div class="op-lrow"><label for="rf-reason">Reason for referral</label>' + (s.reasonFrom && s.reason ? opMk('chart', 'From today’s concern') : '') + '</div>' +
+      '<textarea id="rf-reason" rows="2" data-fk="reason" oninput="rfIn(\'reason\', this.value)">' + csEsc(s.reason) + '</textarea></div>' +
+    '<div class="op-f" style="margin-top:12px"><div class="op-lrow"><label for="rf-sum">Clinical summary</label><span id="rf-sum-mk" class="op-lrow">' + opAiMk(s.sumSt, 'sumok', 'rfOk(\'sum\')') + '</span></div>' +
+      '<textarea id="rf-sum" rows="6" data-fk="sum" oninput="rfIn(\'sum\', this.value)">' + csEsc(s.sum) + '</textarea><p class="op-src">Sources the AI used: ' + csEsc(s.sumSrc.join('; ')) + '</p></div>' +
+    '<div class="op-f" style="margin-top:12px"><div class="op-lrow"><label for="rf-req">Request</label><span id="rf-req-mk" class="op-lrow">' + opAiMk(s.reqSt, 'reqok', 'rfOk(\'req\')') + '</span></div>' +
+      '<p class="op-note" id="rf-req-h">What you specifically want the specialist to do</p>' +
+      '<textarea id="rf-req" rows="3" data-fk="req" aria-describedby="rf-req-h" oninput="rfIn(\'req\', this.value)">' + csEsc(s.req) + '</textarea></div></section>';
+  var docs = rfDocs(name), sug = rfSuggest(name, s), n = Object.keys(s.att).length;
+  h += '<section class="op-card" aria-labelledby="rf-at-h"><div class="op-hrow"><h3 id="rf-at-h">Supporting documents</h3><span class="op-note" aria-live="polite">' + n + ' of 5</span></div>' +
+    '<p class="op-note">Attach the patient’s documents to fax with this referral (up to 5). Suggested ones say why; none is ticked for you.</p><ul class="op-att">' +
+    docs.map(function(d){ var on = !!s.att[d.id], dis = !on && n >= 5;
+      return '<li><label class="op-t"><input type="checkbox" data-fk="att-' + d.id + '"' + (on ? ' checked' : '') + (dis ? ' disabled' : '') + ' onchange="rfAtt(\'' + d.id + '\', this.checked)"><span>' + csEsc(d.n) + '<span class="op-td">' + csEsc(d.t) + '</span>' +
+        (sug[d.id] ? '<span class="op-sgw">' + rxIc('copilot') + 'Suggested: ' + csEsc(sug[d.id]) + '</span>' : '') + '</span></label></li>'; }).join('') + '</ul>' +
+    (n >= 5 ? '<p class="op-note">Five are attached, the most a referral carries. Untick one to add another.</p>' : '') + '</section>';
+  return h;
+}
+function rfLetter(forPaper){
+  var s = OP.st, name = PC_CURRENT, w = rfWho(s), ch = ptChart(name), docs = rfDocs(name).filter(function(d){ return s.att[d.id]; });
+  var ph = function(t){ return '<span class="op-ph">' + csEsc(t) + '</span>'; };
+  var h = '<article class="op-letter" aria-label="Referral letter' + (forPaper ? '' : ', live preview') + '">' +
+    '<div class="op-lh"><div><b>SimpleCare</b><span>' + OP_DR_FULL + ' · Family physician · Virtual care</span></div><span>' + csEsc(sdDate()) + '</span></div>' +
+    '<p><b>To:</b> ' + (w.n ? csEsc(w.n) + (w.s ? ', ' + csEsc(w.s) : '') : ph('Choose a specialist')) + (w.c ? '\n' + csEsc(w.c) : '') + (w.f ? '\nFax ' + csEsc(w.f) : '') + '</p>' +
+    '<p><b>Re:</b> ' + csEsc(opLegal()) + ' · ' + csEsc([opAge(), opSex()].filter(Boolean).join(' · ')) + ' · PHN ' + csEsc(ch.phn || '—') + '</p>' +
+    (s.urg ? '<p class="op-urg">Urgent</p>' : '') +
+    '<p>Dear ' + (w.n ? csEsc(w.n) : ph('Dr. …')) + ',</p>' +
+    '<p>Thank you for seeing ' + csEsc(opLegal()) + (sdPlain(s.reason) ? ' for ' + csEsc(sdPlain(s.reason).replace(/^./, function(c){ return c.toLowerCase(); })) : '') + '.</p>' +
+    '<p>' + (sdPlain(s.sum) ? csEsc(s.sum) : ph('Clinical summary')) + '</p>' +
+    '<p><b>Request:</b> ' + (sdPlain(s.req) ? csEsc(s.req) : ph('What you want the specialist to do')) + '</p>' +
+    (docs.length ? '<p><b>Enclosed:</b></p><ul>' + docs.map(function(d){ return '<li>' + csEsc(d.n) + '</li>'; }).join('') + '</ul>' : '') +
+    '<p>Sincerely,\n' + OP_DR_FULL + '\nSimpleCare</p>' +
+    '<p class="op-ph">Signed with the time when you press a sign button.</p></article>';
+  return h;
+}
+OP_K.ref = {
+  two:true,
+  title:function(){ return 'Referral'; },
+  noun:function(){ return 'the referral'; },
+  railLabel:function(){ return 'Letter preview'; },
+  fresh:function(name){ return rfFresh(name); },
+  selfLabel:function(){ return 'Sign and fax to specialist'; },
+  okLine:function(){ return 'Both buttons sign it. You choose who sends it.'; },
+  pvNote:function(){ return 'The letter exactly as it will be faxed, with the documents listed as enclosed.'; },
+  valid:function(){
+    var m = rfMissing(); if(m.length) return {why:m.length > 1 ? m[0].replace(/\.$/, '') + ' (and ' + (m.length - 1) + ' more).' : m[0]};
+    if(!rfWho(OP.st).f.trim()) return {selfWhy:'Add the specialist’s fax number to fax it yourself. ' + sdMoa() + ' can still send it.'};
+    return {};
+  },
+  main:function(){ return rfMain(); },
+  rail:function(){ return '<p class="op-gl">Letter preview</p>' + rfLetter(false); },
+  paper:function(){ return '<div style="max-width:860px;margin:0 auto;width:100%">' + rfLetter(true) + '</div>'; },
+  sign:function(route, name, at){
+    var s = OP.st, w = rfWho(s), moa = sdMoa(), reason = sdPlain(s.reason);
+    var att = rfDocs(name).filter(function(d){ return s.att[d.id]; }).map(function(d){ return d.n; });
+    var e = {id:'rf' + Date.now(), kind:'ref', ts:Date.now(), pt:name, spec:w.s, to:w.n, fax:w.f, reason:reason, urgent:s.urg, att:att, route:route, at:at, iso:rxIso(new Date()), date:sdDate()};
+    if(route === 'moa'){
+      var t = opMoaTask({patient:name, type:'Referrals', prio:s.urg ? 'urgent' : 'routine', title:'Send referral: ' + w.n + ' (' + w.s + ')',
+        note:'Send the referral letter to ' + w.n + ', ' + w.s + (w.f ? ' (fax ' + w.f + ')' : ' (no fax number on the letter; please find it)') + '. Reason: ' + reason + '.' + (att.length ? ' Enclose: ' + att.join('; ') + '.' : '') + (s.urg ? ' Marked urgent.' : '') + ' Signed by ' + RX_DR + ' ' + at + '.'});
+      e.task = t.id;
+    }
+    sdOut(name).refs.unshift(e);
+    e.noteLine = 'Referral to ' + w.n + ' (' + w.s + ')' + (s.urg ? ', urgent' : '') + ': ' + reason + '. Signed by ' + RX_DR + ' ' + at + (route === 'moa' ? '; sent to ' + moa + ' (MOA) to send.' : '; faxed to the specialist.');
+    e.toast = route === 'moa' ? 'Signed · sent to ' + moa + ' to send' : 'Signed · referral faxed';
+    return e;
+  },
+  doneHtml:function(e){ return opDoneHtml(e.route === 'moa' ? 'Signed and sent to ' + sdMoa() : 'Signed and faxed to the specialist',
+    ['Referral to ' + e.to + ', ' + e.spec + (e.urgent ? ' (urgent)' : '') + (e.att.length ? ', with ' + e.att.length + (e.att.length === 1 ? ' document' : ' documents') : '') + '.',
+     e.route === 'moa' ? sdMoa() + ' has a task to send the referral. You can follow it in Tasks.' : 'You faxed the referral yourself.',
+     'Filed in Chart > Documents and listed in Chart > Consults.'], e); }
+};
+function refOpen(){ opOpen('ref'); }
+function rfOpen(){ refOpen(); }   /* the older callers' name */
+
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-26 16:16</div>
+  <div class="build-stamp">v2 · build 2026-10-26 16:19</div>
 </body>
 </html>
