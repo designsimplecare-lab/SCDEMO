@@ -6536,6 +6536,225 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
   #ms-overlay .sd-pvm{margin:0;font-size:15px;line-height:22px;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere;max-width:66ch;}
   #ms-overlay .sd-pvm.empty{color:var(--ink-soft);}
   #cs-msgs .sd-msg{margin:6px 0;font-size:15px;line-height:22px;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere;max-width:66ch;}
+
+/* ===== T-028, T-029, T-030 (Ani, 26 Oct 2026: "build the redesigned Lab requisition, Imaging requisition, Referral and Medical documents").
+   Spec: product/specs/orders-referrals-documents.md section 2. One full-height panel (#op-panel) for all four forms, the same family as the
+   T-026 prescribing panel (#rx-panel): paper page, white cards, depth from lightness, ink words, colour on icons, brand blue only for the
+   current choice and the primary actions, red only for the referral letter's Urgent marker. Nothing under 14 px, buttons 44 px, prose 66ch,
+   no uppercase (Daniel's portal uses uppercase headings; ours does not), light only. ===== */
+#op-panel.op-ov{display:none;position:fixed;inset:0;z-index:200;background:rgba(23,24,28,.28);justify-content:flex-end;}
+#op-panel.op-ov.show{display:flex;}
+#op-panel .op-sheet{display:flex;flex-direction:column;width:min(1320px,calc(100vw - 64px));height:100%;background:var(--paper);box-shadow:-12px 0 40px rgba(23,24,28,.14);color:var(--ink);font-size:15px;line-height:22px;}
+body:has(#callw:not([hidden])) #op-panel .op-sheet{height:calc(100% - 84px);}
+#op-panel :is(button,input,textarea,select,a,[tabindex]):focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+#op-panel h2:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px;}
+#op-panel .op-top{flex:none;display:flex;align-items:center;gap:12px;padding:14px 24px 12px;background:var(--panel);box-shadow:0 1px 0 var(--line);}
+#op-panel .op-tt{flex:1;min-width:0;}
+#op-panel .op-tt h2{margin:0;font-size:20px;line-height:28px;font-weight:700;color:var(--ink);}
+#op-panel .op-tt p{margin:0;font-size:14px;line-height:20px;color:var(--ink-soft);max-width:none;}
+#op-panel .op-x{width:44px;height:44px;flex:none;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:12px;background:none;color:var(--ink-soft);cursor:pointer;padding:0;}
+#op-panel .op-x:hover{background:var(--wash);color:var(--ink);}
+#op-panel .op-x .ic,#op-panel .op-x svg{width:22px;height:22px;}
+#op-panel .op-body{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;padding:16px 24px;overflow:hidden;}
+#op-panel .op-body.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+#op-panel .op-body.solo{grid-template-columns:minmax(0,1fr);}
+#op-panel .op-main{min-width:0;overflow-y:auto;overscroll-behavior:contain;container-type:inline-size;padding-right:4px;display:grid;gap:12px;align-content:start;}
+#op-panel .op-rail{min-width:0;overflow-y:auto;overscroll-behavior:contain;display:grid;gap:12px;align-content:start;}
+#op-panel .op-rail[hidden]{display:none;}
+#op-panel .op-card{background:var(--panel);border-radius:14px;padding:14px 16px;min-width:0;}
+#op-panel .op-card > h3,#op-panel .op-h3{margin:0 0 6px;font-size:16px;line-height:24px;font-weight:700;color:var(--ink);}
+#op-panel .op-hrow{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:0 0 6px;}
+#op-panel .op-hrow h3{flex:1 1 auto;margin:0;font-size:16px;line-height:24px;font-weight:700;color:var(--ink);}
+#op-panel .op-note{margin:0;font-size:14px;line-height:20px;color:var(--ink-soft);max-width:66ch;}
+#op-panel .op-p{margin:0;font-size:15px;line-height:22px;color:var(--ink);max-width:66ch;}
+#op-panel .op-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+/* buttons: 44 px with an icon; the secondary style is an outline (rx-panel's own) */
+#op-panel .btn{min-height:44px;height:auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 16px;border-radius:12px;border:1px solid var(--ink);background:var(--panel);font:inherit;font-size:15px;font-weight:600;line-height:22px;color:var(--ink);cursor:pointer;box-sizing:border-box;}
+#op-panel .btn .ic,#op-panel .btn svg{width:18px;height:18px;flex:none;}
+#op-panel .btn.dark{background:var(--brand);border-color:var(--brand);color:#fff;}
+#op-panel .btn.dark:hover{background:var(--brand-ink);border-color:var(--brand-ink);}
+#op-panel .btn:disabled{opacity:.45;cursor:not-allowed;}
+#op-panel .btn.op-q{border-color:transparent;background:none;padding:0 10px;}
+#op-panel .btn.op-q:hover{background:var(--wash);}
+/* fields */
+#op-panel input[type=text],#op-panel input[type=search],#op-panel input[type=tel],#op-panel input[type=date],#op-panel input[type=number],#op-panel select,#op-panel textarea{height:44px;box-sizing:border-box;padding:0 12px;border:1px solid var(--line-strong);border-radius:12px;background:var(--panel);font:inherit;font-size:15px;line-height:22px;color:var(--ink);width:100%;max-width:66ch;}
+#op-panel textarea{height:auto;padding:10px 12px;resize:vertical;}
+#op-panel .op-f{display:grid;gap:4px;min-width:0;}
+#op-panel .op-f > label,#op-panel .op-f > .op-fl,#op-panel .op-fs > legend{font-size:14px;line-height:20px;font-weight:600;color:var(--ink);padding:0;}
+#op-panel .op-fs{margin:0;padding:0;border:0;min-width:0;display:grid;gap:8px;}
+#op-panel .op-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px 16px;}
+#op-panel .op-grid .op-wide{grid-column:1 / -1;}
+/* markers: "AI draft" and "From the chart" (text with an icon, not a tag) */
+#op-panel .op-mk{display:inline-flex;align-items:center;gap:6px;font-size:14px;line-height:20px;font-weight:600;color:var(--ink);}
+#op-panel .op-mk .ic,#op-panel .op-mk svg{width:16px;height:16px;color:var(--brand);flex:none;}
+#op-panel .op-mk.chart{font-weight:500;color:var(--ink-soft);}
+#op-panel .op-mk.chart .ic{color:var(--ink-soft);}
+#op-panel .op-mk.ok .ic{color:var(--good);}
+#op-panel .op-lrow{display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px;}
+#op-panel .op-lrow > label,#op-panel .op-lrow > .op-fl{font-size:14px;line-height:20px;font-weight:600;color:var(--ink);}
+#op-panel .op-src{font-size:14px;line-height:20px;color:var(--ink-soft);max-width:66ch;margin:0;}
+/* chips, segmented control, pills (one family with rx-panel) */
+#op-panel .op-chips{display:flex;flex-wrap:wrap;gap:6px;}
+#op-panel .op-chip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:0;border-radius:999px;background:var(--wash);font:inherit;font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;text-align:left;}
+#op-panel .op-chip .ic,#op-panel .op-chip svg{width:16px;height:16px;color:var(--brand);flex:none;}
+#op-panel .op-chip:hover{background:var(--brand-wash);}
+#op-panel .op-chip[aria-pressed="true"]{background:var(--brand);color:#fff;}
+#op-panel .op-chip[aria-pressed="true"] .ic{color:#fff;}
+#op-panel .op-seg{display:flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:24px;background:var(--wash);width:fit-content;max-width:100%;box-sizing:border-box;}
+#op-panel .op-sb{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border:0;border-radius:999px;background:none;font:inherit;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;}
+#op-panel .op-sb[aria-pressed="true"],#op-panel .op-sb[aria-checked="true"]{background:var(--brand);color:#fff;}
+#op-panel .op-gl{font-size:14px;line-height:20px;font-weight:600;color:var(--ink);margin:0;}
+/* a test: one checkbox row, 44 px, the whole row is the target */
+#op-panel .op-ts{display:grid;grid-template-columns:minmax(0,1fr);gap:2px;}
+@container (min-width:620px){ #op-panel .op-ts{grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 12px;} }
+#op-panel .op-t{display:flex;align-items:flex-start;gap:12px;min-height:44px;padding:11px 12px;box-sizing:border-box;border-radius:12px;font-size:15px;line-height:22px;color:var(--ink);cursor:pointer;}
+#op-panel .op-t:hover{background:var(--wash);}
+#op-panel .op-t:has(input:checked){background:var(--brand-wash);}
+#op-panel .op-t:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:-2px;}
+#op-panel .op-t input{flex:none;width:20px;height:20px;margin:1px 0 0;accent-color:var(--brand);}
+#op-panel .op-t input:focus-visible{outline:none;}
+#op-panel .op-t .op-td{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+#op-panel .op-t .op-tg{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+/* form sections: one column; a section with a choice is open, the rest closed with a count */
+#op-panel .op-form{display:grid;gap:8px;}
+#op-panel .op-sec{background:var(--panel);border-radius:14px;min-width:0;}
+#op-panel .op-sec h3{margin:0;}
+#op-panel .op-sh{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:0 16px;border:0;border-radius:14px;background:none;font:inherit;font-size:16px;line-height:24px;font-weight:700;color:var(--ink);cursor:pointer;text-align:left;}
+#op-panel .op-sh:hover{background:var(--wash);}
+#op-panel .op-sh .op-st{flex:1 1 auto;}
+#op-panel .op-sh .op-cnt{font-size:14px;font-weight:500;color:var(--ink-soft);}
+#op-panel .op-sh.has .op-cnt{color:var(--ink);font-weight:600;}
+#op-panel .op-sh .ic,#op-panel .op-sh svg{width:18px;height:18px;flex:none;color:var(--ink-soft);transition:transform .15s;}
+#op-panel .op-sh[aria-expanded="true"] .ic{transform:rotate(180deg);}
+#op-panel .op-sbd{padding:0 16px 14px;display:grid;gap:12px;}
+#op-panel .op-sbd[hidden]{display:none;}
+#op-panel .op-g{margin:0;padding:0;border:0;min-width:0;display:grid;gap:4px;}
+#op-panel .op-g > legend{padding:0;margin:0 0 4px;font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
+#op-panel .op-g > legend .op-one{display:block;font-size:14px;line-height:20px;font-weight:400;color:var(--ink-soft);}
+/* follow-up questions: only when needed, right under what asked for them */
+#op-panel .op-fu{display:grid;gap:8px;padding:12px;border-radius:12px;background:var(--wash);margin:2px 0 4px;min-width:0;}
+#op-panel .op-fu .op-pills{display:flex;flex-wrap:wrap;gap:6px;}
+#op-panel .op-pill{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border:0;border-radius:999px;background:var(--panel);font:inherit;font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;}
+#op-panel .op-pill[aria-pressed="true"]{background:var(--brand);color:#fff;}
+#op-panel .op-fu input[type=text],#op-panel .op-fu input[type=tel],#op-panel .op-fu input[type=date]{max-width:420px;}
+/* suggested for today */
+#op-panel .op-sug{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:0;}
+#op-panel .op-sug li{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);}
+#op-panel .op-sug li > div{flex:1 1 auto;min-width:0;}
+#op-panel .op-sug b{font-weight:600;}
+#op-panel .op-sug .op-why{margin:0;font-size:14px;line-height:20px;color:var(--ink);max-width:66ch;}
+#op-panel .op-sug .op-src{font-size:14px;}
+#op-panel .op-sug .btn{flex:none;}
+#op-panel .op-skip{margin:8px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);max-width:66ch;}
+/* search results */
+#op-panel .op-sr{display:grid;gap:2px;margin-top:8px;}
+#op-panel .op-sr:empty{display:none;}
+/* the rail: "This requisition" */
+#op-panel .op-rl{list-style:none;margin:0;padding:0;display:grid;gap:0;}
+#op-panel .op-rl li{display:flex;align-items:center;gap:8px;min-height:44px;border-top:1px solid var(--line);}
+#op-panel .op-rl li:first-child{border-top:0;}
+#op-panel .op-rl li > span{flex:1 1 auto;min-width:0;font-size:15px;line-height:22px;color:var(--ink);padding:6px 0;}
+#op-panel .op-rl li > span i{display:block;font-style:normal;font-size:14px;line-height:20px;color:var(--ink-soft);}
+#op-panel .op-rm{flex:none;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:12px;background:none;color:var(--ink-soft);cursor:pointer;padding:0;}
+#op-panel .op-rm:hover{background:var(--wash);color:var(--ink);}
+#op-panel .op-rm .ic,#op-panel .op-rm svg{width:18px;height:18px;}
+#op-panel .op-need{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:2px;}
+#op-panel .op-need button{display:flex;align-items:flex-start;gap:8px;width:100%;min-height:44px;padding:11px 10px;box-sizing:border-box;border:0;border-radius:10px;background:var(--wash);font:inherit;font-size:15px;line-height:22px;color:var(--ink);cursor:pointer;text-align:left;}
+#op-panel .op-need button:hover{background:var(--brand-wash);}
+#op-panel .op-need .ic,#op-panel .op-need svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--warn);}
+#op-panel .op-dl{margin:0;display:grid;gap:8px;}
+#op-panel .op-dl dt{margin:0;font-size:14px;line-height:20px;font-weight:600;color:var(--ink);}
+#op-panel .op-dl dd{margin:0;font-size:15px;line-height:22px;color:var(--ink);overflow-wrap:anywhere;white-space:pre-line;}
+#op-panel .op-dl dd .op-src{display:block;}
+/* the footer: Cancel, Save for later, Preview; the quiet line and the note checkbox; two equal send buttons, neither default */
+#op-panel .op-bar{flex:none;display:flex;align-items:center;gap:10px 12px;flex-wrap:wrap;padding:12px 24px;background:var(--panel);box-shadow:0 -1px 0 var(--line);}
+#op-panel .op-bl,#op-panel .op-br{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+#op-panel .op-br{margin-left:auto;}
+#op-panel .op-bm{flex:1 1 240px;min-width:0;display:grid;gap:2px;}
+#op-panel .op-bm p{margin:0;font-size:14px;line-height:20px;color:var(--ink-soft);max-width:66ch;}
+#op-panel .op-nl{display:inline-flex;align-items:center;gap:10px;min-height:44px;font-size:14px;line-height:20px;color:var(--ink);cursor:pointer;width:fit-content;}
+#op-panel .op-nl input{width:20px;height:20px;margin:0;accent-color:var(--brand);}
+#op-panel .op-br .op-go{min-width:200px;white-space:normal;text-align:left;}
+@media (max-width:1180px){ #op-panel .op-br{flex:1 1 100%;} #op-panel .op-br .op-go{flex:1 1 0;justify-content:center;text-align:center;} }
+/* the preview: the filled form or letter exactly as it will be faxed */
+#op-panel .op-pvh{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;max-width:860px;margin:0 auto;width:100%;}
+#op-panel .op-pvh p{flex:1 1 260px;margin:0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+#op-panel .op-paper{box-sizing:border-box;width:100%;max-width:860px;margin:0 auto;background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(23,24,28,.12),0 8px 24px rgba(23,24,28,.06);padding:32px 36px;color:var(--ink);font-size:14px;line-height:20px;}
+#op-panel .op-paper h4{margin:0 0 2px;font-size:18px;line-height:26px;font-weight:700;color:var(--ink);}
+#op-panel .op-paper h5{margin:14px 0 6px;padding-top:10px;border-top:1px solid var(--line-strong);font-size:15px;line-height:22px;font-weight:700;color:var(--ink);}
+#op-panel .op-paper h6{margin:8px 0 4px;font-size:14px;line-height:20px;font-weight:600;color:var(--ink);}
+#op-panel .op-paper p{margin:0 0 6px;font-size:14px;line-height:20px;color:var(--ink);max-width:none;}
+#op-panel .op-paper .op-pmeta{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px 18px;margin:10px 0 0;}
+#op-panel .op-paper .op-pmeta div{font-size:14px;line-height:20px;}
+#op-panel .op-paper .op-pmeta b{display:block;font-weight:600;color:var(--ink-soft);}
+#op-panel .op-pbx{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:4px 16px;}
+#op-panel .op-pi{display:flex;align-items:flex-start;gap:8px;font-size:14px;line-height:20px;color:var(--ink);}
+#op-panel .op-box{flex:none;width:14px;height:14px;margin-top:3px;border:1.5px solid var(--ink);border-radius:2px;box-sizing:border-box;position:relative;}
+#op-panel .op-box.on{background:var(--ink);}
+#op-panel .op-box.on::after{content:"";position:absolute;left:3.5px;top:0.5px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);}
+#op-panel .op-pfv{display:block;font-size:14px;line-height:20px;color:var(--ink);padding:2px 0 2px 22px;}
+#op-panel .op-sig{margin-top:18px;padding-top:12px;border-top:1px solid var(--line-strong);}
+/* the referral letter and documents: a live letter on the right */
+#op-panel .op-letter{box-sizing:border-box;background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(23,24,28,.12),0 8px 24px rgba(23,24,28,.06);padding:28px 32px;color:var(--ink);font-size:15px;line-height:23px;}
+#op-panel .op-letter p{margin:0 0 12px;max-width:66ch;white-space:pre-line;overflow-wrap:anywhere;}
+#op-panel .op-letter .op-lh{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid var(--line-strong);}
+#op-panel .op-letter .op-lh b{display:block;font-size:16px;}
+#op-panel .op-letter .op-lh span{font-size:14px;line-height:20px;color:var(--ink-soft);}
+#op-panel .op-letter .op-urg{color:var(--crit);font-weight:700;text-decoration:underline;text-underline-offset:3px;}
+#op-panel .op-letter .op-ph{color:var(--ink-soft);}
+#op-panel .op-letter ul{margin:0 0 12px;padding-left:20px;}
+#op-panel .op-paper .op-urg{color:var(--crit);font-weight:700;text-decoration:underline;}
+/* specialist search results, supporting documents, document types */
+#op-panel .op-who{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:2px;}
+#op-panel .op-who button{display:grid;gap:0;width:100%;min-height:52px;padding:8px 12px;box-sizing:border-box;border:0;border-radius:12px;background:none;font:inherit;text-align:left;color:var(--ink);cursor:pointer;}
+#op-panel .op-who button:hover{background:var(--wash);}
+#op-panel .op-who b{font-size:15px;line-height:22px;font-weight:600;}
+#op-panel .op-who span{font-size:14px;line-height:20px;color:var(--ink-soft);}
+#op-panel .op-chosen{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;padding:10px 12px;border-radius:12px;background:var(--wash);}
+#op-panel .op-chosen > div{flex:1 1 200px;min-width:0;}
+#op-panel .op-chosen b{display:block;font-size:15px;line-height:22px;}
+#op-panel .op-chosen span{font-size:14px;line-height:20px;color:var(--ink-soft);}
+#op-panel .op-sw{display:inline-flex;align-items:center;gap:12px;min-height:44px;padding:0 6px 0 0;border:0;background:none;font:inherit;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;}
+#op-panel .op-sw .op-swt{position:relative;flex:none;width:44px;height:26px;border-radius:13px;background:var(--line-strong);transition:background .15s;}
+#op-panel .op-sw .op-swt::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(23,24,28,.3);transition:left .15s;}
+#op-panel .op-sw[aria-checked="true"] .op-swt{background:var(--brand);}
+#op-panel .op-sw[aria-checked="true"] .op-swt::after{left:21px;}
+#op-panel .op-att{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:2px;}
+#op-panel .op-att .op-t{align-items:flex-start;}
+#op-panel .op-att .op-sgw{display:flex;align-items:center;gap:6px;font-size:14px;line-height:20px;color:var(--ink);}
+#op-panel .op-att .op-sgw .ic,#op-panel .op-att .op-sgw svg{width:16px;height:16px;color:var(--brand);flex:none;}
+#op-panel .op-t:has(input:disabled){cursor:not-allowed;opacity:.6;}
+#op-panel .op-types{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;}
+#op-panel .op-type{display:grid;gap:4px;align-content:start;min-height:96px;padding:14px 16px;border:0;border-radius:14px;background:var(--panel);font:inherit;text-align:left;color:var(--ink);cursor:pointer;}
+#op-panel .op-type:hover{background:var(--brand-wash);}
+#op-panel .op-type b{display:flex;align-items:center;gap:8px;font-size:16px;line-height:24px;font-weight:700;}
+#op-panel .op-type b .ic,#op-panel .op-type b svg{width:18px;height:18px;color:var(--brand);}
+#op-panel .op-type span{font-size:14px;line-height:20px;color:var(--ink-soft);}
+/* done */
+#op-panel .op-done{background:var(--panel);border-radius:14px;padding:18px 20px;max-width:760px;display:grid;gap:8px;}
+#op-panel .op-done h3{display:flex;align-items:center;gap:10px;margin:0;font-size:18px;line-height:26px;font-weight:700;color:var(--ink);}
+#op-panel .op-done h3 .ic,#op-panel .op-done h3 svg{width:22px;height:22px;color:var(--good);}
+#op-panel .op-done p{margin:0;font-size:15px;line-height:22px;color:var(--ink);max-width:66ch;}
+@media (max-width:900px){
+  #op-panel .op-sheet{width:100vw;}
+  #op-panel .op-body,#op-panel .op-body.two{grid-template-columns:minmax(0,1fr);overflow-y:auto;display:block;}
+  #op-panel .op-main{overflow:visible;}
+  #op-panel .op-rail{margin-top:16px;overflow:visible;}
+}
+/* Chart > Documents: "Documents and letters" with Create a document and Upload (T-030) */
+#cs-docs .dl-hd{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:0 0 12px;}
+#cs-docs .dl-hd h3{flex:1 1 auto;margin:0;font-size:17px;line-height:24px;font-weight:700;color:var(--ink);}
+#cs-docs .dl-hd .btn{min-height:44px;display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;border-radius:12px;padding:0 16px;cursor:pointer;}
+#cs-docs .dl-hd .btn .ic,#cs-docs .dl-hd .btn svg{width:18px;height:18px;}
+#cs-docs .dl-up{position:relative;}
+#cs-docs .dl-up input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;}
+#cs-docs .dl-up:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px;}
+#cs-docs .dl-open{min-height:44px;margin-top:6px;}
+#op-panel .op-gl .op-src{font-weight:400;}
+#op-panel .op-note > .op-mk{vertical-align:top;}
+#op-panel .op-pg{margin-top:8px;}
+#op-panel .op-pg:first-of-type{margin-top:0;}
+#cs-docs .dl-txt{margin:6px 0;font-size:15px;line-height:22px;color:var(--ink);white-space:pre-line;max-width:66ch;}
 </style>
 </head>
 <body>
@@ -7044,7 +7263,9 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
                 <section class="rm-drafts" id="rm-drafts" aria-labelledby="rm-dr-h" hidden></section>
                 <div class="v2-ord" id="v2-ord">
                   <button type="button" class="v2-orow" onclick="rxOpen();v2RxFocus()"><span class="ic" data-pdic="chartnote"></span><span class="v2-ot"><b>Prescribe</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
-                  <button type="button" class="v2-orow" onclick="odOpen()"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <!-- T-028 (Ani, 26 Oct): two entries, not one Order with a chooser: one tap fewer, and Daniel's lab and imaging requisitions are two separate Ministry forms -->
+                  <button type="button" class="v2-orow" onclick="labOpen()"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order labs</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="odOpen()"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order imaging</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="rfOpen()"><span class="ic" data-pdic="practice"></span><span class="v2-ot"><b>Refer</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pdic="taskmoa"></span><span class="v2-ot"><b>Task</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="msOpen()"><span class="ic" data-pdic="chat"></span><span class="v2-ot"><b>Message</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
@@ -7190,7 +7411,8 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
               </span>
               <span class="cs-tsep" aria-hidden="true"></span>
               <button type="button" class="cs-tb" onclick="rxOpen()"><span class="ic" data-pdic="chartnote"></span>Prescribe</button>
-              <button type="button" class="cs-tb" onclick="odOpen()"><span class="ic" data-pdic="addon"></span>Order</button>
+              <button type="button" class="cs-tb" onclick="labOpen()"><span class="ic" data-pdic="addon"></span>Order labs</button>
+              <button type="button" class="cs-tb" onclick="odOpen()"><span class="ic" data-pdic="addon"></span>Order imaging</button>
               <button type="button" class="cs-tb" onclick="rfOpen()"><span class="ic" data-pdic="practice"></span>Refer</button>
               <button type="button" class="cs-tb" onclick="openTaskMoa(PC_CURRENT)" aria-label="Task the MOA"><span class="ic" data-pcic="task"></span>Task</button>
               <button type="button" class="cs-tb" onclick="msOpen()"><span class="ic" data-pdic="chat"></span>Message</button>
@@ -7351,7 +7573,7 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
               </div>
 
               <div class="vd-pane" id="vdt-labs">
-                <div class="vd-secttl"><h4>Labs</h4><button class="btn dark xs" onclick="odOpen()">+ Order labs</button></div>
+                <div class="vd-secttl"><h4>Labs</h4><button class="btn dark xs" onclick="labOpen()">+ Order labs</button></div>
                 <div class="vd-subtabs"><button class="active">Results</button><button>Requisitions</button></div>
                 <div class="vd-subhead">Lab Work &mdash; ordered tests and current state</div>
                 <p class="lo-legend">What was ordered, how the requisition was fulfilled, and where each test stands. A requisition that failed says so; one whose receipt was never confirmed says that; a collection that is not due yet says that rather than implying a result is on its way.</p>
@@ -8087,6 +8309,21 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
   </div>
 </div>
 <!-- T-026 prescribing panel: HTML end -->
+<!-- T-028, T-029, T-030 (Ani, 26 Oct 2026): one full-height panel for the lab requisition, imaging requisition, referral and medical documents.
+     The T-026 prescribing panel's pattern (header, main column and right rail, pinned footer). Filled by opRender(). -->
+<div class="op-ov" id="op-panel">
+  <div class="op-sheet" id="op-sheet" role="dialog" aria-modal="true" aria-labelledby="op-ttl">
+    <header class="op-top">
+      <div class="op-tt"><h2 id="op-ttl" tabindex="-1">Order</h2><p id="op-sub"></p></div>
+      <button type="button" class="op-x" id="op-x" data-fk="x" onclick="opClose()" aria-label="Close"><span class="ic" data-pdic="close"></span></button>
+    </header>
+    <div class="op-body" id="op-body">
+      <div class="op-main" id="op-main"></div>
+      <aside class="op-rail" id="op-rail" aria-label="Summary"></aside>
+    </div>
+    <footer class="op-bar" id="op-bar"></footer>
+  </div>
+</div>
 
 <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
@@ -12115,7 +12352,7 @@ function renderLabOrders(){
         (o.standing ? '<span class="lo2-n">' + o.progress.done + '/' + o.progress.total + ' received</span>' : '') +
         '<span class="lo2-s ' + st[1] + '">' + st[0] + '</span></div>' +
       (o.window ? '<p class="lo2-q">' + String(o.window).replace(/^Collection window /, 'Collect ') + '</p>' : '') +
-      (o.urgent ? '<p class="lo2-q">Urgent</p>' : '') +
+      (o.urgent ? '<p class="lo2-q">' + (o.out && o.out.stat ? 'STAT' : o.out && o.out.prio === 'stat' ? 'Stat' : 'Urgent') + '</p>' : '') +   /* T-028: a STAT lab or Stat imaging says so */
       (rev ? '<button type="button" class="cs-link lo2-rv" onclick="if(typeof v2Tab===\'function\')v2Tab(\'review\',true)">' + rev + ' to review</button>' : '') +
       tests +
       ((o.unmapped || []).length ? '<p class="lo2-q">Also received: ' + o.unmapped.map(function(u){ return u.n; }).join(', ') + ' (not ordered)</p>' : '') +
@@ -19468,16 +19705,17 @@ function sdStat(e){
 }
 /* Chart > Documents: one entry per signed order or referral, named by what it is, then the date, then who sent it (the prescribing entries' rule) */
 function sdDocsHtml(name){
-  var o = SD.out[name]; if(!o) return '';
+  var o = SD.out[name], dr = typeof opDraftsHtml === 'function' ? opDraftsHtml(name) : '';   /* T-028: drafts saved for later come first */
+  if(!o) return dr;
   var all = o.orders.map(function(e){ return {e:e, k:'order'}; }).concat(o.refs.map(function(e){ return {e:e, k:'ref'}; }));
   all.sort(function(a, b){ return b.e.ts - a.e.ts; });
-  return all.map(function(x){
+  return dr + all.map(function(x){
     var e = x.e, kind, list, cap;
     if(x.k === 'order'){
       var g = e.items.map(function(t){ return t.g; }).filter(function(v, i, a){ return a.indexOf(v) === i; });
-      kind = g.length === 1 && g[0] === 'Blood tests' ? 'Lab requisition' : g.length === 1 && g[0] === 'Imaging' ? 'Imaging requisition' : 'Requisition';
+      kind = e.kind === 'lab' ? 'Lab requisition' : e.kind === 'img' ? 'Imaging requisition' : g.length === 1 && g[0] === 'Blood tests' ? 'Lab requisition' : g.length === 1 && g[0] === 'Imaging' ? 'Imaging requisition' : 'Requisition';   /* T-028: e.kind from the new forms */
       list = e.items.map(function(t){ return '<li>' + csEsc(t.n) + '</li>'; }).join('');
-      cap = (e.ind ? 'Reason: ' + e.ind + ' \u00b7 ' : '') + (e.urgent ? 'Urgent' : 'Routine');
+      cap = (e.ind ? (e.kind === 'lab' ? 'Diagnosis: ' : 'Reason: ') + e.ind + ' \u00b7 ' : '') + (e.stat ? 'STAT' : e.prio === 'stat' ? 'Stat' : e.urgent ? 'Urgent' : 'Routine');
     } else {
       kind = 'Referral \u00b7 ' + e.spec;
       list = '<li>Reason: ' + csEsc(e.reason) + '</li>' + (e.att.length ? '<li>Attached: ' + csEsc(e.att.join(', ')) + '</li>' : '');
@@ -19743,6 +19981,601 @@ function sdMsgsHtml(name){
 
 /* SD:END (more drawers are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-25 17:24</div>
+<script>
+/* ============================================================
+   ORDERS, REFERRALS and DOCUMENTS (T-028, T-029, T-030; Ani, 26 Oct 2026).
+   Spec: product/specs/orders-referrals-documents.md, section 2 (decided). Daniel, 25 Oct (from-daniel/2026-10-25-meeting-prescribing-and-orders.md, J):
+   the requisitions are the Ministry's standard forms, "keep every field", "how you present the information is going to be up to us"; the AI
+   suggests tests with the reason and writes the radiologist's one-line clinical question; the doctor signs.
+   One full-height panel (#op-panel) hosts the four forms. It is the T-026 prescribing panel's pattern: header, a scrolling main column and a
+   right rail, a pinned footer; focus moves to the title on open, Tab stays inside (the shared drawer stack), Esc closes the top layer (the
+   preview first), focus goes back to the button that opened it.
+   Common footer (spec 2): Cancel · Save for later (was Carry Forward) · Preview · two equal send buttons, neither the default; both stay
+   disabled until the form is valid and the reason shows; a quiet "Add a line to today's note" (on by default) adds a line to the note's Plan.
+   Every AI-filled field says "AI draft" until the doctor accepts or edits it. Nothing is sent before the doctor presses a sign button.
+   DEMO DATA: the AI suggestions, order panels, exam lists, specialist directory and drafts are invented for the demo; none is a clinical rule.
+   ============================================================ */
+var OP = {kind:null, st:null, view:'form', done:null, opener:null, saved:{}, restored:null, barKey:''};
+var OP_K = {};   /* the forms register here: OP_K.lab, OP_K.img, OP_K.ref, OP_K.doc */
+var OP_DR_FULL = 'Dr. Daniel Pannozzo';
+function opPanel(){ return document.getElementById('op-panel'); }
+function opIsOpen(){ var p = opPanel(); return !!(p && p.classList.contains('show')); }
+function opClone(o){ return JSON.parse(JSON.stringify(o)); }
+function opAge(){ var r = sdRow(); return r && r.age ? parseInt(r.age, 10) : null; }
+function opSex(){ var r = sdRow(); return r ? r.sex || '' : ''; }
+function opLegal(){ var r = sdRow(); return r ? (r.legal || r.name) : 'the patient'; }
+function opWoman(){ var s = opSex(); return s === 'Female' ? 'woman' : s === 'Male' ? 'man' : 'person'; }
+function opMedsList(name){ return rxMeds(name).map(function(m){ return m.drug + ' ' + m.dose + ' ' + m.freq; }); }
+function opMedsText(name){ var l = opMedsList(name); return l.length ? l.join('; ') : 'None on the chart'; }
+/* allergies from the chart (three states: no known allergies, a named allergy, not recorded) */
+function opAllergy(name){
+  var a = CS.allergy[name] || 'nkda', ex = ((CS.allergyAdd || {})[name] || []).map(function(x){ return x.label || x; });
+  if(a === 'named') return {pen:true, text:['Penicillin (anaphylaxis)'].concat(ex).join('; ')};
+  if(ex.length) return {pen:false, text:ex.join('; ')};
+  return a === 'none' ? {pen:null, text:'Not recorded'} : {pen:false, text:'No known allergies'};
+}
+function opNoteOpen(){ var n = document.getElementById('vc-note-input'); return !!(n && !n.readOnly && typeof nsAppend === 'function'); }
+function opMk(kind, text){ return '<span class="op-mk' + (kind === 'ai' ? '' : ' ' + kind) + '">' + rxIc(kind === 'ai' ? 'copilot' : kind === 'ok' ? 'complete' : 'file') + csEsc(text) + '</span>'; }
+function opAiMk(state, fk, acceptFn){
+  /* "AI draft" until the doctor accepts or edits it (spec 2, common) */
+  if(state === 'draft') return opMk('ai', 'AI draft') + '<button type="button" class="btn op-q" data-fk="' + fk + '" onclick="' + acceptFn + '">' + rxIc('complete') + 'Accept</button>';
+  if(state === 'ok') return opMk('ok', 'Accepted');
+  return opMk('ok', 'Edited by you');
+}
+function opBrackets(t){ var m = String(t || '').match(/\[[^\]]+\]/g); return m || []; }
+
+/* ---------- open, close, Esc ---------- */
+function opOpen(kind, arg){
+  if(!sdNeedChart()) return;
+  var pn = opPanel(), K = OP_K[kind]; if(!pn || !K) return;
+  if(!opIsOpen()) OP.opener = (document.activeElement && document.activeElement !== document.body) ? document.activeElement : null;
+  var name = PC_CURRENT, sv = (OP.saved[name] || {})[kind];
+  OP.kind = kind; OP.view = 'form'; OP.done = null; OP.barKey = '';
+  OP.st = sv ? opClone(sv.st) : K.fresh(name, arg);
+  OP.restored = sv ? sv.at : null;
+  pn.classList.add('show');
+  opRender();
+  var b = document.getElementById('op-main'); if(b) b.scrollTop = 0;
+  var h = document.getElementById('op-ttl'); if(h) h.focus({preventScroll:true});
+}
+function opClose(){
+  var pn = opPanel(); if(!pn || !opIsOpen()) return;
+  pn.classList.remove('show');
+  var op = OP.opener; OP.opener = null;
+  if(op && document.contains(op) && op.checkVisibility && op.checkVisibility()) op.focus({preventScroll:true});
+  else { var f = document.getElementById('v2t-orders') || document.getElementById('v2-main'); if(f){ if(!f.matches('button,a,[tabindex]')) f.tabIndex = -1; f.focus({preventScroll:true}); } }
+}
+/* Esc: back from the preview first, then close (the drawer stack calls this for the top layer) */
+function opEsc(){
+  if(OP.view === 'preview' && !OP.done){ opView('form'); return; }
+  opClose();
+}
+function opView(v){
+  OP.view = v; opRender();
+  var m = document.getElementById('op-main'); if(m) m.scrollTop = 0;
+  var f = document.getElementById(v === 'preview' ? 'op-edit' : 'op-prev'); if(f) f.focus({preventScroll:true});
+}
+function opSubLine(){
+  var r = sdRow(); if(!r) return '';
+  return [opLegal(), opAge() ? opAge() + '' : '', opSex(), r.concern ? 'Today’s concern: ' + r.concern : ''].filter(Boolean).join(' · ');
+}
+
+/* ---------- render (the rx-panel way: redraw, then put focus and scroll back where they were) ---------- */
+function opRender(){
+  if(!opIsOpen() || !OP.kind) return;
+  var K = OP_K[OP.kind], sh = document.getElementById('op-sheet');
+  var ae = document.activeElement, inS = !!(ae && ae.closest && ae.closest('#op-sheet')), fk = inS ? ae.getAttribute('data-fk') : null;
+  var m = document.getElementById('op-main'), ra = document.getElementById('op-rail'), bd = document.getElementById('op-body');
+  var sm = m.scrollTop, sr = ra.scrollTop;
+  document.getElementById('op-ttl').textContent = K.title();
+  document.getElementById('op-sub').textContent = opSubLine();
+  var solo = OP.done || OP.view === 'preview' || (K.solo && K.solo());
+  bd.className = 'op-body' + (solo ? ' solo' : K.two ? ' two' : '');
+  if(OP.done){ m.innerHTML = K.doneHtml(OP.done); ra.hidden = true; ra.innerHTML = ''; }
+  else if(OP.view === 'preview'){
+    m.innerHTML = '<div class="op-pvh"><p>' + csEsc(K.pvNote()) + '</p></div>' + K.paper();
+    ra.hidden = true; ra.innerHTML = '';
+  } else {
+    m.innerHTML = (OP.restored ? '<p class="op-note">' + rxIc('carryforward') + ' Saved for later at ' + csEsc(OP.restored) + '. It opened where you left it.</p>' : '') + K.main();
+    if(solo){ ra.hidden = true; ra.innerHTML = ''; } else { ra.hidden = false; ra.innerHTML = K.rail(); }
+  }
+  ra.setAttribute('aria-label', K.railLabel ? K.railLabel() : 'Summary');
+  OP.barKey = ''; opBarPaint();
+  paintPd(opPanel());
+  m.scrollTop = sm; ra.scrollTop = sr;
+  var t = fk && sh.querySelector('[data-fk="' + fk.replace(/"/g, '') + '"]');
+  if(!t && OP.focusNext){ t = sh.querySelector('[data-fk="' + OP.focusNext + '"]'); }
+  OP.focusNext = null;
+  if(t && inS) t.focus({preventScroll:true});
+  else if(inS && !sh.contains(document.activeElement)){ var h = document.getElementById('op-ttl'); if(h) h.focus({preventScroll:true}); }
+}
+/* typing: only the rail and the footer change, so the field keeps its caret */
+function opSoft(){
+  if(!opIsOpen() || OP.done) return;
+  var K = OP_K[OP.kind], ra = document.getElementById('op-rail');
+  if(OP.view === 'form' && !ra.hidden){ var sr = ra.scrollTop; ra.innerHTML = K.rail(); paintPd(ra); ra.scrollTop = sr; }
+  opBarPaint();
+}
+function opBarPaint(){
+  var K = OP_K[OP.kind], el = document.getElementById('op-bar'); if(!el) return;
+  if(OP.done){
+    el.innerHTML = '<button type="button" class="btn dark" id="op-done" data-fk="done" onclick="opClose()">' + rxIc('complete') + 'Close</button>' +
+      '<div class="op-bm"><p>Signed by ' + RX_DR + ', ' + csEsc(OP.done.at) + '.</p></div>';
+    paintPd(el); OP.barKey = 'done'; return;
+  }
+  var v = K.valid(), self = K.selfLabel(), moaOk = !v.why && !v.moaWhy, selfOk = !v.why && !v.selfWhy;
+  var line = v.why || v.selfWhy || v.moaWhy || K.okLine();
+  var key = [OP.view, line, self, moaOk, selfOk, OP.st.note].join('|');
+  if(key === OP.barKey) return;   /* only redraw when the words or the states change */
+  var ae = document.activeElement, fk = ae && el.contains(ae) ? ae.getAttribute('data-fk') : null;
+  OP.barKey = key;
+  var h = '<div class="op-bl">' +
+    '<button type="button" class="btn" id="op-cancel" data-fk="cancel" onclick="opClose()">' + rxIc('close') + 'Cancel</button>' +
+    '<button type="button" class="btn" id="op-save" data-fk="save" onclick="opSave()">' + rxIc('carryforward') + 'Save for later</button>' +
+    (OP.view === 'preview'
+      ? '<button type="button" class="btn" id="op-edit" data-fk="edit" onclick="opView(\'form\')">' + rxIc('edit') + 'Back to the form</button>'
+      : '<button type="button" class="btn" id="op-prev" data-fk="prev" onclick="opView(\'preview\')">' + rxIc('eye') + 'Preview</button>') + '</div>';
+  h += '<div class="op-bm"><p id="op-why" aria-live="polite">' + csEsc(line) + '</p>' +
+    (opNoteOpen() ? '<label class="op-nl"><input type="checkbox" id="op-note" data-fk="note"' + (OP.st.note ? ' checked' : '') + ' onchange="OP.st.note=this.checked;opBarPaint()">Add a line to today’s note</label>' : '') + '</div>';
+  h += '<div class="op-br">' +
+    '<button type="button" class="btn dark op-go" id="op-self" data-fk="self"' + (selfOk ? '' : ' disabled') + ' onclick="opSign(\'self\')">' + rxIc('arrowup') + csEsc(self) + '</button>' +
+    '<button type="button" class="btn dark op-go" id="op-moa" data-fk="moa"' + (moaOk ? '' : ' disabled') + ' onclick="opSign(\'moa\')">' + rxIc('taskmoa') + 'Sign and ask the MOA to send</button></div>';
+  el.innerHTML = h; paintPd(el);
+  if(fk){ var t = el.querySelector('[data-fk="' + fk + '"]'); if(t && !t.disabled) t.focus({preventScroll:true}); }
+}
+
+/* ---------- save for later, sign ---------- */
+function opSave(){
+  if(!OP.kind || OP.done) return;
+  var name = PC_CURRENT, at = rxNow();
+  (OP.saved[name] = OP.saved[name] || {})[OP.kind] = {st:opClone(OP.st), at:at, ts:Date.now()};
+  sdRefresh(name);
+  toast('Saved for later · ' + OP_K[OP.kind].noun() + ' opens where you left it');
+  opClose();
+}
+function opSign(route){
+  if(!OP.kind || OP.done) return;
+  var K = OP_K[OP.kind], v = K.valid();
+  if(v.why || (route === 'self' && v.selfWhy) || (route === 'moa' && v.moaWhy)) return;
+  var name = PC_CURRENT, at = rxNow();
+  var e = K.sign(route, name, at);
+  e.at = at; e.route = route; e.noted = false;
+  if(OP.st.note && opNoteOpen() && e.noteLine){ nsAppend('plan', e.noteLine); e.noted = true; }
+  if(OP.saved[name]) delete OP.saved[name][OP.kind];
+  OP.done = e; OP.view = 'form';
+  opRender();
+  var m = document.getElementById('op-main'); if(m) m.scrollTop = 0;
+  var d = document.getElementById('op-done'); if(d) d.focus({preventScroll:true});
+  sdRefresh(name);
+  toast(e.toast);
+}
+function opDoneHtml(title, lines, e){
+  return '<section class="op-done" role="status"><h3>' + rxIc('complete') + '<span>' + csEsc(title) + '</span></h3>' +
+    lines.filter(Boolean).map(function(l){ return '<p>' + csEsc(l) + '</p>'; }).join('') +
+    (e.noted ? '<p>A line was added to the Plan of today’s note.</p>' : '') + '</section>';
+}
+function opMoaTask(o){ return moaTask(o); }
+/* the paper header shared by the previews: who, for whom, signed by */
+function opPaperHead(title){
+  var r = sdRow(), ch = ptChart(PC_CURRENT);
+  return '<h4>' + csEsc(title) + '</h4><p>SimpleCare · ' + OP_DR_FULL + ' · Family physician</p>' +
+    '<div class="op-pmeta"><div><b>Patient</b>' + csEsc(opLegal()) + '</div><div><b>Personal Health Number</b>' + csEsc(ch.phn || '—') + '</div>' +
+    '<div><b>Age and sex</b>' + csEsc([opAge(), opSex()].filter(Boolean).join(' · ')) + '</div><div><b>Date</b>' + csEsc(sdDate()) + '</div>' +
+    '<div><b>Ordering practitioner</b>' + OP_DR_FULL + '</div><div><b>Clinic</b>SimpleCare (virtual)</div></div>';
+}
+function opPaperSig(){
+  return '<div class="op-sig"><p><b>Signature:</b> ' + OP_DR_FULL + '. It is signed with the time when you press a sign button.</p></div>';
+}
+function opBox(on, label){ return '<span class="op-pi"><span class="op-box' + (on ? ' on' : '') + '" aria-hidden="true"></span><span>' + csEsc(label) + (on ? '<span class="op-vh"> (selected)</span>' : '') + '</span></span>'; }
+
+/* ---------- the panel joins the drawer stack: Tab stays inside, Esc closes the top layer ---------- */
+(function(){
+  var ov = document.getElementById('op-panel'); if(!ov || typeof DRW_CLOSE === 'undefined') return;
+  DRW_CLOSE['op-panel'] = function(){ opEsc(); };
+  new MutationObserver(function(){
+    var on = ov.classList.contains('show'), was = DRW_STACK.some(function(l){ return l.id === 'op-panel'; });
+    if(on && !was) drwOpened(ov); else if(!on && was) drwClosed(ov);
+  }).observe(ov, {attributes:true, attributeFilter:['class']});
+})();
+/* a chart switch closes the panel quietly (the forms belong to one patient) */
+(function(){
+  var oc = openChart;
+  openChart = function(){ if(opIsOpen()){ OP.opener = null; opPanel().classList.remove('show'); } return oc.apply(this, arguments); };
+})();
+
+/* ============================================================
+   LAB REQUISITION (T-028). The Ministry's standard outpatient laboratory requisition, every section and field verbatim from Daniel's
+   current screen (spec 1a), presented our way (spec 2): Suggested for today, order panels and favourites, search any test, then the form in
+   one column of sections (open when they hold a choice, closed with a count otherwise). "Choose up to one" groups act as single choice and a
+   second press clears. Follow-up questions appear only when needed. The rail lists the requisition and what is still needed.
+   Assumption to confirm with Daniel: "Choose up to one. Select again to clear." is his portal's help text for single-choice groups, so it is
+   shown on every such group; Hematology profile, INR and Ferritin stay separate checkboxes (they can be ordered together on the BC form).
+   ============================================================ */
+/* f: the follow-up questions a test brings: anticoag, pen (penicillin allergy), site, genhist, stisite, derm, myc. k: search words. */
+var LR_SECS = [
+  {id:'hem', t:'Hematology', groups:[
+    {items:[{id:'hem-prof', n:'Hematology profile', k:'cbc complete blood count hemoglobin haemoglobin'}, {id:'hem-inr', n:'INR', f:['anticoag'], k:'warfarin coagulation'}, {id:'hem-fer', n:'Ferritin (query iron deficiency)', s:'Ferritin', k:'iron'}]},
+    {t:'HFE – Hemochromatosis (check ONE only)', one:true, items:[{id:'hfe-conf', n:'Confirm diagnosis (ferritin first, + TS, + DNA testing)', s:'HFE – confirm diagnosis', k:'hfe hemochromatosis'}, {id:'hfe-rel', n:'Screen relatives (First-degree living relative available for testing)', s:'HFE – screen relatives', k:'hfe hemochromatosis'}]}]},
+  {id:'mic', t:'Microbiology', note:'Label all specimens with patient’s first & last name, DOB, PHN & site', groups:[
+    {t:'Routine culture', one:true, items:[{id:'rc-thr', n:'Throat', s:'Throat culture', f:['pen'], k:'culture swab'}, {id:'rc-spu', n:'Sputum', s:'Sputum culture', f:['pen'], k:'culture'}, {id:'rc-bld', n:'Blood', s:'Blood culture', f:['pen'], k:'culture'},
+      {id:'rc-oth', n:'Other', s:'Other culture', f:['pen', 'site'], k:'culture'}, {id:'rc-dw', n:'Deep Wound', s:'Deep wound culture', f:['pen', 'site'], site:'Site**', k:'culture'}, {id:'rc-sw', n:'Superficial Wound', s:'Superficial wound culture', f:['pen', 'site'], k:'culture'}]},
+    {t:'**Clinical information required', items:[{id:'gen', n:'Genital Culture', f:['site', 'genhist'], k:'culture swab'}]},
+    {items:[{id:'gbs', n:'Group B Strep Pregnancy Screen (vagino-anorectal swab)', s:'Group B Strep pregnancy screen', f:['pen'], k:'gbs strep pregnancy'}]},
+    {t:'STI tests', items:[{id:'sti-ct', n:'Chlamydia / Gonorrhea NAAT', f:['stisite'], k:'sti std chlamydia gonorrhea'}, {id:'sti-tv', n:'Trichomonas NAAT', f:['stisite'], k:'sti std trichomonas'}, {id:'gc', n:'Gonorrhea (GC) Culture', f:['site'], k:'sti std gonorrhea'}]},
+    {t:'Vaginitis', items:[{id:'vag-i', n:'Initial (Bacterial Vaginosis / Yeast)', s:'Vaginitis – initial', k:'vaginitis yeast bv swab'}, {id:'vag-c', n:'Chronic/recurrent (Bacterial Vaginosis / Yeast identification)', s:'Vaginitis – chronic/recurrent', k:'vaginitis yeast bv swab'}, {id:'vag-p', n:'Pre-Pubertal or Post-Menopausal (Culture)', s:'Vaginitis – pre-pubertal or post-menopausal', k:'vaginitis'}]},
+    {t:'Dermatophytes', items:[{id:'der-c', n:'Dermatophyte culture', f:['derm'], k:'fungal nail skin'}, {id:'der-k', n:'KOH prep (direct exam)', s:'KOH prep', f:['derm'], k:'fungal nail skin'}]},
+    {t:'Mycology', items:[{id:'myc-y', n:'Yeast', s:'Mycology – yeast', f:['myc'], k:'fungal candida'}, {id:'myc-f', n:'Fungus', s:'Mycology – fungus', f:['myc'], k:'fungal'}]}]},
+  {id:'uri', t:'Urine tests', groups:[
+    {items:[{id:'uri-d', n:'Dipstick (routine screening, or atypical symptoms)', s:'Urine dipstick', k:'urinalysis ua'}, {id:'uri-dc', n:'Dipstick + Culture if indicated (e.g., risk of resistant uropathogen)', s:'Urine dipstick + culture if indicated', k:'urinalysis ua uti'},
+      {id:'uri-m', n:'Microscopy (requires with ua / suspected pediatric UTI)', s:'Urine microscopy', k:'urinalysis'}, {id:'uri-c', n:'Culture (Symptomatic UTI, pregnancy, pre-urological procedure)', s:'Urine culture', k:'uti'}]}]},
+  {id:'ser', t:'Serology tests', groups:[
+    {t:'Hepatitis', items:[{id:'hep-a', n:'Acute viral hepatitis undefined etiology', d:'Hepatitis A (anti-HAV IgM), Hepatitis B (HBsAg & anti-HBc), Hepatitis C (anti-HCV)', k:'hepatitis liver'},
+      {id:'hep-c', n:'Chronic viral hepatitis undefined etiology', d:'Hepatitis B (HBsAg; anti-HBc; anti-HBs), Hepatitis C (anti-HCV)', k:'hepatitis liver'}]},
+    {t:'Investigation of hepatitis immune status', items:[{id:'hi-a', n:'Hepatitis A (anti-HAV)', k:'immunity hepatitis'}, {id:'hi-b', n:'Hepatitis B (anti-HBs)', k:'immunity hepatitis'}]},
+    {t:'Hepatitis marker(s)', note:'For other hepatitis markers, please order specific test(s) below', items:[{id:'hm-s', n:'HBsAg', k:'hepatitis b surface'}]},
+    {items:[{id:'hiv', n:'HIV Serology', k:'hiv sti'}, {id:'syp', n:'Syphilis Screening', k:'syphilis sti'}]}]},
+  {id:'sto', t:'Stool tests', groups:[
+    {one:true, note:'One only (IDP includes C. difficile testing)', items:[{id:'st-idp', n:'Infectious Diarrhea Panel', k:'idp stool diarrhea'}, {id:'st-cd', n:'C. difficile testing', k:'cdiff stool diarrhea'}]}]},
+  {id:'mis', t:'Miscellaneous tests', groups:[
+    {items:[{id:'ecg', n:'ECG', k:'ekg heart'}]},
+    {one:true, items:[{id:'fit-c', n:'FIT (Age 50–74 asymptomatic q2y), Copy – Colon Screening Program', s:'FIT, copy to Colon Screening Program', k:'fit colon stool occult'}, {id:'fit-n', n:'FIT, No copy to Colon Screening Program', s:'FIT, no copy to Colon Screening Program', k:'fit colon stool occult'}]}],
+   other:true},
+  {id:'che', t:'Chemistry', groups:[
+    {items:[{id:'glu-f', n:'Glucose – fasting (fasting a minimum of 8 hours)', s:'Glucose – fasting', k:'sugar fbs'}, {id:'glu-r', n:'Glucose – random', k:'sugar'},
+      {id:'gtt-c', n:'GTT – gestational diabetes confirmatory (75 g load, fasting, 1 hour test)', s:'GTT – gestational confirmatory', k:'glucose tolerance pregnancy'}, {id:'gtt-s', n:'GTT – gestational diabetes screen (50 g load, 1 hour post-load)', s:'GTT – gestational screen', k:'glucose tolerance pregnancy'},
+      {id:'gtt-n', n:'GTT – non-gestational diabetes (impaired fasting glucose)', s:'GTT – non-gestational', k:'glucose tolerance'}, {id:'a1c', n:'HbA1C/A1C', k:'a1c hba1c diabetes sugar'}, {id:'acr', n:'Albumin/microalbumin ratio (ACR) – Urine', s:'Urine ACR', k:'acr microalbumin kidney diabetes'}]}]},
+  {id:'lip', t:'Lipids', groups:[
+    {one:true, oneNote:'Check one only', note:'Fasting is not required for any of the panels but clinician may specifically instruct patient to fast for 10 hours in select circumstances.', items:[
+      {id:'lip-f', n:'Full Lipid Profile – Total, HDL, non-HDL, LDL cholesterol, & triglycerides (Baseline or Follow-up of complex dyslipidemia)', s:'Full lipid profile', k:'cholesterol lipid ldl'},
+      {id:'lip-u', n:'Follow-up Lipid Profile – Total, HDL & non-HDL cholesterol only', s:'Follow-up lipid profile', k:'cholesterol lipid'},
+      {id:'apob', n:'Apo B (not available with lipid profiles unless diagnosis of complex dyslipidemia is indicated)', s:'Apo B', k:'apolipoprotein cholesterol lipid'}]}]},
+  {id:'thy', t:'Thyroid function', groups:[
+    {one:true, note:'For other thyroid investigations, please order specific tests below and provide diagnosis.', items:[
+      {id:'thy-m', n:'Monitor thyroid replacement therapy (TSH Only)', s:'TSH (monitor replacement therapy)', k:'tsh thyroid levothyroxine t4'},
+      {id:'thy-o', n:'Suspected Hypothyroidism (TSH first, fT4 if indicated)', s:'TSH (suspected hypothyroidism)', k:'tsh thyroid t4'},
+      {id:'thy-r', n:'Suspected Hyperthyroidism (TSH first, fT4 & fT3 if indicated)', s:'TSH (suspected hyperthyroidism)', k:'tsh thyroid t4 t3'}]}]},
+  {id:'och', t:'Other chemistry tests', groups:[
+    {items:[{id:'na', n:'Sodium', k:'electrolytes lytes'}, {id:'k', n:'Potassium', k:'electrolytes lytes'}, {id:'alb', n:'Albumin', k:'liver protein'}, {id:'alp', n:'Alk phos', k:'alkaline phosphatase liver alp'}, {id:'alt', n:'Alt', k:'liver alt'},
+      {id:'bili', n:'Bilirubin', k:'liver'}, {id:'ggt', n:'GGT', k:'liver'}, {id:'tp', n:'T. Protein', k:'total protein'}, {id:'cr', n:'Creatinine / eGFR', k:'kidney renal egfr'}, {id:'ca', n:'Calcium', k:'calcium'},
+      {id:'ck', n:'Creatine kinase (CK)', k:'ck muscle'}, {id:'psa-k', n:'PSA (Known cancer)', k:'prostate psa'}, {id:'psa-s', n:'PSA screening', k:'prostate psa'}, {id:'preg', n:'Pregnancy test', k:'hcg pregnancy'}, {id:'bhcg', n:'B-HCG – quantitative', k:'hcg pregnancy beta'}]}]}
+];
+var LR_IT = {};   /* id -> {item, sec, grp} */
+LR_SECS.forEach(function(s){ s.groups.forEach(function(g){ g.items.forEach(function(it){ LR_IT[it.id] = {it:it, sec:s, grp:g}; }); }); });
+function lrShort(id){ var x = LR_IT[id]; return x ? (x.it.s || x.it.n) : id; }
+/* DEMO order panels and favourites (spec 2: "demo: Diabetes follow-up, Annual physical, Chest pain workup, Fatigue"). Daniel will send his own. */
+var LR_PANELS = [
+  {k:'dm', n:'Diabetes follow-up', ids:['a1c', 'acr', 'cr', 'lip-f']},
+  {k:'phys', n:'Annual physical', ids:['hem-prof', 'glu-f', 'lip-f', 'cr']},
+  {k:'cp', n:'Chest pain workup', ids:['ecg', 'hem-prof', 'lip-f', 'a1c', 'cr']},
+  {k:'fat', n:'Fatigue', ids:['hem-prof', 'hem-fer', 'thy-o', 'glu-r', 'cr']}
+];
+var LR_FAVS = ['hem-prof', 'a1c', 'uri-dc'];
+/* DEMO "Suggested for today": what the AI proposes from today's concern and the chart, each with its reason and source.
+   Every reason points at something in the demo chart (care plan, last plan, results, medication list, intake). Not a clinical rule. */
+var LR_AI = {
+  'Gloria Mcdonald, 74F': {sug:[
+    {id:'a1c', why:'Cardiology asked for a current HbA1c before the September review. Overdue since Aug 20.', src:'Cardiology consult, Jul 28 (care plan)'},
+    {id:'lip-f', why:'Cardiology asked for a current lipid profile at the same time.', src:'Cardiology consult, Jul 28 (care plan)'},
+    {id:'cr', why:'On metformin, and no kidney function result is on file.', src:'Medication list; Results'}]},
+  'Behdis Maleki, 35F': {sug:[
+    {id:'hem-fer', why:'The Aug 4 plan asked for a repeat ferritin by Aug 31. Not drawn yet.', src:'Visit note, Aug 4'},
+    {id:'hem-prof', why:'The same plan asked for a repeat CBC. Not drawn yet.', src:'Visit note, Aug 4'}]},
+  'Manjit': {sug:[
+    {id:'thy-m', why:'On levothyroxine 75 mcg. The Aug 14 plan asks for thyroid tests every 6 weeks; the last TSH was Jul 30.', src:'Visit note, Aug 14; Results'}]},
+  'Greg': {sug:[
+    {id:'cr', why:'On ramipril. Kidney function was last checked Jun 24.', src:'Medication list; Results'},
+    {id:'k', why:'On ramipril. Potassium was last checked Jun 24.', src:'Medication list; Results'}],
+    skip:'Not suggested: a lipid panel and ALT, already booked by his previous clinic for Oct 3.'},
+  'Carol-Anne Feldman, 44F': {sug:[
+    {id:'vag-c', why:'Third episode this year, by the patient’s intake today.', src:'Intake, today'}]}
+};
+function lrFresh(name){
+  var al = opAllergy(name);
+  return {sel:{}, open:{}, q:'', stat:false, phone:'', more:false, note:true, other:'',
+    ans:{anticoag:'', anticoagSpec:'', pen:al.pen === true ? 'yes' : al.pen === false ? 'no' : '', penFrom:al.pen == null ? '' : al.text,
+      site:{}, genhist:{}, genhistOther:'', stisite:{}, stiOther:'', derm:{}, dermSite:'', mycSite:''},
+    dx:(sdRow() || {}).concern || '', dxFrom:true, meds:opMedsText(name) === 'None on the chart' ? '' : opMedsText(name), medsFrom:true,
+    cc1:'', cc2:'', soEff:'', soExp:'', soDet:'', instr:''};
+}
+function lrSel(){ return Object.keys(OP.st.sel).filter(function(id){ return OP.st.sel[id]; }); }
+function lrHas(id){ return !!OP.st.sel[id]; }
+function lrSecCount(s){ var n = 0; s.groups.forEach(function(g){ g.items.forEach(function(it){ if(lrHas(it.id)) n++; }); }); return n; }
+function lrSecSize(s){ var n = 0; s.groups.forEach(function(g){ n += g.items.length; }); return n; }
+function lrSecOpen(s){ var e = OP.st.open[s.id]; return e != null ? e : lrSecCount(s) > 0; }
+function lrNeeds(f){ return lrSel().some(function(id){ return (LR_IT[id].it.f || []).indexOf(f) > -1; }); }
+/* select a test; in a "choose up to one" group the others clear (a second press on the same one clears it) */
+function lrSet(id, on){
+  var x = LR_IT[id]; if(!x) return;
+  if(on && x.grp.one) x.grp.items.forEach(function(it){ if(it.id !== id) delete OP.st.sel[it.id]; });
+  if(on) OP.st.sel[id] = 1; else delete OP.st.sel[id];
+}
+function lrPick(id, on){ lrSet(id, on); opRender(); }
+function lrSec(sid){ var s = LR_SECS.filter(function(x){ return x.id === sid; })[0]; OP.st.open[sid] = !lrSecOpen(s); opRender(); }
+function lrPanel(k){
+  var p = LR_PANELS.filter(function(x){ return x.k === k; })[0] || {ids:LR_FAVS.indexOf(k) > -1 ? [k] : []};
+  var all = p.ids.every(lrHas);
+  p.ids.forEach(function(id){ lrSet(id, !all); });
+  opRender();
+}
+function lrSug(id){ lrSet(id, !lrHas(id)); opRender(); }
+function lrSugAll(){ (LR_AI[PC_CURRENT] || {sug:[]}).sug.forEach(function(s){ lrSet(s.id, true); }); opRender(); }
+function lrIn(k, v, sub){
+  var a = OP.st.ans;
+  if(k === 'site') a.site[sub] = v; else if(k in a) a[k] = v; else OP.st[k] = v;
+  if(k === 'dx') OP.st.dxFrom = false; if(k === 'meds') OP.st.medsFrom = false;
+  if(k === 'soEff'){ var ex = document.getElementById('lr-soexp'); if(ex) ex.max = lrMaxExp(v); }
+  opSoft();
+}
+function lrAns(k, v){ var a = OP.st.ans; a[k] = a[k] === v ? '' : v; if(k === 'pen') a.penFrom = ''; opRender(); }   /* a second press clears */
+function lrMulti(k, v){ var o = OP.st.ans[k]; if(o[v]) delete o[v]; else o[v] = 1; opRender(); }
+function lrStat(on){ OP.st.stat = on; opRender(); }
+function lrMore(){ OP.st.more = !OP.st.more; opRender(); }
+function lrSearch(v){
+  OP.st.q = v;
+  var el = document.getElementById('lr-sr'); if(el){ el.innerHTML = lrSearchHtml(); }
+}
+/* the standing order's expiry: valid for a max of 2 yrs / 24 mos (printed on the Ministry form) */
+function lrMaxExp(eff){ if(!eff) return ''; var d = new Date(eff + 'T12:00:00'); d.setMonth(d.getMonth() + 24); return rxIso(d); }
+function lrGo(fk){
+  /* the rail's "still needed" lines jump to the field */
+  var x = LR_IT[fk.split(':')[1]];
+  if(fk.indexOf('sec:') === 0 && x){ OP.st.open[x.sec.id] = true; }
+  if(/^(dx|meds|soexp)$/.test(fk)) OP.st.more = true;
+  var to = fk.indexOf('sec:') === 0 ? fk.split(':')[2] : fk;
+  opRender();
+  var t = document.querySelector('#op-sheet [data-fk="' + to + '"]');
+  if(t){ t.focus(); t.scrollIntoView({block:'center'}); }
+}
+/* what is still missing before the requisition can be signed: the follow-up answers the form asks for */
+function lrMissing(){
+  var s = OP.st, a = s.ans, out = [];
+  if(lrHas('hem-inr') && !a.anticoag) out.push(['INR: On Anticoagulant? is not answered', 'sec:hem-inr:ac-Yes']);
+  if(lrHas('hem-inr') && a.anticoag === 'yes' && !a.anticoagSpec.trim()) out.push(['INR: specify the anticoagulant', 'sec:hem-inr:anticoagSpec']);
+  if(lrNeeds('pen') && !a.pen) out.push(['Culture: Penicillin Allergy? is not answered', 'sec:rc-thr:penYes']);
+  lrSel().forEach(function(id){ var it = LR_IT[id].it; if((it.f || []).indexOf('site') > -1 && !(a.site[id] || '').trim()) out.push([lrShort(id) + ': ' + (it.site || 'Site').replace(/\*/g, ''), 'sec:' + id + ':site-' + id]); });
+  if(lrHas('gen') && !Object.keys(a.genhist).length) out.push(['Genital Culture: History', 'sec:gen:gh-Peripartum']);
+  if(lrHas('gen') && a.genhist.Other && !a.genhistOther.trim()) out.push(['Genital Culture: other history', 'sec:gen:ghother']);
+  if(lrNeeds('stisite') && !Object.keys(a.stisite).length) out.push(['STI tests: Site', 'sec:sti-ct:ss-Vagina']);
+  if(lrNeeds('stisite') && a.stisite.Other && !a.stiOther.trim()) out.push(['STI tests: other site', 'sec:sti-ct:stiother']);
+  if(lrNeeds('derm') && !Object.keys(a.derm).length) out.push(['Dermatophytes: Specimen', 'sec:der-c:dm-Skin']);
+  if(lrNeeds('derm') && !a.dermSite.trim()) out.push(['Dermatophytes: Site', 'sec:der-c:dermsite']);
+  if(lrNeeds('myc') && !a.mycSite.trim()) out.push(['Mycology: Site', 'sec:myc-y:mycsite']);
+  if(s.stat && !s.phone.trim()) out.push(['STAT order: contact telephone number', 'phone']);
+  if(s.soEff && s.soExp && s.soExp > lrMaxExp(s.soEff)) out.push(['Standing order: expiry is more than 2 years after the effective date', 'soexp']);
+  return out;
+}
+OP_K.lab = {
+  title:function(){ return 'Lab requisition'; },
+  noun:function(){ return 'the lab requisition'; },
+  railLabel:function(){ return 'This requisition'; },
+  fresh:function(name){ return lrFresh(name); },
+  selfLabel:function(){ return 'Sign and fax to lab'; },
+  okLine:function(){ return 'Both buttons sign it. You choose who sends it.'; },
+  pvNote:function(){ return 'The requisition exactly as it will be faxed. Every field of the provincial form is on it.'; },
+  valid:function(){
+    if(!lrSel().length) return {why:'Choose at least one test.'};
+    var m = lrMissing(); if(m.length) return {why:'Still needed: ' + m[0][0] + (m.length > 1 ? ' (and ' + (m.length - 1) + ' more)' : '') + '.'};
+    return {};
+  },
+  main:function(){ return lrMain(); },
+  rail:function(){ return lrRail(); },
+  paper:function(){ return lrPaper(); },
+  sign:function(route, name, at){ return lrSign(route, name, at); },
+  doneHtml:function(e){ return opDoneHtml(e.route === 'moa' ? 'Signed and sent to ' + sdMoa() : 'Signed and faxed to the lab',
+    [e.items.map(function(t){ return t.n; }).join(', ') + (e.stat ? ' (STAT)' : '') + '.',
+     e.route === 'moa' ? sdMoa() + ' has a task to fax the requisition. You can follow it in Tasks.' : 'You faxed the requisition yourself.',
+     'Filed in Chart > Documents. It shows under Ordered and pending in Chart review, and in Chart > Results.'], e); }
+};
+function lrTest(it, ctx){
+  var on = lrHas(it.id);
+  return '<label class="op-t"><input type="checkbox" data-fk="' + (ctx || '') + it.id + '"' + (on ? ' checked' : '') + ' onchange="lrPick(\'' + it.id + '\', this.checked)"><span>' + csEsc(it.n) +
+    (it.d ? '<span class="op-td">' + csEsc(it.d) + '</span>' : '') + (ctx ? '<span class="op-tg">' + csEsc(LR_IT[it.id].sec.t) + '</span>' : '') + '</span></label>';
+}
+function lrPills(k, opts, cur, fkp, multi){
+  return '<div class="op-pills">' + opts.map(function(o){
+    var on = multi ? !!cur[o] : cur === o.toLowerCase();
+    return '<button type="button" class="op-pill" data-fk="' + fkp + o + '" aria-pressed="' + on + '" onclick="' + (multi ? 'lrMulti' : 'lrAns') + '(\'' + k + '\', \'' + (multi ? o : o.toLowerCase()) + '\')">' + csEsc(o) + '</button>';
+  }).join('') + '</div>';
+}
+function lrFollow(it){
+  var a = OP.st.ans, h = '';
+  (it.f || []).forEach(function(f){
+    if(f === 'anticoag'){
+      h += '<div class="op-fu" role="group" aria-labelledby="lr-ac-l"><p class="op-gl" id="lr-ac-l">On Anticoagulant? <span class="op-src">Choose up to one. Select again to clear.</span></p>' + lrPills('anticoag', ['Yes', 'No'], a.anticoag, 'ac-') +
+        (a.anticoag === 'yes' ? '<div class="op-f"><label for="lr-acs">Specify:</label><input type="text" id="lr-acs" data-fk="anticoagSpec" value="' + csEsc(a.anticoagSpec) + '" oninput="lrIn(\'anticoagSpec\', this.value)"></div>' : '') + '</div>';
+    }
+    if(f === 'site'){
+      h += '<div class="op-fu"><div class="op-f"><label for="lr-site-' + it.id + '">' + csEsc(it.n) + ': ' + csEsc(it.site || 'Site') + '</label><input type="text" id="lr-site-' + it.id + '" data-fk="site-' + it.id + '" value="' + csEsc(a.site[it.id] || '') + '" oninput="lrIn(\'site\', this.value, \'' + it.id + '\')"></div></div>';
+    }
+    if(f === 'genhist'){
+      h += '<div class="op-fu" role="group" aria-labelledby="lr-gh-l"><p class="op-gl" id="lr-gh-l">History:</p>' + lrPills('genhist', ['Peripartum', 'Pelvic / Genitourinary Surgery', 'Other'], a.genhist, 'gh-', true) +
+        (a.genhist.Other ? '<div class="op-f"><label for="lr-gho">Other</label><input type="text" id="lr-gho" data-fk="ghother" value="' + csEsc(a.genhistOther) + '" oninput="lrIn(\'genhistOther\', this.value)"></div>' : '') + '</div>';
+    }
+  });
+  return h;
+}
+function lrGroupFollow(g){
+  /* questions shared by a group: shown once, under the group, when one of its tests is chosen */
+  var a = OP.st.ans, ids = g.items.map(function(it){ return it.id; }), any = ids.some(lrHas), h = '';
+  if(!any) return '';
+  var fs = []; g.items.forEach(function(it){ if(lrHas(it.id)) (it.f || []).forEach(function(f){ if(fs.indexOf(f) < 0) fs.push(f); }); });
+  if(fs.indexOf('pen') > -1 && !OP._penShown){
+    OP._penShown = true;
+    h += '<div class="op-fu" role="group" aria-labelledby="lr-pen-l"><p class="op-gl" id="lr-pen-l">Penicillin Allergy? <span class="op-src">Choose up to one. Select again to clear.</span></p>' + lrPills('pen', ['Yes', 'No'], a.pen, 'pen') +
+      (a.penFrom ? opMk('chart', 'From the chart: ' + a.penFrom) : '') + '</div>';
+  }
+  if(fs.indexOf('stisite') > -1) h += '<div class="op-fu" role="group" aria-labelledby="lr-ss-l"><p class="op-gl" id="lr-ss-l">Site:</p>' + lrPills('stisite', ['Vagina', 'Urine (first catch)', 'Cervix', 'Urethra', 'Other'], a.stisite, 'ss-', true) +
+    (a.stisite.Other ? '<div class="op-f"><label for="lr-sso">Other</label><input type="text" id="lr-sso" data-fk="stiother" value="' + csEsc(a.stiOther) + '" oninput="lrIn(\'stiOther\', this.value)"></div>' : '') + '</div>';
+  if(fs.indexOf('derm') > -1) h += '<div class="op-fu" role="group" aria-labelledby="lr-dm-l"><p class="op-gl" id="lr-dm-l">Specimen:</p>' + lrPills('derm', ['Skin', 'Nail', 'Hair'], a.derm, 'dm-', true) +
+    '<div class="op-f"><label for="lr-dms">Site</label><input type="text" id="lr-dms" data-fk="dermsite" value="' + csEsc(a.dermSite) + '" oninput="lrIn(\'dermSite\', this.value)"></div></div>';
+  if(fs.indexOf('myc') > -1) h += '<div class="op-fu"><div class="op-f"><label for="lr-mys">Site</label><input type="text" id="lr-mys" data-fk="mycsite" value="' + csEsc(a.mycSite) + '" oninput="lrIn(\'mycSite\', this.value)"></div></div>';
+  return h;
+}
+function lrSearchHtml(){
+  var q = OP.st.q.trim().toLowerCase(); if(!q) return '';
+  var words = q.split(/\s+/), hits = [];
+  Object.keys(LR_IT).forEach(function(id){
+    var x = LR_IT[id], hay = (x.it.n + ' ' + (x.it.s || '') + ' ' + (x.it.d || '') + ' ' + (x.it.k || '') + ' ' + x.sec.t + ' ' + (x.grp.t || '')).toLowerCase();
+    if(words.every(function(w){ return hay.indexOf(w) > -1; })) hits.push(x.it);
+  });
+  if(!hits.length) return '<p class="op-note">No test on the form matches “' + csEsc(OP.st.q.trim()) + '”. You can write it under Miscellaneous tests, Other tests.</p>';
+  return '<p class="op-note" aria-live="polite">' + hits.length + (hits.length === 1 ? ' test' : ' tests') + ' on the form</p>' + hits.slice(0, 10).map(function(it){ return lrTest(it, 'q-'); }).join('');
+}
+function lrMain(){
+  var s = OP.st, name = PC_CURRENT, ai = LR_AI[name], h = '';
+  OP._penShown = false;
+  /* 1. Suggested for today (AI, with the reason; one tap adds; nothing is added on its own) */
+  if(ai && ai.sug.length){
+    var allIn = ai.sug.every(function(x){ return lrHas(x.id); });
+    h += '<section class="op-card" aria-labelledby="lr-sg-h"><div class="op-hrow"><h3 id="lr-sg-h">Suggested for today</h3>' +
+      '<button type="button" class="btn" data-fk="sugall" onclick="lrSugAll()"' + (allIn ? ' disabled' : '') + '>' + rxIc('plus') + 'Add all</button></div>' +
+      '<p class="op-note">' + opMk('ai', 'AI suggestions') + ' from today’s concern and the chart. Nothing is added until you tap it.</p><ul class="op-sug">' +
+      ai.sug.map(function(x){ var on = lrHas(x.id);
+        return '<li><div><b>' + csEsc(lrShort(x.id)) + '</b><p class="op-why">' + csEsc(x.why) + '</p><p class="op-src">' + csEsc(x.src) + '</p></div>' +
+          '<button type="button" class="btn" data-fk="sug-' + x.id + '" aria-pressed="' + on + '" aria-label="' + (on ? 'Remove ' : 'Add ') + csEsc(lrShort(x.id)) + '" onclick="lrSug(\'' + x.id + '\')">' + rxIc(on ? 'complete' : 'plus') + (on ? 'Added' : 'Add') + '</button></li>';
+      }).join('') + '</ul>' + (ai.skip ? '<p class="op-skip">' + csEsc(ai.skip) + '</p>' : '') + '</section>';
+  } else {
+    h += '<section class="op-card" aria-labelledby="lr-sg-h"><h3 id="lr-sg-h">Suggested for today</h3><p class="op-note">Nothing to suggest from today’s concern and the chart.</p></section>';
+  }
+  /* 2. Order panels and favourites, then 3. search any test */
+  h += '<section class="op-card" aria-labelledby="lr-pn-h"><h3 id="lr-pn-h">Order panels and favourites</h3>' +
+    '<p class="op-note">Example panels for the demo. Your own panels go here.</p>' +
+    '<div class="op-chips" role="group" aria-label="Order panels">' + LR_PANELS.map(function(p){ var on = p.ids.every(lrHas);
+      return '<button type="button" class="op-chip" data-fk="pn-' + p.k + '" aria-pressed="' + on + '" onclick="lrPanel(\'' + p.k + '\')">' + rxIc(on ? 'complete' : 'plus') + csEsc(p.n) + '<span class="op-vh"> (' + p.ids.map(lrShort).join(', ') + ')</span></button>'; }).join('') + '</div>' +
+    '<p class="op-gl" style="margin-top:10px">Favourites</p><div class="op-chips" role="group" aria-label="Favourite tests">' + LR_FAVS.map(function(id){ var on = lrHas(id);
+      return '<button type="button" class="op-chip" data-fk="fv-' + id + '" aria-pressed="' + on + '" onclick="lrPanel(\'' + id + '\')">' + rxIc('star') + csEsc(lrShort(id)) + '</button>'; }).join('') + '</div>' +
+    '<div class="op-f" style="margin-top:12px"><label for="lr-q">Search any test</label><input type="search" id="lr-q" data-fk="q" autocomplete="off" placeholder="For example TSH, ferritin, urine culture" value="' + csEsc(s.q) + '" oninput="lrSearch(this.value)"></div>' +
+    '<div class="op-sr" id="lr-sr">' + lrSearchHtml() + '</div></section>';
+  /* 4. Priority: STAT reveals the phone number (the form's own words) */
+  h += '<section class="op-card" aria-labelledby="lr-pr-h"><h3 id="lr-pr-h">Priority</h3><div class="op-seg" role="group" aria-labelledby="lr-pr-h">' +
+    '<button type="button" class="op-sb" data-fk="routine" aria-pressed="' + !s.stat + '" onclick="lrStat(false)">Routine</button>' +
+    '<button type="button" class="op-sb" data-fk="stat" aria-pressed="' + s.stat + '" onclick="lrStat(true)">STAT</button></div>' +
+    (s.stat ? '<div class="op-f" style="margin-top:10px"><label for="lr-phone">If this is a STAT order, please provide contact telephone number</label><input type="tel" id="lr-phone" data-fk="phone" value="' + csEsc(s.phone) + '" oninput="lrIn(\'phone\', this.value)"></div>' : '') + '</section>';
+  /* 5. The Ministry form, every section verbatim, one column */
+  h += '<div class="op-form" aria-labelledby="lr-fm-h"><h3 class="op-h3" id="lr-fm-h" style="margin:8px 0 0">The requisition form</h3><p class="op-note">Every section of the provincial form. Sections with a test chosen are open.</p>';
+  LR_SECS.forEach(function(sec){
+    var open = lrSecOpen(sec), n = lrSecCount(sec);
+    h += '<section class="op-sec"><h3><button type="button" class="op-sh' + (n ? ' has' : '') + '" id="lr-sh-' + sec.id + '" data-fk="sh-' + sec.id + '" aria-expanded="' + open + '" aria-controls="lr-sb-' + sec.id + '" onclick="lrSec(\'' + sec.id + '\')">' +
+      '<span class="op-st">' + csEsc(sec.t) + '</span><span class="op-cnt">' + (n ? n + ' chosen' : lrSecSize(sec) + ' tests') + '</span>' + rxIc('chevdown') + '</button></h3>' +
+      '<div class="op-sbd" id="lr-sb-' + sec.id + '"' + (open ? '' : ' hidden') + '>' + (sec.note ? '<p class="op-note">' + csEsc(sec.note) + '</p>' : '');
+    if(open){
+      sec.groups.forEach(function(g, gi){
+        h += '<fieldset class="op-g">' + (g.t ? '<legend>' + csEsc(g.t) + (g.one ? '<span class="op-one">' + (g.oneNote ? csEsc(g.oneNote) + '. ' : '') + 'Choose up to one. Select again to clear.</span>' : '') + '</legend>'
+          : g.one ? '<legend><span class="op-one">' + (g.oneNote ? csEsc(g.oneNote) + '. ' : '') + 'Choose up to one. Select again to clear.</span></legend>' : '<legend class="op-vh">' + csEsc(sec.t) + ' tests</legend>') +
+          (g.note ? '<p class="op-note">' + csEsc(g.note) + '</p>' : '') + '<div class="op-ts">';
+        g.items.forEach(function(it){ h += lrTest(it); });
+        h += '</div>';
+        g.items.forEach(function(it){ if(lrHas(it.id)) h += lrFollow(it); });
+        h += lrGroupFollow(g) + '</fieldset>';
+      });
+      if(sec.other) h += '<div class="op-f"><label for="lr-other">Other tests</label><textarea id="lr-other" rows="2" data-fk="other" oninput="lrIn(\'other\', this.value)">' + csEsc(s.other) + '</textarea></div>';
+    }
+    h += '</div></section>';
+  });
+  h += '</div>';
+  /* 6. More details: diagnosis and current medications (pre-filled), copy to, standing orders, instructions to patients */
+  h += '<section class="op-sec"><h3><button type="button" class="op-sh" data-fk="more" aria-expanded="' + s.more + '" aria-controls="lr-more" onclick="lrMore()"><span class="op-st">More details</span>' +
+    '<span class="op-cnt">Diagnosis, medications, copy to, standing orders, instructions</span>' + rxIc('chevdown') + '</button></h3>' +
+    '<div class="op-sbd" id="lr-more"' + (s.more ? '' : ' hidden') + '>' + (s.more ? lrMoreHtml() : '') + '</div></section>';
+  return h;
+}
+function lrMoreHtml(){
+  var s = OP.st, eff = s.soEff;
+  return '<div class="op-f"><div class="op-lrow"><label for="lr-dx">Diagnosis</label>' + (s.dxFrom && s.dx ? opMk('chart', 'From today’s concern') : '') + '</div><textarea id="lr-dx" rows="2" data-fk="dx" oninput="lrIn(\'dx\', this.value)">' + csEsc(s.dx) + '</textarea></div>' +
+    '<div class="op-f"><div class="op-lrow"><label for="lr-meds">Current medications / antibiotics / date and time of last dose</label>' + (s.medsFrom && s.meds ? opMk('chart', 'From the chart’s medication list') : '') + '</div><textarea id="lr-meds" rows="2" data-fk="meds" oninput="lrIn(\'meds\', this.value)">' + csEsc(s.meds) + '</textarea></div>' +
+    '<fieldset class="op-fs"><legend>Copy to practitioner / MSP practitioner number &amp; clinic name / address</legend>' +
+      '<div class="op-f"><label for="lr-cc1" class="op-vh">Copy to practitioner, first</label><input type="text" id="lr-cc1" data-fk="cc1" value="' + csEsc(s.cc1) + '" oninput="lrIn(\'cc1\', this.value)"></div>' +
+      '<div class="op-f"><label for="lr-cc2" class="op-vh">Copy to practitioner, second</label><input type="text" id="lr-cc2" data-fk="cc2" value="' + csEsc(s.cc2) + '" oninput="lrIn(\'cc2\', this.value)"></div></fieldset>' +
+    '<fieldset class="op-fs"><legend>Standing orders (valid for a max of 2 yrs / 24 mos)</legend><div class="op-grid">' +
+      '<div class="op-f"><label for="lr-soeff">Effective date</label><input type="date" id="lr-soeff" data-fk="soeff" value="' + csEsc(eff) + '" oninput="lrIn(\'soEff\', this.value)"></div>' +
+      '<div class="op-f"><label for="lr-soexp">Expiry date</label><input type="date" id="lr-soexp" data-fk="soexp" value="' + csEsc(s.soExp) + '"' + (eff ? ' min="' + eff + '" max="' + lrMaxExp(eff) + '"' : '') + ' oninput="lrIn(\'soExp\', this.value)"></div>' +
+      '<div class="op-f op-wide"><label for="lr-sodet">Details &amp; frequency</label><input type="text" id="lr-sodet" data-fk="sodet" value="' + csEsc(s.soDet) + '" oninput="lrIn(\'soDet\', this.value)"></div></div></fieldset>' +
+    '<div class="op-f"><label for="lr-instr">Instructions to patients</label><textarea id="lr-instr" rows="2" data-fk="instr" oninput="lrIn(\'instr\', this.value)">' + csEsc(s.instr) + '</textarea></div>';
+}
+function lrRail(){
+  var s = OP.st, sel = lrSel(), miss = lrMissing(), h = '<section class="op-card" aria-labelledby="lr-rq-h"><div class="op-hrow"><h3 id="lr-rq-h" tabindex="-1" data-fk="railh">This requisition</h3><span class="op-note">' + (sel.length ? sel.length + (sel.length === 1 ? ' test' : ' tests') : '') + '</span></div>';
+  if(!sel.length) h += '<p class="op-note">No tests yet. Tap a suggestion or a panel, or search.</p>';
+  else {
+    h += '<ul class="op-rl">';
+    LR_SECS.forEach(function(sec){ sec.groups.forEach(function(g){ g.items.forEach(function(it){ if(!lrHas(it.id)) return;
+      h += '<li><span>' + csEsc(lrShort(it.id)) + '<i>' + csEsc(sec.t) + '</i></span><button type="button" class="op-rm" data-fk="rm-' + it.id + '" aria-label="Remove ' + csEsc(lrShort(it.id)) + '" onclick="OP.focusNext=\'railh\';lrPick(\'' + it.id + '\', false)">' + rxIc('close') + '</button></li>';
+    }); }); });
+    h += '</ul>';
+  }
+  if(s.other.trim()) h += '<p class="op-p"><b>Other tests:</b> ' + csEsc(s.other) + '</p>';
+  h += '</section>';
+  if(miss.length) h += '<section class="op-card" aria-labelledby="lr-ms-h"><h3 id="lr-ms-h">Still needed</h3><ul class="op-need">' + miss.map(function(m){
+    return '<li><button type="button" data-fk="go-' + m[1] + '" onclick="lrGo(\'' + m[1] + '\')">' + rxIc('alert') + '<span>' + csEsc(m[0]) + '</span></button></li>'; }).join('') + '</ul></section>';
+  h += '<section class="op-card" aria-label="Details on the form"><dl class="op-dl">' +
+    '<div><dt>Priority</dt><dd>' + (s.stat ? 'STAT' + (s.phone ? ' · call ' + csEsc(s.phone) : '') : 'Routine') + '</dd></div>' +
+    '<div><dt>Diagnosis</dt><dd>' + csEsc(s.dx || 'None written') + (s.dxFrom && s.dx ? '<span class="op-src">From today’s concern</span>' : '') + '</dd></div>' +
+    '<div><dt>Current medications</dt><dd>' + csEsc(s.meds || 'None written') + (s.medsFrom && s.meds ? '<span class="op-src">From the chart’s medication list</span>' : '') + '</dd></div>' +
+    ([s.cc1, s.cc2].filter(function(x){ return x.trim(); }).length ? '<div><dt>Copy to</dt><dd>' + csEsc([s.cc1, s.cc2].filter(function(x){ return x.trim(); }).join('\n')) + '</dd></div>' : '') +
+    (s.soEff || s.soExp || s.soDet ? '<div><dt>Standing order</dt><dd>' + csEsc([s.soEff && 'From ' + s.soEff, s.soExp && 'to ' + s.soExp, s.soDet].filter(Boolean).join(' ')) + '</dd></div>' : '') +
+    (s.instr.trim() ? '<div><dt>Instructions to patients</dt><dd>' + csEsc(s.instr) + '</dd></div>' : '') + '</dl>' +
+    '<button type="button" class="btn op-q" data-fk="editmore" onclick="OP.st.more=true;lrGo(\'dx\')">' + rxIc('edit') + 'Edit in More details</button></section>';
+  return h;
+}
+/* the filled form, every field of the provincial requisition, as it will be faxed */
+function lrPaper(){
+  var s = OP.st, a = s.ans, h = '<article class="op-paper" aria-label="Lab requisition preview">' + opPaperHead('Laboratory requisition');
+  LR_SECS.forEach(function(sec){
+    h += '<h5>' + csEsc(sec.t) + '</h5>' + (sec.note ? '<p>' + csEsc(sec.note) + '</p>' : '');
+    sec.groups.forEach(function(g){
+      h += '<div class="op-pg">';
+      if(g.t) h += '<h6>' + csEsc(g.t) + (g.oneNote ? ' (' + csEsc(g.oneNote) + ')' : '') + '</h6>';
+      if(g.note) h += '<p>' + csEsc(g.note) + '</p>';
+      h += '<div class="op-pbx">' + g.items.map(function(it){ return opBox(lrHas(it.id), it.n + (it.d ? ': ' + it.d : '')); }).join('') + '</div>';
+      g.items.forEach(function(it){
+        if(!lrHas(it.id)) return;
+        if((it.f || []).indexOf('site') > -1) h += '<span class="op-pfv">' + csEsc(it.n + ', ' + (it.site || 'Site') + ': ' + (a.site[it.id] || '—')) + '</span>';
+        if(it.id === 'hem-inr') h += '<span class="op-pfv">On Anticoagulant? ' + csEsc(a.anticoag ? (a.anticoag === 'yes' ? 'Yes' : 'No') : '—') + (a.anticoag === 'yes' ? '. Specify: ' + csEsc(a.anticoagSpec || '—') : '') + '</span>';
+        if(it.id === 'gen') h += '<span class="op-pfv">History: ' + csEsc(Object.keys(a.genhist).map(function(k){ return k === 'Other' ? 'Other: ' + (a.genhistOther || '—') : k; }).join(', ') || '—') + '</span>';
+      });
+      var fs = []; g.items.forEach(function(it){ if(lrHas(it.id)) (it.f || []).forEach(function(f){ fs.push(f); }); });
+      if(fs.indexOf('stisite') > -1) h += '<span class="op-pfv">Site: ' + csEsc(Object.keys(a.stisite).map(function(k){ return k === 'Other' ? 'Other: ' + (a.stiOther || '—') : k; }).join(', ') || '—') + '</span>';
+      if(fs.indexOf('derm') > -1) h += '<span class="op-pfv">Specimen: ' + csEsc(Object.keys(a.derm).join(', ') || '—') + '. Site: ' + csEsc(a.dermSite || '—') + '</span>';
+      if(fs.indexOf('myc') > -1) h += '<span class="op-pfv">Site: ' + csEsc(a.mycSite || '—') + '</span>';
+      h += '</div>';
+    });
+    if(sec.id === 'mic') h += '<span class="op-pfv">Penicillin Allergy? ' + (lrNeeds('pen') ? csEsc(a.pen === 'yes' ? 'Yes' : a.pen === 'no' ? 'No' : '—') : '—') + '</span>';
+    if(sec.other) h += '<h6>Other tests</h6><p>' + csEsc(s.other || '—') + '</p>';
+  });
+  h += '<h5>Diagnosis / current medications</h5><p><b>Diagnosis:</b> ' + csEsc(s.dx || '—') + '</p><p><b>Current medications / antibiotics / date and time of last dose:</b> ' + csEsc(s.meds || '—') + '</p>' +
+    '<h5>STAT order / copy to practitioner</h5><p><b>If this is a STAT order, please provide contact telephone number:</b> ' + csEsc(s.stat ? (s.phone || '—') : '—') + '</p>' +
+    '<p><b>Copy to practitioner / MSP practitioner number &amp; clinic name / address:</b> ' + csEsc(s.cc1 || '—') + '</p><p><b>Copy to practitioner / MSP practitioner number &amp; clinic name / address:</b> ' + csEsc(s.cc2 || '—') + '</p>' +
+    '<h5>Standing orders (valid for a max of 2 yrs / 24 mos)</h5><p><b>Effective date:</b> ' + csEsc(s.soEff || '—') + ' &nbsp; <b>Expiry date:</b> ' + csEsc(s.soExp || '—') + '</p><p><b>Details &amp; frequency:</b> ' + csEsc(s.soDet || '—') + '</p>' +
+    '<h5>Instructions to patients</h5><p>' + csEsc(s.instr || '—') + '</p>' + opPaperSig() + '</article>';
+  return h;
+}
+function lrSign(route, name, at){
+  var s = OP.st, ids = lrSel(), names = ids.map(lrShort), moa = sdMoa();
+  var e = {id:'od' + Date.now(), kind:'lab', ts:Date.now(), pt:name, items:ids.map(function(id){ return {n:lrShort(id), g:LR_IT[id].sec.t}; }), ind:sdPlain(s.dx), urgent:s.stat, stat:s.stat,
+    route:route, at:at, iso:rxIso(new Date()), date:sdDate(), other:sdPlain(s.other)};
+  if(e.other) e.items.push({n:'Other: ' + e.other, g:'Miscellaneous tests'});
+  if(route === 'moa'){
+    var t = opMoaTask({patient:name, type:'Lab Work', prio:s.stat ? 'urgent' : 'routine', title:'Fax lab requisition: ' + names.join(', '),
+      note:'Fax the lab requisition for ' + names.join(', ') + '.' + (s.stat ? ' STAT; the lab calls ' + s.phone + '.' : '') + ' Signed by ' + RX_DR + ' ' + at + '.'});
+    e.task = t.id;
+  }
+  sdOut(name).orders.unshift(e);
+  LAB_ORDERS.unshift(odLabOrder(e));
+  e.noteLine = 'Lab requisition: ' + names.join(', ') + (e.other ? ', other: ' + e.other : '') + (s.stat ? ' (STAT)' : '') + '. Signed by ' + RX_DR + ' ' + at + (route === 'moa' ? '; sent to ' + moa + ' (MOA) to fax.' : '; faxed to the lab.');
+  e.toast = route === 'moa' ? 'Signed · sent to ' + moa + ' to fax' : 'Signed · lab requisition faxed';
+  return e;
+}
+/* Chart > Documents: forms saved for later, not signed yet (Save for later replaces Daniel's "Carry Forward") */
+function opDraftsHtml(name){
+  var sv = OP.saved[name]; if(!sv) return '';
+  return Object.keys(sv).filter(function(k){ return sv[k] && OP_K[k]; }).map(function(k){
+    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="carryforward"></span><h4>' + csEsc(OP_K[k].title() + ' · draft saved ' + sv[k].at + ', not signed') + '</h4></div>' +
+      '<button type="button" class="btn dl-open" onclick="opOpen(\'' + k + '\')"><span class="ic" data-pdic="edit"></span>Open the draft</button></div>';
+  }).join('');
+}
+function labOpen(){ opOpen('lab'); }
+
+/* OP:END (the imaging, referral and document forms are added above this line) */
+</script>
+  <div class="build-stamp">v2 · build 2026-10-26 16:12</div>
 </body>
 </html>
