@@ -7265,7 +7265,7 @@ body:has(#callw:not([hidden])) #op-panel .op-sheet{height:calc(100% - 84px);}
                   <button type="button" class="v2-orow" onclick="rxOpen();v2RxFocus()"><span class="ic" data-pdic="chartnote"></span><span class="v2-ot"><b>Prescribe</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <!-- T-028 (Ani, 26 Oct): two entries, not one Order with a chooser: one tap fewer, and Daniel's lab and imaging requisitions are two separate Ministry forms -->
                   <button type="button" class="v2-orow" onclick="labOpen()"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order labs</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
-                  <button type="button" class="v2-orow" onclick="odOpen()"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order imaging</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="imgOpen()"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order imaging</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="rfOpen()"><span class="ic" data-pdic="practice"></span><span class="v2-ot"><b>Refer</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pdic="taskmoa"></span><span class="v2-ot"><b>Task</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="msOpen()"><span class="ic" data-pdic="chat"></span><span class="v2-ot"><b>Message</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
@@ -7412,7 +7412,7 @@ body:has(#callw:not([hidden])) #op-panel .op-sheet{height:calc(100% - 84px);}
               <span class="cs-tsep" aria-hidden="true"></span>
               <button type="button" class="cs-tb" onclick="rxOpen()"><span class="ic" data-pdic="chartnote"></span>Prescribe</button>
               <button type="button" class="cs-tb" onclick="labOpen()"><span class="ic" data-pdic="addon"></span>Order labs</button>
-              <button type="button" class="cs-tb" onclick="odOpen()"><span class="ic" data-pdic="addon"></span>Order imaging</button>
+              <button type="button" class="cs-tb" onclick="imgOpen()"><span class="ic" data-pdic="addon"></span>Order imaging</button>
               <button type="button" class="cs-tb" onclick="rfOpen()"><span class="ic" data-pdic="practice"></span>Refer</button>
               <button type="button" class="cs-tb" onclick="openTaskMoa(PC_CURRENT)" aria-label="Task the MOA"><span class="ic" data-pcic="task"></span>Task</button>
               <button type="button" class="cs-tb" onclick="msOpen()"><span class="ic" data-pdic="chat"></span>Message</button>
@@ -7585,7 +7585,7 @@ body:has(#callw:not([hidden])) #op-panel .op-sheet{height:calc(100% - 84px);}
               </div>
 
               <div class="vd-pane" id="vdt-imaging">
-                <div class="vd-secttl"><h4>Imaging</h4><button class="btn dark xs" onclick="odOpen()">+ Order imaging</button></div>
+                <div class="vd-secttl"><h4>Imaging</h4><button class="btn dark xs" onclick="imgOpen()">+ Order imaging</button></div>
                 <div class="vd-subtabs"><button class="active">Reports</button><button>Requisitions</button></div>
                 <div class="vd-list"><p class="pc-empty">No imaging on file for this patient.</p></div>
               </div>
@@ -8103,16 +8103,7 @@ body:has(#callw:not([hidden])) #op-panel .op-sheet{height:calc(100% - 84px);}
   </div>
 </div>
 
-<!-- Order drawer (26 Oct): tests, imaging, ECG. PLACEHOLDER built without a Daniel spec; see the note above odOpen. -->
-<div class="tm-overlay drw-ov" id="od-overlay" onclick="if(event.target===this) odClose()">
-  <div class="tm-card drw" id="od-card" role="dialog" aria-modal="true" aria-labelledby="od-ttl">
-    <p class="tm-title" id="od-ttl">Order tests</p>
-    <p class="tm-sub" id="od-sub"></p>
-    <div id="od-body"></div>
-    <div class="tm-actions" id="od-acts"></div>
-  </div>
-</div>
-
+<!-- T-028 (26 Oct): the placeholder Order drawer was replaced by the lab and imaging requisitions in #op-panel -->
 <!-- Refer drawer (26 Oct): a specialist or service. PLACEHOLDER built without a Daniel spec; see the note above rfOpen. -->
 <div class="tm-overlay drw-ov" id="rf-overlay" onclick="if(event.target===this) rfClose()">
   <div class="tm-card drw" id="rf-card" role="dialog" aria-modal="true" aria-labelledby="rf-ttl">
@@ -19727,68 +19718,8 @@ function sdDocsHtml(name){
   }).join('');
 }
 
-/* ---------- ORDER: tests, imaging and the ECG (placeholder, see the note at the top) ----------
-   A short pick of common orders (a demo list, not a clinical rule), one reason line from today's concern (editable), routine or urgent, and the
-   two equal sign buttons. On sign: Chart > Documents, the order under Ordered and pending in Chart review, and the orders list in Chart > Results
-   (the lab orders list, LAB_ORDERS, shown by renderLabOrders). */
-var OD_CAT = [
-  {g:'Blood tests', items:['Complete blood count (CBC)', 'Electrolytes', 'Kidney function', 'Lipids', 'HbA1c', 'TSH']},
-  {g:'Imaging', items:['Chest X-ray', 'Abdominal ultrasound']},
-  {g:'Heart', items:['ECG']}
-];
-var OD_TESTS = [];
-OD_CAT.forEach(function(c){ c.items.forEach(function(n){ OD_TESTS.push({id:'t' + OD_TESTS.length, n:n, g:c.g}); }); });
-function odOpen(){
-  if(!sdNeedChart()) return;
-  SD.od = {sel:{}, q:'', urg:'routine', ind:sdConcern(), done:null};
-  sdEl('od-sub').textContent = 'For ' + sdPref() + (sdConcern() ? ' · ' + sdConcern() : '');
-  odRenderBody();
-  sdEl('od-overlay').classList.add('show');
-}
-function odClose(){ sdEl('od-overlay').classList.remove('show'); }
-function odRenderBody(){
-  var s = SD.od, el = sdEl('od-body'); if(!s) return;
-  if(s.done){
-    var e = s.done, moa = sdMoa();
-    el.innerHTML = sdDone(e.route === 'moa' ? 'Signed and sent to ' + moa : 'Signed and sent',
-      [e.items.map(function(t){ return t.n; }).join(', ') + (e.urgent ? ' (urgent)' : '') + '.',
-       e.route === 'moa' ? moa + ' has a task to send the requisition. You can follow it in Tasks.' : 'You sent the requisition yourself.',
-       'Filed in Chart > Documents. It shows under Ordered and pending in Chart review, and in Chart > Results.']);
-    paintPd(el); sdDoneFoot('od'); return;
-  }
-  var moa = sdMoa();
-  el.innerHTML =
-    '<div class="sd-f"><label class="sd-l" for="od-q">Find a test</label><input type="search" id="od-q" autocomplete="off" placeholder="Blood test, X-ray, ECG" oninput="odSearch(this.value)"></div>' +
-    '<fieldset class="sd-f"><legend class="sd-l">Tests <span class="sd-n" id="od-n"></span></legend><div id="od-list"></div></fieldset>' +
-    '<div class="sd-f"><label class="sd-l" for="od-ind">Reason</label><textarea id="od-ind" rows="2" oninput="odInd(this.value)"></textarea></div>' +
-    '<fieldset class="sd-f"><legend class="sd-l">Urgency</legend>' + sdPills('od-urg', [['routine', 'Routine'], ['urgent', 'Urgent']], s.urg, 'odUrg') + '</fieldset>' +
-    '<div class="sd-who"><p class="sd-l">Who sends it</p>' +
-      '<p><b>Sign and send:</b> you send the requisition yourself.</p>' +
-      '<p><b>Sign and ask the MOA to send:</b> ' + csEsc(moa) + ', on service for this window, gets a task and faxes the requisition.</p></div>';
-  sdEl('od-ind').value = s.ind;
-  odList(); odState();
-}
-function odList(){
-  var s = SD.od, q = s.q.trim().toLowerCase(), h = '';
-  OD_CAT.forEach(function(c){
-    var rows = OD_TESTS.filter(function(t){ return t.g === c.g && (!q || t.n.toLowerCase().indexOf(q) > -1 || c.g.toLowerCase().indexOf(q) > -1); });
-    if(!rows.length) return;
-    h += '<p class="sd-g">' + csEsc(c.g) + '</p>' + rows.map(function(t){
-      return '<label class="sd-chk"><input type="checkbox" value="' + t.id + '"' + (s.sel[t.id] ? ' checked' : '') + ' onchange="odPick(this)"><span>' + csEsc(t.n) + '</span></label>';
-    }).join('');
-  });
-  sdEl('od-list').innerHTML = h || '<p class="sd-note">No test matches. Clear the search to see them all.</p>';
-}
-function odSearch(v){ SD.od.q = v; odList(); }
-function odInd(v){ SD.od.ind = v; }
-function odUrg(v){ SD.od.urg = v; }
-function odPick(cb){ if(cb.checked) SD.od.sel[cb.value] = 1; else delete SD.od.sel[cb.value]; odState(); }
-function odState(){
-  var n = Object.keys(SD.od.sel).length;
-  sdEl('od-n').textContent = n ? '· ' + n + ' picked' : '';
-  sdFoot('od', n ? 'Both buttons sign it. You choose who sends it.' : 'Pick at least one test.', n > 0, true);
-}
-function odTaskType(items){ return items.some(function(t){ return t.g === 'Blood tests'; }) ? 'Lab Work' : 'Imaging'; }
+/* ---------- ORDER: replaced (T-028, 26 Oct) by the lab and imaging requisitions (labOpen, imgOpen in the OP script below). ----------
+   What stays here is shared: odLabOrder puts a signed requisition in the orders list (LAB_ORDERS), sdOrderStatus says who sent it. */
 /* the Results and Chart review lists show this entry like any lab order: one status line, the tests behind a toggle */
 function odLabOrder(e){
   var n = e.items.length, nm = e.items.map(function(t){ return t.n; });
@@ -19802,23 +19733,6 @@ function sdOrderStatus(o){
   o.tests.forEach(function(t){ t.st = sent ? 'ordered' : 'with_moa'; });
   return e.route === 'self' ? ['Sent by you · ' + e.at, 'ok'] : sent ? ['Sent by ' + moa, 'ok'] : ['With ' + moa + ' to send', 'neutral'];
 }
-function odSign(route){
-  var s = SD.od; if(!s || s.done) return;
-  var items = OD_TESTS.filter(function(t){ return s.sel[t.id]; }); if(!items.length) return;
-  var name = PC_CURRENT, moa = sdMoa(), at = rxNow(), names = items.map(function(t){ return t.n; }), ind = sdPlain(s.ind), urgent = s.urg === 'urgent';
-  var e = {id:'od' + Date.now(), ts:Date.now(), pt:name, items:items.map(function(t){ return {n:t.n, g:t.g}; }), ind:ind, urgent:urgent, route:route, at:at, iso:rxIso(new Date()), date:sdDate()};
-  if(route === 'moa'){
-    var t = moaTask({patient:name, type:odTaskType(items), prio:urgent ? 'urgent' : 'routine', title:'Send requisition: ' + names.join(', '),
-      note:'Fax the requisition for ' + names.join(', ') + '.' + (ind ? ' Reason: ' + ind + '.' : '') + (urgent ? ' Marked urgent.' : '') + ' Signed by ' + RX_DR + ' ' + at + '.'});
-    e.task = t.id;
-  }
-  sdOut(name).orders.unshift(e);
-  LAB_ORDERS.unshift(odLabOrder(e));
-  s.done = e; odRenderBody();
-  sdRefresh(name);
-  toast(route === 'moa' ? 'Signed · sent to ' + moa : 'Signed · requisition sent');
-}
-
 /* the three overlays join the drawer stack once they exist */
 (function(){
   [['od-overlay', 'odClose'], ['rf-overlay', 'rfClose'], ['ms-overlay', 'msClose']].forEach(function(p){
@@ -20065,6 +19979,7 @@ function opRender(){
   if(!opIsOpen() || !OP.kind) return;
   var K = OP_K[OP.kind], sh = document.getElementById('op-sheet');
   var ae = document.activeElement, inS = !!(ae && ae.closest && ae.closest('#op-sheet')), fk = inS ? ae.getAttribute('data-fk') : null;
+  var c0 = null, c1 = null; try { if(inS && /^(INPUT|TEXTAREA)$/.test(ae.tagName) && ae.selectionStart != null){ c0 = ae.selectionStart; c1 = ae.selectionEnd; } } catch(err){}
   var m = document.getElementById('op-main'), ra = document.getElementById('op-rail'), bd = document.getElementById('op-body');
   var sm = m.scrollTop, sr = ra.scrollTop;
   document.getElementById('op-ttl').textContent = K.title();
@@ -20086,7 +20001,7 @@ function opRender(){
   var t = fk && sh.querySelector('[data-fk="' + fk.replace(/"/g, '') + '"]');
   if(!t && OP.focusNext){ t = sh.querySelector('[data-fk="' + OP.focusNext + '"]'); }
   OP.focusNext = null;
-  if(t && inS) t.focus({preventScroll:true});
+  if(t && inS){ t.focus({preventScroll:true}); if(c0 != null && t.getAttribute('data-fk') === fk) try { t.setSelectionRange(c0, c1); } catch(err){} }
   else if(inS && !sh.contains(document.activeElement)){ var h = document.getElementById('op-ttl'); if(h) h.focus({preventScroll:true}); }
 }
 /* typing: only the rail and the footer change, so the field keeps its caret */
@@ -20574,8 +20489,243 @@ function opDraftsHtml(name){
 }
 function labOpen(){ opOpen('lab'); }
 
+/* ============================================================
+   IMAGING REQUISITION (T-028). Daniel's current screen (spec 1b), every field kept: Modality selection; Exam requested; Priority level;
+   Patient safety risk assessment (Pt Diabetic, On Metformin, Breast Feeding, Pregnant Yes / No, LMP, G P A, Height, Weight, Previous contrast
+   reaction? details); Pertinent history / medications; Copy to (optional), up to two doctors. Presented our way (spec 2): modality as a
+   segmented control, the exam as a search over that modality's list, an AI-drafted one-line clinical question for the radiologist (Daniel,
+   25 Oct: "age, sex, the symptom and how long, what to rule out"; the doctor edits) that feeds Pertinent history, and the safety questions
+   only when they apply, pre-filled from the chart. The preview always shows every field of the form.
+   DEMO LIST: the exams below are a demo list until Daniel's radiology data arrives (his portal holds radiologist-approved categories,
+   "source-verified: keep them as they are"). Needs Daniel: the categories, and who "could be pregnant" (the demo asks women aged 12 to 55).
+   ============================================================ */
+var IM_MODS = ['X-Ray', 'Ultrasound', 'Echo', 'CT', 'Angio/Intv', 'Nuclear Medicine', 'Breast Imaging'];
+/* c: the exam uses contrast (asks the contrast questions); c:false says so explicitly */
+var IM_EXAMS = {   /* DEMO LIST until Daniel's radiology data */
+  'X-Ray': [{n:'Chest 2 Views'}, {n:'Chest 1 View'}, {n:'Abdomen'}, {n:'Cervical spine'}, {n:'Lumbar spine'}, {n:'Shoulder'}, {n:'Wrist'}, {n:'Hand'}, {n:'Hip and pelvis'}, {n:'Knee'}, {n:'Ankle'}, {n:'Foot'}],
+  'Ultrasound': [{n:'Abdomen complete'}, {n:'Pelvis'}, {n:'Renal'}, {n:'Thyroid'}, {n:'Scrotum'}, {n:'Soft tissue'}, {n:'Venous Doppler, leg'}, {n:'Obstetric'}],
+  'Echo': [{n:'Transthoracic echocardiogram'}, {n:'Stress echocardiogram'}],
+  'CT': [{n:'Head without contrast', c:false}, {n:'Head with contrast', c:true}, {n:'Chest with contrast', c:true}, {n:'Abdomen and pelvis with contrast', c:true}, {n:'Sinuses without contrast', c:false}, {n:'Lumbar spine without contrast', c:false}],
+  'Angio/Intv': [{n:'Peripheral angiogram', c:true}, {n:'Image-guided biopsy', c:true}, {n:'Image-guided joint injection', c:true}],
+  'Nuclear Medicine': [{n:'Bone scan'}, {n:'Thyroid scan'}, {n:'Myocardial perfusion scan'}, {n:'Lung ventilation and perfusion scan'}, {n:'Hepatobiliary scan'}],
+  'Breast Imaging': [{n:'Screening mammogram'}, {n:'Diagnostic mammogram'}, {n:'Breast ultrasound'}]
+};
+/* DEMO: an exam the chart already asks for (Behdis's Aug 4 plan) */
+var IM_FROM = {'Behdis Maleki, 35F': {mod:'Ultrasound', exam:'Abdomen complete', why:'The Aug 4 plan lists an abdominal ultrasound for a source of iron loss. Not booked yet.', src:'Visit note, Aug 4'}};
+/* DEMO: the AI's one-line clinical question for the radiologist. Where the chart says what is being looked for, the line says it; otherwise it
+   leaves "[what to rule out]" for the doctor, and signing waits until the square brackets are filled. */
+var IM_RULE = {
+  'Gloria Mcdonald, 74F': 'Also has type 2 diabetes. Rule out a cardiac or lung cause.',
+  'Behdis Maleki, 35F': 'Looking for a source of blood loss.'
+};
+function imContrast(s){
+  if(!s.mod) return false;
+  if(s.mod === 'Angio/Intv') return true;
+  var ex = (IM_EXAMS[s.mod] || []).filter(function(x){ return x.n.toLowerCase() === s.exam.trim().toLowerCase(); })[0];
+  if(ex && ex.c != null) return ex.c;
+  if(/without contrast|non-contrast|no contrast/i.test(s.exam)) return false;
+  return s.mod === 'CT' || /with contrast/i.test(s.exam);
+}
+function imCouldBePregnant(){ var a = opAge(); return opSex() === 'Female' && a != null && a >= 12 && a <= 55; }   /* demo rule, Needs Daniel */
+function imAsk(s){
+  var c = imContrast(s), p = imCouldBePregnant();
+  /* breast feeding: breast imaging and contrast exams, for the same patients as the pregnancy questions (demo rule, Needs Daniel) */
+  return {contrast:c, preg:p, breast:p && (s.mod === 'Breast Imaging' || c), size:s.mod === 'CT' || s.mod === 'Nuclear Medicine'};
+}
+function imCq(name){
+  var r = sdRow(), sum = (AI_SUMMARY[name] || '').replace(/\.$/, ''), a = opAge();
+  var lead = (a ? a + '-year-old ' : '') + opWoman() + (sum ? ', ' + sum.charAt(0).toLowerCase() + sum.slice(1) : (r && r.concern ? ', ' + r.concern.toLowerCase() : '')) + '.';
+  return lead.replace(/ x(\d+)/g, ' for $1').replace(/\bHTN\b/g, 'hypertension') + ' ' + (IM_RULE[name] || 'What to rule out: [what to rule out].');
+}
+function imHistFrom(s, name){
+  return (s.cq ? s.cq + '\n' : '') + 'Medications: ' + opMedsText(name) + '.\nAllergies: ' + opAllergy(name).text + '.';
+}
+function imFresh(name){
+  var meds = rxMeds(name).map(function(m){ return m.drug.toLowerCase(); }), metf = meds.indexOf('metformin') > -1;
+  var dm = metf || /type 2 diabetes/i.test(((PT_LAST[name] || {}).note || {}).A || '');
+  var wt = ((PT_READINGS[name] || {}).wt || []), w = wt.length ? String(wt[wt.length - 1][1]) : '';
+  var s = {mod:'', exam:'', prio:'routine', cq:imCq(name), cqSt:'draft', hist:'', histEdited:false, note:true,
+    safe:{diab:dm ? 'yes' : '', diabFrom:dm ? (metf ? 'On metformin; type 2 diabetes on the chart' : 'Type 2 diabetes on the chart') : '',
+      metf:metf ? 'yes' : 'no', metfFrom:metf ? 'On the medication list' : 'Not on the medication list',
+      breast:'', preg:'', lmp:'', gpa:'', ht:'', wt:w, wtFrom:w ? 'Patient-reported, ' + wt[wt.length - 1][0] : '', rxn:'', rxnDet:''},
+    cc:[{n:'', f:''}, {n:'', f:''}]};
+  s.hist = imHistFrom(s, name);
+  return s;
+}
+function imSet(k, v){
+  var s = OP.st;
+  if(k === 'mod'){ s.mod = s.mod === v ? s.mod : v; if(!(IM_EXAMS[v] || []).some(function(x){ return x.n === s.exam; })) s.exam = ''; opRender(); return; }
+  if(k === 'prio'){ s.prio = v; opRender(); return; }
+  if(k === 'exam'){ s.exam = v; opRender(); return; }
+}
+function imExamIn(v){
+  /* typing in Exam requested: free text is allowed (the form's field is text); the list below narrows as you type */
+  var s = OP.st, before = imAsk(s), shown = JSON.stringify(before);
+  s.exam = v;
+  var el = document.getElementById('im-ex-list'); if(el) el.innerHTML = imExamList();
+  if(JSON.stringify(imAsk(s)) !== shown){ opRender(); return; }
+  opSoft();
+}
+function imSafe(k, v){ var sf = OP.st.safe; sf[k] = sf[k] === v ? '' : v; if(k === 'diab') sf.diabFrom = ''; if(k === 'metf') sf.metfFrom = ''; opRender(); }   /* a second press clears */
+function imSafeIn(k, v){ OP.st.safe[k] = v; if(k === 'wt') OP.st.safe.wtFrom = ''; opSoft(); }
+function imCqIn(v){
+  var s = OP.st; s.cq = v; s.cqSt = 'edited';
+  if(!s.histEdited){ s.hist = imHistFrom(s, PC_CURRENT); var h = document.getElementById('im-hist'); if(h) h.value = s.hist; }
+  var mk = document.getElementById('im-cq-mk'); if(mk && !mk.getAttribute('data-ed')){ mk.setAttribute('data-ed', '1'); mk.innerHTML = opMk('ok', 'Edited by you'); paintPd(mk); }
+  opSoft();
+}
+function imCqOk(){ OP.st.cqSt = 'ok'; OP.focusNext = 'cq'; opRender(); }
+function imHistIn(v){ OP.st.hist = v; OP.st.histEdited = true; opSoft(); }
+function imCcIn(i, k, v){ OP.st.cc[i][k] = v; opSoft(); }
+function imUseFrom(){ var f = IM_FROM[PC_CURRENT]; if(!f) return; OP.st.mod = f.mod; OP.st.exam = f.exam; OP.focusNext = 'exam'; opRender(); }
+function imExamList(){
+  var s = OP.st; if(!s.mod) return '';
+  var q = s.exam.trim().toLowerCase(), L = IM_EXAMS[s.mod] || [];
+  var hits = L.filter(function(x){ return !q || x.n.toLowerCase().indexOf(q) > -1 || q.split(/\s+/).every(function(w){ return x.n.toLowerCase().indexOf(w) > -1; }); });
+  var exact = L.some(function(x){ return x.n.toLowerCase() === q; });
+  if(exact) hits = L;
+  if(!hits.length) return '<p class="op-note">Not on the ' + csEsc(s.mod) + ' list. It goes on the form as you typed it.</p>';
+  return '<div class="op-chips" role="group" aria-label="' + csEsc(s.mod) + ' exams">' + hits.map(function(x, i){
+    var on = x.n.toLowerCase() === q;
+    return '<button type="button" class="op-chip" data-fk="ex-' + i + '" aria-pressed="' + on + '" onclick="imSet(\'exam\', ' + csEsc(JSON.stringify(x.n)) + ')">' + csEsc(x.n) + '</button>';
+  }).join('') + '</div>';
+}
+function imMissing(){
+  var s = OP.st, sf = s.safe, k = imAsk(s), out = [];
+  if(!s.mod) out.push(['Choose a modality', 'mod-X-Ray']);
+  if(!s.exam.trim()) out.push(['Exam requested', 'exam']);
+  if(!s.cq.trim()) out.push(['Clinical question for the radiologist', 'cq']);
+  else if(s.cqSt === 'draft') out.push(['Accept or edit the AI draft clinical question', 'cqok']);
+  if(opBrackets(s.cq).length) out.push(['Clinical question: fill in ' + opBrackets(s.cq).join(', '), 'cq']);
+  if(k.contrast){
+    if(!sf.diab) out.push(['Pt Diabetic? is not answered', 'sf-diab-yes']);
+    if(!sf.metf) out.push(['On Metformin? is not answered', 'sf-metf-yes']);
+    if(!sf.rxn) out.push(['Previous contrast reaction? is not answered', 'sf-rxn-yes']);
+    if(sf.rxn === 'yes' && !sf.rxnDet.trim()) out.push(['Previous contrast reaction: details', 'rxndet']);
+  }
+  if(k.preg && !sf.preg) out.push(['Pregnant? is not answered', 'sf-preg-yes']);
+  if(k.breast && !sf.breast) out.push(['Breast Feeding? is not answered', 'sf-breast-yes']);
+  if(k.size && !sf.ht.trim()) out.push(['Height (cm)', 'ht']);
+  if(k.size && !sf.wt.trim()) out.push(['Weight (kg)', 'wt']);
+  return out;
+}
+function imGo(fk){
+  var t = document.querySelector('#op-sheet [data-fk="' + fk + '"]');
+  if(t){ t.focus(); t.scrollIntoView({block:'center'}); }
+}
+function imYN(k, label, fromTxt){
+  var sf = OP.st.safe, v = sf[k];
+  return '<div class="op-fu" role="group" aria-labelledby="im-' + k + '-l"><p class="op-gl" id="im-' + k + '-l">' + csEsc(label) + ' <span class="op-src">Choose up to one. Select again to clear.</span></p>' +
+    '<div class="op-pills">' + ['yes', 'no'].map(function(o){ return '<button type="button" class="op-pill" data-fk="sf-' + k + '-' + o + '" aria-pressed="' + (v === o) + '" onclick="imSafe(\'' + k + '\', \'' + o + '\')">' + (o === 'yes' ? 'Yes' : 'No') + '</button>'; }).join('') + '</div>' +
+    (fromTxt ? opMk('chart', 'From the chart: ' + fromTxt) : '') + '</div>';
+}
+function imMain(){
+  var s = OP.st, sf = s.safe, name = PC_CURRENT, k = imAsk(s), fr = IM_FROM[name], h = '';
+  if(fr && !(s.mod === fr.mod && s.exam === fr.exam)) h += '<section class="op-card" aria-labelledby="im-fr-h"><h3 id="im-fr-h">From the chart</h3><ul class="op-sug"><li><div><b>' + csEsc(fr.mod + ': ' + fr.exam) + '</b><p class="op-why">' + csEsc(fr.why) + '</p><p class="op-src">' + csEsc(fr.src) + '</p></div>' +
+    '<button type="button" class="btn" data-fk="usefr" onclick="imUseFrom()">' + rxIc('plus') + 'Use it</button></li></ul></section>';
+  h += '<section class="op-card" aria-labelledby="im-md-h"><h3 id="im-md-h">Modality</h3><div class="op-seg" role="group" aria-labelledby="im-md-h">' + IM_MODS.map(function(m){
+      return '<button type="button" class="op-sb" data-fk="mod-' + m + '" aria-pressed="' + (s.mod === m) + '" onclick="imSet(\'mod\', \'' + m + '\')">' + csEsc(m) + '</button>'; }).join('') + '</div>' +
+    '<div class="op-f" style="margin-top:12px"><label for="im-exam">Exam requested</label><input type="text" id="im-exam" data-fk="exam" autocomplete="off"' + (s.mod ? ' placeholder="Search the ' + csEsc(s.mod) + ' list, or type the exam"' : ' placeholder="Choose a modality first, or type the exam"') + ' value="' + csEsc(s.exam) + '" oninput="imExamIn(this.value)"></div>' +
+    '<div id="im-ex-list" style="margin-top:8px">' + imExamList() + '</div>' +
+    '<p class="op-gl" id="im-pr-l" style="margin-top:12px">Priority level</p><div class="op-seg" role="group" aria-labelledby="im-pr-l">' + [['routine', 'Routine'], ['urgent', 'Urgent'], ['stat', 'Stat']].map(function(p){
+      return '<button type="button" class="op-sb" data-fk="pr-' + p[0] + '" aria-pressed="' + (s.prio === p[0]) + '" onclick="imSet(\'prio\', \'' + p[0] + '\')">' + p[1] + '</button>'; }).join('') + '</div></section>';
+  h += '<section class="op-card" aria-labelledby="im-cq-h"><div class="op-hrow"><h3 id="im-cq-h">Clinical question for the radiologist</h3><span id="im-cq-mk" class="op-lrow">' + opAiMk(s.cqSt, 'cqok', 'imCqOk()') + '</span></div>' +
+    '<p class="op-note">One line: age, sex, the symptom and how long, and what to rule out. Drafted from today’s intake and the chart; edit it freely. It goes into Pertinent history.</p>' +
+    '<label for="im-cq" class="op-vh">Clinical question for the radiologist</label><textarea id="im-cq" rows="3" data-fk="cq" oninput="imCqIn(this.value)">' + csEsc(s.cq) + '</textarea>' +
+    '<p class="op-src">Sources: Intake, today' + (PT_LAST[name] ? '; Visit note, ' + csEsc(PT_LAST[name].date.replace(/, 2026$/, '')) : '') + '</p></section>';
+  /* safety: only what applies to this exam and this patient */
+  var any = k.contrast || k.preg || k.breast || k.size;
+  h += '<section class="op-card" aria-labelledby="im-sf-h"><h3 id="im-sf-h">Patient safety risk assessment</h3>';
+  if(!s.mod) h += '<p class="op-note">The questions that apply show once you choose a modality and an exam.</p>';
+  else if(!any) h += '<p class="op-note">No safety questions apply to this exam for this patient. The form shows them blank.</p>';
+  else {
+    if(k.contrast) h += '<p class="op-note">This exam uses contrast.</p>' + imYN('diab', 'Pt Diabetic?', sf.diabFrom) + imYN('metf', 'On Metformin?', sf.metfFrom) +
+      imYN('rxn', 'Previous contrast reaction?', '') + (sf.rxn === 'yes' ? '<div class="op-f"><label for="im-rxnd">Previous contrast reaction: details</label><input type="text" id="im-rxnd" data-fk="rxndet" value="' + csEsc(sf.rxnDet) + '" oninput="imSafeIn(\'rxnDet\', this.value)"></div>' : '');
+    if(k.preg) h += imYN('preg', 'Pregnant?', '') + '<div class="op-grid"><div class="op-f"><label for="im-lmp">LMP</label><input type="date" id="im-lmp" data-fk="lmp" value="' + csEsc(sf.lmp) + '" oninput="imSafeIn(\'lmp\', this.value)"></div>' +
+      '<div class="op-f"><label for="im-gpa">G, P, A</label><input type="text" id="im-gpa" data-fk="gpa" placeholder="For example G2 P2 A0" value="' + csEsc(sf.gpa) + '" oninput="imSafeIn(\'gpa\', this.value)"></div></div>';
+    if(k.breast) h += imYN('breast', 'Breast Feeding?', '');
+    if(k.size) h += '<div class="op-grid"><div class="op-f"><label for="im-ht">Height (cm)</label><input type="number" inputmode="decimal" id="im-ht" data-fk="ht" value="' + csEsc(sf.ht) + '" oninput="imSafeIn(\'ht\', this.value)"></div>' +
+      '<div class="op-f"><div class="op-lrow"><label for="im-wt">Weight (kg)</label>' + (sf.wtFrom ? opMk('chart', sf.wtFrom) : '') + '</div><input type="number" inputmode="decimal" id="im-wt" data-fk="wt" value="' + csEsc(sf.wt) + '" oninput="imSafeIn(\'wt\', this.value)"></div></div>';
+  }
+  h += '</section>';
+  h += '<section class="op-card" aria-labelledby="im-hx-h"><div class="op-hrow"><h3 id="im-hx-h"><label for="im-hist">Pertinent history / medications</label></h3>' + (s.histEdited ? '' : opMk('chart', 'From the clinical question and the chart')) + '</div>' +
+    '<textarea id="im-hist" rows="4" data-fk="hist" oninput="imHistIn(this.value)">' + csEsc(s.hist) + '</textarea></section>';
+  h += '<section class="op-card" aria-labelledby="im-cc-h"><h3 id="im-cc-h">Copy to (optional)</h3><p class="op-note">The requisition will also be faxed to these doctors. Up to two doctors.</p><div class="op-grid">' +
+    [0, 1].map(function(i){ return '<div class="op-f"><label for="im-ccn' + i + '">Doctor name</label><input type="text" id="im-ccn' + i + '" data-fk="ccn' + i + '" value="' + csEsc(s.cc[i].n) + '" oninput="imCcIn(' + i + ', \'n\', this.value)"></div>' +
+      '<div class="op-f"><label for="im-ccf' + i + '">Fax number</label><input type="tel" id="im-ccf' + i + '" data-fk="ccf' + i + '" value="' + csEsc(s.cc[i].f) + '" oninput="imCcIn(' + i + ', \'f\', this.value)"></div>'; }).join('') + '</div></section>';
+  return h;
+}
+function imRail(){
+  var s = OP.st, miss = imMissing(), sf = s.safe, k = imAsk(s);
+  var h = '<section class="op-card" aria-labelledby="im-rq-h"><h3 id="im-rq-h">This requisition</h3><dl class="op-dl">' +
+    '<div><dt>Exam</dt><dd>' + (s.mod || s.exam ? csEsc([s.mod, s.exam].filter(Boolean).join(': ')) : 'None chosen yet') + '</dd></div>' +
+    '<div><dt>Priority level</dt><dd>' + {routine:'Routine', urgent:'Urgent', stat:'Stat'}[s.prio] + '</dd></div>' +
+    '<div><dt>Clinical question</dt><dd>' + csEsc(s.cq || '—') + (s.cqSt === 'draft' ? '<span class="op-src">AI draft, not accepted yet</span>' : '') + '</dd></div>';
+  var sl = [];
+  if(k.contrast){ sl.push('Diabetic: ' + (sf.diab || '—')); sl.push('On metformin: ' + (sf.metf || '—')); sl.push('Previous contrast reaction: ' + (sf.rxn === 'yes' ? 'yes, ' + (sf.rxnDet || '—') : sf.rxn || '—')); }
+  if(k.preg) sl.push('Pregnant: ' + (sf.preg || '—') + (sf.lmp ? ', LMP ' + sf.lmp : ''));
+  if(k.breast) sl.push('Breast feeding: ' + (sf.breast || '—'));
+  if(k.size) sl.push('Height ' + (sf.ht || '—') + ' cm, weight ' + (sf.wt || '—') + ' kg');
+  if(sl.length) h += '<div><dt>Safety</dt><dd>' + csEsc(sl.join('\n')) + '</dd></div>';
+  var cc = s.cc.filter(function(c){ return c.n.trim() || c.f.trim(); });
+  if(cc.length) h += '<div><dt>Copy to</dt><dd>' + csEsc(cc.map(function(c){ return c.n + (c.f ? ', fax ' + c.f : ''); }).join('\n')) + '</dd></div>';
+  h += '</dl></section>';
+  if(miss.length) h += '<section class="op-card" aria-labelledby="im-ms-h"><h3 id="im-ms-h">Still needed</h3><ul class="op-need">' + miss.map(function(m){
+    return '<li><button type="button" data-fk="go-' + m[1] + '" onclick="imGo(\'' + m[1] + '\')">' + rxIc('alert') + '<span>' + csEsc(m[0]) + '</span></button></li>'; }).join('') + '</ul></section>';
+  return h;
+}
+function imPaper(){
+  var s = OP.st, sf = s.safe, yn = function(v){ return v === 'yes' ? 'Yes' : v === 'no' ? 'No' : '—'; };
+  var h = '<article class="op-paper" aria-label="Imaging requisition preview">' + opPaperHead('Medical imaging requisition') +
+    '<h5>Modality selection</h5><div class="op-pbx">' + IM_MODS.map(function(m){ return opBox(s.mod === m, m); }).join('') + '</div>' +
+    '<h5>Exam requested</h5><p>' + csEsc(s.exam || '—') + '</p>' +
+    '<h5>Priority level</h5><div class="op-pbx">' + [['routine', 'Routine'], ['urgent', 'Urgent'], ['stat', 'Stat']].map(function(p){ return opBox(s.prio === p[0], p[1]); }).join('') + '</div>' +
+    '<h5>Patient safety risk assessment</h5><div class="op-pbx">' + opBox(sf.diab === 'yes', 'Pt Diabetic') + opBox(sf.metf === 'yes', 'On Metformin') + opBox(sf.breast === 'yes', 'Breast Feeding') + '</div>' +
+    '<p><b>Pregnant:</b> ' + yn(sf.preg) + ' &nbsp; <b>LMP:</b> ' + csEsc(sf.lmp || '—') + ' &nbsp; <b>G, P, A:</b> ' + csEsc(sf.gpa || '—') + '</p>' +
+    '<p><b>Height:</b> ' + csEsc(sf.ht ? sf.ht + ' cm' : '—') + ' &nbsp; <b>Weight:</b> ' + csEsc(sf.wt ? sf.wt + ' kg' : '—') + '</p>' +
+    '<p><b>Previous contrast reaction?</b> ' + yn(sf.rxn) + (sf.rxn === 'yes' ? ': ' + csEsc(sf.rxnDet || '—') : '') + '</p>' +
+    '<h5>Pertinent history / medications</h5><p style="white-space:pre-line">' + csEsc(s.hist || '—') + '</p>' +
+    '<h5>Copy to (optional)</h5>' + s.cc.map(function(c){ return '<p>' + csEsc((c.n || '—') + ', fax ' + (c.f || '—')) + '</p>'; }).join('') +
+    opPaperSig() + '</article>';
+  return h;
+}
+OP_K.img = {
+  title:function(){ return 'Imaging requisition'; },
+  noun:function(){ return 'the imaging requisition'; },
+  railLabel:function(){ return 'This requisition'; },
+  fresh:function(name){ return imFresh(name); },
+  selfLabel:function(){ return 'Sign and fax to radiology'; },
+  okLine:function(){ return 'Both buttons sign it. You choose who sends it.'; },
+  pvNote:function(){ return 'The requisition exactly as it will be faxed. Every field of the provincial form is on it, blank where it does not apply.'; },
+  valid:function(){ var m = imMissing(); return m.length ? {why:'Still needed: ' + m[0][0] + (m.length > 1 ? ' (and ' + (m.length - 1) + ' more)' : '') + '.'} : {}; },
+  main:function(){ return imMain(); },
+  rail:function(){ return imRail(); },
+  paper:function(){ return imPaper(); },
+  sign:function(route, name, at){
+    var s = OP.st, moa = sdMoa(), exam = s.mod + ': ' + s.exam.trim(), pr = {routine:'routine', urgent:'urgent', stat:'Stat'}[s.prio];
+    var e = {id:'od' + Date.now(), kind:'img', ts:Date.now(), pt:name, items:[{n:exam, g:'Imaging'}], ind:sdPlain(s.cq), urgent:s.prio !== 'routine', prio:s.prio, iso:rxIso(new Date()), date:sdDate(), at:at, route:route};
+    if(route === 'moa'){
+      var t = opMoaTask({patient:name, type:'Imaging', prio:s.prio === 'routine' ? 'routine' : 'urgent', title:'Fax imaging requisition: ' + exam,
+        note:'Fax the imaging requisition (' + exam + ', ' + pr + ') to radiology' + (s.cc.some(function(c){ return c.f.trim(); }) ? ', with copies to ' + s.cc.filter(function(c){ return c.f.trim(); }).map(function(c){ return (c.n || 'a doctor') + ' (fax ' + c.f + ')'; }).join(' and ') : '') + '. Signed by ' + RX_DR + ' ' + at + '.'});
+      e.task = t.id;
+    }
+    sdOut(name).orders.unshift(e);
+    LAB_ORDERS.unshift(odLabOrder(e));
+    e.noteLine = 'Imaging requisition: ' + exam + ' (' + pr + '). Clinical question: ' + sdPlain(s.cq) + ' Signed by ' + RX_DR + ' ' + at + (route === 'moa' ? '; sent to ' + moa + ' (MOA) to fax.' : '; faxed to radiology.');
+    e.toast = route === 'moa' ? 'Signed · sent to ' + moa + ' to fax' : 'Signed · imaging requisition faxed';
+    return e;
+  },
+  doneHtml:function(e){ return opDoneHtml(e.route === 'moa' ? 'Signed and sent to ' + sdMoa() : 'Signed and faxed to radiology',
+    [e.items[0].n + ' (' + {routine:'routine', urgent:'urgent', stat:'Stat'}[e.prio] + ').',
+     e.route === 'moa' ? sdMoa() + ' has a task to fax the requisition. You can follow it in Tasks.' : 'You faxed the requisition yourself.',
+     'Filed in Chart > Documents. It shows under Ordered and pending in Chart review, and in Chart > Results.'], e); }
+};
+function imgOpen(){ opOpen('img'); }
+/* the old single Order entry (any caller left over) asks for the lab requisition; imaging has its own entry */
+function odOpen(kind){ if(kind === 'img') imgOpen(); else labOpen(); }
+
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-26 16:12</div>
+  <div class="build-stamp">v2 · build 2026-10-26 16:16</div>
 </body>
 </html>
