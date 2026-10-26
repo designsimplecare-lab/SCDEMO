@@ -34,6 +34,11 @@ tasks below are **Ready**, and waiting for Ani's go.
 | T-024 | AI Chart Assist in the chart, Phase 1 first (Daniel's requirements, 11 Oct) | Design + build | P1 | `ux-designer` | `clinical-safety`, `privacy-security`, `qa-engineer`, `accessibility` | Ready; queued behind the 11 Oct chart changes |
 | T-025 | Specialist report → reminders, patient reply and drafted orders (Daniel, 15 Oct) | Design + build | P1 | `ux-designer` | `clinical-safety`, `privacy-security`, `qa-engineer`, `accessibility` | In progress: Ani approved 15 Oct |
 | T-026 | Prescribing redesign: Medications and prescribing, three steps (Daniel's Prescription Modal v2, 21 Oct) | Design + build | P1 | `ux-designer` | `clinical-safety`, `privacy-security`, `qa-engineer`, `accessibility` | Built in the demo (Ani, "do all", 21 Oct; build 22 Oct, stamp in the portal): panel, three steps, safety check, both send routes, Schedule 1A block, override. In review: `clinical-safety`, `privacy-security`, `qa-engineer` and `accessibility` have not run yet; safety data is demo data; waiting on Daniel (see the spec) |
+| T-027 | Prescribing v2: prescription pad first, reconciliation as a mode, med list as the result (Daniel, 25 Oct) | Design + build | P0 | `ux-designer` | `clinical-safety`, `privacy-security`, `qa-engineer`, `accessibility` | Ready: waiting for Ani's go |
+| T-028 | Lab and imaging requisitions with order panels and AI-suggested tests | Design + build | P1 | `ux-designer` | `clinical-safety`, `qa-engineer`, `accessibility` | Ready: needs requisition field data |
+| T-029 | Referral built from Daniel's referral forms | Design + build | P1 | `ux-designer` | `qa-engineer`, `accessibility` | Ready: needs his referral HTML |
+| T-030 | Create a medical note or document from the chart | Design + build | P1 | `ux-designer` | `qa-engineer`, `accessibility` | Ready: document types to confirm |
+| T-031 | Clinical flowsheets per condition | Design + build | P2 | `ux-designer` | `clinical-safety`, `qa-engineer` | Ready: needs the reference pack |
 
 **Recording files (local, never committed):**
 - `~/Downloads/Fixing Annoying Appointment Chat Flow.mp4`
