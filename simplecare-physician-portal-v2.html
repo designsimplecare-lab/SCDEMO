@@ -3665,7 +3665,7 @@
      carries meaning: brand blue for what to do and where you are now, one
      tone per priority band, and heavier headings so sections lead.
      ============================================================ */
-  :root{--brand:#4353E8;--brand-ink:#2F3CC0;--brand-wash:#EEF0FD;--brand-line:#C9CEF8;}
+  :root{--brand-navy:#162660;--brand:#4353E8;--brand-ink:#2F3CC0;--brand-wash:#EEF0FD;--brand-line:#C9CEF8;}
   :root[data-theme="dark"]{--brand:#7C89FF;--brand-ink:#A9B1FF;--brand-wash:#1E2340;--brand-line:#3A4380;}
 
   /* primary actions in brand blue */
@@ -6462,6 +6462,98 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
 #rx-panel .rp-fax p{margin:0;font-size:15px;line-height:22px;}
 #rx-panel .rp-fax ul{margin:0;padding-left:20px;font-size:15px;line-height:22px;}
 #rx-panel .rp-bar #rx-fax,#rx-panel .rp-bar #rx-moa{white-space:normal;text-align:left;min-height:44px;}
+/* T-027 (Daniel, 25 Oct): the prescription pad looks like the paper pad doctors know. Cream paper, ruled lines, the ℞ mark,
+   a signature line. Calm, clinical, a soft reminder of consequence; no alert colours unless something is wrong. */
+#rx-panel.t027 .rp-nav,#rx-panel.t027 .rp-facts{display:none;}
+#rx-panel .op-lk{display:inline-flex;align-items:center;gap:4px;background:none;border:0;padding:6px 4px;min-height:32px;font:inherit;font-size:14px;font-weight:600;color:var(--brand);cursor:pointer;}
+#rx-panel .op-lk:hover{text-decoration:underline;}
+#rx-panel .op-lk .ic,#rx-panel .op-lk svg{width:16px;height:16px;}
+#rx-panel .rp-sm{min-height:36px;padding:0 12px;font-size:14px;}
+#rx-panel .rp-tag{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:var(--wash);font-size:13px;line-height:20px;font-weight:600;color:var(--ink-soft);vertical-align:1px;}
+#rx-panel .rp-tag.today{background:var(--brand-wash);color:var(--brand);}
+#rx-panel .rp-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+/* the paper */
+#rx-panel .rp-paper{position:relative;max-width:640px;margin:0 auto 12px;padding:34px 38px 26px;background:#fff;border:1px solid #dcdcdc;
+  box-shadow:3px 4px 0 -1px #fff,3px 4px 0 0 #e2e2e2,0 10px 24px rgba(0,0,0,.08);color:#222;font-family:Georgia,'Times New Roman',serif;display:flex;flex-direction:column;min-height:720px;}
+#rx-panel .rp-ph2{display:flex;align-items:flex-start;gap:20px;padding-bottom:16px;border-bottom:1.5px solid #222;}
+#rx-panel .rp-rx{flex:none;font-family:Georgia,'Times New Roman',serif;font-size:66px;line-height:62px;font-weight:400;color:var(--brand-navy);letter-spacing:-8px;}
+#rx-panel .rp-rx i{font-style:normal;font-size:42px;vertical-align:-16px;}
+#rx-panel .rp-hd{flex:1;min-width:0;display:grid;gap:8px;padding-top:4px;}
+#rx-panel .rp-title{margin:0 0 4px;font-family:'Trajan Pro',Georgia,'Times New Roman',serif;font-size:27px;line-height:32px;letter-spacing:.3em;font-weight:400;color:#222;}
+#rx-panel .rp-fr{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 22px;margin:0;}
+#rx-panel .rp-fl2{flex:1 1 auto;display:flex;align-items:flex-end;gap:8px;min-width:120px;font-size:13px;color:#333;}
+#rx-panel .rp-fl2 > span{flex:none;}
+#rx-panel .rp-fl2 b{flex:1;min-width:max-content;padding:0 4px 1px;border-bottom:1px solid #888;font-size:15px;font-weight:400;color:#111;min-height:21px;white-space:nowrap;}
+#rx-panel .rp-alg{margin-top:12px;}
+#rx-panel .rp-alg.has .rp-fl2 b{color:var(--crit);font-weight:700;}
+#rx-panel .rp-bd{flex:1;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-0.5 -0.5 24 21'%3E%3Cpath fill='%23162660' fill-opacity='.06' d='M0.861827 0C1.16364 0.0380711 1.46624 0.0721207 1.76728 0.115554C1.9613 0.143705 2.1548 0.179631 2.34649 0.222797C2.56545 0.272128 2.78285 0.329771 2.99921 0.390363C3.19895 0.446398 3.39739 0.507794 3.59428 0.57348C3.76025 0.62871 3.92414 0.691715 4.08752 0.75472C4.26102 0.821747 4.43635 0.885556 4.60492 0.964648C4.88933 1.09816 5.17271 1.23517 5.44959 1.3845C5.72465 1.53277 5.99738 1.68827 6.26049 1.85771C6.72412 2.15665 7.16828 2.48428 7.59009 2.84515C8.00489 3.20012 8.40619 3.5693 8.78073 3.96932C9.21735 4.43582 9.61761 4.93289 9.94774 5.48573C10.1046 5.74874 10.2488 6.02114 10.3818 6.29809C10.5262 6.59891 10.6615 6.90509 10.7805 7.21743C10.8812 7.48205 10.9599 7.75632 11.0355 8.03033C11.1028 8.27431 11.1638 8.52123 11.207 8.77084C11.2605 9.07997 11.2979 9.39258 11.3324 9.70465C11.3636 9.98804 11.3828 10.2728 11.4046 10.5572C11.4129 10.6661 11.4132 10.7757 11.4189 10.8849C11.4202 10.9076 11.4285 10.9481 11.4366 10.9489C11.4612 10.9516 11.4934 10.9463 11.5119 10.9307C11.7075 10.7658 11.9082 10.6066 12.0932 10.4293C12.321 10.2114 12.5469 9.98885 12.7514 9.74809C12.9586 9.50411 13.1542 9.24619 13.3272 8.9754C13.5662 8.60166 13.7854 8.21425 14.001 7.82523C14.1877 7.48849 14.3542 7.13995 14.5355 6.79999C14.7576 6.38362 14.9965 5.97824 15.2581 5.58654C15.4859 5.24551 15.7381 4.92646 16.023 4.63556C16.1396 4.51652 16.2682 4.41035 16.3905 4.29721C16.4682 4.22536 16.4703 4.21839 16.388 4.15217C16.1905 3.99318 15.9994 3.82347 15.789 3.68513C15.5321 3.51622 15.2511 3.39798 14.9477 3.33471C14.6576 3.27412 14.368 3.25106 14.0789 3.30924C13.8851 3.34838 13.6916 3.40522 13.509 3.48217C13.016 3.68941 12.622 4.03661 12.2786 4.44977C11.9584 4.83503 11.7134 5.26964 11.4984 5.72354C11.4823 5.75732 11.4732 5.79459 11.4602 5.82998C11.3298 6.18602 10.8851 6.27933 10.6308 6.00425C10.4766 5.83722 10.4223 5.59914 10.5392 5.37715C10.6379 5.18974 10.7142 4.98946 10.8121 4.80152C11.0612 4.32322 11.3547 3.87521 11.7062 3.46984C12.0119 3.11728 12.3503 2.80252 12.7451 2.55935C12.9789 2.41564 13.2272 2.30304 13.4877 2.21536C13.9277 2.06737 14.3758 2.03091 14.8321 2.07943C15.1345 2.11161 15.4238 2.19821 15.7051 2.31859C16.123 2.49768 16.4937 2.7548 16.8318 3.05829C17.0916 3.29154 17.3783 3.36125 17.7092 3.3079C17.8838 3.27975 18.0609 3.26742 18.237 3.24758C18.4775 3.2205 18.7175 3.18913 18.9583 3.16661C19.2913 3.13551 19.6246 3.09824 19.9586 3.08671C20.4726 3.06902 20.9874 3.06526 21.5017 3.06741C21.73 3.06848 21.958 3.09636 22.1861 3.11567C22.356 3.13014 22.5253 3.14945 22.6947 3.16875C22.7308 3.17277 22.7671 3.18269 22.8014 3.19529C22.817 3.20092 22.8373 3.21969 22.838 3.23363C22.8388 3.24811 22.8217 3.26849 22.8071 3.27787C22.7876 3.29047 22.764 3.29852 22.7409 3.30254C22.5897 3.32908 22.4383 3.35294 22.2871 3.38002C22.0767 3.41755 21.8661 3.45429 21.6562 3.49611C21.3573 3.55563 21.058 3.61435 20.7609 3.68244C20.4152 3.76154 20.0692 3.8409 19.7277 3.93768C19.4261 4.02294 19.129 4.12723 18.8331 4.23206C18.37 4.39614 17.9253 4.60312 17.5108 4.87391C17.1409 5.11547 16.8173 5.41227 16.53 5.75276C16.2061 6.13669 15.9443 6.56459 15.7022 7.00509C15.4934 7.385 15.3002 7.77402 15.0973 8.15741C14.7867 8.7451 14.461 9.32421 14.0862 9.87115C13.77 10.3323 13.4132 10.7589 13.0145 11.1484C12.5493 11.6031 12.0589 12.0259 11.5485 12.4249C11.5433 12.4289 11.5386 12.4345 11.5329 12.4367C11.4095 12.482 11.3927 12.5879 11.3825 12.7037C11.3555 13.0166 11.3308 13.33 11.2914 13.6415C11.255 13.9284 11.2062 14.2139 11.1534 14.4981C11.1064 14.7515 11.0547 15.0049 10.9895 15.2539C10.9324 15.4724 10.8555 15.6856 10.7833 15.8998C10.7366 16.0381 10.6867 16.1759 10.6301 16.3103C10.5638 16.4674 10.4916 16.6218 10.4176 16.7752C10.1192 17.3913 9.70904 17.9202 9.21683 18.3811C8.94645 18.6345 8.66489 18.8771 8.33892 19.0525C8.1345 19.1624 7.92178 19.256 7.71087 19.3522C7.47607 19.4594 7.22672 19.5128 6.97399 19.549C6.76101 19.5793 6.54335 19.594 6.3353 19.5404C5.93971 19.4385 5.63478 19.2176 5.49556 18.7961C5.35478 18.3704 5.3527 17.9385 5.42024 17.5015C5.48699 17.0693 5.61816 16.658 5.78543 16.2564C6.02309 15.6864 6.34543 15.1703 6.71789 14.6874C7.01581 14.3011 7.35295 13.9528 7.71087 13.6241C8.21398 13.1622 8.76827 12.7764 9.33995 12.4144C9.60151 12.249 9.86176 12.0814 10.1205 11.9112C10.1462 11.8943 10.1683 11.8541 10.1727 11.8219C10.2163 11.498 10.2124 11.172 10.1992 10.8471C10.1823 10.4352 10.1618 10.0234 10.1293 9.61296C10.1124 9.40062 10.0711 9.18989 10.0327 8.97996C9.99501 8.77432 9.95397 8.56869 9.90098 8.3668C9.8506 8.17377 9.78644 7.98421 9.72202 7.7952C9.6628 7.6212 9.59709 7.44907 9.53112 7.27749C9.39164 6.91447 9.21761 6.56942 9.02774 6.23187C8.74541 5.72971 8.40853 5.26883 8.02879 4.84335C7.65814 4.42778 7.261 4.03929 6.82542 3.69531C6.43581 3.38753 6.03841 3.08993 5.61244 2.83764C5.29816 2.65157 4.9805 2.47007 4.65479 2.30706C4.39557 2.17729 4.1231 2.07434 3.85349 1.96763C3.64622 1.88559 3.43661 1.80918 3.22415 1.74323C3.00779 1.67593 2.78805 1.61829 2.56701 1.56816C2.31844 1.51185 2.06753 1.46493 1.81637 1.42097C1.68468 1.39791 1.55065 1.39121 1.41793 1.37485C1.36364 1.36815 1.34364 1.38826 1.34416 1.44429C1.34572 1.64939 1.34988 1.85288 1.38027 2.05772C1.42936 2.39124 1.49065 2.72155 1.5813 3.04489C1.6387 3.24999 1.70208 3.45509 1.78156 3.65188C1.9226 4.00096 2.06727 4.34923 2.23039 4.68784C2.4226 5.08759 2.66052 5.45945 2.92129 5.81657C3.29895 6.33348 3.74389 6.77988 4.23635 7.17695C4.65453 7.51422 5.1005 7.80807 5.574 8.0558C5.93192 8.24294 6.29088 8.429 6.65633 8.59952C6.88958 8.70837 7.13269 8.79658 7.37607 8.87969C7.66438 8.97835 7.95554 9.06871 8.24879 9.15021C8.52983 9.22823 8.81372 9.2974 9.09891 9.35719C9.45164 9.43092 9.63839 9.72986 9.62151 9.9993C9.60618 10.2427 9.47839 10.4143 9.27112 10.5232C9.10021 10.6127 8.92203 10.5838 8.74463 10.5465C8.58619 10.5133 8.42723 10.4808 8.26983 10.443C8.10178 10.4025 7.93425 10.3594 7.76801 10.3116C7.5623 10.2527 7.35633 10.1934 7.15373 10.1242C6.8875 10.0336 6.62309 9.93737 6.36049 9.8363C6.15867 9.75854 5.95738 9.67758 5.76179 9.58428C5.48595 9.45263 5.21323 9.31322 4.94336 9.16871C4.59998 8.98479 4.27687 8.76575 3.95791 8.54C3.63817 8.31372 3.33454 8.06599 3.05532 7.78957C2.77013 7.50725 2.48883 7.21904 2.22753 6.91366C1.89533 6.52571 1.59974 6.10613 1.36001 5.64954C1.18234 5.31119 1.00546 4.97096 0.853516 4.62001C0.711439 4.29131 0.590141 3.95162 0.483128 3.60898C0.371701 3.25321 0.277935 2.89046 0.196117 2.5261C0.135339 2.25558 0.100793 1.97836 0.0641704 1.70248C0.0358589 1.48853 0.0161187 1.2727 0.00391104 1.05714C-0.00881615 0.831131 0.00624869 0.607798 0.0981961 0.395189C0.202611 0.153089 0.391441 0.0410203 0.633777 0.0107243C0.708322 0.00134053 0.784945 0.00938373 0.860528 0.00938373C0.861048 0.00643456 0.861308 0.00321728 0.861827 0.000268107V0ZM6.88984 18.2677C6.89062 18.2728 6.89165 18.2776 6.89243 18.2827C7.01711 18.2591 7.14542 18.2471 7.2662 18.2095C7.57918 18.1117 7.86204 17.9487 8.12074 17.7444C8.41892 17.509 8.68281 17.2366 8.908 16.9256C9.08671 16.6784 9.23476 16.4119 9.37372 16.1392C9.50281 15.8861 9.61034 15.6244 9.69449 15.3523C9.73579 15.2188 9.77839 15.0856 9.81423 14.9504C9.86125 14.7724 9.90696 14.5936 9.9441 14.4129C9.98046 14.2367 10.0062 14.0582 10.0345 13.8804C10.055 13.7509 10.0732 13.6209 10.089 13.4906C10.0922 13.4646 10.0805 13.4364 10.0755 13.4094C10.0498 13.4179 10.0212 13.422 9.99865 13.4362C9.83397 13.5388 9.66904 13.641 9.50722 13.748C8.97839 14.0981 8.48048 14.4871 8.03295 14.9459C7.65633 15.3319 7.34594 15.7668 7.09114 16.2427C6.88672 16.624 6.72283 17.0258 6.64776 17.4588C6.61322 17.6583 6.5849 17.8591 6.61633 18.0637C6.64438 18.2447 6.66283 18.2648 6.83789 18.268C6.85529 18.2682 6.87244 18.268 6.88984 18.268V18.2677Z'/%3E%3C/svg%3E") no-repeat center 45%/460px auto;}
+#rx-panel .rp-pf{margin-top:24px;padding-top:18px;border-top:1.5px solid #222;}
+#rx-panel .rp-foot .rp-fl2 b{min-height:26px;}
+#rx-panel .rp-paper :is(button,input,.rp-tag,.rp-pw2,.rp-pop,.rp-more,.rp-blank){font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+#rx-panel .rp-paper .rp-part{font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#222;}
+#rx-panel .rp-pls{list-style:none;margin:14px 0 0;padding:0;}
+#rx-panel .rp-pl{display:grid;grid-template-columns:28px minmax(0,1fr) 40px;gap:2px 8px;align-items:start;padding:12px 0;}
+#rx-panel .rp-pl.stop .rp-pd b{text-decoration:line-through;}
+#rx-panel .rp-pn{font-family:Georgia,'Times New Roman',serif;font-size:18px;line-height:28px;color:#6b7080;}
+#rx-panel .rp-pb2{min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;}
+#rx-panel .rp-pb2 > *{flex:1 1 100%;}
+#rx-panel .rp-pb2 > .rp-os,#rx-panel .rp-pb2 > .rp-pa{flex:0 1 auto;}
+#rx-panel .rp-pd{margin:0;font-size:19px;line-height:28px;}
+#rx-panel .rp-pd b{font-family:Georgia,'Times New Roman',serif;font-weight:700;}
+#rx-panel .rp-paper .rp-os{gap:0;}
+#rx-panel .rp-paper .rp-part{background:transparent;min-height:32px;padding:0 6px;font-weight:400;text-decoration:none;color:#3a3f4d;}
+#rx-panel .rp-paper .rp-part + .rp-part::before{content:'·';margin-right:12px;color:#9a9eaa;}
+#rx-panel .rp-pl:not(:hover):not(:focus-within) .rp-pa:not(:has([aria-expanded=true])){display:none;}
+#rx-panel .rp-paper .rp-part:hover,#rx-panel .rp-paper .rp-part.on{background:rgba(22,38,96,.06);color:var(--ink);}
+#rx-panel .rp-paper .rp-pop{background:#fff;border:1px solid #e8e1cc;}
+#rx-panel .rp-pw2{list-style:none;margin:0;padding:8px 12px;border-left:3px solid var(--warn);background:#fffaf0;display:grid;gap:8px;}
+#rx-panel .rp-pw2 li{display:grid;gap:6px;justify-items:start;}
+#rx-panel .rp-pa{display:flex;gap:8px;}
+#rx-panel .rp-pa .btn{min-height:32px;border:0;background:none;padding:0 4px;font-size:14px;color:var(--brand);}
+#rx-panel .rp-pa .btn .ic{color:var(--brand);}
+#rx-panel .rp-px{width:40px;height:40px;border:0;border-radius:999px;background:none;color:#6b7080;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
+#rx-panel .rp-px:hover{background:rgba(22,38,96,.06);color:var(--ink);}
+#rx-panel .rp-px .ic,#rx-panel .rp-px svg{width:18px;height:18px;}
+#rx-panel .rp-blank{margin:18px 0 6px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:16px;color:#8a8f9c;}
+#rx-panel .rp-padd{display:grid;gap:8px;margin-top:14px;}
+#rx-panel .rp-padd input{width:100%;max-width:420px;background:#fff;}
+#rx-panel .rp-quick{display:flex;flex-wrap:wrap;gap:6px;}
+#rx-panel .rp-paper .rp-chip{min-height:34px;background:rgba(22,38,96,.05);border:0;font-size:14px;}
+#rx-panel .rp-paper .rp-chip .ic{width:14px;height:14px;color:#b08a2e;}
+#rx-panel .rp-sl{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;}
+/* the medication list (rail) */
+#rx-panel .rp-mlh{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+#rx-panel .rp-mlh h3{margin:0;}
+#rx-panel .rp-win select{height:36px;font-size:14px;}
+#rx-panel .rp-unrec{margin:4px 0 8px;font-size:14px;font-weight:600;color:var(--warn-ink,#8a5a00);}
+#rx-panel .rp-recd{display:flex;align-items:center;gap:6px;margin:4px 0 8px;font-size:14px;font-weight:600;color:var(--ink);}
+#rx-panel .rp-recd .ic,#rx-panel .rp-recd svg{width:16px;height:16px;color:var(--good);}
+#rx-panel .rp-mll{list-style:none;margin:0 0 10px;padding:0;}
+#rx-panel .rp-mll li{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:10px 0;border-top:1px solid var(--line);}
+#rx-panel .rp-mll p{margin:0;}
+#rx-panel .rp-mll .rp-src{white-space:nowrap;}
+#rx-panel .rp-recb{width:100%;}
+/* reconcile */
+#rx-panel .rp-rec{display:grid;gap:10px;}
+#rx-panel.t027 .rp-main > * + *{margin-top:16px;}
+#rx-panel .rp-rec h3{margin:0;}
+#rx-panel .rp-tbl{width:100%;border-collapse:collapse;margin-top:8px;font-size:15px;}
+#rx-panel .rp-tbl th,#rx-panel .rp-tbl td{text-align:left;vertical-align:top;padding:10px 8px;border-top:1px solid var(--line);}
+#rx-panel .rp-tbl thead th{font-size:13px;font-weight:600;color:var(--ink-soft);border-top:0;}
+#rx-panel .rp-tbl tbody th{font-weight:600;}
+#rx-panel .rp-tbl td .rp-rs{display:block;}
+#rx-panel .rp-tbl tr.diff td:nth-child(4){color:var(--ink);}
+#rx-panel .rp-va{text-align:right;white-space:nowrap;}
+#rx-panel .rp-tbl + .op-lk,#rx-panel .rp-tbl + .rp-rs{margin-top:14px;}
+#rx-panel.t027 .rp-bar .rp-bm{max-width:none;}
+#rx-panel.t027 .rp-bar .rp-bm b{color:var(--ink);font-weight:600;}
+#rx-panel .rp-va .btn{margin:0 0 6px 6px;}
+@media (max-width:1180px){
+  #rx-panel.t027 .rp-body{grid-template-columns:minmax(0,1fr);overflow-y:auto;display:block;}
+  #rx-panel.t027 .rp-main{overflow:visible;}
+  #rx-panel.t027 .rp-rail{margin-top:16px;overflow:visible;}
+}
+#rx-panel .rp-va .rp-done{display:inline-flex;}
 /* T-026 prescribing panel: CSS end */
 
   /* ===== Order, Refer and Message drawers (26 Oct 2026; Ani: "they must work now"). PLACEHOLDERS, built without a Daniel spec (see the script note).
@@ -6742,6 +6834,8 @@ body:has(#callw:not([hidden])) #op-panel .op-sheet{height:calc(100% - 84px);}
   #op-panel .op-rail{margin-top:16px;overflow:visible;}
 }
 /* Chart > Documents: "Documents and letters" with Create a document and Upload (T-030) */
+/* the note toolbar gained Labs, Imaging and Document (T-028, T-030): it may wrap rather than clip the last buttons */
+#screen-patientchart #pcv-c #cs-acts.cs-tbar{flex-wrap:wrap;justify-content:flex-start;}
 #cs-docs .dl-hd{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:0 0 12px;}
 #cs-docs .dl-hd h3{flex:1 1 auto;margin:0;font-size:17px;line-height:24px;font-weight:700;color:var(--ink);}
 #cs-docs .dl-hd .btn{min-height:44px;display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;border-radius:12px;padding:0 16px;cursor:pointer;}
@@ -6750,11 +6844,40 @@ body:has(#callw:not([hidden])) #op-panel .op-sheet{height:calc(100% - 84px);}
 #cs-docs .dl-up input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;}
 #cs-docs .dl-up:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px;}
 #cs-docs .dl-open{min-height:44px;margin-top:6px;}
+/* above the full-chart drawer (300 to 310: Create a document opens from Chart > Documents), below the toast (400); the call widget stays on top
+   and usable while a form is open, as with the prescribing panel (the sheet is 84 px shorter while a call is on) */
+#op-panel.op-ov.show{z-index:350 !important;}
+body:has(#op-panel.show) #callw{z-index:360;}
 #op-panel .op-gl .op-src{font-weight:400;}
 #op-panel .op-note > .op-mk{vertical-align:top;}
 #op-panel .op-pg{margin-top:8px;}
 #op-panel .op-pg:first-of-type{margin-top:0;}
 #cs-docs .dl-txt{margin:6px 0;font-size:15px;line-height:22px;color:var(--ink);white-space:pre-line;max-width:66ch;}
+
+  /* order drawers, calm (Ani, 26 Oct) */
+  .op-ov .op-sheet{max-width:min(980px,94vw);margin-left:auto;}
+  .op-ov .op-body.solo .op-main{max-width:760px;margin:0 auto;width:100%;}
+  .op-ov .op-search input{width:100%;min-height:44px;font-size:15px;}
+  .op-ov .op-row{display:flex;align-items:flex-start;gap:12px;margin:12px 0 0;}
+  .op-ov .op-row .op-rk,.op-ov .op-cedar{flex:0 0 72px;font-size:14px;color:var(--ink-soft);padding-top:8px;display:inline-flex;align-items:center;gap:6px;}
+  .op-ov .op-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .op-ov .op-chip.on{background:var(--accent-wash,#EEF0FD);color:var(--ink);border-color:transparent;}
+  .op-ov .op-lk{background:none;border:0;padding:6px 4px;font:inherit;font-size:14px;font-weight:600;color:var(--accent-ink,var(--accent));cursor:pointer;}
+  .op-ov .op-lk:hover{text-decoration:underline;}
+  .op-ov .op-req{margin:18px 0 6px;padding:16px;border-radius:14px;background:var(--panel);border:1px solid var(--line);}
+  .op-ov .op-req .op-hrow{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .op-ov .op-req h3{margin:0;font-size:15px;}
+  .op-ov .op-req .op-cnt{font-weight:400;color:var(--ink-soft);margin-left:4px;}
+  .op-ov .op-empty{margin:8px 0 0;color:var(--ink-faint);font-size:14px;}
+  .op-ov .op-rl{list-style:none;margin:10px 0 0;padding:0;}
+  .op-ov .op-rl li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--line);}
+  .op-ov .op-rl li:first-child{border-top:0;}
+  .op-ov .op-rl li.op-fuw{display:block;border-top:0;padding-top:0;}
+  .op-ov .op-sec2 h4{margin:0;}
+  .op-ov .op-cq{font-weight:400;color:var(--ink-faint);}
+  .op-ov .op-bar .op-links{display:flex;gap:10px;}
+  .op-ov .op-bar .op-go2{background:var(--panel);}
+  .op-ov .op-bar #op-why:empty{display:none;}
 </style>
 </head>
 <body>
@@ -7267,6 +7390,8 @@ body:has(#callw:not([hidden])) #op-panel .op-sheet{height:calc(100% - 84px);}
                   <button type="button" class="v2-orow" onclick="labOpen()"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order labs</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="imgOpen()"><span class="ic" data-pdic="addon"></span><span class="v2-ot"><b>Order imaging</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="refOpen()"><span class="ic" data-pdic="practice"></span><span class="v2-ot"><b>Refer</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <!-- T-030 (Daniel, 25 Oct: the demo is missing "documents (a note or a medical document)"): create a work or school note, letter or form -->
+                  <button type="button" class="v2-orow" onclick="docOpen()"><span class="ic" data-pdic="file"></span><span class="v2-ot"><b>Document</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pdic="taskmoa"></span><span class="v2-ot"><b>Task</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="msOpen()"><span class="ic" data-pdic="chat"></span><span class="v2-ot"><b>Message</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                 </div>
@@ -7411,9 +7536,10 @@ body:has(#callw:not([hidden])) #op-panel .op-sheet{height:calc(100% - 84px);}
               </span>
               <span class="cs-tsep" aria-hidden="true"></span>
               <button type="button" class="cs-tb" onclick="rxOpen()"><span class="ic" data-pdic="chartnote"></span>Prescribe</button>
-              <button type="button" class="cs-tb" onclick="labOpen()"><span class="ic" data-pdic="addon"></span>Order labs</button>
-              <button type="button" class="cs-tb" onclick="imgOpen()"><span class="ic" data-pdic="addon"></span>Order imaging</button>
+              <button type="button" class="cs-tb" onclick="labOpen()" aria-label="Order labs"><span class="ic" data-pdic="addon"></span>Labs</button>
+              <button type="button" class="cs-tb" onclick="imgOpen()" aria-label="Order imaging"><span class="ic" data-pdic="addon"></span>Imaging</button>
               <button type="button" class="cs-tb" onclick="refOpen()"><span class="ic" data-pdic="practice"></span>Refer</button>
+              <button type="button" class="cs-tb" onclick="docOpen()"><span class="ic" data-pdic="file"></span>Document</button>
               <button type="button" class="cs-tb" onclick="openTaskMoa(PC_CURRENT)" aria-label="Task the MOA"><span class="ic" data-pcic="task"></span>Task</button>
               <button type="button" class="cs-tb" onclick="msOpen()"><span class="ic" data-pdic="chat"></span>Message</button>
             </div>
@@ -10468,6 +10594,10 @@ function scFind(id){ return SC_PROPOSALS.filter(function(p){ return p.id===id; }
 function scAccept(id){
   var p = scFind(id); if(!p) return;
   scDone[id] = 'accepted';
+  if(p.kind === 'Prescription'){
+    var lb = rxLibName(p.action.split(' ')[0]); if(lb){ var nm = PC_CURRENT || 'Gloria Mcdonald, 74F'; (RX_FROMVISIT[nm] = RX_FROMVISIT[nm] || []).push({key:lb.k, src:'From the call'}); }
+    renderScribe(); toast('On the prescription pad'); return;
+  }
   if(p.kind === 'Diagnosis'){
     renderScribe();
     toast('Coded on the visit note — nothing sent to anyone');
@@ -13086,6 +13216,7 @@ var RX_LIB = [
   {k:'zopiclone-5', name:'Zopiclone', strength:'5 mg', mg:5, form:'tablet', freq:'at bedtime', rep:0, ind:'sleep', sed:true},
   {k:'ibuprofen-400', name:'Ibuprofen', strength:'400 mg', mg:400, form:'tablet', freq:'three times daily', rep:0, ind:'pain', renalNeed:true},
   {k:'acetaminophen-500', name:'Acetaminophen', strength:'500 mg', mg:500, form:'tablet', freq:'four times daily', rep:0, ind:'pain', maxDay:4000},
+  {k:'valacyclovir-1000', name:'Valacyclovir', strength:'1 g', mg:1000, form:'tablet', freq:'twice daily', rep:0, ind:'coldsore', days:1, renalNeed:true},
   {k:'nitrofurantoin-100', name:'Nitrofurantoin', strength:'100 mg', mg:100, form:'capsule', freq:'twice daily', rep:0, ind:'uti', days:5, renalMin:30},
   {k:'amoxicillin-500', name:'Amoxicillin', strength:'500 mg', mg:500, form:'capsule', freq:'three times daily', rep:0, ind:'uti', days:7, cls:'penicillin'},
   {k:'tmp-smx', name:'Trimethoprim-sulfamethoxazole', strength:'160/800 mg', mg:null, form:'tablet', freq:'twice daily', rep:0, ind:'uti', days:3, cls:'sulfa'},
@@ -13159,11 +13290,15 @@ function rxRowFrom(src){
   o.freq = o.freq || (lib && lib.freq) || 'once daily'; o.per = o.per || 1; return o;
 }
 /* the patient's profile: invented import for two demo patients, otherwise the chart's own list */
+function rxAgoOf(last){
+  var d = last ? new Date(last + ', ' + new Date().getFullYear()) : null; if(!d || isNaN(d)) return 60;
+  if(d > new Date()) d.setFullYear(d.getFullYear() - 1); return Math.floor((new Date() - d) / 864e5);
+}
 function rxChartRows(name){
   return rxMeds(name).map(function(m, i){
     var lib = rxLibName(m.drug);
     return rxRowFrom({id:'c' + i, key:lib ? lib.k : null, drug:m.drug, strength:m.dose, form:(m.form || 'tablets').replace(/s$/, ''), freq:m.freq,
-      ind:null, by:'Simple Rx', pharm:ptChart(name).pharm, ago:60, supply:90, chart:true, chartOnly:true});
+      ind:null, by:'Simple Rx', pharm:ptChart(name).pharm, ago:rxAgoOf(m.last), supply:90, chart:true, chartOnly:true});
   });
 }
 function rxProfile(name){
@@ -13316,17 +13451,17 @@ function rxSafety(st){
     var lib = e.key ? rxLib(e.key) : rxLibName(e.name);
     if(lib && lib.cls) al.forEach(function(a){ if(a.cls === lib.cls) add('allergy', e, e.name + ' is ' + RX_CLS[lib.cls] + '. ' + a.label + ' is on the allergy list (' + a.rx + ').', a.src); });
     if(lib && lib.renalMin){
-      if(kid.egfr != null && kid.egfr < lib.renalMin) add('kidney', e, 'Kidney function is ' + kid.egfr + ' mL/min. ' + e.name + ' is not advised below ' + lib.renalMin + '.', 'Drug library (demo data)');
-      else if(!kid.ok) add('kidney', e, 'No kidney function result is on file, and ' + e.name + ' depends on it.', 'Drug library (demo data)');
+      if(kid.egfr != null && kid.egfr < lib.renalMin) add('kidney', e, 'Kidney function is ' + kid.egfr + ' mL/min. ' + e.name + ' is not advised below ' + lib.renalMin + '.', 'Drug library');
+      else if(!kid.ok) add('kidney', e, 'No kidney function result is on file, and ' + e.name + ' depends on it.', 'Drug library');
     }
-    if(lib && lib.renalNeed && !kid.ok) add('kidney', e, 'No kidney function result is on file, and ' + e.name + ' depends on it.', 'Drug library (demo data)');
+    if(lib && lib.renalNeed && !kid.ok) add('kidney', e, 'No kidney function result is on file, and ' + e.name + ' depends on it.', 'Drug library');
     if(lib && lib.sed && age != null && age >= 65) add('sedative', e, e.name + ' is a sedative and the patient is ' + age + '.', 'Beers list');
-    if(lib && lib.maxDay && lib.mg){ var day = e.per * lib.mg * rxPer(e.freq); if(day > lib.maxDay) add('maxdose', e, 'That is ' + day + ' mg a day. The limit in the drug library is ' + lib.maxDay + ' mg a day.', 'Drug library (demo data)'); }
+    if(lib && lib.maxDay && lib.mg){ var day = e.per * lib.mg * rxPer(e.freq); if(day > lib.maxDay) add('maxdose', e, 'That is ' + day + ' mg a day. The limit in the drug library is ' + lib.maxDay + ' mg a day.', 'Drug library'); }
     if(lib && lib.s1a) add('s1a', e, e.name + ' is a Schedule 1A drug. It cannot be sent by fax or by electronic prescription.', 'Schedule 1A rule');
   });
   RX_INTER.forEach(function(pr, i){
     var a = reg.filter(function(e){ return e.name === pr[0]; })[0], b = reg.filter(function(e){ return e.name === pr[1]; })[0];
-    if(a && b){ var e = (b.ord ? b : a); add('interaction', e, pr[2], 'Drug library (demo data)', ':' + i); }
+    if(a && b){ var e = (b.ord ? b : a); add('interaction', e, pr[2], 'Drug library', ':' + i); }
   });
   var seen = {}; reg.forEach(function(e){ var k = e.name.toLowerCase(); if(seen[k]){ add('duplicate', e, e.name + ' is on this list twice.', 'This list'); } seen[k] = 1; });
   var clear = RX_SG.filter(function(g){ return !W.some(function(w){ return w.type === g[0]; }); }).map(function(g){ return g[1]; });
@@ -13360,6 +13495,7 @@ function rxOpen(auto){
   if(!RX_UI.open) RX_UI.opener = (document.activeElement && document.activeElement !== document.body) ? document.activeElement : null;
   RX_UI.open = true; RX_UI.trap = false; RX_UI.ov = RX_UI.edit = RX_UI.adding = RX_UI.link = null; RX_UI.pharmEdit = false;
   if(rxLocked()) st.step = 3;
+  if(!st.mode) st.mode = auto && !rxLocked() ? 'rec' : 'pad';
   pn.classList.add('show'); document.body.classList.add('rx-open');
   rxRender();
   /* a renewal visit opens it without taking focus; the trap starts when the doctor uses it */
@@ -13478,11 +13614,10 @@ function rxRender(){
   var ev = ae && ae.id === 'rx-ovt' ? ae.value : null;
   document.getElementById('rx-ttl').textContent = 'Prescribe for ' + (r ? (r.legal || r.name) : '');
   document.getElementById('rx-sub').textContent = r ? [r.age ? parseInt(r.age, 10) : '', r.sex].filter(Boolean).join(' · ') : '';
-  document.getElementById('rx-steps').innerHTML = rxStepBar(st);
-  document.getElementById('rx-facts').innerHTML = rxFactsHtml(st);
-  m.innerHTML = rxBody(st);
-  ra.innerHTML = rxRegHtml(st) + rxSafeHtml(st);
-  document.getElementById('rx-bar').innerHTML = rxBarHtml(st);
+  var md = rxMode(st); document.getElementById('rx-panel').classList.add('t027');
+  m.innerHTML = md === 'rec' ? rxRecHtml(st) : rxPadHtml(st);
+  ra.innerHTML = rxListHtml(st);
+  document.getElementById('rx-bar').innerHTML = md === 'rec' ? rxBarRec(st) : rxBarPad(st);
   paintPd(document.getElementById('rx-panel'));
   m.scrollTop = sm; ra.scrollTop = sr; if(bd) bd.scrollTop = sb;
   var t = fk && sh.querySelector('[data-fk="' + fk.replace(/"/g, '') + '"]');
@@ -13589,7 +13724,7 @@ function rxHistHtml(st){
     h += '<ul id="rx-hist" class="rp-hl">' + H.rows.map(function(x){
       var lib = x.r.key ? rxLib(x.r.key) : null, din = '0000' + ('0000' + (RX_LIB.indexOf(lib) + 101)).slice(-4);
       return '<li><b>' + rxIso(x.d) + '</b> · ' + csEsc(rxRowTitle(x.r)) + ' · DIN ' + din + ' · qty ' + (x.r.supply ? x.r.per * rxPer(x.r.freq) * x.r.supply : 'as needed') + ' · ' + csEsc(rxDirs(x.r)) + ' · ' + csEsc(x.r.by) + ' · ' + csEsc(x.r.pharm || '') + '</li>';
-    }).join('') + '</ul><p class="rp-note">DINs are placeholders in this demo.</p>';
+    }).join('') + '</ul>';
   }
   return h + '</section>';
 }
@@ -13741,7 +13876,7 @@ function rxAddHtml(st, p){
 function rxSearchHtml(pid){
   var q = (RX_UI.q || '').trim().toLowerCase(); if(!q) return '';
   var r = RX_LIB.filter(function(x){ return (x.name + ' ' + x.strength).toLowerCase().indexOf(q) > -1; }).slice(0, 6);
-  if(!r.length) return '<p class="rp-note">No drug in the demo list matches.</p>';
+  if(!r.length) return '<p class="rp-note">No match.</p>';
   return '<ul class="rp-sl">' + r.map(function(x){ return '<li><button type="button" class="btn" data-fk="sr' + x.k + '" onclick="rxAct(\'addlib\',\'' + pid + '\',\'' + x.k + '\')">' + csEsc(x.name + ' ' + x.strength + ' ' + x.form) + (x.s1a ? ', Schedule 1A' : '') + '</button></li>'; }).join('') + '</ul>';
 }
 function rxSearch(v, pid){ RX_UI.q = v; var e = document.getElementById('rx-sr'); if(e) e.innerHTML = rxSearchHtml(pid); }
@@ -13900,6 +14035,13 @@ function rxSign(route){
   var entry = {route:route, text:lines.join('; ') || 'Stop note', state:'pending', at:at, signedAt:at, pharm:ph, n:ords.length,
     orders:ords.map(function(o){ return {drug:o.drug, strength:o.strength, instr:o.instrEdited ? o.more.instr : rxInstr(o), qty:rxQtyOf(o), repeats:o.repeats, sub:[o.more.nosub ? 'do not substitute' : '', o.more.cp ? 'compliance packaging' : ''].filter(Boolean).join(', ')}; })};
   st.status.push(entry); ords.forEach(function(o){ o.sent = true; o.ai = false; if(st.sent.indexOf(o.drug) === -1) st.sent.push(o.drug); });
+  /* T-027: what is prescribed today joins the medication list (Simple's own prescriptions) */
+  ords.forEach(function(o){
+    var L = (RX_MEDS[name] = RX_MEDS[name] || []), mo = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric'});
+    for(var i = L.length - 1; i >= 0; i--){ if(L[i].drug === o.drug) L.splice(i, 1); }
+    L.push({drug:o.drug, dose:o.strength, freq:o.freq, form:o.form + 's', last:mo});
+    if(st.rows){ st.rows = st.rows.filter(function(r){ return r.drug !== o.drug; }); st.rows.push(rxRowFrom({id:'s' + o.id, key:o.key, drug:o.drug, strength:o.strength, form:o.form, freq:o.freq, per:o.per, ind:null, by:'Simple Rx', pharm:ph, ago:0, supply:o.days, chart:true})); }
+  });
   var ovl = []; Object.keys(st.overrides).forEach(function(k){ if(sf.W.some(function(w){ return w.id === k; })) ovl.push(k.split(':')[0] + ': ' + st.overrides[k].reason); });
   var stopNotes = [];
   stops.forEach(function(r){
@@ -13943,6 +14085,227 @@ function rxBar(st){
   return '<button type="button" class="btn" data-fk="back" onclick="rxClose()">' + rxIc('chevl') + 'Close</button>';
 }
 /* chart banner: allergies added from PharmaNet show with the chart's own (T-026) */
+/* ===== T-027 Prescribing v2 (Daniel, 25 Oct): the prescription pad first, reconciliation as a mode, the med list as the result =====
+   Pad = what I am doing today (the clinical encounter). Reconcile = Simple's list against a source, verified with the patient.
+   Med list = the result, reconciled as of a date by a named doctor, or plainly "not reconciled". Paper look on purpose:
+   "make it look like the classic doctor's pad … make it clinical". Steps 1 to 3 above stay as the engine (orders, safety, signing). */
+var RX_FROMVISIT = {};   /* name -> [{key, src}] put on the pad from the chart (Cedar, at the moment of decision) */
+var RX_QUICK = [
+  {label:'Cold sore', key:'valacyclovir-1000', per:2, days:1},
+  {label:'Urinary tract infection', key:'nitrofurantoin-100', days:5}
+];
+var RX_WINS = [3, 6, 12, 18];
+/* demo addresses for the pad (invented, like the patients) */
+var RX_ADDR = {'Gloria Mcdonald, 74F':'88 Cedar Lane, Coquitlam, BC', 'Greg':'212 Maple Crescent, Burnaby, BC', 'Behdis Maleki, 35F':'1406 Birch Street, Surrey, BC', 'Manjit':'35 Alder Road, Kamloops, BC'};
+function rxMode(st){ return st.mode || 'pad'; }
+function rxPadOrders(st){ return st.orders.filter(function(o){ return !o.sent; }); }
+/* drugs the doctor decided on in today's note ("start", "increase", "renew", "prescribe"), never ones they only continue */
+function rxNoteDrugs(){
+  var n = document.getElementById('vc-note-input'), t = n ? n.value : '', out = [], seen = {};
+  var re = /\b(start(?:ed|ing)?|increas(?:e|ed|ing)|renew(?:ed|ing)?|prescrib(?:e|ed|ing)|switch(?:ed)? to)\s+(?:her |him |them )?(?:on\s+)?(?:a\s+low\s+dose\s+of\s+)?([A-Za-z-]+)(?:\s+(?:tartrate\s+)?to)?\s*([\d.]+\s*(?:mg|mcg|g))?/gi, m;
+  while((m = re.exec(t))){
+    var name = m[2].toLowerCase(), lib = RX_LIB.filter(function(x){ return x.name.toLowerCase().split(' ')[0] === name && (!m[3] || x.strength.replace(/\s/g, '') === m[3].replace(/\s/g, '')); })[0]
+      || RX_LIB.filter(function(x){ return x.name.toLowerCase().split(' ')[0] === name; })[0];
+    if(lib && !seen[lib.k]){ seen[lib.k] = 1; out.push({key:lib.k, src:'Today’s note'}); }
+  }
+  return out;
+}
+function rxPadSync(st){
+  st.padSeen = st.padSeen || {};
+  (RX_FROMVISIT[PC_CURRENT] || []).concat(rxNoteDrugs()).forEach(function(s){
+    if(st.padSeen[s.key]) return; st.padSeen[s.key] = 1;
+    var lib = rxLib(s.key); if(!lib) return;
+    var row = rxRows(st).filter(function(r){ return r.drug === lib.name; })[0];
+    st.orders.push(rxMkOrder(st, {drug:lib.name, key:lib.k, strength:lib.strength, form:lib.form, freq:lib.freq, per:1},
+      {src:'visit', tag:s.src, kind:row ? 'change' : 'new', replaces:row ? row.id : null, days:lib.days || 30, repeats:lib.rep || 0}));
+  });
+}
+/* ---- the medication list (the result) ---- */
+function rxListRows(st){
+  var win = RX_UI.win || 12, cut = rxAgo(Math.round(win * 30.4));
+  /* before a sign-off the list is Simple's own; after it, the reconciled list */
+  return (st.recon ? rxRows(st) : rxChartRows(PC_CURRENT)).filter(function(r){ return !rxStopped(st, r); })
+    .map(function(r){ return {r:r, f:rxFilled(r)}; })
+    .filter(function(x){ return !x.f || x.f >= cut; })
+    .sort(function(a, b){ return (b.f || 0) - (a.f || 0); });
+}
+function rxActive(f){ return f && f >= rxAgo(91); }
+function rxDate(d){ return d ? d.toLocaleDateString('en-US', {month:'short', day:'numeric'}) + (d.getFullYear() !== new Date().getFullYear() ? ', ' + d.getFullYear() : '') : ''; }
+function rxListHtml(st){
+  var L = rxListRows(st), rc = st.recon, mode = rxMode(st);
+  var h = '<section class="rp-card rp-ml" aria-labelledby="rx-ml-h"><div class="rp-mlh"><h3 id="rx-ml-h">Medication list</h3>' +
+    '<label class="rp-win"><span class="rp-vh">Show the last</span><select data-fk="win" onchange="rxAct(\'win\',this.value)">' + RX_WINS.map(function(m){ return '<option value="' + m + '"' + ((RX_UI.win || 12) === m ? ' selected' : '') + '>' + m + ' months</option>'; }).join('') + '</select></label></div>';
+  h += rc ? '<p class="rp-recd">' + rxIc('usercheck') + 'Reconciled with the patient · ' + csEsc(rc.date) + ' · ' + RX_DR + '</p>'
+          : '<p class="rp-unrec">Not reconciled with the patient</p>';
+  if(!L.length) h += '<p class="rp-note">Nothing prescribed in the last ' + (RX_UI.win || 12) + ' months.</p>';
+  else h += '<ul class="rp-mll">' + L.map(function(x){
+    var r = x.r, left = rxLeft(r), onPad = st.orders.some(function(o){ return !o.sent && o.replaces === r.id; });
+    return '<li><div><p class="rp-rt"><b>' + csEsc(r.drug + ' ' + r.strength) + '</b>' + (rxActive(x.f) ? ' <span class="rp-tag">Active</span>' : '') + '</p>' +
+      '<p class="rp-rs">' + csEsc(rxDirs(r)) + (x.f ? ' · filled ' + rxDate(x.f) : '') + (left != null ? ' · ' + (left < 0 ? 'ran out ' + (-left) + ' days ago' : left + ' days left') : '') + '</p>' +
+      '<p class="rp-rs">' + csEsc(r.pharm || 'No pharmacy on file') + (r.out ? ' · ' + csEsc(r.by) : '') + (r.supply >= 365 ? ' · a year’s supply at once' : '') + '</p></div>' +
+      (mode === 'pad' && !r.out && !rxLocked() ? (onPad ? '<span class="rp-src">On the pad</span>' : '<button type="button" class="btn rp-sm" data-fk="ren' + r.id + '" onclick="rxAct(\'padrenew\',\'' + r.id + '\')">Renew</button>') : '') + '</li>';
+  }).join('') + '</ul>';
+  if(mode === 'pad') h += '<button type="button" class="btn rp-recb" data-fk="torec" onclick="rxAct(\'mode\',\'rec\')">' + rxIc('encounterlog') + (rc ? 'Reconcile again' : 'Reconcile medications') + '</button>';
+  if(rc && !rc.sentPharm) h += '<button type="button" class="op-lk rp-lk" data-fk="sendlist" onclick="rxAct(\'sendlist\')">Send this list to the pharmacy</button>';
+  else if(rc && rc.sentPharm) h += '<p class="rp-rs">List sent to ' + csEsc(rxPharmName(st) || 'the pharmacy') + ' · ' + rc.sentPharm + '</p>';
+  return h + '</section>';
+}
+/* ---- the pad ---- */
+function rxAllergyBox(st){
+  var al = rxAllergens(st), a0 = CS.allergy[PC_CURRENT] || 'nkda';
+  return '<p class="rp-fr rp-alg' + (al.length ? ' has' : '') + '"><span class="rp-fl2"><span>Allergies:</span><b>' + (al.length
+    ? al.map(function(a){ return csEsc(a.label + ' (' + a.rx + ')'); }).join(', ') : (a0 === 'none' ? 'Not recorded' : 'No known drug allergies')) + '</b></span>' +
+    al.filter(function(a){ return !a.inChart; }).map(function(a){ return '<button type="button" class="op-lk" data-fk="addal' + a.idx + '" onclick="rxAct(\'addal\',' + a.idx + ')">Add ' + csEsc(a.label) + ' to chart</button>'; }).join('') + '</p>';
+}
+function rxPadLine(st, o, i, sf){
+  var ws = sf.W.filter(function(w){ return w.ord && new RegExp(':' + o.id + '(:|$)').test(w.id); });
+  var tag = o.tag || (o.kind === 'renew' ? 'Renewal' : o.kind === 'change' ? 'Change' : '');
+  var h = '<li class="rp-pl" data-fk="ord' + o.id + '" data-fp="ord' + o.id + '" tabindex="-1"><span class="rp-pn">' + (i + 1) + '.</span><div class="rp-pb2">' +
+    '<p class="rp-pd"><b>' + csEsc(o.drug + ' ' + o.strength) + '</b>' + (tag ? ' <span class="rp-tag' + (o.src === 'visit' ? ' today' : '') + '">' + csEsc(tag) + '</span>' : '') + '</p>' +
+    '<div class="rp-os" role="group" aria-label="Directions. Tap a part to change it.">' + rxPartBtn(o, 'dose', o.per + ' ' + rxU(o.form, o.per)) + rxPartBtn(o, 'freq', o.freq) +
+    rxPartBtn(o, 'days', o.days + (o.days === 1 ? ' day' : ' days')) + rxPartBtn(o, 'qty', 'Qty ' + rxQtyOf(o)) + rxPartBtn(o, 'reps', rxRepText(o.repeats)) + '</div>' + rxEditHtml(st, o);
+  if(ws.length) h += '<ul class="rp-pw2">' + ws.map(function(w){ return rxWarnHtml(w, st); }).join('') + '</ul>';
+  h += '<div class="rp-pa">' + rxMoreHtml(st, o, 'btn') + '</div>' + rxMoreHtml(st, o, 'panel') + '</div>' +
+    '<button type="button" class="rp-px" data-fk="rm' + o.id + '" aria-label="Remove ' + csEsc(o.drug) + '" onclick="rxAct(\'rmord\',\'' + o.id + '\')">' + rxIc('close') + '</button></li>';
+  return h;
+}
+function rxPadAddHtml(){
+  return '<div class="rp-padd"><label class="rp-vh" for="rx-q">Add a drug</label><input type="search" id="rx-q" data-fk="q" autocomplete="off" placeholder="Add a drug" value="' + csEsc(RX_UI.q || '') + '" oninput="rxSearch(this.value,\'pad\')">' +
+    '<div id="rx-sr">' + rxSearchHtml('pad') + '</div>' +
+    '<div class="rp-quick">' + RX_QUICK.map(function(q, i){ var l = rxLib(q.key); return '<button type="button" class="rp-chip" data-fk="qk' + i + '" title="' + csEsc(l.name + ' ' + l.strength) + '" onclick="rxAct(\'quick\',' + i + ')">' + csEsc(q.label) + ' · ' + csEsc(l.name) + '</button>'; }).join('') +
+    (RX_UI.favs ? RX_FAVS.map(function(f, i){ return '<button type="button" class="rp-chip" data-fk="fv' + i + '" onclick="rxAct(\'addfav\',\'pad\',' + i + ')">' + rxIc('star') + csEsc(f.drug + ' ' + f.dose) + '</button>'; }).join('') : '') +
+    '<button type="button" class="op-lk" data-fk="favs" aria-expanded="' + !!RX_UI.favs + '" onclick="RX_UI.favs=!RX_UI.favs;rxRender()">' + (RX_UI.favs ? 'Fewer' : rxIc('star') + 'Favourites') + '</button></div></div>';
+}
+function rxPadHtml(st){
+  rxPadSync(st);
+  var r = rxRow(PC_CURRENT), ch = ptChart(PC_CURRENT), kid = rxKidney(PC_CURRENT), ords = rxPadOrders(st), stops = rxStops(st), sf = rxSafety(st), ph = rxPharmName(st), h = '';
+  if(st.status.length) h += '<section class="rp-card" id="rx-status" aria-label="Sent today">' + rxStatusHtml(st) + '</section>';
+  var dt = rxDate(new Date()) + ', ' + new Date().getFullYear(), fld = function(l, v, w){ return '<span class="rp-fl2"' + (w ? ' style="flex:' + w + '"' : '') + '><span>' + l + ':</span><b>' + csEsc(v) + '</b></span>'; };
+  h += '<article class="rp-paper" aria-label="Prescription pad"><header class="rp-ph2"><span class="rp-rx" aria-hidden="true">R<i>x</i></span><div class="rp-hd"><p class="rp-title">PRESCRIPTION</p>' +
+    '<p class="rp-fr">' + fld('Patient Name', (r ? (r.legal || r.name) : '') + (r && r.age ? ', ' + parseInt(r.age, 10) + ' ' + (r.sex || '').charAt(0) : '') + (ch.phn ? ' · PHN ' + ch.phn : '')) + '</p>' +
+    '<p class="rp-fr">' + fld('Address', RX_ADDR[PC_CURRENT] || '') + '</p></div></header>' +
+    rxAllergyBox(st) + '<div class="rp-bd">';
+  h += ords.length || stops.length ? '<ol class="rp-pls">' + ords.map(function(o, i){ return rxPadLine(st, o, i, sf); }).join('') +
+      stops.map(function(x){ return '<li class="rp-pl stop"><span class="rp-pn">—</span><div class="rp-pb2"><p class="rp-pd"><b>Stop ' + csEsc(rxRowTitle(x)) + '</b></p><p class="rp-rs">' + (x.out ? 'Chart note only; prescribed by ' + csEsc(x.by) + '.' : 'A note goes to the pharmacy.') + '</p></div></li>'; }).join('') + '</ol>'
+    : '<p class="rp-blank">Nothing on the pad yet.</p>';
+  if(!rxLocked()) h += rxPadAddHtml();
+  h += '</div><footer class="rp-pf"><p class="rp-fr rp-foot">' + fld('Date', dt, 1) + fld('Signature', '', 1.6) + '</p></footer></article>';
+  return h;
+}
+function rxBarPad(st){
+  if(rxLocked()) return '<button type="button" class="btn dark" data-fk="done" id="rx-done" onclick="rxClose()">Close</button>';
+  var ords = rxPadOrders(st), stops = rxStops(st), sf = rxSafety(st), ph = rxPharmName(st), moa = MOA_ON_SERVICE.split(' ')[0], why = '';
+  if(!ords.length && !stops.length) why = '';
+  else if(sf.block.length) why = 'Schedule 1A cannot be faxed. Remove it.';
+  else if(sf.open.length) why = sf.open.length === 1 ? 'One warning needs a reason or removal.' : sf.open.length + ' warnings need a reason or removal.';
+  var dis = !ords.length && !stops.length || !!why;
+  if(RX_UI.pharmEdit && !why) return '<div class="rp-chips rp-bm" role="group" aria-label="Choose a pharmacy">' + RX_PHARMS.map(function(p, i){ return '<button type="button" class="rp-chip" data-fk="ph' + i + '" aria-pressed="' + (p === ph) + '" onclick="rxAct(\'pharm\',' + i + ')">' + csEsc(p) + '</button>'; }).join('') + '</div>';
+  return '<p class="rp-bm" id="rx-why">' + (why ? csEsc(why) : 'To <b>' + csEsc(ph || 'no pharmacy on file') + '</b> <button type="button" class="op-lk" data-fk="phchg" onclick="rxAct(\'phedit\')">Change</button>') + '</p>' +
+    '<button type="button" class="btn" id="rx-moa" data-fk="moa"' + (dis ? ' disabled' : '') + ' onclick="rxSign(\'moa\')">Sign, ' + csEsc(moa) + ' sends</button>' +
+    '<button type="button" class="btn dark" id="rx-fax" data-fk="fax"' + (dis || !ph ? ' disabled' : '') + ' onclick="rxSign(\'fax\')">Sign and fax</button>';
+}
+/* ---- reconcile: Simple against a source, drug by drug, verified with the patient ---- */
+var RX_SRCS = [['pharmanet', 'PharmaNet'], ['fax', 'Pharmacy list'], ['paste', 'CareConnect screenshot'], ['photo', 'Photo'], ['type', 'Type it']];
+function rxSimpleOf(r){ return (RX_MEDS[PC_CURRENT] || []).filter(function(m){ return m.drug === r.drug; })[0] || null; }
+function rxDiff(st, r){
+  var s = rxSimpleOf(r), l = rxLeft(r);
+  if(r.chartOnly) return {t:'Only in Simple', k:'only'};
+  if(!s && !r.chart) return {t:'New to Simple', k:'new'};
+  if(s && s.dose.replace(/\s/g, '') !== String(r.strength).replace(/\s/g, '')) return {t:'Dose differs: ' + s.dose + ' in Simple', k:'dose'};
+  if(l != null && l < 0) return {t:'Ran out ' + (-l) + ' days ago', k:'late'};
+  if(r.otherFills) return {t:'Another prescriber, ' + r.otherFills.n + ' fills left', k:'other'};
+  return {t:'Same', k:'same'};
+}
+function rxRecRow(st, r){
+  var s = rxSimpleOf(r), d = rxDiff(st, r), v = st.ver && st.ver[r.id], f = rxFilled(r), srcName = (RX_SRCS.filter(function(x){ return x[0] === st.recSrc; })[0] || [0, 'Source'])[1];
+  var h = '<tr' + (d.k !== 'same' ? ' class="diff"' : '') + '><th scope="row">' + csEsc(r.drug) + '</th>' +
+    '<td>' + (s ? csEsc(s.dose + ', ' + s.freq) : '<span class="rp-src">Not in Simple</span>') + '</td>' +
+    '<td>' + (r.chartOnly ? '<span class="rp-src">Not on ' + csEsc(srcName) + '</span>' : csEsc(r.strength + ', ' + rxDirs(r)) + '<span class="rp-rs">' + (f ? 'Filled ' + rxDate(f) : '') + (r.pharm ? ' · ' + csEsc(r.pharm.split(',')[0]) : '') + (r.out ? ' · ' + csEsc(r.by) : '') + '</span>') + '</td>' +
+    '<td>' + (d.k === 'same' ? '<span class="rp-src">Same</span>' : '<b>' + csEsc(d.t) + '</b>') + '</td><td class="rp-va">';
+  if(v) h += '<span class="rp-done">' + rxIc('usercheck') + (v === 'taking' ? 'Taking' : 'Not taking') + '</span> <button type="button" class="op-lk" data-fk="vu' + r.id + '" onclick="rxAct(\'ver\',\'' + r.id + '\',null)">Undo</button>';
+  else h += '<button type="button" class="btn rp-sm" data-fk="vt' + r.id + '" onclick="rxAct(\'ver\',\'' + r.id + '\',\'taking\')">Taking</button><button type="button" class="btn rp-sm" data-fk="vn' + r.id + '" onclick="rxAct(\'ver\',\'' + r.id + '\',\'not\')">Not taking</button>';
+  return h + '</td></tr>';
+}
+function rxRecHtml(st){
+  var h = '<section class="rp-card rp-rec"><h3>Compare with</h3><div class="rp-seg" role="group" aria-label="Source">' + RX_SRCS.map(function(s){
+    return '<button type="button" class="rp-sb' + (st.recSrc === s[0] ? ' on' : '') + '" data-fk="src' + s[0] + '" aria-pressed="' + (st.recSrc === s[0]) + '" onclick="rxAct(\'recsrc\',\'' + s[0] + '\')">' + csEsc(s[1]) + '</button>';
+  }).join('') + '</div>';
+  if(!st.recSrc) return h + '</section>';
+  if(st.recSrc === 'type'){
+    h += '<label class="rp-f rp-fw"><span class="rp-vh">Drug</span><input type="search" id="rx-tq" data-fk="tq" autocomplete="off" placeholder="Drug the patient takes" value="' + csEsc(RX_UI.tq || '') + '" oninput="RX_UI.tq=this.value;document.getElementById(\'rx-tr\').innerHTML=rxTypeHtml()"></label><div id="rx-tr">' + rxTypeHtml() + '</div>';
+  } else if(st.recSrc !== 'pharmanet') h += '<p class="rp-rs">' + (st.recSrc === 'paste' ? 'Paste the screenshot here (⌘V). CareConnect is view-only: nothing is copied from it.' : st.recSrc === 'photo' ? 'Take a photo of the list or the bottles.' : 'Upload the pharmacy’s faxed list.') + ' Cedar reads it; every row is checked by you.</p>';
+  h += '</section>';
+  var rows = rxRows(st), chartOnly = (RX_MEDS[PC_CURRENT] || []).filter(function(m){ return !rows.some(function(r){ return r.drug === m.drug; }); });
+  var all = rows.concat(rxChartRows(PC_CURRENT).filter(function(c){ return chartOnly.some(function(m){ return m.drug === c.drug; }); }));
+  st.recAll = all;
+  var left = all.filter(function(r){ return !(st.ver && st.ver[r.id]); }).length;
+  h += '<section class="rp-card"><div class="rp-mlh"><h3>Simple and ' + csEsc((RX_SRCS.filter(function(x){ return x[0] === st.recSrc; })[0] || [])[1]) + '</h3><span class="rp-src">' + (left ? left + ' to verify with the patient' : 'All verified') + '</span></div>' +
+    '<table class="rp-tbl"><thead><tr><th scope="col">Drug</th><th scope="col">Simple</th><th scope="col">' + csEsc((RX_SRCS.filter(function(x){ return x[0] === st.recSrc; })[0] || [])[1]) + '</th><th scope="col">Difference</th><th scope="col"><span class="rp-vh">Patient says</span></th></tr></thead><tbody>' +
+    all.map(function(r){ return rxRecRow(st, r); }).join('') + '</tbody></table>';
+  h += st.askPharm ? '<p class="rp-rs">' + rxIc('clock') + ' Verification asked of ' + csEsc(rxPharmName(st) || 'the pharmacy') + ' · ' + st.askPharm + '. The patient brings their bottles.</p>'
+    : '<button type="button" class="op-lk" data-fk="askph" onclick="rxAct(\'askph\')">Not sure? Sign and ask the pharmacy to verify</button>';
+  h += '</section>' + rxHistHtml(st);
+  return h;
+}
+function rxTypeHtml(){
+  var q = (RX_UI.tq || '').trim().toLowerCase(); if(!q) return '';
+  return '<div class="rp-chips">' + RX_LIB.filter(function(x){ return (x.name + ' ' + x.strength).toLowerCase().indexOf(q) > -1; }).slice(0, 6).map(function(x){
+    return '<button type="button" class="rp-chip" onclick="rxAct(\'typed\',\'' + x.k + '\')">' + csEsc(x.name + ' ' + x.strength) + '</button>'; }).join('') + '</div>';
+}
+function rxBarRec(st){
+  var all = st.recAll || [], left = all.filter(function(r){ return !(st.ver && st.ver[r.id]); }).length;
+  return '<button type="button" class="op-lk" data-fk="topad" onclick="rxAct(\'mode\',\'pad\')">' + rxIc('chevl') + 'Back to the pad</button><p class="rp-bm">' + (st.recSrc && left ? left + ' still to verify' : '') + '</p>' +
+    '<button type="button" class="btn dark" data-fk="recsign" id="rx-recsign"' + (!st.recSrc || left || !all.length ? ' disabled' : '') + ' onclick="rxAct(\'recsign\')">Sign off the list</button>';
+}
+/* ---- actions ---- */
+RX_ACT.mode = function(m){ var st = rxState(PC_CURRENT); st.mode = m; RX_UI.edit = null; rxRender(); var x = document.getElementById('rx-main'); if(x) x.scrollTop = 0; };
+RX_ACT.win = function(v){ RX_UI.win = parseInt(v, 10); rxRender(); };
+RX_ACT.padrenew = function(id){
+  var st = rxState(PC_CURRENT), r = rxListRows(st).map(function(x){ return x.r; }).filter(function(x){ return x.id === id; })[0]; if(!r) return;
+  st.orders.push(rxMkOrder(st, r, {src:'added', kind:'renew', replaces:r.id, days:90})); rxLog(st, 'Renewal on the pad: ' + r.drug); rxRender();
+};
+RX_ACT.quick = function(i){
+  var st = rxState(PC_CURRENT), q = RX_QUICK[i], l = rxLib(q.key);
+  st.orders.push(rxMkOrder(st, {drug:l.name, key:l.k, strength:l.strength, form:l.form, freq:l.freq, per:q.per || 1}, {src:'added', kind:'new', days:q.days, repeats:0, tag:q.label}));
+  rxRender();
+};
+RX_ACT.recsrc = function(k){
+  var st = rxState(PC_CURRENT); st.recSrc = k; st.ver = st.ver || {};
+  if(k !== 'type' && !st.imported) rxLoad(st, 'import');
+  if(k === 'type' && !st.rows) st.rows = [];
+  rxRender();
+};
+RX_ACT.typed = function(k){
+  var st = rxState(PC_CURRENT), l = rxLib(k); st.rows = st.rows || [];
+  if(!st.rows.some(function(r){ return r.drug === l.name; })) st.rows.push(rxRowFrom({id:'t' + (++st.seq), key:k, ind:null, by:'Patient report', pharm:'', chart:!!rxSimpleOf({drug:l.name})}));
+  RX_UI.tq = ''; rxRender();
+};
+RX_ACT.ver = function(id, v){ var st = rxState(PC_CURRENT); st.ver = st.ver || {}; if(v) st.ver[id] = v; else delete st.ver[id]; rxRender(); };
+RX_ACT.askph = function(){
+  var st = rxState(PC_CURRENT), ph = rxPharmName(st) || 'the patient’s pharmacy';
+  moaTask({patient:PC_CURRENT, type:'Prescriptions', prio:'routine', title:'Ask ' + ph + ' to verify medications',
+    note:'Signed by ' + RX_DR + ' ' + rxNow() + '. Please verify every medication with the patient’s bottles and fax back the list. Patient asked to bring their bottles.'});
+  st.askPharm = rxNow(); rxLog(st, 'Asked ' + ph + ' to verify the medication list'); rxRender(); toast('Signed · request sent to ' + MOA_ON_SERVICE);
+};
+RX_ACT.recsign = function(){
+  var st = rxState(PC_CURRENT), at = rxNow(), name = PC_CURRENT, src = (RX_SRCS.filter(function(x){ return x[0] === st.recSrc; })[0] || [])[1], taking = 0, stopped = 0;
+  (st.recAll || []).forEach(function(r){
+    var v = st.ver[r.id];
+    if(v === 'taking'){ taking++; if(!rxSimpleOf(r)){ (RX_MEDS[name] = RX_MEDS[name] || []).push({drug:r.drug, dose:r.strength, freq:r.freq, form:r.form + 's', last:rxFill(r)}); } r.chart = true; st.rec[r.id] = {k:'still', by:RX_DR, at:at}; }
+    else if(v === 'not'){ stopped++; var L = RX_MEDS[name] || []; for(var i = L.length - 1; i >= 0; i--){ if(L[i].drug === r.drug) L.splice(i, 1); } st.rec[r.id] = {k:'stopped', by:RX_DR, at:at}; st.stopDone = st.stopDone || {}; st.stopDone[r.id] = true; }
+  });
+  st.rows = (st.recAll || []).filter(function(r){ return st.ver[r.id] === 'taking'; });
+  st.recon = {date:rxDate(new Date()) + ', ' + at, src:src};
+  var n = document.getElementById('vc-note-input');
+  if(n && !n.readOnly && typeof nsAppend === 'function') nsAppend('plan', 'Medication reconciliation with the patient against ' + src + ': ' + taking + ' taking, ' + stopped + ' not taking. Signed off by ' + RX_DR + ' ' + at + '.');
+  if(typeof renderMedRail === 'function') renderMedRail(name);
+  rxLog(st, 'Medication list reconciled against ' + src); st.mode = 'pad'; rxRender(); toast('Medication list signed off');
+};
+RX_ACT.sendlist = function(){
+  var st = rxState(PC_CURRENT), ph = rxPharmName(st) || 'the patient’s pharmacy';
+  moaTask({patient:PC_CURRENT, type:'Prescriptions', prio:'routine', title:'Fax the reconciled medication list to ' + ph, note:'Reconciled by ' + RX_DR + ' ' + st.recon.date + '. This is the patient’s current list.'});
+  st.recon.sentPharm = rxNow(); rxRender(); toast('List going to ' + ph);
+};
 /* ===== T-026 prescribing panel: JS end ===== */
 
 /* One way to file a doctor -> MOA task, shared by the Task MOA dialog and the renewal
@@ -15413,6 +15776,7 @@ function csRenderConsults(name){
 function csRenderDocs(name){
   var el = document.getElementById('cs-docs'); if(!el) return;
   var r = csRow(), L = PT_LAST[name], f = csIntakeFlag(r), h = '';
+  if(typeof opDocsHead === 'function') h += opDocsHead(name);   /* T-030: Documents and letters, Create a document and Upload, then what was created or uploaded */
   h += '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>Intake &middot; today</h4></div><dl class="cs-kv">' +
     '<dt>Clinical concern</dt><dd>' + csEsc(r ? r.concern : '') + '</dd>' +
     (AI_SUMMARY[name] ? '<dt>Summary</dt><dd>' + csEsc(csIntakeSummary(name)) + '</dd>' : '') +
@@ -19914,7 +20278,7 @@ function opRender(){
   var sm = m.scrollTop, sr = ra.scrollTop;
   document.getElementById('op-ttl').textContent = K.title();
   document.getElementById('op-sub').textContent = opSubLine();
-  var solo = OP.done || OP.view === 'preview' || (K.solo && K.solo());
+  var solo = OP.done || OP.view === 'preview' || (K.solo && K.solo()) || !!K.noRail;
   bd.className = 'op-body' + (solo ? ' solo' : K.two ? ' two' : '');
   if(OP.done){ m.innerHTML = K.doneHtml(OP.done); ra.hidden = true; ra.innerHTML = ''; }
   else if(OP.view === 'preview'){
@@ -19948,23 +20312,29 @@ function opBarPaint(){
       '<div class="op-bm"><p>Signed by ' + RX_DR + ', ' + csEsc(OP.done.at) + '.</p></div>';
     paintPd(el); OP.barKey = 'done'; return;
   }
+  if(K.solo && K.solo()){   /* choosing a document type: nothing to save, preview or sign yet */
+    if(OP.barKey === 'solo') return; OP.barKey = 'solo';
+    el.innerHTML = '<div class="op-bl"><button type="button" class="btn" id="op-cancel" data-fk="cancel" onclick="opClose()">' + rxIc('close') + 'Cancel</button></div><div class="op-bm"><p id="op-why" aria-live="polite">' + csEsc(K.valid().why || '') + '</p></div>';
+    paintPd(el); return;
+  }
   var v = K.valid(), self = K.selfLabel(), moaOk = !v.why && !v.moaWhy, selfOk = !v.why && !v.selfWhy;
   var line = v.why || v.selfWhy || v.moaWhy || K.okLine();
   var key = [OP.view, line, self, moaOk, selfOk, OP.st.note].join('|');
   if(key === OP.barKey) return;   /* only redraw when the words or the states change */
   var ae = document.activeElement, fk = ae && el.contains(ae) ? ae.getAttribute('data-fk') : null;
   OP.barKey = key;
-  var h = '<div class="op-bl">' +
-    '<button type="button" class="btn" id="op-cancel" data-fk="cancel" onclick="opClose()">' + rxIc('close') + 'Cancel</button>' +
-    '<button type="button" class="btn" id="op-save" data-fk="save" onclick="opSave()">' + rxIc('carryforward') + 'Save for later</button>' +
+  /* Ani, 26 Oct: quieter footer. Close is the X and Esc; Save and Preview are links; one dark primary */
+  var h = '<div class="op-bl op-links">' +
+    '<button type="button" class="op-lk" id="op-save" data-fk="save" onclick="opSave()">Save for later</button>' +
     (OP.view === 'preview'
-      ? '<button type="button" class="btn" id="op-edit" data-fk="edit" onclick="opView(\'form\')">' + rxIc('edit') + 'Back to the form</button>'
-      : '<button type="button" class="btn" id="op-prev" data-fk="prev" onclick="opView(\'preview\')">' + rxIc('eye') + 'Preview</button>') + '</div>';
+      ? '<button type="button" class="op-lk" id="op-edit" data-fk="edit" onclick="opView(\'form\')">Back to the form</button>'
+      : '<button type="button" class="op-lk" id="op-prev" data-fk="prev" onclick="opView(\'preview\')">Preview</button>') + '</div>';
+  line = v.why || v.selfWhy || v.moaWhy || '';
   h += '<div class="op-bm"><p id="op-why" aria-live="polite">' + csEsc(line) + '</p>' +
     (opNoteOpen() ? '<label class="op-nl"><input type="checkbox" id="op-note" data-fk="note"' + (OP.st.note ? ' checked' : '') + ' onchange="OP.st.note=this.checked;opBarPaint()">Add a line to today’s note</label>' : '') + '</div>';
   h += '<div class="op-br">' +
-    '<button type="button" class="btn dark op-go" id="op-self" data-fk="self"' + (selfOk ? '' : ' disabled') + ' onclick="opSign(\'self\')">' + rxIc('arrowup') + csEsc(self) + '</button>' +
-    '<button type="button" class="btn dark op-go" id="op-moa" data-fk="moa"' + (moaOk ? '' : ' disabled') + ' onclick="opSign(\'moa\')">' + rxIc('taskmoa') + 'Sign and ask the MOA to send</button></div>';
+    '<button type="button" class="btn dark op-go" id="op-self" data-fk="self" style="order:2"' + (selfOk ? '' : ' disabled') + ' onclick="opSign(\'self\')">' + csEsc(self) + '</button>' +
+    '<button type="button" class="btn op-go2" id="op-moa" data-fk="moa"' + (moaOk ? '' : ' disabled') + ' onclick="opSign(\'moa\')">Sign, ' + csEsc(sdMoa()) + ' sends</button></div>';
   el.innerHTML = h; paintPd(el);
   if(fk){ var t = el.querySelector('[data-fk="' + fk + '"]'); if(t && !t.disabled) t.focus({preventScroll:true}); }
 }
@@ -20193,8 +20563,9 @@ OP_K.lab = {
   title:function(){ return 'Lab requisition'; },
   noun:function(){ return 'the lab requisition'; },
   railLabel:function(){ return 'This requisition'; },
+  noRail:true,   /* Ani, 26 Oct: one clean column; the chosen tests sit in the body */
   fresh:function(name){ return lrFresh(name); },
-  selfLabel:function(){ return 'Sign and fax to lab'; },
+  selfLabel:function(){ return 'Sign and fax'; },
   okLine:function(){ return 'Both buttons sign it. You choose who sends it.'; },
   pvNote:function(){ return 'The requisition exactly as it will be faxed. Every field of the provincial form is on it.'; },
   valid:function(){
@@ -20267,60 +20638,68 @@ function lrSearchHtml(){
   return '<p class="op-note" aria-live="polite">' + hits.length + (hits.length === 1 ? ' test' : ' tests') + ' on the form</p>' + hits.slice(0, 10).map(function(it){ return lrTest(it, 'q-'); }).join('');
 }
 function lrMain(){
-  var s = OP.st, name = PC_CURRENT, ai = LR_AI[name], h = '';
+  /* Ani, 26 Oct: "very noisy, not clean". One column: search, Cedar's chips, panels, the chosen tests; the full form and
+     the details fold away. No explaining sentences. Every field of the provincial form is still here. */
+  var s = OP.st, name = PC_CURRENT, ai = LR_AI[name], h = '', sel = lrSel(), miss = lrMissing();
   OP._penShown = false;
-  /* 1. Suggested for today (AI, with the reason; one tap adds; nothing is added on its own) */
+  /* 1. search */
+  h += '<div class="op-f op-search"><label for="lr-q" class="op-vh">Add a test</label><input type="search" id="lr-q" data-fk="q" autocomplete="off" placeholder="Add a test: TSH, ferritin, urine culture" value="' + csEsc(s.q) + '" oninput="lrSearch(this.value)"></div>' +
+    '<div class="op-sr" id="lr-sr">' + lrSearchHtml() + '</div>';
+  /* 2. Cedar's suggestions as chips (the reason is the tooltip); nothing is added until tapped */
   if(ai && ai.sug.length){
     var allIn = ai.sug.every(function(x){ return lrHas(x.id); });
-    h += '<section class="op-card" aria-labelledby="lr-sg-h"><div class="op-hrow"><h3 id="lr-sg-h">Suggested for today</h3>' +
-      '<button type="button" class="btn" data-fk="sugall" onclick="lrSugAll()"' + (allIn ? ' disabled' : '') + '>' + rxIc('plus') + 'Add all</button></div>' +
-      '<p class="op-note">' + opMk('ai', 'AI suggestions') + ' from today’s concern and the chart. Nothing is added until you tap it.</p><ul class="op-sug">' +
+    h += '<div class="op-row"><span class="op-cedar"><span class="cs-ai-ic">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span>Cedar</span><div class="op-chips" role="group" aria-label="Cedar suggests">' +
       ai.sug.map(function(x){ var on = lrHas(x.id);
-        return '<li><div><b>' + csEsc(lrShort(x.id)) + '</b><p class="op-why">' + csEsc(x.why) + '</p><p class="op-src">' + csEsc(x.src) + '</p></div>' +
-          '<button type="button" class="btn" data-fk="sug-' + x.id + '" aria-pressed="' + on + '" aria-label="' + (on ? 'Remove ' : 'Add ') + csEsc(lrShort(x.id)) + '" onclick="lrSug(\'' + x.id + '\')">' + rxIc(on ? 'complete' : 'plus') + (on ? 'Added' : 'Add') + '</button></li>';
-      }).join('') + '</ul>' + (ai.skip ? '<p class="op-skip">' + csEsc(ai.skip) + '</p>' : '') + '</section>';
-  } else {
-    h += '<section class="op-card" aria-labelledby="lr-sg-h"><h3 id="lr-sg-h">Suggested for today</h3><p class="op-note">Nothing to suggest from today’s concern and the chart.</p></section>';
+        return '<button type="button" class="op-chip' + (on ? ' on' : '') + '" data-fk="sug-' + x.id + '" aria-pressed="' + on + '" title="' + csEsc(x.why + ' · ' + x.src) + '" onclick="lrSug(\'' + x.id + '\')">' + rxIc(on ? 'complete' : 'plus') + csEsc(lrShort(x.id)) + '</button>'; }).join('') +
+      (allIn ? '' : '<button type="button" class="op-lk" data-fk="sugall" onclick="lrSugAll()">Add all</button>') + '</div></div>';
   }
-  /* 2. Order panels and favourites, then 3. search any test */
-  h += '<section class="op-card" aria-labelledby="lr-pn-h"><h3 id="lr-pn-h">Order panels and favourites</h3>' +
-    '<p class="op-note">Example panels for the demo. Your own panels go here.</p>' +
-    '<div class="op-chips" role="group" aria-label="Order panels">' + LR_PANELS.map(function(p){ var on = p.ids.every(lrHas);
-      return '<button type="button" class="op-chip" data-fk="pn-' + p.k + '" aria-pressed="' + on + '" onclick="lrPanel(\'' + p.k + '\')">' + rxIc(on ? 'complete' : 'plus') + csEsc(p.n) + '<span class="op-vh"> (' + p.ids.map(lrShort).join(', ') + ')</span></button>'; }).join('') + '</div>' +
-    '<p class="op-gl" style="margin-top:10px">Favourites</p><div class="op-chips" role="group" aria-label="Favourite tests">' + LR_FAVS.map(function(id){ var on = lrHas(id);
-      return '<button type="button" class="op-chip" data-fk="fv-' + id + '" aria-pressed="' + on + '" onclick="lrPanel(\'' + id + '\')">' + rxIc('star') + csEsc(lrShort(id)) + '</button>'; }).join('') + '</div>' +
-    '<div class="op-f" style="margin-top:12px"><label for="lr-q">Search any test</label><input type="search" id="lr-q" data-fk="q" autocomplete="off" placeholder="For example TSH, ferritin, urine culture" value="' + csEsc(s.q) + '" oninput="lrSearch(this.value)"></div>' +
-    '<div class="op-sr" id="lr-sr">' + lrSearchHtml() + '</div></section>';
-  /* 4. Priority: STAT reveals the phone number (the form's own words) */
-  h += '<section class="op-card" aria-labelledby="lr-pr-h"><h3 id="lr-pr-h">Priority</h3><div class="op-seg" role="group" aria-labelledby="lr-pr-h">' +
-    '<button type="button" class="op-sb" data-fk="routine" aria-pressed="' + !s.stat + '" onclick="lrStat(false)">Routine</button>' +
-    '<button type="button" class="op-sb" data-fk="stat" aria-pressed="' + s.stat + '" onclick="lrStat(true)">STAT</button></div>' +
-    (s.stat ? '<div class="op-f" style="margin-top:10px"><label for="lr-phone">If this is a STAT order, please provide contact telephone number</label><input type="tel" id="lr-phone" data-fk="phone" value="' + csEsc(s.phone) + '" oninput="lrIn(\'phone\', this.value)"></div>' : '') + '</section>';
-  /* 5. The Ministry form, every section verbatim, one column */
-  h += '<div class="op-form" aria-labelledby="lr-fm-h"><h3 class="op-h3" id="lr-fm-h" style="margin:8px 0 0">The requisition form</h3><p class="op-note">Every section of the provincial form. Sections with a test chosen are open.</p>';
-  LR_SECS.forEach(function(sec){
+  /* 3. panels and favourites, one row */
+  h += '<div class="op-row"><span class="op-rk">Panels</span><div class="op-chips" role="group" aria-label="Panels and favourites">' +
+    LR_PANELS.map(function(p){ var on = p.ids.every(lrHas);
+      return '<button type="button" class="op-chip' + (on ? ' on' : '') + '" data-fk="pn-' + p.k + '" aria-pressed="' + on + '" title="' + csEsc(p.ids.map(lrShort).join(', ')) + '" onclick="lrPanel(\'' + p.k + '\')">' + csEsc(p.n) + '</button>'; }).join('') +
+    LR_FAVS.map(function(id){ var on = lrHas(id);
+      return '<button type="button" class="op-chip' + (on ? ' on' : '') + '" data-fk="fv-' + id + '" aria-pressed="' + on + '" onclick="lrPanel(\'' + id + '\')">' + rxIc('star') + csEsc(lrShort(id)) + '</button>'; }).join('') + '</div></div>';
+  /* 4. this requisition: the chosen tests, priority, what is still needed */
+  h += '<section class="op-req" aria-labelledby="lr-rq-h"><div class="op-hrow"><h3 id="lr-rq-h" tabindex="-1" data-fk="railh">This requisition' + (sel.length ? ' <span class="op-cnt">' + sel.length + '</span>' : '') + '</h3>' +
+    '<div class="op-seg" role="group" aria-label="Priority"><button type="button" class="op-sb" data-fk="routine" aria-pressed="' + !s.stat + '" onclick="lrStat(false)">Routine</button>' +
+    '<button type="button" class="op-sb" data-fk="stat" aria-pressed="' + s.stat + '" onclick="lrStat(true)">STAT</button></div></div>' +
+    (s.stat ? '<div class="op-f"><label for="lr-phone">If this is a STAT order, please provide contact telephone number</label><input type="tel" id="lr-phone" data-fk="phone" value="' + csEsc(s.phone) + '" oninput="lrIn(\'phone\', this.value)"></div>' : '');
+  if(!sel.length) h += '<p class="op-empty">No tests yet</p>';
+  else {
+    h += '<ul class="op-rl">';
+    LR_SECS.forEach(function(sec){ sec.groups.forEach(function(g){ g.items.forEach(function(it){ if(!lrHas(it.id)) return;
+      h += '<li><span>' + csEsc(lrShort(it.id)) + '</span><button type="button" class="op-rm" data-fk="rm-' + it.id + '" aria-label="Remove ' + csEsc(lrShort(it.id)) + '" onclick="lrPick(\'' + it.id + '\', false)">' + rxIc('close') + '</button></li>' +
+        (lrFollow(it) ? '<li class="op-fuw">' + lrFollow(it) + '</li>' : '');
+    }); }); });
+    h += '</ul>';
+  }
+  if(miss.length) h += '<ul class="op-need">' + miss.map(function(m){
+    return '<li><button type="button" data-fk="go-' + m[1] + '" onclick="lrGo(\'' + m[1] + '\')">' + rxIc('alert') + '<span>' + csEsc(m[0]) + '</span></button></li>'; }).join('') + '</ul>';
+  h += '</section>';
+  /* 5. the whole provincial form, folded */
+  var anyOpen = LR_SECS.some(function(sec){ return OP.st.open[sec.id]; });
+  h += '<section class="op-sec"><h3><button type="button" class="op-sh" data-fk="formall" aria-expanded="' + !!s.formOpen + '" aria-controls="lr-form" onclick="OP.st.formOpen=!OP.st.formOpen;opRender()"><span class="op-st">All tests on the form</span>' + rxIc('chevdown') + '</button></h3>' +
+    '<div class="op-sbd" id="lr-form"' + (s.formOpen || anyOpen ? '' : ' hidden') + '>';
+  if(s.formOpen || anyOpen) LR_SECS.forEach(function(sec){
     var open = lrSecOpen(sec), n = lrSecCount(sec);
-    h += '<section class="op-sec"><h3><button type="button" class="op-sh' + (n ? ' has' : '') + '" id="lr-sh-' + sec.id + '" data-fk="sh-' + sec.id + '" aria-expanded="' + open + '" aria-controls="lr-sb-' + sec.id + '" onclick="lrSec(\'' + sec.id + '\')">' +
-      '<span class="op-st">' + csEsc(sec.t) + '</span><span class="op-cnt">' + (n ? n + ' chosen' : lrSecSize(sec) + ' tests') + '</span>' + rxIc('chevdown') + '</button></h3>' +
-      '<div class="op-sbd" id="lr-sb-' + sec.id + '"' + (open ? '' : ' hidden') + '>' + (sec.note ? '<p class="op-note">' + csEsc(sec.note) + '</p>' : '');
+    h += '<section class="op-sec op-sec2"><h4><button type="button" class="op-sh' + (n ? ' has' : '') + '" id="lr-sh-' + sec.id + '" data-fk="sh-' + sec.id + '" aria-expanded="' + open + '" aria-controls="lr-sb-' + sec.id + '" onclick="lrSec(\'' + sec.id + '\')">' +
+      '<span class="op-st">' + csEsc(sec.t) + '</span>' + (n ? '<span class="op-cnt">' + n + '</span>' : '') + rxIc('chevdown') + '</button></h4>' +
+      '<div class="op-sbd" id="lr-sb-' + sec.id + '"' + (open ? '' : ' hidden') + '>';
     if(open){
-      sec.groups.forEach(function(g, gi){
-        h += '<fieldset class="op-g">' + (g.t ? '<legend>' + csEsc(g.t) + (g.one ? '<span class="op-one">' + (g.oneNote ? csEsc(g.oneNote) + '. ' : '') + 'Choose up to one. Select again to clear.</span>' : '') + '</legend>'
-          : g.one ? '<legend><span class="op-one">' + (g.oneNote ? csEsc(g.oneNote) + '. ' : '') + 'Choose up to one. Select again to clear.</span></legend>' : '<legend class="op-vh">' + csEsc(sec.t) + ' tests</legend>') +
-          (g.note ? '<p class="op-note">' + csEsc(g.note) + '</p>' : '') + '<div class="op-ts">';
+      sec.groups.forEach(function(g){
+        h += '<fieldset class="op-g">' + (g.t ? '<legend>' + csEsc(g.t) + (g.one ? '<span class="op-one">Choose one</span>' : '') + '</legend>'
+          : g.one ? '<legend><span class="op-one">Choose one</span></legend>' : '<legend class="op-vh">' + csEsc(sec.t) + ' tests</legend>') + '<div class="op-ts">';
         g.items.forEach(function(it){ h += lrTest(it); });
-        h += '</div>';
-        g.items.forEach(function(it){ if(lrHas(it.id)) h += lrFollow(it); });
-        h += lrGroupFollow(g) + '</fieldset>';
+        h += '</div>' + lrGroupFollow(g) + '</fieldset>';
       });
       if(sec.other) h += '<div class="op-f"><label for="lr-other">Other tests</label><textarea id="lr-other" rows="2" data-fk="other" oninput="lrIn(\'other\', this.value)">' + csEsc(s.other) + '</textarea></div>';
     }
     h += '</div></section>';
   });
-  h += '</div>';
-  /* 6. More details: diagnosis and current medications (pre-filled), copy to, standing orders, instructions to patients */
-  h += '<section class="op-sec"><h3><button type="button" class="op-sh" data-fk="more" aria-expanded="' + s.more + '" aria-controls="lr-more" onclick="lrMore()"><span class="op-st">More details</span>' +
-    '<span class="op-cnt">Diagnosis, medications, copy to, standing orders, instructions</span>' + rxIc('chevdown') + '</button></h3>' +
+  h += '</div></section>';
+  /* 6. diagnosis, medications, copy to, standing orders, instructions: folded */
+  h += '<section class="op-sec"><h3><button type="button" class="op-sh" data-fk="more" aria-expanded="' + s.more + '" aria-controls="lr-more" onclick="lrMore()"><span class="op-st">Details</span>' +
+    '<span class="op-cnt op-cq">' + csEsc((s.dx ? 'Dx ' : '') + (s.meds ? '· meds' : '')).replace(/^·\s*/, '') + '</span>' + rxIc('chevdown') + '</button></h3>' +
     '<div class="op-sbd" id="lr-more"' + (s.more ? '' : ' hidden') + '>' + (s.more ? lrMoreHtml() : '') + '</div></section>';
   return h;
 }
@@ -20413,7 +20792,7 @@ function lrSign(route, name, at){
 function opDraftsHtml(name){
   var sv = OP.saved[name]; if(!sv) return '';
   return Object.keys(sv).filter(function(k){ return sv[k] && OP_K[k]; }).map(function(k){
-    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="carryforward"></span><h4>' + csEsc(OP_K[k].title() + ' · draft saved ' + sv[k].at + ', not signed') + '</h4></div>' +
+    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="carryforward"></span><h4>' + csEsc((OP_K[k].draftName ? OP_K[k].draftName(sv[k].st) : OP_K[k].title()) + ' · draft saved ' + sv[k].at + ', not signed') + '</h4></div>' +
       '<button type="button" class="btn dl-open" onclick="opOpen(\'' + k + '\')"><span class="ic" data-pdic="edit"></span>Open the draft</button></div>';
   }).join('');
 }
@@ -20697,7 +21076,7 @@ function rfDocs(name){
   Object.keys(by).forEach(function(d, i){ out.push({id:'lab' + i, n:'Lab report · ' + by[d].join(', ') + ' · ' + d, t:'Lab report', k:'lab', d:d}); });
   var seen = {};
   (CARE_PLAN[name] || []).forEach(function(x){ if(x.specialty === 'Family practice' || seen[x.src]) return; seen[x.src] = 1; out.push({id:'cons' + Object.keys(seen).length, n:x.src, t:'Consult letter', k:'cons', spec:x.specialty}); });
-  ((SD.out[name] || {}).docs || []).forEach(function(d){ out.push({id:d.id, n:(d.kind === 'upload' ? d.n : d.type) + ' · ' + d.iso, t:d.kind === 'upload' ? 'Uploaded' : 'Letter', k:d.kind}); });
+  ((SD.out[name] || {}).docs || []).forEach(function(d){ out.push({id:d.id, n:(d.kind === 'upload' ? d.n : d.title || d.type) + ' · ' + d.iso, t:d.kind === 'upload' ? 'Uploaded' : 'Letter', k:d.kind}); });
   return out;
 }
 /* the AI suggests documents with a reason; it never ticks them (spec 2) */
@@ -20861,8 +21240,175 @@ OP_K.ref = {
 function refOpen(){ opOpen('ref'); }
 function rfOpen(){ refOpen(); }   /* the older callers' name */
 
+/* ============================================================
+   MEDICAL DOCUMENTS (T-030). Daniel's current screen (spec 1d): a "Letters" list with Create Medical Document and Upload. Ours (spec 2):
+   "Documents and letters" in Chart > Documents with Create a document and Upload; Create: choose a type → the AI drafts from today's
+   encounter, marked AI draft → edit → preview → sign → send by fax, to the patient's portal, or print, or save in the chart.
+   DEMO TYPES: Work or school note, To whom it may concern letter, Patient letter, Form (Needs Daniel: which types he wants).
+   The drafts never name a diagnosis in a note for an employer or school (privacy by default); anything the AI cannot know is left in
+   [square brackets], and signing waits until those are filled. The portal notice is the generic one (no health information in email or text).
+   ============================================================ */
+var DC_TYPES = [
+  {k:'work', n:'Work or school note', d:'Confirms the visit and the time off, without a diagnosis.', send:'portal'},
+  {k:'twimc', n:'To whom it may concern letter', d:'A letter for an employer, a school or an agency.', send:'fax'},
+  {k:'patient', n:'Patient letter', d:'A letter to the patient, such as a summary of today’s plan.', send:'portal'},
+  {k:'form', n:'Form', d:'The clinical part of a form, such as an insurance or disability form.', send:'fax'}
+];
+var DC_SEND = [['fax', 'Fax'], ['portal', 'Patient’s portal'], ['print', 'Print'], ['save', 'Save in the chart only']];
+function dcType(k){ return DC_TYPES.filter(function(t){ return t.k === k; })[0] || null; }
+function dcNote(){ return typeof nsGet === 'function' ? nsGet() : {}; }
+function dcDraft(k, name){
+  var r = sdRow(), d = sdDate(), legal = opLegal(), pref = sdPref(), n = dcNote(), plan = (n.plan || '').trim(), asmt = (n.assessment || '').trim();
+  var concern = (r && r.concern ? r.concern : 'today’s concern').replace(/^./, function(c){ return c.toLowerCase(); });
+  if(k === 'work') return {t:'To whom it may concern,\n\n' + legal + ' was seen by me in a virtual visit on ' + d + '. For medical reasons, they should be excused from work or school from ' + d + ' until [return date].\n\nPlease contact SimpleCare if you need more information.',
+    src:['Today’s visit (date only; no diagnosis is shared)']};
+  if(k === 'twimc') return {t:'To whom it may concern,\n\nI am the family physician for ' + legal + ', whom I saw in a virtual visit on ' + d + '. [Write the purpose of this letter.]\n\nPlease contact SimpleCare if you need more information.',
+    src:['Today’s visit']};
+  if(k === 'patient') return {t:'Dear ' + pref + ',\n\nThank you for speaking with me today about ' + concern + '. Here is what we agreed:\n\n' + (plan || '[Add the plan from today’s visit]') + '\n\nIf anything changes or you have questions, please book a visit or message the office.',
+    src:[plan ? 'Today’s note, Plan' : 'Intake, today (the Plan in today’s note is empty)']};
+  return {t:'Diagnosis or clinical information: ' + (asmt || (r ? r.concern : '')) + '\nCurrent medications: ' + opMedsText(name) + '\nAllergies: ' + opAllergy(name).text + '\nRestrictions and expected duration: [add]',
+    src:[asmt ? 'Today’s note, Assessment' : 'Today’s concern', 'Medication list', 'Allergies']};
+}
+function dcFresh(name, type){
+  var s = {type:'', text:'', src:[], textSt:'draft', send:'', to:'', fax:'', form:'', note:true};
+  if(type) dcSetType(s, type, name);
+  return s;
+}
+function dcSetType(s, k, name){
+  var t = dcType(k), dr = dcDraft(k, name);
+  s.type = k; s.text = dr.t; s.src = dr.src; s.textSt = 'draft'; s.send = t.send;
+  if(k === 'patient' || k === 'work'){ s.to = ''; }
+}
+function dcPick(k){ dcSetType(OP.st, k, PC_CURRENT); OP.focusNext = 'dctext'; opRender(); }
+function dcChange(){ var s = OP.st; s.type = ''; OP.focusNext = 'type-work'; opRender(); }
+function dcRedraft(){ var s = OP.st, dr = dcDraft(s.type, PC_CURRENT); s.text = dr.t; s.src = dr.src; s.textSt = 'draft'; OP.focusNext = 'dctext'; opRender(); }
+function dcIn(k, v){
+  var s = OP.st; s[k] = v;
+  if(k === 'text' && s.textSt === 'draft'){ s.textSt = 'edited'; var el = document.getElementById('dc-mk'); if(el){ el.innerHTML = opMk('ok', 'Edited by you'); paintPd(el); } }
+  opSoft();
+}
+function dcOk(){ OP.st.textSt = 'ok'; OP.focusNext = 'dctext'; opRender(); }
+function dcSend(v){ OP.st.send = v; opRender(); }
+function dcMissing(){
+  var s = OP.st, out = [];
+  if(!s.type) return ['Choose a document type.'];
+  if(s.type === 'form' && !s.form.trim()) out.push('Write the name of the form.');
+  if(!s.text.trim()) out.push('Write the document.');
+  else if(s.textSt === 'draft') out.push('Accept or edit the AI draft.');
+  var br = opBrackets(s.text); if(br.length) out.push('Fill in the parts in square brackets: ' + br.join(', ') + '.');
+  if(!s.send) out.push('Choose how to send it.');
+  if(s.send === 'fax' && !s.to.trim()) out.push('Write who it goes to.');
+  return out;
+}
+function dcMain(){
+  var s = OP.st, h = '';
+  if(!s.type){
+    return '<section class="op-card" aria-labelledby="dc-ty-h"><h3 id="dc-ty-h">What do you want to write?</h3><p class="op-note">The AI drafts it from today’s visit. You edit, preview and sign it. Nothing is sent before you press a sign button.</p></section>' +
+      '<div class="op-types" role="group" aria-labelledby="dc-ty-h">' + DC_TYPES.map(function(t){
+        return '<button type="button" class="op-type" data-fk="type-' + t.k + '" onclick="dcPick(\'' + t.k + '\')"><b>' + rxIc('file') + csEsc(t.n) + '</b><span>' + csEsc(t.d) + '</span></button>'; }).join('') + '</div>';
+  }
+  var t = dcType(s.type);
+  h += '<section class="op-card" aria-labelledby="dc-tx-h"><div class="op-hrow"><h3 id="dc-tx-h">' + csEsc(t.n) + '</h3><button type="button" class="btn op-q" data-fk="dcchg" onclick="dcChange()">' + rxIc('edit') + 'Change type</button></div>';
+  if(s.type === 'form') h += '<div class="op-f" style="margin-bottom:12px"><label for="dc-form">Name of the form</label><input type="text" id="dc-form" data-fk="dcform" placeholder="For example, an insurance claim form" value="' + csEsc(s.form) + '" oninput="dcIn(\'form\', this.value)"></div>';
+  h += '<div class="op-f"><div class="op-lrow"><label for="dc-text">The document</label><span id="dc-mk" class="op-lrow">' + opAiMk(s.textSt, 'dcok', 'dcOk()') + '</span></div>' +
+    '<textarea id="dc-text" rows="12" data-fk="dctext" oninput="dcIn(\'text\', this.value)">' + csEsc(s.text) + '</textarea>' +
+    '<p class="op-src">Sources the AI used: ' + csEsc(s.src.join('; ')) + '</p>' +
+    '<div><button type="button" class="btn op-q" data-fk="redraft" onclick="dcRedraft()">' + rxIc('copilot') + 'Draft again from today’s visit</button></div></div></section>';
+  h += '<section class="op-card" aria-labelledby="dc-sd-h"><h3 id="dc-sd-h">Send by</h3><div class="op-seg" role="group" aria-labelledby="dc-sd-h">' + DC_SEND.map(function(o){
+      return '<button type="button" class="op-sb" data-fk="send-' + o[0] + '" aria-pressed="' + (s.send === o[0]) + '" onclick="dcSend(\'' + o[0] + '\')">' + csEsc(o[1]) + '</button>'; }).join('') + '</div>';
+  if(s.send === 'fax') h += '<div class="op-grid" style="margin-top:12px"><div class="op-f"><label for="dc-to">To</label><input type="text" id="dc-to" data-fk="dcto" placeholder="Name and organization" value="' + csEsc(s.to) + '" oninput="dcIn(\'to\', this.value)"></div>' +
+    '<div class="op-f"><label for="dc-fax">Fax number</label><input type="tel" id="dc-fax" data-fk="dcfax" value="' + csEsc(s.fax) + '" oninput="dcIn(\'fax\', this.value)"></div></div>';
+  if(s.send === 'portal') h += '<p class="op-note" style="margin-top:10px">It appears in ' + csEsc(sdPref()) + '’s portal. The email and the text say only: ' + csEsc(typeof MS_NOTICE !== 'undefined' ? MS_NOTICE : 'You have a new message from your care team') + '.</p>';
+  if(s.send === 'print') h += '<p class="op-note" style="margin-top:10px">It goes to your printer when you sign. A copy stays in Chart > Documents.</p>';
+  if(s.send === 'save') h += '<p class="op-note" style="margin-top:10px">Signed and kept in Chart > Documents. Nothing is sent.</p>';
+  h += '</section>';
+  return h;
+}
+function dcLetter(forPaper){
+  var s = OP.st, t = dcType(s.type), ch = ptChart(PC_CURRENT);
+  if(!t) return '';
+  var paras = s.text.split(/\n{2,}/).map(function(p){ return '<p>' + csEsc(p).replace(/\[[^\]]+\]/g, function(m){ return '<span class="op-ph">' + m + '</span>'; }) + '</p>'; }).join('');
+  return '<article class="op-letter" aria-label="' + csEsc(t.n) + (forPaper ? '' : ', live preview') + '">' +
+    '<div class="op-lh"><div><b>SimpleCare</b><span>' + OP_DR_FULL + ' · Family physician · Virtual care</span></div><span>' + csEsc(sdDate()) + '</span></div>' +
+    (s.type === 'form' ? '<p><b>Form:</b> ' + csEsc(s.form || '—') + '</p>' : '') +
+    (s.type !== 'patient' ? '<p><b>Re:</b> ' + csEsc(opLegal()) + (s.type === 'form' ? ' · PHN ' + csEsc(ch.phn || '—') : '') + '</p>' : '') +
+    (s.send === 'fax' && s.to ? '<p><b>To:</b> ' + csEsc(s.to) + (s.fax ? ' · fax ' + csEsc(s.fax) : '') + '</p>' : '') +
+    paras + '<p>Sincerely,\n' + OP_DR_FULL + '\nSimpleCare</p><p class="op-ph">Signed with the time when you press a sign button.</p></article>';
+}
+OP_K.doc = {
+  two:true,
+  solo:function(){ return !OP.st.type; },
+  title:function(){ var t = dcType(OP.st && OP.st.type); return t ? t.n : 'Create a document'; },
+  draftName:function(st){ var t = dcType(st && st.type); return t ? t.n : 'Document'; },
+  noun:function(){ return 'the document'; },
+  railLabel:function(){ return 'Preview'; },
+  fresh:function(name, type){ return dcFresh(name, type); },
+  selfLabel:function(){ var v = OP.st.send; return v === 'portal' ? 'Sign and send to the patient’s portal' : v === 'print' ? 'Sign and print' : v === 'save' ? 'Sign and save' : 'Sign and fax'; },
+  okLine:function(){ return OP.st.send === 'save' ? 'Signing saves it in the chart. Nothing is sent.' : 'Both buttons sign it. You choose who sends it.'; },
+  pvNote:function(){ return 'The document exactly as it will be sent.'; },
+  valid:function(){
+    var m = dcMissing(), s = OP.st; if(m.length) return {why:m.length > 1 ? m[0].replace(/\.$/, '') + ' (and ' + (m.length - 1) + ' more).' : m[0]};
+    var r = {};
+    if(s.send === 'fax' && !s.fax.trim()) r.selfWhy = 'Add the fax number to fax it yourself. ' + sdMoa() + ' can still send it.';
+    if(s.send === 'portal' || s.send === 'save') r.moaWhy = s.send === 'save' ? 'Saved only: there is nothing for the MOA to send.' : 'The portal sends at once: there is nothing for the MOA to send.';
+    return r;
+  },
+  main:function(){ return dcMain(); },
+  rail:function(){ return '<p class="op-gl">Preview</p>' + dcLetter(false); },
+  paper:function(){ return OP.st.type ? '<div style="max-width:860px;margin:0 auto;width:100%">' + dcLetter(true) + '</div>' : '<p class="op-note">Choose a document type first.</p>'; },
+  sign:function(route, name, at){
+    var s = OP.st, t = dcType(s.type), moa = sdMoa(), title = t.n + (s.type === 'form' && s.form.trim() ? ': ' + s.form.trim() : '');
+    var how = route === 'moa' ? (s.send === 'print' ? 'with ' + moa + ' to print and mail' : 'with ' + moa + ' to fax') :
+      s.send === 'fax' ? 'faxed to ' + s.to : s.send === 'portal' ? 'in the patient’s portal' : s.send === 'print' ? 'printed' : 'saved in the chart';
+    var e = {id:'dc' + Date.now(), kind:'doc', ts:Date.now(), pt:name, type:t.n, title:title, text:s.text, send:s.send, to:s.to, fax:s.fax, route:route, at:at, iso:rxIso(new Date()), how:how};
+    if(route === 'moa'){
+      var tk = opMoaTask({patient:name, type:'Documents', prio:'routine', title:(s.send === 'print' ? 'Print and mail: ' : 'Fax document: ') + title,
+        note:(s.send === 'print' ? 'Print the signed ' + t.n.toLowerCase() + ' and mail it to the patient.' : 'Fax the signed ' + t.n.toLowerCase() + ' to ' + (s.to || 'the recipient') + (s.fax ? ' (fax ' + s.fax + ')' : ' (no fax number; please find it)') + '.') + ' Signed by ' + RX_DR + ' ' + at + '.'});
+      e.task = tk.id;
+    }
+    var o = sdOut(name); (o.docs = o.docs || []).unshift(e);
+    e.noteLine = 'Document: ' + title + ', ' + how + '. Signed by ' + RX_DR + ' ' + at + '.';
+    e.toast = route === 'moa' ? 'Signed · sent to ' + moa : s.send === 'fax' ? 'Signed · document faxed' : s.send === 'portal' ? 'Signed · in the patient’s portal' : s.send === 'print' ? 'Signed · sent to your printer' : 'Signed · saved in the chart';
+    return e;
+  },
+  doneHtml:function(e){
+    var moa = sdMoa();
+    return opDoneHtml(e.route === 'moa' ? 'Signed and sent to ' + moa : e.send === 'fax' ? 'Signed and faxed' : e.send === 'portal' ? 'Signed and sent to the patient’s portal' : e.send === 'print' ? 'Signed and sent to your printer' : 'Signed and saved',
+      [e.title + '.',
+       e.route === 'moa' ? moa + ' has a task to ' + (e.send === 'print' ? 'print and mail it' : 'fax it') + '. You can follow it in Tasks.' :
+         e.send === 'portal' ? 'The email and the text say only: ' + (typeof MS_NOTICE !== 'undefined' ? MS_NOTICE : 'You have a new message from your care team') + '.' :
+         e.send === 'print' ? 'In this demo nothing prints.' : '',
+       'Filed in Chart > Documents.'], e);
+  }
+};
+function docOpen(type){ opOpen('doc', type); }
+/* Chart > Documents: the "Documents and letters" heading with Create a document and Upload, then what was created or uploaded */
+function opDocsHead(name){
+  var o = SD.out[name] || {}, L = o.docs || [];
+  var h = '<div class="dl-hd"><h3 id="dl-h">Documents and letters</h3>' +
+    '<button type="button" class="btn dark" id="dl-create" onclick="docOpen()"><span class="ic" data-pdic="plus"></span>Create a document</button>' +
+    '<span class="btn dl-up"><span class="ic" data-pdic="upload"></span>Upload<input type="file" id="dl-file" aria-label="Upload a document" accept=".pdf,image/*" onchange="opUpload(this)"></span></div>';
+  h += L.map(function(e){
+    if(e.kind === 'upload') return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="upload"></span><h4>' + csEsc('Uploaded · ' + e.n + ' · ' + e.iso) + '</h4></div><p class="cs-cap">Added by ' + RX_DR + ', ' + csEsc(e.at) + '. Not signed.</p></div>';
+    var tk = e.task && typeof taskFind === 'function' ? taskFind(e.task) : null, how = e.how;
+    if(e.route === 'moa' && tk && tk.status === 'complete') how = 'sent by ' + sdMoa();
+    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>' + csEsc(e.title + ' · ' + e.iso + ' · ' + how) + '</h4></div>' +
+      '<p class="dl-txt">' + csEsc(e.text.length > 220 ? e.text.slice(0, 220).replace(/\s+\S*$/, '') + '…' : e.text) + '</p>' +
+      '<p class="slv-ro"><span class="ic" data-pdic="complete"></span>Signed by ' + RX_DR + ', ' + csEsc(e.at) + '</p></div>';
+  }).join('');
+  return h;
+}
+function opUpload(inp){
+  var name = PC_CURRENT; if(!name || !inp.files || !inp.files.length) return;
+  var o = sdOut(name), n = [];
+  [].forEach.call(inp.files, function(f, i){ (o.docs = o.docs || []).unshift({id:'up' + Date.now() + i, kind:'upload', n:f.name, iso:rxIso(new Date()), at:rxNow(), ts:Date.now()}); n.push(f.name); });
+  if(typeof csRenderDocs === 'function') csRenderDocs(name);
+  var b = document.getElementById('dl-file'); if(b) b.focus({preventScroll:true});
+  toast('Uploaded · ' + n.join(', '));
+}
+
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-26 16:19</div>
+  <div class="build-stamp">v2 · build 2026-10-26 20:42</div>
 </body>
 </html>
