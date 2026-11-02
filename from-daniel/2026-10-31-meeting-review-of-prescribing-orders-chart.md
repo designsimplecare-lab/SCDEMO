@@ -124,3 +124,40 @@ The list follows the conversation: "What is the patient phoning for? I need my d
 4. **T-035 Referral spacing, suggested specialist, synthesized reason and summary** (4).
 5. **T-036 Note to patient and visit summary** (5, 6) — needs the requirements PDF.
 6. **T-037 Chart review and results display** (7, 8).
+
+
+## Addendum (2 Nov): the two documents from WhatsApp, now read
+Copies are in `private/requirements/` (not committed).
+
+**Visit Summary Requirements (Daniel, 24 Oct 2026).** Principles, not a fixed template; only the sections that apply; the physician
+reviews and signs every summary before release.
+- **Actions first:** open with what the patient must do (start, stop or change a medicine, book tests, book follow-up, danger signs).
+- **Headings in the patient's words**, drawn from: *What you need to do*, *What we found*, *What to expect*, *Good to know* (a mental
+  health example uses *How you are doing*); drop any that do not apply.
+- **Fit the encounter:** results-only visit leads with the result and its meaning; no new medicine → no medication details; mental
+  health or sensitive → neutral wording, no unneeded detail.
+- **Plain language:** grade 6, sentences under 15 words, everyday words; **no abbreviations** (a test name may follow its full name once).
+- **Scannable:** bullets for actions; bold the key medicine, dose and danger sign; no paragraph over 3 lines.
+- **Address the worry** plainly when reassuring ("not cancer").
+- **Complete medicine instructions** when started or changed: name, dose, how often, how to take, when it works, common side effects,
+  safety warnings.
+- **Safety net** in the first section, bolded (the specific reason to go to emergency; for mental health, 9-8-8 or emergency).
+- **Accuracy:** only what the visit note documents; never invent findings, doses or results; **flag gaps for the physician**.
+- **Length:** usually 150 words or fewer (one phone screen).
+- **Subject line always** "Dr. [Name] – Visit Summary – [date]"; never a condition, body part, test, medicine or specialty (lock screens; BC PIPA).
+- **Transparency footer:** "Prepared with AI help and checked by Dr. [Name]. Contact the clinic with questions."
+- Three worked examples: new long-term medicine, test results only with no medicine, sensitive mental health follow-up.
+
+**Medical imaging requisition (the health authority's standard form) — fields the demo does not have yet:**
+- Modalities on the form: X-Ray, CT, Ultrasound, Echo, Angiogram/Interventional, Nuclear Medicine (the demo also has Breast Imaging).
+- Any site or specify site; appointment date and time; previous images and location.
+- Escort required (nurse, porter, volunteer); mode of transport (wheelchair, stretcher, bed); other (O2, isolation, portable, IV pump) — hospital use.
+- Able to give consent (yes/no); interpreter must accompany a patient who does not speak English.
+- Copies of report to.
+- **Must be completed for CT:** kidney function abnormal? previous L-spine surgery? If yes, or for CT abdomen/pelvis or angiogram:
+  **eGFR and creatinine within 3 months, with dates, mandatory.**
+- **Must be completed for core biopsies, angiograms and interventional procedures:** INR, platelets, eGFR, creatinine, each with date;
+  anticoagulant or anti-platelet medication (yes/no, list).
+- Physician signature, date, phone, MSP billing number. "Incomplete requisition forms will be returned."
+- Design consequence: the CT and procedure sections should appear only for those exams and **fill the eGFR, creatinine, INR and platelets
+  with their dates from the chart**, flagging when a value is older than 3 months (links to the kidney-function quick order in prescribing).
