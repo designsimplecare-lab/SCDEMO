@@ -7053,6 +7053,29 @@ body:has(#op-panel.show) #callw{z-index:360;}
 #op-panel .op-old .ic,#op-panel .op-old svg{width:16px;height:16px;color:var(--warn);}
 #op-panel .op-needc .op-need{margin:0;}
 @media (max-width:1100px){ #op-panel .op-labr{grid-template-columns:100px minmax(0,1fr) minmax(0,1fr);} #op-panel .op-labst{grid-column:1 / -1;} }
+/* T-035 (Daniel, 31 Oct): the referral, more spacious; Cedar's suggested specialist; a better-formatted letter */
+#op-panel[data-kind=ref] .op-sheet{max-width:min(1320px,calc(100vw - 64px));}
+#op-panel[data-kind=ref] .op-body.two{gap:28px;padding:20px 28px;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);}
+#op-panel[data-kind=ref] .op-main{gap:16px;}
+#op-panel[data-kind=ref] .op-card{padding:20px 22px;}
+#op-panel[data-kind=ref] .op-rail{background:var(--wash);border-radius:16px;padding:16px;}
+#op-panel .op-rfsug .op-gl{display:flex;align-items:center;gap:6px;}
+#op-panel .op-whos{margin:6px 0 0;}
+#op-panel .op-whos li.top button{box-shadow:inset 0 0 0 1.5px var(--brand-line,#C9CEF8);}
+#op-panel .op-whos button span + span{color:var(--ink);}
+#op-panel .op-pick{display:inline-block;margin-left:6px;padding:0 8px;border-radius:999px;background:var(--brand-wash,#EEF0FD);font-size:14px;font-weight:500;line-height:22px;color:var(--ink);}
+#op-panel .op-letter2{padding:36px 40px;font-size:15px;line-height:24px;}
+#op-panel .op-letter2 .op-lh{align-items:flex-start;}
+#op-panel .op-letter2 .op-lh div{display:grid;gap:0;}
+#op-panel .op-letter2 .op-lh b{font-size:18px;line-height:26px;color:var(--brand-navy,#162660);}
+#op-panel .op-letter2 .op-lh span{font-size:14px;line-height:20px;color:var(--ink-soft);}
+#op-panel .op-letter2 .op-ldt{font-size:15px !important;color:var(--ink) !important;}
+#op-panel .op-letter2 .op-lto{display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;margin:0 0 10px;}
+#op-panel .op-letter2 .op-lto p{margin:0;}
+#op-panel .op-letter2 .op-lk2{font-size:14px;font-weight:600;color:var(--ink-soft);}
+#op-panel .op-letter2 .op-lsh{margin:16px 0 2px;font-size:15px;line-height:22px;font-weight:700;color:var(--ink);}
+#op-panel .op-letter2 p{max-width:66ch;}
+#op-panel .op-letter2 .op-lsig{margin-top:20px;}
 </style>
 </head>
 <body>
@@ -20773,6 +20796,7 @@ function opRender(){
   document.getElementById('op-sub').textContent = opSubLine();
   var solo = OP.done || OP.view === 'preview' || (K.solo && K.solo()) || !!K.noRail;
   bd.className = 'op-body' + (solo ? ' solo' : K.two ? ' two' : '');
+  opPanel().setAttribute('data-kind', OP.kind);   /* T-035: the referral takes more room */
   if(OP.done){ m.innerHTML = K.doneHtml(OP.done); ra.hidden = true; ra.innerHTML = ''; }
   else if(OP.view === 'preview'){
     m.innerHTML = '<div class="op-pvh"><p>' + csEsc(K.pvNote()) + '</p></div>' + K.paper();
@@ -21665,70 +21689,91 @@ function odOpen(kind){ if(kind === 'img') imgOpen(); else labOpen(); }
    DEMO DIRECTORY: invented names and 555 fax numbers (Needs Daniel: the directory's real source). Dr. M. Ferreira is the demo chart's own
    cardiologist (care plan).
    ============================================================ */
+/* T-035 (Daniel, 31 Oct, section 4): more space, a better letter, Cedar suggests the specialist (proximity to the patient and who is taking
+   patients, from the internal list the MOAs keep up to date), a synthesized reason and a compact clinical summary in his style, and the
+   source documents (lab report, imaging report, consult letter) as the supporting documents; the visit note is never suggested.
+   DEMO DIRECTORY: invented names, 555 fax numbers, demo distances and intake status. Needs Daniel: the real list and who maintains it. */
 var RF_DIR = [
-  {n:'Dr. M. Ferreira', s:'Cardiology', c:'St. Paul’s Cardiology, Vancouver', city:'Vancouver', f:'604-555-0119'},
-  {n:'Dr. Amara Okafor', s:'Cardiology', c:'Burnaby Heart Clinic', city:'Burnaby', f:'604-555-0141'},
-  {n:'Dr. Mei Tanaka', s:'Gastroenterology', c:'Tri-Cities Digestive Health', city:'Coquitlam', f:'604-555-0118'},
-  {n:'Dr. Rafael Ortiz', s:'Gastroenterology', c:'Fraser GI Associates', city:'Surrey', f:'604-555-0163'},
-  {n:'Dr. Hannah Weiss', s:'Dermatology', c:'West Side Skin Clinic', city:'Vancouver', f:'604-555-0127'},
-  {n:'Dr. Samuel Adeyemi', s:'Neurology', c:'Metrotown Neurology', city:'Burnaby', f:'604-555-0185'},
-  {n:'Dr. Clara Jensen', s:'Endocrinology', c:'Surrey Endocrine Centre', city:'Surrey', f:'604-555-0139'},
-  {n:'Dr. Priya Natarajan', s:'Gynecology', c:'Coquitlam Women’s Health', city:'Coquitlam', f:'604-555-0192'},
-  {n:'Dr. Victor Laine', s:'Orthopedics', c:'Thompson Orthopedic Clinic', city:'Kamloops', f:'250-555-0154'},
-  {n:'Dr. Owen McAllister', s:'Psychiatry', c:'Downtown Psychiatry Group', city:'Vancouver', f:'604-555-0108'},
-  {n:'Coastal Physiotherapy', s:'Physiotherapy', c:'Coastal Physiotherapy', city:'Burnaby', f:'604-555-0177'}
+  {n:'Dr. M. Ferreira', s:'Cardiology', c:'St. Paul’s Cardiology, Vancouver', city:'Vancouver', f:'604-555-0119', take:'yes'},
+  {n:'Dr. Amara Okafor', s:'Cardiology', c:'Burnaby Heart Clinic', city:'Burnaby', f:'604-555-0141', take:'yes'},
+  {n:'Dr. Lena Park', s:'Cardiology', c:'Fraser Heart Centre, Surrey', city:'Surrey', f:'604-555-0172', take:'no'},
+  {n:'Dr. Mei Tanaka', s:'Gastroenterology', c:'Tri-Cities Digestive Health', city:'Coquitlam', f:'604-555-0118', take:'wait'},
+  {n:'Dr. Rafael Ortiz', s:'Gastroenterology', c:'Fraser GI Associates', city:'Surrey', f:'604-555-0163', take:'yes'},
+  {n:'Dr. Hannah Weiss', s:'Dermatology', c:'West Side Skin Clinic', city:'Vancouver', f:'604-555-0127', take:'yes'},
+  {n:'Dr. Samuel Adeyemi', s:'Neurology', c:'Metrotown Neurology', city:'Burnaby', f:'604-555-0185', take:'wait'},
+  {n:'Dr. Clara Jensen', s:'Endocrinology', c:'Surrey Endocrine Centre', city:'Surrey', f:'604-555-0139', take:'yes'},
+  {n:'Dr. Priya Natarajan', s:'Gynecology', c:'Coquitlam Women’s Health', city:'Coquitlam', f:'604-555-0192', take:'yes'},
+  {n:'Dr. Victor Laine', s:'Orthopedics', c:'Thompson Orthopedic Clinic', city:'Kamloops', f:'250-555-0154', take:'yes'},
+  {n:'Dr. Owen McAllister', s:'Psychiatry', c:'Downtown Psychiatry Group', city:'Vancouver', f:'604-555-0108', take:'no'},
+  {n:'Coastal Physiotherapy', s:'Physiotherapy', c:'Coastal Physiotherapy', city:'Burnaby', f:'604-555-0177', take:'yes'}
 ];
-/* DEMO: a specialty the chart already points to, shown as a search shortcut (never chosen for the doctor) */
-var RF_HINT = {
-  'Gloria Mcdonald, 74F': {q:'Ferreira', why:'Cardiology is already following (consult, Jul 28).'},
-  'Behdis Maleki, 35F': {q:'Gastroenterology', why:'The Aug 4 plan says to refer to GI if ferritin stays low.'},
-  'Carol-Anne Feldman, 44F': {q:'Gynecology', why:'Third episode this year (intake today).'}
+var RF_TAKE = {yes:'Taking referrals', wait:'Waitlist', no:'Not taking referrals'};
+/* DEMO road distances between the demo cities, km */
+var RF_KM = {Coquitlam:{Coquitlam:4, Burnaby:11, Vancouver:24, Surrey:19, Kamloops:340}, Burnaby:{Coquitlam:11, Burnaby:4, Vancouver:13, Surrey:22, Kamloops:350},
+  Surrey:{Coquitlam:19, Burnaby:22, Vancouver:32, Surrey:5, Kamloops:330}, Vancouver:{Coquitlam:24, Burnaby:13, Vancouver:5, Surrey:32, Kamloops:355},
+  Kamloops:{Coquitlam:340, Burnaby:350, Vancouver:355, Surrey:330, Kamloops:6}};
+function rfCity(name){ var a = (typeof RX_ADDR !== 'undefined' && RX_ADDR[name]) || ''; var m = a.match(/,\s*([A-Za-z ]+),\s*BC/); return m ? m[1] : 'Vancouver'; }
+function rfKm(name, d){ var t = RF_KM[rfCity(name)] || RF_KM.Vancouver; return t[d.city] != null ? t[d.city] : null; }
+/* DEMO: what the chart points to (specialty, a specialist already following, the reason Cedar synthesizes) */
+var RF_CTX = {
+  'Gloria Mcdonald, 74F': {s:'Cardiology', follow:'Dr. M. Ferreira', followWhy:'Already following her (consult, Jul 28)',
+    reason:'Suspected NSTEMI with elevated troponin and exertional chest pain.', reasonSrc:['Results, today', 'Intake, today']},
+  'Behdis Maleki, 35F': {s:'Gastroenterology', reason:'Iron deficiency with ferritin still low on oral iron; source not yet found.', reasonSrc:['Visit note, Aug 4', 'Results']},
+  'Carol-Anne Feldman, 44F': {s:'Gynecology', reason:'Recurrent vaginal yeast infection, third episode this year.', reasonSrc:['Intake, today']}
 };
-/* DEMO: what the AI asks the specialist to do, where the chart says it; otherwise a plain default the doctor edits */
 var RF_REQ = {
+  'Gloria Mcdonald, 74F': 'Please assess urgently for acute coronary syndrome and advise on further investigation and management.',
   'Behdis Maleki, 35F': 'Please assess for a source of iron loss and advise on investigation. Ferritin has stayed low on oral iron.'
 };
+/* Cedar's pick: the specialist already following the patient if they take referrals, then taking referrals, then the nearest */
+function rfRank(name){
+  var c = RF_CTX[name]; if(!c) return [];
+  var rk = {yes:0, wait:1, no:2};
+  return RF_DIR.map(function(d, i){ return {d:d, i:i, km:rfKm(name, d), follow:c.follow === d.n}; }).filter(function(x){ return x.d.s === c.s; })
+    .sort(function(a, b){ return (b.follow && a.d.take !== 'no') - (a.follow && b.d.take !== 'no') || rk[a.d.take] - rk[b.d.take] || (a.km || 999) - (b.km || 999); });
+}
 function rfDocs(name){
-  /* the chart's documents the letter can carry: visit notes, the intake, lab reports, consult letters, uploads (T-030) */
-  var L = PT_LAST[name], out = [];
+  /* source documents first (what specialists check), then the visit note and the intake, which are kept but never suggested */
+  var L = PT_LAST[name], out = [], by = {};
+  (PT_RESULTS[name] || []).forEach(function(t){ t.pts.forEach(function(p){ (by[p[0]] = by[p[0]] || []).push({n:t.n, flag:p[2]}); }); });
+  var dates = Object.keys(by).sort(function(a, b){ return (imResDate(b) || 0) - (imResDate(a) || 0); });
+  dates.forEach(function(d, i){ out.push({id:'lab' + i, n:'Lab report · ' + by[d].map(function(x){ return x.n; }).join(', ') + ' · ' + d, t:'Lab report', k:'lab', d:d, flagged:by[d].filter(function(x){ return x.flag; }).map(function(x){ return x.n; })}); });
+  var seen = {};
+  (CARE_PLAN[name] || []).forEach(function(x){ if(x.specialty === 'Family practice' || seen[x.src] || /^care plan/i.test(x.src)) return; seen[x.src] = 1; out.push({id:'cons' + Object.keys(seen).length, n:x.src, t:'Consult letter', k:'cons', spec:x.specialty}); });
+  ((SD.out[name] || {}).docs || []).forEach(function(d){ out.push({id:d.id, n:(d.kind === 'upload' ? d.n : d.title || d.type) + ' · ' + d.iso, t:d.kind === 'upload' ? 'Uploaded' : 'Letter', k:d.kind}); });
   if(L) out.push({id:'note', n:'Visit note · ' + L.date, t:'Note', k:'note'});
   out.push({id:'intake', n:'Intake · today', t:'Form', k:'intake'});
-  var by = {};
-  (PT_RESULTS[name] || []).forEach(function(t){ var d = rsLast(t)[0]; (by[d] = by[d] || []).push(t.n); });
-  Object.keys(by).forEach(function(d, i){ out.push({id:'lab' + i, n:'Lab report · ' + by[d].join(', ') + ' · ' + d, t:'Lab report', k:'lab', d:d}); });
-  var seen = {};
-  (CARE_PLAN[name] || []).forEach(function(x){ if(x.specialty === 'Family practice' || seen[x.src]) return; seen[x.src] = 1; out.push({id:'cons' + Object.keys(seen).length, n:x.src, t:'Consult letter', k:'cons', spec:x.specialty}); });
-  ((SD.out[name] || {}).docs || []).forEach(function(d){ out.push({id:d.id, n:(d.kind === 'upload' ? d.n : d.title || d.type) + ' · ' + d.iso, t:d.kind === 'upload' ? 'Uploaded' : 'Letter', k:d.kind}); });
   return out;
 }
-/* the AI suggests documents with a reason; it never ticks them (spec 2) */
+/* Cedar suggests the source reports that matter for this referral, with a reason; it never ticks them, and never suggests the visit note */
 function rfSuggest(name, s){
-  var docs = rfDocs(name), spec = rfWho(s).s, sug = {};
-  var note = docs.filter(function(d){ return d.k === 'note'; })[0]; if(note) sug[note.id] = 'History and plan from the last visit.';
-  var labs = docs.filter(function(d){ return d.k === 'lab'; }); if(labs.length) sug[labs[0].id] = 'The most recent results.';
-  docs.forEach(function(d){ if(d.k === 'cons' && spec && d.spec === spec) sug[d.id] = 'The earlier letter from ' + spec.toLowerCase() + '.'; });
+  var docs = rfDocs(name), spec = rfWho(s).s || (RF_CTX[name] || {}).s, sug = {};
+  var labs = docs.filter(function(d){ return d.k === 'lab' && d.flagged.length; });
+  if(labs[0]) sug[labs[0].id] = 'The source report for ' + labs[0].flagged.join(' and ') + ' (' + labs[0].d.toLowerCase() + ').';
+  docs.forEach(function(d){ if(d.k === 'cons' && spec && d.spec === spec) sug[d.id] = 'The earlier ' + spec.toLowerCase() + ' letter.'; });
+  docs.forEach(function(d){ if(d.k === 'upload' && /imaging|x-ray|ultrasound|ct|mri|echo|ecg/i.test(d.n)) sug[d.id] = 'An imaging report.'; });
   return sug;
 }
 function rfWho(s){ return s.manual ? s.man : (s.who != null ? RF_DIR[s.who] : {n:'', s:'', c:'', city:'', f:''}); }
-/* DEMO: where the generic draft would repeat itself, the chart's own story (last visit, care plan) is written out */
+/* the clinical summary in Daniel's style: age and sex, symptom, history, key results, pending reports, medications, allergies */
 var RF_SUM = {
-  'Gloria Mcdonald, 74F': {t:'74-year-old woman with chest pressure on exertion for 3 days, eased by rest. Known hypertension and type 2 diabetes. Seen on Jun 25 for exertional chest pressure, cause not yet established; cardiology saw her on Jul 28 and booked an exercise stress test (report not back).',
-    src:['Intake, today', 'Visit note, Jun 25', 'Cardiology consult, Jul 28']}
+  'Gloria Mcdonald, 74F': {t:'74F with exertional chest pressure × 3 days, relieved by rest. HTN, T2DM. Troponin I 0.42 µg/L, CK 210 U/L. Previously assessed by cardiology; stress test report pending. On ASA 81 mg, amlodipine and metformin. NKDA.',
+    src:['Intake, today', 'Results, today', 'Cardiology consult, Jul 28', 'Medication list', 'Allergies']}
 };
 function rfSumDraft(name){
-  var r = sdRow(), a = opAge(), L = PT_LAST[name], src = ['Intake, today'], o = RF_SUM[name];
-  var t = o ? o.t : (a ? a + '-year-old ' : '') + opWoman() + '. ' + String(AI_SUMMARY[name] || (r ? r.concern : '')).replace(/ x(\d+)/g, ' for $1').replace(/\bHTN\b/g, 'hypertension').replace(/\.?$/, '.');
-  if(o) src = o.src.slice();
-  else if(L){ t += ' Seen on ' + L.date.replace(/, 2026$/, '') + ': ' + L.note.A.replace(/\.?$/, '.'); src.push('Visit note, ' + L.date.replace(/, 2026$/, '')); }
+  var o = RF_SUM[name]; if(o) return {t:o.t, src:o.src.slice()};
+  var r = sdRow(), a = opAge(), sx = opSex() ? opSex().charAt(0) : '', src = ['Intake, today'];
+  var t = (a || '') + sx + ' with ' + String(r ? r.concern : '').toLowerCase().replace(/\.$/, '') + '.';
   var flagged = (PT_RESULTS[name] || []).filter(function(x){ return rsLast(x)[2]; }).slice(0, 3);
-  if(flagged.length){ t += ' Recent results: ' + flagged.map(function(x){ var p = rsLast(x); return x.n + ' ' + p[1] + ' ' + x.u + ' (' + p[0] + ')'; }).join(', ') + '.'; src.push('Results'); }
-  t += ' Medications: ' + opMedsText(name) + '. Allergies: ' + opAllergy(name).text + '.';
-  src.push('Medication list');
+  if(flagged.length){ t += ' ' + flagged.map(function(x){ var p = rsLast(x); return x.n + ' ' + p[1] + ' ' + x.u; }).join(', ') + '.'; src.push('Results'); }
+  var m = rxMeds(name); if(m.length){ t += ' On ' + m.map(function(x){ return x.drug.toLowerCase() + ' ' + x.dose; }).join(', ') + '.'; src.push('Medication list'); }
+  var al = opAllergy(name); t += ' ' + (al.pen === false && al.text === 'No known allergies' ? 'NKDA.' : al.pen == null ? 'Allergies not recorded.' : 'Allergies: ' + al.text + '.'); src.push('Allergies');
   return {t:t, src:src};
 }
 function rfFresh(name){
-  var d = rfSumDraft(name);
-  return {who:null, q:'', manual:false, man:{n:'', s:'', c:'', city:'', f:''}, urg:false, reason:(sdRow() || {}).concern || '', reasonFrom:true,
+  var d = rfSumDraft(name), c = RF_CTX[name];
+  return {who:null, q:'', manual:false, man:{n:'', s:'', c:'', city:'', f:''}, urg:false,
+    reason:c ? c.reason : (sdRow() || {}).concern || '', reasonFrom:!c, reasonSt:c ? 'draft' : 'ok', reasonSrc:c ? c.reasonSrc : [],
     sum:d.t, sumSrc:d.src, sumSt:'draft', req:RF_REQ[name] || 'Please assess and advise on investigation and management.', reqSt:'draft', att:{}, note:true};
 }
 function rfQ(v){ OP.st.q = v; var el = document.getElementById('rf-who'); if(el){ el.innerHTML = rfWhoList(); paintPd(el); } }
@@ -21739,7 +21784,7 @@ function rfManIn(k, v){ OP.st.man[k] = v; opSoft(); }
 function rfUrg(){ OP.st.urg = !OP.st.urg; opRender(); }
 function rfIn(k, v){
   var s = OP.st; s[k] = v;
-  if(k === 'reason') s.reasonFrom = false;
+  if(k === 'reason'){ s.reasonFrom = false; if(s.reasonSt === 'draft'){ s.reasonSt = 'edited'; rfMk('reason'); } }
   if(k === 'sum' && s.sumSt === 'draft'){ s.sumSt = 'edited'; rfMk('sum'); }
   if(k === 'req' && s.reqSt === 'draft'){ s.reqSt = 'edited'; rfMk('req'); }
   opSoft();
@@ -21752,12 +21797,13 @@ function rfAtt(id, on){
   if(on) s.att[id] = 1; else delete s.att[id];
   opRender();
 }
+function rfDirLine(name, d){ var km = rfKm(name, d); return [d.c, km != null ? km + ' km from the patient' : '', RF_TAKE[d.take] || ''].filter(Boolean).join(' · '); }
 function rfWhoList(){
-  var q = OP.st.q.trim().toLowerCase(); if(!q) return '';
+  var q = OP.st.q.trim().toLowerCase(), name = PC_CURRENT; if(!q) return '';
   var hits = RF_DIR.map(function(d, i){ return {d:d, i:i}; }).filter(function(x){ return (x.d.n + ' ' + x.d.s + ' ' + x.d.city + ' ' + x.d.c).toLowerCase().indexOf(q) > -1; });
-  if(!hits.length) return '<p class="op-note">No one in the directory matches. Enter the specialist manually.</p>';
+  if(!hits.length) return '<p class="op-note">No one on the list matches. Enter the specialist manually.</p>';
   return '<ul class="op-who" aria-label="Specialists found">' + hits.map(function(x){
-    return '<li><button type="button" data-fk="who-' + x.i + '" onclick="rfPickWho(' + x.i + ')"><b>' + csEsc(x.d.n) + ' · ' + csEsc(x.d.s) + '</b><span>' + csEsc(x.d.c + ' · fax ' + x.d.f) + '</span></button></li>';
+    return '<li><button type="button" data-fk="who-' + x.i + '" onclick="rfPickWho(' + x.i + ')"><b>' + csEsc(x.d.n) + ' · ' + csEsc(x.d.s) + '</b><span>' + csEsc(rfDirLine(name, x.d) + ' · fax ' + x.d.f) + '</span></button></li>';
   }).join('') + '</ul>';
 }
 function rfMissing(){
@@ -21765,41 +21811,48 @@ function rfMissing(){
   if(!w.n.trim()) out.push(s.manual ? 'Write the specialist’s name.' : 'Choose a specialist, or enter one manually.');
   else if(!w.s.trim()) out.push('Write the specialty.');
   if(!sdPlain(s.reason)) out.push('Write the reason for referral.');
+  else if(s.reasonSt === 'draft') out.push('Accept or edit the Cedar draft reason.');
   if(!sdPlain(s.sum)) out.push('Write a clinical summary.');
-  else if(s.sumSt === 'draft') out.push('Accept or edit the AI draft clinical summary.');
+  else if(s.sumSt === 'draft') out.push('Accept or edit the Cedar draft clinical summary.');
   if(!sdPlain(s.req)) out.push('Write what you want the specialist to do.');
-  else if(s.reqSt === 'draft') out.push('Accept or edit the AI draft request.');
+  else if(s.reqSt === 'draft') out.push('Accept or edit the Cedar draft request.');
   return out;
 }
 function rfMain(){
-  var s = OP.st, name = PC_CURRENT, w = rfWho(s), hint = RF_HINT[name], h = '';
+  var s = OP.st, name = PC_CURRENT, w = rfWho(s), R = rfRank(name), h = '';
   h += '<section class="op-card" aria-labelledby="rf-sp-h"><h3 id="rf-sp-h">Specialist</h3>';
   if(s.who != null){
-    h += '<div class="op-chosen"><div><b>' + csEsc(w.n + ' · ' + w.s) + '</b><span>' + csEsc(w.c + ' · fax ' + w.f) + '</span></div><button type="button" class="btn" data-fk="whochg" onclick="rfChange()">' + rxIc('edit') + 'Change</button></div>';
+    h += '<div class="op-chosen"><div><b>' + csEsc(w.n + ' · ' + w.s) + '</b><span>' + csEsc(rfDirLine(name, w) + ' · fax ' + w.f) + '</span></div><button type="button" class="btn" data-fk="whochg" onclick="rfChange()">' + rxIc('edit') + 'Change</button></div>';
   } else if(s.manual){
     h += '<div class="op-grid">' + [['n', 'Name'], ['s', 'Specialty'], ['c', 'Clinic and address'], ['f', 'Fax number']].map(function(f){
       return '<div class="op-f"><label for="rf-man-' + f[0] + '">' + f[1] + '</label><input type="' + (f[0] === 'f' ? 'tel' : 'text') + '" id="rf-man-' + f[0] + '" data-fk="man-' + f[0] + '" value="' + csEsc(s.man[f[0]]) + '" oninput="rfManIn(\'' + f[0] + '\', this.value)"></div>'; }).join('') + '</div>' +
-      '<div style="margin-top:8px"><button type="button" class="btn op-q" data-fk="mansearch" onclick="rfChange()">' + rxIc('search') + 'Search the directory instead</button></div>';
+      '<div class="op-mt8"><button type="button" class="btn op-q" data-fk="mansearch" onclick="rfChange()">' + rxIc('search') + 'Search the list instead</button></div>';
   } else {
-    h += '<div class="op-f"><label for="rf-q">Search by name, specialty or city</label><input type="search" id="rf-q" data-fk="rfq" autocomplete="off" value="' + csEsc(s.q) + '" oninput="rfQ(this.value)"></div>' +
-      (hint ? '<p class="op-src" style="margin-top:6px">' + opMk('ai', 'Suggested') + ' ' + csEsc(hint.why) + ' <button type="button" class="btn op-q" data-fk="hint" onclick="rfQ(' + csEsc(JSON.stringify(hint.q)) + ');document.getElementById(\'rf-q\').value=' + csEsc(JSON.stringify(hint.q)) + '">' + rxIc('search') + 'Search ' + csEsc(hint.q) + '</button></p>' : '') +
+    /* Cedar suggests the specialist (Daniel: proximity, and who is taking patients); one tap chooses */
+    if(R.length) h += '<div class="op-rfsug" role="group" aria-labelledby="rf-sg-l"><p class="op-gl" id="rf-sg-l"><span class="cs-ai-ic">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span>Cedar suggests</p><ul class="op-who op-whos">' +
+      R.slice(0, 3).map(function(x, j){
+        var why = [x.follow ? (RF_CTX[name].followWhy) : '', x.km != null ? x.km + ' km from the patient' : '', RF_TAKE[x.d.take]].filter(Boolean).join(' · ');
+        return '<li' + (j ? '' : ' class="top"') + '><button type="button" data-fk="who-' + x.i + '" onclick="rfPickWho(' + x.i + ')"' + (x.d.take === 'no' ? ' aria-describedby="rf-no-' + x.i + '"' : '') + '><b>' + csEsc(x.d.n + ' · ' + x.d.s) + (j ? '' : ' <span class="op-pick">Best match</span>') + '</b>' +
+          '<span>' + csEsc(x.d.c) + '</span><span' + (x.d.take === 'no' ? ' id="rf-no-' + x.i + '"' : '') + '>' + csEsc(why) + '</span></button></li>';
+      }).join('') + '</ul><p class="op-src">From the specialist list the MOAs keep up to date (demo list).</p></div>';
+    h += '<div class="op-f op-mt"><label for="rf-q">Or search by name, specialty or city</label><input type="search" id="rf-q" data-fk="rfq" autocomplete="off" value="' + csEsc(s.q) + '" oninput="rfQ(this.value)"></div>' +
       '<div id="rf-who">' + rfWhoList() + '</div>' +
-      '<div style="margin-top:8px"><button type="button" class="btn" data-fk="manual" onclick="rfManual()">' + rxIc('edit') + 'Enter manually</button></div>';
+      '<div class="op-mt8"><button type="button" class="btn" data-fk="manual" onclick="rfManual()">' + rxIc('edit') + 'Enter manually</button></div>';
   }
   h += '</section>';
   h += '<section class="op-card" aria-labelledby="rf-dt-h"><h3 id="rf-dt-h">Referral details</h3>' +
     '<button type="button" class="op-sw" role="switch" data-fk="urg" aria-checked="' + s.urg + '" aria-describedby="rf-urg-h" onclick="rfUrg()"><span class="op-swt" aria-hidden="true"></span>Urgent</button>' +
     '<p class="op-note" id="rf-urg-h">Adds “Urgent” above the greeting in the letter.</p>' +
-    '<div class="op-f" style="margin-top:12px"><div class="op-lrow"><label for="rf-reason">Reason for referral</label>' + (s.reasonFrom && s.reason ? opMk('chart', 'From today’s concern') : '') + '</div>' +
-      '<textarea id="rf-reason" rows="2" data-fk="reason" oninput="rfIn(\'reason\', this.value)">' + csEsc(s.reason) + '</textarea></div>' +
-    '<div class="op-f" style="margin-top:12px"><div class="op-lrow"><label for="rf-sum">Clinical summary</label><span id="rf-sum-mk" class="op-lrow">' + opAiMk(s.sumSt, 'sumok', 'rfOk(\'sum\')') + '</span></div>' +
-      '<textarea id="rf-sum" rows="6" data-fk="sum" oninput="rfIn(\'sum\', this.value)">' + csEsc(s.sum) + '</textarea><p class="op-src">Sources the AI used: ' + csEsc(s.sumSrc.join('; ')) + '</p></div>' +
-    '<div class="op-f" style="margin-top:12px"><div class="op-lrow"><label for="rf-req">Request</label><span id="rf-req-mk" class="op-lrow">' + opAiMk(s.reqSt, 'reqok', 'rfOk(\'req\')') + '</span></div>' +
+    '<div class="op-f op-mt"><div class="op-lrow"><label for="rf-reason">Reason for referral</label>' + (s.reasonFrom && s.reason ? opMk('chart', 'From today’s concern') : '<span id="rf-reason-mk" class="op-lrow">' + opAiMk(s.reasonSt, 'reasonok', 'rfOk(\'reason\')') + '</span>') + '</div>' +
+      '<textarea id="rf-reason" rows="2" data-fk="reason" oninput="rfIn(\'reason\', this.value)">' + csEsc(s.reason) + '</textarea>' + (s.reasonSrc.length ? '<p class="op-src">Cedar used: ' + csEsc(s.reasonSrc.join('; ')) + '</p>' : '') + '</div>' +
+    '<div class="op-f op-mt"><div class="op-lrow"><label for="rf-sum">Clinical summary</label><span id="rf-sum-mk" class="op-lrow">' + opAiMk(s.sumSt, 'sumok', 'rfOk(\'sum\')') + '</span></div>' +
+      '<textarea id="rf-sum" rows="5" data-fk="sum" oninput="rfIn(\'sum\', this.value)">' + csEsc(s.sum) + '</textarea><p class="op-src">Cedar used: ' + csEsc(s.sumSrc.join('; ')) + '</p></div>' +
+    '<div class="op-f op-mt"><div class="op-lrow"><label for="rf-req">Request</label><span id="rf-req-mk" class="op-lrow">' + opAiMk(s.reqSt, 'reqok', 'rfOk(\'req\')') + '</span></div>' +
       '<p class="op-note" id="rf-req-h">What you specifically want the specialist to do</p>' +
-      '<textarea id="rf-req" rows="3" data-fk="req" aria-describedby="rf-req-h" oninput="rfIn(\'req\', this.value)">' + csEsc(s.req) + '</textarea></div></section>';
+      '<textarea id="rf-req" rows="2" data-fk="req" aria-describedby="rf-req-h" oninput="rfIn(\'req\', this.value)">' + csEsc(s.req) + '</textarea></div></section>';
   var docs = rfDocs(name), sug = rfSuggest(name, s), n = Object.keys(s.att).length;
   h += '<section class="op-card" aria-labelledby="rf-at-h"><div class="op-hrow"><h3 id="rf-at-h">Supporting documents</h3><span class="op-note" aria-live="polite">' + n + ' of 5</span></div>' +
-    '<p class="op-note">Attach the patient’s documents to fax with this referral (up to 5). Suggested ones say why; none is ticked for you.</p><ul class="op-att">' +
+    '<p class="op-note">Specialists check the source documents: the lab report, the imaging report, a consult letter. Cedar suggests the ones that matter and says why; none is ticked for you.</p><ul class="op-att">' +
     docs.map(function(d){ var on = !!s.att[d.id], dis = !on && n >= 5;
       return '<li><label class="op-t"><input type="checkbox" data-fk="att-' + d.id + '"' + (on ? ' checked' : '') + (dis ? ' disabled' : '') + ' onchange="rfAtt(\'' + d.id + '\', this.checked)"><span>' + csEsc(d.n) + '<span class="op-td">' + csEsc(d.t) + '</span>' +
         (sug[d.id] ? '<span class="op-sgw">' + rxIc('copilot') + 'Suggested: ' + csEsc(sug[d.id]) + '</span>' : '') + '</span></label></li>'; }).join('') + '</ul>' +
@@ -21809,17 +21862,18 @@ function rfMain(){
 function rfLetter(forPaper){
   var s = OP.st, name = PC_CURRENT, w = rfWho(s), ch = ptChart(name), docs = rfDocs(name).filter(function(d){ return s.att[d.id]; });
   var ph = function(t){ return '<span class="op-ph">' + csEsc(t) + '</span>'; };
-  var h = '<article class="op-letter" aria-label="Referral letter' + (forPaper ? '' : ', live preview') + '">' +
-    '<div class="op-lh"><div><b>SimpleCare</b><span>' + OP_DR_FULL + ' · Family physician · Virtual care</span></div><span>' + csEsc(sdDate()) + '</span></div>' +
-    '<p><b>To:</b> ' + (w.n ? csEsc(w.n) + (w.s ? ', ' + csEsc(w.s) : '') : ph('Choose a specialist')) + (w.c ? '\n' + csEsc(w.c) : '') + (w.f ? '\nFax ' + csEsc(w.f) : '') + '</p>' +
-    '<p><b>Re:</b> ' + csEsc(opLegal()) + ' · ' + csEsc([opAge(), opSex()].filter(Boolean).join(' · ')) + ' · PHN ' + csEsc(ch.phn || '—') + '</p>' +
+  var h = '<article class="op-letter op-letter2" aria-label="Referral letter' + (forPaper ? '' : ', live preview') + '">' +
+    '<header class="op-lh"><div><b>SimpleCare</b><span>' + OP_DR_FULL + '</span><span>Family physician · Virtual family practice, British Columbia</span></div><span class="op-ldt">' + csEsc(sdDate()) + '</span></header>' +
+    '<div class="op-lto"><p class="op-lk2">To</p><p>' + (w.n ? '<b>' + csEsc(w.n) + '</b>' + (w.s ? ', ' + csEsc(w.s) : '') : ph('Choose a specialist')) + (w.c ? '<br>' + csEsc(w.c) : '') + (w.f ? '<br>Fax ' + csEsc(w.f) : '') + '</p></div>' +
+    '<div class="op-lto"><p class="op-lk2">Re</p><p><b>' + csEsc(opLegal()) + '</b>, ' + csEsc([opAge(), opSex()].filter(Boolean).join(', ')) + '<br>PHN ' + csEsc(ch.phn || '—') + '</p></div>' +
     (s.urg ? '<p class="op-urg">Urgent</p>' : '') +
     '<p>Dear ' + (w.n ? csEsc(w.n) : ph('Dr. …')) + ',</p>' +
-    '<p>Thank you for seeing ' + csEsc(opLegal()) + (sdPlain(s.reason) ? ' for ' + csEsc(sdPlain(s.reason).replace(/^./, function(c){ return c.toLowerCase(); })) : '') + '.</p>' +
-    '<p>' + (sdPlain(s.sum) ? csEsc(s.sum) : ph('Clinical summary')) + '</p>' +
-    '<p><b>Request:</b> ' + (sdPlain(s.req) ? csEsc(s.req) : ph('What you want the specialist to do')) + '</p>' +
-    (docs.length ? '<p><b>Enclosed:</b></p><ul>' + docs.map(function(d){ return '<li>' + csEsc(d.n) + '</li>'; }).join('') + '</ul>' : '') +
-    '<p>Sincerely,\n' + OP_DR_FULL + '\nSimpleCare</p>' +
+    '<p>Thank you for seeing ' + csEsc(opLegal()) + '.</p>' +
+    '<h5 class="op-lsh">Reason for referral</h5><p>' + (sdPlain(s.reason) ? csEsc(s.reason) : ph('Reason for referral')) + '</p>' +
+    '<h5 class="op-lsh">Clinical summary</h5><p>' + (sdPlain(s.sum) ? csEsc(s.sum) : ph('Clinical summary')) + '</p>' +
+    '<h5 class="op-lsh">Request</h5><p>' + (sdPlain(s.req) ? csEsc(s.req) : ph('What you want the specialist to do')) + '</p>' +
+    (docs.length ? '<h5 class="op-lsh">Enclosed</h5><ul>' + docs.map(function(d){ return '<li>' + csEsc(d.n) + '</li>'; }).join('') + '</ul>' : '') +
+    '<p class="op-lsig">Sincerely,<br><b>' + OP_DR_FULL + '</b><br>SimpleCare</p>' +
     '<p class="op-ph">Signed with the time when you press a sign button.</p></article>';
   return h;
 }
@@ -21839,7 +21893,7 @@ OP_K.ref = {
   },
   main:function(){ return rfMain(); },
   rail:function(){ return '<p class="op-gl">Letter preview</p>' + rfLetter(false); },
-  paper:function(){ return '<div style="max-width:860px;margin:0 auto;width:100%">' + rfLetter(true) + '</div>'; },
+  paper:function(){ return '<div style="max-width:820px;margin:0 auto;width:100%">' + rfLetter(true) + '</div>'; },
   sign:function(route, name, at){
     var s = OP.st, w = rfWho(s), moa = sdMoa(), reason = sdPlain(s.reason);
     var att = rfDocs(name).filter(function(d){ return s.att[d.id]; }).map(function(d){ return d.n; });
@@ -22031,6 +22085,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-02 16:51</div>
+  <div class="build-stamp">v2 · build 2026-11-02 16:56</div>
 </body>
 </html>

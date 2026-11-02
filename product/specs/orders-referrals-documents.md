@@ -167,3 +167,21 @@ Functions: `imCq`, `imFresh`, `imMain`, `imMissing`, `imLabRow`, `imLabFrom`, `i
   **Order kidney function**, which saves the imaging requisition, opens the lab requisition with Creatinine / eGFR ticked, and comes back to
   the imaging requisition when closed. A missing value blocks signing (the form says mandatory); an old one is flagged, not blocked.
 - Needs Daniel: who "could be pregnant"; the radiology exam list; whether an old value should block; the anticoagulant / anti-platelet list.
+
+### Referral (T-035)
+Functions: `rfRank`, `rfKm`, `rfCity`, `rfDirLine`, `rfDocs`, `rfSuggest`, `rfSumDraft`, `rfFresh`, `rfMain`, `rfLetter`, `rfMissing`; the panel carries `data-kind` so the referral takes more room.
+- **More spacious**: the referral uses the full panel width (up to 1320 px), wider gaps and padding; the letter sits on a soft panel.
+- **Cedar suggests the specialist**: up to three from the specialty the chart points to, ranked by the specialist already following the patient
+  (when taking referrals), then taking referrals, then distance; each shows the clinic, "N km from the patient" and Taking referrals /
+  Waitlist / Not taking referrals; "Best match" on the first; one tap chooses. Labelled "From the specialist list the MOAs keep up to date
+  (demo list)". Search and Enter manually stay. DEMO: the list, distances and intake status are invented.
+- **Reason synthesized** (Cedar draft with its sources; Gloria: "Suspected NSTEMI with elevated troponin and exertional chest pain.").
+- **Clinical summary in Daniel's style** (age and sex, symptom, history, key results, pending reports, medications, allergies); Gloria's is his
+  example verbatim; other patients get the same shape built from the chart.
+- **Supporting documents are the source documents**: lab reports (grouped by date), consult letters and uploads first; the visit note and the
+  intake are still listed but never suggested. Cedar suggests the lab report holding the flagged values and the earlier letter from the same
+  specialty, with the reason; none is ticked; up to five.
+- **The letter**: letterhead (SimpleCare, the doctor, the practice), date, To and Re blocks, Urgent above the greeting (as in Daniel's form),
+  headed sections (Reason for referral, Clinical summary, Request, Enclosed) and a signature block.
+- The MOA route stays (Daniel: referrals are laborious).
+
