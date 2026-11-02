@@ -148,3 +148,22 @@ Functions: `lrFresh`, `lrOverviewHtml`, `lrOvRow`, `lrOv`, `lrUse`, `lrInstrDraf
 - **All tests on the form**: every section listed; the ones holding Cedar's suggestions or chosen tests open, the rest closed with a count.
 - Opened from prescribing ("Order kidney function", or "Next, as per your note"), the tests arrive ticked with the reason shown.
 - Needs Daniel: what "Copy to: pre-filled (from provider location)" means exactly; his own panels; the patient-instruction wording.
+
+### Imaging requisition (T-034, with the 2 Nov addendum)
+Functions: `imCq`, `imFresh`, `imMain`, `imMissing`, `imLabRow`, `imLabFrom`, `imOld`, `imRenal`, `imCT`, `imProc`, `imOrderKid`, `imFold`, `imPaper`; `opClose` returns to the form it was opened from.
+- **One field** (Daniel: "clinical question and pertinent history are one field"): **Pertinent history / medications** holds the clinical
+  question for the radiologist in one line, drafted by Cedar (Gloria: Daniel's own example, 18 words), with a live word count and a soft
+  hint above 20 words; "AI draft" until accepted or edited; square-bracket gaps block signing. The separate history field is gone.
+- **Shorter**: one column (no rail); modality, exam, site and priority in one card; the safety card only when a question applies; Copies and
+  Hospital transport folded; what is still needed listed at the end and in the footer. The MOA route stays (both buttons).
+- **Standard form fields added** (addendum): Any site / specify site; previous images and location; able to give consent, with "An interpreter
+  must accompany a patient who does not speak English."; copies of report to; appointment date and time, escort, mode of transport and other
+  (O2, isolation, portable, IV pump) under the closed **Hospital transport**.
+- **Must be completed for CT** (CT only): Kidney function abnormal? Previous L-spine surgery? If yes, or for CT abdomen/pelvis: eGFR and
+  creatinine with dates. **Must be completed for core biopsies, angiograms and interventional procedures** (Angio/Intv, or an exam naming
+  biopsy or angiogram): INR, platelets, eGFR, creatinine with dates, and anticoagulant or anti-platelet yes/no with the list (pre-answered from
+  the medication list with a DEMO class map; Gloria's ASA reads as anti-platelet). Values and dates come from Results with their source; a
+  value older than 3 months is flagged ("Older than 3 months; the form asks for one within 3 months") and, for kidney function, offers
+  **Order kidney function**, which saves the imaging requisition, opens the lab requisition with Creatinine / eGFR ticked, and comes back to
+  the imaging requisition when closed. A missing value blocks signing (the form says mandatory); an old one is flagged, not blocked.
+- Needs Daniel: who "could be pregnant"; the radiology exam list; whether an old value should block; the anticoagulant / anti-platelet list.

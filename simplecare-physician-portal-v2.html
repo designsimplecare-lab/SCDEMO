@@ -7034,6 +7034,25 @@ body:has(#op-panel.show) #callw{z-index:360;}
 #op-panel .op-formh{margin:16px 0 4px !important;}
 #op-panel .op-form{display:grid;gap:8px;}
 @media (max-width:900px){ #op-panel .op-ovb .op-ovk{flex-basis:150px;} #op-panel .op-whyl{margin-left:0;} }
+/* T-034 (Daniel, 31 Oct, and the 2 Nov addendum): the shorter imaging requisition, its one-line field, the CT and procedure sections */
+#op-panel .op-mt{margin-top:12px;}
+#op-panel .op-mt8{margin-top:8px;}
+#op-panel .op-siter{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 16px;}
+#op-panel .op-siter .op-f{flex:1 1 240px;}
+#op-panel .op-tin{min-height:44px;align-items:center;}
+#op-panel .op-labs{display:grid;gap:8px;margin-top:6px;}
+#op-panel .op-labr{display:grid;grid-template-columns:110px minmax(120px,170px) 170px minmax(0,1fr);align-items:center;gap:8px 12px;}
+#op-panel .op-labk{font-weight:600;font-size:15px;}
+#op-panel .op-labv{display:flex;align-items:center;gap:6px;}
+#op-panel .op-labv input{width:100%;min-width:0;}
+#op-panel .op-labu{font-size:14px;color:var(--ink-soft);white-space:nowrap;}
+#op-panel .op-labd input{width:100%;}
+#op-panel .op-labst{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;}
+#op-panel .op-labr .op-lk{min-height:44px;}
+#op-panel .op-old{display:inline-flex;align-items:center;gap:6px;font-size:14px;line-height:20px;color:var(--ink);}
+#op-panel .op-old .ic,#op-panel .op-old svg{width:16px;height:16px;color:var(--warn);}
+#op-panel .op-needc .op-need{margin:0;}
+@media (max-width:1100px){ #op-panel .op-labr{grid-template-columns:100px minmax(0,1fr) minmax(0,1fr);} #op-panel .op-labst{grid-column:1 / -1;} }
 </style>
 </head>
 <body>
@@ -20720,6 +20739,8 @@ function opOpen(kind, arg){
 }
 function opClose(){
   var pn = opPanel(); if(!pn || !opIsOpen()) return;
+  if(OP.back && OP.kind !== OP.back){ var bk = OP.back; OP.back = null; opOpen(bk); return; }
+  OP.back = null;
   pn.classList.remove('show');
   var op = OP.opener; OP.opener = null;
   if(op && document.contains(op) && op.checkVisibility && op.checkVisibility()) op.focus({preventScroll:true});
@@ -21337,12 +21358,28 @@ var IM_EXAMS = {   /* DEMO LIST until Daniel's radiology data */
 };
 /* DEMO: an exam the chart already asks for (Behdis's Aug 4 plan) */
 var IM_FROM = {'Behdis Maleki, 35F': {mod:'Ultrasound', exam:'Abdomen complete', why:'The Aug 4 plan lists an abdominal ultrasound for a source of iron loss. Not booked yet.', src:'Visit note, Aug 4'}};
-/* DEMO: the AI's one-line clinical question for the radiologist. Where the chart says what is being looked for, the line says it; otherwise it
-   leaves "[what to rule out]" for the doctor, and signing waits until the square brackets are filled. */
-var IM_RULE = {
-  'Gloria Mcdonald, 74F': 'Also has type 2 diabetes. Rule out a cardiac or lung cause.',
-  'Behdis Maleki, 35F': 'Looking for a source of blood loss.'
+/* T-034 (Daniel, 31 Oct, section 3): "A bit too long." The clinical question and the pertinent history are ONE field on the form: a
+   heavily synthesized one-liner of about 20 words or fewer ("Radiologists want the question, briefly"). Cedar drafts it; the doctor accepts
+   or edits. The form is shorter: one column, the safety questions only when they apply, copies and hospital transport folded away.
+   Addendum (2 Nov, the health authority's standard form): "Must be completed for CT" (kidney function abnormal? previous L-spine surgery?
+   and, when yes or for CT abdomen/pelvis or an angiogram, eGFR and creatinine within 3 months with dates) and "Must be completed for core
+   biopsies, angiograms and interventional procedures" (INR, platelets, eGFR, creatinine with dates; anticoagulant or anti-platelet, yes/no
+   and list) show only for those exams, filled from the chart with their dates, and a value older than 3 months is flagged. Also: any site or
+   specify site, previous images and location, able to give consent (with the interpreter line), copies of report to; hospital-only fields
+   (escort, transport, other) under a closed "Hospital transport". DEMO DATA throughout. */
+var IM_CQ = {   /* DEMO Cedar drafts; Gloria's is Daniel's own example */
+  'Gloria Mcdonald, 74F': '74F with exertional chest pressure × 3 days, relieved by rest. HTN, T2DM. Assess for acute cardiopulmonary abnormalities.',
+  'Behdis Maleki, 35F': '35F with iron deficiency, ferritin still low on oral iron. Assess for a source of blood loss.'
 };
+/* DEMO: medicines the anticoagulant / anti-platelet question pre-answers from the medication list (Needs a qualified reviewer) */
+var IM_ANTI = {'Acetylsalicylic acid':'anti-platelet', 'Clopidogrel':'anti-platelet', 'Ticagrelor':'anti-platelet', 'Warfarin':'anticoagulant', 'Apixaban':'anticoagulant', 'Rivaroxaban':'anticoagulant', 'Dabigatran':'anticoagulant', 'Edoxaban':'anticoagulant'};
+function imWords(t){ return String(t || '').trim().split(/\s+/).filter(Boolean).length; }
+function imCq(name){
+  if(IM_CQ[name]) return IM_CQ[name];
+  /* no imaging question on the chart yet: the shape of the line, with the gaps for the doctor (signing waits until they are filled) */
+  var a = opAge(), sx = opSex() ? opSex().charAt(0) : '';
+  return (a || '') + sx + ' with [symptom and how long]. Assess for [what to rule out].';
+}
 function imContrast(s){
   if(!s.mod) return false;
   if(s.mod === 'Angio/Intv') return true;
@@ -21354,54 +21391,76 @@ function imContrast(s){
 function imCouldBePregnant(){ var a = opAge(); return opSex() === 'Female' && a != null && a >= 12 && a <= 55; }   /* demo rule, Needs Daniel */
 function imAsk(s){
   var c = imContrast(s), p = imCouldBePregnant();
-  /* breast feeding: breast imaging and contrast exams, for the same patients as the pregnancy questions (demo rule, Needs Daniel) */
   return {contrast:c, preg:p, breast:p && (s.mod === 'Breast Imaging' || c), size:s.mod === 'CT' || s.mod === 'Nuclear Medicine'};
 }
-function imCq(name){
-  var r = sdRow(), sum = (AI_SUMMARY[name] || '').replace(/\.$/, ''), a = opAge();
-  var lead = (a ? a + '-year-old ' : '') + opWoman() + (sum ? ', ' + sum.charAt(0).toLowerCase() + sum.slice(1) : (r && r.concern ? ', ' + r.concern.toLowerCase() : '')) + '.';
-  return lead.replace(/ x(\d+)/g, ' for $1').replace(/\bHTN\b/g, 'hypertension') + ' ' + (IM_RULE[name] || 'What to rule out: [what to rule out].');
+/* the standard form's conditional sections */
+function imCT(s){ return s.mod === 'CT'; }
+function imProc(s){ return s.mod === 'Angio/Intv' || /biopsy|angiogra|interventional/i.test(s.exam); }
+function imRenal(s){ var sf = s.safe; return imProc(s) || (imCT(s) && (/abdomen|pelvis/i.test(s.exam) || sf.kidAbn === 'yes' || sf.lspine === 'yes')); }
+function imResDate(d){
+  if(!d) return null; var n = new Date();
+  if(/^today$/i.test(d)) return n; if(/^yesterday$/i.test(d)){ n.setDate(n.getDate() - 1); return n; }
+  var x = new Date(/\d{4}/.test(d) ? d : d + ', ' + n.getFullYear()); if(isNaN(x)) return null;
+  if(x > n) x.setFullYear(x.getFullYear() - 1); return x;
 }
-function imHistFrom(s, name){
-  return (s.cq ? s.cq + '\n' : '') + 'Medications: ' + opMedsText(name) + '.\nAllergies: ' + opAllergy(name).text + '.';
+function imLabFrom(name, n){
+  var T = (PT_RESULTS[name] || []).filter(function(t){ return t.n === n; })[0], u = {eGFR:'mL/min', Creatinine:'µmol/L', INR:'', Platelets:'×10⁹/L'}[n];
+  if(!T) return {v:'', u:u, d:'', from:''};
+  var p = rsLast(T), dt = imResDate(p[0]);
+  return {v:p[1], u:T.u || u, d:dt ? rxIso(dt) : '', from:'From Results, ' + p[0]};
 }
+function imOld(iso){ if(!iso) return false; var d = new Date(iso + 'T12:00:00'), c = new Date(); c.setMonth(c.getMonth() - 3); return d < c; }
 function imFresh(name){
-  var meds = rxMeds(name).map(function(m){ return m.drug.toLowerCase(); }), metf = meds.indexOf('metformin') > -1;
+  var meds = rxMeds(name), metf = meds.some(function(m){ return /^metformin$/i.test(m.drug); });
   var dm = metf || /type 2 diabetes/i.test(((PT_LAST[name] || {}).note || {}).A || '');
   var wt = ((PT_READINGS[name] || {}).wt || []), w = wt.length ? String(wt[wt.length - 1][1]) : '';
-  var s = {mod:'', exam:'', prio:'routine', cq:imCq(name), cqSt:'draft', hist:'', histEdited:false, note:true,
+  var anti = meds.filter(function(m){ return IM_ANTI[m.drug]; });
+  return {mod:'', exam:'', prio:'routine', cq:imCq(name), cqSt:'draft', note:true, site:{any:false, spec:''}, prev:'', copies:'', open:{},
     safe:{diab:dm ? 'yes' : '', diabFrom:dm ? (metf ? 'On metformin; type 2 diabetes on the chart' : 'Type 2 diabetes on the chart') : '',
       metf:metf ? 'yes' : 'no', metfFrom:metf ? 'On the medication list' : 'Not on the medication list',
-      breast:'', preg:'', lmp:'', gpa:'', ht:'', wt:w, wtFrom:w ? 'Patient-reported, ' + wt[wt.length - 1][0] : '', rxn:'', rxnDet:''},
+      breast:'', preg:'', lmp:'', gpa:'', ht:'', wt:w, wtFrom:w ? 'Patient-reported, ' + wt[wt.length - 1][0] : '', rxn:'', rxnDet:'',
+      kidAbn:'', lspine:'', anti:anti.length ? 'yes' : '', antiFrom:anti.length ? 'On the medication list' : '', consent:''},
+    antiList:anti.map(function(m){ return m.drug + ' ' + m.dose + ' (' + IM_ANTI[m.drug] + ')'; }).join('; '),
+    lab:{egfr:imLabFrom(name, 'eGFR'), cr:imLabFrom(name, 'Creatinine'), inr:imLabFrom(name, 'INR'), plt:imLabFrom(name, 'Platelets')},
+    hosp:{appt:'', escort:'', transport:'', other:{}},
     cc:[{n:'', f:''}, {n:'', f:''}]};
-  s.hist = imHistFrom(s, name);
-  return s;
 }
 function imSet(k, v){
   var s = OP.st;
-  if(k === 'mod'){ s.mod = s.mod === v ? s.mod : v; if(!(IM_EXAMS[v] || []).some(function(x){ return x.n === s.exam; })) s.exam = ''; opRender(); return; }
+  if(k === 'mod'){ s.mod = v; if(!(IM_EXAMS[v] || []).some(function(x){ return x.n === s.exam; })) s.exam = ''; opRender(); return; }
   if(k === 'prio'){ s.prio = v; opRender(); return; }
   if(k === 'exam'){ s.exam = v; opRender(); return; }
 }
+function imKey(s){ return JSON.stringify([imAsk(s), imCT(s), imProc(s), imRenal(s)]); }
 function imExamIn(v){
   /* typing in Exam requested: free text is allowed (the form's field is text); the list below narrows as you type */
-  var s = OP.st, before = imAsk(s), shown = JSON.stringify(before);
+  var s = OP.st, before = imKey(s);
   s.exam = v;
   var el = document.getElementById('im-ex-list'); if(el) el.innerHTML = imExamList();
-  if(JSON.stringify(imAsk(s)) !== shown){ opRender(); return; }
+  if(imKey(s) !== before){ opRender(); return; }
   opSoft();
 }
-function imSafe(k, v){ var sf = OP.st.safe; sf[k] = sf[k] === v ? '' : v; if(k === 'diab') sf.diabFrom = ''; if(k === 'metf') sf.metfFrom = ''; opRender(); }   /* a second press clears */
+function imSafe(k, v){ var sf = OP.st.safe; sf[k] = sf[k] === v ? '' : v; if(k === 'diab') sf.diabFrom = ''; if(k === 'metf') sf.metfFrom = ''; if(k === 'anti') sf.antiFrom = ''; opRender(); }   /* a second press clears */
 function imSafeIn(k, v){ OP.st.safe[k] = v; if(k === 'wt') OP.st.safe.wtFrom = ''; opSoft(); }
 function imCqIn(v){
   var s = OP.st; s.cq = v; s.cqSt = 'edited';
-  if(!s.histEdited){ s.hist = imHistFrom(s, PC_CURRENT); var h = document.getElementById('im-hist'); if(h) h.value = s.hist; }
   var mk = document.getElementById('im-cq-mk'); if(mk && !mk.getAttribute('data-ed')){ mk.setAttribute('data-ed', '1'); mk.innerHTML = opMk('ok', 'Edited by you'); paintPd(mk); }
+  var wc = document.getElementById('im-wc'); if(wc) wc.innerHTML = imWcHtml(v);
   opSoft();
 }
+function imWcHtml(v){ var n = imWords(v); return n + (n === 1 ? ' word' : ' words') + (n > 20 ? '. Radiologists want the question briefly: about 20 words.' : ''); }
 function imCqOk(){ OP.st.cqSt = 'ok'; OP.focusNext = 'cq'; opRender(); }
-function imHistIn(v){ OP.st.hist = v; OP.st.histEdited = true; opSoft(); }
 function imCcIn(i, k, v){ OP.st.cc[i][k] = v; opSoft(); }
+function imIn(k, v){ var s = OP.st; if(k === 'spec') s.site.spec = v; else if(k.indexOf('h.') === 0) s.hosp[k.slice(2)] = v; else s[k] = v; opSoft(); }
+function imAny(){ OP.st.site.any = !OP.st.site.any; opRender(); }
+function imOther(k){ var o = OP.st.hosp.other; if(o[k]) delete o[k]; else o[k] = 1; opRender(); }
+function imSec(k){ OP.st.open[k] = !OP.st.open[k]; opRender(); }
+function imLabIn(k, f, v){ var L = OP.st.lab[k]; L[f] = v; L.from = ''; if(f === 'd') opRender(); else opSoft(); }
+/* kidney function not on file or older than 3 months: the lab requisition opens with it ticked; closing it comes back here */
+function imOrderKid(){
+  var name = PC_CURRENT; (OP.saved[name] = OP.saved[name] || {}).img = {st:opClone(OP.st), at:rxNow(), ts:Date.now()};
+  OP.back = 'img'; opOpen('lab', {pre:['cr'], from:'For the imaging requisition: eGFR and creatinine within 3 months.'});
+}
 function imUseFrom(){ var f = IM_FROM[PC_CURRENT]; if(!f) return; OP.st.mod = f.mod; OP.st.exam = f.exam; OP.focusNext = 'exam'; opRender(); }
 function imExamList(){
   var s = OP.st; if(!s.mod) return '';
@@ -21415,13 +21474,14 @@ function imExamList(){
     return '<button type="button" class="op-chip" data-fk="ex-' + i + '" aria-pressed="' + on + '" onclick="imSet(\'exam\', ' + csEsc(JSON.stringify(x.n)) + ')">' + csEsc(x.n) + '</button>';
   }).join('') + '</div>';
 }
+var IM_LABN = {egfr:'eGFR', cr:'Creatinine', inr:'INR', plt:'Platelets'};
 function imMissing(){
   var s = OP.st, sf = s.safe, k = imAsk(s), out = [];
   if(!s.mod) out.push(['Choose a modality', 'mod-X-Ray']);
   if(!s.exam.trim()) out.push(['Exam requested', 'exam']);
-  if(!s.cq.trim()) out.push(['Clinical question for the radiologist', 'cq']);
-  else if(s.cqSt === 'draft') out.push(['Accept or edit the AI draft clinical question', 'cqok']);
-  if(opBrackets(s.cq).length) out.push(['Clinical question: fill in ' + opBrackets(s.cq).join(', '), 'cq']);
+  if(!s.cq.trim()) out.push(['Pertinent history / medications', 'cq']);
+  else if(s.cqSt === 'draft') out.push(['Accept or edit the Cedar draft clinical question', 'cqok']);
+  if(opBrackets(s.cq).length) out.push(['Pertinent history: fill in ' + opBrackets(s.cq).join(', '), 'cq']);
   if(k.contrast){
     if(!sf.diab) out.push(['Pt Diabetic? is not answered', 'sf-diab-yes']);
     if(!sf.metf) out.push(['On Metformin? is not answered', 'sf-metf-yes']);
@@ -21432,6 +21492,16 @@ function imMissing(){
   if(k.breast && !sf.breast) out.push(['Breast Feeding? is not answered', 'sf-breast-yes']);
   if(k.size && !sf.ht.trim()) out.push(['Height (cm)', 'ht']);
   if(k.size && !sf.wt.trim()) out.push(['Weight (kg)', 'wt']);
+  if(imCT(s)){
+    if(!sf.kidAbn) out.push(['CT: Kidney function abnormal? is not answered', 'sf-kidAbn-yes']);
+    if(!sf.lspine) out.push(['CT: Previous L-spine surgery? is not answered', 'sf-lspine-yes']);
+  }
+  var labs = imProc(s) ? ['inr', 'plt', 'egfr', 'cr'] : imRenal(s) ? ['egfr', 'cr'] : [];
+  labs.forEach(function(x){ var L = s.lab[x]; if(!String(L.v).trim() || !L.d) out.push([IM_LABN[x] + ': value and date', 'l-' + x]); });
+  if(imProc(s)){
+    if(!sf.anti) out.push(['Anticoagulant or anti-platelet medication? is not answered', 'sf-anti-yes']);
+    if(sf.anti === 'yes' && !s.antiList.trim()) out.push(['List the anticoagulant or anti-platelet medication', 'antilist']);
+  }
   return out;
 }
 function imGo(fk){
@@ -21440,30 +21510,46 @@ function imGo(fk){
 }
 function imYN(k, label, fromTxt){
   var sf = OP.st.safe, v = sf[k];
-  return '<div class="op-fu" role="group" aria-labelledby="im-' + k + '-l"><p class="op-gl" id="im-' + k + '-l">' + csEsc(label) + ' <span class="op-src">Choose up to one. Select again to clear.</span></p>' +
+  return '<div class="op-fu" role="group" aria-labelledby="im-' + k + '-l"><p class="op-gl" id="im-' + k + '-l">' + csEsc(label) + '</p>' +
     '<div class="op-pills">' + ['yes', 'no'].map(function(o){ return '<button type="button" class="op-pill" data-fk="sf-' + k + '-' + o + '" aria-pressed="' + (v === o) + '" onclick="imSafe(\'' + k + '\', \'' + o + '\')">' + (o === 'yes' ? 'Yes' : 'No') + '</button>'; }).join('') + '</div>' +
     (fromTxt ? opMk('chart', 'From the chart: ' + fromTxt) : '') + '</div>';
 }
+function imLabRow(k){
+  var L = OP.st.lab[k], label = IM_LABN[k], old = imOld(L.d), kid = k === 'egfr' || k === 'cr';
+  return '<div class="op-labr" role="group" aria-label="' + label + '"><span class="op-labk">' + label + '</span>' +
+    '<span class="op-labv"><label for="im-l-' + k + '" class="op-vh">' + label + ' value</label><input type="text" inputmode="decimal" id="im-l-' + k + '" data-fk="l-' + k + '" placeholder="Value" value="' + csEsc(L.v) + '" oninput="imLabIn(\'' + k + '\', \'v\', this.value)">' +
+    (L.u ? '<span class="op-labu">' + csEsc(L.u) + '</span>' : '') + '</span>' +
+    '<span class="op-labd"><label for="im-ld-' + k + '" class="op-vh">' + label + ' date</label><input type="date" id="im-ld-' + k + '" data-fk="ld-' + k + '" value="' + csEsc(L.d) + '" oninput="imLabIn(\'' + k + '\', \'d\', this.value)"></span>' +
+    '<span class="op-labst">' + (L.from ? opMk('chart', L.from) : !String(L.v).trim() ? '<span class="op-note">Not on file</span>' : '') +
+    (old ? '<span class="op-old">' + rxIc('clock') + 'Older than 3 months; the form asks for one within 3 months</span>' : '') +
+    (kid && (old || !String(L.v).trim()) ? '<button type="button" class="op-lk" data-fk="kid-' + k + '" onclick="imOrderKid()">' + rxIc('plus') + 'Order kidney function</button>' : '') + '</span></div>';
+}
+function imFold(k, title, sum, body){
+  var open = !!OP.st.open[k];
+  return '<section class="op-sec"><h3><button type="button" class="op-sh" data-fk="fold-' + k + '" aria-expanded="' + open + '" aria-controls="im-fold-' + k + '" onclick="imSec(\'' + k + '\')"><span class="op-st">' + title + '</span>' +
+    (sum ? '<span class="op-cnt op-cq">' + csEsc(sum) + '</span>' : '') + rxIc('chevdown') + '</button></h3><div class="op-sbd" id="im-fold-' + k + '"' + (open ? '' : ' hidden') + '>' + (open ? body : '') + '</div></section>';
+}
 function imMain(){
-  var s = OP.st, sf = s.safe, name = PC_CURRENT, k = imAsk(s), fr = IM_FROM[name], h = '';
+  var s = OP.st, sf = s.safe, name = PC_CURRENT, k = imAsk(s), fr = IM_FROM[name], h = '', miss = imMissing();
   if(fr && !(s.mod === fr.mod && s.exam === fr.exam)) h += '<section class="op-card" aria-labelledby="im-fr-h"><h3 id="im-fr-h">From the chart</h3><ul class="op-sug"><li><div><b>' + csEsc(fr.mod + ': ' + fr.exam) + '</b><p class="op-why">' + csEsc(fr.why) + '</p><p class="op-src">' + csEsc(fr.src) + '</p></div>' +
     '<button type="button" class="btn" data-fk="usefr" onclick="imUseFrom()">' + rxIc('plus') + 'Use it</button></li></ul></section>';
+  /* 1. the exam: modality, exam, site, priority */
   h += '<section class="op-card" aria-labelledby="im-md-h"><h3 id="im-md-h">Modality</h3><div class="op-seg" role="group" aria-labelledby="im-md-h">' + IM_MODS.map(function(m){
       return '<button type="button" class="op-sb" data-fk="mod-' + m + '" aria-pressed="' + (s.mod === m) + '" onclick="imSet(\'mod\', \'' + m + '\')">' + csEsc(m) + '</button>'; }).join('') + '</div>' +
-    '<div class="op-f" style="margin-top:12px"><label for="im-exam">Exam requested</label><input type="text" id="im-exam" data-fk="exam" autocomplete="off"' + (s.mod ? ' placeholder="Search the ' + csEsc(s.mod) + ' list, or type the exam"' : ' placeholder="Choose a modality first, or type the exam"') + ' value="' + csEsc(s.exam) + '" oninput="imExamIn(this.value)"></div>' +
-    '<div id="im-ex-list" style="margin-top:8px">' + imExamList() + '</div>' +
-    '<p class="op-gl" id="im-pr-l" style="margin-top:12px">Priority level</p><div class="op-seg" role="group" aria-labelledby="im-pr-l">' + [['routine', 'Routine'], ['urgent', 'Urgent'], ['stat', 'Stat']].map(function(p){
+    '<div class="op-f op-mt"><label for="im-exam">Exam requested</label><input type="text" id="im-exam" data-fk="exam" autocomplete="off"' + (s.mod ? ' placeholder="Search the ' + csEsc(s.mod) + ' list, or type the exam"' : ' placeholder="Choose a modality first, or type the exam"') + ' value="' + csEsc(s.exam) + '" oninput="imExamIn(this.value)"></div>' +
+    '<div id="im-ex-list" class="op-mt8">' + imExamList() + '</div>' +
+    '<div class="op-siter op-mt"><label class="op-t op-tin"><input type="checkbox" data-fk="anysite"' + (s.site.any ? ' checked' : '') + ' onchange="imAny()"><span>Any site</span></label>' +
+      '<div class="op-f"><label for="im-site">or specify site</label><input type="text" id="im-site" data-fk="site" value="' + csEsc(s.site.spec) + '"' + (s.site.any ? ' disabled' : '') + ' oninput="imIn(\'spec\', this.value)"></div></div>' +
+    '<p class="op-gl op-mt" id="im-pr-l">Priority level</p><div class="op-seg" role="group" aria-labelledby="im-pr-l">' + [['routine', 'Routine'], ['urgent', 'Urgent'], ['stat', 'Stat']].map(function(p){
       return '<button type="button" class="op-sb" data-fk="pr-' + p[0] + '" aria-pressed="' + (s.prio === p[0]) + '" onclick="imSet(\'prio\', \'' + p[0] + '\')">' + p[1] + '</button>'; }).join('') + '</div></section>';
-  h += '<section class="op-card" aria-labelledby="im-cq-h"><div class="op-hrow"><h3 id="im-cq-h">Clinical question for the radiologist</h3><span id="im-cq-mk" class="op-lrow">' + opAiMk(s.cqSt, 'cqok', 'imCqOk()') + '</span></div>' +
-    '<p class="op-note">One line: age, sex, the symptom and how long, and what to rule out. Drafted from today’s intake and the chart; edit it freely. It goes into Pertinent history.</p>' +
-    '<label for="im-cq" class="op-vh">Clinical question for the radiologist</label><textarea id="im-cq" rows="3" data-fk="cq" oninput="imCqIn(this.value)">' + csEsc(s.cq) + '</textarea>' +
-    '<p class="op-src">Sources: Intake, today' + (PT_LAST[name] ? '; Visit note, ' + csEsc(PT_LAST[name].date.replace(/, 2026$/, '')) : '') + '</p></section>';
-  /* safety: only what applies to this exam and this patient */
-  var any = k.contrast || k.preg || k.breast || k.size;
-  h += '<section class="op-card" aria-labelledby="im-sf-h"><h3 id="im-sf-h">Patient safety risk assessment</h3>';
-  if(!s.mod) h += '<p class="op-note">The questions that apply show once you choose a modality and an exam.</p>';
-  else if(!any) h += '<p class="op-note">No safety questions apply to this exam for this patient. The form shows them blank.</p>';
-  else {
+  /* 2. ONE field: the clinical question is the pertinent history (Daniel, 31 Oct) */
+  h += '<section class="op-card" aria-labelledby="im-cq-h"><div class="op-hrow"><h3 id="im-cq-h"><label for="im-cq">Pertinent history / medications</label></h3><span id="im-cq-mk" class="op-lrow">' + opAiMk(s.cqSt, 'cqok', 'imCqOk()') + '</span></div>' +
+    '<p class="op-note">The clinical question for the radiologist, in one line.</p>' +
+    '<textarea id="im-cq" rows="2" data-fk="cq" aria-describedby="im-wc" oninput="imCqIn(this.value)">' + csEsc(s.cq) + '</textarea>' +
+    '<p class="op-src"><span id="im-wc">' + imWcHtml(s.cq) + '</span> · Cedar drafted it from: Intake, today' + (PT_LAST[name] ? '; Visit note, ' + csEsc(PT_LAST[name].date.replace(/, 2026$/, '')) : '') + '; Medication list</p></section>';
+  /* 3. safety: only what applies to this exam and this patient (no card at all when nothing applies) */
+  if(s.mod && (k.contrast || k.preg || k.breast || k.size)){
+    h += '<section class="op-card" aria-labelledby="im-sf-h"><h3 id="im-sf-h">Patient safety risk assessment</h3>';
     if(k.contrast) h += '<p class="op-note">This exam uses contrast.</p>' + imYN('diab', 'Pt Diabetic?', sf.diabFrom) + imYN('metf', 'On Metformin?', sf.metfFrom) +
       imYN('rxn', 'Previous contrast reaction?', '') + (sf.rxn === 'yes' ? '<div class="op-f"><label for="im-rxnd">Previous contrast reaction: details</label><input type="text" id="im-rxnd" data-fk="rxndet" value="' + csEsc(sf.rxnDet) + '" oninput="imSafeIn(\'rxnDet\', this.value)"></div>' : '');
     if(k.preg) h += imYN('preg', 'Pregnant?', '') + '<div class="op-grid"><div class="op-f"><label for="im-lmp">LMP</label><input type="date" id="im-lmp" data-fk="lmp" value="' + csEsc(sf.lmp) + '" oninput="imSafeIn(\'lmp\', this.value)"></div>' +
@@ -21471,57 +21557,77 @@ function imMain(){
     if(k.breast) h += imYN('breast', 'Breast Feeding?', '');
     if(k.size) h += '<div class="op-grid"><div class="op-f"><label for="im-ht">Height (cm)</label><input type="number" inputmode="decimal" id="im-ht" data-fk="ht" value="' + csEsc(sf.ht) + '" oninput="imSafeIn(\'ht\', this.value)"></div>' +
       '<div class="op-f"><div class="op-lrow"><label for="im-wt">Weight (kg)</label>' + (sf.wtFrom ? opMk('chart', sf.wtFrom) : '') + '</div><input type="number" inputmode="decimal" id="im-wt" data-fk="wt" value="' + csEsc(sf.wt) + '" oninput="imSafeIn(\'wt\', this.value)"></div></div>';
+    h += '</section>';
   }
-  h += '</section>';
-  h += '<section class="op-card" aria-labelledby="im-hx-h"><div class="op-hrow"><h3 id="im-hx-h"><label for="im-hist">Pertinent history / medications</label></h3>' + (s.histEdited ? '' : opMk('chart', 'From the clinical question and the chart')) + '</div>' +
-    '<textarea id="im-hist" rows="4" data-fk="hist" oninput="imHistIn(this.value)">' + csEsc(s.hist) + '</textarea></section>';
-  h += '<section class="op-card" aria-labelledby="im-cc-h"><h3 id="im-cc-h">Copy to (optional)</h3><p class="op-note">The requisition will also be faxed to these doctors. Up to two doctors.</p><div class="op-grid">' +
-    [0, 1].map(function(i){ return '<div class="op-f"><label for="im-ccn' + i + '">Doctor name</label><input type="text" id="im-ccn' + i + '" data-fk="ccn' + i + '" value="' + csEsc(s.cc[i].n) + '" oninput="imCcIn(' + i + ', \'n\', this.value)"></div>' +
-      '<div class="op-f"><label for="im-ccf' + i + '">Fax number</label><input type="tel" id="im-ccf' + i + '" data-fk="ccf' + i + '" value="' + csEsc(s.cc[i].f) + '" oninput="imCcIn(' + i + ', \'f\', this.value)"></div>'; }).join('') + '</div></section>';
-  return h;
-}
-function imRail(){
-  var s = OP.st, miss = imMissing(), sf = s.safe, k = imAsk(s);
-  var h = '<section class="op-card" aria-labelledby="im-rq-h"><h3 id="im-rq-h">This requisition</h3><dl class="op-dl">' +
-    '<div><dt>Exam</dt><dd>' + (s.mod || s.exam ? csEsc([s.mod, s.exam].filter(Boolean).join(': ')) : 'None chosen yet') + '</dd></div>' +
-    '<div><dt>Priority level</dt><dd>' + {routine:'Routine', urgent:'Urgent', stat:'Stat'}[s.prio] + '</dd></div>' +
-    '<div><dt>Clinical question</dt><dd>' + csEsc(s.cq || '—') + (s.cqSt === 'draft' ? '<span class="op-src">AI draft, not accepted yet</span>' : '') + '</dd></div>';
-  var sl = [];
-  if(k.contrast){ sl.push('Diabetic: ' + (sf.diab || '—')); sl.push('On metformin: ' + (sf.metf || '—')); sl.push('Previous contrast reaction: ' + (sf.rxn === 'yes' ? 'yes, ' + (sf.rxnDet || '—') : sf.rxn || '—')); }
-  if(k.preg) sl.push('Pregnant: ' + (sf.preg || '—') + (sf.lmp ? ', LMP ' + sf.lmp : ''));
-  if(k.breast) sl.push('Breast feeding: ' + (sf.breast || '—'));
-  if(k.size) sl.push('Height ' + (sf.ht || '—') + ' cm, weight ' + (sf.wt || '—') + ' kg');
-  if(sl.length) h += '<div><dt>Safety</dt><dd>' + csEsc(sl.join('\n')) + '</dd></div>';
+  /* 4. the standard form's conditional sections, only for those exams */
+  if(imCT(s)){
+    h += '<section class="op-card" aria-labelledby="im-ct-h"><h3 id="im-ct-h">Must be completed for CT</h3>' + imYN('kidAbn', 'Kidney function abnormal?', '') + imYN('lspine', 'Previous L-spine surgery?', '');
+    if(imRenal(s) && !imProc(s)) h += '<p class="op-gl">eGFR and creatinine within 3 months, with dates</p><div class="op-labs">' + imLabRow('egfr') + imLabRow('cr') + '</div>';
+    h += '</section>';
+  }
+  if(imProc(s)){
+    h += '<section class="op-card" aria-labelledby="im-pc-h"><h3 id="im-pc-h">Must be completed for core biopsies, angiograms and interventional procedures</h3><div class="op-labs">' +
+      imLabRow('inr') + imLabRow('plt') + imLabRow('egfr') + imLabRow('cr') + '</div>' + imYN('anti', 'Anticoagulant or anti-platelet medication?', sf.antiFrom) +
+      (sf.anti === 'yes' ? '<div class="op-f"><label for="im-anti">List</label><input type="text" id="im-anti" data-fk="antilist" value="' + csEsc(s.antiList) + '" oninput="imIn(\'antiList\', this.value)"></div>' : '') + '</section>';
+  }
+  /* 5. consent and previous images */
+  h += '<section class="op-card" aria-labelledby="im-cn-h"><h3 id="im-cn-h" class="op-vh">Consent and previous images</h3>' + imYN('consent', 'Able to give consent?', '') +
+    '<p class="op-note">An interpreter must accompany a patient who does not speak English.</p>' +
+    '<div class="op-f op-mt"><label for="im-prev">Previous images and location</label><input type="text" id="im-prev" data-fk="prev" placeholder="For example chest X-ray, Royal Columbian, 2025" value="' + csEsc(s.prev) + '" oninput="imIn(\'prev\', this.value)"></div></section>';
+  /* 6. folded: copies, hospital transport */
   var cc = s.cc.filter(function(c){ return c.n.trim() || c.f.trim(); });
-  if(cc.length) h += '<div><dt>Copy to</dt><dd>' + csEsc(cc.map(function(c){ return c.n + (c.f ? ', fax ' + c.f : ''); }).join('\n')) + '</dd></div>';
-  h += '</dl></section>';
-  if(miss.length) h += '<section class="op-card" aria-labelledby="im-ms-h"><h3 id="im-ms-h">Still needed</h3><ul class="op-need">' + miss.map(function(m){
+  h += imFold('cc', 'Copies', [cc.length ? cc.length + ' doctor' + (cc.length === 1 ? '' : 's') : '', s.copies.trim() ? 'report copies' : ''].filter(Boolean).join(' · '),
+    '<p class="op-gl">Copy to (optional)</p><p class="op-note">The requisition will also be faxed to these doctors. Up to two doctors.</p><div class="op-grid">' +
+    [0, 1].map(function(i){ return '<div class="op-f"><label for="im-ccn' + i + '">Doctor name</label><input type="text" id="im-ccn' + i + '" data-fk="ccn' + i + '" value="' + csEsc(s.cc[i].n) + '" oninput="imCcIn(' + i + ', \'n\', this.value)"></div>' +
+      '<div class="op-f"><label for="im-ccf' + i + '">Fax number</label><input type="tel" id="im-ccf' + i + '" data-fk="ccf' + i + '" value="' + csEsc(s.cc[i].f) + '" oninput="imCcIn(' + i + ', \'f\', this.value)"></div>'; }).join('') + '</div>' +
+    '<div class="op-f"><label for="im-copies">Copies of report to</label><input type="text" id="im-copies" data-fk="copies" value="' + csEsc(s.copies) + '" oninput="imIn(\'copies\', this.value)"></div>');
+  var ho = s.hosp;
+  h += imFold('hosp', 'Hospital transport', [ho.escort, ho.transport].concat(Object.keys(ho.other)).filter(Boolean).join(' · '),
+    '<p class="op-note">Hospital use. Leave blank for a patient at home.</p>' +
+    '<div class="op-f"><label for="im-appt">Appointment date and time</label><input type="text" id="im-appt" data-fk="appt" placeholder="Filled when booked" value="' + csEsc(ho.appt) + '" oninput="imIn(\'h.appt\', this.value)"></div>' +
+    '<div class="op-fu" role="group" aria-labelledby="im-esc-l"><p class="op-gl" id="im-esc-l">Escort required</p><div class="op-pills">' + ['Nurse', 'Porter', 'Volunteer'].map(function(o){
+      return '<button type="button" class="op-pill" data-fk="esc-' + o + '" aria-pressed="' + (ho.escort === o) + '" onclick="OP.st.hosp.escort=OP.st.hosp.escort===\'' + o + '\'?\'\':\'' + o + '\';opRender()">' + o + '</button>'; }).join('') + '</div></div>' +
+    '<div class="op-fu" role="group" aria-labelledby="im-tr-l"><p class="op-gl" id="im-tr-l">Mode of transport</p><div class="op-pills">' + ['Wheelchair', 'Stretcher', 'Bed'].map(function(o){
+      return '<button type="button" class="op-pill" data-fk="tr-' + o + '" aria-pressed="' + (ho.transport === o) + '" onclick="OP.st.hosp.transport=OP.st.hosp.transport===\'' + o + '\'?\'\':\'' + o + '\';opRender()">' + o + '</button>'; }).join('') + '</div></div>' +
+    '<div class="op-fu" role="group" aria-labelledby="im-ot-l"><p class="op-gl" id="im-ot-l">Other</p><div class="op-pills">' + ['O2', 'Isolation', 'Portable', 'IV pump'].map(function(o){
+      return '<button type="button" class="op-pill" data-fk="ot-' + o + '" aria-pressed="' + !!ho.other[o] + '" onclick="imOther(\'' + o + '\')">' + o + '</button>'; }).join('') + '</div></div>');
+  if(miss.length) h += '<section class="op-card op-needc" aria-labelledby="im-ms-h"><h3 id="im-ms-h">Still needed</h3><ul class="op-need">' + miss.map(function(m){
     return '<li><button type="button" data-fk="go-' + m[1] + '" onclick="imGo(\'' + m[1] + '\')">' + rxIc('alert') + '<span>' + csEsc(m[0]) + '</span></button></li>'; }).join('') + '</ul></section>';
   return h;
 }
+function imRail(){ return ''; }
 function imPaper(){
-  var s = OP.st, sf = s.safe, yn = function(v){ return v === 'yes' ? 'Yes' : v === 'no' ? 'No' : '—'; };
+  var s = OP.st, sf = s.safe, yn = function(v){ return v === 'yes' ? 'Yes' : v === 'no' ? 'No' : '—'; }, lab = function(x){ var L = s.lab[x]; return '<b>' + IM_LABN[x] + ':</b> ' + csEsc(L.v ? L.v + (L.u ? ' ' + L.u : '') : '—') + ', date ' + csEsc(L.d || '—'); };
   var h = '<article class="op-paper" aria-label="Imaging requisition preview">' + opPaperHead('Medical imaging requisition') +
     '<h5>Modality selection</h5><div class="op-pbx">' + IM_MODS.map(function(m){ return opBox(s.mod === m, m); }).join('') + '</div>' +
-    '<h5>Exam requested</h5><p>' + csEsc(s.exam || '—') + '</p>' +
+    '<h5>Exam requested</h5><p>' + csEsc(s.exam || '—') + '</p><div class="op-pbx">' + opBox(s.site.any, 'Any site') + '</div><p><b>Specify site:</b> ' + csEsc(s.site.spec || '—') + '</p>' +
     '<h5>Priority level</h5><div class="op-pbx">' + [['routine', 'Routine'], ['urgent', 'Urgent'], ['stat', 'Stat']].map(function(p){ return opBox(s.prio === p[0], p[1]); }).join('') + '</div>' +
+    '<p><b>Appointment date and time:</b> ' + csEsc(s.hosp.appt || '—') + '</p><p><b>Previous images and location:</b> ' + csEsc(s.prev || '—') + '</p>' +
     '<h5>Patient safety risk assessment</h5><div class="op-pbx">' + opBox(sf.diab === 'yes', 'Pt Diabetic') + opBox(sf.metf === 'yes', 'On Metformin') + opBox(sf.breast === 'yes', 'Breast Feeding') + '</div>' +
     '<p><b>Pregnant:</b> ' + yn(sf.preg) + ' &nbsp; <b>LMP:</b> ' + csEsc(sf.lmp || '—') + ' &nbsp; <b>G, P, A:</b> ' + csEsc(sf.gpa || '—') + '</p>' +
     '<p><b>Height:</b> ' + csEsc(sf.ht ? sf.ht + ' cm' : '—') + ' &nbsp; <b>Weight:</b> ' + csEsc(sf.wt ? sf.wt + ' kg' : '—') + '</p>' +
     '<p><b>Previous contrast reaction?</b> ' + yn(sf.rxn) + (sf.rxn === 'yes' ? ': ' + csEsc(sf.rxnDet || '—') : '') + '</p>' +
-    '<h5>Pertinent history / medications</h5><p style="white-space:pre-line">' + csEsc(s.hist || '—') + '</p>' +
+    '<p><b>Able to give consent:</b> ' + yn(sf.consent) + '. An interpreter must accompany a patient who does not speak English.</p>' +
+    '<h5>Must be completed for CT</h5><p><b>Kidney function abnormal?</b> ' + yn(sf.kidAbn) + ' &nbsp; <b>Previous L-spine surgery?</b> ' + yn(sf.lspine) + '</p>' +
+    '<p>If yes, or for CT abdomen/pelvis or angiogram: eGFR and creatinine within 3 months, with dates (mandatory).</p><p>' + (imCT(s) && imRenal(s) && !imProc(s) ? lab('egfr') + ' &nbsp; ' + lab('cr') : '—') + '</p>' +
+    '<h5>Must be completed for core biopsies, angiograms and interventional procedures</h5><p>' + (imProc(s) ? lab('inr') + ' &nbsp; ' + lab('plt') + ' &nbsp; ' + lab('egfr') + ' &nbsp; ' + lab('cr') : '—') + '</p>' +
+    '<p><b>Anticoagulant or anti-platelet medication:</b> ' + (imProc(s) ? yn(sf.anti) + (sf.anti === 'yes' ? ': ' + csEsc(s.antiList || '—') : '') : '—') + '</p>' +
+    '<h5>Pertinent history / medications</h5><p style="white-space:pre-line">' + csEsc(s.cq || '—') + '</p>' +
+    '<h5>Hospital use</h5><p><b>Escort required:</b> ' + csEsc(s.hosp.escort || '—') + ' &nbsp; <b>Mode of transport:</b> ' + csEsc(s.hosp.transport || '—') + ' &nbsp; <b>Other:</b> ' + csEsc(Object.keys(s.hosp.other).join(', ') || '—') + '</p>' +
     '<h5>Copy to (optional)</h5>' + s.cc.map(function(c){ return '<p>' + csEsc((c.n || '—') + ', fax ' + (c.f || '—')) + '</p>'; }).join('') +
-    opPaperSig() + '</article>';
+    '<p><b>Copies of report to:</b> ' + csEsc(s.copies || '—') + '</p>' +
+    opPaperSig() + '<p>Physician phone and MSP billing number are printed from the provider profile. Incomplete requisition forms will be returned.</p></article>';
   return h;
 }
 OP_K.img = {
   title:function(){ return 'Imaging requisition'; },
   noun:function(){ return 'the imaging requisition'; },
   railLabel:function(){ return 'This requisition'; },
+  noRail:true,   /* T-034: one shorter column; what is still needed sits at the end and in the footer */
   fresh:function(name){ return imFresh(name); },
   selfLabel:function(){ return 'Sign and fax to radiology'; },
   okLine:function(){ return 'Both buttons sign it. You choose who sends it.'; },
-  pvNote:function(){ return 'The requisition exactly as it will be faxed. Every field of the provincial form is on it, blank where it does not apply.'; },
+  pvNote:function(){ return 'The requisition exactly as it will be faxed. Every field of the standard form is on it, blank where it does not apply.'; },
   valid:function(){ var m = imMissing(); return m.length ? {why:'Still needed: ' + m[0][0] + (m.length > 1 ? ' (and ' + (m.length - 1) + ' more)' : '') + '.'} : {}; },
   main:function(){ return imMain(); },
   rail:function(){ return imRail(); },
@@ -21536,7 +21642,7 @@ OP_K.img = {
     }
     sdOut(name).orders.unshift(e);
     LAB_ORDERS.unshift(odLabOrder(e));
-    e.noteLine = 'Imaging requisition: ' + exam + ' (' + pr + '). Clinical question: ' + sdPlain(s.cq) + ' Signed by ' + RX_DR + ' ' + at + (route === 'moa' ? '; sent to ' + moa + ' (MOA) to fax.' : '; faxed to radiology.');
+    e.noteLine = 'Imaging requisition: ' + exam + ' (' + pr + '). Pertinent history: ' + sdPlain(s.cq) + ' Signed by ' + RX_DR + ' ' + at + (route === 'moa' ? '; sent to ' + moa + ' (MOA) to fax.' : '; faxed to radiology.');
     e.toast = route === 'moa' ? 'Signed · sent to ' + moa + ' to fax' : 'Signed · imaging requisition faxed';
     return e;
   },
@@ -21925,6 +22031,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-02 16:45</div>
+  <div class="build-stamp">v2 · build 2026-11-02 16:51</div>
 </body>
 </html>
