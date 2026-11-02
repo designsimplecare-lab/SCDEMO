@@ -7076,6 +7076,38 @@ body:has(#op-panel.show) #callw{z-index:360;}
 #op-panel .op-letter2 .op-lsh{margin:16px 0 2px;font-size:15px;line-height:22px;font-weight:700;color:var(--ink);}
 #op-panel .op-letter2 p{max-width:66ch;}
 #op-panel .op-letter2 .op-lsig{margin-top:20px;}
+/* T-036 (Daniel, 31 Oct; Visit Summary Requirements, 24 Oct): the visit summary in the Note to patient drawer, its phone preview, the setting */
+#ms-overlay.vs > .tm-card.drw{width:min(1000px,100vw) !important;}
+#ms-card .vs-tabs{display:inline-flex;margin:0 0 14px;border:1px solid var(--line-strong);border-radius:12px;overflow:hidden;}
+#ms-card .vs-tab{min-height:44px;padding:0 18px;border:0;background:var(--panel);font:inherit;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;}
+#ms-card .vs-tab + .vs-tab{border-left:1px solid var(--line-strong);}
+#ms-card .vs-tab[aria-pressed=true]{background:var(--brand-navy,#162660);color:#fff;}
+#ms-card .vs-tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+#ms-card .vs-off{margin:0 0 12px;}
+#ms-card .vs-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start;}
+#ms-card .vs-ed textarea{width:100%;min-height:340px;box-sizing:border-box;padding:12px;border:1px solid var(--line-strong);border-radius:12px;font:inherit;font-size:15px;line-height:22px;color:var(--ink);background:var(--panel);resize:vertical;}
+#ms-card .vs-lrow{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+#ms-card .vs-ai{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink-soft);}
+#ms-card .vs-ai .ic,#ms-card .vs-ai svg{width:16px;height:16px;color:var(--brand);}
+#ms-card .vs-meta{display:grid;gap:6px;margin-top:8px;}
+#ms-card .vs-meta p{margin:0;max-width:66ch;}
+#ms-card .vs-warn{display:flex;gap:6px;align-items:flex-start;color:var(--ink);}
+#ms-card .vs-warn .ic,#ms-card .vs-warn svg{flex:none;width:16px;height:16px;margin-top:2px;color:var(--warn);}
+#ms-card .vs-gl{margin:4px 0 0;padding-left:18px;display:grid;gap:4px;font-size:14px;line-height:20px;color:var(--ink);max-width:66ch;}
+#ms-card .vs-pv{display:grid;gap:8px;}
+#ms-card .vs-phone{box-sizing:border-box;width:360px;max-width:100%;padding:16px 18px 14px;border:8px solid #1d1f24;border-radius:28px;background:#fff;color:#17181C;}
+#ms-card .vs-subj{margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid var(--line);font-size:15px;line-height:21px;font-weight:600;}
+#ms-card .vs-subj span{display:block;font-size:14px;font-weight:400;color:var(--ink-soft);}
+#ms-card .vs-foot{margin:12px 0 0;padding-top:10px;border-top:1px solid var(--line);font-size:14px;line-height:20px;color:var(--ink-soft);}
+.vs-body h4{margin:12px 0 4px;font-size:16px;line-height:22px;font-weight:700;color:var(--ink);}
+.vs-body h4:first-child{margin-top:0;}
+.vs-body p{margin:0 0 6px;font-size:15px;line-height:22px;max-width:66ch;}
+.vs-body ul{margin:0 0 6px;padding-left:20px;font-size:15px;line-height:22px;}
+.vs-body li{margin:0 0 4px;}
+.vs-body .vs-gap{background:var(--warn-wash,#FDF1CF);color:var(--ink);border-radius:3px;padding:0 2px;}
+.pd-item.pd-sw .pd-swv{margin-left:auto;font-size:14px;color:var(--ink-soft);}
+.pd-item.pd-sw[aria-checked=true] .pd-swv{color:var(--ink);font-weight:600;}
+@media (max-width:900px){ #ms-card .vs-grid{grid-template-columns:minmax(0,1fr);} }
 </style>
 </head>
 <body>
@@ -7149,6 +7181,8 @@ body:has(#op-panel.show) #callw{z-index:360;}
           <button class="pd-item" onclick="toggleProfileMenu();showScreen('feesettings')"><span class="pd-ic" data-pdic="feesettings"></span> Fee settings</button>
           <button class="pd-item" onclick="toggleProfileMenu();showScreen('profile')"><span class="pd-ic" data-pdic="user"></span> View profile</button>
           <!-- Batch A (4): a discreet way in to the shortcuts -->
+          <!-- T-036 (Daniel, 31 Oct): each doctor turns Cedar's visit summaries on or off (doctor autonomy) -->
+          <button class="pd-item pd-sw" id="pd-vs" role="switch" aria-checked="true" onclick="vsToggleSetting()"><span class="pd-ic" data-pdic="file"></span> Visit summaries by Cedar <span class="pd-swv">On</span></button>
           <button class="pd-item" id="pd-kb" onclick="toggleProfileMenu();kbOpen()"><span class="pd-ic" data-pdic="keyboard"></span> Keyboard shortcuts</button>
           <div class="pd-divider"></div>
           <!-- Ani, 7 Oct: one way to reach the other portals, the same place in every portal -->
@@ -20640,6 +20674,7 @@ var MS_TPL = [
 ];
 function msOpen(){
   if(!sdNeedChart()) return;
+  sdEl('ms-overlay').classList.remove('vs');
   SD.ms = {text:SD.draft[PC_CURRENT] || '', done:null, key:''};   /* a message not sent is kept for this patient until it is sent, so Escape does not lose it */
   sdEl('ms-sub').textContent = 'To ' + sdPref();
   msRenderBody();
@@ -20652,8 +20687,10 @@ function msRenderBody(){
     el.innerHTML = sdDone('Note sent', ['It is in the patient portal, and filed in Chart > Messages.', 'The email and the text say only: ' + MS_NOTICE + '.']);
     paintPd(el); sdDoneFoot('ms'); return;
   }
+  if(s.mode === 'vs' && vsOn()){ vsRender(el); return; }   /* T-036 */
+  sdEl('ms-overlay').classList.remove('vs');
   var p = sdPref();
-  el.innerHTML =
+  el.innerHTML = vsTabs() +
     '<div class="sd-f"><p class="sd-l" id="ms-tl">Quick templates</p><div class="sd-pills" role="group" aria-labelledby="ms-tl">' + MS_TPL.map(function(t){
       return '<button type="button" class="sd-tpl" onclick="msTpl(\'' + t.k + '\')">' + csEsc(t.l) + '</button>'; }).join('') + '</div></div>' +
     '<div class="sd-f"><label class="sd-l" for="ms-text">Note to ' + csEsc(p) + '</label><textarea id="ms-text" rows="6" oninput="msText(this.value)"></textarea></div>' +
@@ -20671,6 +20708,7 @@ function msPreview(){
   el.classList.toggle('empty', !t);
 }
 function msState(){
+  if(SD.ms && SD.ms.mode === 'vs'){ vsState(); return; }
   var s = SD.ms, ok = !!s.text.trim(), why = ok ? 'Nothing is sent until you press Send.' : 'Write a note first. Nothing is sent until you press Send.';
   if(s.key === why) return;
   s.key = why; sdFoot('ms', why, ok, false, 'Send note');
@@ -20685,6 +20723,7 @@ function msTpl(k){
 }
 function msSend(){
   var s = SD.ms; if(!s || s.done) return;
+  if(s.mode === 'vs'){ vsSend(); return; }
   var text = s.text.trim(); if(!text) return;
   var name = PC_CURRENT, e = {id:'ms' + Date.now(), ts:Date.now(), pt:name, text:text, at:rxNow(), iso:rxIso(new Date())};
   sdOut(name).msgs.unshift(e); delete SD.draft[name];
@@ -20696,10 +20735,122 @@ function msSend(){
 function sdMsgsHtml(name){
   var o = SD.out[name]; if(!o || !o.msgs.length) return '';
   return o.msgs.map(function(e){
+    if(e.kind === 'vs') return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>' + csEsc('Visit summary · ' + e.iso + ' · ' + e.at) + '</h4></div>' +
+      '<div class="sd-msg vs-body">' + vsHtml(e.text) + '</div><p class="cs-cap">Signed and sent by ' + RX_DR + '. Subject: ' + csEsc(e.subject) + '. ' + csEsc(VS_FOOT) + '</p></div>';
     return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="chat"></span><h4>' + csEsc('Note to patient · ' + e.iso + ' · ' + e.at) + '</h4></div>' +
       '<p class="sd-msg">' + csEsc(e.text) + '</p><p class="cs-cap">Sent by ' + RX_DR + '. The patient was told by email and text that there is a new message, with no details.</p></div>';
   }).join('');
 }
+
+/* ---------- VISIT SUMMARY (T-036; Daniel's "Visit Summary Requirements", 24 Oct 2026, read 2 Nov; see the addendum in
+   from-daniel/2026-10-31-meeting-review-of-prescribing-orders-chart.md). Cedar drafts it from the visit note; the doctor edits, signs and
+   sends it; it never goes by itself. Principles held here: actions first; headings in the patient's words (What you need to do, What we
+   found, What to expect, Good to know; How you are doing for a sensitive visit), only those that apply; grade 6, short sentences, no
+   abbreviations (a test name may follow its full name once); bold the key medicine, dose and danger sign; the safety net in the first
+   section; only what the note documents, with the gaps flagged for the doctor ([square brackets] block signing); about 150 words; the
+   subject is always "Dr. Pannozzo – Visit Summary – [date]", never a condition; the transparency footer; never a review request.
+   Each doctor turns visit summaries on or off in the profile menu; off means Cedar does not draft one. DEMO DRAFTS, invented patients. ---------- */
+var VS_KEY = 'sc-visit-summary-on';
+var VS_FOOT = 'Prepared with AI help and checked by Dr. Pannozzo. Contact the clinic with questions.';
+var VS_SIG = 'Dr. Daniel Pannozzo, Family Physician';
+var VS_HEADS = ['What you need to do', 'What we found', 'What to expect', 'Good to know', 'How you are doing'];
+function vsOn(){ try { return localStorage.getItem(VS_KEY) !== '0'; } catch(e){ return true; } }
+function vsPaintSetting(){ var b = document.getElementById('pd-vs'); if(!b) return; b.setAttribute('aria-checked', vsOn() ? 'true' : 'false'); var v = b.querySelector('.pd-swv'); if(v) v.textContent = vsOn() ? 'On' : 'Off'; }
+function vsToggleSetting(){
+  try { localStorage.setItem(VS_KEY, vsOn() ? '0' : '1'); } catch(e){}
+  vsPaintSetting();
+  toast(vsOn() ? 'Visit summaries on. Cedar drafts one for you to check and sign.' : 'Visit summaries off. Cedar will not draft them.');
+  if(SD.ms && sdEl('ms-overlay') && sdEl('ms-overlay').classList.contains('show')){ if(!vsOn()) SD.ms.mode = 'note'; msRenderBody(); }
+}
+function vsSubject(){ return 'Dr. Pannozzo – Visit Summary – ' + new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}); }
+/* DEMO drafts, one per worked-example style: a new long-term medicine (Gloria), results only (Manjit), a sensitive visit (Korynn) */
+var VS_DEMO = {
+  'Gloria Mcdonald, 74F': {kind:'New medicine', from:/bisoprolol/i, src:['Visit note: Plan', 'Intake, today'],
+    gaps:['How to take bisoprolol, when it starts to work and its common side effects are not in your note. Add them, or leave them out.'],
+    t:'Dear Gloria,\n\nWhat you need to do\n• Start **bisoprolol 2.5 mg once a day**. Keep taking amlodipine.\n• **[Danger sign: write the chest pain advice you gave on the call.]**\n• You will get a form for blood tests: cholesterol and average blood sugar (hemoglobin A1c).\n• We will phone you in 4 weeks to check your heart rate and blood pressure.\n\nWhat we found\nYou have had chest pressure with activity for 3 days. It eases with rest. We are still looking for the cause.\n\nWhat to expect\nOur office will follow up on your heart specialist appointment.'},
+  'Manjit': {kind:'Results only', src:['Results: thyroid tests, Jul 30', 'Last visit plan, Aug 14', 'Pending: thyroid scan'],
+    gaps:['No danger sign is in your note. Add one if it applies.'],
+    t:'Dear Manjit,\n\nWhat you need to do\n• Keep taking **levothyroxine 75 mcg once a day**, as your thyroid specialist set.\n• Get your thyroid blood tests done. They were due on August 22.\n\nWhat we found\nYour thyroid test (thyroid stimulating hormone, TSH) was 5.2 on July 30. This is above the normal range of 0.4 to 4.0. It is coming down: it was 8.1 in May and 6.8 in June. Your other thyroid test (free T4) was normal.\n\nWhat to expect\nYour thyroid scan report is not back yet.'},
+  'Korynn': {kind:'Sensitive visit', why:'Sertraline for low mood is on the medication list, so Cedar used neutral words and no extra detail.', src:['Medication list (PharmaNet)'],
+    gaps:['Nothing about how she is doing or the plan is in your note yet.'],
+    t:'Dear Korynn,\n\nWhat you need to do\n• [What she needs to do first, from your plan.]\n• **If you have thoughts of harming yourself, call or text 9-8-8 any time, or go to the emergency department.**\n\nHow you are doing\n[How she is doing, in neutral words, from your note.]'}
+};
+function vsDraft(name){
+  var D = VS_DEMO[name], note = typeof rxNoteText === 'function' ? rxNoteText() : '';
+  if(D) return {t:D.t + '\n\n' + VS_SIG, kind:D.kind, why:D.why || '', src:D.src, gaps:D.gaps, noteHas:!D.from || D.from.test(note)};
+  return {t:'Dear ' + sdPref() + ',\n\nWhat you need to do\n• [From your plan: what the patient must do first.]\n• **[Danger sign: when to go to the emergency department, if it applies.]**\n\nWhat we found\n[From your note, in plain words.]\n\n' + VS_SIG,
+    kind:'', why:'', src:['Visit note'], gaps:[], noteHas:false, skeleton:true};
+}
+function vsGaps(t){ return (String(t).match(/\[[^\]]+\]/g) || []); }
+function vsWords(t){ var b = String(t).replace(VS_SIG, '').replace(/^Dear [^\n]*\n/, ''); return b.replace(/[*•]/g, ' ').trim().split(/\s+/).filter(Boolean).length; }
+function vsLine(l){ return csEsc(l).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\[([^\]]+)\]/g, '<mark class="vs-gap">[$1]</mark>'); }
+function vsHtml(t){
+  var out = '', list = false;
+  String(t).split('\n').forEach(function(l){
+    var x = l.trim(), b = /^[•\-]\s*/.test(x);
+    if(!b && list){ out += '</ul>'; list = false; }
+    if(!x) return;
+    if(VS_HEADS.indexOf(x.replace(/:$/, '')) > -1) out += '<h4>' + csEsc(x.replace(/:$/, '')) + '</h4>';
+    else if(b){ if(!list){ out += '<ul>'; list = true; } out += '<li>' + vsLine(x.replace(/^[•\-]\s*/, '')) + '</li>'; }
+    else out += '<p>' + vsLine(x) + '</p>';
+  });
+  return out + (list ? '</ul>' : '');
+}
+function vsTabs(){
+  if(!vsOn()) return '<p class="sd-note vs-off">Visit summaries are off. Turn them on in your profile menu.</p>';
+  var m = (SD.ms && SD.ms.mode) || 'note';
+  return '<div class="vs-tabs" role="group" aria-label="What to send"><button type="button" class="vs-tab" aria-pressed="' + (m === 'note') + '" onclick="vsMode(\'note\')">Note</button>' +
+    '<button type="button" class="vs-tab" aria-pressed="' + (m === 'vs') + '" onclick="vsMode(\'vs\')">Visit summary</button></div>';
+}
+function vsMode(m){ var s = SD.ms; if(!s) return; s.mode = m; if(m === 'vs' && !s.vs) s.vs = vsDraft(PC_CURRENT); s.key = ''; msRenderBody(); var t = sdEl('ms-card').querySelector('.vs-tab[aria-pressed="true"]'); if(t) t.focus(); }
+function vsRender(el){
+  var s = SD.ms, v = s.vs, p = sdPref(), g = vsGaps(v.t), n = vsWords(v.t);
+  sdEl('ms-overlay').classList.add('vs');
+  el.innerHTML = vsTabs() + '<div class="vs-grid"><div class="vs-ed">' +
+    '<div class="sd-f"><div class="vs-lrow"><label class="sd-l" for="vs-text">Visit summary for ' + csEsc(p) + '</label><span class="vs-ai">' + rxIc('copilot') + (v.edited ? 'Edited by you' : 'AI draft') + '</span></div>' +
+      '<textarea id="vs-text" rows="16" aria-describedby="vs-help" oninput="vsIn(this.value)">' + csEsc(v.t) + '</textarea>' +
+      '<p class="sd-note" id="vs-help">Bold with **two stars**. Lines starting with • are a list. Square brackets are gaps for you.</p></div>' +
+    '<div class="vs-meta"><p class="sd-note" id="vs-wc">' + vsWcTxt(n) + '</p>' +
+      (v.kind ? '<p class="sd-note"><b>Format:</b> ' + csEsc(v.kind) + (v.why ? '. ' + csEsc(v.why) : '') + '</p>' : '') +
+      '<p class="sd-note"><b>Cedar used:</b> ' + csEsc(v.src.join('; ')) + '</p>' +
+      (!v.noteHas ? '<p class="sd-note vs-warn">' + rxIc('alert') + (v.skeleton ? 'Today’s note has no plan Cedar can use yet, so the draft is the shape with gaps.' : 'Today’s note does not say this yet. Check every line against your note.') + '</p>' : '') +
+      '<div id="vs-gaps">' + vsGapsHtml(v, g) + '</div></div></div>' +
+    '<section class="vs-pv" aria-labelledby="vs-pv-h"><h3 class="sd-l" id="vs-pv-h">What ' + csEsc(p) + ' receives</h3><div class="vs-phone">' +
+      '<p class="vs-subj"><span>Subject</span>' + csEsc(vsSubject()) + '</p><div class="vs-body" id="vs-pv">' + vsHtml(v.t) + '</div><p class="vs-foot">' + csEsc(VS_FOOT) + '</p></div>' +
+      '<p class="sd-note">The subject never names a condition, test, medicine or specialty. No review request is added to a visit summary.</p></section></div>';
+  paintPd(el); vsState();
+}
+function vsWcTxt(n){ return n + ' words' + (n > 150 ? '. Aim for 150 or fewer, one phone screen.' : ', about one phone screen.'); }
+function vsGapsHtml(v, g){
+  var L = g.map(function(x){ return 'Fill or delete: ' + x; }).concat(v.gaps || []);
+  return L.length ? '<p class="sd-l">Gaps for you</p><ul class="vs-gl">' + L.map(function(x){ return '<li>' + csEsc(x) + '</li>'; }).join('') + '</ul>' : '';
+}
+function vsIn(t){
+  var v = SD.ms.vs; v.t = t; v.edited = true;
+  var pv = sdEl('vs-pv'); if(pv) pv.innerHTML = vsHtml(t);
+  var wc = sdEl('vs-wc'); if(wc) wc.textContent = vsWcTxt(vsWords(t));
+  var gp = sdEl('vs-gaps'); if(gp) gp.innerHTML = vsGapsHtml(v, vsGaps(t));
+  var mk = sdEl('ms-card').querySelector('.vs-ai'); if(mk && !mk.getAttribute('data-ed')){ mk.setAttribute('data-ed', '1'); mk.innerHTML = rxIc('copilot') + 'Edited by you'; paintPd(mk); }
+  vsState();
+}
+function vsState(){
+  var v = SD.ms.vs, g = vsGaps(v.t), ok = !!v.t.trim() && !g.length;
+  var why = !v.t.trim() ? 'Write the summary first.' : g.length ? (g.length === 1 ? 'Fill or delete the 1 gap in square brackets.' : 'Fill or delete the ' + g.length + ' gaps in square brackets.') : 'You sign it. Nothing is sent until you press the button.';
+  if(SD.ms.key === why) return; SD.ms.key = why;
+  sdFoot('ms', why, ok, false, 'Sign and send visit summary');
+}
+function vsSend(){
+  var s = SD.ms, v = s.vs; if(!v || vsGaps(v.t).length || !v.t.trim()) return;
+  var name = PC_CURRENT, e = {id:'vs' + Date.now(), ts:Date.now(), pt:name, kind:'vs', text:v.t, subject:vsSubject(), at:rxNow(), iso:rxIso(new Date())};
+  sdOut(name).msgs.unshift(e);
+  s.done = e; sdEl('ms-overlay').classList.remove('vs');
+  sdEl('ms-body').innerHTML = sdDone('Visit summary signed and sent', ['Signed by ' + RX_DR + ', ' + e.at + '. It is in the patient portal, and filed in Chart > Messages.', 'Subject: ' + e.subject + '. No review request is added.']);
+  paintPd(sdEl('ms-body')); sdDoneFoot('ms');
+  if(typeof opNoteOpen === 'function' && opNoteOpen()) nsAppend('plan', 'Visit summary sent to the patient. Signed by ' + RX_DR + ' ' + e.at + '.');
+  sdRefresh(name);
+  toast('Signed · visit summary sent to ' + sdPref() + '’s portal');
+}
+vsPaintSetting();
 
 /* SD:END (more drawers are added above this line) */
 </script>
@@ -22085,6 +22236,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-02 16:58</div>
+  <div class="build-stamp">v2 · build 2026-11-02 17:04</div>
 </body>
 </html>

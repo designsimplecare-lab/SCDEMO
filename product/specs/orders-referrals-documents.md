@@ -190,3 +190,27 @@ Functions: `rfRank`, `rfKm`, `rfCity`, `rfDirLine`, `rfDocs`, `rfSuggest`, `rfSu
 "Message" is now **Note to patient** on every doctor-facing label: the Action row and note-toolbar buttons, the drawer title, the field
 label, the send button ("Send note"), the toast, the done state and the Chart > Messages item heading. The patient's email and text notice is
 unchanged ("You have a new message from your care team"): it is patient-facing copy and Daniel asked only for the doctor-side name (open point).
+
+### Visit summary to the patient (T-036, built 2 Nov 2026)
+Source: Daniel, 31 Oct (section 6) and his "Visit Summary Requirements" (24 Oct; copy in `private/requirements/`, principles summarised in
+the 2 Nov addendum). Functions: `vsDraft`, `vsRender`, `vsHtml`, `vsIn`, `vsState`, `vsSend`, `vsTabs`, `vsMode`, `vsOn`, `vsToggleSetting`, `vsSubject`; `msRenderBody`, `msState`, `msSend` branch to it.
+- The **Note to patient** drawer has two tabs, **Note** (the existing short note, the default) and **Visit summary**. The summary tab widens
+  the drawer: the editable draft on the left, a phone-width preview on the right with the **subject always "Dr. Pannozzo – Visit Summary –
+  [date]"** (never a condition, test, medicine or specialty), the body, and the fixed footer "Prepared with AI help and checked by Dr.
+  Pannozzo. Contact the clinic with questions."
+- **Cedar drafts it** to the principles: actions first; only the headings that apply (What you need to do, What we found, What to expect,
+  Good to know; How you are doing for a sensitive visit); bold medicine, dose and danger sign; the safety net in the first section; plain
+  words, no abbreviations (a test name may follow its full name once). It shows "AI draft" until edited, the word count (aim 150 or fewer),
+  the format it chose and why, and what it used.
+- **Accuracy**: only what the note documents. Anything missing is a gap in [square brackets] (highlighted in the preview, listed under "Gaps
+  for you") and blocks signing until filled or deleted; other gaps are listed without blocking (for example, a new medicine's side effects
+  that the note does not give). If today's note does not contain what the draft says, a warning says so.
+- **The doctor signs and sends** ("Sign and send visit summary"); it never goes by itself. It is filed in Chart > Messages as "Visit
+  summary" with the subject, and a line goes into the Plan. **No review request** appears on it.
+- **Per-doctor setting**: "Visit summaries by Cedar" (On / Off) in the profile menu, a switch kept per browser in the demo. Off: no Visit
+  summary tab, no draft, and a quiet line in the drawer says where to turn it on.
+- **Demo drafts**, one per worked-example style: Gloria (new long-term medicine, from the scribe's plan: bisoprolol; the chest-pain advice is
+  a gap because the note says it was given verbally), Manjit (results only: thyroid tests with their range and trend), Korynn (sensitive:
+  neutral words, 9-8-8 line, How you are doing as a gap). Other patients get the shape with gaps.
+- Needs Daniel: the safety-net wording per condition (rule 17a); whether the setting defaults to on; whether summaries also go by email
+  (the demo files them in the portal); the templates he designed earlier.
