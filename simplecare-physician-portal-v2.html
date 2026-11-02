@@ -7318,7 +7318,7 @@ body:has(#op-panel.show) #callw{z-index:360;}
                 <input type="text" id="rv-moa" placeholder="What should the MOA do?" value="">
               </div>
 
-              <label class="rv-act"><input type="checkbox" id="a-msg" onchange="rvToggle('msg')"> <span><b>Message patient to book</b></span></label>
+              <label class="rv-act"><input type="checkbox" id="a-msg" onchange="rvToggle('msg')"> <span><b>Note to patient: please book</b></span></label>
               <div class="rv-exp" id="exp-msg"><textarea id="rv-msg" rows="3"></textarea></div>
             </div>
           </div>
@@ -7591,7 +7591,7 @@ body:has(#op-panel.show) #callw{z-index:360;}
                   <!-- T-030 (Daniel, 25 Oct: the demo is missing "documents (a note or a medical document)"): create a work or school note, letter or form -->
                   <button type="button" class="v2-orow" onclick="docOpen()"><span class="ic" data-pdic="file"></span><span class="v2-ot"><b>Document</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                   <button type="button" class="v2-orow" onclick="openTaskMoa(PC_CURRENT)"><span class="ic" data-pdic="taskmoa"></span><span class="v2-ot"><b>Task</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
-                  <button type="button" class="v2-orow" onclick="msOpen()"><span class="ic" data-pdic="chat"></span><span class="v2-ot"><b>Message</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
+                  <button type="button" class="v2-orow" onclick="msOpen()"><span class="ic" data-pdic="chat"></span><span class="v2-ot"><b>Note to patient</b></span><span class="ic v2-go" data-pdic="chevr"></span></button>
                 </div>
                 <!-- 21 Oct (Daniel, 18 Oct video 2: "this goes into the lab results section of the chart. So not quite here. This is purely action-oriented."):
                      the Lab orders list is not an action. It moved to the top of Chart review (Ordered and pending) and to Chart > Results. -->
@@ -7739,7 +7739,7 @@ body:has(#op-panel.show) #callw{z-index:360;}
               <button type="button" class="cs-tb" onclick="refOpen()"><span class="ic" data-pdic="practice"></span>Refer</button>
               <button type="button" class="cs-tb" onclick="docOpen()"><span class="ic" data-pdic="file"></span>Document</button>
               <button type="button" class="cs-tb" onclick="openTaskMoa(PC_CURRENT)" aria-label="Task the MOA"><span class="ic" data-pcic="task"></span>Task</button>
-              <button type="button" class="cs-tb" onclick="msOpen()"><span class="ic" data-pdic="chat"></span>Message</button>
+              <button type="button" class="cs-tb" onclick="msOpen()"><span class="ic" data-pdic="chat"></span>Note to patient</button>
             </div>
             <!-- Batch B (1), lead brief 6 Oct: "replace the single empty textarea with four sections: Reason, Findings,
                  Assessment, Plan". One compact card, label beside each field, hairlines between rows; each field grows
@@ -8429,10 +8429,10 @@ body:has(#op-panel.show) #callw{z-index:360;}
 
 <!-- T-028 (26 Oct): the placeholder Order drawer was replaced by the lab and imaging requisitions in #op-panel -->
 <!-- T-029 (26 Oct): the placeholder Refer drawer was replaced by the referral in #op-panel -->
-<!-- Message drawer (26 Oct): a message to the patient. PLACEHOLDER built without a Daniel spec; see the note above msOpen. -->
+<!-- Note to patient drawer (26 Oct; renamed from "Message" by Daniel, 31 Oct: "message sounds a little too personal; note sounds more professional"). PLACEHOLDER built without a Daniel spec; see the note above msOpen. -->
 <div class="tm-overlay drw-ov" id="ms-overlay" onclick="if(event.target===this) msClose()">
   <div class="tm-card drw" id="ms-card" role="dialog" aria-modal="true" aria-labelledby="ms-ttl">
-    <p class="tm-title" id="ms-ttl">Message the patient</p>
+    <p class="tm-title" id="ms-ttl">Note to patient</p>
     <p class="tm-sub" id="ms-sub"></p>
     <div id="ms-body"></div>
     <div class="tm-actions" id="ms-acts"></div>
@@ -12489,7 +12489,7 @@ function rvCommit(){
     bits.push('book '+(w?w.textContent.split('·')[0].trim():'the next call window')+' and queue your call');
   }
   if(document.getElementById('a-moa').checked) bits.push('contact the patient');
-  if(document.getElementById('a-msg').checked) bits.push('message the patient to book');
+  if(document.getElementById('a-msg').checked) bits.push('note to the patient to book');
   el.textContent = bits.length
     ? 'Records the review and sends ' + rvPairedMoa() + ' a task to ' + bits.join(', ') + '.'
     : 'Records the follow-up with no action attached.';
@@ -20627,7 +20627,7 @@ function sdRefsHtml(name){
   }).join('');
 }
 
-/* ---------- MESSAGE: to the patient (placeholder, see the note at the top) ----------
+/* ---------- NOTE TO PATIENT (was "Message"; renamed by Daniel, 31 Oct: "note sounds more professional"). Placeholder, see the note at the top ----------
    Needs Daniel: whether a message to the patient goes through the Inbox thread (today the Inbox holds results, and the thread panel is the chat with the MOA, so
    there is no patient thread to add to). Until then the sent message is filed in Chart > Messages. Rules held here: no health information in the email subject or
    the text preview (the notice is always the same generic line), the doctor presses Send every time, and the preview shows exactly what the patient receives.
@@ -20649,14 +20649,14 @@ function msClose(){ sdEl('ms-overlay').classList.remove('show'); }
 function msRenderBody(){
   var s = SD.ms, el = sdEl('ms-body'); if(!s) return;
   if(s.done){
-    el.innerHTML = sdDone('Message sent', ['It is in the patient portal, and filed in Chart > Messages.', 'The email and the text say only: ' + MS_NOTICE + '.']);
+    el.innerHTML = sdDone('Note sent', ['It is in the patient portal, and filed in Chart > Messages.', 'The email and the text say only: ' + MS_NOTICE + '.']);
     paintPd(el); sdDoneFoot('ms'); return;
   }
   var p = sdPref();
   el.innerHTML =
     '<div class="sd-f"><p class="sd-l" id="ms-tl">Quick templates</p><div class="sd-pills" role="group" aria-labelledby="ms-tl">' + MS_TPL.map(function(t){
       return '<button type="button" class="sd-tpl" onclick="msTpl(\'' + t.k + '\')">' + csEsc(t.l) + '</button>'; }).join('') + '</div></div>' +
-    '<div class="sd-f"><label class="sd-l" for="ms-text">Message to ' + csEsc(p) + '</label><textarea id="ms-text" rows="6" oninput="msText(this.value)"></textarea></div>' +
+    '<div class="sd-f"><label class="sd-l" for="ms-text">Note to ' + csEsc(p) + '</label><textarea id="ms-text" rows="6" oninput="msText(this.value)"></textarea></div>' +
     '<section class="sd-pv" aria-labelledby="ms-pv-h"><h3 class="sd-l" id="ms-pv-h">What ' + csEsc(p) + ' receives</h3>' +
       '<div class="sd-pvb"><p class="sd-pvl">Email and text message</p><p class="sd-pvt">' + MS_NOTICE + '</p>' +
         '<p class="sd-note">Nothing else is in the email subject or the text. The message is read in the patient portal, after sign-in.</p></div>' +
@@ -20667,13 +20667,13 @@ function msRenderBody(){
 function msPreview(){
   var s = SD.ms, el = sdEl('ms-pv'); if(!el) return;
   var t = s.text.trim();
-  el.textContent = t || 'Your message shows here as you write it.';
+  el.textContent = t || 'Your note shows here as you write it.';
   el.classList.toggle('empty', !t);
 }
 function msState(){
-  var s = SD.ms, ok = !!s.text.trim(), why = ok ? 'Nothing is sent until you press Send.' : 'Write a message first. Nothing is sent until you press Send.';
+  var s = SD.ms, ok = !!s.text.trim(), why = ok ? 'Nothing is sent until you press Send.' : 'Write a note first. Nothing is sent until you press Send.';
   if(s.key === why) return;
-  s.key = why; sdFoot('ms', why, ok, false, 'Send message');
+  s.key = why; sdFoot('ms', why, ok, false, 'Send note');
 }
 function msText(v){ SD.ms.text = v; SD.draft[PC_CURRENT] = v; msPreview(); msState(); }
 function msTpl(k){
@@ -20690,13 +20690,13 @@ function msSend(){
   sdOut(name).msgs.unshift(e); delete SD.draft[name];
   s.done = e; msRenderBody();
   sdRefresh(name);
-  toast('Message sent to ' + sdPref() + '’s portal');
+  toast('Note sent to ' + sdPref() + '’s portal');
 }
 /* Chart > Messages: what was sent to the patient, above the chat lines that mention them */
 function sdMsgsHtml(name){
   var o = SD.out[name]; if(!o || !o.msgs.length) return '';
   return o.msgs.map(function(e){
-    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="chat"></span><h4>' + csEsc('Message to the patient · ' + e.iso + ' · ' + e.at) + '</h4></div>' +
+    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="chat"></span><h4>' + csEsc('Note to patient · ' + e.iso + ' · ' + e.at) + '</h4></div>' +
       '<p class="sd-msg">' + csEsc(e.text) + '</p><p class="cs-cap">Sent by ' + RX_DR + '. The patient was told by email and text that there is a new message, with no details.</p></div>';
   }).join('');
 }
@@ -22085,6 +22085,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-02 16:56</div>
+  <div class="build-stamp">v2 · build 2026-11-02 16:58</div>
 </body>
 </html>

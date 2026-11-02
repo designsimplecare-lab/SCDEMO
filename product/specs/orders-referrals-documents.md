@@ -185,3 +185,8 @@ Functions: `rfRank`, `rfKm`, `rfCity`, `rfDirLine`, `rfDocs`, `rfSuggest`, `rfSu
   headed sections (Reason for referral, Clinical summary, Request, Enclosed) and a signature block.
 - The MOA route stays (Daniel: referrals are laborious).
 
+
+### Note to patient (rename, section 5)
+"Message" is now **Note to patient** on every doctor-facing label: the Action row and note-toolbar buttons, the drawer title, the field
+label, the send button ("Send note"), the toast, the done state and the Chart > Messages item heading. The patient's email and text notice is
+unchanged ("You have a new message from your care team"): it is patient-facing copy and Daniel asked only for the doctor-side name (open point).

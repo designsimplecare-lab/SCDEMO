@@ -370,7 +370,7 @@ try {
            ['the older Referrals button', `setChartVer('d'); vdTab('referrals')`, '#vdt-referrals .btn[onclick="rfOpen()"]']],
       ms: [['the Action row', `v2Tab('orders', true)`, '.v2-orow[onclick="msOpen()"]'], ['the note toolbar', `csLayout('current'); csView('note')`, '#cs-acts .cs-tb[onclick="msOpen()"]']]
     };
-    const NAME = { od: 'Order', rf: 'Refer', ms: 'Message' };
+    const NAME = { od: 'Order', rf: 'Refer', ms: 'Note to patient' };   // 2 Nov: "Message" renamed (Daniel, 31 Oct)
     // 2 Nov: each block is wrapped so a stale selector records a fail and the run continues (od/rf were replaced by opOpen/refOpen in T-028/T-029).
     const safe = async (id, name, fn) => { try { await fn(); } catch (e) { check('drawers', id, name + ' (could not run)', [], false, { error: String(e).slice(0, 200) }); } };
     for (const k of ['od', 'rf', 'ms']) { await safe(`dr-${k}-1`, `${NAME[k]} opens from every caller`, async () => {
@@ -419,7 +419,7 @@ try {
         pre.dis && /\S/.test(pre.reason) && pre.att === 0 && r.sent === 1 && r.route === route && r.att === 'Recent results' && r.tasks === t0 + (route === 'moa' ? 1 : 0) && (route === 'self' || r.type === 'Referrals') && where.consults && where.docs, { pre, r, where });
     }); }
     // Message: the notice is generic, the preview is the message, Send is a press, one filed item, no task
-    await safe('dr-ms-2', 'Message drawer', async () => {
+    await safe('dr-ms-2', 'Note to patient drawer', async () => {
       (grab(), await b.open(BASE + '#chart:0', 1000)); await E(`v2Tab('orders', true)`); await b.sleep(300);
       const t0 = await E(`DOC_TASKS.length`);
       await E(`document.querySelector('.v2-orow[onclick="msOpen()"]').click()`); await b.sleep(400);
@@ -430,7 +430,7 @@ try {
       const r = await E(`({sent:SD.out[PC_CURRENT].msgs.length, tasks:DOC_TASKS.length, toast:document.getElementById('toast').textContent})`);
       await keyEsc();
       const where = await E(`(()=>{csOpenFull('messages'); return document.getElementById('cs-msgs').innerText.replace(/\\s+/g,' ')})()`);
-      check('drawers', 'dr-ms-2', 'Message: three templates, the notice is only "You have a new message from your care team", the preview shows exactly the message, nothing is sent until Send, one item in Chart > Messages, no task, a toast',
+      check('drawers', 'dr-ms-2', 'Note to patient (was Message): three templates, the notice is only "You have a new message from your care team", the preview shows exactly the message, nothing is sent until Send, one item in Chart > Messages, no task, a toast',
         [], pre.dis && pre.tpl.length === 3 && pre.notice === 'You have a new message from your care team' && pre.sent === 0 && mid.text === mid.pv && mid.sentYet === 0 && r.sent === 1 && r.tasks === t0 && /sent/i.test(r.toast) && /Hello/.test(where), { pre, mid, r, where: where.slice(0, 160) });
     });
     // design rules inside each open drawer, and the console
