@@ -7012,6 +7012,28 @@ body:has(#op-panel.show) #callw{z-index:360;}
   #rx-panel.t027 .rp-body{grid-template-columns:minmax(0,1fr) 340px;}
   #rx-panel .rp-t3 thead th:nth-child(1){width:26%;}
 }
+/* T-033 (Daniel, 31 Oct): the lab requisition's compact overview on top, Cedar's suggestions in one row, the likely sections open */
+#op-panel .op-ovw .op-sbd{gap:0;padding:0 8px 8px;}
+#op-panel .op-ovr + .op-ovr{border-top:1px solid var(--line);}
+#op-panel .op-ovr,#op-panel .op-ovd,#op-panel .op-ovw{min-width:0;}
+#op-panel .op-ovb{display:flex;align-items:center;gap:12px;width:100%;min-height:48px;padding:4px 8px;border:0;border-radius:10px;background:none;font:inherit;font-size:15px;line-height:22px;color:var(--ink);text-align:left;cursor:pointer;}
+#op-panel .op-ovb:hover{background:var(--wash);}
+#op-panel .op-ovb .op-ovk{flex:0 0 210px;font-weight:600;}
+#op-panel .op-ovb .op-ovv{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);}
+#op-panel .op-ovb .op-ovv.empty{color:var(--ink-faint);}
+#op-panel .op-ovb .ic,#op-panel .op-ovb svg{flex:none;width:18px;height:18px;color:var(--ink-soft);transition:transform .15s;}
+#op-panel .op-ovb[aria-expanded=true] .ic{transform:rotate(180deg);}
+#op-panel .op-ovd{display:grid;gap:8px;padding:4px 8px 12px;}
+#op-panel .op-ovd[hidden]{display:none;}
+#op-panel .op-ovd .op-lk{justify-self:start;min-height:44px;}
+#op-panel .op-pre{margin:0 0 4px;}
+#op-panel .op-sugrow .op-chpan:not(.on){box-shadow:inset 0 0 0 1px var(--line-strong);}
+#op-panel .op-chips .op-lk{min-height:44px;}
+#op-panel .op-whyl{margin:4px 0 0 84px;padding:0 0 0 18px;display:grid;gap:4px;font-size:14px;line-height:20px;color:var(--ink);max-width:66ch;}
+#op-panel .op-whyl .op-src{color:var(--ink-soft);}
+#op-panel .op-formh{margin:16px 0 4px !important;}
+#op-panel .op-form{display:grid;gap:8px;}
+@media (max-width:900px){ #op-panel .op-ovb .op-ovk{flex-basis:150px;} #op-panel .op-whyl{margin-left:0;} }
 </style>
 </head>
 <body>
@@ -20921,7 +20943,8 @@ var LR_AI = {
   'Gloria Mcdonald, 74F': {sug:[
     {id:'a1c', why:'Cardiology asked for a current HbA1c before the September review. Overdue since Aug 20.', src:'Cardiology consult, Jul 28 (care plan)'},
     {id:'lip-f', why:'Cardiology asked for a current lipid profile at the same time.', src:'Cardiology consult, Jul 28 (care plan)'},
-    {id:'cr', why:'On metformin, and no kidney function result is on file.', src:'Medication list; Results'}]},
+    {id:'cr', why:'On metformin, and no kidney function result is on file.', src:'Medication list; Results'}],
+    panel:{k:'cp', why:'Chest pressure on exertion for 3 days, eased by rest.', src:'Intake, today'}},
   'Behdis Maleki, 35F': {sug:[
     {id:'hem-fer', why:'The Aug 4 plan asked for a repeat ferritin by Aug 31. Not drawn yet.', src:'Visit note, Aug 4'},
     {id:'hem-prof', why:'The same plan asked for a repeat CBC. Not drawn yet.', src:'Visit note, Aug 4'}]},
@@ -20935,18 +20958,21 @@ var LR_AI = {
     {id:'vag-c', why:'Third episode this year, by the patient’s intake today.', src:'Intake, today'}]}
 };
 function lrFresh(name){
-  var al = opAllergy(name);
+  var al = opAllergy(name), cc = LR_CC[name];
   return {sel:{}, open:{}, q:'', stat:false, phone:'', more:false, note:true, other:'',
     ans:{anticoag:'', anticoagSpec:'', pen:al.pen === true ? 'yes' : al.pen === false ? 'no' : '', penFrom:al.pen == null ? '' : al.text,
       site:{}, genhist:{}, genhistOther:'', stisite:{}, stiOther:'', derm:{}, dermSite:'', mycSite:''},
-    dx:(sdRow() || {}).concern || '', dxFrom:true, meds:opMedsText(name) === 'None on the chart' ? '' : opMedsText(name), medsFrom:true,
-    cc1:'', cc2:'', soEff:'', soExp:'', soDet:'', instr:''};
+    /* T-033 (Daniel, 31 Oct): Diagnosis and Current medications are not pre-filled; Copy to is */
+    dx:'', dxFrom:false, meds:'', medsFrom:false, ovOpen:true, ovr:{},
+    cc1:cc ? cc.t : '', ccFrom:cc ? cc.src : '', cc2:'', soEff:'', soExp:'', soDet:'', instr:'', instrEdited:false};
 }
+/* DEMO Copy to, pre-filled. Needs Daniel: his "pre-filled (from provider location)" (the demo uses the chart's other doctor who asked for the tests). */
+var LR_CC = {'Gloria Mcdonald, 74F': {t:'Dr. M. Ferreira, cardiology, St. Paul’s Cardiology, Vancouver · fax 604-555-0119', src:'From the care plan: cardiology asked for these results'}};
 function lrSel(){ return Object.keys(OP.st.sel).filter(function(id){ return OP.st.sel[id]; }); }
 function lrHas(id){ return !!OP.st.sel[id]; }
 function lrSecCount(s){ var n = 0; s.groups.forEach(function(g){ g.items.forEach(function(it){ if(lrHas(it.id)) n++; }); }); return n; }
 function lrSecSize(s){ var n = 0; s.groups.forEach(function(g){ n += g.items.length; }); return n; }
-function lrSecOpen(s){ var e = OP.st.open[s.id]; return e != null ? e : lrSecCount(s) > 0; }
+function lrSecOpen(s){ var e = OP.st.open[s.id]; return e != null ? e : (lrSecCount(s) > 0 || lrSecLikely(s)); }
 function lrNeeds(f){ return lrSel().some(function(id){ return (LR_IT[id].it.f || []).indexOf(f) > -1; }); }
 /* select a test; in a "choose up to one" group the others clear (a second press on the same one clears it) */
 function lrSet(id, on){
@@ -20968,7 +20994,7 @@ function lrSugAll(){ (LR_AI[PC_CURRENT] || {sug:[]}).sug.forEach(function(s){ lr
 function lrIn(k, v, sub){
   var a = OP.st.ans;
   if(k === 'site') a.site[sub] = v; else if(k in a) a[k] = v; else OP.st[k] = v;
-  if(k === 'dx') OP.st.dxFrom = false; if(k === 'meds') OP.st.medsFrom = false;
+  if(k === 'dx') OP.st.dxFrom = false; if(k === 'meds') OP.st.medsFrom = false; if(k === 'instr') OP.st.instrEdited = true;
   if(k === 'soEff'){ var ex = document.getElementById('lr-soexp'); if(ex) ex.max = lrMaxExp(v); }
   opSoft();
 }
@@ -20986,7 +21012,7 @@ function lrGo(fk){
   /* the rail's "still needed" lines jump to the field */
   var x = LR_IT[fk.split(':')[1]];
   if(fk.indexOf('sec:') === 0 && x){ OP.st.open[x.sec.id] = true; }
-  if(/^(dx|meds|soexp)$/.test(fk)) OP.st.more = true;
+  if(/^(dx|meds|soexp)$/.test(fk)){ OP.st.ovOpen = true; OP.st.ovr = OP.st.ovr || {}; OP.st.ovr[fk === 'soexp' ? 'so' : fk] = true; }
   var to = fk.indexOf('sec:') === 0 ? fk.split(':')[2] : fk;
   opRender();
   var t = document.querySelector('#op-sheet [data-fk="' + to + '"]');
@@ -21088,29 +21114,86 @@ function lrSearchHtml(){
   if(!hits.length) return '<p class="op-note">No test on the form matches “' + csEsc(OP.st.q.trim()) + '”. You can write it under Miscellaneous tests, Other tests.</p>';
   return '<p class="op-note" aria-live="polite">' + hits.length + (hits.length === 1 ? ' test' : ' tests') + ' on the form</p>' + hits.slice(0, 10).map(function(it){ return lrTest(it, 'q-'); }).join('');
 }
+/* T-033 (Daniel, 31 Oct, section 2): the bottom fields move to a compact, collapsible overview at the top. Copy to is pre-filled; the
+   instructions to the patient are drafted by Cedar from the chosen tests; Diagnosis, Current medications and Standing orders are NOT
+   pre-filled ("he fills it only when he expects the lab to refuse a test"), one tap opens each. The Ministry's labels stay verbatim. */
+function lrInstrDraft(s){
+  /* only what the form itself prints: "Glucose – fasting (fasting a minimum of 8 hours)"; the GTTs say "fasting". Wording Needs Daniel. */
+  var sel = s.sel, t = [];
+  if(sel['glu-f']) t.push('Fasting test: please do not eat for at least 8 hours before your blood test.');
+  else if(sel['gtt-c'] || sel['gtt-n']) t.push('Fasting test: please do not eat before this test. The lab will tell you how long it takes.');
+  return t.join(' ');
+}
+function lrInstr(s){ return s.instrEdited ? s.instr : lrInstrDraft(s); }
+function lrOvRow(k, label, value, empty, body){
+  var open = !!(OP.st.ovr || {})[k];
+  return '<div class="op-ovr"><button type="button" class="op-ovb" data-fk="ov-' + k + '" aria-expanded="' + open + '" aria-controls="lr-ov-' + k + '" onclick="lrOv(\'' + k + '\')">' +
+    '<span class="op-ovk">' + label + '</span><span class="op-ovv' + (value ? '' : ' empty') + '">' + csEsc(value || empty) + '</span>' + rxIc('chevdown') + '</button>' +
+    '<div class="op-ovd" id="lr-ov-' + k + '"' + (open ? '' : ' hidden') + '>' + (open ? body : '') + '</div></div>';
+}
+function lrOv(k){ OP.st.ovr = OP.st.ovr || {}; OP.st.ovr[k] = !OP.st.ovr[k]; opRender(); }
+function lrUse(k){
+  var s = OP.st;
+  if(k === 'dx'){ s.dx = (sdRow() || {}).concern || ''; s.dxFrom = true; }
+  if(k === 'meds'){ s.meds = opMedsText(PC_CURRENT) === 'None on the chart' ? '' : opMedsText(PC_CURRENT); s.medsFrom = true; }
+  OP.focusNext = k; opRender();
+}
+function lrOverviewHtml(){
+  var s = OP.st, open = s.ovOpen !== false, instr = lrInstr(s), eff = s.soEff, cc = [s.cc1, s.cc2].filter(function(x){ return x.trim(); });
+  var so = s.soEff || s.soExp || s.soDet ? [s.soEff && 'From ' + s.soEff, s.soExp && 'to ' + s.soExp, s.soDet].filter(Boolean).join(' ') : '';
+  var h = '<section class="op-sec op-ovw"><h3><button type="button" class="op-sh" data-fk="ovall" aria-expanded="' + open + '" aria-controls="lr-ovw" onclick="OP.st.ovOpen=' + !open + ';opRender()">' +
+    '<span class="op-st">Overview</span>' + (open ? '' : '<span class="op-cnt op-cq">' + csEsc([cc.length ? 'Copy to' : '', instr ? 'Instructions' : '', s.dx ? 'Diagnosis' : '', s.meds ? 'Medications' : '', so ? 'Standing order' : ''].filter(Boolean).join(' · ')) + '</span>') + rxIc('chevdown') + '</button></h3>' +
+    '<div class="op-sbd" id="lr-ovw"' + (open ? '' : ' hidden') + '>';
+  if(open){
+    h += lrOvRow('cc', 'Copy to', cc.join('; '), 'No one', '<fieldset class="op-fs"><legend>Copy to practitioner / MSP practitioner number &amp; clinic name / address</legend>' +
+        (s.ccFrom ? opMk('chart', s.ccFrom) : '') +
+        '<div class="op-f"><label for="lr-cc1" class="op-vh">Copy to practitioner, first</label><input type="text" id="lr-cc1" data-fk="cc1" value="' + csEsc(s.cc1) + '" oninput="OP.st.ccFrom=\'\';lrIn(\'cc1\', this.value)"></div>' +
+        '<div class="op-f"><label for="lr-cc2" class="op-vh">Copy to practitioner, second</label><input type="text" id="lr-cc2" data-fk="cc2" value="' + csEsc(s.cc2) + '" oninput="lrIn(\'cc2\', this.value)"></div></fieldset>');
+    h += lrOvRow('instr', 'Instructions to the patient', instr, 'None', '<div class="op-f"><div class="op-lrow"><label for="lr-instr">Instructions to patients</label>' +
+        (!s.instrEdited && instr ? opMk('ai', 'Cedar draft, from the tests chosen') : '') + '</div><textarea id="lr-instr" rows="2" data-fk="instr" oninput="lrIn(\'instr\', this.value)">' + csEsc(instr) + '</textarea></div>');
+    h += lrOvRow('dx', 'Diagnosis', s.dx, 'Not written', '<div class="op-f"><div class="op-lrow"><label for="lr-dx">Diagnosis</label>' + (s.dxFrom && s.dx ? opMk('chart', 'From today’s concern') : '') + '</div>' +
+        '<textarea id="lr-dx" rows="2" data-fk="dx" oninput="lrIn(\'dx\', this.value)">' + csEsc(s.dx) + '</textarea>' + (s.dx ? '' : '<button type="button" class="op-lk" data-fk="usedx" onclick="lrUse(\'dx\')">Use today’s concern</button>') + '</div>');
+    h += lrOvRow('meds', 'Current medications', s.meds, 'Not written', '<div class="op-f"><div class="op-lrow"><label for="lr-meds">Current medications / antibiotics / date and time of last dose</label>' + (s.medsFrom && s.meds ? opMk('chart', 'From the chart’s medication list') : '') + '</div>' +
+        '<textarea id="lr-meds" rows="2" data-fk="meds" oninput="lrIn(\'meds\', this.value)">' + csEsc(s.meds) + '</textarea>' + (s.meds ? '' : '<button type="button" class="op-lk" data-fk="usemeds" onclick="lrUse(\'meds\')">Use the medication list</button>') + '</div>');
+    h += lrOvRow('so', 'Standing orders', so, 'None', '<fieldset class="op-fs"><legend>Standing orders (valid for a max of 2 yrs / 24 mos)</legend><div class="op-grid">' +
+        '<div class="op-f"><label for="lr-soeff">Effective date</label><input type="date" id="lr-soeff" data-fk="soeff" value="' + csEsc(eff) + '" oninput="lrIn(\'soEff\', this.value)"></div>' +
+        '<div class="op-f"><label for="lr-soexp">Expiry date</label><input type="date" id="lr-soexp" data-fk="soexp" value="' + csEsc(s.soExp) + '"' + (eff ? ' min="' + eff + '" max="' + lrMaxExp(eff) + '"' : '') + ' oninput="lrIn(\'soExp\', this.value)"></div>' +
+        '<div class="op-f op-wide"><label for="lr-sodet">Details &amp; frequency</label><input type="text" id="lr-sodet" data-fk="sodet" value="' + csEsc(s.soDet) + '" oninput="lrIn(\'soDet\', this.value)"></div></div></fieldset>');
+  }
+  return h + '</div></section>';
+}
+/* sections the doctor will likely use open (Cedar's suggestions, what is chosen); the rest closed (Daniel: anticipatory) */
+function lrSugIds(){ var ai = LR_AI[PC_CURRENT]; if(!ai) return []; var ids = ai.sug.map(function(x){ return x.id; }); if(ai.panel){ var p = LR_PANELS.filter(function(x){ return x.k === ai.panel.k; })[0]; if(p) ids = ids.concat(p.ids); } return ids; }
+function lrSecLikely(s){ var ids = lrSugIds(); return s.groups.some(function(g){ return g.items.some(function(it){ return ids.indexOf(it.id) > -1; }); }); }
 function lrMain(){
-  /* Ani, 26 Oct: "very noisy, not clean". One column: search, Cedar's chips, panels, the chosen tests; the full form and
-     the details fold away. No explaining sentences. Every field of the provincial form is still here. */
   var s = OP.st, name = PC_CURRENT, ai = LR_AI[name], h = '', sel = lrSel(), miss = lrMissing();
   OP._penShown = false;
-  /* 1. search */
+  if(s.preFrom) h += '<p class="op-note op-pre">' + opMk('chart', 'Ticked for you') + ' ' + csEsc(sel.map(lrShort).join(', ')) + '. ' + csEsc(s.preFrom) + '</p>';
+  /* 1. the overview: copy to, instructions, diagnosis, medications, standing orders */
+  h += lrOverviewHtml();
+  /* 2. search */
   h += '<div class="op-f op-search"><label for="lr-q" class="op-vh">Add a test</label><input type="search" id="lr-q" data-fk="q" autocomplete="off" placeholder="Add a test: TSH, ferritin, urine culture" value="' + csEsc(s.q) + '" oninput="lrSearch(this.value)"></div>' +
     '<div class="op-sr" id="lr-sr">' + lrSearchHtml() + '</div>';
-  /* 2. Cedar's suggestions as chips (the reason is the tooltip); nothing is added until tapped */
-  if(ai && ai.sug.length){
-    var allIn = ai.sug.every(function(x){ return lrHas(x.id); });
-    h += '<div class="op-row"><span class="op-cedar"><span class="cs-ai-ic">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span>Cedar</span><div class="op-chips" role="group" aria-label="Cedar suggests">' +
+  /* 3. Cedar's suggested tests in one horizontal row, and a suggested panel; nothing is added until tapped */
+  if(ai && (ai.sug.length || ai.panel)){
+    var allIn = ai.sug.every(function(x){ return lrHas(x.id); }), pp = ai.panel ? LR_PANELS.filter(function(x){ return x.k === ai.panel.k; })[0] : null;
+    h += '<div class="op-row op-sugrow"><span class="op-cedar"><span class="cs-ai-ic">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span>Suggested</span><div class="op-chips op-hscroll" role="group" aria-label="Cedar suggests">' +
       ai.sug.map(function(x){ var on = lrHas(x.id);
         return '<button type="button" class="op-chip' + (on ? ' on' : '') + '" data-fk="sug-' + x.id + '" aria-pressed="' + on + '" title="' + csEsc(x.why + ' · ' + x.src) + '" onclick="lrSug(\'' + x.id + '\')">' + rxIc(on ? 'complete' : 'plus') + csEsc(lrShort(x.id)) + '</button>'; }).join('') +
-      (allIn ? '' : '<button type="button" class="op-lk" data-fk="sugall" onclick="lrSugAll()">Add all</button>') + '</div></div>';
+      (pp ? (function(){ var on = pp.ids.every(lrHas); return '<button type="button" class="op-chip op-chpan' + (on ? ' on' : '') + '" data-fk="sugpn" aria-pressed="' + on + '" title="' + csEsc(ai.panel.why + ' · ' + pp.ids.map(lrShort).join(', ')) + '" onclick="lrPanel(\'' + pp.k + '\')">' + rxIc(on ? 'complete' : 'plus') + csEsc(pp.n) + ' panel</button>'; })() : '') +
+      (allIn || !ai.sug.length ? '' : '<button type="button" class="op-lk" data-fk="sugall" onclick="lrSugAll()">Add all</button>') +
+      '<button type="button" class="op-lk" data-fk="sugwhy" aria-expanded="' + !!s.why + '" onclick="OP.st.why=!OP.st.why;opRender()">' + (s.why ? 'Hide why' : 'Why') + '</button></div></div>';
+    if(s.why) h += '<ul class="op-whyl">' + ai.sug.map(function(x){ return '<li><b>' + csEsc(lrShort(x.id)) + ':</b> ' + csEsc(x.why) + ' <span class="op-src">' + csEsc(x.src) + '</span></li>'; }).join('') +
+      (ai.panel && pp ? '<li><b>' + csEsc(pp.n) + ' panel</b> (' + csEsc(pp.ids.map(lrShort).join(', ')) + '): ' + csEsc(ai.panel.why) + ' <span class="op-src">' + csEsc(ai.panel.src) + '</span></li>' : '') +
+      (ai.skip ? '<li>' + csEsc(ai.skip) + '</li>' : '') + '</ul>';
   }
-  /* 3. panels and favourites, one row */
+  /* 4. panels and favourites, one row */
   h += '<div class="op-row"><span class="op-rk">Panels</span><div class="op-chips" role="group" aria-label="Panels and favourites">' +
     LR_PANELS.map(function(p){ var on = p.ids.every(lrHas);
       return '<button type="button" class="op-chip' + (on ? ' on' : '') + '" data-fk="pn-' + p.k + '" aria-pressed="' + on + '" title="' + csEsc(p.ids.map(lrShort).join(', ')) + '" onclick="lrPanel(\'' + p.k + '\')">' + csEsc(p.n) + '</button>'; }).join('') +
     LR_FAVS.map(function(id){ var on = lrHas(id);
       return '<button type="button" class="op-chip' + (on ? ' on' : '') + '" data-fk="fv-' + id + '" aria-pressed="' + on + '" onclick="lrPanel(\'' + id + '\')">' + rxIc('star') + csEsc(lrShort(id)) + '</button>'; }).join('') + '</div></div>';
-  /* 4. this requisition: the chosen tests, priority, what is still needed */
+  /* 5. this requisition: the chosen tests, priority, what is still needed */
   h += '<section class="op-req" aria-labelledby="lr-rq-h"><div class="op-hrow"><h3 id="lr-rq-h" tabindex="-1" data-fk="railh">This requisition' + (sel.length ? ' <span class="op-cnt">' + sel.length + '</span>' : '') + '</h3>' +
     '<div class="op-seg" role="group" aria-label="Priority"><button type="button" class="op-sb" data-fk="routine" aria-pressed="' + !s.stat + '" onclick="lrStat(false)">Routine</button>' +
     '<button type="button" class="op-sb" data-fk="stat" aria-pressed="' + s.stat + '" onclick="lrStat(true)">STAT</button></div></div>' +
@@ -21127,19 +21210,18 @@ function lrMain(){
   if(miss.length) h += '<ul class="op-need">' + miss.map(function(m){
     return '<li><button type="button" data-fk="go-' + m[1] + '" onclick="lrGo(\'' + m[1] + '\')">' + rxIc('alert') + '<span>' + csEsc(m[0]) + '</span></button></li>'; }).join('') + '</ul>';
   h += '</section>';
-  /* 5. the whole provincial form, folded */
-  var anyOpen = LR_SECS.some(function(sec){ return OP.st.open[sec.id]; });
-  h += '<section class="op-sec"><h3><button type="button" class="op-sh" data-fk="formall" aria-expanded="' + !!s.formOpen + '" aria-controls="lr-form" onclick="OP.st.formOpen=!OP.st.formOpen;opRender()"><span class="op-st">All tests on the form</span>' + rxIc('chevdown') + '</button></h3>' +
-    '<div class="op-sbd" id="lr-form"' + (s.formOpen || anyOpen ? '' : ' hidden') + '>';
-  if(s.formOpen || anyOpen) LR_SECS.forEach(function(sec){
+  /* 6. every section of the provincial form: the likely ones open, the rest one tap away */
+  h += '<h3 class="op-h3 op-formh" id="lr-form-h">All tests on the form</h3><div class="op-form" id="lr-form" role="group" aria-labelledby="lr-form-h">';
+  LR_SECS.forEach(function(sec){
     var open = lrSecOpen(sec), n = lrSecCount(sec);
     h += '<section class="op-sec op-sec2"><h4><button type="button" class="op-sh' + (n ? ' has' : '') + '" id="lr-sh-' + sec.id + '" data-fk="sh-' + sec.id + '" aria-expanded="' + open + '" aria-controls="lr-sb-' + sec.id + '" onclick="lrSec(\'' + sec.id + '\')">' +
       '<span class="op-st">' + csEsc(sec.t) + '</span>' + (n ? '<span class="op-cnt">' + n + '</span>' : '') + rxIc('chevdown') + '</button></h4>' +
       '<div class="op-sbd" id="lr-sb-' + sec.id + '"' + (open ? '' : ' hidden') + '>';
     if(open){
+      if(sec.note) h += '<p class="op-note">' + csEsc(sec.note) + '</p>';
       sec.groups.forEach(function(g){
         h += '<fieldset class="op-g">' + (g.t ? '<legend>' + csEsc(g.t) + (g.one ? '<span class="op-one">Choose one</span>' : '') + '</legend>'
-          : g.one ? '<legend><span class="op-one">Choose one</span></legend>' : '<legend class="op-vh">' + csEsc(sec.t) + ' tests</legend>') + '<div class="op-ts">';
+          : g.one ? '<legend><span class="op-one">Choose one</span></legend>' : '<legend class="op-vh">' + csEsc(sec.t) + ' tests</legend>') + (g.note ? '<p class="op-note">' + csEsc(g.note) + '</p>' : '') + '<div class="op-ts">';
         g.items.forEach(function(it){ h += lrTest(it); });
         h += '</div>' + lrGroupFollow(g) + '</fieldset>';
       });
@@ -21147,25 +21229,8 @@ function lrMain(){
     }
     h += '</div></section>';
   });
-  h += '</div></section>';
-  /* 6. diagnosis, medications, copy to, standing orders, instructions: folded */
-  h += '<section class="op-sec"><h3><button type="button" class="op-sh" data-fk="more" aria-expanded="' + s.more + '" aria-controls="lr-more" onclick="lrMore()"><span class="op-st">Details</span>' +
-    '<span class="op-cnt op-cq">' + csEsc((s.dx ? 'Dx ' : '') + (s.meds ? '· meds' : '')).replace(/^·\s*/, '') + '</span>' + rxIc('chevdown') + '</button></h3>' +
-    '<div class="op-sbd" id="lr-more"' + (s.more ? '' : ' hidden') + '>' + (s.more ? lrMoreHtml() : '') + '</div></section>';
+  h += '</div>';
   return h;
-}
-function lrMoreHtml(){
-  var s = OP.st, eff = s.soEff;
-  return '<div class="op-f"><div class="op-lrow"><label for="lr-dx">Diagnosis</label>' + (s.dxFrom && s.dx ? opMk('chart', 'From today’s concern') : '') + '</div><textarea id="lr-dx" rows="2" data-fk="dx" oninput="lrIn(\'dx\', this.value)">' + csEsc(s.dx) + '</textarea></div>' +
-    '<div class="op-f"><div class="op-lrow"><label for="lr-meds">Current medications / antibiotics / date and time of last dose</label>' + (s.medsFrom && s.meds ? opMk('chart', 'From the chart’s medication list') : '') + '</div><textarea id="lr-meds" rows="2" data-fk="meds" oninput="lrIn(\'meds\', this.value)">' + csEsc(s.meds) + '</textarea></div>' +
-    '<fieldset class="op-fs"><legend>Copy to practitioner / MSP practitioner number &amp; clinic name / address</legend>' +
-      '<div class="op-f"><label for="lr-cc1" class="op-vh">Copy to practitioner, first</label><input type="text" id="lr-cc1" data-fk="cc1" value="' + csEsc(s.cc1) + '" oninput="lrIn(\'cc1\', this.value)"></div>' +
-      '<div class="op-f"><label for="lr-cc2" class="op-vh">Copy to practitioner, second</label><input type="text" id="lr-cc2" data-fk="cc2" value="' + csEsc(s.cc2) + '" oninput="lrIn(\'cc2\', this.value)"></div></fieldset>' +
-    '<fieldset class="op-fs"><legend>Standing orders (valid for a max of 2 yrs / 24 mos)</legend><div class="op-grid">' +
-      '<div class="op-f"><label for="lr-soeff">Effective date</label><input type="date" id="lr-soeff" data-fk="soeff" value="' + csEsc(eff) + '" oninput="lrIn(\'soEff\', this.value)"></div>' +
-      '<div class="op-f"><label for="lr-soexp">Expiry date</label><input type="date" id="lr-soexp" data-fk="soexp" value="' + csEsc(s.soExp) + '"' + (eff ? ' min="' + eff + '" max="' + lrMaxExp(eff) + '"' : '') + ' oninput="lrIn(\'soExp\', this.value)"></div>' +
-      '<div class="op-f op-wide"><label for="lr-sodet">Details &amp; frequency</label><input type="text" id="lr-sodet" data-fk="sodet" value="' + csEsc(s.soDet) + '" oninput="lrIn(\'soDet\', this.value)"></div></div></fieldset>' +
-    '<div class="op-f"><label for="lr-instr">Instructions to patients</label><textarea id="lr-instr" rows="2" data-fk="instr" oninput="lrIn(\'instr\', this.value)">' + csEsc(s.instr) + '</textarea></div>';
 }
 function lrRail(){
   var s = OP.st, sel = lrSel(), miss = lrMissing(), h = '<section class="op-card" aria-labelledby="lr-rq-h"><div class="op-hrow"><h3 id="lr-rq-h" tabindex="-1" data-fk="railh">This requisition</h3><span class="op-note">' + (sel.length ? sel.length + (sel.length === 1 ? ' test' : ' tests') : '') + '</span></div>';
@@ -21220,7 +21285,7 @@ function lrPaper(){
     '<h5>STAT order / copy to practitioner</h5><p><b>If this is a STAT order, please provide contact telephone number:</b> ' + csEsc(s.stat ? (s.phone || '—') : '—') + '</p>' +
     '<p><b>Copy to practitioner / MSP practitioner number &amp; clinic name / address:</b> ' + csEsc(s.cc1 || '—') + '</p><p><b>Copy to practitioner / MSP practitioner number &amp; clinic name / address:</b> ' + csEsc(s.cc2 || '—') + '</p>' +
     '<h5>Standing orders (valid for a max of 2 yrs / 24 mos)</h5><p><b>Effective date:</b> ' + csEsc(s.soEff || '—') + ' &nbsp; <b>Expiry date:</b> ' + csEsc(s.soExp || '—') + '</p><p><b>Details &amp; frequency:</b> ' + csEsc(s.soDet || '—') + '</p>' +
-    '<h5>Instructions to patients</h5><p>' + csEsc(s.instr || '—') + '</p>' + opPaperSig() + '</article>';
+    '<h5>Instructions to patients</h5><p>' + csEsc(lrInstr(s) || '—') + '</p>' + opPaperSig() + '</article>';
   return h;
 }
 function lrSign(route, name, at){
@@ -21860,6 +21925,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-02 16:40</div>
+  <div class="build-stamp">v2 · build 2026-11-02 16:45</div>
 </body>
 </html>

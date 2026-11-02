@@ -131,3 +131,20 @@ Patient, Headset Call, Transfer to [the MOA] (with online dot), Send Task. Each 
 ## 3. Not decided / needs Daniel
 The radiology exam categories and the "Other tests" list (data with the developer); the order panels he will send; which document
 types he wants; whether Add Note should always add a line; the referral directory source.
+
+## 31 Oct changes (built 2 Nov 2026)
+Source: Daniel's review of build 2026-10-26 20:42, `from-daniel/2026-10-31-meeting-review-of-prescribing-orders-chart.md`, sections 2 to 5.
+
+### Lab requisition (T-033)
+Functions: `lrFresh`, `lrOverviewHtml`, `lrOvRow`, `lrOv`, `lrUse`, `lrInstrDraft`, `lrInstr`, `lrSugIds`, `lrSecLikely`, `lrSecOpen`, `lrMain`.
+- **Overview at the top**, compact and collapsible (open by default; each row one line, one tap opens its fields with the Ministry's
+  verbatim labels): **Copy to** (pre-filled; demo: the chart's cardiologist who asked for the tests, with the source shown);
+  **Instructions to the patient** (Cedar draft from the tests chosen, only what the form prints: Glucose – fasting gives "Fasting test:
+  please do not eat for at least 8 hours before your blood test."; marked "Cedar draft" until edited); **Diagnosis**, **Current
+  medications** and **Standing orders** are not pre-filled (Diagnosis and medications offer "Use today’s concern" / "Use the medication
+  list" on tap). The old "Details" fold at the bottom is gone.
+- **Suggested tests in one horizontal row** of chips, plus **a suggested panel** (demo: Chest pain workup for exertional chest pressure),
+  "Add all", and "Why" which lists each reason with its source.
+- **All tests on the form**: every section listed; the ones holding Cedar's suggestions or chosen tests open, the rest closed with a count.
+- Opened from prescribing ("Order kidney function", or "Next, as per your note"), the tests arrive ticked with the reason shown.
+- Needs Daniel: what "Copy to: pre-filled (from provider location)" means exactly; his own panels; the patient-instruction wording.
