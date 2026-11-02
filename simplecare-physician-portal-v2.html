@@ -6906,6 +6906,112 @@ body:has(#op-panel.show) #callw{z-index:360;}
   .op-ov .op-bar .op-links{display:flex;gap:10px;}
   .op-ov .op-bar .op-go2{background:var(--panel);}
   .op-ov .op-bar #op-why:empty{display:none;}
+/* T-032 (Daniel, 31 Oct 2026: "the list follows the conversation"): the medication list in his order, actions per drug, the pad
+   without the MOA route. No uppercase, nothing under 14px, 44px buttons; the dose difference keeps the barely tinted highlight he liked. */
+#rx-panel .rp-rec3{padding:16px 0 8px;}
+#rx-panel .rp-rec3 > :not(table){margin-left:16px;margin-right:16px;}
+#rx-panel .rp-rec3 .rp-rh .op-lk{min-height:44px;}
+#rx-panel .rp-tabs button{min-height:44px;padding:0 14px;font-size:15px;}
+#rx-panel .rp-tabs button.on{background:var(--brand-navy);color:#fff;}
+#rx-panel .rp-t3{width:100%;border-collapse:collapse;margin-top:10px;font-size:15px;line-height:22px;table-layout:fixed;}
+#rx-panel .rp-t3 thead th{padding:8px;font-size:14px;line-height:20px;font-weight:600;letter-spacing:0;text-transform:none;text-align:left;color:var(--ink-soft);}
+#rx-panel .rp-t3 thead th:nth-child(1){width:24%;}
+#rx-panel .rp-t3:not(.rp-pn) thead th:nth-child(4){width:22%;}
+#rx-panel .rp-t3.rp-pn thead th:nth-child(3){width:22%;}
+#rx-panel .rp-t3 th:first-child,#rx-panel .rp-t3 td:first-child{padding-left:16px;}
+#rx-panel .rp-t3 th:last-child,#rx-panel .rp-t3 td:last-child{padding-right:16px;}
+#rx-panel .rp-t3 tbody th,#rx-panel .rp-t3 td{padding:12px 8px 8px;text-align:left;vertical-align:top;font-weight:400;overflow-wrap:anywhere;}
+#rx-panel .rp-t3 tbody th b{display:block;font-weight:700;}
+#rx-panel .rp-t3 .rp-sub{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+#rx-panel .rp-t3 .rp-norec{color:var(--ink-faint);}
+#rx-panel .rp-t3 i{color:var(--ink-soft);}
+#rx-panel .rp-t3 mark{background:#fde7a8;border-radius:3px;padding:0 3px;font-weight:700;color:var(--ink);}
+#rx-panel .rp-t3 tr.rp-it{border-top:1px solid var(--line);}
+#rx-panel .rp-t3 tr.rp-it.stp th b{text-decoration:line-through;text-decoration-color:var(--ink-faint);}
+#rx-panel .rp-t3 tr.diff{background:#fffbef;}
+#rx-panel .rp-t3 tr.rp-acr td{padding:0 16px 14px;}
+#rx-panel .rp-t3 .rp-grh th{padding:20px 16px 6px;font-size:16px;line-height:24px;}
+#rx-panel .rp-t3 .rp-grh th b{display:inline;color:var(--ink);}
+#rx-panel .rp-t3 .rp-grh th .rp-rs{font-weight:400;margin-left:6px;}
+#rx-panel .rp-cnt{display:inline-block;min-width:24px;margin-left:4px;padding:0 6px;border-radius:999px;background:var(--wash);font-size:14px;line-height:22px;font-weight:600;text-align:center;color:var(--ink-soft);}
+#rx-panel .rp-sup b{font-weight:700;}
+#rx-panel .rp-acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+#rx-panel .rp-act{min-height:44px;padding:0 14px;border:1px solid var(--line-strong);border-radius:12px;background:var(--panel);font:inherit;font-size:15px;font-weight:600;line-height:20px;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+#rx-panel .rp-act:hover:not(:disabled){border-color:var(--ink);}
+#rx-panel .rp-act[aria-pressed=true]{background:var(--brand);border-color:var(--brand);color:#fff;}
+#rx-panel .rp-act[aria-pressed=true] .ic,#rx-panel .rp-act[aria-pressed=true] svg{color:#fff;}
+#rx-panel .rp-act:disabled{opacity:.5;cursor:not-allowed;}
+#rx-panel .rp-act[aria-pressed=true]:disabled{opacity:.75;}
+#rx-panel .rp-act .ic,#rx-panel .rp-act svg{width:16px;height:16px;}
+#rx-panel .rp-state{font-size:14px;line-height:20px;color:var(--ink-soft);margin-left:4px;}
+#rx-panel .rp-pnh{margin-top:24px !important;padding-top:16px;border-top:2px solid var(--line-strong);}
+#rx-panel .rp-pnh.lead{margin-top:12px !important;padding-top:0;border-top:0;}
+#rx-panel .rp-pnh h4{margin:0;font-size:16px;line-height:24px;font-weight:700;color:var(--ink);}
+#rx-panel .rp-pnh p{margin:2px 0 0;max-width:66ch;}
+#rx-panel .rp-flag{display:flex;gap:10px;align-items:flex-start;margin-top:10px !important;padding:12px 14px;border-radius:12px;background:var(--wash);max-width:66ch;}
+#rx-panel .rp-flag p{margin:0;font-size:15px;line-height:22px;color:var(--ink);}
+#rx-panel .rp-flag p.rp-rs{font-size:14px;color:var(--ink-soft);}
+#rx-panel .rp-cm{flex:none;display:inline-flex;width:18px;height:18px;color:var(--brand);}
+#rx-panel .rp-cm svg{width:18px;height:18px;}
+#rx-panel .rp-blank2{margin:12px 16px 4px;font-size:15px;color:var(--ink-soft);max-width:66ch;}
+/* the uploaded file: paste zone and the source image */
+#rx-panel .rp-paste{display:grid;gap:8px;margin-top:12px !important;padding:16px;border:1.5px dashed var(--line-strong);border-radius:12px;background:var(--wash);}
+#rx-panel .rp-paste:focus-visible,#rx-panel .rp-paste:focus-within{border-color:var(--brand);}
+#rx-panel .rp-paste p{margin:0;max-width:66ch;font-size:15px;}
+#rx-panel .rp-paste .rp-rs{font-size:14px;}
+#rx-panel .rp-paste .rp-row{display:flex;flex-wrap:wrap;gap:8px;}
+#rx-panel .rp-paste .btn.rp-sm{min-height:44px;font-size:15px;}
+#rx-panel .rp-file{position:relative;overflow:hidden;}
+#rx-panel .rp-file input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;}
+#rx-panel .rp-file:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px;}
+#rx-panel .rp-upimg{margin:12px 16px 0 !important;padding:12px;border-radius:12px;background:var(--wash);}
+#rx-panel .rp-upimg figcaption{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:15px;}
+#rx-panel .rp-upimg img{display:block;max-width:100%;max-height:320px;margin-top:10px;border-radius:6px;border:1px solid var(--line);background:#fff;}
+#rx-panel .rp-upimg p{margin:8px 0 0;max-width:66ch;}
+/* the new medication list and its sign-off */
+#rx-panel .rp-nl{display:grid;gap:8px;}
+#rx-panel .rp-nlh{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;}
+#rx-panel .rp-nlh h3{margin:0;font-size:17px;line-height:24px;}
+#rx-panel .rp-nlh .op-lk{min-height:44px;margin-left:auto;}
+#rx-panel .rp-nll{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:15px;line-height:22px;}
+#rx-panel .rp-nll b{font-weight:600;}
+#rx-panel .rp-nlf{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;}
+#rx-panel .rp-nlf p{flex:1 1 220px;margin:0;font-size:14px;}
+#rx-panel .rp-recd .op-lk{min-height:44px;}
+/* the pad: Cedar drafts from the note, the drug reference, the next form */
+#rx-panel .rp-asper{display:flex;gap:8px;align-items:flex-start;margin:2px 0 4px !important;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:14px;line-height:20px;color:#555;}
+#rx-panel .rp-srcai{white-space:nowrap;color:#6b6f7a;}
+#rx-panel .rp-acc{min-height:44px;padding:0 16px;display:inline-flex;align-items:center;gap:6px;}
+#rx-panel .rp-acc .ic,#rx-panel .rp-acc svg{width:16px;height:16px;color:#fff;}
+#rx-panel .rp-aiact .op-lk{min-height:44px;padding:0 10px;}
+#rx-panel .rp-soft{margin:4px 0 0 !important;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:14px;line-height:20px;color:#555;}
+#rx-panel .rp-px{width:44px;height:44px;}
+#rx-panel .rp-sl2{list-style:none;margin:0;padding:0;display:grid;gap:4px;}
+#rx-panel .rp-sl2 button{width:100%;min-height:44px;padding:6px 10px;border:0;border-radius:8px;background:rgba(22,38,96,.04);text-align:left;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:15px;line-height:20px;color:#222;cursor:pointer;}
+#rx-panel .rp-sl2 button:hover{background:rgba(22,38,96,.08);}
+#rx-panel .rp-sl2 button span{display:block;font-size:14px;color:#555;}
+#rx-panel .rp-padd .rp-rs,#rx-panel .rp-dym{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:14px;line-height:20px;color:#555;}
+#rx-panel .rp-dym .op-lk,#rx-panel .rp-free{min-height:44px;}
+#rx-panel .rp-padd input{height:44px;font-size:15px;}
+#rx-panel .rp-paper .rp-chip{min-height:44px;padding:0 14px;font-size:14px;}
+#rx-panel .rp-paper .rp-part{min-height:44px;font-size:15px;}
+#rx-panel .rp-sigl{font-size:14px;}
+#rx-panel .rp-blank{font-size:15px;color:#5f636b;}
+#rx-panel .rp-next{display:grid;gap:8px;justify-items:start;}
+#rx-panel .rp-next h3{margin:0;font-size:16px;line-height:24px;}
+#rx-panel .rp-next p{margin:0;max-width:66ch;}
+#rx-panel .rp-bar .rp-src{font-size:14px;}
+#rx-panel .rp-bar .op-lk{min-height:44px;}
+#rx-panel .rp-strip .op-lk{min-height:32px;padding:0 4px;}
+#rx-panel .rp-strip .rp-src{font-size:14px;}
+#rx-panel .rp-strip b.al{color:var(--ink);}
+#rx-panel .rp-strip > span > .ic,#rx-panel .rp-strip > span > .ic svg{display:inline-block;width:16px;height:16px;margin:0 4px -2px 0;color:var(--crit);}
+#rx-panel .rp-t3 .rp-same{display:inline-flex !important;align-items:center;gap:4px;font-size:15px !important;color:var(--ink) !important;}
+#rx-panel .rp-t3 .rp-same .ic,#rx-panel .rp-t3 .rp-same svg{width:15px;height:15px;color:var(--good);}
+@media (max-width:1180px){
+  #rx-panel.t027 .rp-body{grid-template-columns:minmax(0,1fr) 340px;}
+  #rx-panel .rp-t3 thead th:nth-child(1){width:26%;}
+}
 </style>
 </head>
 <body>
@@ -13253,7 +13359,14 @@ var RX_LIB = [
   {k:'nitrofurantoin-100', name:'Nitrofurantoin', strength:'100 mg', mg:100, form:'capsule', freq:'twice daily', rep:0, ind:'uti', days:5, renalMin:30},
   {k:'amoxicillin-500', name:'Amoxicillin', strength:'500 mg', mg:500, form:'capsule', freq:'three times daily', rep:0, ind:'uti', days:7, cls:'penicillin'},
   {k:'tmp-smx', name:'Trimethoprim-sulfamethoxazole', strength:'160/800 mg', mg:null, form:'tablet', freq:'twice daily', rep:0, ind:'uti', days:3, cls:'sulfa'},
-  {k:'oxycodone-5', name:'Oxycodone', strength:'5 mg', mg:5, form:'tablet', freq:'four times daily', rep:0, ind:'pain', days:3, s1a:true}
+  {k:'oxycodone-5', name:'Oxycodone', strength:'5 mg', mg:5, form:'tablet', freq:'four times daily', rep:0, ind:'pain', days:3, s1a:true, ctl:true, ctlWhat:'an opioid'},
+  /* T-032 (31 Oct): more of the demo drug reference for Add a drug, and ctl = controlled in the demo (for the Cedar flag). DEMO DATA. */
+  {k:'tramadol-50', name:'Tramadol', strength:'50 mg', mg:50, form:'tablet', freq:'four times daily', rep:0, ind:'pain', ctl:true, ctlWhat:'an opioid'},
+  {k:'pantoprazole-40', name:'Pantoprazole', strength:'40 mg', mg:40, form:'tablet', freq:'once daily', rep:3, ind:'gi'},
+  {k:'cephalexin-500', name:'Cephalexin', strength:'500 mg', mg:500, form:'capsule', freq:'four times daily', rep:0, ind:'uti', days:7},
+  {k:'azithromycin-250', name:'Azithromycin', strength:'250 mg', mg:250, form:'tablet', freq:'once daily', rep:0, ind:'chest', days:5},
+  {k:'losartan-50', name:'Losartan', strength:'50 mg', mg:50, form:'tablet', freq:'once daily', rep:3, ind:'htn'},
+  {k:'rosuvastatin-10', name:'Rosuvastatin', strength:'10 mg', mg:10, form:'tablet', freq:'once daily', rep:3, ind:'lipid'}
 ];
 var RX_CLS = {penicillin:'a penicillin', sulfa:'a sulfa drug'};
 /* DEMO interaction pairs, labelled as such in the panel */
@@ -13271,7 +13384,9 @@ var RXP = {
    {id:'a3', key:'zopiclone-5', ind:null, by:'Dr. S. Gill', out:true, pharm:'Lincoln Pharmacy, Coquitlam', ago:14, supply:30, repLeft:1, chart:false,
     otherFills:{n:2, by:'Dr. S. Gill', written:'2 weeks ago'}, comment:'Pharmacist comment: patient asked about a lower dose.'},
    {id:'a4', key:'ibuprofen-400', prn:true, qty:30, ind:null, by:'Dr. S. Gill', out:true, pharm:'Lincoln Pharmacy, Coquitlam', ago:30, chart:false},
-   {id:'a5', key:'denosumab-60', ind:{t:'Osteoporosis', src:'Problem list'}, by:'Simple Rx', pharm:'Lincoln Pharmacy, Coquitlam', ago:165, supply:182, repLeft:1, chart:true},
+   {id:'a5', key:'denosumab-60', ind:{t:'Osteoporosis', src:'Problem list'}, by:'Simple Rx', pharm:'Lincoln Pharmacy, Coquitlam', ago:178, supply:182, repLeft:1, chart:true},
+   {id:'a7', key:'tramadol-50', prn:true, qty:30, ind:{t:'Pain', src:'PharmaNet'}, by:'Dr. S. Gill', out:true, pharm:'Lincoln Pharmacy, Coquitlam', ago:55, chart:false},
+   {id:'a8', key:'tramadol-50', prn:true, qty:20, ind:null, by:'Dr. K. Brar', spec:'walk-in clinic', out:true, pharm:'London Drugs, Coquitlam', ago:23, chart:false},
    {id:'a6', key:'amoxicillin-500', ind:{t:'Chest infection', src:'Walk-in clinic'}, course:true, by:'Walk-in clinic', out:true, pharm:'London Drugs, Coquitlam', ago:58, supply:7, chart:false}
   ],
   problems:[
@@ -13301,6 +13416,13 @@ var RXP = {
     choices:[{k:'none', label:'No change'},{k:'renew', label:'Renew now'},{k:'stop', label:'Stop'}]}
   ]}
 };
+/* T-032: a new patient after a hospital stay, no Simple Care history (DEMO, invented) */
+RXP['Korynn'] = {histTotal:6, pw:false, pn:{adverse:[]}, problems:[],
+  rows:[
+   {id:'k1', key:'sertraline-50', ind:{t:'Low mood', src:'PharmaNet'}, by:'Dr. L. Moreau', spec:'walk-in clinic', pharm:'London Drugs, Surrey', ago:25, supply:30, repLeft:2, chart:false},
+   {id:'k2', key:'pantoprazole-40', ind:null, by:'Dr. P. Singh', spec:'hospital', pharm:'London Drugs, Surrey', ago:12, supply:30, repLeft:0, chart:false},
+   {id:'k3', key:'cephalexin-500', ind:{t:'Infection', src:'Hospital discharge'}, course:true, by:'Dr. P. Singh', spec:'hospital', pharm:'London Drugs, Surrey', ago:12, supply:7, chart:false}
+  ]};
 var RX_STATE = {};
 var RX_UI = {open:false, opener:null, trap:false, ov:null, edit:null, adding:null, link:null, iss:{}, grp:{rec:true, match:false}, hist:false, more:{}, pharmEdit:false, prev:false};
 function rxLib(k){ return RX_LIB.filter(function(x){ return x.k === k; })[0] || null; }
@@ -13384,7 +13506,8 @@ function rxMkOrder(st, src, extra){
 function rxOrderFor(st, rowId){ return st.orders.filter(function(o){ return o.replaces === rowId; })[0] || null; }
 function rxSentFor(st, rowId){ return st.orders.some(function(o){ return o.replaces === rowId && o.sent; }); }
 /* ---- problems, picks and orders (step 2 logic; the safety check reads the result) ---- */
-function rxStopped(st, r){ return (st.rec[r.id] && st.rec[r.id].k === 'stopped') || (st.stop && st.stop[r.id]); }
+function rxStopped0(st, r){ return (st.rec[r.id] && st.rec[r.id].k === 'stopped') || (st.stop && st.stop[r.id]); }
+function rxStopped(st, r){ return rxStopped0(st, r) || Object.keys(st.stop2 || {}).some(function(k){ return st.stop2[k].drug === r.drug; }); }
 function rxRowById(st, id){ return rxRows(st).filter(function(r){ return r.id === id; })[0] || null; }
 function rxChoice(p, k){ return p.choices.filter(function(c){ return c.k === k; })[0] || null; }
 function rxRenewable(st, r){ return !rxStopped(st, r) && !r.otherFills && !rxSentFor(st, r.id); }
@@ -13546,6 +13669,7 @@ function rxClose(quiet){
 }
 document.addEventListener('keydown', function(e){
   if(!RX_UI.open) return;
+  if(typeof opIsOpen === 'function' && opIsOpen()) return;
   if(e.key === 'Escape'){
     if(document.querySelector('.cs-pop, #cw-pad:not([hidden])') && !document.activeElement.closest('#rx-sheet')) return;
     e.stopPropagation(); e.preventDefault();
@@ -13744,9 +13868,9 @@ function rxImgHtml(st){
 }
 function rxHistory(st){
   var P = rxProfile(PC_CURRENT), out = [];
-  rxRows(st).forEach(function(r){
-    var f = rxFilled(r); if(!f) return; var step = r.supply || 30;
-    for(var i = 0; i < 4; i++){ var d = new Date(f); d.setDate(d.getDate() - i * step); out.push({d:d, r:r}); }
+  (P.rows.length ? P.rows.map(rxRowFrom) : rxRows(st)).forEach(function(r){
+    var f = rxFilled(r); if(!f) return; var step = r.supply || 30, n = r.course || r.prn ? 1 : 4;
+    for(var i = 0; i < n; i++){ var d = new Date(f); d.setDate(d.getDate() - i * step); out.push({d:d, r:r}); }
   });
   out.sort(function(a, b){ return b.d - a.d; });
   return {rows:out.slice(0, 15), total:Math.max(P.histTotal || 0, Math.min(out.length, 15))};
@@ -13914,7 +14038,7 @@ function rxSearchHtml(pid){
   if(!r.length) return '<p class="rp-note">No match.</p>';
   return '<ul class="rp-sl">' + r.map(function(x){ return '<li><button type="button" class="btn" data-fk="sr' + x.k + '" onclick="rxAct(\'addlib\',\'' + pid + '\',\'' + x.k + '\')">' + csEsc(x.name + ' ' + x.strength + ' ' + x.form) + (x.s1a ? ', Schedule 1A' : '') + '</button></li>'; }).join('') + '</ul>';
 }
-function rxSearch(v, pid){ RX_UI.q = v; var e = document.getElementById('rx-sr'); if(e) e.innerHTML = rxSearchHtml(pid); }
+function rxSearch(v, pid){ RX_UI.q = v; var e = document.getElementById('rx-sr'); if(e){ e.innerHTML = pid === 'pad' && typeof rxPadSearchHtml === 'function' ? rxPadSearchHtml() : rxSearchHtml(pid); paintPd(e); } }
 function rxProbHtml(st, p){
   var pr = st.probs[p.id] || {pick:'none', approved:true}, ai = rxAiLine(st, p), rulePick = rxRulePick(st, p);
   var h = '<section class="rp-card rp-pb" aria-labelledby="rx-p-' + p.id + '"><h3 id="rx-p-' + p.id + '">' + csEsc(p.name) + (p.concern ? ' <span class="rp-src">today’s concern</span>' : '') + '</h3>' +
@@ -13970,7 +14094,7 @@ function rxAddOrder(st, pid, src, extra){
   var b = document.querySelector('#rx-main [data-fk="pt' + o.id + 'drug"]'); if(b) b.focus();
 }
 RX_ACT.addfav = function(pid, i){ var st = rxState(PC_CURRENT), f = rxFavOrders()[i]; rxAddOrder(st, pid, f, {days:f.days}); };
-RX_ACT.addlib = function(pid, k){ var st = rxState(PC_CURRENT), lib = rxLib(k); rxAddOrder(st, pid, {drug:lib.name, key:lib.k, strength:lib.strength, form:lib.form, freq:lib.freq}, {days:lib.days || 30, repeats:lib.rep || 0}); };
+RX_ACT.addlib = function(pid, k){ var st = rxState(PC_CURRENT), lib = rxLib(k); if(pid === 'pad') RX_UI.q = ''; rxAddOrder(st, pid, {drug:lib.name, key:lib.k, strength:lib.strength, form:lib.form, freq:lib.freq}, {days:lib.days || 30, repeats:lib.rep || 0}); };
 RX_ACT.rmord = function(oid){ var st = rxState(PC_CURRENT); st.orders = st.orders.filter(function(o){ return o.id !== oid; }); RX_UI.edit = null; rxRender(); };
 function rxBar2(st){
   var pend = rxPending(st).length;
@@ -13982,7 +14106,8 @@ RX_ACT.go3 = function(){ var st = rxState(PC_CURRENT); if(rxPending(st).length) 
 /* ===== Step 3: Sign and send ===== */
 var RX_PHARMS = ['Shoppers Drug Mart, Burnaby', 'London Drugs, Surrey', 'Lincoln Pharmacy, Coquitlam', 'Save-On-Foods Pharmacy, Kamloops'];
 function rxUnsent(st){ return st.orders.filter(function(o){ return !o.sent; }); }
-function rxStops(st){ st.stopDone = st.stopDone || {}; return rxRows(st).filter(function(r){ return rxStopped(st, r) && !st.stopDone[r.id]; }); }
+function rxStops(st){ st.stopDone = st.stopDone || {}; var a = rxRows(st).filter(function(r){ return rxStopped0(st, r) && !st.stopDone[r.id]; });
+  Object.keys(st.stop2 || {}).forEach(function(k){ var x = st.stop2[k]; if(!st.stopDone[x.id]) a.push(x); }); return a; }
 function rxNoun(n){ return n + (n === 1 ? ' prescription' : ' prescriptions'); }
 function rxMoreSummary(o){
   var m = o.more, a = [];
@@ -14103,7 +14228,7 @@ function rxSign(route){
   if(typeof renderMedRail === 'function') renderMedRail(name);
   if(typeof csRenderDocs === 'function' && document.getElementById('cs-docs')) csRenderDocs(name);
   rxRender();
-  var d = document.getElementById('rx-done'); if(d) d.focus();
+  var nx = document.getElementById('rx-next'), d = document.getElementById('rx-done'); if(nx) nx.focus(); else if(d) d.focus();
 }
 /* the Documents list names what it is, the date, then the transmission status (the chart's own rule) */
 function rxDocsHtml(name){
@@ -14120,10 +14245,14 @@ function rxBar(st){
   return '<button type="button" class="btn" data-fk="back" onclick="rxClose()">' + rxIc('chevl') + 'Close</button>';
 }
 /* chart banner: allergies added from PharmaNet show with the chart's own (T-026) */
-/* ===== T-027 Prescribing v2 (Daniel, 25 and 26 Oct): one screen. "Grab the information from Simple. Compare to the source of truth (PharmaNet).
-   Then reconcile. If a medication is running low, add it to the Prescription Pad for prescribing."
-   Left: the reconciliation (Simple against the source, grouped, only the differences need an answer). Right: the prescription pad as a paper card.
-   Med list = the result, reconciled as of a date by a named doctor, or plainly "not reconciled". ===== */
+/* ===== T-027 Prescribing v2 (Daniel, 25 and 26 Oct): one screen. Left: the medication list; right: the prescription pad as a paper card.
+   T-032 (Daniel, 31 Oct 2026; from-daniel/2026-10-31-meeting-review-of-prescribing-orders-chart.md, section 1). The list follows the call:
+   "What is the patient phoning for? I need my drugs." Top to bottom: Due for renewal (Simple's drugs with about 7 days or less, fewest first,
+   "26 days overdue" computed), Simple's drugs where PharmaNet differs (highlighted; Confirm goes to the medication list, not the pad), the
+   rest of Simple's drugs, a line, then PharmaNet: not prescribed at Simple (same order, same buttons, prescriber shown), a short Cedar flag,
+   and the raw dispense history collapsed. Each drug: Continue (the row stays, the button shows as chosen, the drug lands on the pad),
+   Adjust dose, Stop, Confirm. The end state is the new medication list, signed off. No "ask the MOA to send" on prescriptions ("I can't
+   really think of a use case where I would have this prescription directed to my MOA"); the MOA only resends a fax that fails. ===== */
 var RX_FROMVISIT = {};   /* name -> [{key, src}] put on the pad from the chart (Cedar, at the moment of decision) */
 var RX_QUICK = [
   {label:'Cold sore', key:'valacyclovir-1000', per:2, days:1},
@@ -14132,198 +14261,387 @@ var RX_QUICK = [
 /* demo addresses for the pad (invented, like the patients) */
 var RX_ADDR = {'Gloria Mcdonald, 74F':'88 Cedar Lane, Coquitlam, BC', 'Greg':'212 Maple Crescent, Burnaby, BC', 'Behdis Maleki, 35F':'1406 Birch Street, Surrey, BC', 'Manjit':'35 Alder Road, Kamloops, BC'};
 var RX_IND = {htn:'High blood pressure', dm:'Type 2 diabetes', lipid:'Cholesterol', thyroid:'Underactive thyroid', mood:'Depression', sleep:'Sleep', pain:'Pain',
-  uti:'Infection', iron:'Iron deficiency', bone:'Osteoporosis', cv:'Heart and stroke prevention', coldsore:'Cold sores'};
-var RX_SRC2 = [['pharmanet', 'PharmaNet'], ['upload', 'Uploaded profile'], ['patient', 'Patient only']];
+  uti:'Infection', iron:'Iron deficiency', bone:'Osteoporosis', cv:'Heart and stroke prevention', coldsore:'Cold sores', gi:'Stomach acid', chest:'Chest infection'};
+/* Daniel, 31 Oct: "PharmaNet live", "Uploaded file", "Patient only" */
+var RX_SRC2 = [['pharmanet', 'PharmaNet'], ['upload', 'Uploaded file'], ['patient', 'Patient only']];
+/* Daniel, 31 Oct: due = "about 7 days or less" (pharmacies use 14; patients get nervous within a week) */
+var RX_DUE = 7;
 function rxPadOrders(st){ return st.orders.filter(function(o){ return !o.sent; }); }
+function rxNoteText(){ var n = document.getElementById('vc-note-input'); return n ? n.value : ''; }
+/* the sentence of the note a match sits in, so the pad can say "As per your note: ..." (Daniel: every AI item shows where it came from) */
+function rxSentence(t, i){
+  /* a full stop ends a sentence only before a space or the end, so "2.5 mg" stays whole */
+  var head = t.slice(0, i), m, a = 0, re = /[.!?](?=\s)|\n/g;
+  while((m = re.exec(head))) a = m.index + 1;
+  var tail = t.slice(i), e = tail.search(/[.!?](?=\s|$)|\n/);
+  return t.slice(a, e < 0 ? t.length : i + e + (tail[e] === '\n' ? 0 : 1)).trim();
+}
 /* drugs the doctor decided on in today's note ("start", "increase", "renew", "prescribe"), never ones they only continue */
 function rxNoteDrugs(){
-  var n = document.getElementById('vc-note-input'), t = n ? n.value : '', out = [], seen = {};
+  var t = rxNoteText(), out = [], seen = {};
   var re = /\b(start(?:ed|ing)?|increas(?:e|ed|ing)|renew(?:ed|ing)?|prescrib(?:e|ed|ing)|switch(?:ed)? to)\s+(?:her |him |them )?(?:on\s+)?(?:a\s+low\s+dose\s+of\s+)?([A-Za-z-]+)(?:\s+(?:tartrate\s+)?to)?\s*([\d.]+\s*(?:mg|mcg|g))?/gi, m;
   while((m = re.exec(t))){
     var name = m[2].toLowerCase(), lib = RX_LIB.filter(function(x){ return x.name.toLowerCase().split(' ')[0] === name && (!m[3] || x.strength.replace(/\s/g, '') === m[3].replace(/\s/g, '')); })[0]
       || RX_LIB.filter(function(x){ return x.name.toLowerCase().split(' ')[0] === name; })[0];
-    if(lib && !seen[lib.k]){ seen[lib.k] = 1; out.push({key:lib.k, src:'From today’s note'}); }
+    if(lib && !seen[lib.k]){ seen[lib.k] = 1; out.push({key:lib.k, src:'From today’s note', quote:rxSentence(t, m.index)}); }
   }
   return out;
 }
-/* what the doctor decided today arrives on the pad as an AI draft: Accept, Change drug or Remove */
+/* what the doctor decided today arrives on the pad as a Cedar draft: Add, Change or Ignore */
 function rxPadSync(st){
   st.padSeen = st.padSeen || {};
   (RX_FROMVISIT[PC_CURRENT] || []).concat(rxNoteDrugs()).forEach(function(s){
     if(st.padSeen[s.key]) return; st.padSeen[s.key] = 1;
     var lib = rxLib(s.key); if(!lib) return;
+    if(st.orders.some(function(o){ return !o.sent && o.drug === lib.name; })) return;
     var row = rxRows(st).filter(function(r){ return r.drug === lib.name; })[0];
     st.orders.push(rxMkOrder(st, {drug:lib.name, key:lib.k, strength:lib.strength, form:lib.form, freq:lib.freq, per:1},
-      {src:'visit', tag:s.src, kind:row ? 'change' : 'new', replaces:row ? row.id : null, days:lib.days || 30, repeats:lib.rep || 0, ai:true}));
+      {src:'visit', tag:s.src, quote:s.quote || '', kind:row ? 'change' : 'new', replaces:row ? row.id : null, days:lib.days || 30, repeats:lib.rep || 0, ai:true}));
   });
 }
 function rxDate(d){ return d ? d.toLocaleDateString('en-US', {month:'short', day:'numeric'}) + (d.getFullYear() !== new Date().getFullYear() ? ', ' + d.getFullYear() : '') : ''; }
 function rxIn2(n){ var d = new Date(); d.setDate(d.getDate() + n); return d; }
 function rxSimpleList(){ return RX_MEDS[PC_CURRENT] || []; }
-/* the source's rows: PharmaNet (or the uploaded profile) for the two demo profiles, otherwise Simple's own fills */
+function rxDays(n){ return n + (n === 1 ? ' day' : ' days'); }
+/* the source's rows: PharmaNet (or the uploaded file) for the demo profiles, otherwise Simple's own fills */
 function rxSourceRows(){
   var P = rxProfile(PC_CURRENT);
   return (P.rows.length ? P.rows : rxChartRows(PC_CURRENT).map(function(r){ var o = {}; for(var k in r) o[k] = r[k]; o.chartOnly = false; return o; })).map(rxRowFrom);
 }
-/* one item per medicine: Simple's version, the source's version, the difference, the group, the supply */
+function rxSame(a, b){ return String(a).replace(/\s/g, '').toLowerCase() === String(b).replace(/\s/g, '').toLowerCase(); }
+/* one item per medicine: Simple's version, the source's version (the latest fill; earlier fills of the same drug ride along), the group */
 function rxRecModel(st){
-  var src = st.recSrc || 'pharmanet', S = rxSimpleList(), R = src === 'patient' ? [] : rxSourceRows(), out = [], used = {};
+  var src = st.recSrc || 'pharmanet', S = rxSimpleList().filter(function(m){ return !m.pnConf; });
+  var R = src === 'patient' || (src === 'upload' && !st.upDone) ? [] : rxSourceRows(), out = [], used = {};
+  var latest = function(rs){ return rs.slice().sort(function(a, b){ return (rxFilled(b) || 0) - (rxFilled(a) || 0); })[0]; };
   var sd = function(m){ return m.dose + ' · ' + (m.per || 1) + ' ' + rxU((m.form || 'tablets').replace(/s$/, ''), m.per || 1) + ' ' + m.freq; };
   S.forEach(function(m, i){
-    var r = R.filter(function(x){ return x.drug === m.drug; })[0], lib = rxLibName(m.drug), it = {id:'m' + i, drug:m.drug, simple:m, sText:sd(m), row:r || null, lib:lib};
-    if(r) used[r.id] = 1;
+    var rs = R.filter(function(x){ return x.drug === m.drug; }), r = rs.length ? latest(rs) : null, lib = rxLibName(m.drug), cf = (st.conf2 || {})[m.drug];
+    rs.forEach(function(x){ used[x.id] = 1; });
+    var it = {id:'m' + i, drug:m.drug, simple:m, sDose:cf ? cf.from : m.dose, row:r, lib:lib, side:'simple', conf:cf || null};
+    it.sText = sd({dose:it.sDose, per:m.per, form:m.form, freq:m.freq});
     it.ind = (r && r.ind && r.ind.t) || (lib && RX_IND[lib.ind]) || '';
     if(src === 'patient') it.kind = 'ask';
     else if(!r) it.kind = 'notdisp';
-    else if(String(m.dose).replace(/\s/g, '') !== String(r.strength).replace(/\s/g, '')) it.kind = 'dose';
+    else if(cf || !rxSame(it.sDose, r.strength)) it.kind = 'dose';
     else it.kind = 'same';
     out.push(it);
   });
-  R.forEach(function(r){
-    if(used[r.id]) return; var lib = r.key ? rxLib(r.key) : rxLibName(r.drug);
-    out.push({id:'r' + r.id, drug:r.drug, simple:null, row:r, lib:lib, ind:(r.ind && r.ind.t) || (lib && RX_IND[lib.ind]) || '', kind:r.course ? 'short' : 'new'});
+  var byDrug = {};
+  R.forEach(function(r){ if(!used[r.id]) (byDrug[r.drug] = byDrug[r.drug] || []).push(r); });
+  Object.keys(byDrug).forEach(function(d){
+    var rs = byDrug[d], r = latest(rs), lib = r.key ? rxLib(r.key) : rxLibName(r.drug);
+    out.push({id:'r' + r.id, drug:r.drug, simple:null, row:r, lib:lib, side:'pn', also:rs.filter(function(x){ return x !== r; }),
+      ind:(r.ind && r.ind.t) || (lib && RX_IND[lib.ind]) || '', kind:r.course ? 'short' : 'new'});
   });
   out.forEach(function(it){
-    var r = it.row, l = r ? rxLeft(r) : null, f = r ? rxFilled(r) : null, every = it.lib && it.lib.every;
-    it.left = l; it.filled = f;
-    if(it.kind === 'short') it.group = 'short';
-    else if(every) it.group = 'long';
-    else if(l != null && l < 0 && it.kind !== 'new') it.group = 'lapsed';
-    else it.group = 'active';
-    if(it.group === 'lapsed' && it.kind === 'same') it.kind = 'lapsed';
-    /* running out: 14 days or fewer, ran out, or a long-interval dose due within a month */
-    it.low = r && !r.prn && it.kind !== 'short' && it.kind !== 'new' && l != null && (every ? l <= 30 : l <= 14);
+    var r = it.row, l = r ? rxLeft(r) : null;
+    it.left = l; it.filled = r ? rxFilled(r) : null;
+    it.due = !!(r && !r.prn && it.kind !== 'short' && l != null && l <= RX_DUE);
+    it.group = it.side === 'pn' ? 'pn' : it.due ? 'due' : it.kind === 'dose' ? 'diff' : 'simple';
+  });
+  var bySupply = function(a, b){
+    var x = a.left == null ? 1e9 : a.left, y = b.left == null ? 1e9 : b.left;
+    return x - y || a.drug.localeCompare(b.drug);
+  };
+  /* PharmaNet's own list: due for renewal first (fewest first), then by date, newest first */
+  var pnOrder = function(a, b){
+    if(a.due !== b.due) return a.due ? -1 : 1;
+    if(a.due) return bySupply(a, b);
+    return ((b.filled || 0) - (a.filled || 0)) || a.drug.localeCompare(b.drug);
+  };
+  return out.filter(function(it){ return it.side === 'simple'; }).sort(bySupply).concat(out.filter(function(it){ return it.side === 'pn'; }).sort(pnOrder));
+}
+function rxItem(st, id){ return rxRecModel(st).filter(function(x){ return x.id === id; })[0] || null; }
+function rxItemOrder(st, it){ return st.orders.filter(function(o){ return !o.sent && o.drug === it.drug; })[0] || null; }
+function rxPnConf(it){ return rxSimpleList().some(function(m){ return m.pnConf && m.drug === it.drug; }); }
+function rxConfirmed(st, it){ return it.side === 'pn' ? rxPnConf(it) : !!it.conf; }
+function rxStopFor(st, it){ return (st.stop2 || {})[it.id] || null; }
+/* a dose difference needs a decision before the list is signed off: Confirm, Adjust dose or Stop */
+function rxDiffLeft(st){
+  return rxRecModel(st).filter(function(it){
+    var o = rxItemOrder(st, it);
+    return it.kind === 'dose' && !it.conf && !rxStopFor(st, it) && !(o && o.kind === 'change');
+  }).length;
+}
+function rxRep(r){ return r && r.repLeft != null ? (r.repLeft ? r.repLeft + (r.repLeft === 1 ? ' repeat' : ' repeats') + ' left' : 'no repeats left') : ''; }
+/* supply in days, the way the doctor thinks about it; "26 days overdue" is computed (Daniel: "that's clinical information") */
+function rxSupply(it){
+  var r = it.row, rep = rxRep(r), sub = function(t){ return t ? '<span class="rp-sub">' + t + '</span>' : ''; };
+  if(it.kind === 'ask') return '<b>Ask the patient</b>';
+  if(!r) return '<b>Unknown</b>' + sub(it.simple && it.simple.otc ? 'often bought over the counter' : 'not dispensed');
+  if(it.kind === 'short') return '<b>Finished</b>' + sub('about ' + rxDate(rxIn2(it.left || 0)));
+  if(r.prn) return '<b>As needed</b>' + sub((r.qty || 30) + ' dispensed');
+  var l = it.left;
+  if(it.lib && it.lib.every){
+    if(l < 0) return '<b>Next dose ' + rxDays(-l) + ' overdue</b>' + sub(rep);
+    return '<b>' + (l <= 30 ? 'Next dose in ' + rxDays(l) : 'Next dose ' + rxDate(rxIn2(l))) + '</b>' + sub(rep);
+  }
+  if(l < 0) return '<b>' + rxDays(-l) + ' overdue</b>' + sub(rep);
+  if(l === 0) return '<b>Runs out today</b>' + sub(rep);
+  return '<b>' + rxDays(l) + ' left</b>' + sub('until ' + rxDate(rxIn2(l)) + (rep ? ' · ' + rep : ''));
+}
+function rxWho(r){
+  if(r.by === 'Simple Rx') return 'Simple Care';
+  return r.by + (r.spec ? ', ' + r.spec : '') + ' · not a Simple Care doctor';
+}
+function rxSrcName(st){ return (RX_SRC2.filter(function(x){ return x[0] === (st.recSrc || 'pharmanet'); })[0] || [])[1]; }
+/* the actions on one drug. The chosen one shows as pressed; the row never moves. */
+function rxActsHtml(st, it){
+  if(rxLocked()) return '';
+  var o = rxItemOrder(st, it), stp = rxStopFor(st, it), cf = rxConfirmed(st, it), dz = it.kind === 'dose' && !it.conf && !(o && o.kind === 'change');
+  var b = function(k, label, on, extra, icon){
+    return '<button type="button" class="rp-act" data-fk="a' + k + it.id + '" aria-pressed="' + !!on + '"' + (extra || '') + ' onclick="rxAct(\'' + k + '\',\'' + it.id + '\')">' + (on ? rxIc('complete') : icon ? rxIc(icon) : '') + label + '</button>';
+  };
+  var h = '<div class="rp-acts" role="group" aria-label="' + csEsc(it.drug) + '">', sent = !o && st.orders.some(function(x){ return x.sent && x.drug === it.drug; });
+  if(sent) return h + b('cont', 'Continue', true, ' disabled') + '<span class="rp-state">Prescribed today</span></div>';
+  h += b('cont', 'Continue', o && o.kind !== 'change', dz && !o ? ' disabled aria-describedby="rx-dz' + it.id + '"' : '');
+  h += b('adj', 'Adjust dose', o && o.kind === 'change');
+  h += b('stp', 'Stop', !!stp);
+  if(it.kind === 'dose' || it.side === 'pn') h += b('conf', it.kind === 'dose' ? 'Confirm ' + it.row.strength : 'Confirm', cf);
+  var note = '';
+  if(dz && !o) note = '<span class="rp-state" id="rx-dz' + it.id + '">Confirm or adjust the dose first</span>';
+  else if(o && !stp) note = '<span class="rp-state">On the pad</span>';
+  else if(stp) note = '<span class="rp-state">' + (stp.out ? 'Stopping. Chart note only.' : 'Stopping. A note goes to the pharmacy.') + '</span>';
+  if(cf && it.kind === 'dose') note += '<span class="rp-state">On the list as ' + csEsc(it.row.strength) + ', as per PharmaNet</span>';
+  if(cf && it.side === 'pn') note += '<span class="rp-state">On the list, prescribed by ' + csEsc(it.row.by) + '</span>';
+  return h + note + '</div>';
+}
+function rxRecRow2(st, it, pnOnly){
+  var r = it.row, hl = it.kind === 'dose', stp = rxStopFor(st, it), cols = pnOnly ? 3 : (st.recSrc === 'patient' ? 3 : 4);
+  var name = '<th scope="row"><b>' + csEsc(it.drug) + '</b>' + (it.ind ? '<span class="rp-sub">' + csEsc(it.ind) + '</span>' : '') +
+    (it.side === 'pn' ? '<span class="rp-sub rp-norec">' + (rxPnConf(it) ? 'On Simple Care’s list now' : 'No Simple Care record') + '</span>' : '') + '</th>';
+  var simple = it.simple ? (hl ? '<mark>' + csEsc(it.sDose) + '</mark>' + csEsc(it.sText.slice(it.sDose.length)) : csEsc(it.sText)) : '';
+  var pn = '';
+  if(r){
+    var dose = (hl ? '<mark>' + csEsc(r.strength) + '</mark>' : csEsc(r.strength)) + ' · ' + csEsc(rxDirs(r)) + (it.kind === 'short' && r.supply ? ' for ' + rxDays(r.supply) : '');
+    if(!pnOnly && it.kind === 'same') pn = '<span class="rp-same">' + rxIc('complete') + 'Same as Simple</span><span class="rp-sub">' + csEsc(rxWho(r)) + ' · filled ' + rxDate(it.filled) + '</span>';
+    else pn = dose + '<span class="rp-sub">' + csEsc(rxWho(r)) + ' · filled ' + rxDate(it.filled) + '</span>' +
+      (it.also && it.also.length ? '<span class="rp-sub">Also from ' + it.also.map(function(x){ return csEsc(x.by) + ', ' + rxDate(rxFilled(x)); }).join('; ') + '</span>' : '');
+  } else if(!pnOnly && st.recSrc !== 'patient') pn = '<i>Not dispensed</i>';
+  var cells = pnOnly ? '<td>' + pn + '</td>' : st.recSrc === 'patient' ? '<td>' + simple + '</td>' : '<td>' + simple + '</td><td>' + pn + '</td>';
+  var h = '<tr class="rp-it' + (hl && !it.conf ? ' diff' : '') + (stp ? ' stp' : '') + '" data-fk="rr' + it.id + '" tabindex="-1">' + name + cells + '<td class="rp-sup">' + rxSupply(it) + '</td></tr>';
+  var acts = rxActsHtml(st, it);
+  if(acts) h += '<tr class="rp-acr' + (hl && !it.conf ? ' diff' : '') + '"><td colspan="' + cols + '">' + acts + '</td></tr>';
+  return h;
+}
+/* Daniel, 31 Oct: doctors tend to ignore the PharmaNet list, so a short Cedar note nudges them to look (example: opioids from several
+   prescribers). DEMO: a drug marked controlled in the demo library, dispensed by 2 or more prescribers in the last 90 days. Needs Daniel:
+   what Cedar should flag, and over what window. Facts only, never a judgement about the patient. */
+function rxCedarFlag(M){
+  var out = [];
+  M.filter(function(it){ return it.side === 'pn' && it.lib && it.lib.ctl; }).forEach(function(it){
+    var fills = [it.row].concat(it.also || []).filter(function(r){ var f = rxFilled(r); return f && (new Date() - f) / 864e5 <= 90; });
+    var who = {}; fills.forEach(function(r){ who[r.by] = r; });
+    var names = Object.keys(who); if(names.length < 2) return;
+    out.push(it.drug + ', ' + (it.lib.ctlWhat || 'a controlled drug') + ', was dispensed from ' + names.length + ' prescribers in the last 90 days: ' +
+      names.map(function(n){ return n + ' on ' + rxDate(rxFilled(who[n])); }).join(' and ') + '.');
   });
   return out;
 }
-var RX_ANS = {
-  dose:function(it){ return [['t1', 'Taking ' + it.simple.dose], ['t2', 'Taking ' + it.row.strength], ['other', 'Other'], ['stop', 'Stopped']]; },
-  new:function(){ return [['take', 'Taking'], ['stop', 'Stopped'], ['never', 'Never started']]; },
-  notdisp:function(){ return [['take', 'Taking'], ['stop', 'Stopped'], ['never', 'Never started']]; },
-  lapsed:function(){ return [['take', 'Taking'], ['other', 'Other'], ['stop', 'Stopped']]; },
-  short:function(){ return [['done', 'Finished'], ['take', 'Still taking']]; },
-  ask:function(){ return [['take', 'Taking'], ['stop', 'Stopped']]; }
-};
-function rxIsDiff(it){ return it.kind !== 'same'; }
-function rxTaking(st, it){ var a = (st.ans || {})[it.id]; return it.kind === 'same' ? !!st.matchOk || a === 'take' : a === 'take' || a === 't1' || a === 't2' || a === 'other'; }
-function rxRecLeft(st){ var M = rxRecModel(st); return M.filter(function(it){ return rxIsDiff(it) && !(st.ans || {})[it.id]; }).length + (M.some(function(it){ return it.kind === 'same'; }) && !st.matchOk ? 1 : 0); }
-function rxSupply(it){
-  var r = it.row;
-  if(!r) return it.simple && it.simple.otc ? '<b>Unknown</b><span>ask the patient</span>' : '<b>Unknown</b><span>not dispensed</span>';
-  var rep = r.repLeft != null ? (r.repLeft ? r.repLeft + (r.repLeft === 1 ? ' repeat' : ' repeats') : 'no repeats') : '';
-  if(it.kind === 'short') return '<b>Finished</b><span>about ' + rxDate(rxIn2(it.left || 0)) + '</span>';
-  if(r.prn) return '<b>As needed</b><span>' + (r.qty || 30) + ' dispensed</span>';
-  if(it.lib && it.lib.every) return '<b class="' + (it.low ? 'rp-lo' : '') + '">' + rxDate(rxIn2(it.left)) + '</b> next dose<span>' + rep + '</span>';
-  if(it.left < 0) return '<b class="rp-out">None</b> left<span>since ' + rxDate(rxIn2(it.left)) + (rep ? ' · ' + rep : '') + '</span>';
-  var n = Math.round(it.left * (r.per || 1) * rxPer(r.freq));
-  return '<b class="' + (it.left <= 14 ? 'rp-lo' : '') + '">' + n + '</b> ' + rxU(r.form, n) + '<span>until ' + rxDate(rxIn2(it.left)) + (rep ? ' · ' + rep : '') + '</span>';
+/* Uploaded file: paste a screenshot with Cmd/Ctrl+V (Daniel: "pasting a screenshot must work"), upload a file or take a photo.
+   The image stays in this browser tab; it is shown beside the rows Cedar drafted from it. */
+function rxUpHtml(st){
+  if(st.upDone) return '<figure class="rp-upimg"><figcaption><b>Source: ' + csEsc(st.upHow || 'Uploaded file') + '</b>' + (st.upName ? ' · ' + csEsc(st.upName) : '') + (st.upAt ? ' · ' + csEsc(st.upAt) : '') +
+      ' <button type="button" class="op-lk" data-fk="upshow" aria-expanded="' + !RX_UI.upHide + '" onclick="RX_UI.upHide=!RX_UI.upHide;rxRender()">' + (RX_UI.upHide ? 'Show the image' : 'Hide the image') + '</button>' +
+      '<button type="button" class="op-lk" data-fk="upagain" onclick="rxAct(\'upagain\')">Use another file</button></figcaption>' +
+      (RX_UI.upHide ? '' : st.upImg ? '<img src="' + st.upImg + '" alt="The medication list you added">' : '<p class="rp-rs">' + csEsc(st.upName || 'File') + ' is not an image, so it is not shown here.</p>') +
+      '<p class="rp-rs">Demo: Cedar’s reading is simulated, so the rows below are sample rows, not read from your file. Check every row.</p></figure>';
+  return '<div class="rp-paste" tabindex="0" data-fk="paste" aria-labelledby="rx-paste-h" aria-describedby="rx-paste-d" role="group">' +
+    '<p id="rx-paste-h"><b>Paste a screenshot here</b> with ⌘V or Ctrl+V</p>' +
+    '<p class="rp-rs" id="rx-paste-d">A pharmacy’s faxed list, a CareConnect screenshot (view-only; nothing is copied from it) or a photo of the bottles. Cedar reads it; you check every row. The image stays on this screen.</p>' +
+    '<div class="rp-row"><button type="button" class="btn rp-sm" data-fk="uppaste" onclick="rxAct(\'pastebtn\')">' + rxIc('file') + 'Paste</button>' +
+    '<label class="btn rp-sm rp-file">' + rxIc('upload') + 'Upload a file<input type="file" data-fk="upfile" accept="image/*,application/pdf" onchange="rxUpFile(this,\'Uploaded file\')"></label>' +
+    '<label class="btn rp-sm rp-file">' + rxIc('upload') + 'Take a photo<input type="file" data-fk="upphoto" accept="image/*" capture="environment" onchange="rxUpFile(this,\'Photo\')"></label></div></div>';
 }
-function rxRecRow2(st, it){
-  var r = it.row, a = (st.ans || {})[it.id], hl = it.kind === 'dose';
-  var simple = it.simple ? (hl ? '<mark>' + csEsc(it.simple.dose) + '</mark>' + csEsc(it.sText.slice(it.simple.dose.length)) : csEsc(it.sText)) : '<i>Not in Simple</i>';
-  var srcName = (RX_SRC2.filter(function(x){ return x[0] === (st.recSrc || 'pharmanet'); })[0] || [])[1];
-  var pn;
-  if((st.recSrc || 'pharmanet') === 'patient') pn = '<i>No source</i>';
-  else if(!r) pn = '<i>Not dispensed</i>' + (it.simple && it.simple.otc ? '<span>Often bought over the counter</span>' : '');
-  else if(it.kind === 'same' || it.kind === 'lapsed' && it.simple && String(it.simple.dose).replace(/\s/g, '') === String(r.strength).replace(/\s/g, ''))
-    pn = '<span class="rp-same">' + rxIc('complete') + 'Same as Simple</span><span>Last ' + (it.lib && it.lib.every ? 'dose ' : 'filled ') + rxDate(it.filled) + '</span>';
-  else pn = (hl ? '<mark>' + csEsc(r.strength) + '</mark>' : csEsc(r.strength)) + ' · ' + csEsc(rxDirs(r)) + (it.kind === 'short' && r.supply ? ' for ' + r.supply + ' days' : '') +
-    '<span>' + csEsc(r.by === 'Simple Rx' ? RX_DR : r.by) + (r.spec ? ', ' + csEsc(r.spec) : '') + ' · ' + rxDate(it.filled) + '</span>';
-  var h = '<tr class="' + (rxIsDiff(it) ? 'diff' : '') + (a || st.recon ? ' done' : '') + '" data-fk="rr' + it.id + '" tabindex="-1"><th scope="row"><b>' + csEsc(it.drug) + '</b><span>' + csEsc(it.ind) + '</span></th>' +
-    '<td>' + simple + '</td><td>' + pn + '</td><td class="rp-sup">' + rxSupply(it) + '</td></tr>';
-  if(rxIsDiff(it) && RX_ANS[it.kind] && !st.recon){
-    h += '<tr class="rp-ansr' + (a ? ' done' : '') + '"><td></td><td colspan="3"><div class="rp-ans" role="group" aria-label="' + csEsc(it.drug) + ': the patient says">' + RX_ANS[it.kind](it).map(function(o){
-      return '<button type="button" class="rp-ab" data-fk="an' + it.id + o[0] + '" aria-pressed="' + (a === o[0]) + '" onclick="rxAct(\'ans\',\'' + it.id + '\',\'' + o[0] + '\')">' + csEsc(o[1]) + '</button>';
-    }).join('') + (a === 'other' ? '<input type="text" class="rp-oth" data-fk="oth' + it.id + '" placeholder="What the patient takes" value="' + csEsc(((st.oth || {})[it.id]) || '') + '" oninput="rxState(PC_CURRENT).oth=rxState(PC_CURRENT).oth||{};rxState(PC_CURRENT).oth[\'' + it.id + '\']=this.value">' : '') + '</div></td></tr>';
-  }
-  return h;
+function rxReadImage(f, how){
+  if(!f) return;
+  var st = rxState(PC_CURRENT), done = function(url){
+    st.recSrc = 'upload'; st.upImg = url; st.upHow = how; st.upName = f.name && !/^image\.\w+$/.test(f.name) ? f.name : ''; st.upAt = rxNow(); st.upDone = true; RX_UI.upHide = false;
+    rxLog(st, how + ' added; Cedar read it'); rxRender(); toast('Read by Cedar. Check every row.');
+  };
+  if(!/^image\//.test(f.type || '')){ done(null); return; }
+  var rd = new FileReader(); rd.onload = function(){ done(rd.result); }; rd.readAsDataURL(f);
 }
-var RX_GROUPS = [['active', 'Active', 'supply covers today'], ['lapsed', 'Possibly lapsed', 'ran out without a refill'], ['long', 'Long-interval', 'given every 3 to 12 months'], ['short', 'Recent short courses', 'last 3 months, kept in the safety check']];
-function rxRecHtml(st){
-  var src = st.recSrc || 'pharmanet', M = rxRecModel(st), diffs = M.filter(rxIsDiff), open = diffs.filter(function(it){ return !(st.ans || {})[it.id]; }).length;
-  var same = M.filter(function(it){ return it.kind === 'same'; }), low = M.filter(function(it){ return it.low; });
-  var h = '<section class="rp-card rp-rec2"><div class="rp-rh"><h3>Medication reconciliation</h3><div class="rp-tabs" role="group" aria-label="Compare with">' + RX_SRC2.map(function(s){
-    return '<button type="button" class="' + (src === s[0] ? 'on' : '') + '" data-fk="src' + s[0] + '" aria-pressed="' + (src === s[0]) + '" onclick="rxAct(\'recsrc\',\'' + s[0] + '\')">' + csEsc(s[1]) + (s[0] === 'pharmanet' && src === s[0] ? ' · live ' + (st.pnAt || (st.pnAt = rxNow())) : '') + '</button>';
-  }).join('') + '</div></div>';
-  if(src === 'upload' && !st.upDone) h += '<div class="rp-up"><p class="rp-rs">A pharmacy’s faxed list, a CareConnect screenshot (paste with ⌘V; CareConnect is view-only, nothing is copied from it) or a photo of the bottles. Cedar reads it; you check every row.</p>' +
-    '<div class="rp-row"><button type="button" class="btn rp-sm" data-fk="upfax" onclick="rxAct(\'upload\')">' + rxIc('upload') + 'Upload a file</button><button type="button" class="btn rp-sm" data-fk="uppaste" onclick="rxAct(\'upload\')">Paste a screenshot</button><button type="button" class="btn rp-sm" data-fk="upphoto" onclick="rxAct(\'upload\')">Take a photo</button></div></div>';
-  if(st.recon) h += '<p class="rp-recd">' + rxIc('usercheck') + 'Reconciled with the patient · ' + csEsc(st.recon.date) + ' · ' + RX_DR + ' <button type="button" class="op-lk" data-fk="reagain" onclick="rxAct(\'reagain\')">Reconcile again</button>' +
-    (st.recon.sentPharm ? '<span class="rp-src"> · list sent to the pharmacy</span>' : ' <button type="button" class="op-lk" data-fk="sendlist" onclick="rxAct(\'sendlist\')">Send the list to the pharmacy</button>') + '</p>';
-  else h += '<div class="rp-sum"><span>' + (diffs.length ? open + ' of ' + diffs.length + ' differences to review' : 'No differences') + '</span>' +
-    (same.length ? '<button type="button" class="rp-pill' + (st.matchOk ? ' on' : '') + '" data-fk="matchok" aria-pressed="' + !!st.matchOk + '" onclick="rxAct(\'matchok\')">' + (st.matchOk ? rxIc('complete') : '') + (same.length === 1 ? 'Patient taking the 1 that matches' : 'Patient taking all ' + same.length + ' that match') + '</button>' : '') +
-    '<span class="rp-grow"></span>' + (st.askPharm ? '<span class="rp-src">Pharmacy asked to verify · ' + st.askPharm + '</span>' : '<button type="button" class="op-lk" data-fk="askph" onclick="rxAct(\'askph\')">Ask the pharmacy to verify</button>') +
-    '<button type="button" class="btn dark rp-sm" data-fk="recsign" id="rx-recsign"' + (rxRecLeft(st) ? ' disabled' : '') + ' onclick="rxAct(\'recsign\')">Sign off the list</button></div>';
-  if(low.length) h += '<div class="rp-low"><span class="rp-lk2">Running out</span><span class="rp-rs">confirm in the list, then add</span>' + low.map(function(it){
-    var on = st.orders.some(function(o){ return !o.sent && o.drug === it.drug; }), l = it.left;
-    var t = it.lib && it.lib.every ? 'due ' + rxDate(rxIn2(l)) : l < 0 ? 'ran out' : Math.round(l * (it.row.per || 1) * rxPer(it.row.freq)) + ' left';
-    return '<button type="button" class="rp-lc' + (on ? ' on' : '') + '" data-fk="low' + it.id + '" onclick="rxAct(\'low\',\'' + it.id + '\')"><b>' + csEsc(it.drug) + '</b> <span class="' + (l < 0 ? 'rp-out' : 'rp-lo') + '">' + (on ? 'on the pad' : t) + '</span></button>';
-  }).join('') + '</div>';
-  h += '<table class="rp-t2"><thead><tr><th scope="col">Medicine</th><th scope="col">Simple</th><th scope="col">' + (src === 'upload' ? 'Uploaded profile' : src === 'patient' ? 'Source' : 'PharmaNet') + '</th><th scope="col">Supply</th></tr></thead>';
-  RX_GROUPS.forEach(function(g){
-    var its = M.filter(function(it){ return it.group === g[0]; }); if(!its.length) return;
-    h += '<tbody><tr class="rp-gr"><th colspan="4" scope="rowgroup"><b>' + g[1] + '</b> <span>' + g[2] + '</span></th></tr>' + its.map(function(it){ return rxRecRow2(st, it); }).join('') + '</tbody>';
+function rxUpFile(inp, how){ var f = inp.files && inp.files[0]; if(f) rxReadImage(f, how); }
+/* Cmd/Ctrl+V anywhere in the panel: an image on the clipboard becomes the uploaded file. Text pastes behave as usual. */
+document.addEventListener('paste', function(e){
+  if(!RX_UI.open || !PC_CURRENT || (typeof opIsOpen === 'function' && opIsOpen())) return;
+  var items = (e.clipboardData && e.clipboardData.items) || [], f = null;
+  for(var i = 0; i < items.length; i++){ if(items[i].kind === 'file' && /^image\//.test(items[i].type)){ f = items[i].getAsFile(); break; } }
+  if(!f) return;
+  e.preventDefault(); rxReadImage(f, 'Pasted screenshot');
+});
+/* the result: the new medication list (Daniel: "from where you are, to the prescription, to where you will end up, which is the new med list") */
+function rxNewList(st, M){
+  var L = [];
+  M.forEach(function(it){
+    var o = rxItemOrder(st, it), stp = rxStopFor(st, it);
+    if(stp) return;
+    if(it.side === 'pn' && !rxPnConf(it) && !o) return;
+    var m = it.simple, r = it.row, dose = o ? o.strength : m ? m.dose : r.strength, freq = o ? o.freq : m ? m.freq : r.freq;
+    var why = o ? (o.kind === 'change' ? 'dose changed today' : 'prescribed today') : it.side === 'pn' ? 'prescribed by ' + r.by : it.conf ? 'confirmed as per PharmaNet (' + r.by + ')' : '';
+    L.push({t:it.drug + ' ' + dose + ', ' + (r && r.prn && !o ? 'as needed' : freq), why:why});
   });
-  h += '</table></section>' + rxHistHtml(st);
+  rxPadOrders(st).forEach(function(o){ if(!M.some(function(it){ return it.drug === o.drug; })) L.push({t:o.drug + ' ' + o.strength + ', ' + o.freq, why:o.ai ? 'Cedar draft on the pad' : 'new today'}); });
+  return L;
+}
+function rxNewListHtml(st, M){
+  var L = rxNewList(st, M), left = rxDiffLeft(st), open = !!RX_UI.nl;
+  var h = '<section class="rp-card rp-nl" aria-labelledby="rx-nl-h"><div class="rp-nlh"><h3 id="rx-nl-h">New medication list</h3><span class="rp-rs">' + L.length + (L.length === 1 ? ' medicine' : ' medicines') + '</span>' +
+    '<button type="button" class="op-lk" data-fk="nl" aria-expanded="' + open + '" aria-controls="rx-nl" onclick="RX_UI.nl=!RX_UI.nl;rxRender()">' + rxIc(open ? 'chevdown' : 'chevr') + (open ? 'Hide' : 'Show') + '</button></div>';
+  if(open) h += '<ul class="rp-nll" id="rx-nl">' + (L.length ? L.map(function(x){ return '<li><b>' + csEsc(x.t) + '</b>' + (x.why ? ' <span class="rp-rs">' + csEsc(x.why) + '</span>' : '') + '</li>'; }).join('') : '<li class="rp-rs">Nothing on the list.</li>') + '</ul>';
+  if(st.recon) h += '<p class="rp-recd">' + rxIc('usercheck') + 'Signed off · ' + csEsc(st.recon.date) + ' · ' + RX_DR + ' <button type="button" class="op-lk" data-fk="reagain" onclick="rxAct(\'reagain\')">Review again</button>' +
+    (st.recon.sentPharm ? '<span class="rp-src"> · list sent to the pharmacy</span>' : ' <button type="button" class="op-lk" data-fk="sendlist" onclick="rxAct(\'sendlist\')">Send the list to the pharmacy</button>') + '</p>';
+  else h += '<div class="rp-nlf"><p class="rp-rs" id="rx-nlwhy">' + (left ? (left === 1 ? 'Confirm or adjust the 1 dose difference first.' : 'Confirm or adjust the ' + left + ' dose differences first.') : 'Checked with the patient? Sign it off.') + '</p>' +
+    (rxLocked() ? '' : '<button type="button" class="btn dark" data-fk="recsign" id="rx-recsign"' + (left ? ' disabled aria-describedby="rx-nlwhy"' : '') + ' onclick="rxAct(\'recsign\')">' + rxIc('usercheck') + 'Sign off the medication list</button>') + '</div>';
+  return h + '</section>';
+}
+var RX_GROUPS = [['due', 'Due for renewal', 'about ' + RX_DUE + ' days of supply or less, fewest first'], ['diff', 'PharmaNet differs', 'check with the patient, then confirm'], ['simple', 'Other Simple Care medications', '']];
+function rxRecHtml(st){
+  var src = st.recSrc || 'pharmanet', M = rxRecModel(st), simple = M.filter(function(it){ return it.side === 'simple'; }), pn = M.filter(function(it){ return it.side === 'pn'; });
+  var srcCol = src === 'upload' ? 'Uploaded file' : 'PharmaNet';
+  var h = '<section class="rp-card rp-rec3"><div class="rp-rh"><h3>Medications</h3><div class="rp-tabs" role="group" aria-label="Compare with">' + RX_SRC2.map(function(s){
+    return '<button type="button" class="' + (src === s[0] ? 'on' : '') + '" data-fk="src' + s[0] + '" aria-pressed="' + (src === s[0]) + '" onclick="rxAct(\'recsrc\',\'' + s[0] + '\')">' + csEsc(s[1]) + (s[0] === 'pharmanet' && src === s[0] ? ' · live ' + (st.pnAt || (st.pnAt = rxNow())) : '') + '</button>';
+  }).join('') + '</div><span class="rp-grow"></span>' +
+    /* kept as a secondary action (see the spec, 31 Oct changes): the MOA asks the pharmacy when the doctor cannot settle the list on the call */
+    (src === 'patient' ? '' : st.askPharm ? '<span class="rp-src">Pharmacy asked to verify · ' + st.askPharm + '</span>' : '<button type="button" class="op-lk" data-fk="askph" onclick="rxAct(\'askph\')">Ask the pharmacy to verify</button>') + '</div>';
+  if(src === 'upload') h += rxUpHtml(st);
+  if(src === 'upload' && !st.upDone && !simple.length){ h += '</section>' + rxNewListHtml(st, M); return h; }
+  if(simple.length){
+    h += '<table class="rp-t3"><thead><tr><th scope="col">Medicine</th><th scope="col">Simple Care</th>' + (src === 'patient' ? '' : '<th scope="col">' + srcCol + '</th>') + '<th scope="col">Supply</th></tr></thead>';
+    RX_GROUPS.forEach(function(g){
+      var its = simple.filter(function(it){ return it.group === g[0] || (src === 'patient' && g[0] === 'simple'); });
+      if(src === 'patient' && g[0] !== 'simple') return; if(!its.length) return;
+      h += '<tbody><tr class="rp-grh"><th colspan="' + (src === 'patient' ? 3 : 4) + '" scope="rowgroup"><b>' + (src === 'patient' ? 'Simple Care’s list' : g[1]) + '</b> <span class="rp-cnt">' + its.length + '</span>' +
+        (g[2] && src !== 'patient' ? ' <span class="rp-rs">' + g[2] + '</span>' : src === 'patient' ? ' <span class="rp-rs">no source to compare; ask the patient about each one</span>' : '') + '</th></tr>' +
+        its.map(function(it){ return rxRecRow2(st, it, false); }).join('') + '</tbody>';
+    });
+    h += '</table>';
+  }
+  if(pn.length){
+    var flags = rxCedarFlag(M), lead = !simple.length;
+    h += '<div class="rp-pnh' + (lead ? ' lead' : '') + '"><h4>' + (lead ? srcCol : srcCol + ': not prescribed at Simple') + ' <span class="rp-cnt">' + pn.length + '</span></h4>' +
+      '<p class="rp-rs">' + (lead ? 'No Simple Care history. Just the list, as per ' + srcCol + '. Verify each one with the patient.' : 'Prescribed elsewhere. Same order and the same choices as above.') + '</p></div>';
+    if(flags.length) h += '<div class="rp-flag" role="note"><span class="rp-cm" aria-hidden="true">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span><div><p><b>Cedar flagged:</b> ' + flags.map(csEsc).join(' ') + '</p><p class="rp-rs">Source: ' + csEsc(srcCol) + ' dispense history</p></div></div>';
+    h += '<table class="rp-t3 rp-pn"><thead><tr><th scope="col">Medicine</th><th scope="col">' + srcCol + '</th><th scope="col">Supply</th></tr></thead><tbody>' +
+      pn.map(function(it){ return rxRecRow2(st, it, true); }).join('') + '</tbody></table>';
+  }
+  if(!simple.length && !pn.length) h += '<p class="rp-blank2">' + (src === 'patient' ? 'Nothing on Simple Care’s list. Ask the patient what they take; add it on the pad or in the chart.' : 'No medications on file.') + '</p>';
+  h += '</section>' + rxNewListHtml(st, M) + rxHistHtml(st);
   return h;
 }
-/* the patient line above everything: allergies, kidney function, today */
+/* the patient line above everything: allergies and kidney function as a constant reminder, a short today line; no medications here
+   (Daniel, 31 Oct: "I know the drugs that a diabetic should be on"). Kidney function not on file: a quick order, without leaving. */
 function rxStrip(st){
   var al = rxAllergens(st), kid = rxKidney(PC_CURRENT), r = rxRow(PC_CURRENT), a0 = CS.allergy[PC_CURRENT] || 'nkda';
-  return '<p class="rp-strip"><span>Allergies: ' + (al.length ? '<b class="al">' + al.map(function(a){ return csEsc(a.label.toLowerCase() + ' (' + a.rx + ')'); }).join(', ') + '</b>' +
+  /* words are ink, colour on the icon (rule: red text only for a critical value) */
+  return '<p class="rp-strip"><span>Allergies: ' + (al.length ? rxIc('crit') + '<b class="al">' + al.map(function(a){ return csEsc(a.label.toLowerCase() + ' (' + a.rx + ')'); }).join(', ') + '</b>' +
       al.filter(function(a){ return !a.inChart; }).map(function(a){ return ' <button type="button" class="op-lk" data-fk="addal' + a.idx + '" onclick="rxAct(\'addal\',' + a.idx + ')">Add to chart</button>'; }).join('')
     : '<b>' + (a0 === 'none' ? 'not recorded' : 'none known') + '</b>') + '</span>' +
-    '<span>Kidney function: <b>' + csEsc(kid.t.split(' · ')[0]) + '</b></span><span>Today: <b>' + csEsc(r ? r.concern || '' : '') + '</b></span></p>';
+    '<span>Kidney function: <b>' + csEsc(kid.t.split(' · ')[0]) + '</b>' + (kid.ok ? ' <span class="rp-src">' + csEsc(kid.t.split(' · ')[1] || '') + '</span>' :
+      (rxLocked() ? '' : ' <button type="button" class="op-lk" data-fk="ordkid" onclick="rxAct(\'orderkid\')">' + rxIc('plus') + 'Order kidney function</button>')) + '</span>' +
+    '<span>Today: <b>' + csEsc(r ? r.concern || '' : '') + '</b></span></p>';
 }
-/* ---- the pad, a paper card beside the reconciliation ---- */
+/* ---- the pad, a paper card beside the list ---- */
 function rxPadLine(st, o, i, sf){
   var ws = sf.W.filter(function(w){ return w.ord && new RegExp(':' + o.id + '(:|$)').test(w.id); }), r = rxRow(PC_CURRENT);
-  var kind = o.kind === 'renew' ? 'Renew' : o.kind === 'change' ? 'Change' : 'New', why = o.tag && o.src !== 'visit' ? o.tag : (o.src === 'visit' && r ? 'for ' + String(r.concern || '').toLowerCase() : '');
+  var kind = o.kind === 'renew' ? 'Renew' : o.kind === 'change' ? 'Change' : 'New', why = o.tag && o.src !== 'visit' ? o.tag : '';
   var h = '<li class="rp-pl" data-fk="ord' + o.id + '" data-fp="ord' + o.id + '" tabindex="-1"><div class="rp-pb2">' +
-    '<p class="rp-pk"><i>' + kind + '</i>' + (why ? ' ' + csEsc(why) : '') + '</p>' +
-    (o.ai ? '<p><span class="rp-aitag">' + csEsc(o.tag || 'From today’s visit') + ' · AI draft</span></p>' : '') +
-    '<p class="rp-pd"><b>' + csEsc(o.drug + ' ' + o.strength) + '</b></p>' +
+    '<p class="rp-pk"><i>' + kind + '</i>' + (why ? ' ' + csEsc(why) : '') + '</p>';
+  /* Daniel, 31 Oct: "As per your note ... Add, change or ignore"; the source shows, subtly, so it is clear Cedar is not deciding */
+  if(o.ai) h += '<p class="rp-asper"><span class="rp-cm" aria-hidden="true">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span><span>As per your ' + (o.tag === 'From the call' ? 'call' : 'note') +
+    (o.quote ? ': “' + csEsc(o.quote.length > 140 ? o.quote.slice(0, 137) + '…' : o.quote) + '”' : '') + ' <span class="rp-srcai">Cedar draft</span></span></p>';
+  h += '<p class="rp-pd"><b>' + csEsc(o.drug + (o.strength ? ' ' + o.strength : '')) + '</b></p>' +
     '<div class="rp-os" role="group" aria-label="Directions. Tap a part to change it.">' + rxPartBtn(o, 'dose', o.per + ' ' + rxU(o.form, o.per)) + rxPartBtn(o, 'freq', o.freq) +
     rxPartBtn(o, 'days', o.days + (o.days === 1 ? ' day' : ' days')) + rxPartBtn(o, 'qty', 'Qty ' + rxQtyOf(o)) + rxPartBtn(o, 'reps', rxRepText(o.repeats)) + '</div>' + rxEditHtml(st, o);
-  if(o.ai) h += '<div class="rp-aiact"><button type="button" class="rp-acc" data-fk="acc' + o.id + '" onclick="rxAct(\'accept\',\'' + o.id + '\')">Accept AI draft</button>' +
-    '<button type="button" class="op-lk" data-fk="chg' + o.id + '" onclick="rxAct(\'chgdrug\',\'' + o.id + '\')">Change drug</button><button type="button" class="op-lk rp-rm2" data-fk="rmd' + o.id + '" onclick="rxAct(\'rmord\',\'' + o.id + '\')">Remove</button></div>';
+  /* free text is allowed (compounded or experimental drugs): a soft notice, not an error */
+  if(o.free) h += '<p class="rp-soft">Not in Health Canada’s drug list. It is sent as you wrote it.</p>';
+  if(o.ai) h += '<div class="rp-aiact"><button type="button" class="rp-acc" data-fk="acc' + o.id + '" onclick="rxAct(\'accept\',\'' + o.id + '\')">' + rxIc('plus') + 'Add</button>' +
+    '<button type="button" class="op-lk" data-fk="chg' + o.id + '" onclick="rxAct(\'chgai\',\'' + o.id + '\')">Change</button><button type="button" class="op-lk" data-fk="rmd' + o.id + '" onclick="rxAct(\'rmord\',\'' + o.id + '\')">Ignore</button></div>';
   if(ws.length) h += '<ul class="rp-pw2">' + ws.map(function(w){ return rxWarnHtml(w, st); }).join('') + '</ul>';
-  h += '</div>' + (o.ai ? '' : '<button type="button" class="rp-px" data-fk="rm' + o.id + '" aria-label="Remove ' + csEsc(o.drug) + '" onclick="rxAct(\'rmord\',\'' + o.id + '\')">' + rxIc('close') + '</button>') + '</li>';
+  h += '</div>' + (o.ai ? '' : '<button type="button" class="rp-px" data-fk="rm' + o.id + '" aria-label="Remove ' + csEsc(o.drug) + ' from the pad" onclick="rxAct(\'rmord\',\'' + o.id + '\')">' + rxIc('close') + '</button>') + '</li>';
   return h;
 }
+/* ---- add a drug: a drug reference with DIN (DEMO: invented DINs, modelled on Health Canada's Drug Product Database), spelling help,
+   and free text with a soft notice (Daniel, 31 Oct) ---- */
+function rxDin(lib){ return '0000' + ('0000' + (RX_LIB.indexOf(lib) + 101)).slice(-4); }
+function rxLev(a, b){
+  var m = a.length, n = b.length, d = []; for(var i = 0; i <= m; i++){ d[i] = [i]; } for(var j = 0; j <= n; j++) d[0][j] = j;
+  for(i = 1; i <= m; i++) for(j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return d[m][n];
+}
+function rxPadSearchHtml(){
+  var raw = (RX_UI.q || '').trim(), q = raw.toLowerCase(); if(!q) return '';
+  var words = q.split(/\s+/), hits = RX_LIB.filter(function(x){ var hay = (x.name + ' ' + x.strength + ' ' + x.form + ' ' + rxDin(x)).toLowerCase(); return words.every(function(w){ return hay.indexOf(w) > -1; }); }).slice(0, 6);
+  var h = '';
+  if(hits.length) h += '<ul class="rp-sl2" aria-label="Drug reference, demo">' + hits.map(function(x){
+    return '<li><button type="button" data-fk="sr' + x.k + '" onclick="rxAct(\'addlib\',\'pad\',\'' + x.k + '\')"><b>' + csEsc(x.name + ' ' + x.strength) + '</b> ' + csEsc(x.form) + (x.s1a ? ', Schedule 1A' : '') + '<span>DIN ' + rxDin(x) + ' (demo)</span></button></li>';
+  }).join('') + '</ul>';
+  else {
+    var w0 = words[0], names = {}, sug = [];
+    RX_LIB.forEach(function(x){ var nm = x.name.toLowerCase().split(/[\s-]/)[0]; if(!names[nm]){ names[nm] = x; } });
+    Object.keys(names).forEach(function(nm){ var dd = rxLev(w0, nm.slice(0, Math.max(w0.length, Math.min(nm.length, w0.length + 2)))); var full = rxLev(w0, nm); var s = Math.min(dd, full); if(s <= Math.max(2, Math.floor(w0.length / 3))) sug.push([s, names[nm].name]); });
+    sug.sort(function(a, b){ return a[0] - b[0]; });
+    if(sug.length) h += '<p class="rp-dym">Did you mean ' + sug.slice(0, 3).map(function(s){ return '<button type="button" class="op-lk" data-fk="dym' + s[1] + '" onclick="rxAct(\'dym\',' + csEsc(JSON.stringify(s[1])) + ')">' + csEsc(s[1]) + '</button>'; }).join(', ') + '?</p>';
+    else h += '<p class="rp-rs">No match in the drug reference.</p>';
+  }
+  h += '<button type="button" class="op-lk rp-free" data-fk="addfree" onclick="rxAct(\'addfree\')">' + rxIc('plus') + 'Add “' + csEsc(raw) + '” as written</button>';
+  return h + '<p class="rp-rs">Drug reference: demo list with demo DIN numbers, modelled on Health Canada’s Drug Product Database.</p>';
+}
 function rxPadAddHtml(){
-  return '<div class="rp-padd"><label class="rp-vh" for="rx-q">Add a drug</label><input type="search" id="rx-q" data-fk="q" autocomplete="off" placeholder="Add a drug" value="' + csEsc(RX_UI.q || '') + '" oninput="rxSearch(this.value,\'pad\')">' +
-    '<div id="rx-sr">' + rxSearchHtml('pad') + '</div>' +
+  return '<div class="rp-padd"><label class="rp-vh" for="rx-q">Add a drug</label><input type="search" id="rx-q" data-fk="q" autocomplete="off" placeholder="Add a drug: name or DIN" value="' + csEsc(RX_UI.q || '') + '" oninput="rxSearch(this.value,\'pad\')">' +
+    '<div id="rx-sr">' + rxPadSearchHtml() + '</div>' +
     '<div class="rp-quick">' + RX_QUICK.map(function(q, i){ var l = rxLib(q.key); return '<button type="button" class="rp-chip" data-fk="qk' + i + '" title="' + csEsc(l.name + ' ' + l.strength) + '" onclick="rxAct(\'quick\',' + i + ')">' + csEsc(q.label) + '</button>'; }).join('') +
     (RX_UI.favs ? RX_FAVS.map(function(f, i){ return '<button type="button" class="rp-chip" data-fk="fv' + i + '" onclick="rxAct(\'addfav\',\'pad\',' + i + ')">' + rxIc('star') + csEsc(f.drug + ' ' + f.dose) + '</button>'; }).join('') : '') +
     '<button type="button" class="op-lk" data-fk="favs" aria-expanded="' + !!RX_UI.favs + '" onclick="RX_UI.favs=!RX_UI.favs;rxRender()">' + (RX_UI.favs ? 'Fewer' : rxIc('star') + 'Favourites') + '</button></div></div>';
 }
+/* ---- after signing: anticipate the next move, only when today's note says labs or imaging come next (Daniel, 31 Oct) ---- */
+var RX_LABWORDS = [[/\blipids?\b|cholesterol/i, 'lip-f'], [/\bhba1c\b|\ba1c\b/i, 'a1c'], [/creatinine|\begfr\b|kidney function/i, 'cr'], [/\bcbc\b|blood count/i, 'hem-prof'], [/ferritin/i, 'hem-fer'], [/\btsh\b|thyroid/i, 'thy-m']];
+function rxNextForms(){
+  var t = rxNoteText(), out = [], m;
+  if((m = /\b(requisition for|bloodwork|blood work|blood tests?|labs\b|lipids?|hba1c|a1c|creatinine|egfr|ferritin|cbc|tsh)\b/i.exec(t)) && !/^\s*$/.test(t)){
+    var q = rxSentence(t, m.index), pre = RX_LABWORDS.filter(function(w){ return w[0].test(q); }).map(function(w){ return w[1]; });
+    out.push({k:'lab', label:'lab requisition', quote:q, pre:pre});
+  }
+  if((m = /\b(x-?ray|ultrasound|ct scan|mri|echocardiogram|mammogram|imaging)\b/i.exec(t))) out.push({k:'img', label:'imaging requisition', quote:rxSentence(t, m.index)});
+  return out;
+}
+function rxNextHtml(st){
+  if(!st.status.length || rxLocked()) return '';
+  var N = rxNextForms().filter(function(x){ return !(st.nextDone || {})[x.k]; }); if(!N.length) return '';
+  return '<section class="rp-card rp-next" aria-labelledby="rx-nx-h"><h3 id="rx-nx-h">Next, as per your note</h3>' + N.map(function(x, i){
+    return '<p class="rp-rs">“' + csEsc(x.quote.length > 140 ? x.quote.slice(0, 137) + '…' : x.quote) + '”</p><button type="button" class="btn' + (i ? '' : ' dark') + '"' + (i ? '' : ' id="rx-next"') + ' data-fk="next' + x.k + '" onclick="rxAct(\'next\',\'' + x.k + '\')">' + rxIc('arrowup') + 'Open the ' + x.label + '</button>';
+  }).join('') + '</section>';
+}
 function rxPadHtml(st){
   rxPadSync(st);
-  var ords = rxPadOrders(st), stops = rxStops(st), sf = rxSafety(st), h = '', left = rxRecLeft(st);
-  if(st.status.length) h += '<section class="rp-card" id="rx-status" aria-label="Sent today">' + rxStatusHtml(st) + '</section>';
+  var ords = rxPadOrders(st), stops = rxStops(st), sf = rxSafety(st), h = '';
+  if(st.status.length) h += '<section class="rp-card" id="rx-status" aria-label="Sent today">' + rxStatusHtml(st) + '</section>' + rxNextHtml(st);
   h += '<article class="rp-paper" aria-label="Prescription pad"><header class="rp-ph2"><span class="rp-rx" aria-hidden="true">R<i>x</i></span><p class="rp-title">Prescription</p><p class="rp-dt2">' + rxDate(new Date()) + ' ' + new Date().getFullYear() + '</p></header>';
   h += ords.length || stops.length ? '<ol class="rp-pls">' + ords.map(function(o, i){ return rxPadLine(st, o, i, sf); }).join('') +
       stops.map(function(x){ return '<li class="rp-pl stop"><div class="rp-pb2"><p class="rp-pk"><i>Stop</i></p><p class="rp-pd"><b>' + csEsc(rxRowTitle(x)) + '</b></p><p class="rp-rs">' + (x.out ? 'Chart note only; prescribed by ' + csEsc(x.by) + '.' : 'A note goes to the pharmacy.') + '</p></div></li>'; }).join('') + '</ol>'
-    : '<p class="rp-blank">Nothing on the pad yet.</p>';
+    : '<p class="rp-blank">Nothing on the pad yet. Continue a drug on the left, or add one.</p>';
   if(!rxLocked()) h += rxPadAddHtml();
   var n = ords.length + stops.length;
-  h += '<footer class="rp-pf"><p class="rp-left">Left: ' + (st.recon ? 'list reconciled' : left ? left + ' to review' + (st.matchOk ? '' : ' · confirm matches') : 'sign off the list') + ' · ' + n + (n === 1 ? ' line' : ' lines') + ' on the pad</p>' +
+  h += '<footer class="rp-pf"><p class="rp-left">' + n + (n === 1 ? ' line' : ' lines') + ' on the pad · medication list ' + (st.recon ? 'signed off' : 'not signed off yet') + '</p>' +
     '<p class="rp-sigl"><span>Signature</span><b></b></p></footer></article>';
   return h;
 }
+/* the bar: Sign and fax only (Daniel, 31 Oct: prescriptions do not go to the MOA; the MOA only handles a fax that fails) */
 function rxBarPad(st){
   if(rxLocked()) return '<button type="button" class="btn dark" data-fk="done" id="rx-done" onclick="rxClose()">Close</button>';
   var ords = rxPadOrders(st), stops = rxStops(st), sf = rxSafety(st), ph = rxPharmName(st), moa = MOA_ON_SERVICE.split(' ')[0], why = '';
   var drafts = ords.filter(function(o){ return o.ai; }).length;
   if(!ords.length && !stops.length) why = '';
-  else if(drafts) why = drafts === 1 ? 'Accept or remove the AI draft.' : 'Accept or remove the ' + drafts + ' AI drafts.';
+  else if(drafts) why = drafts === 1 ? 'Add or ignore the Cedar draft.' : 'Add or ignore the ' + drafts + ' Cedar drafts.';
   else if(sf.block.length) why = 'Schedule 1A cannot be faxed. Remove it.';
   else if(sf.open.length) why = sf.open.length === 1 ? 'One warning needs a reason or removal.' : sf.open.length + ' warnings need a reason or removal.';
   var dis = !ords.length && !stops.length || !!why, cnt = ords.length + stops.length;
   if(RX_UI.pharmEdit && !why) return '<div class="rp-chips rp-bm" role="group" aria-label="Choose a pharmacy">' + RX_PHARMS.map(function(p, i){ return '<button type="button" class="rp-chip" data-fk="ph' + i + '" aria-pressed="' + (p === ph) + '" onclick="rxAct(\'pharm\',' + i + ')">' + csEsc(p) + '</button>'; }).join('') + '</div>';
-  return '<p class="rp-bm" id="rx-why">' + (why ? csEsc(why) : 'To <b>' + csEsc(ph || 'no pharmacy on file') + '</b> <button type="button" class="op-lk" data-fk="phchg" onclick="rxAct(\'phedit\')">Change</button>') + '</p>' +
-    '<button type="button" class="btn" id="rx-moa" data-fk="moa"' + (dis ? ' disabled' : '') + ' onclick="rxSign(\'moa\')">Sign, ' + csEsc(moa) + ' sends</button>' +
-    '<button type="button" class="btn dark" id="rx-fax" data-fk="fax"' + (dis || !ph ? ' disabled' : '') + ' onclick="rxSign(\'fax\')">Sign and fax' + (cnt ? ' (' + cnt + ')' : '') + '</button>';
+  return '<p class="rp-bm" id="rx-why">' + (why ? csEsc(why) : 'To <b>' + csEsc(ph || 'no pharmacy on file') + '</b> <button type="button" class="op-lk" data-fk="phchg" onclick="rxAct(\'phedit\')">Change</button>' +
+      '<span class="rp-src"> · If the fax fails, ' + csEsc(moa) + ' resends it.</span>') + '</p>' +
+    '<button type="button" class="btn dark" id="rx-fax" data-fk="fax"' + (dis || !ph ? ' disabled' : '') + ' onclick="rxSign(\'fax\')">' + rxIc('arrowup') + 'Sign and fax' + (cnt ? ' (' + cnt + ')' : '') + '</button>';
 }
 /* ---- actions ---- */
 RX_ACT.quick = function(i){
@@ -14331,54 +14649,112 @@ RX_ACT.quick = function(i){
   st.orders.push(rxMkOrder(st, {drug:l.name, key:l.k, strength:l.strength, form:l.form, freq:l.freq, per:q.per || 1}, {src:'added', kind:'new', days:q.days, repeats:0, tag:q.label}));
   rxRender();
 };
-RX_ACT.recsrc = function(k){ var st = rxState(PC_CURRENT); if(st.recSrc !== k){ st.recSrc = k; st.ans = {}; st.matchOk = false; } rxRender(); };
-RX_ACT.upload = function(){ var st = rxState(PC_CURRENT); st.upDone = true; rxLog(st, 'Medication profile uploaded; Cedar read it'); rxRender(); toast('Read by Cedar. Check every row.'); };
-RX_ACT.ans = function(id, v){ var st = rxState(PC_CURRENT); st.ans = st.ans || {}; if(st.ans[id] === v) delete st.ans[id]; else st.ans[id] = v; rxRender(); };
-RX_ACT.matchok = function(){ var st = rxState(PC_CURRENT); st.matchOk = !st.matchOk; rxRender(); };
-/* a running-out chip adds the renewal once the medicine is confirmed in the list */
-RX_ACT.low = function(id){
-  var st = rxState(PC_CURRENT), it = rxRecModel(st).filter(function(x){ return x.id === id; })[0]; if(!it) return;
-  if(st.orders.some(function(o){ return !o.sent && o.drug === it.drug; })) return;
-  if(!rxTaking(st, it)){ toast('Confirm ' + it.drug + ' in the list first'); var tr = document.querySelector('#rx-main [data-fk="rr' + id + '"]'); if(tr){ tr.scrollIntoView({block:'center'}); tr.focus({preventScroll:true}); } return; }
-  var r = it.row, m = it.simple, a = (st.ans || {})[id], lib = it.lib;
-  var strength = a === 't2' ? r.strength : (m ? m.dose : r.strength), k = lib ? (RX_LIB.filter(function(x){ return x.name === lib.name && x.strength === strength; })[0] || lib).k : null;
-  st.orders.push(rxMkOrder(st, {drug:it.drug, key:k, strength:strength, form:(r && r.form) || 'tablet', freq:(r && r.freq) || (m && m.freq) || 'once daily', per:(r && r.per) || 1},
-    {src:'added', kind:'renew', replaces:(rxRows(st).filter(function(x){ return x.drug === it.drug; })[0] || {}).id || null, days:lib && lib.every ? lib.every : 90, repeats:lib ? lib.rep || 0 : 0}));
-  rxLog(st, 'Renewal on the pad: ' + it.drug); rxRender();
+RX_ACT.recsrc = function(k){ var st = rxState(PC_CURRENT); st.recSrc = k; rxRender(); };
+RX_ACT.upagain = function(){ var st = rxState(PC_CURRENT); st.upDone = false; st.upImg = null; st.upName = ''; rxRender(); var p = document.querySelector('#rx-main .rp-paste'); if(p) p.focus(); };
+RX_ACT.pastebtn = function(){
+  /* the button asks the browser for the clipboard; where that is not allowed, Cmd/Ctrl+V still works */
+  var hint = function(){ toast('Press ⌘V on a Mac or Ctrl+V to paste the screenshot'); var p = document.querySelector('#rx-main .rp-paste'); if(p) p.focus(); };
+  if(!navigator.clipboard || !navigator.clipboard.read){ hint(); return; }
+  navigator.clipboard.read().then(function(items){
+    for(var i = 0; i < items.length; i++){ var t = items[i].types.filter(function(x){ return /^image\//.test(x); })[0];
+      if(t){ return items[i].getType(t).then(function(b){ rxReadImage(new File([b], 'image.png', {type:t}), 'Pasted screenshot'); }); } }
+    hint();
+  }).catch(hint);
 };
-RX_ACT.accept = function(oid){ var st = rxState(PC_CURRENT), o = rxOrdById(st, oid); if(!o) return; o.ai = false; o.tag = o.tag; rxLog(st, 'Accepted the AI draft: ' + o.drug); rxRender(); };
-RX_ACT.chgdrug = function(oid){ var st = rxState(PC_CURRENT), o = rxOrdById(st, oid); if(!o) return; st.orders = st.orders.filter(function(x){ return x.id !== oid; }); RX_UI.q = o.drug.split(' ')[0]; rxRender(); var q = document.getElementById('rx-q'); if(q) q.focus(); };
+function rxStrengthKey(it, strength){ var lib = it.lib; if(!lib) return null; return (RX_LIB.filter(function(x){ return x.name === lib.name && rxSame(x.strength, strength); })[0] || lib).k; }
+function rxItemOrderNew(st, it, kind){
+  var r = it.row, m = it.simple, strength = it.conf ? r.strength : m ? m.dose : r.strength, lib = it.lib, cr = rxRows(st).filter(function(x){ return x.drug === it.drug; })[0];
+  var days = lib && lib.every ? lib.every : r && r.prn ? 30 : it.kind === 'short' ? (r.supply || 7) : 90;
+  return rxMkOrder(st, {drug:it.drug, key:rxStrengthKey(it, strength), strength:strength, form:(r && r.form) || (m && (m.form || 'tablets').replace(/s$/, '')) || 'tablet',
+    freq:(r && !r.prn && r.freq) || (m && m.freq) || (lib && lib.freq) || 'once daily', per:(r && r.per) || 1},
+    {src:'added', kind:kind, item:it.id, replaces:cr ? cr.id : null, days:days, repeats:lib ? lib.rep || 0 : 0, tag:it.side === 'pn' ? 'prescribed before by ' + r.by : ''});
+}
+/* Continue: the drug stays in the list (its button pressed) and appears on the pad; pressing again takes it off the pad */
+RX_ACT.cont = function(id){
+  var st = rxState(PC_CURRENT), it = rxItem(st, id); if(!it || rxLocked()) return;
+  var o = rxItemOrder(st, it);
+  if(o && o.kind !== 'change'){ st.orders = st.orders.filter(function(x){ return x !== o; }); rxLog(st, 'Taken off the pad: ' + it.drug); rxRender(); return; }
+  if(it.kind === 'dose' && !it.conf && !o){ toast('Confirm the PharmaNet dose or adjust it first'); return; }
+  if(st.stop2) delete st.stop2[id];
+  if(o) st.orders = st.orders.filter(function(x){ return x !== o; });
+  st.orders.push(rxItemOrderNew(st, it, 'renew')); rxLog(st, 'Continue, on the pad: ' + it.drug); rxRender();
+};
+/* Adjust dose: on the pad as a change, with the strength chooser open */
+RX_ACT.adj = function(id){
+  var st = rxState(PC_CURRENT), it = rxItem(st, id); if(!it || rxLocked()) return;
+  var o = rxItemOrder(st, it);
+  if(o && o.kind === 'change' && !o.ai){ st.orders = st.orders.filter(function(x){ return x !== o; }); RX_UI.edit = null; rxRender(); return; }
+  if(st.stop2) delete st.stop2[id];
+  if(o) st.orders = st.orders.filter(function(x){ return x !== o; });
+  var n = rxItemOrderNew(st, it, 'change'); st.orders.push(n); RX_UI.edit = {oid:n.id, part:'dose'}; rxLog(st, 'Adjust dose, on the pad: ' + it.drug); rxRender();
+  var b = document.querySelector('#rx-rail [data-fk="pt' + n.id + 'dose"]'); if(b){ b.scrollIntoView({block:'nearest'}); b.focus({preventScroll:true}); }
+};
+/* Stop: a stop line on the pad (a note to the pharmacy for Simple's own prescriptions, a chart note for anyone else's) */
+RX_ACT.stp = function(id){
+  var st = rxState(PC_CURRENT), it = rxItem(st, id); if(!it || rxLocked()) return;
+  st.stop2 = st.stop2 || {};
+  if(st.stop2[id]){ delete st.stop2[id]; rxRender(); return; }
+  var r = it.row, m = it.simple;
+  st.orders = st.orders.filter(function(o){ return o.sent || o.drug !== it.drug; });
+  st.stop2[id] = {id:'x' + id, item:id, drug:it.drug, strength:m ? m.dose : r.strength, form:(r && r.form) || 'tablet', out:!(m && (!r || r.by === 'Simple Rx')), by:r ? r.by : RX_DR};
+  rxLog(st, 'Stop: ' + it.drug); rxRender();
+};
+/* Confirm: the PharmaNet version goes to the medication list, not the pad ("as per PharmaNet it's actually 10 mg"); a drug prescribed
+   elsewhere joins the list marked with its prescriber. Pressing again undoes it. */
+RX_ACT.conf = function(id){
+  var st = rxState(PC_CURRENT), it = rxItem(st, id), name = PC_CURRENT; if(!it || !it.row || rxLocked()) return;
+  var L = (RX_MEDS[name] = RX_MEDS[name] || []), r = it.row, at = rxDate(new Date());
+  if(it.side === 'simple'){
+    st.conf2 = st.conf2 || {}; var m = it.simple, c = st.conf2[it.drug];
+    if(c){ m.dose = c.from; delete m.pn; delete st.conf2[it.drug]; rxLog(st, 'Undid the confirmation: ' + it.drug); }
+    else { st.conf2[it.drug] = {from:m.dose, to:r.strength, by:r.by, at:rxNow()}; m.dose = r.strength; m.pn = 'dose confirmed ' + at + ' (' + r.by + (r.spec ? ', ' + r.spec : '') + ')'; rxLog(st, 'Confirmed ' + it.drug + ' ' + r.strength + ' as per PharmaNet'); }
+  } else {
+    var i = L.map(function(x){ return x.pnConf ? x.drug : null; }).indexOf(it.drug);
+    if(i > -1){ L.splice(i, 1); rxLog(st, 'Undid the confirmation: ' + it.drug); }
+    else { L.push({drug:it.drug, dose:r.strength, freq:r.prn ? 'as needed' : r.freq, form:(r.form || 'tablet') + 's', last:rxDate(it.filled), pnConf:true, by:r.by,
+      pn:'prescribed by ' + r.by + (r.spec ? ', ' + r.spec : '') + ', not a Simple Care doctor; confirmed with the patient ' + at}); rxLog(st, 'Confirmed ' + it.drug + ' (prescribed by ' + r.by + ')'); }
+  }
+  if(typeof renderMedRail === 'function') renderMedRail(name);
+  rxRender();
+};
+RX_ACT.accept = function(oid){ var st = rxState(PC_CURRENT), o = rxOrdById(st, oid); if(!o) return; o.ai = false; rxLog(st, 'Added the Cedar draft: ' + o.drug); rxRender(); };
+RX_ACT.chgai = function(oid){ var st = rxState(PC_CURRENT), o = rxOrdById(st, oid); if(!o) return; o.ai = false; RX_UI.edit = {oid:oid, part:'dose'}; rxLog(st, 'Changed the Cedar draft: ' + o.drug); rxRender();
+  var b = document.querySelector('#rx-rail [data-fk="pt' + oid + 'dose"]'); if(b) b.focus(); };
+RX_ACT.dym = function(n){ RX_UI.q = n; rxRender(); var q = document.getElementById('rx-q'); if(q){ q.focus(); q.setSelectionRange(q.value.length, q.value.length); } };
+RX_ACT.addfree = function(){
+  var st = rxState(PC_CURRENT), t = (RX_UI.q || '').trim(); if(!t) return;
+  st.orders.push(rxMkOrder(st, {drug:t.charAt(0).toUpperCase() + t.slice(1), key:null, strength:'', form:'unit', freq:'once daily', per:1}, {src:'added', kind:'new', days:30, repeats:0, free:true}));
+  RX_UI.q = ''; rxLog(st, 'Added as written: ' + t); rxRender();
+};
 RX_ACT.askph = function(){
   var st = rxState(PC_CURRENT), ph = rxPharmName(st) || 'the patient’s pharmacy';
   moaTask({patient:PC_CURRENT, type:'Prescriptions', prio:'routine', title:'Ask ' + ph + ' to verify medications',
     note:'Signed by ' + RX_DR + ' ' + rxNow() + '. Please verify every medication with the patient’s bottles and fax back the list. Patient asked to bring their bottles.'});
   st.askPharm = rxNow(); rxLog(st, 'Asked ' + ph + ' to verify the medication list'); rxRender(); toast('Signed · request sent to ' + MOA_ON_SERVICE);
 };
-/* signing off writes the result into the medication list: what the patient takes, at the dose they take */
+/* signing off the new medication list: confirmations are already on the list; this records who checked it with the patient, and when */
 RX_ACT.recsign = function(){
-  var st = rxState(PC_CURRENT), name = PC_CURRENT, at = rxNow(), M = rxRecModel(st), L = (RX_MEDS[name] = RX_MEDS[name] || []), taking = 0, stopped = 0;
-  var src = (RX_SRC2.filter(function(x){ return x[0] === (st.recSrc || 'pharmanet'); })[0] || [])[1];
-  M.forEach(function(it){
-    var a = (st.ans || {})[it.id], m = it.simple, r = it.row;
-    var drop = function(){ for(var i = L.length - 1; i >= 0; i--){ if(L[i].drug === it.drug) L.splice(i, 1); } };
-    if(rxTaking(st, it)){
-      taking++;
-      if(!m) L.push({drug:it.drug, dose:r.strength, freq:r.freq, form:r.form + 's', last:rxDate(it.filled)});
-      else if(a === 't2') m.dose = r.strength;
-      else if(a === 'other' && (st.oth || {})[it.id]) m.note = st.oth[it.id];
-    } else if(a === 'stop' || a === 'never' || a === 'done'){ if(m){ drop(); stopped++; } }
-  });
-  st.recon = {date:rxDate(new Date()) + ', ' + at, src:src}; st.ans = {}; st.matchOk = false;
+  var st = rxState(PC_CURRENT), name = PC_CURRENT, at = rxNow(), M = rxRecModel(st), src = rxSrcName(st);
+  if(rxDiffLeft(st)) return;
+  var L = rxNewList(st, M), stops = Object.keys(st.stop2 || {}).length;
+  st.recon = {date:rxDate(new Date()) + ', ' + at, src:src};
   var n = document.getElementById('vc-note-input');
-  if(n && !n.readOnly && typeof nsAppend === 'function') nsAppend('plan', 'Medication reconciliation with the patient against ' + src + ': ' + taking + ' taking, ' + stopped + ' stopped. Signed off by ' + RX_DR + ' ' + at + '.');
+  if(n && !n.readOnly && typeof nsAppend === 'function') nsAppend('plan', 'Medication list checked with the patient against ' + (st.recSrc === 'patient' ? 'the patient’s account' : src) + ': ' + L.length + (L.length === 1 ? ' medicine' : ' medicines') + (stops ? ', ' + stops + ' to stop' : '') + '. Signed off by ' + RX_DR + ' ' + at + '.');
   if(typeof renderMedRail === 'function') renderMedRail(name);
-  rxLog(st, 'Medication list reconciled against ' + src); rxRender(); toast('Medication list signed off');
+  rxLog(st, 'Medication list signed off against ' + src); rxRender(); toast('Medication list signed off');
 };
 RX_ACT.reagain = function(){ var st = rxState(PC_CURRENT); st.recon = null; rxRender(); };
 RX_ACT.sendlist = function(){
   var st = rxState(PC_CURRENT), ph = rxPharmName(st) || 'the patient’s pharmacy';
-  moaTask({patient:PC_CURRENT, type:'Prescriptions', prio:'routine', title:'Fax the reconciled medication list to ' + ph, note:'Reconciled by ' + RX_DR + ' ' + st.recon.date + '. This is the patient’s current list.'});
+  moaTask({patient:PC_CURRENT, type:'Prescriptions', prio:'routine', title:'Fax the medication list to ' + ph, note:'Signed off by ' + RX_DR + ' ' + st.recon.date + '. This is the patient’s current list.'});
   st.recon.sentPharm = rxNow(); rxRender(); toast('List going to ' + ph);
+};
+/* the lab requisition opens over this panel with the test ticked; closing it comes back here (Daniel: "without leaving") */
+RX_ACT.orderkid = function(){ if(typeof opOpen === 'function') opOpen('lab', {pre:['cr'], from:'Kidney function is not on file (prescribing)'}); };
+RX_ACT.next = function(k){
+  var st = rxState(PC_CURRENT), x = rxNextForms().filter(function(f){ return f.k === k; })[0]; (st.nextDone = st.nextDone || {})[k] = true;
+  if(k === 'lab') opOpen('lab', {pre:x ? x.pre : [], from:'As per your note' + (x ? ': “' + x.quote + '”' : '')}); else opOpen('img');
+  rxRender();
 };
 /* ===== T-026 prescribing panel: JS end ===== */
 
@@ -20579,6 +20955,7 @@ function lrSet(id, on){
   if(on) OP.st.sel[id] = 1; else delete OP.st.sel[id];
 }
 function lrPick(id, on){ lrSet(id, on); opRender(); }
+function lrSetIn(s, id){ var x = LR_IT[id]; if(x.grp.one) x.grp.items.forEach(function(it){ delete s.sel[it.id]; }); s.sel[id] = 1; }
 function lrSec(sid){ var s = LR_SECS.filter(function(x){ return x.id === sid; })[0]; OP.st.open[sid] = !lrSecOpen(s); opRender(); }
 function lrPanel(k){
   var p = LR_PANELS.filter(function(x){ return x.k === k; })[0] || {ids:LR_FAVS.indexOf(k) > -1 ? [k] : []};
@@ -20638,7 +21015,7 @@ OP_K.lab = {
   noun:function(){ return 'the lab requisition'; },
   railLabel:function(){ return 'This requisition'; },
   noRail:true,   /* Ani, 26 Oct: one clean column; the chosen tests sit in the body */
-  fresh:function(name){ return lrFresh(name); },
+  fresh:function(name, arg){ var s = lrFresh(name); if(arg && arg.pre){ arg.pre.forEach(function(id){ if(LR_IT[id]) lrSetIn(s, id); }); s.preFrom = arg.from || ''; } return s; },
   selfLabel:function(){ return 'Sign and fax'; },
   okLine:function(){ return 'Both buttons sign it. You choose who sends it.'; },
   pvNote:function(){ return 'The requisition exactly as it will be faxed. Every field of the provincial form is on it.'; },
@@ -21483,6 +21860,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-10-26 20:42</div>
+  <div class="build-stamp">v2 · build 2026-11-02 16:40</div>
 </body>
 </html>

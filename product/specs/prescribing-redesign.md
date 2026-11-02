@@ -85,3 +85,63 @@ One panel, `#rx-panel` (`role="dialog"`, `aria-modal`, labelled by its heading),
 
 ### Needs Daniel / clinical-safety (nothing here is a clinical rule)
 All drugs, strengths, interaction pairs, kidney limits, maximum doses, Schedule 1A flags, standard repeats and fill dates are invented demo data. Needs: the drug-check source and rules; his favourites; the PharmaNet indication and frequency code lists (the indication code is left out until then); the real standard repeats per drug; what a Schedule 1A drug should do instead of fax; whether a drug the patient reports that is not on PharmaNet can be added in phase 1; whether "ask the MOA to send" stays after e-prescribing.
+
+## 31 Oct changes (T-032, built 2 Nov 2026)
+Source: Daniel's review of build 2026-10-26 20:42, `from-daniel/2026-10-31-meeting-review-of-prescribing-orders-chart.md`, section 1.
+Built in `simplecare-physician-portal-v2.html` (functions in the T-027 block: `rxRecModel`, `rxRecHtml`, `rxRecRow2`, `rxActsHtml`,
+`rxSupply`, `rxCedarFlag`, `rxNewListHtml`, `rxUpHtml`, `rxReadImage`, `rxStrip`, `rxPadLine`, `rxPadSearchHtml`, `rxNextForms`,
+`rxNextHtml`, `rxPadHtml`, `rxBarPad`; actions `RX_ACT.cont`, `.adj`, `.stp`, `.conf`, `.accept`, `.chgai`, `.addfree`, `.dym`,
+`.pastebtn`, `.orderkid`, `.next`, `.recsign`).
+
+**Top line.** Allergies and kidney function stay as the constant reminder, with a short "Today" line; no medications beside the concern.
+Kidney function not on file shows **Order kidney function**, which opens the lab requisition over the panel with Creatinine / eGFR ticked;
+closing it comes back to the same place. Allergy words are ink with the red on the icon (red text is for a critical value only).
+Needs Daniel: how old a kidney result is "out of date" (the demo only acts on "not on file").
+
+**The list, in Daniel's order** (one item per medicine; the row never moves when the doctor acts on it):
+1. **Due for renewal**: Simple Care's drugs with 7 days or less of supply (`RX_DUE = 7`, his "about 7 days"), fewest first, ties
+   alphabetical. Supply is in days: "27 days overdue", "4 days left", "Next dose in 4 days" (long-interval drugs).
+2. **PharmaNet differs**: Simple's drugs whose strength differs on PharmaNet, highlighted (barely tinted row, the two doses marked).
+3. **Other Simple Care medications**.
+4. A line, then **PharmaNet: not prescribed at Simple**: due first, then by last fill, newest first; prescriber shown with "not a Simple
+   Care doctor"; a soft "No Simple Care record" under the name (ink-faint, no tag, no alarm). Earlier fills of the same drug ride along
+   ("Also from Dr. S. Gill, Aug 2"). For a patient with no Simple history this is the whole list, headed "PharmaNet", with no Simple column
+   (demo: Korynn, new after a hospital stay).
+5. **Cedar flagged** (a quiet grey note on the PharmaNet section, with its source): DEMO rule, a drug marked controlled in the demo
+   library dispensed by 2 or more prescribers in the last 90 days (Gloria: tramadol from two prescribers). Needs Daniel: what Cedar flags,
+   and the window.
+6. **PharmaNet dispense history**: the raw fills, newest first (who, what, when, pharmacy, demo DIN), collapsed.
+Sources: PharmaNet live, **Uploaded file** (renamed from "Uploaded profile"), Patient only (no comparison column; supply reads "Ask the patient").
+
+**Actions per drug.** Continue (on the pad as a renewal; the button stays pressed; pressing again or removing it from the pad undoes it),
+Adjust dose (on the pad as a change with the strength chooser open), Stop (a stop line on the pad: a note to the pharmacy for Simple's own
+prescriptions, a chart note for anyone else's), Confirm (dose differences: the PharmaNet strength goes to the medication list, not the pad,
+marked with its prescriber; drugs prescribed elsewhere: join the list marked with their prescriber). Continue is off on an unconfirmed
+dose difference until the doctor confirms or adjusts it. After signing, a prescribed drug reads "Prescribed today".
+
+**The end state.** "New medication list" (collapsed, with its count) shows where the patient ends up; **Sign off the medication list**
+works once every dose difference has a decision. The word "reconciliation" is no longer on any action. The note line reads "Medication list
+checked with the patient against PharmaNet: N medicines. Signed off by …".
+
+**"Ask the pharmacy to verify": kept, as a secondary link** beside the source tabs (it files an MOA task to ask the pharmacy for the list
+when the doctor cannot settle it on the call). It is not a prescription route, so Daniel's "no MOA" rule does not apply to it.
+
+**The pad.** Cedar drafts from today's note or the call: "As per your note: “Start bisoprolol 2.5 mg daily alongside existing
+amlodipine.”" with a subtle "Cedar draft" and **Add**, **Change** (adds it and opens the strength chooser) or **Ignore**. The bar has
+**Sign and fax** only ("If the fax fails, <MOA> resends it."); "Sign, <MOA> sends" is removed (Daniel: "I can't really think of a use case
+where I would have this prescription directed to my MOA"). After signing, if today's note names labs or imaging, a card "Next, as per your
+note" quotes the line and offers **Open the lab requisition** (tests named in the line are ticked: lipids, HbA1c, creatinine, CBC, ferritin,
+TSH) or the imaging requisition; the button takes focus. Nothing is offered when the note says nothing.
+
+**Add a drug.** Search a drug reference (DEMO list with demo DIN numbers, labelled as modelled on Health Canada's Drug Product Database),
+by name, strength or DIN; spelling help ("Did you mean Amoxicillin?"); free text always allowed ("Add “…” as written") with a soft notice
+on the pad line: "Not in Health Canada’s drug list. It is sent as you wrote it." Needs: the real Drug Product Database feed.
+
+**Paste a screenshot.** In Uploaded file, Cmd+V or Ctrl+V anywhere in the panel reads an image from the clipboard (the `paste` event), and
+switches the source to Uploaded file; Paste (asks the browser for the clipboard, falls back to the shortcut), Upload a file, Take a photo.
+The image is shown above the rows as the source, can be hidden, and stays in the browser tab. In the demo the rows are sample rows, and the
+panel says so.
+
+**Demo data added** (invented): Gloria's denosumab is due in 4 days; tramadol fills from Dr. S. Gill and Dr. K. Brar; Korynn's PharmaNet
+profile (sertraline due, pantoprazole, a finished cephalexin course); more drugs in the demo library (tramadol, pantoprazole, cephalexin,
+azithromycin, losartan, rosuvastatin).

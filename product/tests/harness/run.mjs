@@ -183,13 +183,14 @@ try {
     check('UC-06', '06-10', 'Fax status goes "Sending to …" then "Delivered to … · patient copy sent"', ['REQ-RX-05'], /Sending to/.test(st1 || '') && /Delivered to .* patient copy sent/.test(st2 || ''), { at400ms: (st1 || '').slice(0, 120), at6s: (st2 || '').slice(0, 200) });
     check('UC-06', '06-11', 'The note gets the renewal line, and the record says "Signed by Dr. …" with a time', ['REQ-UI-06', 'REQ-RX-01'], /Rx renewal: .*Signed off by Dr\. \w+ \d{1,2}:\d{2}/.test(note1) && /Signed by Dr\. \w+, \d{1,2}:\d{2}/.test(st2 || ''), { noteHasLine: /Rx renewal/.test(note1), statusStamp: /Signed by/.test(st2 || '') });
     await b.shot(`${OUT}/shots/uc06-after-fax.png`);
-    // MOA route
+    // T-032 (Daniel, 31 Oct): prescriptions have no MOA route ("I can't really think of a use case where I would have this prescription directed
+    // to my MOA"); Sign and fax only, and the MOA only resends a fax that fails. Replaces the old "Sign and ask <MOA> to send" check.
     await prep(); await toStep3();
-    await click('#rx-moa'); await b.sleep(400);
-    const m1 = await text('#rx-status'); await b.sleep(7400); const m2 = await text('#rx-status');
-    const task = await E(`(DOC_TASKS[0]||{}).title + ' → ' + (DOC_TASKS[0]||{}).to`);
-    check('UC-06', '06-12', '"Sign and ask <MOA> to send" files one task and shows "Picked up by <MOA>"', ['REQ-RX-07', 'REQ-TK-03', 'REQ-TK-04'], /Sent to .*waiting/.test(m1 || '') && /Picked up by/.test(m2 || '') && /Fax prescriptions/.test(task), { first: (m1 || '').slice(0, 100), after7s: (m2 || '').slice(0, 120), task: task.replace(/→ .*/, '→ <MOA>') });
+    const nomoa = await E(`({moa: !!document.getElementById('rx-moa'), fax: !!document.getElementById('rx-fax'), bar: document.getElementById('rx-bar').innerText.replace(/\\s+/g,' ')})`);
+    check('UC-06', '06-12', 'Prescriptions are signed and faxed only: no "ask the MOA to send" button; the bar says the MOA resends a fax that fails (T-032)', ['REQ-RX-07'], !nomoa.moa && nomoa.fax && /If the fax fails, \w+ resends it/.test(nomoa.bar), nomoa);
     // T-026 safety: Schedule 1A is blocked from fax and electronic send; an override needs a typed reason and is stored
+    // 2 Nov: wrapped so a missing T-026 element records a fail instead of stopping the whole run (the drawer checks below never ran).
+    try {
     await b.open(BASE + '#chart:0', 1000);
     await E(`rxClose(true); rxOpen(); rxAct('import'); rxAct('confall'); rxAct('go2'); rxPending(rxState(PC_CURRENT)).forEach(p=>rxAct('appr',p.id)); (()=>{var p=rxProbs(rxState(PC_CURRENT))[0]; rxAct('adding',p.id); rxAct('addlib',p.id,'oxycodone-5')})(); rxAct('go3')`); await b.sleep(200);
     const blk = await E(`({fax: document.getElementById('rx-fax').disabled, moa: document.getElementById('rx-moa').disabled, why: document.getElementById('rx-why').innerText, safety: document.getElementById('rx-safety').innerText.replace(/\\s+/g,' ')})`);
@@ -202,6 +203,7 @@ try {
     await E(`document.getElementById('rx-ovt').value='Creatinine ordered today'; rxAct('ovsave', rxSafety(rxState(PC_CURRENT)).open[0].id)`); await b.sleep(100);
     const gate2 = await E(`({fax: document.getElementById('rx-fax').disabled, stored: Object.values(rxState(PC_CURRENT).overrides).map(o=>o.reason+' / '+o.by)})`);
     check('UC-06', '06-14', 'A safety warning on a prescribed drug needs an override with a typed reason before signing, and the reason is stored (T-026)', [], gate1.fax && /override with a reason/.test(gate1.why) && empty === true && gate2.fax === false && gate2.stored.length === 1, { gate1, emptyReasonStillBlocked: empty, gate2 });
+    } catch (e) { check('UC-06', '06-13/14', 'T-026 Schedule 1A block and override gate (could not run)', [], false, { error: String(e).slice(0, 200) }); }
   }
 
   // UC-07 Follow-up where the last plan sets the renewal (row 5: plan titrated the dose)
@@ -369,7 +371,9 @@ try {
       ms: [['the Action row', `v2Tab('orders', true)`, '.v2-orow[onclick="msOpen()"]'], ['the note toolbar', `csLayout('current'); csView('note')`, '#cs-acts .cs-tb[onclick="msOpen()"]']]
     };
     const NAME = { od: 'Order', rf: 'Refer', ms: 'Message' };
-    for (const k of ['od', 'rf', 'ms']) {
+    // 2 Nov: each block is wrapped so a stale selector records a fail and the run continues (od/rf were replaced by opOpen/refOpen in T-028/T-029).
+    const safe = async (id, name, fn) => { try { await fn(); } catch (e) { check('drawers', id, name + ' (could not run)', [], false, { error: String(e).slice(0, 200) }); } };
+    for (const k of ['od', 'rf', 'ms']) { await safe(`dr-${k}-1`, `${NAME[k]} opens from every caller`, async () => {
       const rows = [];
       for (const [label, prep, sel] of CALLERS[k]) {
         const log = (grab(), await b.open(BASE + '#chart:0', 1000));
@@ -383,9 +387,9 @@ try {
       }
       check('drawers', `dr-${k}-1`, `${NAME[k]} opens from every caller as a labelled dialog, Esc closes it and focus returns to the button (${CALLERS[k].map(x => x[0]).join(', ')})`, [],
         rows.every(r => r.vis && r.show && r.inDialog && r.role === 'dialog' && r.label && r.title && r.closed && r.back && r.errors === 0), rows);
-    }
+    }); }
     // Order and Refer: sign by both routes
-    for (const route of ['self', 'moa']) {
+    for (const route of ['self', 'moa']) { await safe(`dr-od-${route}`, `Order, ${route}`, async () => {
       (grab(), await b.open(BASE + '#chart:0', 1000)); await E(`v2Tab('orders', true)`); await b.sleep(300);
       const t0 = await E(`DOC_TASKS.length`);
       await E(`document.querySelector('.v2-orow[onclick="odOpen()"]').click()`); await b.sleep(400);
@@ -399,8 +403,8 @@ try {
       check('drawers', `dr-od-${route}`, `Order, "${route === 'self' ? 'Sign and send' : 'Sign and ask the MOA to send'}": nothing is sent before the press, it files a document, shows under Ordered and pending and in Results, and ${route === 'moa' ? 'files one MOA task' : 'files no task'}`, [],
         pre.dis && pre.sentBefore === 0 && /\S/.test(pre.ind) && eq.hA === eq.hB && Math.abs(eq.wA - eq.wB) < 3 && r.sent === 1 && r.route === route && r.tasks === t0 + (route === 'moa' ? 1 : 0) && /Chest X-ray/.test(r.lab) && /Complete blood count/.test(where.pending) && /Chest X-ray/.test(where.results) && where.docs,
         { pre, eq, r, where });
-    }
-    for (const route of ['self', 'moa']) {
+    }); }
+    for (const route of ['self', 'moa']) { await safe(`dr-rf-${route}`, `Refer, ${route}`, async () => {
       (grab(), await b.open(BASE + '#chart:0', 1000)); await E(`v2Tab('orders', true)`); await b.sleep(300);
       const t0 = await E(`DOC_TASKS.length`);
       await E(`document.querySelector('.v2-orow[onclick="rfOpen()"]').click()`); await b.sleep(400);
@@ -413,9 +417,9 @@ try {
       const where = await E(`(()=>{csOpenFull('consults'); var c=document.getElementById('cs-consults').innerText.replace(/\\s+/g,' '); csTab('documents'); var d=document.getElementById('cs-docs').innerText.replace(/\\s+/g,' '); return {consults:/Referral · Cardiology/.test(c), docs:/Referral · Cardiology · /.test(d)}})()`);
       check('drawers', `dr-rf-${route}`, `Refer, "${route === 'self' ? 'Sign and send' : 'Sign and ask the MOA to send'}": disabled until a specialty is chosen, attaches only what is ticked, files a document and a Consults entry, and ${route === 'moa' ? 'files one Referrals task' : 'files no task'}`, [],
         pre.dis && /\S/.test(pre.reason) && pre.att === 0 && r.sent === 1 && r.route === route && r.att === 'Recent results' && r.tasks === t0 + (route === 'moa' ? 1 : 0) && (route === 'self' || r.type === 'Referrals') && where.consults && where.docs, { pre, r, where });
-    }
+    }); }
     // Message: the notice is generic, the preview is the message, Send is a press, one filed item, no task
-    {
+    await safe('dr-ms-2', 'Message drawer', async () => {
       (grab(), await b.open(BASE + '#chart:0', 1000)); await E(`v2Tab('orders', true)`); await b.sleep(300);
       const t0 = await E(`DOC_TASKS.length`);
       await E(`document.querySelector('.v2-orow[onclick="msOpen()"]').click()`); await b.sleep(400);
@@ -428,9 +432,9 @@ try {
       const where = await E(`(()=>{csOpenFull('messages'); return document.getElementById('cs-msgs').innerText.replace(/\\s+/g,' ')})()`);
       check('drawers', 'dr-ms-2', 'Message: three templates, the notice is only "You have a new message from your care team", the preview shows exactly the message, nothing is sent until Send, one item in Chart > Messages, no task, a toast',
         [], pre.dis && pre.tpl.length === 3 && pre.notice === 'You have a new message from your care team' && pre.sent === 0 && mid.text === mid.pv && mid.sentYet === 0 && r.sent === 1 && r.tasks === t0 && /sent/i.test(r.toast) && /Hello/.test(where), { pre, mid, r, where: where.slice(0, 160) });
-    }
+    });
     // design rules inside each open drawer, and the console
-    {
+    await safe('dr-design', 'The three drawers design rules', async () => {
       const bad = {};
       for (const [k, open] of [['od', 'odOpen()'], ['rf', 'rfOpen()'], ['ms', 'msOpen()']]) {
         (grab(), await b.open(BASE + '#chart:0', 1000)); await E(open); await b.sleep(400);
@@ -439,7 +443,7 @@ try {
           if(e.tagName==='BUTTON'&&e.getBoundingClientRect().height<43.5)o.buttons.push((e.id||e.className)+' '+e.getBoundingClientRect().height);});return o})()`);
       }
       check('drawers', 'dr-design', 'The three drawers: no text under 14px, buttons 44px, no uppercase, ink text only', ['REQ-UI-01', 'REQ-UI-02'], Object.values(bad).every(o => !o.small.length && !o.buttons.length && !o.upper.length && !o.text.length), bad);
-    }
+    });
     // the care plan's Order now still works, and Prescribe and Task MOA are untouched
     {
       (grab(), await b.open(BASE + '#chart:0', 1000));
