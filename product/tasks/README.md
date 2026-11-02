@@ -39,6 +39,12 @@ tasks below are **Ready**, and waiting for Ani's go.
 | T-029 | Referral built from Daniel's referral forms | Design + build | P1 | `ux-designer` | `qa-engineer`, `accessibility` | Ready: needs his referral HTML |
 | T-030 | Create a medical note or document from the chart | Design + build | P1 | `ux-designer` | `qa-engineer`, `accessibility` | Ready: document types to confirm |
 | T-031 | Clinical flowsheets per condition | Design + build | P2 | `ux-designer` | `clinical-safety`, `qa-engineer` | Ready: needs the reference pack |
+| T-032 | Prescribing: list ordered by Due for renewal (days overdue), differences, Simple then PharmaNet; Continue keeps the row and adds to the pad; no MOA route; drug search with DIN; paste screenshot (Daniel, 31 Oct) | Design + build | P0 | `ux-designer` | `clinical-safety`, `qa-engineer` | In progress |
+| T-033 | Lab requisition: horizontal suggestions, Cedar panel, anticipated sections open, compact overview on top (31 Oct) | Design + build | P1 | `ux-designer` | `qa-engineer` | In progress |
+| T-034 | Imaging: one synthesized clinical-question field under 20 words (31 Oct) | Design + build | P1 | `ux-designer` | `qa-engineer` | In progress |
+| T-035 | Referral: more space, better letter, suggested specialist, synthesized reason and summary, source documents (31 Oct) | Design + build | P1 | `ux-designer` | `qa-engineer` | In progress |
+| T-036 | Note to patient (renamed) and visit summary to the patient, doctor signs, on/off per doctor (31 Oct) | Design + build | P1 | `ux-designer` | `clinical-safety`, `privacy-security` | Waiting for the requirements PDF |
+| T-037 | Chart review under intake summary, no repetition; results shown the LifeLabs way with reference range and two priors (31 Oct) | Design + build | P1 | `ux-designer` | `clinical-safety`, `qa-engineer` | Ready |
 
 **Recording files (local, never committed):**
 - `~/Downloads/Fixing Annoying Appointment Chat Flow.mp4`
