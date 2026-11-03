@@ -6265,6 +6265,10 @@
   #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-hd .kf-ai{margin-left:4px;}
   #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-h5{margin:12px 0 2px;font-size:15px;line-height:22px;font-weight:600;color:var(--ink-soft);}
   #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-op{border-top:0;padding-top:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-sec.cr-who{border-top:0;padding-top:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2s-pend-b .v2-pend-ord{margin:0 0 12px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2s-pend-b .v2-pend-ord .kf-h5{font-size:15px;font-weight:600;margin:0 0 6px;color:var(--ink-2,inherit);}
+  #screen-patientchart #pcv-c.cs-v2 #v2s-pend-b .v2-pend-ord[hidden]{display:none;}
   #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-op .kf-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-labs[hidden],#screen-patientchart #pcv-c.cs-v2 #v2-key .kf-op[hidden]{display:none;}
   #screen-patientchart .cs-lo-card .v2-loh{margin:0 0 4px;}
@@ -18368,7 +18372,13 @@ function v2RenderSide(name){
   var invH = typeof lrInvHtml === 'function' ? lrInvHtml(name) : {h:inv ? v2Lines(inv, name) : '', n:v2Count(inv)};
   v2SetSec('inv', invH.n, '', invH.h, !!invH.n);
   var over = pend ? pend[1].filter(function(x){ return x[4] === 'Overdue'; }).length : 0;
-  v2SetSec('pend', v2Count(pend), over ? '<span class="v2-chip warn">' + csIc('clock') + over + ' overdue</span>' : '', pend ? v2Lines(pend, name) : '', !!pend);
+  /* Orders and pending, in one place: the left Pending section (Ani, 3 Nov). New orders (lab, imaging) land here via the shared lab-orders mount. */
+  v2SetSec('pend', v2Count(pend), over ? '<span class="v2-chip warn">' + csIc('clock') + over + ' overdue</span>' : '',
+    '<div class="v2-pend-ord"><h5 class="kf-h5">Orders</h5><div class="lab-orders-mount"></div></div>' + (pend ? v2Lines(pend, name) : ''), true);
+  if(typeof renderLabOrders === 'function') renderLabOrders();
+  (function(){ var po = document.querySelector('#v2s-pend-b .v2-pend-ord'), mt = po && po.querySelector('.lab-orders-mount');
+    var none = !mt || /^\s*No (lab )?orders\.?\s*$/.test(mt.textContent); if(po) po.hidden = none;
+    var sec = v2El('v2s-pend'); if(sec) sec.hidden = !pend && none; })();
   /* Since you last saw: the chart's own section (renderSinceLast), moved here; hidden when it is */
   var slv = v2El('slv'), list = L ? (CS_SINCE[name] || csSinceGeneric(name)) : [];
   v2SetSec('since', list.length, '', null, !!(slv && !slv.hidden));
@@ -18406,7 +18416,7 @@ var CR_SYN = {
   'Gloria Mcdonald, 74F': [
     {t:'74-year-old woman with hypertension and type 2 diabetes.', src:[['Problem list', 'problems']]},
     {t:'Today’s chest pressure is the complaint she was seen for on Jun 25; its cause is not yet established.', src:[['Visit note, Jun 25', 'documents']]},
-    {t:'Cardiology (Jul 28) arranged a stress test for Sep 12 and asked you to start bisoprolol, not yet started. Internal medicine (Aug 26) ordered a 48-hour Holter. Neither result is back.', src:[['Consults', 'consults'], ['Care plan', 'careplan']]}
+    {t:'Cardiology (Jul 28) asked you to start bisoprolol; it is not started yet.', src:[['Consults', 'consults']]}
   ]
 };
 /* past medicines that matter for today's concern, from PharmaNet (Daniel: "for some concerns ... include past drugs from PharmaNet") */
@@ -18619,19 +18629,12 @@ function v2RenderKey(el, name, by){
   var pend = by['Pending'];
   el.hidden = false;
   CS.keyOpen = CS.keyOpen || {};
-  /* T-037 (Daniel, 31 Oct): Chart review is a short, synthesized picture of the patient, today's concern first: Ordered and pending (kept at the top,
-     21 Oct), who this patient is, and the medications with the concerns they treat. History, past visits, investigations and consult reports moved
+  /* T-037 (Daniel, 31 Oct): Chart review is a short, synthesized picture of the patient, today's concern first: who this patient is, and the medications with the concerns they treat. History, past visits, investigations and consult reports moved
      to the left Patient summary ("no repetition"). Cedar's mark and the AI label stay (AI text is marked); every line names its source and opens it. */
   var groups = crMedGroups(name), sents = crSentences(name, groups);
   var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Chart review</h3><span class="v2-chip kf-ai">Cedar &middot; AI</span></div>' +
-    '<p class="kf-note">Cedar&rsquo;s short picture of this patient from the chart and the data feeds, today&rsquo;s concern first. History, results and consult reports are in the Patient summary. Nothing here goes into your note without you.</p>';
-  /* 1. Ordered and pending, right at the top (Daniel, video 2: "I'm gonna wanna see right at the top because I need that information to make my assessments.
-        That's a rate limiting step ... not buried down here, it's too important."): the lab orders and where each stands, then what is pending */
-  var pl = kfLines(pend, name, null), over = pend ? pend[1].filter(function(x){ return x[4] === 'Overdue'; }).length : 0;
-  h += '<section class="kf-sec kf-op" aria-labelledby="kf-h-op"><h4 class="kf-h" id="kf-h-op">Ordered and pending' +
-      (over ? '<span class="v2-chip warn">' + csIc('clock') + over + ' overdue</span>' : '') + '</h4>' +
-    '<div class="kf-labs"><h5 class="kf-h5">Orders</h5><div class="lab-orders-mount"></div></div>' +
-    (pl ? '<div class="kf-pend"><h5 class="kf-h5">Pending</h5><div class="kf-lines">' + pl + '</div></div>' : '') + '</section>';
+    '<p class="kf-note">Cedar&rsquo;s short picture of this patient from the chart and the data feeds, today&rsquo;s concern first. History, results, consult reports, orders and pending items are in the Patient summary. Nothing here goes into your note without you.</p>';
+  /* Ordered and pending lives only in the left Patient summary (Ani, 3 Nov: "it should only be on the left side"; no repetition, Daniel 31 Oct). */
   /* 2. Who this patient is: a few synthesized sentences, each opening its source */
   if(sents.length) h += '<section class="kf-sec cr-who" aria-labelledby="kf-h-who"><h4 class="kf-h" id="kf-h-who">Who this patient is</h4><div class="kf-lines">' +
     sents.map(function(s){ return crLine({main:s.t, src:s.src.map(function(x){ return x[0]; }).join(' &middot; '), tab:s.src[0][1], cls:'cr-s'}); }).join('') + '</div></section>';
@@ -18641,11 +18644,6 @@ function v2RenderKey(el, name, by){
     (groups.length ? '<div class="kf-lines">' + groups.map(crGroupHtml).join('') + '</div>' : '<p class="v2-q kf-q">No medications recorded in Simple Care.</p>') +
     (pnKnown ? '' : '<p class="v2-q kf-q">PharmaNet not checked for this patient yet.</p>') + '</section>';
   el.innerHTML = h; paintPd(el);
-  /* the lab orders list paints every mount (here and in Chart > Results); display by exception: no lab orders, no sub-heading, and no section when nothing is pending either */
-  if(typeof renderLabOrders === 'function') renderLabOrders();
-  var labs = el.querySelector('.kf-labs'), mt = labs && labs.querySelector('.lab-orders-mount');
-  if(labs && mt && /^\s*No (lab )?orders\.?\s*$/.test(mt.textContent)) labs.hidden = true;
-  var op = el.querySelector('.kf-op'); if(op && labs && labs.hidden && !op.querySelector('.kf-pend')) op.hidden = true;
 }
 
 /* ---------- This visit: removed (Daniel, 12 Oct: "we can remove all of this") ----------
@@ -21514,7 +21512,7 @@ OP_K.lab = {
   doneHtml:function(e){ return opDoneHtml(e.route === 'moa' ? 'Signed and sent to ' + sdMoa() : 'Signed and faxed to the lab',
     [e.items.map(function(t){ return t.n; }).join(', ') + (e.stat ? ' (STAT)' : '') + '.',
      e.route === 'moa' ? sdMoa() + ' has a task to fax the requisition. You can follow it in Tasks.' : 'You faxed the requisition yourself.',
-     'Filed in Chart > Documents. It shows under Ordered and pending in Chart review, and in Chart > Results.'], e); }
+     'Filed in Chart > Documents. It shows under Pending in the Patient summary, and in Chart > Results.'], e); }
 };
 function lrTest(it, ctx){
   var on = lrHas(it.id);
@@ -22085,7 +22083,7 @@ OP_K.img = {
   doneHtml:function(e){ return opDoneHtml(e.route === 'moa' ? 'Signed and sent to ' + sdMoa() : 'Signed and faxed to radiology',
     [e.items[0].n + ' (' + {routine:'routine', urgent:'urgent', stat:'Stat'}[e.prio] + ').',
      e.route === 'moa' ? sdMoa() + ' has a task to fax the requisition. You can follow it in Tasks.' : 'You faxed the requisition yourself.',
-     'Filed in Chart > Documents. It shows under Ordered and pending in Chart review, and in Chart > Results.'], e); }
+     'Filed in Chart > Documents. It shows under Pending in the Patient summary, and in Chart > Results.'], e); }
 };
 function imgOpen(){ opOpen('img'); }
 /* the old single Order entry (any caller left over) asks for the lab requisition; imaging has its own entry */
@@ -22497,6 +22495,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-02 21:08</div>
+  <div class="build-stamp">v2 · build 2026-11-03 09:27</div>
 </body>
 </html>
