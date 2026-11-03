@@ -7112,6 +7112,60 @@ body:has(#op-panel.show) #callw{z-index:360;}
 #screen-patientchart #pcv-c.cs-v2 #v2-side .v2-sub{margin:14px 0 2px;font-size:15px;line-height:22px;font-weight:600;color:var(--ink-soft);}
 #screen-patientchart #pcv-c.cs-v2 #v2-key .cr-s .v2-l1{font-weight:400;font-size:15px;line-height:22px;color:var(--ink);}
 #screen-patientchart #pcv-c.cs-v2 #v2-key .cr-line .v2-l1 .v2-chip{margin-left:8px;}
+/* T-037 (Daniel, 31 Oct, section 8): results the LifeLabs way, quiet. Ink words, the value in Out of range or Within range, the word for the arrow,
+   the reference interval and the two earlier values with dates; red only on a critical value (and its icon). One look on every screen. */
+.lr-wrap{container-type:inline-size;width:100%;}
+.lr-t{width:100%;border-collapse:collapse;font-size:15px;line-height:22px;color:var(--ink);font-variant-numeric:tabular-nums;}
+.lr-t thead th{padding:0 12px 8px 0;text-align:left;font-size:14px;line-height:20px;font-weight:600;color:var(--ink-soft);border-bottom:1px solid var(--line);white-space:nowrap;}
+.lr-t tbody th,.lr-t tbody td{padding:10px 12px 10px 0;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);}
+.lr-t tbody tr:last-child > *{border-bottom:0;}
+.lr-t tbody th{font-weight:600;}
+.lr-t .lr-o .lr-v{font-weight:700;}
+.lr-t .lr-i .lr-v{font-weight:400;}
+.lr-v.crit{color:var(--crit-text) !important;}
+.lr-w{display:inline-flex;align-items:center;gap:4px;font-weight:600;color:var(--ink);white-space:nowrap;}
+.lr-w.in{font-weight:400;color:var(--ink-soft);}
+.lr-w.lr-lc{text-transform:lowercase;font-weight:400;}
+.lr-w .ic,.lr-w svg{width:16px;height:16px;color:var(--crit);flex:none;}
+.lr-t .lr-r{color:var(--ink-soft);white-space:nowrap;}
+.lr-pv{display:block;white-space:nowrap;}
+.lr-pv i,.lr-l i{font-style:normal;color:var(--ink-soft);}
+.lr-none{color:var(--ink-soft);}
+.lr-t .lr-x{text-align:right;white-space:nowrap;}
+#screen-review #rv-results .lr-t :is(thead th,tbody th):first-child{padding-left:12px;}
+@container (max-width:600px){
+  .lr-t thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  .lr-t,.lr-t tbody,.lr-t tr,.lr-t tbody th,.lr-t tbody td{display:block;}
+  .lr-t tr{padding:10px 0;border-bottom:1px solid var(--line);}
+  .lr-t tbody tr:last-child{border-bottom:0;}
+  .lr-t tbody th,.lr-t tbody td{padding:2px 0;border:0;}
+  .lr-t tbody td:empty{display:none;}
+  .lr-t tbody td[data-l]::before{content:attr(data-l) ": ";color:var(--ink-soft);font-weight:400;}
+  .lr-pv{display:inline;margin-right:10px;}
+  .lr-t .lr-x{text-align:left;}
+}
+/* Inbox rows: one line per out-of-range value, columns line up from row to row; they wrap on a narrow window */
+html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;flex-direction:column;align-items:stretch;gap:4px;}
+:is(#screen-inbox,#today-inbox-preview) .lr-l{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:14px;row-gap:0;font-size:15px;line-height:22px;color:var(--ink);font-variant-numeric:tabular-nums;}
+:is(#screen-inbox,#today-inbox-preview) .lr-l .lr-n{flex:0 0 120px;}
+:is(#screen-inbox,#today-inbox-preview) .lr-l .lr-vv{flex:0 0 175px;}
+:is(#screen-inbox,#today-inbox-preview) .lr-l .lr-v{font-weight:700;}
+:is(#screen-inbox,#today-inbox-preview) .lr-l .lr-r{flex:0 0 130px;font-size:14px;color:var(--ink-soft);}
+:is(#screen-inbox,#today-inbox-preview) .lr-l .lr-p{flex:1 1 120px;min-width:0;font-size:14px;color:var(--ink);}
+:is(#screen-inbox,#today-inbox-preview) .lr-l .lr-pv{display:inline-block;white-space:nowrap;}
+:is(#screen-inbox,#today-inbox-preview) .lr-l .lr-pv:not(:last-child)::after{content:",";margin-right:4px;}
+/* Home attention row and Needs attention: the word and the reference interval in quiet ink */
+#screen-today .al-val .lr-w{margin-left:6px;font-size:14.5px;}
+#screen-today .al-val .lr-aref{display:block;font-size:14px;font-weight:500;color:var(--ink-soft);}
+@media (max-width:1180px){ #screen-today .al-row .al-val{flex-wrap:wrap;white-space:normal;} #screen-today .al-val .lr-w{display:flex;flex-basis:100%;margin:2px 0 0;white-space:normal;} #screen-today .al-val .lr-aref{flex-basis:100%;} }
+#screen-patientchart .vca-t .lr-w{margin-left:6px;font-size:15px;}
+#screen-patientchart .lr-prev .lr-pv{display:inline;}
+#screen-patientchart .lr-prev .lr-pv:not(:last-child)::after{content:",";margin-right:4px;}
+#screen-patientchart #v2-side .lr-inv .lr-pv{display:inline;}
+#screen-patientchart #v2-side .lr-inv .lr-pv:not(:last-child)::after{content:",";margin-right:4px;}
+#screen-patientchart #v2-side .lr-inv .lr-pv i{color:inherit;}
+#screen-patientchart #vcp-results .lr-t .rs-src,#screen-patientchart #vcp-results .lr-t .rs-hist{font-weight:400;}
+#screen-patientchart #vcp-results .lr-t .rs-n{display:block;font-size:16px;}
 </style>
 </head>
 <body>
@@ -9546,8 +9600,9 @@ function renderCriticals(){
       '<span class="al-who"><span class="ic al-tone crit" role="img" aria-label="critical" data-pdic="crit"></span>'+
         '<b>'+c.patient+'</b><i>'+(c.age||'')+'</i></span>'+
       '<span class="al-test">'+cx.n+'</span>'+
-      '<span class="al-val critical"><b>'+cx.v+'</b> <u>'+cx.u+'</u>'+
-        '<span class="ic al-dir" role="img" aria-label="'+(up?'high':'low')+'" data-pdic="'+(up?'arrowup':'arrowdown')+'"></span></span>'+
+      /* T-037 (Daniel, 31 Oct: "explain or replace the arrow", the reference range "right there"): the word and the reference interval, quiet */
+      '<span class="al-val critical"><b>'+cx.v+'</b> <u>'+cx.u+'</u>'+lrWord(cx.f, cx.v)+
+        (cx.ref ? '<span class="lr-aref">Reference '+cx.ref+'</span>' : '')+'</span>'+
       /* Daniel, 29 Sep markup: the reference range, the diagnosis text and the source are crossed
          off. The row is the icon, the patient, the test and the value with its arrow. The range,
          the basis and the intake flag are one click away, on the review (and "Review intake"). */
@@ -11119,6 +11174,80 @@ var INBOX_ITEMS = [
     status:'signed-off', signedAt:'Mon, 4:12 PM', lab:'Eagle Ridge Imaging', impression:'Clear.', abnormal:false }
 ];
 
+/* ---------- T-037 Results the LifeLabs way (Daniel, 31 Oct review, section 8) ----------
+   "Flag results the LifeLabs way: value, out of range / within range, reference interval, quietly ("I don't really like colours and bells and
+   whistles"). Show the reference range right there, not on click. Explain or replace the arrow, and show the two prior values (example: HbA1c)."
+   One set of helpers for every place a lab value is listed: the result review, Chart > Results, the Inbox rows, Home, Needs attention and the
+   left Investigations row. The arrow is replaced by the word (High, Low, Abnormal; Critical high or low on a critical value), the value sits in
+   the Out of range or Within range column as on the LifeLabs report, and the two earlier values show with their dates. The only colour left
+   is the existing critical red on a critical value (and its icon). The critical / high / routine bands are unchanged.
+   DEMO DATA: earlier values for results with no chart (invented). */
+var LR_HIST = {
+  'Manjit Dhaliwal|Haemoglobin': [['Feb 3', '124'], ['Jul 8', '118']],
+  'Manjit Dhaliwal|MCV': [['Jul 8', '78']],
+  'Grace Lin|INR': [['Aug 12', '2.4'], ['Sep 9', '2.6']],
+  'Grace Lin|PT': [['Sep 9', '29']],
+  'Priya Raman|TSH': [['Feb 20', '3.1'], ['Jun 2', '5.2']],
+  'Priya Raman|Free T4': [['Jun 2', '12.0']],
+  'Greg Whitmore|LDL': [['Dec 2, 2025', '3.9'], ['Apr 14', '4.1']],
+  'Greg Whitmore|HDL': [['Apr 14', '1.0']],
+  'Greg Whitmore|Total cholesterol': [['Apr 14', '6.0']]
+};
+function lrFlag(f, v){
+  f = f || ''; if(!f) return {out:false, crit:false, word:'Within range'};
+  var crit = f.indexOf('crit') === 0, up = /high/.test(f), num = !isNaN(parseFloat(v));
+  var w = num ? (up ? 'high' : 'low') : 'abnormal';
+  return {out:true, crit:crit, up:up, word:crit ? 'Critical ' + w : w.charAt(0).toUpperCase() + w.slice(1)};
+}
+function lrWord(f, v){
+  var fl = lrFlag(f, v); if(!fl.out) return '';
+  return '<span class="lr-w">' + (fl.crit ? '<span class="ic lr-ci" data-pdic="crit"></span>' : '') + fl.word + '</span>';
+}
+function lrRef(t){ return t.ref ? t.ref + (t.u ? ' ' + t.u : '') : ''; }
+function lrTwo(pts){ return pts.slice(-2).reverse().map(function(p){ return {v:p[1], d:p[0], pt:p[3] === 'patient'}; }); }
+/* the two values before this one, newest first: the chart's own results when this value is the chart's latest, else the demo history */
+function lrPriors(patient, t){
+  var base = String(patient || '').split(',')[0].trim();
+  if(typeof PT_RESULTS !== 'undefined'){
+    for(var k in PT_RESULTS){
+      if(k.split(',')[0].trim() !== base) continue;
+      var T = PT_RESULTS[k].filter(function(x){ return x.n === t.n; })[0];
+      if(T && T.pts.length && T.pts[T.pts.length - 1][1] === String(t.v)) return lrTwo(T.pts.slice(0, -1));
+    }
+  }
+  var h = LR_HIST[base + '|' + t.n]; if(h) return lrTwo(h);
+  return t.prior ? [{v:t.prior, d:''}] : [];
+}
+function lrPrevList(pr){
+  return pr.map(function(p){ return '<span class="lr-pv">' + p.v + ' <i>' + (p.d || 'date not on file') + (p.pt ? ', uploaded by patient' : '') + '</i></span>'; }).join('');
+}
+/* the LifeLabs table: Test | Out of range | Within range | Reference interval | Previous (two, with dates) */
+function lrTable(rows, o){
+  o = o || {};
+  var h = '<div class="lr-wrap"><table class="lr-t"' + (o.label ? ' aria-label="' + o.label + '"' : '') + '><thead><tr>' +
+    '<th scope="col">Test</th><th scope="col">Out of range</th><th scope="col">Within range</th><th scope="col">Reference interval</th><th scope="col">Previous</th>' +
+    (o.tail ? '<th scope="col"><span class="vh">' + o.tail + '</span></th>' : '') + '</tr></thead><tbody>';
+  rows.forEach(function(r){
+    var fl = lrFlag(r.f, r.v), val = '<span class="lr-v' + (fl.crit ? ' crit' : '') + '">' + r.v + '</span>';
+    var pv = r.prior || [];
+    h += '<tr class="' + (o.rowCls || '') + (fl.out ? ' lr-out' : '') + '"><th scope="row" class="lr-n">' + (r.nameHtml || r.n) + '</th>' +
+      '<td class="lr-o" data-l="Out of range">' + (fl.out ? val + ' ' + lrWord(r.f, r.v) : '') + '</td>' +
+      '<td class="lr-i" data-l="Within range">' + (fl.out ? '' : val) + '</td>' +
+      '<td class="lr-r" data-l="Reference interval">' + lrRef(r) + '</td>' +
+      '<td class="lr-p" data-l="Previous">' + (pv.length ? lrPrevList(pv) : '<span class="lr-none">None on file</span>') + '</td>' +
+      (o.tail ? '<td class="lr-x">' + (r.tail || '') + '</td>' : '') + '</tr>';
+  });
+  return h + '</tbody></table></div>';
+}
+/* one line per value where a table does not fit (Inbox rows): name, value and unit with the word, the reference, the two earlier values */
+function lrInline(t, pr){
+  var fl = lrFlag(t.f, t.v);
+  return '<span class="lr-l"><span class="lr-n">' + t.n + '</span>' +
+    '<span class="lr-vv"><b class="lr-v' + (fl.crit ? ' crit' : '') + '">' + t.v + '</b>' + (t.u ? ' ' + t.u : '') + ' ' + (fl.out ? lrWord(t.f, t.v) : '<span class="lr-w in">Within range</span>') + '</span>' +
+    (t.ref ? '<span class="lr-r">Reference ' + t.ref + '</span>' : '') +
+    '<span class="lr-p">' + (pr.length ? 'Previous ' + lrPrevList(pr) : 'No previous result') + '</span></span>';
+}
+
 var IX_TYPE_CLS = {'Lab':'','Imaging':'img','Consult':'con','Micro':'mic','Trace':'tra','Screening':'scr'};
 function inboxAbnormal(item){ return (item.tests||[]).filter(function(t){ return t.f; }); }
 
@@ -11311,19 +11440,14 @@ function inboxRowHtml(item, i){
     var okN = item.tests.filter(function(t){ return !t.f; }).length;
     /* the value that set the band leads the line: critical, then alert, then the rest */
     var rank = function(t){ return t.f.indexOf('crit')===0 ? 0 : (t.f.indexOf('alert')===0 ? 1 : 2); };
-    findings = '<div class="ix-find">' + item.tests.filter(function(t){ return t.f; })
+    /* T-037 (Daniel, 31 Oct: results "the LifeLabs way", the reference range "right there, not on click", the arrow explained, the two prior values):
+       each out-of-range value is one line: name, value and unit with the word (High, Low, Critical high), the reference interval, the two earlier
+       values with their dates. Values within range still collapse to a count. The critical value keeps the only red. */
+    findings = '<div class="ix-find lr-find">' + item.tests.filter(function(t){ return t.f; })
       .map(function(t,k){ return {t:t,k:k}; })
       .sort(function(a,b){ return (rank(a.t)-rank(b.t)) || (a.k-b.k); })
-      .map(function(x){ return x.t; }).map(function(t){
-      var tier = t.f.indexOf('crit')===0 ? ' crit' : (t.f.indexOf('alert')===0 ? ' alert' : '');
-      var up = t.f.indexOf('high') > -1;
-      return '<span class="ix-v'+tier+'"'+(t.ref ? ' title="ref '+attr(t.ref)+'"' : '')+'>'+t.n+' <b>'+t.v+'</b>'+
-        (t.u ? ' <i>'+t.u+'</i>' : '')+
-        '<span class="ic ix-dir" role="img" aria-label="'+(up?'high':'low')+'" data-pdic="'+(up?'arrowup':'arrowdown')+'"></span>'+
-        /* the range is shown where magnitude matters: on the value that set the band */
-        (tier && t.ref ? '<i class="ix-ref">ref '+t.ref+'</i>' : '')+'</span>';
-    }).join('') +
-    (okN ? '<span class="ix-okn">'+(okN===total ? 'All '+total+' in range' : '+'+okN+' in range')+'</span>' : '') +
+      .map(function(x){ return lrInline(x.t, lrPriors(item.patient, x.t)); }).join('') +
+    (okN ? '<span class="ix-okn">'+(okN===total ? 'All '+total+' within range' : '+'+okN+' within range')+'</span>' : '') +
     '</div>';
   } else if(item.kind==='culture'){
     var grp = function(r){ return item.sens.filter(function(x){ return x.r===r; }).map(function(x){ return x.ab; }).join(', '); };
@@ -12234,18 +12358,10 @@ function openReview(i){
   if(chb){ chb.hidden = !inboxHasChart(chp); chb.onclick = function(){ fastTrack(chp); }; }
 
   var tests = it.tests || [];
+  /* T-037 (Daniel, 31 Oct): the LifeLabs layout, value in Out of range or Within range, the word instead of the arrow, the reference interval
+     and the two earlier values with dates, all visible without a click */
   document.getElementById('rv-results').innerHTML = tests.length
-    ? tests.map(function(t){
-        /* no fills: the arrow carries direction, and its colour carries the tier */
-        var cls = !t.f ? '' : (t.f.indexOf('crit')===0 ? 'crit' : (t.f.indexOf('alert')===0 ? 'abn alert' : 'abn'));
-        var up = t.f && t.f.indexOf('high') > -1;
-        var dir = t.f ? '<span class="ic rv-dir" role="img" aria-label="'+(up?'high':'low')+'" data-pdic="'+(up?'arrowup':'arrowdown')+'"></span>' : '';
-        return '<div class="rv-row '+cls+'"><span class="rv-n">'+t.n+'</span>'+
-          /* numbers, units and arrows each form a column */
-          '<span class="rv-v"><span class="rv-num">'+t.v+'</span>'+(t.u ? '<i>'+t.u+'</i>' : '<i></i>')+dir+'</span>'+
-          '<span class="rv-ref">'+(t.ref ? 'ref '+t.ref : '')+'</span>'+
-          (t.prior?'<span class="rv-prior">was '+t.prior+'</span>':'<span class="rv-prior">no prior result</span>')+'</div>';
-      }).join('')
+    ? lrTable(tests.map(function(t){ return {n:t.n, v:t.v, u:t.u, ref:t.ref, f:t.f, prior:lrPriors(it.patient, t)}; }), {label:it.panel + ' results'})
     /* a culture has no tests and no narrative, so it used to print "See
        source report" -- the organism and sensitivities are shown instead */
     : (it.kind === 'culture'
@@ -15079,7 +15195,7 @@ function renderChartAlerts(name){
       '<span class="ic vca-ic" role="img" aria-label="' + (crit ? 'critical' : 'high') + '" data-pdic="' + (crit ? 'crit' : 'alert') + '"></span>' +
       '<div class="vca-main">' +
         '<p class="vca-t"><b>' + (crit ? 'Critical' : 'High') + '</b> &middot; ' + t.n +
-          ' <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span><span class="ic vca-dir" role="img" aria-label="' + (up ? 'high' : 'low') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span>' +
+          ' <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span>' + lrWord(t.f, t.v) +
           ' <span class="vca-ref">ref ' + t.ref + '</span></p>' +
         '<p class="vca-s">' + (t.concern ? '<b>' + t.concern + '</b> &middot; ' : '') + (t.basis || '') + '</p>' +
         '<p class="vca-s">' + it.panel + ' &middot; ' + it.lab + ' &middot; received ' + it.received + ' &middot; ' + state + '</p>' +
@@ -15317,22 +15433,22 @@ var PT_RESULTS = {
     {n:'Troponin I', u:'µg/L', ref:'<0.04', pts:[['Today','0.42','crit-high','Eagle Ridge']]},
     {n:'CK', u:'U/L', ref:'30–200', pts:[['Today','210','high','Eagle Ridge']]},
     {n:'Ferritin', u:'µg/L', ref:'30–300', pts:[['Mar 12','22','low','LifeLabs'],['Jun 25','18','low','LifeLabs']]},
-    {n:'HbA1c', u:'%', ref:'<7.0', pts:[['Dec 4, 2025','6.9','','patient'],['Mar 12','7.1','high','LifeLabs']]},
+    {n:'HbA1c', u:'%', ref:'<7.0', pts:[['Sep 2, 2025','6.6','','LifeLabs'],['Dec 4, 2025','6.9','','patient'],['Mar 12','7.1','high','LifeLabs']]},
     {n:'Haemoglobin', u:'g/L', ref:'120–160', pts:[['Mar 12','131','','LifeLabs'],['Jun 25','134','','LifeLabs']]}],
   'Andrey Abushakhmanov, 24M': [
-    {n:'ALT', u:'U/L', ref:'10–40', pts:[['Mar 3','34','','LifeLabs'],['Today','88','high','LifeLabs']]},
+    {n:'ALT', u:'U/L', ref:'10–40', pts:[['Nov 18, 2025','29','','LifeLabs'],['Mar 3','34','','LifeLabs'],['Today','88','high','LifeLabs']]},
     {n:'AST', u:'U/L', ref:'10–35', pts:[['Today','65','high','LifeLabs']]},
     {n:'ALP', u:'U/L', ref:'40–130', pts:[['Today','96','','LifeLabs']]},
     {n:'Bilirubin', u:'µmol/L', ref:'<21', pts:[['Today','14','','LifeLabs']]}],
   'Behdis Maleki, 35F': [
-    {n:'Potassium', u:'mmol/L', ref:'3.5–5.1', pts:[['Jun 25','5.1','','LifeLabs'],['Today','6.3','crit-high','LifeLabs']]},
-    {n:'Creatinine', u:'µmol/L', ref:'45–90', pts:[['Jun 25','96','high','LifeLabs'],['Today','104','high','LifeLabs']]},
-    {n:'eGFR', u:'mL/min', ref:'>60', pts:[['Jun 25','60','','LifeLabs'],['Today','54','low','LifeLabs']]},
+    {n:'Potassium', u:'mmol/L', ref:'3.5–5.1', pts:[['Mar 20','4.6','','LifeLabs'],['Jun 25','5.1','','LifeLabs'],['Today','6.3','crit-high','LifeLabs']]},
+    {n:'Creatinine', u:'µmol/L', ref:'45–90', pts:[['Mar 20','88','','LifeLabs'],['Jun 25','96','high','LifeLabs'],['Today','104','high','LifeLabs']]},
+    {n:'eGFR', u:'mL/min', ref:'>60', pts:[['Mar 20','72','','LifeLabs'],['Jun 25','60','','LifeLabs'],['Today','54','low','LifeLabs']]},
     {n:'Urea', u:'mmol/L', ref:'2.5\u20137.1', pts:[['Today','9.1','high','LifeLabs']]},
     {n:'Ferritin', u:'µg/L', ref:'30–300', pts:[['Mar 20','12','low','patient'],['Jun 25','18','low','LifeLabs']]},
     {n:'Haemoglobin', u:'g/L', ref:'120–160', pts:[['Mar 20','121','','patient'],['Jun 25','124','','LifeLabs']]}],
   'K Arli Eyre, 41': [
-    {n:'HbA1c', u:'%', ref:'<7.0', pts:[['Mar 12','6.8','','LifeLabs'],['Yesterday','7.1','high','LifeLabs']]},
+    {n:'HbA1c', u:'%', ref:'<7.0', pts:[['Sep 9, 2025','6.5','','LifeLabs'],['Mar 12','6.8','','LifeLabs'],['Yesterday','7.1','high','LifeLabs']]},
     {n:'Fasting glucose', u:'mmol/L', ref:'4.0–6.0', pts:[['Aug 19, 2025','6.9','high','patient'],['Yesterday','7.8','high','LifeLabs']]}],
   'Greg': [
     {n:'LDL cholesterol', u:'mmol/L', ref:'<2.0', pts:[['Jan 9','2.4','high','patient']]},
@@ -15348,6 +15464,8 @@ var PT_EXPECT = {
   'Greg': [{what:'Lipid panel and ALT', when:'booked Oct 3', by:'by his previous clinic'}]
 };
 function expFor(name){ return PT_EXPECT[name] || []; }
+/* T-037: the Inbox and Home's preview first render before PT_RESULTS is defined; render them again so each earlier value carries its date */
+if(document.getElementById('inbox-received')){ renderInboxList(); if(typeof renderInboxToday === 'function') renderInboxToday(); }
 var RS_ADD = false;
 function rsLast(t){ return t.pts[t.pts.length - 1]; }
 /* A value that is also in the inbox takes the inbox's flag, which the deterministic safety layer
@@ -15374,11 +15492,11 @@ function rsSrc(src, date){
 function rsVal(p, t, withRef){
   var f = p[2] || '', crit = f.indexOf('crit') === 0, alrt = f.indexOf('alert') === 0, up = /high/.test(f);
   return '<span class="rs-v"><b class="' + (crit ? 'crit' : '') + '">' + p[1] + '</b> ' + t.u +
-    (f ? '<span class="ic rs-dir' + (crit ? ' crit' : '') + '" role="img" aria-label="' + (up ? 'high' : 'low') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span>' +
+    (f ? /* T-037: the word, not an arrow */ '' +
          '<span class="rs-flag' + (crit ? ' crit' : (alrt ? ' alert' : '')) + '">' +
            (crit || alrt ? '<span class="ic rs-ex" aria-hidden="true" data-pdic="' + (crit ? 'crit' : 'alert') + '"></span>' : '') +
            (crit ? 'Critical' : (up ? 'High' : 'Low')) + '</span>' : '') +
-    (withRef ? '<i class="rs-ref">ref ' + t.ref + '</i>' : '') + '</span>';
+    '<i class="rs-ref">Reference ' + t.ref + '</i>' + '</span>';   /* T-037: the reference interval always shows (it was hidden in the rail) */
 }
 /* Daniel, 30 Sep, pointing at CK's yellow flag: "did the doctor like clear this or what do we do?"
    A flagged value shows whether it is cleared (its result signed off), and opens the result. */
@@ -15401,20 +15519,14 @@ function renderResults(name){
           ' &middot; ordered ' + x.by + ', outside SimpleCare &middot; waiting for the result</span></p>';
       }).join('') + '</div>';
     }
-    h += list.length ? list.map(function(o){
-      var t = o.t, p = rsLast(t), prev = t.pts.slice(0, -1);
-      var nums = t.pts.map(function(q){ return parseFloat(q[1]); });
-      var trend = t.pts.length > 1 && nums.every(function(v){ return !isNaN(v); }) ? prSpark([nums], 88, 32) : '';
-      return '<div class="rs-row">' +
-        '<div class="rs-main"><b class="rs-n">' + t.n + '</b>' + rsSrc(p[3], p[0]) + (rsClear(name, t, p) ? '<span class="rs-hist">' + rsClear(name, t, p).replace(/^ &middot; /, '') + '</span>' : '') +
-          (prev.length ? '<span class="rs-hist">Before: ' + prev.slice().reverse().map(function(q){
-              return q[1] + ' on ' + q[0] + (q[3] === 'patient' ? ' (uploaded by patient)' : '');
-            }).join(' &middot; ') + '</span>' : '') + '</div>' +
-        '<div class="rs-t">' + trend + '</div>' +
-        rsVal(p, t, true) +
-        '<button type="button" class="vc-more rs-pdf" onclick="toast(\'Opening the ' + (p[3] === 'patient' ? 'uploaded' : p[3]) + ' report for ' + t.n + '\')"><span class="ic" data-pdic="file"></span>PDF</button>' +
-      '</div>';
-    }).join('') : '<p class="pc-empty">No lab results on file.</p>';
+    /* T-037 (Daniel, 31 Oct): Chart > Results is the LifeLabs table too: the test with its date, source and cleared state; the value in Out of range
+       or Within range with the word; the reference interval; the two earlier values with dates (they replace the trend line and the arrow); the report */
+    h += list.length ? lrTable(list.map(function(o){
+      var t = o.t, p = rsLast(t), clr = rsClear(name, t, p);
+      return {n:t.n, v:p[1], u:t.u, ref:t.ref, f:p[2], prior:lrTwo(t.pts.slice(0, -1)),
+        nameHtml:'<b class="rs-n">' + t.n + '</b>' + rsSrc(p[3], p[0]) + (clr ? '<span class="rs-hist">' + clr.replace(/^ &middot; /, '') + '</span>' : ''),
+        tail:'<button type="button" class="vc-more rs-pdf" onclick="toast(\'Opening the ' + (p[3] === 'patient' ? 'uploaded' : p[3]) + ' report for ' + t.n + '\')"><span class="ic" data-pdic="file"></span>PDF</button>'};
+    }), {label:'Lab results', tail:'Report', rowCls:'lr-row'}) : '<p class="pc-empty">No lab results on file.</p>';
     h += RS_ADD
       ? '<div class="rs-form"><p class="rs-k">Add an expected result</p>' +
           '<label class="rs-f"><span>Test</span><input id="rs-what" type="text" placeholder="e.g. Lipid panel and ALT"></label>' +
@@ -15771,14 +15883,16 @@ function csNARowV2(x, related, also){
   var mk = x.idx + '-' + (t ? String(t.n).replace(/[^a-z0-9]/gi,'') : 'abn'), open = !!CS.metaOpen[mk];
   var val, up = t && (t.f || '').indexOf('high') > -1, low = t && (t.f || '').indexOf('low') > -1;
   if(x.abn) val = '<b>' + (x.ecg ? ecgLine(it) : 'Abnormal ' + csEsc(it.panel)) + '</b>';
-  else val = '<b>' + t.n + '</b> <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span>' +
-    (up || low ? '<span class="ic vca-dir" role="img" aria-label="' + (up ? 'high' : 'low') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span>' : '');
+  else val = '<b>' + t.n + '</b> <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span>' + lrWord(t.f, t.v);   /* T-037: the word, not an arrow */
   var h = '';
   if(!x.abn && t.concern) h += '<p class="v2-na-c">' + t.concern + '</p>';
-  if(!x.abn) h += '<p class="v2-q">ref ' + csEsc(t.ref) + (x.label ? ', ' + x.label.toLowerCase() : '') + '</p>';
+  /* T-037 (Daniel, 31 Oct): the reference interval and, when there are any, the two earlier values with dates */
+  if(!x.abn){ var pr = lrPriors(it.patient, t);
+    h += '<p class="v2-q">Reference ' + csEsc(lrRef(t)) + (x.label ? ', ' + x.label.toLowerCase() : '') + '</p>' +
+      (pr.length ? '<p class="v2-q lr-prev">Previous ' + lrPrevList(pr) + '</p>' : ''); }
   if(also && also.length) h += '<p class="v2-q"><span class="vh">Info: </span>Also ' + also.map(function(a){
       var at = a.test, au = (at.f || '').indexOf('high') > -1;
-      return '<span class="cs-also-v">' + at.n + ' ' + at.v + ' ' + (at.u || '') + '<span class="ic vca-dir" role="img" aria-label="' + (au ? 'above range' : 'below range') + '" data-pdic="' + (au ? 'arrowup' : 'arrowdown') + '"></span></span>';
+      return '<span class="cs-also-v">' + at.n + ' ' + at.v + ' ' + (at.u || '') + ' ' + lrWord(at.f, at.v).replace('class="lr-w"', 'class="lr-w lr-lc"') + (at.ref ? ', reference ' + csEsc(lrRef(at)) : '') + '</span>';
     }).join(', ') + '</p>';
   h += '<p class="v2-q v2-meta">Received ' + csEsc(it.received) +
     '<button type="button" class="cs-info" id="cs-mi-' + mk + '" aria-expanded="' + open + '" aria-controls="cs-md-' + mk + '" aria-label="Source details" title="Source details" onclick="CS.metaOpen[\'' + mk + '\']=!CS.metaOpen[\'' + mk + '\'];renderChartAlerts(PC_CURRENT);csFocus(\'#cs-mi-' + mk + '\')">' + csIc('cardinfo') + '</button></p>' +
@@ -15802,8 +15916,7 @@ function csNARow(x, related, also){
     title = x.ecg ? '<b>' + ecgLine(it) + '</b>' : '<b>Abnormal</b> &middot; ' + csEsc(it.panel);
   } else {
     var up = (t.f || '').indexOf('high') > -1, low = (t.f || '').indexOf('low') > -1;
-    title = '<b>' + T.w + '</b> &middot; ' + t.n + ' <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span>' +
-      (up || low ? '<span class="ic vca-dir" role="img" aria-label="' + (up ? 'high' : 'low') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span>' : '') +
+    title = '<b>' + T.w + '</b> &middot; ' + t.n + ' <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span>' + lrWord(t.f, t.v) +
       ' <span class="vca-ref">ref ' + csEsc(t.ref) + (x.tier === 'info' ? (up ? ' &middot; above range' : ' &middot; below range') : (x.label ? ' &middot; ' + x.label.toLowerCase() : '')) + '</span>';
   }
   var why = (!x.abn && x.tier !== 'info' && (t.concern || attnBasis(t))) ? '<p class="vca-s">' + (t.concern ? '<b>' + t.concern + '</b>' : '') + (t.concern && attnBasis(t) ? ' &middot; ' : '') + (attnBasis(t) || '') + '</p>' : '';
@@ -15814,7 +15927,7 @@ function csNARow(x, related, also){
      with its own "Open result" (Behdis had 3 of them). Still tier Info: word, symbol, value, direction. */
   var alsoH = (also && also.length) ? '<p class="cs-also">' + csIc('cardinfo') + '<span><span class="vh">Info: </span><span class="cs-k">Also out of range:</span> ' + also.map(function(a){
       var at = a.test, up = (at.f || '').indexOf('high') > -1;
-      return '<span class="cs-also-v">' + at.n + ' <b>' + at.v + ' ' + (at.u || '') + '</b><span class="ic vca-dir" role="img" aria-label="' + (up ? 'above range' : 'below range') + '" data-pdic="' + (up ? 'arrowup' : 'arrowdown') + '"></span></span>';
+      return '<span class="cs-also-v">' + at.n + ' <b>' + at.v + ' ' + (at.u || '') + '</b> ' + lrWord(at.f, at.v) + '</span>';
     }).join('<span class="cs-dot" aria-hidden="true">&middot;</span>') + '</span></p>' : '';
   return '<div class="vca-row cs-' + x.tier + (related ? ' cs-rel' : '') + '">' +
     '<span class="ic vca-ic" role="img" aria-label="' + T.w + '" data-pdic="' + T.ic + '"></span>' +
@@ -18412,6 +18525,26 @@ function crPmhx(name, prev){
   var cons = CS_REL[name] ? (prev ? prev[1].filter(function(x){ return !/&middot;\s*you$/.test(x[0]); }) : []) : crConsults(name);
   if(cons.length){ h += '<h5 class="v2-sub">Consult reports</h5>' + v2Lines([null, cons], name); n += cons.length; }
   return {h:h, n:n};
+}
+
+/* T-037 (Daniel, 31 Oct: investigations belong in the left summary; results the LifeLabs way): the latest results, critical and out of range first,
+   each with the word, the reference interval and the two earlier values with dates; today's values that Needs attention already shows are left out
+   (each fact once); home BP stays. "See all" opens Chart > Results. */
+function lrInvHtml(name){
+  if(typeof rsSync === 'function') rsSync(name);
+  var na = CS.empty ? [] : csNAItems(name).filter(function(x){ return x.test; }).map(function(x){ return x.test.n; });
+  var list = rsSorted(name).map(function(o){ return o.t; }).filter(function(t){ return !(na.indexOf(t.n) > -1 && rsLast(t)[0] === 'Today'); }).slice(0, 4);
+  var h = list.map(function(t){
+    var p = rsLast(t), fl = lrFlag(p[2], p[1]), pr = lrTwo(t.pts.slice(0, -1));
+    return '<button type="button" class="v2-line lr-inv" onclick="csOpenFull(\'results\',this)"><span class="v2-l0">' + t.n + '</span>' +
+      '<span class="v2-l1"><span class="lr-v' + (fl.crit ? ' crit' : '') + '">' + p[1] + '</span> ' + t.u + ' ' + (fl.out ? lrWord(p[2], p[1]) : '<span class="lr-w in">Within range</span>') + '</span>' +
+      '<span class="v2-l2">Reference ' + lrRef(t) + '</span>' +
+      '<span class="v2-l2">' + p[0] + ', ' + (p[3] === 'patient' ? 'uploaded by patient' : p[3]) + '</span>' +
+      '<span class="v2-l2">' + (pr.length ? 'Previous ' + lrPrevList(pr) : 'No previous result') + '</span>' +
+      '<span class="vh"> &mdash; open the source</span>' + csIc('chevr', 'v2-go') + '</button>';
+  }).join('');
+  var bp = v2BP(name);
+  return {h:h + bp, n:list.length + (bp ? 1 : 0)};
 }
 
 /* ---------- Cedar · Key clinical findings (Daniel, 11 Oct) ----------
@@ -22364,6 +22497,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-02 21:00</div>
+  <div class="build-stamp">v2 · build 2026-11-02 21:08</div>
 </body>
 </html>

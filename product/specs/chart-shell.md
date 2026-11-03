@@ -699,3 +699,87 @@ The Action tab rows (`.v2-orow` Order, Refer, Message); the note toolbar (`.cs-t
 
 ### QA
 `product/tests/harness/run.mjs` has 11 new checks (suite `drawers`, `dr-*`): every caller opens a labelled dialog, Esc closes it and focus returns; both routes for Order and Refer; Message's generic notice, preview and single press; the design rules inside each drawer; the console. Run on this build: 130 checks, 80 pass, 50 fail (12 are documented gaps), against 119 checks, 69 pass, 50 fail before this work. No check that passed before fails now.
+
+
+## 2 Nov: chart review and results (T-037)
+
+Source: `from-daniel/2026-10-31-meeting-review-of-prescribing-orders-chart.md`, sections 7 (Chart view) and 8 (Results); he reviewed the live demo, build 2026-10-26 20:42. Ani asked to work on all of Daniel's 31 Oct requirements. Light only; 1440, 1280 and 1024 px checked in headless Chrome (`?nologin=1`). Screenshots are local only. The product-manager updates the statuses of REQ-CH-38 (Today and Relevant, now Intake summary and Chart review), REQ-CH-22 and REQ-IN-13 (results by test) and REQ-CH-37 (Needs attention). This section is the design record.
+
+### One-screen summary
+1. **Chart review is a short picture of the patient.** It sits under the Intake summary, today's concern first. In order: **Ordered and pending** (kept at the top, as built on 21 Oct), **Who this patient is** (a few Cedar sentences, each one opening its source), and **Medications and what they treat** (grouped by the concern each medicine treats). Cedar's mark, the "Cedar · AI" label and the source on every line stay.
+2. **No repetition.** Relevant medical history, Past visits, Investigations and Prior related care are gone from Chart review. The left Patient summary is now Medications, **Past Medical History (PMHx)** (conditions, then **Surgical history** and **Consult reports** under them), **Investigations** (new), Pending (kept: Daniel calls it "a version of the inbox specific to the patient"), and Since you last saw.
+3. **Results are shown the LifeLabs way everywhere a lab value is listed.** The value sits in an *Out of range* or *Within range* column. The arrow is replaced by a word: High, Low, Abnormal, or Critical high or low. The reference interval and the **two earlier values with their dates** are visible without a click. The only colour is the existing critical red on a critical value, plus its icon. The critical, high and routine bands are unchanged.
+
+### 1. Chart review (section 7)
+- **Daniel:** Chart review is "a heavily synthesized picture of who the patient is, emphasis on today's visit; medications connected to the clinical concerns; for some concerns (for example mental health) include past drugs from PharmaNet."
+- **Who this patient is** (`crSentences`):
+  - **The demo patient** gets three sentences written from her own chart (`CR_SYN`): her problem list, the Jun 25 note, and the cardiology and internal medicine consults.
+  - **Every other patient** gets sentences built from structured data only: age and sex from the queue row; conditions from the problem list, or else the concerns her medicines treat; "new to Simple Care" when there is no earlier visit; and either "Today's concern follows the <date> visit for ..." or "Last seen <date> for ...", using the same word match Past visits used.
+  - **One PharmaNet sentence for every patient** names the medicines PharmaNet shows that are not on the Simple Care list, with the prescriber (Gloria: zopiclone, ibuprofen and tramadol from 2 other prescribers; Greg: sertraline from Dr. R. Chu).
+  - **Past PharmaNet medicines** appear only when they matter for today's concern (`CR_PAST`). Demo: Carol-Anne's two earlier fluconazole fills, for her third yeast infection this year.
+  - Each sentence is a full-width line (44 px or more) that opens its source in the Chart drawer.
+- **Medications and what they treat** (`crMedGroups`, `crGroupHtml`):
+  - **Where the link comes from.** Each link between a medicine and a concern is the chart's own: the prescribing profile's problems and indications (`RXP`), or, for a patient with no profile, the last visit note naming the medicine. Nothing is inferred from drug knowledge.
+  - **Order.** Today's concern comes first, with a "Today's concern" tag. "No indication on file" comes last.
+  - **Each concern is one line.** It shows the concern, its medicines, any difference (e.g. "Amlodipine: PharmaNet shows 10 mg"), "Not on the Simple Care list" where that applies, and the source (Simple Care list, or PharmaNet with the prescriber).
+  - **A recommendation not yet started** shows under today's concern, with its consult as the source (Gloria: bisoprolol, from cardiology on Jul 28).
+  - **Finished courses are left out**, unless they matter today.
+  - **Patients with no PharmaNet data** get one quiet line: "PharmaNet not checked for this patient yet."
+- **Removed from Chart review:** Relevant medical history, Past visits, Investigations and Prior related care. `kfLines` is kept, because Ordered and pending uses it. `kfVisits` is now unused.
+
+### 2. Left Patient summary (section 7)
+- **Past Medical History (PMHx)** (`crPmhx`). The conditions come first, then:
+  - **Surgical history:** demo data, invented (`PT_SURG`). It says "Not recorded in Simple Care." when there is none.
+  - **Consult reports:** for the demo patient, the curated cardiology and internal medicine lines, where "Show what they wrote" still works. For others, the care plan's specialist items grouped by consult, plus the recommendations not yet in the plan.
+  - The count includes all three.
+- **Investigations** (`lrInvHtml`, new row `#v2s-inv`, icon chartup):
+  - It shows the latest four results, critical and out of range first.
+  - Each result shows the word, the reference interval, its date and source, and the two earlier values with dates.
+  - Home BP stays.
+  - Today's values that Needs attention already shows are left out, so each fact appears once.
+  - "See all" opens Chart > Results.
+- **Pending** and **Since you last saw** are unchanged.
+
+### 3. Results (section 8)
+- **Daniel:** "Flag results the LifeLabs way: value, out of range / within range, reference interval, quietly ('I don't really like colours and bells and whistles'). Show the reference range right there, not on click. Explain or replace the arrow, and show the two prior values (example: HbA1c). He liked the critical / high / routine grouping."
+- **One set of helpers** (`lrFlag`, `lrWord`, `lrPriors`, `lrTable`, `lrInline`, `LR_HIST`), used on every screen:
+  - **The result review** (`openReview`). A table with the columns Test, Out of range, Within range, Reference interval, Previous. Example: HbA1c 7.1 High; reference <7.0 %; previous 6.8 Mar 12 and 6.5 Sep 9, 2025.
+  - **Chart > Results** (`renderResults`). The same table. The test cell keeps its date, source and Cleared or Not cleared state, and the PDF button stays at the end. The two earlier values replace the trend line and the "Before:" line.
+  - **Inbox rows** (`inboxRowHtml`, also Home's inbox preview):
+    - **Each out-of-range value is one line.** It shows the name, the value and unit with the word, "Reference ...", and "Previous ..." with dates.
+    - **Values within range** still collapse to "+N within range" (was "in range").
+    - **The bands** are still Critical, High and Routine.
+  - **Home's attention rows** (`renderCriticals`). The word and the reference interval replace the arrow. At 1180 px and below they stack under the value.
+  - **Needs attention on the chart** (`csNARowV2`). The word replaces the arrow. Below it come the reference interval, "Previous ..." (only when there are earlier values) and the same panel's other values with their word and reference interval. The older layout's cards (`csNARow`, the older alert list) and the Recent results rail (`rsVal`) also use the word, and the rail now always shows the reference interval.
+- **Where the earlier values come from.** They are the chart's own results (`PT_RESULTS`) when the inbox value is the chart's latest; otherwise the demo history (`LR_HIST`); otherwise the old single `prior` with "date not on file".
+- **Invented demo data:**
+  - **Added to `PT_RESULTS`:** an older value for Arli's HbA1c (6.5, Sep 9, 2025), Gloria's HbA1c, Andrey's ALT, and Behdis's potassium, creatinine and eGFR.
+  - **`LR_HIST`** holds the history for results that have no chart.
+- **Quiet styling.**
+  - Words are ink. The flag word is 600 weight; "Within range" is soft ink.
+  - Red appears only on a critical value (`--crit-text`) and its icon.
+  - No new fills, no uppercase, and nothing under 14 px.
+  - Under 600 px of width, the table stacks, and each value carries its column name (container query).
+- **Load order fix.** The Inbox first renders before `PT_RESULTS` exists, so it is rendered again right after `PT_RESULTS` is defined. Each earlier value then carries its date.
+
+### Proof
+- All 17 inline scripts pass `node --check`.
+- The console was clean on Home, the Inbox, the result review, all eight charts and Chart > Results, at 1440, 1280 and 1024 px.
+- No horizontal scroll at any of those widths (one overflow at 1024 on Home, from the new word, was found and fixed).
+- No text under 14 px and no uppercase in the new elements.
+- Behaviour checked:
+  - Gloria: Chart review reads Ordered and pending, the four sentences, then seven concern lines. PMHx has 7 items; Investigations has 4.
+  - Greg: "treated for high blood pressure and depression", plus the PharmaNet sertraline line.
+  - Carol-Anne: today's concern, with the past fluconazole fills.
+  - Korynn: everything from PharmaNet.
+  - The result review for Arli shows Daniel's HbA1c example.
+  - Behdis: the potassium previous values read "5.1 Jun 25, 4.6 Mar 20" in the Inbox, the review and Needs attention.
+  - Harness before and after: see the T-037 commit message and the task board.
+
+### Not done, and open points
+1. **Pending shows twice:** in the left summary, and in Chart review's Ordered and pending. Both are kept as briefed; Daniel said placement is open. **Needs Daniel:** keep both, or keep only one?
+2. **Past visits** left Chart review. The last visit is in "Since you last saw" (left) and in the second Cedar sentence. This partly reverses his 12 Oct request ("shouldn't be buried at the bottom"). **Needs Daniel.**
+3. **Home shows the reference interval again.** On 29 Sep he crossed it off Home; the 31 Oct direction ("show the reference range right there") and the brief ("wherever a lab value is listed") were followed. **Needs Daniel to confirm for Home.**
+4. **Tier words still disagree for Behdis's potassium.** Home and the chart's card say Critical; the Inbox and the review say High. This comes from the open item of 21 Oct, waiting on his critical and flagged-result criteria in Notion. Not changed here.
+5. **The medication links** come from the demo prescribing profile, where some PharmaNet indications are invented. In production, a link needs the prescription's recorded indication, or a source Cedar can cite. **Needs `clinical-safety`.**
+6. **Surgical history and the past fluconazole fills** are invented demo data, and the Chart review sentences are demo text. Cedar's real synthesis is AI Chart Assist delivery work (B-007).
