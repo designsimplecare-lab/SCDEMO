@@ -7108,6 +7108,10 @@ body:has(#op-panel.show) #callw{z-index:360;}
 .pd-item.pd-sw .pd-swv{margin-left:auto;font-size:14px;color:var(--ink-soft);}
 .pd-item.pd-sw[aria-checked=true] .pd-swv{color:var(--ink);font-weight:600;}
 @media (max-width:900px){ #ms-card .vs-grid{grid-template-columns:minmax(0,1fr);} }
+/* T-037 (Daniel, 31 Oct, section 7): Past medical history's sub-headings (Surgical history, Consult reports) and Chart review's synthesized sentences, read as prose, not bold */
+#screen-patientchart #pcv-c.cs-v2 #v2-side .v2-sub{margin:14px 0 2px;font-size:15px;line-height:22px;font-weight:600;color:var(--ink-soft);}
+#screen-patientchart #pcv-c.cs-v2 #v2-key .cr-s .v2-l1{font-weight:400;font-size:15px;line-height:22px;color:var(--ink);}
+#screen-patientchart #pcv-c.cs-v2 #v2-key .cr-line .v2-l1 .v2-chip{margin-left:8px;}
 </style>
 </head>
 <body>
@@ -7579,6 +7583,8 @@ body:has(#op-panel.show) #callw{z-index:360;}
             <h3 class="v2-sum-h" id="v2-sum-h">Patient summary</h3>
             <section class="v2-sec" id="v2s-meds" data-k="meds"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-meds-b" onclick="v2Sec('meds')"><span class="ic" data-pdic="encounterlog"></span><span class="v2-st">Medications</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-meds-b" hidden></div></section>
             <section class="v2-sec" id="v2s-hist" data-k="hist"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-hist-b" onclick="v2Sec('hist')"><span class="ic" data-pdic="tasks"></span><span class="v2-st">Past Medical History (PMHx)</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-hist-b" hidden></div></section>
+            <!-- T-037 (Daniel, 31 Oct: investigations belong in the left summary, not in Chart review) -->
+            <section class="v2-sec" id="v2s-inv" data-k="inv"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-inv-b" onclick="v2Sec('inv')"><span class="ic" data-pdic="chartup"></span><span class="v2-st">Investigations</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-inv-b" hidden></div></section>
             <section class="v2-sec" id="v2s-pend" data-k="pend"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-pend-b" onclick="v2Sec('pend')"><span class="ic" data-pdic="clock"></span><span class="v2-st">Pending</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-pend-b" hidden></div></section>
             <section class="v2-sec" id="v2s-since" data-k="since"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-since-b" onclick="v2Sec('since')"><span class="ic" data-pdic="reassign"></span><span class="v2-st">Since you last saw</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-since-b" hidden></div></section>
             </section>
@@ -18089,7 +18095,7 @@ function v2Sec(k, open){
   if(body) body.hidden = !open;
   s.classList.toggle('v2-open', !!open);   /* Ani, 6 Oct: the open row gets a soft background */
 }
-function v2Secs(){ ['meds','hist','pend','since'].forEach(function(k){ v2Sec(k, !!V2.open[k]); }); }
+function v2Secs(){ ['meds','hist','inv','pend','since'].forEach(function(k){ v2Sec(k, !!V2.open[k]); }); }
 /* Ani, 6 Oct: open the one section that matters most for this visit, and only one: Pending when something is overdue;
    Medications for a prescription renewal visit (e.g. "Rx renewal"). Otherwise all rows start closed. */
 function v2AutoOpen(name){
@@ -18243,7 +18249,11 @@ function v2RenderSide(name){
   /* count active medicines only, so it matches Chart > Medications (a recommended, not-started one is listed but not counted) */
   var medsN = meds ? meds[1].filter(function(x){ return x[0] !== '@na' && !/not started/.test(x[1] || ''); }).length : 0;
   v2SetSec('meds', medsN, '', meds ? v2Lines(meds, name) + src(meds) : '<p class="v2-q">No medications recorded in Simple Care.</p>', true);
-  v2SetSec('hist', v2Count(hist), '', hist ? v2Lines(hist, name) + src(hist) : '<p class="v2-q">No conditions recorded in Simple Care.</p>', true);
+  /* T-037 (Daniel, 31 Oct: "Past medical history includes consult reports; surgical history goes under it"; investigations go to the left summary, not Chart review) */
+  var px = crPmhx(name, prev), inv = by['Investigations'];
+  v2SetSec('hist', v2Count(hist) + px.n, '', (hist ? v2Lines(hist, name) + src(hist) : '<p class="v2-q">No conditions recorded in Simple Care.</p>') + px.h, true);
+  var invH = typeof lrInvHtml === 'function' ? lrInvHtml(name) : {h:inv ? v2Lines(inv, name) : '', n:v2Count(inv)};
+  v2SetSec('inv', invH.n, '', invH.h, !!invH.n);
   var over = pend ? pend[1].filter(function(x){ return x[4] === 'Overdue'; }).length : 0;
   v2SetSec('pend', v2Count(pend), over ? '<span class="v2-chip warn">' + csIc('clock') + over + ' overdue</span>' : '', pend ? v2Lines(pend, name) : '', !!pend);
   /* Since you last saw: the chart's own section (renderSinceLast), moved here; hidden when it is */
@@ -18259,11 +18269,149 @@ function v2RenderSide(name){
     Object.keys(n).forEach(function(k){ if(n[k] > bn && CS_TABS.some(function(t){ return t[0] === k; })){ best = k; bn = n[k]; } });
     return best;
   };
-  v2SeeAll('meds', 'medications'); v2SeeAll('hist', 'problems'); v2SeeAll('pend', most(pend, 'careplan'));
+  v2SeeAll('meds', 'medications'); v2SeeAll('hist', 'problems'); v2SeeAll('inv', 'results'); v2SeeAll('pend', most(pend, 'careplan'));
   v2SeeAll('since', 'timeline');
   v2SumEdges();
   var el = v2El('v2-key');
   if(el) v2RenderKey(el, name, by);
+}
+
+/* ---------- T-037 Chart review and Past medical history (Daniel, 31 Oct review, section 7 "Chart view") ----------
+   Daniel: Chart review "sits right under the intake summary": "a heavily synthesized picture of who the patient is, emphasis on today's visit;
+   medications connected to the clinical concerns; for some concerns (for example mental health) include past drugs from PharmaNet."
+   "No repetition": relevant medical history, prior related care and investigations leave Chart review for the left Patient summary;
+   Past medical history holds the consult reports, and surgical history sits under it. Every line still names its source and opens it.
+   The links between a medicine and a concern are the chart's own (the prescribing profile's problems and indications, RXP, or the last
+   visit note naming the medicine); nothing is inferred from drug knowledge. DEMO DATA below is invented. */
+var PT_SURG = {
+  'Gloria Mcdonald, 74F': [['Laparoscopic cholecystectomy', '2009'], ['Right cataract surgery', '2021']],
+  'Carol-Anne Feldman, 44F': [['Caesarean section', '2014']],
+  'Greg': [['Appendectomy', '1988']]
+};
+/* Cedar's picture of the demo patient, from her problem list, the Jun 25 visit note and the consults (the PharmaNet line is added below for every patient) */
+var CR_SYN = {
+  'Gloria Mcdonald, 74F': [
+    {t:'74-year-old woman with hypertension and type 2 diabetes.', src:[['Problem list', 'problems']]},
+    {t:'Today’s chest pressure is the complaint she was seen for on Jun 25; its cause is not yet established.', src:[['Visit note, Jun 25', 'documents']]},
+    {t:'Cardiology (Jul 28) arranged a stress test for Sep 12 and asked you to start bisoprolol, not yet started. Internal medicine (Aug 26) ordered a 48-hour Holter. Neither result is back.', src:[['Consults', 'consults'], ['Care plan', 'careplan']]}
+  ]
+};
+/* past medicines that matter for today's concern, from PharmaNet (Daniel: "for some concerns ... include past drugs from PharmaNet") */
+var CR_PAST = {
+  'Carol-Anne Feldman, 44F': [{name:'fluconazole 150 mg', t:'Fluconazole 150 mg capsule, single dose', when:'filled Feb 11 and May 27, 2026',
+    sub:'Filled Feb 11 and May 27, 2026 &middot; past, not current', src:'PharmaNet, Dr. K. Brar (walk-in clinic)'}]
+};
+function crList(a){ a = a.map(function(x){ return String(x).charAt(0).toLowerCase() + String(x).slice(1); }); return a.length > 1 ? a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1] : (a[0] || ''); }
+function crWords(name){ var r = rxRow(name); return kfWords((csIntakeSummary(name) || '') + ' ' + (r ? r.concern : '')); }
+function crPast(r){ var f = rxFilled(r); if(!r.course || !f) return false; var end = new Date(f); end.setDate(end.getDate() + (r.supply || 7)); return end < new Date(); }
+function crLine(o){
+  return '<button type="button" class="v2-line cr-line' + (o.cls ? ' ' + o.cls : '') + '" onclick="csOpenFull(\'' + o.tab + '\',this)">' +
+    (o.top ? '<span class="v2-l0">' + o.top + '</span>' : '') +
+    '<span class="v2-l1">' + o.main + (o.chip ? '<span class="v2-chip">Today&rsquo;s concern</span>' : '') + '</span>' +
+    (o.sub ? '<span class="v2-l2">' + v2Cap(o.sub) + '</span>' : '') +
+    (o.src ? '<span class="v2-l2"><span class="kf-src">Source: ' + o.src + '</span></span>' : '') +
+    '<span class="vh"> &mdash; open the source</span>' + csIc('chevr', 'v2-go') + '</button>';
+}
+/* medicines grouped by the concern they treat, today's concern first, "No indication on file" last */
+function crMedGroups(name){
+  var P = RXP[name], chart = rxMeds(name), cw = crWords(name), groups = [], by = {}, NONE = 'No indication on file';
+  var grp = function(n, today){ var k = String(n).toLowerCase(); if(!by[k]){ by[k] = {name:n, today:false, items:[], notes:[], past:[]}; groups.push(by[k]); } if(today) by[k].today = true; return by[k]; };
+  var item = function(rows){
+    var r0 = rxRowFrom(rows[0]);
+    var cm = chart.filter(function(m){ return String(m.drug).toLowerCase() === String(r0.drug).toLowerCase(); })[0];
+    var who = []; rows.forEach(function(x){ if(!x.out) return; var w = x.by + (x.spec ? ' (' + x.spec + ')' : ''); if(who.indexOf(w) < 0) who.push(w); });
+    var onList = !!cm || rows.some(function(x){ return x.chart; });
+    return {t:cm ? cm.drug + ' ' + cm.dose + ' ' + cm.freq : r0.drug + ' ' + r0.strength + ' ' + (r0.prn ? 'as needed' : r0.freq),
+      diff:cm && r0.strength && cm.dose !== r0.strength && !r0.chartOnly ? 'PharmaNet shows ' + r0.strength : '',
+      off:!onList, who:who, simple:onList, name:String(r0.drug), src:''};
+  };
+  if(P){
+    var rowsBy = {}, order = [], placed = {};
+    P.rows.forEach(function(r){ if(crPast(r)) return; var k = r.key || r.id; if(!rowsBy[k]){ rowsBy[k] = []; order.push(k); } rowsBy[k].push(r); });
+    (P.problems || []).forEach(function(p){
+      if(/^Medicines/.test(p.name)) return;          /* "Medicines with no indication on file": each goes to its own PharmaNet indication, below */
+      var g = grp(p.name, !!p.concern);
+      var c = (p.choices || []).filter(function(x){ return x.add; })[0], lib = c ? rxLib(c.add) : null;
+      if(p.ai && lib) g.notes.push({t:lib.name + ' ' + lib.strength + ' ' + lib.freq, sub:p.ai.t, src:p.ai.src});
+      (p.rows || []).forEach(function(id){ order.forEach(function(k){ if(!placed[k] && rowsBy[k].some(function(r){ return r.id === id; })){ placed[k] = 1; g.items.push(item(rowsBy[k])); } }); });
+    });
+    order.forEach(function(k){
+      if(placed[k]) return;
+      var wi = rowsBy[k].filter(function(r){ return r.ind && r.ind.t; })[0];
+      grp(wi ? wi.ind.t : NONE).items.push(item(rowsBy[k]));
+    });
+  } else {
+    var L = PT_LAST[name], txt = L ? ((L.plan || []).join(' ') + ' ' + ((L.note || {}).P || '')).toLowerCase() : '';
+    var dx = L ? (L.note && L.note.A ? L.note.A.split(/[,.;]/)[0].trim() : L.why) : '';
+    chart.forEach(function(m){
+      var linked = !!L && txt.indexOf(String(m.drug).toLowerCase()) > -1;
+      grp(linked ? dx : NONE).items.push({t:m.drug + ' ' + m.dose + ' ' + m.freq, diff:'', off:false, who:[], simple:true, name:String(m.drug), src:linked ? 'Visit note, ' + csShort(L.date) : ''});
+    });
+    var row = rxRow(name);
+    if(CR_PAST[name] && row) grp(row.concern, true);
+  }
+  groups.forEach(function(g){ if(!g.today && g.name !== NONE && kfWords(g.name).some(function(w){ return cw.indexOf(w) > -1; })) g.today = true; });
+  var tg = groups.filter(function(g){ return g.today; })[0];
+  if(tg) tg.past = (CR_PAST[name] || []).slice();
+  groups = groups.filter(function(g){ return g.items.length || g.notes.length || g.past.length; });
+  var rank = function(g){ return g.today ? 0 : g.name === NONE ? 2 : 1; };
+  return groups.map(function(g, i){ return {g:g, i:i}; }).sort(function(a, b){ return rank(a.g) - rank(b.g) || a.i - b.i; }).map(function(x){ return x.g; });
+}
+function crGroupHtml(g){
+  var h = '', first = true;
+  var top = function(){ var t = first ? g.name : ''; return t; };
+  if(g.items.length){
+    var notes = [], src = [], who = [];
+    g.items.forEach(function(x){ x.who.forEach(function(w){ if(who.indexOf(w) < 0) who.push(w); }); if(x.diff) notes.push(x.name + ': ' + x.diff); if(x.src && src.indexOf(x.src) < 0) src.push(x.src); });
+    var off = g.items.filter(function(x){ return x.off; });
+    if(off.length) notes.push(off.length === g.items.length ? 'Not on the Simple Care list' : 'Not on the Simple Care list: ' + off.map(function(x){ return x.name.toLowerCase(); }).join(', '));
+    if(g.items.some(function(x){ return x.simple && !x.src; })) src.push('Simple Care list');
+    if(who.length) src.push('PharmaNet, ' + who.join(', '));
+    h += crLine({top:top(), main:g.items.map(function(x){ return x.t; }).join('; '), chip:g.today && first, sub:notes.join(' &middot; '), src:src.join(' &middot; '), tab:'medications'});
+    first = false;
+  }
+  g.notes.forEach(function(n){ h += crLine({top:top(), main:n.t, chip:g.today && first, sub:n.sub, src:n.src, tab:'consults'}); first = false; });
+  g.past.forEach(function(p){ h += crLine({top:top(), main:p.t, chip:g.today && first, sub:p.sub, src:p.src, tab:'medications'}); first = false; });
+  return h;
+}
+/* "who is this person": a few sentences, today's concern first, each one opening its source */
+function crSentences(name, groups){
+  var r = rxRow(name), L = PT_LAST[name], cw = crWords(name), out = (CR_SYN[name] || []).slice();
+  if(!out.length && r){
+    var age = parseInt(r.age, 10), who = (age ? age + '-year-old ' : '') + (r.sex === 'Female' ? 'woman' : r.sex === 'Male' ? 'man' : 'patient');
+    var cond = condActive(name).filter(function(c){ return c.name !== 'Preventive care'; }).map(function(c){ return c.name; });
+    var treated = groups.filter(function(g){ return g.name !== 'No indication on file' && g.items.length; }).map(function(g){ return g.name; });
+    out.push({t:v2Cap(who) + (cond.length ? ' with ' + crList(cond) : treated.length ? ', treated for ' + crList(treated) : '') + (L ? '' : ', new to Simple Care') + '.',
+      src:cond.length ? [['Problem list', 'problems']] : treated.length ? [['Medications', 'medications']] : [['Intake', 'documents']]});
+    if(L){
+      var rel = kfWords(L.why).some(function(w){ return cw.indexOf(w) > -1; }), why = rel ? L.why.replace(/ follow-up$/i, '') : L.why;
+      out.push({t:(rel ? 'Today’s concern follows the ' + csShort(L.date) + ' visit for ' : 'Last seen ' + csShort(L.date) + ' for ') + why.charAt(0).toLowerCase() + why.slice(1) + '.',
+        src:[['Visit note, ' + csShort(L.date), 'documents']]});
+    }
+  }
+  var P = RXP[name];
+  if(P){
+    var off = [], by = [];
+    P.rows.forEach(function(x){ if(!x.out || x.chart || crPast(x)) return; var n = String(rxRowFrom(x).drug).toLowerCase(); if(off.indexOf(n) < 0) off.push(n); if(by.indexOf(x.by) < 0) by.push(x.by); });
+    if(off.length) out.push({t:'PharmaNet shows ' + crList(off) + ' from ' + (by.length === 1 ? by[0] : by.length + ' other prescribers') + ', not on the Simple Care list.', src:[['PharmaNet', 'medications']]});
+  }
+  (CR_PAST[name] || []).forEach(function(p){ out.push({t:'Relevant to today: PharmaNet shows ' + p.name + ' ' + p.when + '.', src:[['PharmaNet', 'medications']]}); });
+  return out;
+}
+/* Past medical history (left): conditions, then surgical history and consult reports under it */
+function crConsults(name){
+  var by = {}, out = [];
+  (CARE_PLAN[name] || []).filter(function(x){ return x.specialty !== 'Family practice'; }).forEach(function(x){ (by[x.src] = by[x.src] || []).push(x.action); });
+  Object.keys(by).forEach(function(k){ out.push([k, by[k].slice(0, 2).join('; '), 'consults']); });
+  var P2 = CP_PENDING[name]; if(P2) out.push([P2.src, P2.recs.length + ' recommendations not yet in your plan', 'consults']);
+  return out;
+}
+function crPmhx(name, prev){
+  var surg = PT_SURG[name] || [], h = '', n = surg.length;
+  h += '<h5 class="v2-sub">Surgical history</h5>' + (surg.length ? surg.map(function(s){ return v2Line([s[0], s[1], 'problems']); }).join('') : '<p class="v2-q">Not recorded in Simple Care.</p>');
+  var cons = CS_REL[name] ? (prev ? prev[1].filter(function(x){ return !/&middot;\s*you$/.test(x[0]); }) : []) : crConsults(name);
+  if(cons.length){ h += '<h5 class="v2-sub">Consult reports</h5>' + v2Lines([null, cons], name); n += cons.length; }
+  return {h:h, n:n};
 }
 
 /* ---------- Cedar · Key clinical findings (Daniel, 11 Oct) ----------
@@ -18335,19 +18483,15 @@ function kfVisitLine(x){
     '<span class="vh"> &mdash; open the visit note</span>' + csIc('chevr', 'v2-go') + '</button>';
 }
 function v2RenderKey(el, name, by){
-  var r = csRow(), sum = csIntakeSummary(name), concern = sum || (r && r.concern) || '';
-  var hist = by['History'], meds = by['Medications'], inv = by['Investigations'], pend = by['Pending'];
-  /* the doctor's own visits are in Past visits above; Prior related care keeps the specialists and other care */
-  var prev = by['Prior related care'];
-  if(prev) prev = [prev[0], prev[1].filter(function(x){ return !/&middot;\s*you$/.test(x[0]); })].concat(prev.slice(2));
+  var pend = by['Pending'];
   el.hidden = false;
   CS.keyOpen = CS.keyOpen || {};
-  var cw = kfWords(concern + ' ' + ((r || {}).concern || ''));
-  /* 21 Oct (Daniel, 18 Oct video 3): this card is the "Chart review": "the AI is pulling data off the various data feeds ... it would highlight or prioritize
-     at the top the major [points], how it relates to their present concern." Cedar's mark and the AI label stay (rule: AI text is marked); every line still
-     shows its source and opens it. He will "come up with a better verbiage" later. */
+  /* T-037 (Daniel, 31 Oct): Chart review is a short, synthesized picture of the patient, today's concern first: Ordered and pending (kept at the top,
+     21 Oct), who this patient is, and the medications with the concerns they treat. History, past visits, investigations and consult reports moved
+     to the left Patient summary ("no repetition"). Cedar's mark and the AI label stay (AI text is marked); every line names its source and opens it. */
+  var groups = crMedGroups(name), sents = crSentences(name, groups);
   var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Chart review</h3><span class="v2-chip kf-ai">Cedar &middot; AI</span></div>' +
-    '<p class="kf-note">Cedar read the data feeds and the chart. What relates to today&rsquo;s concern comes first. Nothing here goes into your note without you.</p>';
+    '<p class="kf-note">Cedar&rsquo;s short picture of this patient from the chart and the data feeds, today&rsquo;s concern first. History, results and consult reports are in the Patient summary. Nothing here goes into your note without you.</p>';
   /* 1. Ordered and pending, right at the top (Daniel, video 2: "I'm gonna wanna see right at the top because I need that information to make my assessments.
         That's a rate limiting step ... not buried down here, it's too important."): the lab orders and where each stands, then what is pending */
   var pl = kfLines(pend, name, null), over = pend ? pend[1].filter(function(x){ return x[4] === 'Overdue'; }).length : 0;
@@ -18355,30 +18499,14 @@ function v2RenderKey(el, name, by){
       (over ? '<span class="v2-chip warn">' + csIc('clock') + over + ' overdue</span>' : '') + '</h4>' +
     '<div class="kf-labs"><h5 class="kf-h5">Orders</h5><div class="lab-orders-mount"></div></div>' +
     (pl ? '<div class="kf-pend"><h5 class="kf-h5">Pending</h5><div class="kf-lines">' + pl + '</div></div>' : '') + '</section>';
-  /* 2. Relevant medical history: existing diagnoses, previous episodes, related conditions */
-  h += '<section class="kf-sec" aria-labelledby="kf-h-hist"><h4 class="kf-h" id="kf-h-hist">Relevant medical history</h4>' +
-    (hist ? '<div class="kf-lines">' + kfLines(hist, name, cw) + '</div>' + (hist[2] ? '<p class="v2-q kf-q">' + hist[2] + '</p>' : '') : '<p class="v2-q kf-q">None recorded in Simple Care.</p>') + '</section>';
-  /* 3. Medications: current, previous treatments, PharmaNet dispensing records, each with source and date. The demo holds no
-        previous-treatment history and no PharmaNet feed, so Cedar says so instead of showing nothing (needs PharmaNet access, BC). */
-  var msrc = meds && meds[2] ? meds[2].replace(/^Source:\s*/, '').replace(/\s*&middot;\s*not checked against PharmaNet/, '') : '';
-  h += '<section class="kf-sec" aria-labelledby="kf-h-meds"><h4 class="kf-h" id="kf-h-meds">Medications</h4><div class="kf-lines">' +
-    (meds ? kfLines(meds, name, cw) : '<p class="v2-q kf-q">No current medications recorded in Simple Care.</p>') +
-    kfLine(['Previous treatments', 'none recorded in Simple Care', 'medications']) +
-    kfLine(['PharmaNet dispensing', 'not checked: no dispensing records connected yet', 'medications']) + '</div>' +
-    (msrc ? '<p class="v2-q kf-q">Current list: ' + msrc + '</p>' : '') + '</section>';
-  /* 4. Past visits: the doctor always wants them, so they sit right after history and medications */
-  var pv = kfVisits(name, concern);
-  h += '<section class="kf-sec" aria-labelledby="kf-h-visits"><h4 class="kf-h" id="kf-h-visits">Past visits</h4>' +
-    (pv.length ? '<div class="kf-lines">' + pv.map(kfVisitLine).join('') + '</div>' : '<p class="v2-q kf-q">No previous visits in Simple Care.</p>') + '</section>';
-  /* 5. and 6.: Chart View v2.5's other categories, one click away (Pending moved to the top, as Ordered and pending) */
-  [['inv', 'Investigations', 'chartup', inv], ['prev', 'Prior related care', 'calendar', prev]].forEach(function(c){
-    var lines = kfLines(c[3], name, cw); if(!lines) return;
-    var n = v2Count(c[3]), open = !!CS.keyOpen[name + '|' + c[0]];
-    h += '<section class="kf-sec kf-fold"><h4 class="kf-h"><button type="button" class="kf-btn" id="kf-btn-' + c[0] + '" aria-expanded="' + open + '" aria-controls="kf-b-' + c[0] + '" onclick="kfToggle(\'' + c[0] + '\')">' +
-      csIc(c[2]) + '<span class="kf-t">' + c[1] + '</span><span class="kf-n">' + n + '</span>' +
-      csIc('chevdown', 'kf-chev') + '</button></h4>' +
-      '<div class="kf-b" id="kf-b-' + c[0] + '"' + (open ? '' : ' hidden') + '><div class="kf-lines">' + lines + '</div></div></section>';
-  });
+  /* 2. Who this patient is: a few synthesized sentences, each opening its source */
+  if(sents.length) h += '<section class="kf-sec cr-who" aria-labelledby="kf-h-who"><h4 class="kf-h" id="kf-h-who">Who this patient is</h4><div class="kf-lines">' +
+    sents.map(function(s){ return crLine({main:s.t, src:s.src.map(function(x){ return x[0]; }).join(' &middot; '), tab:s.src[0][1], cls:'cr-s'}); }).join('') + '</div></section>';
+  /* 3. Medications and what they treat: grouped by concern, today's first; PharmaNet medicines and the prescriber; past medicines only where they matter today */
+  var pnKnown = !!(RXP[name] || CR_PAST[name]);
+  h += '<section class="kf-sec cr-meds" aria-labelledby="kf-h-meds"><h4 class="kf-h" id="kf-h-meds">Medications and what they treat</h4>' +
+    (groups.length ? '<div class="kf-lines">' + groups.map(crGroupHtml).join('') + '</div>' : '<p class="v2-q kf-q">No medications recorded in Simple Care.</p>') +
+    (pnKnown ? '' : '<p class="v2-q kf-q">PharmaNet not checked for this patient yet.</p>') + '</section>';
   el.innerHTML = h; paintPd(el);
   /* the lab orders list paints every mount (here and in Chart > Results); display by exception: no lab orders, no sub-heading, and no section when nothing is pending either */
   if(typeof renderLabOrders === 'function') renderLabOrders();
@@ -22236,6 +22364,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-02 17:04</div>
+  <div class="build-stamp">v2 · build 2026-11-02 21:00</div>
 </body>
 </html>
