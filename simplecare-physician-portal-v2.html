@@ -7258,6 +7258,12 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 @media (min-width:1201px) and (max-width:1360px){
   #screen-patientchart #pcv-c.cs-v2 #v2{grid-template-columns:296px minmax(0,1fr);}
 }
+/* Physician pass (Ani, 4 Nov: chart Version 2, physician pass, A1): a PharmaNet-only allergy keeps the prominent band with its own Add to chart (both layouts) */
+#screen-patientchart #pcv-c #cs-allergy.cs-al{flex-wrap:wrap;}
+#screen-patientchart #pcv-c :is(#cs-allergy,#v2s-alg) .cs-al-add{display:inline-flex;align-items:center;gap:6px;height:44px;min-height:44px;margin:0 0 0 auto;padding:0 14px;border:1px solid var(--line-strong);border-radius:8px;background:var(--panel);font-size:15px;font-weight:600;color:var(--ink);box-shadow:none;}
+#screen-patientchart #pcv-c :is(#cs-allergy,#v2s-alg) .cs-al-add .ic,#screen-patientchart #pcv-c :is(#cs-allergy,#v2s-alg) .cs-al-add svg{width:16px;height:16px;}
+#screen-patientchart #pcv-c #v2s-alg .cv2-alg-a{margin:0 0 8px 26px;}
+#screen-patientchart #pcv-c #v2s-alg .cv2-alg-a .cs-al-add{margin:0;}
 /* ============ CHART VERSION 2 (Ani, 4 Nov: chart Version 2 brief) ============
    Everything below is scoped to #pcv-c.chart-v2, so the current chart is untouched. Three zones: a compact patient header across the top
    (#cv2-hd), the steps as a slim left nav (#cv2-nav), the work in the centre (#v2-main), and the patient context on the right (#v2-side),
@@ -7307,6 +7313,13 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt #cs-allergy .cs-k{font-size:14px;line-height:20px;font-weight:600;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt #cs-allergy .cs-v{font-size:16px;line-height:22px;font-weight:700;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-fd{display:none;}
+/* physician pass A1: a PharmaNet-only allergy and its Add to chart stay on the one header row (text up to two lines) */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-facts:has(.cs-al-add){max-width:470px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt #cs-allergy.cs-al:has(.cs-al-add){flex-wrap:nowrap;padding:4px 4px 4px 12px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt #cs-allergy:has(.cs-al-add) .cs-al-b{display:block;flex:1 1 auto;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt #cs-allergy:has(.cs-al-add) .cs-k{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt #cs-allergy:has(.cs-al-add) .cs-v{display:inline;font-size:15px;line-height:20px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt #cs-allergy .cs-al-add{flex:none;margin:0;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-meta{display:flex;align-items:center;gap:8px;flex:0 0 auto;margin-left:auto;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-al{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border:0;border-radius:8px;background:var(--cv2-wash);font:inherit;font-size:15px;line-height:20px;font-weight:600;color:var(--cv2-ink);cursor:pointer;white-space:nowrap;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-al:hover{background:#E9ECF1;}
@@ -16175,6 +16188,24 @@ function csNoShow(name){
 }
 
 /* ================= patient snapshot ================= */
+/* Physician pass (Ani, 4 Nov: chart Version 2, physician pass, A1: Greg showed the no-allergies tick while Prescribe showed "sulfa antibiotics
+   (hives) · Add to chart"): ONE allergy source for the header, the Patient summary, Prescribe and the order forms, in both layouts. It is the chart
+   list (CS.allergy, CS.allergyAdd) plus the reactions PharmaNet reports that are not on the chart list yet. When any allergy is known, the tick
+   never shows. Add to chart is the existing RX_ACT.addal (the doctor's tap is the approval). */
+function ptAllergy(name){
+  var a0 = CS.allergy[name] || 'nkda', ex = (CS.allergyAdd || {})[name] || [];
+  var chart = (a0 === 'named' ? [{label:'Penicillin', rx:'anaphylaxis'}] : []).concat(ex.map(function(x){ return {label:x.label, rx:x.rx}; }));
+  var P = (typeof RXP !== 'undefined' && RXP[name]) || null, pending = [];
+  ((P && P.pn && P.pn.adverse) || []).forEach(function(x, i){
+    if(chart.some(function(c){ return String(c.label).toLowerCase() === String(x.label).toLowerCase(); })) return;
+    pending.push({label:x.label, rx:x.rx, idx:i, when:x.when});
+  });
+  return {state:(chart.length || pending.length) ? 'named' : a0, chart:chart, pending:pending};
+}
+function ptAllergyAdd(i){
+  if(typeof RX_ACT !== 'undefined' && RX_ACT.addal) RX_ACT.addal(i);
+  if(typeof csRefresh === 'function') csRefresh();
+}
 function csRenderSnap(name){
   var r = csRow(); if(!r) return;
   var phn = ptChart(name).phn || '';
@@ -16186,7 +16217,7 @@ function csRenderSnap(name){
      that should be front and center."): the front says name, age and sex. The PHN (masked) is one tap away behind Details. */
   /* Ani, 3 Nov: no "Details" link; the masked PHN sits on the line, and no known allergies joins it as a quiet tick
      (a named or unrecorded allergy keeps its own band, Daniel 11 Oct) */
-  var a00 = CS.allergy[name] || 'nkda', nk = a00 === 'nkda' && !(((CS.allergyAdd || {})[name] || []).length);
+  var AL = ptAllergy(name), nk = AL.state === 'nkda';   /* A1: one source; a PharmaNet-only allergy also removes the tick */
   if(sub) sub.innerHTML = ((r.legal && r.pref && r.legal.split(' ')[0] !== r.pref) ? 'Goes by <b>' + csEsc(r.pref) + '</b> &middot; ' : '') +
     (age ? age + ' &middot; ' : '') + csEsc(r.sex || 'Not recorded') +
     ' &middot; PHN <span class="pc-mono" aria-label="PHN ending ' + csEsc(phn.slice(-3)) + '">' + masked + '</span>' +
@@ -16194,8 +16225,9 @@ function csRenderSnap(name){
     (nk ? '<span class="cs-nksep"> &middot; </span><span class="cs-nkda">' + csIc('complete') + 'No known drug allergies</span>' : '');
   /* v2.5 §3: allergies in three distinct states. Named is ink with a symbol (an allergy is not a critical
      result, so not red); "Not recorded" is amber with its word. The named example is v2.5 §8's, demo only. */
-  var a0 = CS.allergy[name] || 'nkda', ex = (CS.allergyAdd || {})[name] || [], a = (ex.length || a0 === 'named') ? 'named' : a0,
-      atxt = (a0 === 'named' ? ['Penicillin &mdash; anaphylaxis'] : []).concat(ex.map(function(x){ return csEsc(x.label) + ' &mdash; ' + csEsc(x.rx); })).join('; '),
+  var a = AL.state,
+      atxt = AL.chart.map(function(x){ return csEsc(x.label) + ' &mdash; ' + csEsc(x.rx); }).concat(AL.pending.map(function(x){
+        return csEsc(x.label) + ' (' + csEsc(x.rx) + '), not yet on the chart list'; })).join('; '),
       el = document.getElementById('cs-allergy'), v2 = CS.layout === 'v2';
   /* Daniel, 11 Oct: "Alleriges are especially important - make it more prominent". One band, the most prominent item in the banner,
      the same in both layouts: the label "Allergies", then the content in larger bold type, with an icon and its own fill.
@@ -16206,7 +16238,8 @@ function csRenderSnap(name){
     el.setAttribute('role', 'group');
     el.setAttribute('aria-label', 'Allergies: ' + (a === 'nkda' ? 'no known drug allergies' : a === 'named' ? atxt.replace(/&mdash;/g, ',').toLowerCase() : 'not recorded'));
     el.innerHTML = csIc(a === 'nkda' ? 'complete' : 'alert', 'cs-al-ic') + '<span class="cs-al-b"><span class="cs-k">Allergies</span><span class="cs-v">' +
-      (a === 'nkda' ? 'No known drug allergies' : a === 'named' ? atxt : 'Not recorded') + '</span></span>';
+      (a === 'nkda' ? 'No known drug allergies' : a === 'named' ? atxt : 'Not recorded') + '</span></span>' +
+      AL.pending.map(function(x){ return '<button type="button" class="btn cs-al-add" onclick="ptAllergyAdd(' + x.idx + ')" aria-label="Add ' + csEsc(x.label) + ' to the chart allergies"><span class="ic" data-pdic="plus"></span>Add to chart</button>'; }).join('');
   }
   /* Ani, 5 Oct: "Since you last saw: No previous visit" is gone; a small tag by the name says it instead */
   var np = document.getElementById('cs-newpt'); if(np) np.hidden = !!PT_LAST[name];
@@ -21628,8 +21661,10 @@ function opMedsText(name){ var l = opMedsList(name); return l.length ? l.join(';
 /* allergies from the chart (three states: no known allergies, a named allergy, not recorded) */
 function opAllergy(name){
   var a = CS.allergy[name] || 'nkda', ex = ((CS.allergyAdd || {})[name] || []).map(function(x){ return x.label || x; });
-  if(a === 'named') return {pen:true, text:['Penicillin (anaphylaxis)'].concat(ex).join('; ')};
-  if(ex.length) return {pen:false, text:ex.join('; ')};
+  /* physician pass A1: the same source as the header; PharmaNet reactions not yet on the chart list are named too */
+  var pn = typeof ptAllergy === 'function' ? ptAllergy(name).pending.map(function(x){ return x.label + ' (' + x.rx + '), PharmaNet, not yet on the chart list'; }) : [];
+  if(a === 'named') return {pen:true, text:['Penicillin (anaphylaxis)'].concat(ex, pn).join('; ')};
+  if(ex.length || pn.length) return {pen:false, text:ex.concat(pn).join('; ')};
   return a === 'none' ? {pen:null, text:'Not recorded'} : {pen:false, text:'No known allergies'};
 }
 function opNoteOpen(){ var n = document.getElementById('vc-note-input'); return !!(n && !n.readOnly && typeof nsAppend === 'function'); }
@@ -23150,12 +23185,14 @@ function cv2GoAlerts(){
 /* ---------- right: the patient context. Allergies and Previous encounters join the existing sections (same data, nothing new) ---------- */
 function cv2Side(name){
   if(!cv2On() || !name || typeof v2SetSec !== 'function') return;
-  var a0 = CS.allergy[name] || 'nkda', ex = (CS.allergyAdd || {})[name] || [];
-  var list = (a0 === 'named' ? [{label:'Penicillin', rx:'anaphylaxis'}] : []).concat(ex);
-  var body = list.length ? list.map(function(x){ return '<p class="cv2-alg-l">' + csIc('cardwarn') + '<span><b>' + csEsc(x.label) + '</b>' + (x.rx ? '<span class="cv2-alg-r">' + csEsc(v2Cap(x.rx)) + '</span>' : '') + '</span></p>'; }).join('')
-    : a0 === 'none' ? '<p class="cv2-alg-l">' + csIc('alert') + '<span><b>Not recorded</b></span></p>'
+  /* physician pass A1: the same source as the header and Prescribe (ptAllergy) */
+  var AL = ptAllergy(name), n = AL.chart.length + AL.pending.length;
+  var body = n ? AL.chart.map(function(x){ return '<p class="cv2-alg-l">' + csIc('cardwarn') + '<span><b>' + csEsc(x.label) + '</b>' + (x.rx ? '<span class="cv2-alg-r">' + csEsc(v2Cap(x.rx)) + '</span>' : '') + '</span></p>'; }).join('') +
+      AL.pending.map(function(x){ return '<p class="cv2-alg-l">' + csIc('cardwarn') + '<span><b>' + csEsc(x.label) + '</b><span class="cv2-alg-r">' + csEsc(v2Cap(x.rx)) + ', PharmaNet' + (x.when ? ', ' + csEsc(x.when) : '') + '</span><span class="cv2-alg-r">Not yet on the chart list</span></span></p>' +
+        '<p class="cv2-alg-a"><button type="button" class="btn cs-al-add" onclick="ptAllergyAdd(' + x.idx + ')" aria-label="Add ' + csEsc(x.label) + ' to the chart allergies"><span class="ic" data-pdic="plus"></span>Add to chart</button></p>'; }).join('')
+    : AL.state === 'none' ? '<p class="cv2-alg-l">' + csIc('alert') + '<span><b>Not recorded</b></span></p>'
     : '<p class="cv2-alg-l cv2-alg-ok">' + csIc('complete') + '<span>No known drug allergies</span></p>';
-  v2SetSec('alg', list.length, '', body, true);
+  v2SetSec('alg', n, '', body, true);
   /* Previous encounters: the doctor's earlier Simple Care visits (PT_LAST), the one related to today's concern marked; each opens its note */
   var vis = typeof kfVisits === 'function' ? kfVisits(name, '') : [];
   v2SetSec('enc', vis.length, '', vis.map(kfVisitLine).join(''), !!vis.length);
@@ -23308,6 +23345,6 @@ document.addEventListener('keydown', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 17:42</div>
+  <div class="build-stamp">v2 · build 2026-11-04 17:02</div>
 </body>
 </html>
