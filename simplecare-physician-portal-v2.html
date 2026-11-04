@@ -7206,6 +7206,8 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-hd .v2-all{margin-left:auto;}
 #screen-patientchart #pcv-c.cs-v2 #v2-key :is(#cr-rest,#cr-medsec)[hidden]{display:none;}
 #screen-patientchart #pcv-c.cs-v2 #v2-key #cr-rest{margin-top:0;}
+/* T-040 (Daniel, 31 Oct 01:22:51): the drug name that travels to the pad on Continue (rxFly) */
+.rp-fly{position:fixed;z-index:400;pointer-events:none;padding:2px 8px;margin:-2px -8px;border-radius:8px;background:var(--panel);box-shadow:0 4px 14px rgba(23,24,28,.18);font-size:15px;line-height:22px;font-weight:700;color:var(--ink);white-space:nowrap;transform-origin:left top;}
 /* T-040 (Daniel, 31 Oct 00:04:09): the reason on the drug name line, a headline, quieter than the name */
 #rx-panel .rp-t3 th[scope=row] .rp-ind{font-weight:500;color:var(--ink-soft);}
 #rx-panel .rp-t3 tbody th[scope=row] > b{display:inline;}
@@ -15096,8 +15098,23 @@ RX_ACT.cont = function(id){
   if(it.kind === 'dose' && !it.conf && !o){ toast('Confirm the PharmaNet dose or adjust it first'); return; }
   if(st.stop2) delete st.stop2[id];
   if(o) st.orders = st.orders.filter(function(x){ return x !== o; });
-  st.orders.push(rxItemOrderNew(st, it, 'renew')); rxLog(st, 'Continue, on the pad: ' + it.drug); rxRender();
+  var fe = document.querySelector('#rx-panel [data-fk="rr' + id + '"] th b'), from = fe ? fe.getBoundingClientRect() : null;   /* measured before the re-render */
+  var n = rxItemOrderNew(st, it, 'renew'); st.orders.push(n); rxLog(st, 'Continue, on the pad: ' + it.drug); rxRender();
+  rxFly(from, it.drug, n.id);
 };
+/* T-040 (Daniel, 31 Oct 01:22:51: "you take this little thing here ... You shrink it into a little prescription and ... it goes into your prescription
+   pad"; "it's satisfying"): on Continue a small copy of the drug name travels from its row to its line on the pad, about 350 ms. Nothing moves
+   under prefers-reduced-motion; the copy is decorative (aria-hidden) and never takes a click. */
+function rxFly(a, label, oid){
+  if(!a || !window.matchMedia || matchMedia('(prefers-reduced-motion: reduce)').matches || !document.body.animate) return;
+  var to = document.querySelector('#rx-panel [data-fk="ord' + oid + '"] .rp-pd b'); if(!to) return;
+  var b = to.getBoundingClientRect(); if(!a.width || !b.width) return;
+  var f = document.createElement('span'); f.className = 'rp-fly'; f.setAttribute('aria-hidden', 'true'); f.textContent = label;
+  f.style.left = a.left + 'px'; f.style.top = a.top + 'px'; document.body.appendChild(f);
+  var an = f.animate([{transform:'translate(0,0) scale(1)', opacity:1}, {transform:'translate(' + (b.left - a.left) + 'px,' + (b.top - a.top) + 'px) scale(.85)', opacity:.35}],
+    {duration:350, easing:'cubic-bezier(.3,.7,.4,1)'});
+  an.onfinish = an.oncancel = function(){ f.remove(); };
+}
 /* Adjust dose: on the pad as a change, with the strength chooser open */
 RX_ACT.adj = function(id){
   var st = rxState(PC_CURRENT), it = rxItem(st, id); if(!it || rxLocked()) return;
@@ -22765,6 +22782,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 10:59</div>
+  <div class="build-stamp">v2 · build 2026-11-04 11:00</div>
 </body>
 </html>
