@@ -5105,6 +5105,9 @@
   #screen-patientchart #pcv-c.cs-v2 .v2-meta{display:flex;align-items:center;gap:2px;}
   #screen-patientchart #pcv-c.cs-v2 .v2-meta .cs-info{margin:0;}
   #screen-patientchart #pcv-c.cs-v2 .v2-src{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;margin:6px 0 2px;padding:10px 12px;border-radius:10px;background:var(--wash);font-size:14px;line-height:20px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-metaw{position:relative;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-src.v2-tip{display:none;position:absolute;left:0;top:100%;z-index:30;width:max-content;max-width:min(440px,90vw);margin:4px 0 0;background:var(--panel);box-shadow:0 8px 24px rgba(23,24,28,.14);border:1px solid var(--line);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-metaw:has(.cs-info:hover,.cs-info:focus-visible,.v2-tip:hover) .v2-tip{display:grid;}
   #screen-patientchart #pcv-c.cs-v2 .v2-src dt{color:var(--ink-soft);}
   #screen-patientchart #pcv-c.cs-v2 .v2-src dd{margin:0;color:var(--ink);}
   /* Today: the chart's own section, as a card */
@@ -6239,6 +6242,10 @@
   #screen-patientchart #pcv-c.cs-v2 #v2-rv2.v2-one #v2-today-slot > #cs-today{box-sizing:border-box;min-width:0;}
   #screen-patientchart #pcv-c.cs-v2 #v2-rv2.v2-one #v2-today-slot:empty{display:none;}
   #screen-patientchart #pcv-c.cs-v2 #cs-today .v2-big{max-width:66ch;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-side-today #cs-today{box-shadow:none;border-radius:0;padding:14px 20px;background:none;border-bottom:1px solid var(--line);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-side-today #cs-today .v2-ch{flex-wrap:wrap;gap:6px 8px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-side-today #cs-today h3{font-size:15px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-side-today #cs-today .v2-big{font-size:15px;line-height:22px;margin-top:6px;}
   #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-hd .kf-ai{margin-left:4px;}
   #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-h5{margin:12px 0 2px;font-size:15px;line-height:22px;font-weight:600;color:var(--ink-soft);}
   #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-op{border-top:0;padding-top:0;}
@@ -7642,6 +7649,8 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
             <!-- Ani, 6 Oct: "too many separate big cards". One Patient summary card; its sections are accordion rows. -->
             <section class="v2-card v2-sum" id="v2-sum" aria-labelledby="v2-sum-h">
             <h3 class="v2-sum-h" id="v2-sum-h">Patient summary</h3>
+            <!-- Ani, 3 Nov: the intake summary opens the left panel -->
+            <div id="v2-side-today"></div>
             <section class="v2-sec" id="v2s-meds" data-k="meds"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-meds-b" onclick="v2Sec('meds')"><span class="ic" data-pdic="encounterlog"></span><span class="v2-st">Medications</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-meds-b" hidden></div></section>
             <section class="v2-sec" id="v2s-hist" data-k="hist"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-hist-b" onclick="v2Sec('hist')"><span class="ic" data-pdic="tasks"></span><span class="v2-st">Past Medical History (PMHx)</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-hist-b" hidden></div></section>
             <!-- T-037 (Daniel, 31 Oct: investigations belong in the left summary, not in Chart review) -->
@@ -15736,7 +15745,7 @@ window.addEventListener('resize', function(){
 var CS = {empty:false, allergy:{}, visit:{}, ai:{}, sc:{}, draft:{}, stripOpen:{}, pop:null, sinceOpen:{}, relOpen:{},
           fcTab:null, fcReturn:null, ctxScroll:0, view:'chart', dropped:{}, nsResumed:{}, srcOpen:{},
           /* Ani, 5 Oct: chart layout v2 (csLayout, script at the end). Only presentation reads this. */
-          layout:'current', metaOpen:{}};
+          layout:'current'};
 try { CS.draft = JSON.parse(sessionStorage.getItem('sc-cs-draft') || '{}') || {}; } catch(e){ CS.draft = {}; }
 
 function csEsc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -15913,7 +15922,7 @@ function csNAItems(name){
 function ecgLine(it){ return csEsc((it && it.interp) || traceFlag(it)); }
 function csNARowV2(x, related, also){
   var T = CS_TIER[x.tier], it = x.it, t = x.test;
-  var mk = x.idx + '-' + (t ? String(t.n).replace(/[^a-z0-9]/gi,'') : 'abn'), open = !!CS.metaOpen[mk];
+  var mk = x.idx + '-' + (t ? String(t.n).replace(/[^a-z0-9]/gi,'') : 'abn');
   var val, up = t && (t.f || '').indexOf('high') > -1, low = t && (t.f || '').indexOf('low') > -1;
   if(x.abn) val = '<b>' + (x.ecg ? ecgLine(it) : 'Abnormal ' + csEsc(it.panel)) + '</b>';
   else val = '<b>' + t.n + '</b> <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span>' + lrWord(t.f, t.v);   /* T-037: the word, not an arrow */
@@ -15927,12 +15936,13 @@ function csNARowV2(x, related, also){
       var at = a.test, au = (at.f || '').indexOf('high') > -1;
       return '<span class="cs-also-v">' + at.n + ' ' + at.v + ' ' + (at.u || '') + ' ' + lrWord(at.f, at.v).replace('class="lr-w"', 'class="lr-w lr-lc"') + (at.ref ? ', reference ' + csEsc(lrRef(at)) : '') + '</span>';
     }).join(', ') + '</p>';
-  h += '<p class="v2-q v2-meta">Received ' + csEsc(it.received) +
-    '<button type="button" class="cs-info" id="cs-mi-' + mk + '" aria-expanded="' + open + '" aria-controls="cs-md-' + mk + '" aria-label="Source details" title="Source details" onclick="CS.metaOpen[\'' + mk + '\']=!CS.metaOpen[\'' + mk + '\'];renderChartAlerts(PC_CURRENT);csFocus(\'#cs-mi-' + mk + '\')">' + csIc('cardinfo') + '</button></p>' +
-    '<dl class="v2-src" id="cs-md-' + mk + '"' + (open ? '' : ' hidden') + '>' +
+  /* Ani, 3 Nov: the source details show on hover (and keyboard focus), not on a click */
+  h += '<div class="v2-metaw"><p class="v2-q v2-meta">Received ' + csEsc(it.received) +
+    '<button type="button" class="cs-info" id="cs-mi-' + mk + '" aria-describedby="cs-md-' + mk + '" aria-label="Source details">' + csIc('cardinfo') + '</button></p>' +
+    '<dl class="v2-src v2-tip" id="cs-md-' + mk + '" role="tooltip">' +
       (x.tier === 'info' ? '<dt>Panel</dt><dd>Same panel as ' + csEsc(x.panelOf) + ', reviewed with it</dd>' : '<dt>Panel</dt><dd>' + csEsc(it.panel) + '</dd>') +
       '<dt>Lab</dt><dd>' + csEsc(it.lab) + '</dd>' + (x.tier === 'info' ? '' : '<dt>Responsible</dt><dd>Dr. D. Pannozzo</dd>') +
-      (!x.abn && x.tier !== 'info' && attnBasis(t) ? '<dt>Why it is flagged</dt><dd>' + attnBasis(t) + '</dd>' : '') + '</dl>';
+      (!x.abn && x.tier !== 'info' && attnBasis(t) ? '<dt>Why it is flagged</dt><dd>' + attnBasis(t) + '</dd>' : '') + '</dl></div>';
   /* 21 Oct: an abnormal result that is not a lab (the ECG) has no "To do" label: the printed line is the title */
   return '<div class="vca-row v2-nar cs-' + x.tier + (related ? ' cs-rel' : '') + '">' +
     '<span class="ic vca-ic" role="img" aria-label="' + (x.abn ? 'Abnormal' : T.w) + '" data-pdic="' + T.ic + '"></span>' +
@@ -18109,7 +18119,7 @@ function v2Mount(){
   v2Move(v2El('cs-ns'), v2El('v2-ns-slot'));
   v2Move(v2El('recall'), v2El('v2-ns-slot'));
   v2Move(v2El('vc-alerts'), v2El('v2-na-b'));
-  v2Move(v2El('cs-today'), v2El('v2-today-slot'));
+  v2Move(v2El('cs-today'), v2El('v2-side-today'));
   v2Move(v2El('slv'), v2El('v2s-since-b'));
   v2Move(v2El('cs-saved'), v2El('v2-saved-slot'));
   v2Move(v2El('cs-scribe-btn'), v2El('v2-note-acts'));
