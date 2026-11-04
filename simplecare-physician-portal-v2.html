@@ -7376,10 +7376,10 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na .cv2-na-cols > span:nth-child(2){flex:1 1 auto;min-width:0;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na .cv2-na-cols > span:nth-child(3){flex:0 0 112px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na .cv2-na-cols > span:nth-child(4){flex:0 0 104px;}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na .cv2-na-cols > span:nth-child(5){flex:0 0 112px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na .cv2-na-cols > span:nth-child(5){flex:0 0 152px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts{gap:0;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-group + .cs-group{border-top:1px solid var(--cv2-line);}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na:not(.na-all) #vc-alerts .vca-row{display:grid;grid-template-columns:20px minmax(0,1fr) 112px;gap:0 8px;align-items:start;min-height:44px;padding:11px 0 9px;border-radius:0;background:none;box-shadow:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na:not(.na-all) #vc-alerts .vca-row{display:grid;grid-template-columns:20px minmax(0,1fr) 152px;gap:0 8px;align-items:start;min-height:44px;padding:11px 0 9px;border-radius:0;background:none;box-shadow:none;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-group:first-child .vca-row:first-child{padding-top:11px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-relh + .vca-row.cs-rel{padding-top:9px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row.cs-rel{padding-left:0;border-top:0;}
@@ -7395,7 +7395,7 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-fv .lr-w{margin-left:6px;font-size:15px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .v2-na-ref{flex:0 0 112px;margin:0;font-size:14px;line-height:20px;color:var(--cv2-soft);white-space:normal;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-na-dt{display:block;flex:0 0 104px;font-size:14px;line-height:20px;color:var(--cv2-soft);}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts :is(.cv2-refk,.cv2-x){position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-refk{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .v2-nad{flex:0 0 100%;padding-left:88px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-side{display:flex;justify-content:flex-end;align-items:center;gap:8px;min-width:0;margin:-11px 0;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-side .cs-stage{display:none;}
@@ -7413,9 +7413,12 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 /* Visual direction (Version 2 only): the page is a flat #F7F8FA while a Version 2 chart is open; cards are white with a 1px border and an 8px
    radius, no shadows; the ink, secondary, border, critical-icon and success tokens take the brief's values inside the chart. --crit-text stays
    #B52F27 so a critical value keeps AA contrast on its tinted badge. */
-body:has(#screen-patientchart.active #pcv-c.chart-v2){background:#F7F8FA;}
-body:has(#screen-patientchart.active #pcv-c.chart-v2) .topbar{background-color:rgba(247,248,250,.92);}
-#screen-patientchart #pcv-c.cs-v2.chart-v2{--ink:#202936;--ink-soft:#667085;--line:#E5E7EB;--crit:#D92D20;--good:#16865B;--shadow-card:none;}
+/* light only (Ani, 4 Oct: no dark-mode work for now): in the dark theme the chart keeps the theme's own tokens */
+:root:not([data-theme="dark"]) body:has(#screen-patientchart.active #pcv-c.chart-v2){background:#F7F8FA;}
+:root:not([data-theme="dark"]) body:has(#screen-patientchart.active #pcv-c.chart-v2) .topbar{background-color:rgba(247,248,250,.92);}
+:root:not([data-theme="dark"]) #screen-patientchart #pcv-c.cs-v2.chart-v2{--ink:#202936;--ink-soft:#667085;--line:#E5E7EB;--crit:#D92D20;--good:#16865B;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2{--shadow-card:none;}
+:root[data-theme="dark"] #screen-patientchart #pcv-c.cs-v2.chart-v2{--cv2-line:var(--line);--cv2-ink:var(--ink);--cv2-soft:var(--ink-soft);--cv2-wash:var(--wash);--cv2-bg:var(--paper);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main .v2-card{padding:16px;border:1px solid var(--cv2-line);border-radius:8px;box-shadow:none;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main{gap:8px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main .v2-stepH{margin:16px 0 0;font-size:16px;line-height:22px;font-weight:700;color:var(--cv2-ink);}
@@ -7429,6 +7432,13 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .topbar{background-color:r
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main #ns-wrap .cs-ai{border-radius:8px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-sec.v2-open{background:#F9FAFB;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-sec + .v2-sec,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side #v2-side-today + .v2-sec{border-top-color:var(--cv2-line);}
+/* Ani's sizes inside Version 2 (shared parts that measured under them: the billing row's labels 13px and its Suggested tag 12px; Cedar and Insert 36px;
+   Change 30px; See all 32px). Version 2 only; Current is left as it is. */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-sign-b dt{font-size:14px;line-height:20px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-sign-b .t23-sug{font-size:14px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-note-acts .cs-tb{height:44px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-sign-b #t23-dxbtn{min-height:44px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-seeall{min-height:44px;}
 /* at 1200 px and under: stacked; the steps are the horizontal bar, sticky under the top bar; the patient context is a drawer */
 @media (max-width:1200px){
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2,#screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-template-areas:"hd" "nav" "main";gap:8px;height:auto;}
@@ -16335,8 +16345,7 @@ function csNARowV2(x, related, also){
     '<span class="ic vca-ic" role="img" aria-label="' + (x.abn ? 'Abnormal' : T.w) + '" data-pdic="' + T.ic + '"></span>' +
     '<div class="vca-main">' + (x.abn ? '' : '<p class="v2-na-k">' + T.w + '</p>') + '<span class="cv2-na-sev" aria-hidden="true">' + (x.abn ? 'Abnormal' : T.w) + '</span>' + '<p class="vca-t">' + val + '</p><div class="v2-nad">' + h + '</div></div>' +
     '<div class="cs-side"><p class="cs-stage">' + csIc('clock') + '<span><span class="vh">Stage: </span>' + csEsc(x.stage) + '</span></p>' +
-      /* Chart Version 2: the second word is visually hidden there (the button still says "Review result" to a screen reader); Current shows it */
-      '<button type="button" class="btn" onclick="openReview(' + x.idx + ')"><span class="ic" data-pdic="eye"></span>' + '<span>' + String(x.action).replace(/^(\w+)( .+)$/, '$1<span class="cv2-x">$2</span>') + '</span>' + '</button></div>' +
+      '<button type="button" class="btn" onclick="openReview(' + x.idx + ')"><span class="ic" data-pdic="eye"></span>' + x.action + '</button></div>' +
   '</div>';
 }
 function csNARow(x, related, also){
@@ -23299,6 +23308,6 @@ document.addEventListener('keydown', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 17:24</div>
+  <div class="build-stamp">v2 · build 2026-11-04 17:42</div>
 </body>
 </html>
