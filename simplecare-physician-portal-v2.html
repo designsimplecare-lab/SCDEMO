@@ -7379,8 +7379,9 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na .cv2-na-cols > span:nth-child(5){flex:0 0 112px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts{gap:0;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-group + .cs-group{border-top:1px solid var(--cv2-line);}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na:not(.na-all) #vc-alerts .vca-row{display:grid;grid-template-columns:20px minmax(0,1fr) 112px;gap:0 8px;align-items:start;min-height:44px;padding:11px 0;border-radius:0;background:none;box-shadow:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na:not(.na-all) #vc-alerts .vca-row{display:grid;grid-template-columns:20px minmax(0,1fr) 112px;gap:0 8px;align-items:start;min-height:44px;padding:11px 0 9px;border-radius:0;background:none;box-shadow:none;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-group:first-child .vca-row:first-child{padding-top:11px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-relh + .vca-row.cs-rel{padding-top:9px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row.cs-rel{padding-left:0;border-top:0;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-relh{margin:0;padding:2px 0 0 116px;border-top:0;font-size:14px;line-height:20px;color:var(--cv2-soft);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-ic svg{width:20px;height:20px;margin:1px 0 0;align-self:start;}
@@ -7418,7 +7419,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .topbar{background-color:r
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main .v2-card{padding:16px;border:1px solid var(--cv2-line);border-radius:8px;box-shadow:none;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main{gap:8px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main .v2-stepH{margin:16px 0 0;font-size:16px;line-height:22px;font-weight:700;color:var(--cv2-ink);}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2p-review .v2-stepH{margin-top:0;}
+/* the first step's heading is the nav's current step at the top of the column: kept for screen readers, not drawn (the Note heading comes up by its height) */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2p-review .v2-stepH{position:absolute;width:1px;height:1px;margin:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main .v2-step{display:grid;gap:8px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main #v2-rv2.v2-one{gap:8px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main .v2-ch h3{font-size:16px;line-height:22px;color:var(--cv2-ink);}
@@ -18629,9 +18631,17 @@ function nsFields(){ return NS_SECS.map(nsTa).filter(function(t){ return t && t.
     var sc = v2Scroller(), top = sc ? sc.getBoundingClientRect().top : 0, off = (sc ? top : (v2El('v2-head') ? v2El('v2-head').getBoundingClientRect().bottom : 120)) + 24;
     /* Chart layout 2 (Ani, 4 Nov): the tab bar sits at the top of the scrolling centre column, so a section counts once it reaches the bar's bottom */
     var tb = v2El('v2-top'); if(sc && tb && sc.contains(tb)) off += tb.offsetHeight + 12;
+    /* Chart Version 2 (Ani, 4 Nov: chart Version 2 brief), stacked at 1200 px and under: a step press lands its section on the page's scroll padding, so the spy counts from there */
+    if(!sc && typeof cv2On === 'function' && cv2On()) off = Math.max(off, (parseFloat(document.documentElement.style.scrollPaddingTop) || 0) + 8);
     var cur = 'review';
     V2_FLOW.forEach(function(k){ var p = v2El('v2p-' + k); if(p && !p.hidden && p.getBoundingClientRect().top <= off) cur = k; });
     if(sc && sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 4) cur = 'sign';
+    /* Chart Version 2: a step the doctor just pressed stays current while its section is in view, even when the column or page cannot scroll
+       far enough to bring it to the top (the end-of-page rule above would otherwise mark Sign off, or the step above it) */
+    if(typeof cv2On === 'function' && cv2On()){
+      if(!sc && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = 'sign';
+      var pr = CV2.pressed; if(pr && Date.now() - pr.t < 1600){ var ps = v2El('v2p-' + pr.tab); if(ps && ps.getBoundingClientRect().top < window.innerHeight - 40) cur = pr.tab; }
+    }
     if(cur !== V2.flowTab){ V2.tab = cur; v2Step(cur); }
   };
   var on = function(){ if(tick) return; tick = requestAnimationFrame(function(){ tick = null; spy(); }); };
@@ -23268,6 +23278,7 @@ document.addEventListener('keydown', function(e){
   w('v2RenderSide', function(name){ if(cv2On()) cv2Side(name || PC_CURRENT); });
   w('v2SyncHead', function(){ if(cv2On()) cv2Sync(); });
   w('renderChartAlerts', function(){ if(cv2On()) cv2NaCols(); });
+  w('v2Tab', null, function(tab){ CV2.pressed = cv2On() && tab !== 'chart' ? {tab:tab, t:Date.now()} : null; });
   ['pcStartCall', 'pcEndCall', 'pcSyncChartCall'].forEach(function(n){ w(n, function(){ if(cv2On()) cv2Sync(); }); });
   w('showScreen', function(){ cv2NavAuto(); if(cv2On()) cv2Drawer(false, true); });
   /* the doctor pressed Collapse or Expand: the chart leaves the app nav alone from then on */
@@ -23288,6 +23299,6 @@ document.addEventListener('keydown', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 17:08</div>
+  <div class="build-stamp">v2 · build 2026-11-04 17:24</div>
 </body>
 </html>
