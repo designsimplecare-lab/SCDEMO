@@ -145,3 +145,57 @@ panel says so.
 **Demo data added** (invented): Gloria's denosumab is due in 4 days; tramadol fills from Dr. S. Gill and Dr. K. Brar; Korynn's PharmaNet
 profile (sertraline due, pantoprazole, a finished cephalexin course); more drugs in the demo library (tramadol, pantoprazole, cephalexin,
 azithromycin, losartan, rosuvastatin).
+
+## 3 Nov: 31 Oct re-read gaps (T-040, built 4 Nov 2026)
+Source: `product/qa/2026-10-31-coverage-check.md` (items 2, 20, 28, 30, 31, 35, 36, 62, 72, 94), quoting Daniel's 31 Oct call. Ani approved the list ("go").
+Built in `simplecare-physician-portal-v2.html`, one commit per item. All demo data is invented. Light only, headless Chrome, `?nologin=1`.
+
+**Another prescriber of a Simple Care drug** (00:41:04 "somebody else has prescribed this drug not me … or there's a dose discrepancy"; 01:43:29).
+`rxRecModel` no longer folds another prescriber's fill into a plain "Same as Simple" row. It is a new kind, `other`. It sits with the dose
+differences (PharmaNet differs; a due one stays in Due for renewal) and is highlighted the same way. The PharmaNet cell shows Simple Care's own
+fill, then one neutral line per other prescriber: "Also filled from Dr. [name], [specialty or 'not a Simple Care doctor'] · [date]", with the name
+marked like a dose. Supply comes from the latest fill. Stop still writes to the pharmacy, because it is Simple's prescription. Chart review's
+PharmaNet sentence no longer calls such a drug "not on the Simple Care list". Demo: Greg's atorvastatin 20 mg, also filled 18 days ago from
+Dr. J. Haldane, walk-in clinic.
+*Needs `clinical-safety` / Daniel:* Continue is not gated on this row, and it does not block signing off the list (only a dose difference does).
+Which drugs and which window count is his rule; today every fill on the PharmaNet profile counts.
+
+**After Sign and fax, the next form opens by itself** (01:56:33 "if I go sign and fax this opens up right automatically"). When today's note calls
+for labs or imaging (`rxNextForms`), signing opens the first of them over the panel, in place of the "Next, as per your note" card. The tests the
+note names are ticked and the source reads "As per your note: …". A toast says "Lab requisition opened, as per your note." If the note names both,
+the second stays on the card. Closing the form comes back to the panel. Nothing opens when the note says nothing, or when Cedar is off for prescribing.
+
+**Confirm and renew in one press** (00:48:56 "sometimes you got to do both"). A dose difference that is also due or out of supply gets one primary
+button, "Confirm [PharmaNet dose] and continue" (`RX_ACT.confcont`). It confirms the PharmaNet version to the medication list and puts the drug
+on the pad at that dose. Confirm and Adjust dose stay beside it. A difference that is not due is unchanged: Gloria's amlodipine, 46 days left,
+Daniel 00:28:52 "they don't need it but that is still very important information". Demo case: Greg's metoprolol (Simple 25 mg, PharmaNet 50 mg,
+overdue).
+
+**The pad's PharmaNet check** (00:43:41 "as per [PharmaNet] this person's already taking this drug"; 00:45:00 "every drug over the last 18 months …
+even the PRNs"). `rxSafety` checks each drug newly added to the pad (search, quick script, Cedar's "start" draft) against all PharmaNet fills in the
+last `RX_PN_MONTHS = 18` months: current, finished and as needed. The warnings read:
+- "As per PharmaNet, already taking [drug] ([dose][ as needed], filled [date] by [prescriber])."
+- "As per PharmaNet, filled [drug] [date] (finished)." (for a short course)
+
+The source reads "PharmaNet, last 18 months". Like every pad warning, it needs a reason or removal. It replaces the "on this list twice" duplicate
+for that drug. Continue and Adjust dose of a listed drug are not flagged, because that is the doctor's choice about that drug. It is a safety
+warning, so no Cedar switch hides it. "Finished" means PharmaNet's course flag; a long-term drug stays "already taking" even when overdue.
+Demo: Greg's finished azithromycin course (240 days ago) and as-needed acetaminophen (150 days ago).
+*Needs Daniel:* confirm the 18-month window, and whether a finished course should warn or only inform.
+
+**Small things.**
+- *The reason as a headline* (00:04:09). The indication is on the name line: "Metformin · Type 2 diabetes", 500 weight, ink-soft. The Medicine
+  column is 30%, and a long pair wraps after the dot.
+- *Fly-to-pad* (01:22:51 "it's satisfying"). On Continue (and Confirm and continue), a copy of the drug name travels to its pad line in 350 ms.
+  It does not run under prefers-reduced-motion.
+- *A Cedar line on a dose difference* (00:47:09). Under Gloria's amlodipine: "Cedar: the cardiology letter of Jul 28 increased amlodipine to
+  10 mg." The Cedar mark is in brand. "Source: Consults, Jul 28" opens the letter's sentence in place. The brief said a link to Consults, but the
+  Consults drawer is under this panel and inert while it is open, so a jump would close prescribing. The line is hidden with Cedar off for
+  prescribing, and once the dose is confirmed. Demo: the matching sentence is added to the demo cardiology letter.
+
+**Not built (Ani's decisions, 3 Nov).**
+- *No separate dividing lines inside the Simple Care part* (item 20). Daniel at 00:27:23 said "you don't need to … have a separate dividing line"
+  (Ani: "It's just the order." He: "Correct."; again at 01:29:32). Ani's final call is to keep the group names (Due for renewal, PharmaNet differs,
+  Other Simple Care medications). **Question for Daniel:** are the group names acceptable, or should the Simple Care part be one ordered list
+  with "Due for renewal" only as a label in the Supply cell?
+- *"Process each drug" hint* (item 72): not added (Ani: no explaining text). The word "reconciliation" is still not on any action.

@@ -838,3 +838,45 @@ Each switch is a `role="switch"` button with `aria-checked` and a visible On or 
    - Home and Inbox (out of scope).
    **Needs Ani:** do these need a switch?
 5. **No harness check was added.** Test scripts belong to `qa-engineer`. The suggested check: "Prescribing off hides the note draft".
+
+
+## 3 Nov: 31 Oct re-read gaps (T-039, the note up front)
+
+Source: `product/qa/2026-10-31-coverage-check.md`, items 92 and 150 and to-do 1. Daniel, 31 Oct, 01:53:50: "the first place that I start is the note, right?"; 02:56:42: "This is all gone. There's my note. Boom." Ani approved the list ("go"). Built 4 Nov. Light only, headless Chrome, `?nologin=1`. Screenshots are local only. This section is the design record.
+
+### What changed
+- **Nothing is deleted, only folded.** The order stays: Needs attention, then Chart review, then the Note. (The Intake summary now lives at the top of the Patient summary, Ani 3 Nov, so it no longer sits in this column; it is one or two lines.)
+- **Needs attention: one line per item.** The value, its word and the reference interval stay on the line (Daniel, 31 Oct: "show the reference range right there"). The concern, the two earlier values, the rest of the panel and the received/source line sit behind the card's **Show all** (`naAll`, `naAllSync`; `aria-expanded`, per patient). Show all is hidden when there is nothing more to show.
+- **Chart review: two sentences.** The first two sentences of Who this patient is show. The rest, and Medications and what they treat, sit behind the card's **Show all** (`crAll`; `aria-expanded`, `aria-controls`, per patient, toggled in place so focus stays). Cedar off for chart review still shows its one line (T-038).
+- The two buttons are the same quiet link in the card header, 44 px, with a chevron that turns.
+
+### Proof: where the Note heading starts (px from the top of the window)
+| Chart | 1280 × 800 before | after | 1440 × 900 before | after |
+|---|---|---|---|---|
+| Gloria | 1783 | 697 | 1703 | 697 |
+| Andrey | 718 | 420 | 662 | 420 |
+| Carol-Anne | 998 | 562 | 998 | 562 |
+| Behdis | 1074 | 566 | 1018 | 562 |
+| Arli | 836 | 536 | 778 | 536 |
+| Greg | 1000 | 420 | 1000 | 420 |
+| Manjit | 768 | 420 | 712 | 420 |
+| Korynn | 878 | 536 | 878 | 536 |
+
+"Before" is the build of 3 Nov 21:32 with the other session's 3 Nov changes (the coverage check measured 849 to 1890 on the earlier build). "After" includes the 4 Nov chart layout below. Folding alone took Gloria at 1440 from 1703 to 811; the layout took it to 697. All 16 are visible without scrolling. Console clean on all 8 charts at both sizes.
+
+### Open
+- **Needs Daniel:** is one line enough for a critical result on the chart, with the concern ("Acute myocardial injury") one press away? The red count on the Review step and the critical value stay.
+
+## 4 Nov: chart layout (patient and steps left, Patient summary right)
+
+Source: Ani, 4 Nov: "move this to the left side panel and replace left side panel with review etc, basically left side panel will go right".
+
+- **From 1201 px, three columns,** each its own scroll box (`v2Fit`), so nothing moves when another column scrolls:
+  - **Left** (264 px; 240 px at 1201 to 1360): the name; age, sex and masked PHN on one line; the allergy line as the other session left it (a quiet tick when there are none, the band when one is named or unrecorded); Call (split, caret) and Chart stacked, full width, 48 px; the four steps as a vertical list with their counts, the current one marked (`aria-current="step"`, wash and a brand left bar; same click and scroll-spy behaviour as the bar); Save draft at the bottom.
+  - **Centre:** the step content, unchanged.
+  - **Right** (320 px; 288 px at 1201 to 1360): the Patient summary, unchanged.
+  - The old top header card is gone. `#v2-head` is now the grid's first column; the `<aside>` comes after `#v2-main` in the DOM, so the reading and Tab order is patient and steps, the work, the summary.
+- **The app nav** folds to icons on an open chart from 1201 to 1440 px and opens again when the chart is left (`navAuto`). The doctor's saved choice (`sc-nav`) is never written, and once they press Collapse or Expand themselves the chart leaves the nav alone.
+- **Under 1200 px** (was 1100) the chart stacks as before: patient, the step bar, the work, then the Patient summary under the work. (Chosen over a toggle: simpler, nothing hidden.)
+- Centre width: 586 px at 1280, 712 px at 1600. The page does not scroll at 1280 × 800.
+- Harness: 42/129 before and after, the same 42 checks; no selector had to change.
