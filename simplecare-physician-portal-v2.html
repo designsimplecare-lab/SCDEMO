@@ -22354,7 +22354,7 @@ function rfMain(){
         var why = [x.follow ? (RF_CTX[name].followWhy) : '', x.km != null ? x.km + ' km from the patient' : '', RF_TAKE[x.d.take]].filter(Boolean).join(' · ');
         return '<li' + (j ? '' : ' class="top"') + '><button type="button" data-fk="who-' + x.i + '" onclick="rfPickWho(' + x.i + ')"' + (x.d.take === 'no' ? ' aria-describedby="rf-no-' + x.i + '"' : '') + '><b>' + csEsc(x.d.n + ' · ' + x.d.s) + (j ? '' : ' <span class="op-pick">Best match</span>') + '</b>' +
           '<span>' + csEsc(x.d.c) + '</span><span' + (x.d.take === 'no' ? ' id="rf-no-' + x.i + '"' : '') + '>' + csEsc(why) + '</span></button></li>';
-      }).join('') + '</ul><p class="op-src">From the specialist list the MOAs keep up to date (demo list).</p></div>';
+      }).join('') + '</ul><p class="op-src">From the specialist list the MOAs keep up to date.</p></div>';
     h += '<div class="op-f op-mt"><label for="rf-q">Or search by name, specialty or city</label><input type="search" id="rf-q" data-fk="rfq" autocomplete="off" value="' + csEsc(s.q) + '" oninput="rfQ(this.value)"></div>' +
       '<div id="rf-who">' + rfWhoList() + '</div>' +
       '<div class="op-mt8"><button type="button" class="btn" data-fk="manual" onclick="rfManual()">' + rxIc('edit') + 'Enter manually</button></div>';
