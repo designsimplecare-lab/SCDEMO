@@ -7535,6 +7535,19 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-ctx-open{display:inline-flex;height:44px;min-height:44px;padding:0 12px;gap:8px;font-size:15px;border-radius:8px;}
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-snap{flex-wrap:wrap;}
 }
+/* Ani, 4 Nov ("move this, horizontal tab"): on wide screens too, the steps are one horizontal bar above the work, not a left column;
+   the work takes the freed width. Save draft and its status sit at the right end of the bar. */
+@media (min-width:1201px){
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2{grid-template-columns:minmax(0,1fr) 300px;grid-template-rows:auto auto minmax(0,1fr);grid-template-areas:"hd hd" "nav side" "main side";}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2{grid-template-columns:minmax(0,1fr) 56px;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #cv2-nav{flex-direction:row;align-items:center;gap:8px;padding:4px 8px;overflow:visible;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-head{flex:1 1 auto;min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs{flex-direction:row;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button{width:auto;justify-content:flex-start;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button[aria-current="step"]{box-shadow:inset 0 -3px 0 var(--accent);}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #cv2-save{flex-direction:row;align-items:center;margin:0 0 0 auto;padding:0;border:0;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-save #vc-savedraft{width:auto;}
+}
 </style>
 </head>
 <body>
@@ -23673,6 +23686,6 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 17:37</div>
+  <div class="build-stamp">v2 · build 2026-11-04 17:42</div>
 </body>
 </html>
