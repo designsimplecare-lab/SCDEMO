@@ -13979,9 +13979,11 @@ function rxAllergens(st){
 }
 /* ---- the regimen and the safety check on it ---- */
 function rxRegimen(st){
-  var out = [];
+  var out = [], renewed = {};
+  /* T-040: a drug can have fills from two prescribers (one row each); renewing it covers all of its fills, so the others are not a duplicate */
+  rxRows(st).forEach(function(r){ if(rxOrderFor(st, r.id)) renewed[String(r.drug).toLowerCase()] = 1; });
   rxRows(st).forEach(function(r){
-    if(rxStopped(st, r) || rxOrderFor(st, r.id)) return;
+    if(rxStopped(st, r) || rxOrderFor(st, r.id) || renewed[String(r.drug).toLowerCase()]) return;
     out.push({name:r.drug, key:r.key, row:r, ord:null, text:rxRowTitle(r), per:r.per, freq:r.freq, mg:(rxLib(r.key) || {}).mg});
   });
   st.orders.forEach(function(o){ out.push({name:o.drug, key:o.key, row:null, ord:o, text:o.drug + ' ' + o.strength, per:o.per, freq:o.freq, mg:(rxLib(o.key) || {}).mg}); });
@@ -22803,6 +22805,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 11:01</div>
+  <div class="build-stamp">v2 · build 2026-11-04 11:06</div>
 </body>
 </html>
