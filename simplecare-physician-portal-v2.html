@@ -7409,6 +7409,24 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-refk{position:static;width:auto;height:auto;overflow:visible;clip:auto;}
 }
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na{container:cv2na / inline-size;}
+/* Visual direction (Version 2 only): the page is a flat #F7F8FA while a Version 2 chart is open; cards are white with a 1px border and an 8px
+   radius, no shadows; the ink, secondary, border, critical-icon and success tokens take the brief's values inside the chart. --crit-text stays
+   #B52F27 so a critical value keeps AA contrast on its tinted badge. */
+body:has(#screen-patientchart.active #pcv-c.chart-v2){background:#F7F8FA;}
+body:has(#screen-patientchart.active #pcv-c.chart-v2) .topbar{background-color:rgba(247,248,250,.92);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2{--ink:#202936;--ink-soft:#667085;--line:#E5E7EB;--crit:#D92D20;--good:#16865B;--shadow-card:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main .v2-card{padding:16px;border:1px solid var(--cv2-line);border-radius:8px;box-shadow:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main{gap:8px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main .v2-stepH{margin:16px 0 0;font-size:16px;line-height:22px;font-weight:700;color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2p-review .v2-stepH{margin-top:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main .v2-step{display:grid;gap:8px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main #v2-rv2.v2-one{gap:8px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main .v2-ch h3{font-size:16px;line-height:22px;color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main .v2-orow{border-radius:8px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main #ns-wrap{border-color:var(--cv2-line);border-radius:8px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main #ns-wrap .cs-ai{border-radius:8px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-sec.v2-open{background:#F9FAFB;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-sec + .v2-sec,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side #v2-side-today + .v2-sec{border-top-color:var(--cv2-line);}
 /* at 1200 px and under: stacked; the steps are the horizontal bar, sticky under the top bar; the patient context is a drawer */
 @media (max-width:1200px){
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2,#screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-template-areas:"hd" "nav" "main";gap:8px;height:auto;}
@@ -23270,6 +23288,6 @@ document.addEventListener('keydown', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 17:00</div>
+  <div class="build-stamp">v2 · build 2026-11-04 17:08</div>
 </body>
 </html>
