@@ -7366,6 +7366,47 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2s-alg .cv2-alg-l .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2s-alg .cv2-alg-l svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--cv2-warn);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2s-alg .cv2-alg-ok .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2s-alg .cv2-alg-ok svg{color:var(--cv2-ok);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2s-alg .cv2-alg-r{display:block;color:var(--cv2-soft);}
+/* Needs attention as dense single rows (brief: "no big card per result"): severity word and icon, the finding and its value with the LifeLabs word,
+   the reference interval, the date and time received, Review. One quiet column header; the rest of each result stays behind Show all (T-039). */
+.cv2-na-sev,.cv2-na-dt,.cv2-na-cols{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na .cv2-na-cols{display:flex;align-items:center;gap:8px;margin:0;padding:0 0 6px;border-bottom:1px solid var(--cv2-line);font-size:14px;line-height:20px;color:var(--cv2-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na .cv2-na-cols > span:nth-child(1){flex:0 0 108px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na .cv2-na-cols > span:nth-child(2){flex:1 1 auto;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na .cv2-na-cols > span:nth-child(3){flex:0 0 112px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na .cv2-na-cols > span:nth-child(4){flex:0 0 104px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na .cv2-na-cols > span:nth-child(5){flex:0 0 112px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts{gap:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-group + .cs-group{border-top:1px solid var(--cv2-line);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na:not(.na-all) #vc-alerts .vca-row{display:grid;grid-template-columns:20px minmax(0,1fr) 112px;gap:0 8px;align-items:start;min-height:44px;padding:11px 0;border-radius:0;background:none;box-shadow:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-group:first-child .vca-row:first-child{padding-top:11px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row.cs-rel{padding-left:0;border-top:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-relh{margin:0;padding:2px 0 0 116px;border-top:0;font-size:14px;line-height:20px;color:var(--cv2-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-ic svg{width:20px;height:20px;margin:1px 0 0;align-self:start;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row.cs-crit .vca-ic{color:var(--cv2-crit);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row.cs-todo .vca-ic{color:var(--cv2-warn);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-main{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 8px;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .v2-na-k{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-na-sev{display:block;flex:0 0 80px;font-size:15px;line-height:22px;font-weight:600;color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-t{display:flex;align-items:baseline;gap:8px;flex:1 1 0;min-width:0;margin:0;font-size:16px;line-height:22px;color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-fv{flex:1 1 auto;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-fv .lr-w{margin-left:6px;font-size:15px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .v2-na-ref{flex:0 0 112px;margin:0;font-size:14px;line-height:20px;color:var(--cv2-soft);white-space:normal;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-na-dt{display:block;flex:0 0 104px;font-size:14px;line-height:20px;color:var(--cv2-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts :is(.cv2-refk,.cv2-x){position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .v2-nad{flex:0 0 100%;padding-left:88px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-side{display:flex;justify-content:flex-end;align-items:center;gap:8px;min-width:0;margin:-11px 0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-side .cs-stage{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-side .btn{height:44px;min-height:44px;padding:0 14px;gap:8px;font-size:15px;font-weight:600;border-radius:8px;border:1px solid var(--line-strong);background:var(--panel);box-shadow:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cs-side .btn:hover{background:var(--cv2-wash);}
+/* under about 680 px of card (the panel open at 1280, or a narrow window) the reference and the time go under the finding */
+@container cv2na (max-width:640px){
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na .cv2-na-cols{display:none;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-t{flex-wrap:wrap;gap:0 12px;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-fv{flex:1 1 100%;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts :is(.v2-na-ref,.cv2-na-dt){flex:0 0 auto;margin-left:0;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-refk{position:static;width:auto;height:auto;overflow:visible;clip:auto;}
+}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na{container:cv2na / inline-size;}
 /* at 1200 px and under: stacked; the steps are the horizontal bar, sticky under the top bar; the patient context is a drawer */
 @media (max-width:1200px){
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2,#screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-template-areas:"hd" "nav" "main";gap:8px;height:auto;}
@@ -16243,10 +16284,14 @@ function csNARowV2(x, related, also){
   var val, up = t && (t.f || '').indexOf('high') > -1, low = t && (t.f || '').indexOf('low') > -1;
   if(x.abn) val = '<b>' + (x.ecg ? ecgLine(it) : 'Abnormal ' + csEsc(it.panel)) + '</b>';
   else val = '<b>' + t.n + '</b> <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span>' + lrWord(t.f, t.v);   /* T-037: the word, not an arrow */
+  val = '<span class="cv2-fv">' + val + '</span>';   /* Chart Version 2: the finding and its value are one cell of the row (an inline span in Current) */
   /* T-039 (Daniel, 31 Oct 02:56:42 "There's my note. Boom."; 01:53:50 "the first place that I start is the note"): one line per item, so the
      note comes up front. The reference interval stays on that line (Daniel, 31 Oct: "show the reference range right there"); the concern, the
      earlier values, the rest of the panel and the source sit in .v2-nad, folded behind the card's Show all (naAll). Nothing is removed. */
-  if(!x.abn) val += '<span class="v2-na-ref">Reference ' + csEsc(lrRef(t)) + (x.label ? ', ' + x.label.toLowerCase() : '') + '</span>';
+  if(!x.abn) val += '<span class="v2-na-ref"><span class="cv2-refk">Reference </span>' + csEsc(lrRef(t)) + (x.label ? ', ' + x.label.toLowerCase() : '') + '</span>';
+  /* Chart Version 2 (Ani, 4 Nov: chart Version 2 brief, "each with name, value, reference range, severity, date and time, a review action"): the date and
+     time sit on the line too; shown only in Version 2 (#pcv-c.chart-v2), where Received leaves the folded details. */
+  val += '<span class="cv2-na-dt"><span class="vh">Received </span>' + csEsc(it.received) + '</span>';
   var h = '';
   if(!x.abn && t.concern) h += '<p class="v2-na-c">' + t.concern + '</p>';
   /* T-037 (Daniel, 31 Oct): when there are any, the two earlier values with dates */
@@ -16266,9 +16311,10 @@ function csNARowV2(x, related, also){
   /* 21 Oct: an abnormal result that is not a lab (the ECG) has no "To do" label: the printed line is the title */
   return '<div class="vca-row v2-nar cs-' + x.tier + (related ? ' cs-rel' : '') + '">' +
     '<span class="ic vca-ic" role="img" aria-label="' + (x.abn ? 'Abnormal' : T.w) + '" data-pdic="' + T.ic + '"></span>' +
-    '<div class="vca-main">' + (x.abn ? '' : '<p class="v2-na-k">' + T.w + '</p>') + '<p class="vca-t">' + val + '</p><div class="v2-nad">' + h + '</div></div>' +
+    '<div class="vca-main">' + (x.abn ? '' : '<p class="v2-na-k">' + T.w + '</p>') + '<span class="cv2-na-sev" aria-hidden="true">' + (x.abn ? 'Abnormal' : T.w) + '</span>' + '<p class="vca-t">' + val + '</p><div class="v2-nad">' + h + '</div></div>' +
     '<div class="cs-side"><p class="cs-stage">' + csIc('clock') + '<span><span class="vh">Stage: </span>' + csEsc(x.stage) + '</span></p>' +
-      '<button type="button" class="btn" onclick="openReview(' + x.idx + ')"><span class="ic" data-pdic="eye"></span>' + x.action + '</button></div>' +
+      /* Chart Version 2: the second word is visually hidden there (the button still says "Review result" to a screen reader); Current shows it */
+      '<button type="button" class="btn" onclick="openReview(' + x.idx + ')"><span class="ic" data-pdic="eye"></span>' + '<span>' + String(x.action).replace(/^(\w+)( .+)$/, '$1<span class="cv2-x">$2</span>') + '</span>' + '</button></div>' +
   '</div>';
 }
 function csNARow(x, related, also){
@@ -16567,7 +16613,9 @@ function nsAIHtml(k, x){
       '<p class="cs-ai-t">' + csEsc(x.text) + '</p>' +
       '<div class="cs-ai-a"><span class="cs-cap"></span>' +
       '<span class="cs-ai-b"><button type="button" class="btn xs" onclick="csAIAccept(\'' + k + '\')"><span class="ic" data-pdic="complete"></span>Accept</button>' +
-      (scribe ? '<button type="button" class="btn xs" onclick="nsAIEdit(\'' + k + '\')"><span class="ic" data-pdic="edit"></span>Edit</button>' : '') +
+      /* Chart Version 2 (Ani, 4 Nov: chart Version 2 brief, "Accept, Edit, Reject"): the intake suggestion gets Edit too there; Current is unchanged.
+         There is no Regenerate: the demo has no second draft to offer, so none is shown. */
+      (scribe || (typeof cv2On === 'function' && cv2On()) ? '<button type="button" class="btn xs" onclick="nsAIEdit(\'' + k + '\')"><span class="ic" data-pdic="edit"></span>Edit</button>' : '') +
       '<button type="button" class="btn xs" onclick="csAIReject(\'' + k + '\')"><span class="ic" data-pdic="reopen"></span>Reject</button></span></div></div>';
   }
   if(x.state === 'editing'){
@@ -23047,6 +23095,14 @@ function cv2Sync(){
     '<button type="button" class="btn cv2-ctx-open" aria-haspopup="dialog" aria-expanded="' + !!CV2.drawer + '" aria-controls="v2-side" onclick="cv2Drawer(true)">' + csIc('tasks') + 'Patient summary</button>';
   if(CV2.meta.getAttribute('data-h') !== h){ CV2.meta.innerHTML = h; CV2.meta.setAttribute('data-h', h); paintPd(CV2.meta); }
 }
+/* Needs attention: one quiet column header over the dense rows (decorative: each row's cells carry their own words for a screen reader) */
+function cv2NaCols(){
+  var el = v2El('vc-alerts'); if(!el || el.hidden || !el.querySelector('.vca-row')) return;
+  if(el.querySelector('.cv2-na-cols')) return;
+  var d = document.createElement('div'); d.className = 'cv2-na-cols'; d.setAttribute('aria-hidden', 'true');
+  d.innerHTML = '<span>Severity</span><span>Finding</span><span>Reference</span><span>Received</span><span></span>';
+  var h = el.querySelector(':scope > .cs-h3'); el.insertBefore(d, h ? h.nextSibling : el.firstChild);
+}
 function cv2GoAlerts(){
   v2Tab('review', false);
   setTimeout(function(){ var b = document.querySelector('#vc-alerts .cs-side .btn'); if(b) b.focus({preventScroll:true}); }, 60);
@@ -23189,6 +23245,7 @@ document.addEventListener('keydown', function(e){
   w('openChart', function(name){ if(cv2On()){ ['alg', 'enc'].forEach(function(k){ v2Sec(k, false); }); CV2.drawer = false; cv2Side(name); cv2Sync(); cv2CtxPaint(); } cv2NavAuto(); });
   w('v2RenderSide', function(name){ if(cv2On()) cv2Side(name || PC_CURRENT); });
   w('v2SyncHead', function(){ if(cv2On()) cv2Sync(); });
+  w('renderChartAlerts', function(){ if(cv2On()) cv2NaCols(); });
   ['pcStartCall', 'pcEndCall', 'pcSyncChartCall'].forEach(function(n){ w(n, function(){ if(cv2On()) cv2Sync(); }); });
   w('showScreen', function(){ cv2NavAuto(); if(cv2On()) cv2Drawer(false, true); });
   /* the doctor pressed Collapse or Expand: the chart leaves the app nav alone from then on */
@@ -23209,6 +23266,6 @@ document.addEventListener('keydown', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 16:24</div>
+  <div class="build-stamp">v2 · build 2026-11-04 16:52</div>
 </body>
 </html>
