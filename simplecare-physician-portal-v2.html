@@ -7206,6 +7206,9 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-hd .v2-all{margin-left:auto;}
 #screen-patientchart #pcv-c.cs-v2 #v2-key :is(#cr-rest,#cr-medsec)[hidden]{display:none;}
 #screen-patientchart #pcv-c.cs-v2 #v2-key #cr-rest{margin-top:0;}
+/* T-040 (Daniel, 31 Oct 00:48:56): the one primary press on a due dose difference, the panel's primary look at the action row's size */
+#rx-panel .rp-acts .rp-cc{min-height:44px;height:44px;padding:0 16px;gap:8px;border-radius:12px;font-size:15px;font-weight:600;}
+#rx-panel .rp-acts .rp-cc .ic,#rx-panel .rp-acts .rp-cc svg{width:16px;height:16px;color:#fff;}
 /* Chart layout (Ani, 4 Nov: "move this to the left side panel and replace left side panel with review etc, basically left side panel will go
    right"). From 1201 px: LEFT the patient and the steps (name; age, sex and masked PHN; the allergy line as the other session left it; Call and
    Chart stacked; Review, Note, Action, Sign off as a vertical list with their counts, the current one marked; Save draft at the bottom), CENTRE
@@ -14769,6 +14772,10 @@ function rxActsHtml(st, it){
   };
   var h = '<div class="rp-acts" role="group" aria-label="' + csEsc(it.drug) + '">', sent = !o && st.orders.some(function(x){ return x.sent && x.drug === it.drug; });
   if(sent) return h + b('cont', 'Continue', true, ' disabled') + '<span class="rp-state">Prescribed today</span></div>';
+  /* T-040 (Daniel, 31 Oct 00:48:56: "sometimes you need to reconcile and sometimes you need to prescribe and sometimes you got to do both"): a dose
+     difference that is also due (or out) gets one primary press that confirms the PharmaNet version and puts it on the pad. Confirm and
+     Adjust dose stay; a difference that is not due is unchanged. */
+  if(dz && !o && !stp && it.due && it.side === 'simple') h += '<button type="button" class="btn dark rp-cc" data-fk="acc2' + it.id + '" onclick="rxAct(\'confcont\',\'' + it.id + '\')">' + rxIc('complete') + 'Confirm ' + csEsc(it.row.strength) + ' and continue</button>';
   h += b('cont', 'Continue', o && o.kind !== 'change', dz && !o ? ' disabled aria-describedby="rx-dz' + it.id + '"' : '');
   h += b('adj', 'Adjust dose', o && o.kind === 'change');
   h += b('stp', 'Stop', !!stp);
@@ -15094,6 +15101,12 @@ RX_ACT.conf = function(id){
   }
   if(typeof renderMedRail === 'function') renderMedRail(name);
   rxRender();
+};
+/* T-040 (Daniel, 31 Oct 00:48:56): Confirm and continue in one press: the PharmaNet dose goes to the list, then the drug goes on the pad at that dose */
+RX_ACT.confcont = function(id){
+  var st = rxState(PC_CURRENT), it = rxItem(st, id); if(!it || rxLocked() || it.kind !== 'dose') return;
+  if(!it.conf) RX_ACT.conf(id);
+  it = rxItem(st, id); if(it && !rxItemOrder(st, it)) RX_ACT.cont(id);
 };
 RX_ACT.accept = function(oid){ var st = rxState(PC_CURRENT), o = rxOrdById(st, oid); if(!o) return; o.ai = false; rxLog(st, 'Added the Cedar draft: ' + o.drug); rxRender(); };
 RX_ACT.chgai = function(oid){ var st = rxState(PC_CURRENT), o = rxOrdById(st, oid); if(!o) return; o.ai = false; RX_UI.edit = {oid:oid, part:'dose'}; rxLog(st, 'Changed the Cedar draft: ' + o.drug); rxRender();
@@ -22718,6 +22731,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 10:55</div>
+  <div class="build-stamp">v2 · build 2026-11-04 10:56</div>
 </body>
 </html>
