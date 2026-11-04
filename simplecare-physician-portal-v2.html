@@ -7359,6 +7359,8 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-ctx-t[aria-expanded="false"] .ic{transform:rotate(180deg);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #cv2-ctxbar{justify-content:center;padding:4px;border-bottom:0;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #cv2-ctxbar .cv2-ctx-h{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-rail .cv2-rb{position:relative;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-rail .cv2-rdot{position:absolute;top:9px;right:9px;width:8px;height:8px;border-radius:50%;background:var(--cv2-warn);box-shadow:0 0 0 2px var(--panel);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-rail{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;border-top:1px solid var(--cv2-line);margin:0 6px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > #v2-sum{margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > #v2-sum[hidden]{display:none;}
@@ -23157,15 +23159,17 @@ function cv2Rail(){
   var rows = [['today', 'Intake summary', 'today']];
   [].forEach.call(document.querySelectorAll('#v2-sum .v2-sec'), function(s){
     if(s.hidden) return;
-    var ic = s.querySelector('.v2-sbtn > .ic'), st = s.querySelector('.v2-st');
-    rows.push([s.getAttribute('data-k'), st ? st.textContent : '', ic ? ic.getAttribute('data-pdic') : 'file']);
+    var ic = s.querySelector('.v2-sbtn > .ic'), st = s.querySelector('.v2-st'), ch = s.querySelector('.v2-sc');
+    /* display by exception: a section's chip (e.g. "1 overdue" on Pending) keeps a dot on its rail button and joins its name */
+    var chip = ch && !ch.hidden ? ch.textContent.trim() : '';
+    rows.push([s.getAttribute('data-k'), (st ? st.textContent : '') + (chip ? ', ' + chip : ''), ic ? ic.getAttribute('data-pdic') : 'file', chip]);
   });
-  var h = rows.map(function(x){ return '<button type="button" class="cv2-rb" data-k="' + x[0] + '" aria-label="' + csEsc(x[1]) + '" title="' + csEsc(x[1]) + '" onclick="cv2RailGo(\'' + x[0] + '\')">' + csIc(x[2]) + '</button>'; }).join('');
+  var h = rows.map(function(x){ return '<button type="button" class="cv2-rb" data-k="' + x[0] + '" aria-label="' + csEsc(x[1]) + '" title="' + csEsc(x[1]) + '" onclick="cv2RailGo(\'' + x[0] + '\')">' + csIc(x[2]) + (x[3] ? '<span class="cv2-rdot" aria-hidden="true"></span>' : '') + '</button>'; }).join('');
   if(rail.getAttribute('data-h') !== h){ rail.innerHTML = h; rail.setAttribute('data-h', h); paintPd(rail); }
 }
 function cv2RailGo(k){
   cv2Ctx(true);
-  var b = k === 'today' ? document.querySelector('#v2-side-today button, #v2-side-today') : null;
+  var b = k === 'today' ? (document.querySelector('#v2-side-today #cs-today-h') || v2El('v2-side-today')) : null;
   if(k !== 'today'){ v2Sec(k, true); b = document.querySelector('#v2s-' + k + ' .v2-sbtn'); }
   if(b){ if(!b.matches('button')) b.tabIndex = -1; b.focus({preventScroll:true}); if(b.scrollIntoView) b.scrollIntoView({block:'nearest'}); }
 }
@@ -23266,6 +23270,6 @@ document.addEventListener('keydown', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 16:52</div>
+  <div class="build-stamp">v2 · build 2026-11-04 17:00</div>
 </body>
 </html>
