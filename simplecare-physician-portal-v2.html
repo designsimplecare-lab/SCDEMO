@@ -7302,7 +7302,7 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-who > .cs-nmrow{display:flex;align-items:center;gap:8px;min-width:0;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-who .vc-nm{margin:0;font-size:19px;line-height:24px;font-weight:700;color:var(--cv2-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-who > .vc-sub{display:block;margin:2px 0 0;font-size:14px;line-height:20px;color:var(--cv2-soft);white-space:nowrap;}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-nksep{display:inline;white-space:pre;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-nksep{display:inline;white-space:normal;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-nkda{display:inline-flex;align-items:center;gap:4px;margin:0;vertical-align:top;color:var(--cv2-ink);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-nkda .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-nkda svg{width:16px;height:16px;color:var(--cv2-ok);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-facts{flex:0 1 auto;min-width:0;max-width:380px;margin:0;padding:0;border:0;display:block;}
@@ -7500,6 +7500,22 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-scline[hidden]{display:none;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-scline .cs-ai-ic{display:inline-flex;width:18px;height:18px;color:var(--accent);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-scline .cs-link{min-height:44px;padding:0 4px;font-size:15px;font-weight:600;color:var(--accent-ink);}
+/* physician pass B5: on a Version 2 chart the page title and the top line go; Home and the call window sit in the header */
+body:has(#screen-patientchart.active #pcv-c.chart-v2) #tb-title{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+#screen-patientchart:has(#pcv-c.chart-v2) .cs-crumb{display:none;}
+body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd{display:flex;align-items:center;gap:8px;padding-left:4px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd > #v2-pt{flex:1 1 auto;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd > .pc-back{display:inline-flex;align-items:center;justify-content:center;gap:0;flex:none;width:44px;height:44px;min-height:44px;padding:0;font-size:0 !important;border:0;border-radius:8px;background:none;font:inherit;font-size:15px;font-weight:600;color:var(--cv2-ink);cursor:pointer;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd > .pc-back:hover{background:var(--cv2-wash);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd > .pc-back .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd > .pc-back svg{width:18px;height:18px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #cs-winclock{display:block;flex:0 0 172px;min-width:0;margin:0;font-size:14px;line-height:18px;font-weight:500;color:var(--cv2-soft);white-space:normal;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #cs-winclock:empty{display:none;}
+/* the patient line never hides the allergy state: on a narrow window it wraps, so the no-allergies tick goes to its own line */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-who > .vc-sub{white-space:normal;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-who{flex:1 1 220px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #cs-winclock{flex-basis:150px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-meta{margin-left:auto;}
 /* at 1200 px and under: stacked; the steps are the horizontal bar, sticky under the top bar; the patient context is a drawer */
 @media (max-width:1200px){
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2,#screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-template-areas:"hd" "nav" "main";gap:8px;height:auto;}
@@ -16295,7 +16311,7 @@ function csRenderSnap(name){
   var AL = ptAllergy(name), nk = AL.state === 'nkda';   /* A1: one source; a PharmaNet-only allergy also removes the tick */
   if(sub) sub.innerHTML = ((r.legal && r.pref && r.legal.split(' ')[0] !== r.pref) ? 'Goes by <b>' + csEsc(r.pref) + '</b> &middot; ' : '') +
     (age ? age + ' &middot; ' : '') + csEsc(r.sex || 'Not recorded') +
-    ' &middot; PHN <span class="pc-mono" aria-label="PHN ending ' + csEsc(phn.slice(-3)) + '">' + masked + '</span>' +
+    ' &middot; PHN&nbsp;<span class="pc-mono" aria-label="PHN ending ' + csEsc(phn.slice(-3)) + '">' + masked + '</span>' +
     /* Chart layout (Ani, 4 Nov): the separator is its own span so the left column can put the tick on its own line */
     (nk ? '<span class="cs-nksep"> &middot; </span><span class="cs-nkda">' + csIc('complete') + 'No known drug allergies</span>' : '');
   /* v2.5 §3: allergies in three distinct states. Named is ink with a symbol (an allergy is not a critical
@@ -23236,10 +23252,17 @@ function cv2Mount(){
   cv2Mv(v2El('vc-savedraft'), save);               /* Save draft and its status sit at the bottom of the nav */
   cv2Mv(v2El('cs-saved'), save);
   cv2Mv(v2El('v2-side'), v2El('v2'));              /* the patient context comes after the work, in reading and Tab order */
+  /* physician pass (Ani, 4 Nov: chart Version 2, physician pass, B5 "less space above the work"): "← Home" and the call-window clock join the header,
+     so the top line (and the page title) go */
+  var hdr = v2El('cv2-hd'), back = document.querySelector('#screen-patientchart .cs-crumb > .pc-back');
+  if(back && hdr){ cv2Mv(back, hdr, hdr.firstChild); back.title = 'Home'; }
+  var snap0 = document.querySelector('#cv2-hd .cs-snap'), acts0 = snap0 && snap0.querySelector(':scope > .vc-acts');
+  if(snap0) cv2Mv(v2El('cs-winclock'), snap0, acts0);
   /* relevant alerts and the visit status sit in the header row, before Call and Chart */
   var snap = document.querySelector('#cv2-hd .cs-snap'), acts = snap && snap.querySelector(':scope > .vc-acts');
   if(!CV2.meta){ CV2.meta = document.createElement('div'); CV2.meta.className = 'cv2-meta'; CV2.meta.id = 'cv2-meta'; }
-  if(snap) snap.insertBefore(CV2.meta, acts || null);
+  var clk = snap && snap.querySelector(':scope > #cs-winclock');
+  if(snap) snap.insertBefore(CV2.meta, clk || acts || null);
 }
 function cv2Unmount(){
   if(CV2.meta && CV2.meta.parentNode) CV2.meta.parentNode.removeChild(CV2.meta);
@@ -23623,6 +23646,8 @@ document.addEventListener('click', function(e){
   w('renderChartAlerts', function(){ if(cv2On()) cv2NaCols(); });
   w('v2Tab', null, function(tab){ CV2.pressed = cv2On() && tab !== 'chart' ? {tab:tab, t:Date.now()} : null; });
   ['pcStartCall', 'pcEndCall', 'pcSyncChartCall'].forEach(function(n){ w(n, function(){ if(cv2On()) cv2Sync(); }); });
+  /* physician pass B5: when the call starts, the work column goes to the Note */
+  w('pcStartCall', function(){ if(cv2On() && PC_ON_CALL && PC_CALL_WHO === PC_CURRENT) v2Tab('note', false); });
   w('showScreen', function(){ cv2NavAuto(); if(cv2On()) cv2Drawer(false, true); });
   /* the doctor pressed Collapse or Expand: the chart leaves the app nav alone from then on */
   w('toggleSidebarCollapse', null, function(){ var sb = v2El('sidebar'); if(sb) delete sb.dataset.auto; CV2.navUser = true; });
@@ -23642,6 +23667,6 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 17:14</div>
+  <div class="build-stamp">v2 · build 2026-11-04 17:18</div>
 </body>
 </html>
