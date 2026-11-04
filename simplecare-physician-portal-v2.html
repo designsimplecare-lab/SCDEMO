@@ -14170,10 +14170,21 @@ function rxWeight(name){
   var w = ((PT_READINGS[name] || {}).wt) || []; if(!w.length) return 'Not recorded';
   var l = w[w.length - 1]; return l[1] + ' kg · ' + l[0] + ', patient-reported';
 }
+/* physician pass A2: how old a result is, from its date ("Aug 3" -> "8 weeks ago"); empty when the date does not parse */
+function rxAgeTxt(d){
+  if(/^Today/i.test(d)) return 'today';
+  if(/^Yesterday/i.test(d)) return 'yesterday';
+  var now = new Date(), m = String(d).match(/^([A-Z][a-z]{2}) (\d{1,2})(?:, (\d{4}))?/); if(!m) return '';
+  var t = new Date(m[1] + ' ' + m[2] + ', ' + (m[3] || now.getFullYear())); if(isNaN(t)) return '';
+  if(!m[3] && t > now) t.setFullYear(t.getFullYear() - 1);
+  var days = Math.round((now - t) / 864e5);
+  return days < 14 ? days + (days === 1 ? ' day' : ' days') + ' ago' : days < 63 ? Math.round(days / 7) + ' weeks ago' : Math.round(days / 30.4) + ' months ago';
+}
 function rxKidney(name){
   var T = PT_RESULTS[name] || [], f = function(n){ return T.filter(function(t){ return t.n === n; })[0]; };
-  var g = f('eGFR'); if(g){ var p = rsLast(g); return {t:'eGFR ' + p[1] + ' ' + g.u + ' · ' + p[0], egfr:+p[1], ok:true}; }
-  var c = f('Creatinine'); if(c){ var q = rsLast(c); return {t:'Creatinine ' + q[1] + ' ' + c.u + ' · ' + q[0], egfr:null, ok:true}; }
+  var ag = function(d){ var a = rxAgeTxt(d); return a && a !== 'today' ? d + ', ' + a : d; };
+  var g = f('eGFR'); if(g){ var p = rsLast(g); return {t:'eGFR ' + p[1] + ' ' + g.u + ' · ' + ag(p[0]), egfr:+p[1], ok:true}; }
+  var c = f('Creatinine'); if(c){ var q = rsLast(c); return {t:'Creatinine ' + q[1] + ' ' + c.u + ' · ' + ag(q[0]), egfr:null, ok:true}; }
   return {t:'Not on file', egfr:null, ok:false};
 }
 /* allergies and reactions from the chart and PharmaNet together; PharmaNet-only items can be added to the chart */
@@ -15881,7 +15892,10 @@ var PT_RESULTS = {
     {n:'CK', u:'U/L', ref:'30–200', pts:[['Today','210','high','Eagle Ridge']]},
     {n:'Ferritin', u:'µg/L', ref:'30–300', pts:[['Mar 12','22','low','LifeLabs'],['Jun 25','18','low','LifeLabs']]},
     {n:'HbA1c', u:'%', ref:'<7.0', pts:[['Sep 2, 2025','6.6','','LifeLabs'],['Dec 4, 2025','6.9','','patient'],['Mar 12','7.1','high','LifeLabs']]},
-    {n:'Haemoglobin', u:'g/L', ref:'120–160', pts:[['Mar 12','131','','LifeLabs'],['Jun 25','134','','LifeLabs']]}],
+    {n:'Haemoglobin', u:'g/L', ref:'120–160', pts:[['Mar 12','131','','LifeLabs'],['Jun 25','134','','LifeLabs']]},
+    /* physician pass (Ani, 4 Nov: chart Version 2, physician pass, A2): the problem-list suggestion cites "eGFR 52 on Aug 3 and 49 on Feb 11" (COND_SUGGESTIONS)
+       while Prescribe said "Kidney function: Not on file". The same two results now live here, so every screen reads one source. DEMO DATA. */
+    {n:'eGFR', u:'mL/min', ref:'>60', pts:[['Feb 11','49','low','LifeLabs'],['Aug 3','52','low','LifeLabs']]}],
   'Andrey Abushakhmanov, 24M': [
     {n:'ALT', u:'U/L', ref:'10–40', pts:[['Nov 18, 2025','29','','LifeLabs'],['Mar 3','34','','LifeLabs'],['Today','88','high','LifeLabs']]},
     {n:'AST', u:'U/L', ref:'10–35', pts:[['Today','65','high','LifeLabs']]},
