@@ -7258,6 +7258,131 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 @media (min-width:1201px) and (max-width:1360px){
   #screen-patientchart #pcv-c.cs-v2 #v2{grid-template-columns:296px minmax(0,1fr);}
 }
+/* ============ CHART VERSION 2 (Ani, 4 Nov: chart Version 2 brief) ============
+   Everything below is scoped to #pcv-c.chart-v2, so the current chart is untouched. Three zones: a compact patient header across the top
+   (#cv2-hd), the steps as a slim left nav (#cv2-nav), the work in the centre (#v2-main), and the patient context on the right (#v2-side),
+   collapsible to a rail. From 1201 px each column is its own scroll box (v2Fit sets --v2-h); at 1200 and under the chart stacks, the steps
+   become the horizontal bar and the patient context a drawer. The palette is the brief's, nudged from the Paper tokens where they agree:
+   white surfaces on #F7F8FA, 1px #E5E7EB borders instead of shadows, 8px radius and spacing, ink #202936 and #667085, brand blue unchanged
+   (#4353E8, close to the brief's #4559D8), red #D92D20 for critical only, amber #DC9A24 on warning icons only (too light for words). */
+.cv2-hd[hidden],.cv2-nav[hidden],.cv2-ctxbar[hidden],.cv2-rail[hidden],.cv2-bd[hidden]{display:none !important;}
+#profile-dropdown .pd-rad[aria-checked="false"] .pd-ic{visibility:hidden;}
+#profile-dropdown .pd-rad[aria-checked="true"]{font-weight:600;}
+#profile-dropdown .pd-rad[aria-checked="true"] .pd-ic{color:var(--accent);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2{--cv2-bg:#F7F8FA;--cv2-line:#E5E7EB;--cv2-ink:#202936;--cv2-soft:#667085;--cv2-crit:#D92D20;--cv2-warn:#DC9A24;--cv2-ok:#16865B;--cv2-wash:#F2F4F7;}
+/* the visit status moves into the header, so the top line keeps only Home and the window clock */
+#screen-patientchart:has(#pcv-c.chart-v2) .cs-crumb [data-f="visitline"]{display:none;}
+#screen-patientchart:has(#pcv-c.chart-v2) .cs-crumb > span[aria-hidden="true"]{display:none;}
+/* the grid */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2{grid-template-columns:200px minmax(0,1fr) 300px;grid-template-rows:auto minmax(0,1fr);grid-template-areas:"hd hd hd" "nav main side";gap:8px 16px;align-items:stretch;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2{grid-template-columns:200px minmax(0,1fr) 56px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #cv2-hd{grid-area:hd;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #cv2-nav{grid-area:nav;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #v2-main{grid-area:main;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #v2-side{grid-area:side;}
+@media (min-width:1201px){
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2{height:var(--v2-h,640px);}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #cv2-nav{min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #v2-main{height:auto;min-height:0;margin:0 -8px 0 -4px;padding:0 8px 104px 4px;scroll-padding-top:8px;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #v2-side{position:relative;top:auto;height:auto;min-height:0;margin:0;padding:0 0 24px;-webkit-mask-image:none;mask-image:none;}
+  body.cw-on #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #v2-side{padding-bottom:96px;}
+}
+/* the header: one row at 1440 (name; age, sex, masked PHN and the allergy tick; the allergy band when named or unrecorded; alerts; status; Call; Chart) */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd{display:block;box-sizing:border-box;padding:8px 8px 8px 16px;background:var(--panel);border:1px solid var(--cv2-line);border-radius:8px;box-shadow:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt{position:static;top:auto;z-index:auto;display:block;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-snap{display:flex;flex-wrap:nowrap;align-items:center;gap:8px 16px;padding:0;min-height:54px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-photo{width:40px;height:40px;flex:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-who{display:block;flex:0 1 auto;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-who > .cs-nmrow{display:flex;align-items:center;gap:8px;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-who .vc-nm{margin:0;font-size:19px;line-height:24px;font-weight:700;color:var(--cv2-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-who > .vc-sub{display:block;margin:2px 0 0;font-size:14px;line-height:20px;color:var(--cv2-soft);white-space:nowrap;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-nksep{display:inline;white-space:pre;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-nkda{display:inline-flex;align-items:center;gap:4px;margin:0;vertical-align:top;color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-nkda .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-nkda svg{width:16px;height:16px;color:var(--cv2-ok);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-facts{flex:0 1 auto;min-width:0;max-width:380px;margin:0;padding:0;border:0;display:block;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-facts:has(> #cs-allergy[hidden]){display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt #cs-allergy.cs-al{display:flex;align-items:center;gap:8px;margin:0;padding:6px 12px;border-radius:8px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt #cs-allergy .cs-al-ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt #cs-allergy .cs-al-ic svg{width:22px;height:22px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt #cs-allergy .cs-al-b{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 8px;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt #cs-allergy .cs-k{font-size:14px;line-height:20px;font-weight:600;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt #cs-allergy .cs-v{font-size:16px;line-height:22px;font-weight:700;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-fd{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-meta{display:flex;align-items:center;gap:8px;flex:0 0 auto;margin-left:auto;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-al{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border:0;border-radius:8px;background:var(--cv2-wash);font:inherit;font-size:15px;line-height:20px;font-weight:600;color:var(--cv2-ink);cursor:pointer;white-space:nowrap;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-al:hover{background:#E9ECF1;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-al:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-al .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-al svg{width:20px;height:20px;flex:none;color:var(--cv2-warn);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-al.crit .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-al.crit svg{color:var(--cv2-crit);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-st{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 12px;border-radius:8px;background:var(--cv2-wash);font-size:15px;line-height:20px;font-weight:500;color:var(--cv2-ink);white-space:nowrap;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-st .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-st svg{width:18px;height:18px;flex:none;color:var(--cv2-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-st.on{background:var(--accent-wash);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-st.on .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-st.on svg{color:var(--accent);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-st.ok .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-st.ok svg{color:var(--cv2-ok);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-ctx-open{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-acts{display:flex;align-items:center;flex:0 0 auto;gap:8px;margin:0;grid-column:auto;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-acts > .btn{width:auto;min-width:0;height:44px;min-height:44px;padding:0 16px;margin:0;gap:8px;font-size:15px;font-weight:600;border-radius:8px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-acts > .btn .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-acts > .btn .ic svg{width:18px;height:18px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-acts > .pc-split{display:flex;width:auto;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-acts .pc-split > .btn{height:44px;min-height:44px;font-size:15px;font-weight:600;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-acts .pc-split > .btn .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-acts .pc-split > .btn .ic svg{width:18px;height:18px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-acts .pc-split > .pc-split-main{min-width:0;padding:0 16px;border-radius:8px 2px 2px 8px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-acts .pc-split > .pc-split-caret{width:44px;padding:0;border-radius:2px 8px 8px 2px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-acts > .pc-split:has(> .pc-split-main.cw-hide){display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2.cs-ns-on #cv2-hd #v2-pt .vc-acts > .pc-split{display:none;}
+/* the left nav: the four steps, the current one marked; Save draft and its status at the bottom */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav{display:flex;flex-direction:column;gap:8px;box-sizing:border-box;padding:8px;background:var(--panel);border:1px solid var(--cv2-line);border-radius:8px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-head{position:static;top:auto;z-index:auto;display:block;margin:0;padding:0;background:none;box-shadow:none;border-radius:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-head .v2-top{position:static;top:auto;display:block;min-height:0;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-head .v2-top::before,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-head .v2-top::after{content:none;display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-head :is(.v2-acts,#v2-crit){display:none !important;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs{display:flex;flex-direction:column;align-self:auto;gap:4px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;min-height:44px;padding:0 12px;border:0;border-radius:8px;background:none;font-size:16px;line-height:22px;font-weight:500;color:var(--cv2-ink);text-align:left;box-shadow:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button[hidden]{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button:hover{background:var(--cv2-wash);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button[aria-current="step"]{background:var(--cv2-wash);font-weight:700;box-shadow:inset 3px 0 0 var(--accent);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #cv2-save{display:flex;flex-direction:column;align-items:stretch;gap:4px;margin-top:auto;padding-top:8px;border-top:1px solid var(--cv2-line);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-save #vc-savedraft{display:inline-flex;align-items:center;justify-content:flex-start;width:100%;height:44px;padding:0 12px;gap:8px;border:1px solid var(--line-strong);border-radius:8px;background:var(--panel);font-size:15px;font-weight:600;color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-save #vc-savedraft:hover{background:var(--cv2-wash);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-save #vc-savedraft .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-save #vc-savedraft svg{width:18px;height:18px;color:var(--cv2-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-save #cs-saved{display:flex;align-items:center;gap:6px;min-height:20px;padding:0 4px;font-size:14px;line-height:20px;color:var(--cv2-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-save #cs-saved:empty{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-save #cs-saved .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-save #cs-saved svg{width:16px;height:16px;flex:none;color:var(--cv2-ok);}
+/* the right panel: one white surface; its bar holds the title and Hide; collapsed, a 56px rail of section buttons */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #v2-side{display:flex;flex-direction:column;gap:0;box-sizing:border-box;background:var(--panel);border:1px solid var(--cv2-line);border-radius:8px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-ctxbar{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:52px;padding:4px 4px 4px 16px;background:var(--panel);border-bottom:1px solid var(--cv2-line);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-ctxbar .cv2-ctx-h{margin:0;font-size:16px;line-height:22px;font-weight:700;color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 :is(.cv2-ctx-t,.cv2-rb){display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;padding:0;border:0;border-radius:8px;background:none;color:var(--cv2-soft);cursor:pointer;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 :is(.cv2-ctx-t,.cv2-rb):hover{background:var(--cv2-wash);color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 :is(.cv2-ctx-t,.cv2-rb):focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 :is(.cv2-ctx-t,.cv2-rb) .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 :is(.cv2-ctx-t,.cv2-rb) svg{width:20px;height:20px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-ctx-t[aria-expanded="false"] .ic{transform:rotate(180deg);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #cv2-ctxbar{justify-content:center;padding:4px;border-bottom:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #cv2-ctxbar .cv2-ctx-h{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-rail{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;border-top:1px solid var(--cv2-line);margin:0 6px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > #v2-sum{margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > #v2-sum[hidden]{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2s-alg .cv2-alg-l{display:flex;align-items:flex-start;gap:8px;margin:0 0 8px;font-size:15px;line-height:22px;color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2s-alg .cv2-alg-l .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2s-alg .cv2-alg-l svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--cv2-warn);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2s-alg .cv2-alg-ok .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2s-alg .cv2-alg-ok svg{color:var(--cv2-ok);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2s-alg .cv2-alg-r{display:block;color:var(--cv2-soft);}
+/* at 1200 px and under: stacked; the steps are the horizontal bar, sticky under the top bar; the patient context is a drawer */
+@media (max-width:1200px){
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2,#screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-template-areas:"hd" "nav" "main";gap:8px;height:auto;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #cv2-nav{position:sticky;top:calc(var(--cs-top,0px) + 4px);z-index:45;flex-direction:row;align-items:center;gap:8px;padding:4px 8px;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-head{flex:1 1 auto;min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-head:not([hidden]){display:block;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs{flex-direction:row;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button{width:auto;justify-content:flex-start;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button[aria-current="step"]{box-shadow:inset 0 -3px 0 var(--accent);}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #cv2-save{flex-direction:row;align-items:center;margin:0 0 0 auto;padding:0;border:0;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-save #vc-savedraft{width:auto;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #v2-side{display:none;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-drawer-on #v2 > #v2-side{display:flex;position:fixed;top:0;right:0;bottom:0;left:auto;z-index:1200;width:min(380px,92vw);height:auto;max-height:none;margin:0;padding:0 0 24px;border-radius:0;border-width:0 0 0 1px;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-bd{position:fixed;inset:0;z-index:1199;background:rgba(32,41,54,.32);}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-ctx-open{display:inline-flex;height:44px;min-height:44px;padding:0 12px;gap:8px;font-size:15px;border-radius:8px;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-snap{flex-wrap:wrap;}
+}
 </style>
 </head>
 <body>
@@ -7332,6 +7457,14 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
           <button class="pd-item" onclick="toggleProfileMenu();showScreen('profile')"><span class="pd-ic" data-pdic="user"></span> View profile</button>
           <!-- Batch A (4): a discreet way in to the shortcuts -->
           <button class="pd-item" id="pd-kb" onclick="toggleProfileMenu();kbOpen()"><span class="pd-ic" data-pdic="keyboard"></span> Keyboard shortcuts</button>
+          <div class="pd-divider"></div>
+          <!-- Chart Version 2 (Ani, 4 Nov: chart Version 2 brief): two chart layouts on the same data and code, so they can be compared.
+               Per viewer (this browser), default Current; ?chart=2 opens Version 2 for a shared link. cv2Set() in the CHART VERSION 2 script. -->
+          <p class="pd-k" id="pd-cl-h">Chart layout</p>
+          <div role="radiogroup" aria-labelledby="pd-cl-h" id="pd-cl">
+          <button class="pd-item pd-rad" id="pd-cl-1" role="radio" aria-checked="true" tabindex="0" onclick="cv2Set(false)"><span class="pd-ic" data-pdic="complete"></span> Current</button>
+          <button class="pd-item pd-rad" id="pd-cl-2" role="radio" aria-checked="false" tabindex="-1" onclick="cv2Set(true)"><span class="pd-ic" data-pdic="complete"></span> Version 2</button>
+          </div>
           <div class="pd-divider"></div>
           <!-- T-038 (Daniel, 18 Oct Loom: "turn on the AI for the note-taking, but turn it off for the prescriptions ... activate it where we want it
                activated"; 31 Oct: doctors "can toggle on or off in their control panel ... this is where doctors have autonomy"): one group of
@@ -7713,7 +7846,16 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
           <!-- Chart layout 2 (Ani, 4 Nov: "this 2 needs to be combined and review etc be on top of other section horizontal"): ONE left column, the patient
                (name, age, sex, PHN, allergies, Call, Chart) and the Patient summary sections in one card; the steps are horizontal tabs at the top of
                the centre column (sticky while it scrolls), Save draft at their right end; no right column. Under 1200 px the left column stacks above the work. -->
+          <!-- Chart Version 2 (Ani, 4 Nov: chart Version 2 brief, "Understand, Review, Decide, Document, Sign off"): two slots used only when Version 2 is on
+               (#pcv-c.chart-v2). cv2Mount() moves the patient card (#v2-pt) into the header and the step bar (#v2-head) into the left nav, and moves them
+               back for Current. Same nodes, same functions. -->
+          <header class="cv2-hd" id="cv2-hd" aria-label="Patient" hidden></header>
+          <div class="cv2-nav" id="cv2-nav" hidden><div class="cv2-save" id="cv2-save"></div></div>
           <aside class="v2-side" id="v2-side" aria-label="Patient and Patient summary">
+            <!-- Chart Version 2: the panel's own bar (title and hide/show); collapsed, only the rail shows: the toggle and one button per section -->
+            <div class="cv2-ctxbar" id="cv2-ctxbar" hidden><h2 class="cv2-ctx-h" id="cv2-ctx-h">Patient summary</h2>
+              <button type="button" class="cv2-ctx-t" id="cv2-ctx-t" aria-expanded="true" aria-controls="v2-sum" aria-label="Hide patient summary" onclick="cv2Ctx()"><span class="ic" data-pdic="collapse"></span></button></div>
+            <nav class="cv2-rail" id="cv2-rail" aria-label="Patient summary sections" hidden></nav>
             <!-- Ani, 6 Oct: "too many separate big cards". One Patient summary card; its sections are accordion rows. -->
             <section class="v2-card v2-sum" id="v2-sum" aria-labelledby="v2-sum-h">
             <!-- Chart layout 2 (Ani, 4 Nov): the patient heads the card, so the title is kept for screen readers only -->
@@ -7722,10 +7864,13 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
             <!-- Ani, 3 Nov: the intake summary opens the left panel -->
             <div id="v2-side-today"></div>
             <section class="v2-sec" id="v2s-meds" data-k="meds"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-meds-b" onclick="v2Sec('meds')"><span class="ic" data-pdic="encounterlog"></span><span class="v2-st">Medications</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-meds-b" hidden></div></section>
+            <!-- Chart Version 2 (Ani, 4 Nov: chart Version 2 brief, patient context groups): Allergies and Previous encounters, shown only in Version 2 (cv2Side) -->
+            <section class="v2-sec" id="v2s-alg" data-k="alg" hidden><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-alg-b" onclick="v2Sec('alg')"><span class="ic" data-pdic="cardwarn"></span><span class="v2-st">Allergies</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-alg-b" hidden></div></section>
             <section class="v2-sec" id="v2s-hist" data-k="hist"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-hist-b" onclick="v2Sec('hist')"><span class="ic" data-pdic="tasks"></span><span class="v2-st">Past Medical History (PMHx)</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-hist-b" hidden></div></section>
             <!-- T-037 (Daniel, 31 Oct: investigations belong in the left summary, not in Chart review) -->
             <section class="v2-sec" id="v2s-inv" data-k="inv"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-inv-b" onclick="v2Sec('inv')"><span class="ic" data-pdic="chartup"></span><span class="v2-st">Investigations</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-inv-b" hidden></div></section>
             <section class="v2-sec" id="v2s-pend" data-k="pend"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-pend-b" onclick="v2Sec('pend')"><span class="ic" data-pdic="clock"></span><span class="v2-st">Pending</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-pend-b" hidden></div></section>
+            <section class="v2-sec" id="v2s-enc" data-k="enc" hidden><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-enc-b" onclick="v2Sec('enc')"><span class="ic" data-pdic="calendar"></span><span class="v2-st">Previous encounters</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-enc-b" hidden></div></section>
             <section class="v2-sec" id="v2s-since" data-k="since"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-since-b" onclick="v2Sec('since')"><span class="ic" data-pdic="reassign"></span><span class="v2-st">Since you last saw</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-since-b" hidden></div></section>
             </section>
           </aside>
@@ -22792,6 +22937,267 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 15:52</div>
+<script>
+/* ============================================================
+   CHART VERSION 2 (Ani, 4 Nov 2026: chart Version 2 brief, product/specs/chart-v2-brief.md)
+   Ani asked for a second chart layout on the model Understand, Review, Decide, Document, Sign off, in this one file and switchable, so it can
+   be compared with the current chart (layout 2, 4 Nov) on the same data and the same code. It is not a mock-up: it is a class on the chart
+   root (#pcv-c.chart-v2) plus three slots (#cv2-hd, #cv2-nav, the panel bar and rail in #v2-side). cv2Mount() MOVES existing nodes into them
+   (the patient card, the step bar, Save draft and the draft status) and moves #v2-side after the work, and cv2Restore() moves them back.
+   Every render, gate, drawer, Cedar switch, note and sign-off function is the same one in both layouts.
+   Where the brief meets decisions already made, the table in the brief wins (masked PHN; Daniel's note sections; Review, Note, Action,
+   Sign off; red only for critical values and their icon; every Cedar line follows its T-038 switch).
+   ============================================================ */
+var CV2 = {on:false, moved:[], meta:null, drawer:false, opener:null};
+var CV2_KEY = 'sc-chart-version', CV2_CTX = 'sc-cv2-ctx';
+function cv2On(){ return !!CV2.on && typeof v2On === 'function' && v2On(); }
+/* one breakpoint for both layouts: from 1201 px the columns are scroll boxes (v2Wide); at 1200 and under the chart stacks */
+function cv2Wide(){ return !(window.matchMedia && window.matchMedia('(max-width:1200px)').matches); }
+function cv2Mv(node, slot, before){
+  if(!node || !slot || !node.parentNode) return;
+  var ph = document.createComment('cv2 moved: ' + (node.id || node.className));
+  node.parentNode.insertBefore(ph, node);
+  if(before && before.parentNode === slot) slot.insertBefore(node, before); else slot.appendChild(node);
+  CV2.moved.push([node, ph]);
+}
+function cv2Restore(){
+  while(CV2.moved.length){ var m = CV2.moved.pop(); if(m[1].parentNode){ m[1].parentNode.insertBefore(m[0], m[1]); m[1].remove(); } }
+}
+function cv2Mount(){
+  if(CV2.moved.length) return;
+  var nav = v2El('cv2-nav'), save = v2El('cv2-save');
+  cv2Mv(v2El('v2-pt'), v2El('cv2-hd'));          /* the patient card heads the chart */
+  cv2Mv(v2El('v2-head'), nav, save);              /* the steps become the left nav */
+  cv2Mv(v2El('vc-savedraft'), save);               /* Save draft and its status sit at the bottom of the nav */
+  cv2Mv(v2El('cs-saved'), save);
+  cv2Mv(v2El('v2-side'), v2El('v2'));              /* the patient context comes after the work, in reading and Tab order */
+  /* relevant alerts and the visit status sit in the header row, before Call and Chart */
+  var snap = document.querySelector('#cv2-hd .cs-snap'), acts = snap && snap.querySelector(':scope > .vc-acts');
+  if(!CV2.meta){ CV2.meta = document.createElement('div'); CV2.meta.className = 'cv2-meta'; CV2.meta.id = 'cv2-meta'; }
+  if(snap) snap.insertBefore(CV2.meta, acts || null);
+}
+function cv2Unmount(){
+  if(CV2.meta && CV2.meta.parentNode) CV2.meta.parentNode.removeChild(CV2.meta);
+  cv2Drawer(false, true);
+  cv2Restore();
+}
+function cv2Radios(){
+  [['pd-cl-1', !CV2.on], ['pd-cl-2', !!CV2.on]].forEach(function(x){
+    var b = v2El(x[0]); if(!b) return;
+    b.setAttribute('aria-checked', String(x[1])); b.tabIndex = x[1] ? 0 : -1;
+  });
+}
+function cv2Apply(){
+  var root = v2El('pcv-c'); if(!root) return;
+  var want = cv2On(), was = root.classList.contains('chart-v2');
+  if(want){
+    cv2Mount(); root.classList.add('chart-v2');
+    ['cv2-hd', 'cv2-nav', 'cv2-ctxbar'].forEach(function(id){ var e = v2El(id); if(e) e.hidden = false; });
+    var sd = v2El('v2-side'); if(sd) sd.setAttribute('aria-label', 'Patient summary');
+  } else {
+    cv2Unmount(); root.classList.remove('chart-v2', 'cv2-ctx-closed', 'cv2-drawer-on');
+    ['cv2-hd', 'cv2-nav', 'cv2-ctxbar', 'cv2-rail'].forEach(function(id){ var e = v2El(id); if(e) e.hidden = true; });
+    var sd2 = v2El('v2-side'), sm = v2El('v2-sum'); if(sd2) sd2.setAttribute('aria-label', 'Patient and Patient summary'); if(sm) sm.hidden = false;
+    ['alg', 'enc'].forEach(function(k){ var s = v2El('v2s-' + k); if(s) s.hidden = true; });
+    if(typeof v2SumEdges === 'function') v2SumEdges();
+  }
+  cv2Radios();
+  if(was !== want && PC_CURRENT && typeof csOnChart === 'function' && csOnChart()){
+    /* same nodes, so the note text, the open drawers and the Cedar drafts are untouched; only the layout-specific parts render again */
+    if(typeof csRefresh === 'function') csRefresh();
+    if(typeof vcGrow === 'function') vcGrow();
+  }
+  if(want){ cv2Side(PC_CURRENT); cv2Sync(); cv2CtxPaint(); }
+  cv2NavAuto();
+  if(typeof csMeasure === 'function') csMeasure();
+  if(typeof v2Fit === 'function'){ v2Fit(); requestAnimationFrame(function(){ v2Fit(); }); }
+  paintPd(v2El('v2'));
+}
+/* the profile menu's Chart layout (radio-style): per viewer, in this browser's storage */
+function cv2Set(on){
+  CV2.on = !!on;
+  try { localStorage.setItem(CV2_KEY, CV2.on ? '2' : '1'); } catch(e){}
+  cv2Apply();
+  if(typeof toast === 'function') toast('Chart layout: ' + (CV2.on ? 'Version 2' : 'Current'));
+}
+/* arrow keys move the choice inside the radio group (WAI-ARIA radio group pattern) */
+document.addEventListener('keydown', function(e){
+  var t = e.target; if(!t || !t.closest || !t.closest('#pd-cl') || !/^(ArrowDown|ArrowUp|ArrowLeft|ArrowRight)$/.test(e.key)) return;
+  var on = !CV2.on; cv2Set(on); var b = v2El(on ? 'pd-cl-2' : 'pd-cl-1'); if(b) b.focus(); e.preventDefault();
+});
+
+/* ---------- header: relevant alerts and the visit status (display by exception: no alert line when nothing is waiting) ---------- */
+function cv2Status(r){
+  if(r.signed) return {t:'Signed', ic:'complete', k:'ok'};
+  if(PC_ON_CALL && PC_CALL_WHO === PC_CURRENT) return {t:'On call', ic:'phone', k:'on'};
+  if(typeof csNoShow === 'function' && csNoShow(PC_CURRENT)) return {t:STATUS_LABEL.noshow || 'No-show', ic:'phone', k:''};
+  return {t:STATUS_LABEL[r.status] || 'In queue', ic:'clock', k:''};
+}
+function cv2Sync(){
+  if(!cv2On() || !PC_CURRENT || !CV2.meta) return;
+  var r = csRow(); if(!r) return;
+  /* the same items, tiers and stages as Needs attention (csNAItems); a word with the count, so severity is never colour alone */
+  var items = CS.empty ? [] : csNAItems(PC_CURRENT).filter(function(x){ return x.tier !== 'info' && /^Not /.test(x.stage); });
+  var crit = items.filter(function(x){ return x.tier === 'crit'; }).length, other = items.length - crit;
+  var words = [crit ? crit + ' critical' : '', other ? other + ' to review' : ''].filter(Boolean).join(', ');
+  var st = cv2Status(r);
+  var h = (items.length ? '<button type="button" class="cv2-al' + (crit ? ' crit' : '') + '" onclick="cv2GoAlerts()" aria-label="Clinical alerts: ' + words + '. Go to the alerts">' +
+      csIc(crit ? 'crit' : 'alert') + '<span>' + words + '</span></button>' : '') +
+    '<span class="cv2-st' + (st.k ? ' ' + st.k : '') + '">' + csIc(st.ic) + '<span><span class="vh">Visit status: </span>' + st.t + '</span></span>' +
+    '<button type="button" class="btn cv2-ctx-open" aria-haspopup="dialog" aria-expanded="' + !!CV2.drawer + '" aria-controls="v2-side" onclick="cv2Drawer(true)">' + csIc('tasks') + 'Patient summary</button>';
+  if(CV2.meta.getAttribute('data-h') !== h){ CV2.meta.innerHTML = h; CV2.meta.setAttribute('data-h', h); paintPd(CV2.meta); }
+}
+function cv2GoAlerts(){
+  v2Tab('review', false);
+  setTimeout(function(){ var b = document.querySelector('#vc-alerts .cs-side .btn'); if(b) b.focus({preventScroll:true}); }, 60);
+}
+
+/* ---------- right: the patient context. Allergies and Previous encounters join the existing sections (same data, nothing new) ---------- */
+function cv2Side(name){
+  if(!cv2On() || !name || typeof v2SetSec !== 'function') return;
+  var a0 = CS.allergy[name] || 'nkda', ex = (CS.allergyAdd || {})[name] || [];
+  var list = (a0 === 'named' ? [{label:'Penicillin', rx:'anaphylaxis'}] : []).concat(ex);
+  var body = list.length ? list.map(function(x){ return '<p class="cv2-alg-l">' + csIc('cardwarn') + '<span><b>' + csEsc(x.label) + '</b>' + (x.rx ? '<span class="cv2-alg-r">' + csEsc(v2Cap(x.rx)) + '</span>' : '') + '</span></p>'; }).join('')
+    : a0 === 'none' ? '<p class="cv2-alg-l">' + csIc('alert') + '<span><b>Not recorded</b></span></p>'
+    : '<p class="cv2-alg-l cv2-alg-ok">' + csIc('complete') + '<span>No known drug allergies</span></p>';
+  v2SetSec('alg', list.length, '', body, true);
+  /* Previous encounters: the doctor's earlier Simple Care visits (PT_LAST), the one related to today's concern marked; each opens its note */
+  var vis = typeof kfVisits === 'function' ? kfVisits(name, '') : [];
+  v2SetSec('enc', vis.length, '', vis.map(kfVisitLine).join(''), !!vis.length);
+  if(vis.length) v2SeeAll('enc', 'timeline');
+  v2SumEdges();
+  if(!cv2CtxOpen() && cv2Wide()) cv2Rail();
+}
+function cv2CtxStored(){ try { return localStorage.getItem(CV2_CTX); } catch(e){ return null; } }
+/* open by default at 1440 px and wider, collapsed to its rail below; the doctor's own choice is remembered (this browser) */
+function cv2CtxOpen(){ var s = cv2CtxStored(); return s ? s === 'open' : window.innerWidth >= 1440; }
+function cv2CtxPaint(){
+  var root = v2El('pcv-c'); if(!root || !cv2On()) return;
+  var wide = cv2Wide(), open = wide ? cv2CtxOpen() : true;
+  if(wide && CV2.drawer) cv2Drawer(false, true);
+  root.classList.toggle('cv2-ctx-closed', wide && !open);
+  var sum = v2El('v2-sum'), rail = v2El('cv2-rail'), t = v2El('cv2-ctx-t');
+  if(sum) sum.hidden = !open;
+  if(rail) rail.hidden = !(wide && !open);
+  if(t){
+    var dr = !wide;
+    t.setAttribute('aria-expanded', String(dr ? CV2.drawer : open));
+    t.setAttribute('aria-label', dr ? 'Close patient summary' : (open ? 'Hide' : 'Show') + ' patient summary');
+    t.innerHTML = csIc(dr ? 'close' : 'collapse'); paintPd(t);
+  }
+  if(wide && !open) cv2Rail();
+}
+function cv2Ctx(open){
+  if(!cv2Wide()){ cv2Drawer(false); return; }
+  var next = open === undefined ? !cv2CtxOpen() : !!open;
+  try { localStorage.setItem(CV2_CTX, next ? 'open' : 'closed'); } catch(e){}
+  cv2CtxPaint();
+  if(typeof v2Fit === 'function') v2Fit();
+  var t = v2El('cv2-ctx-t'); if(t && open === undefined) t.focus({preventScroll:true});
+}
+/* collapsed: one button per section; pressing one opens the panel on that section */
+function cv2Rail(){
+  var rail = v2El('cv2-rail'); if(!rail) return;
+  var rows = [['today', 'Intake summary', 'today']];
+  [].forEach.call(document.querySelectorAll('#v2-sum .v2-sec'), function(s){
+    if(s.hidden) return;
+    var ic = s.querySelector('.v2-sbtn > .ic'), st = s.querySelector('.v2-st');
+    rows.push([s.getAttribute('data-k'), st ? st.textContent : '', ic ? ic.getAttribute('data-pdic') : 'file']);
+  });
+  var h = rows.map(function(x){ return '<button type="button" class="cv2-rb" data-k="' + x[0] + '" aria-label="' + csEsc(x[1]) + '" title="' + csEsc(x[1]) + '" onclick="cv2RailGo(\'' + x[0] + '\')">' + csIc(x[2]) + '</button>'; }).join('');
+  if(rail.getAttribute('data-h') !== h){ rail.innerHTML = h; rail.setAttribute('data-h', h); paintPd(rail); }
+}
+function cv2RailGo(k){
+  cv2Ctx(true);
+  var b = k === 'today' ? document.querySelector('#v2-side-today button, #v2-side-today') : null;
+  if(k !== 'today'){ v2Sec(k, true); b = document.querySelector('#v2s-' + k + ' .v2-sbtn'); }
+  if(b){ if(!b.matches('button')) b.tabIndex = -1; b.focus({preventScroll:true}); if(b.scrollIntoView) b.scrollIntoView({block:'nearest'}); }
+}
+/* at 1200 px and under, the patient context is a drawer over the chart, from the header's Patient summary button */
+function cv2Drawer(open, quiet){
+  var on = !!open && cv2On() && !cv2Wide(), was = CV2.drawer;
+  CV2.drawer = on;
+  var root = v2El('pcv-c'), sd = v2El('v2-side'), v = v2El('v2'); if(!root || !sd) return;
+  root.classList.toggle('cv2-drawer-on', on);
+  var bd = v2El('cv2-bd');
+  if(!bd && v && on){ bd = document.createElement('div'); bd.id = 'cv2-bd'; bd.className = 'cv2-bd'; bd.hidden = true; bd.onclick = function(){ cv2Drawer(false); }; v.appendChild(bd); }
+  if(bd) bd.hidden = !on;
+  if(on){ sd.setAttribute('role', 'dialog'); sd.setAttribute('aria-modal', 'true'); } else { sd.removeAttribute('role'); sd.removeAttribute('aria-modal'); }
+  var ob = document.querySelector('#cv2-meta .cv2-ctx-open'); if(ob) ob.setAttribute('aria-expanded', String(on));
+  if(cv2On()) cv2CtxPaint();
+  if(on && !was){ CV2.opener = document.activeElement; var t = v2El('cv2-ctx-t'); if(t) t.focus({preventScroll:true}); }
+  if(!on && was && !quiet){ var o = CV2.opener; CV2.opener = null; if(o && document.contains(o) && o.offsetParent) o.focus({preventScroll:true}); }
+}
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape' || !CV2.drawer) return;
+  var t = e.target; if(t && t.closest && t.closest('.drawer, [role=dialog]:not(#v2-side), [role=menu]')) return;
+  cv2Drawer(false); e.stopPropagation();
+}, true);
+/* 1201 to 1440 px: an open Version 2 chart folds the app nav to icons, and leaving the chart opens it again (Ani, 4 Nov, for the first 4 Nov
+   layout: "at about 1440 the app's own left nav may collapse to icons while a chart is open, if needed, so the center stays at least about
+   600px"). The doctor's own choice (sc-nav) is never written here; once they press Collapse or Expand, the chart leaves the nav alone. */
+function cv2NavAuto(){
+  var sb = v2El('sidebar'); if(!sb) return;
+  var want = cv2On() && typeof csOnChart === 'function' && csOnChart() && window.innerWidth > 1200 && window.innerWidth <= 1440 && !CV2.navUser;
+  if(want && !sb.classList.contains('collapsed')){ sb.classList.add('collapsed'); sb.dataset.auto = '1'; if(typeof syncCollapseBtn === 'function') syncCollapseBtn(true); }
+  else if(!want && sb.dataset.auto){ sb.classList.remove('collapsed'); delete sb.dataset.auto; if(typeof syncCollapseBtn === 'function') syncCollapseBtn(false); }
+}
+(function(){
+  var raf = 0, wasWide = null;
+  window.addEventListener('resize', function(){
+    if(raf) return;
+    raf = requestAnimationFrame(function(){
+      raf = 0; cv2NavAuto();
+      if(!cv2On()) return;
+      var wide = cv2Wide(); if(wide !== wasWide){ wasWide = wide; cv2Drawer(false, true); }
+      cv2CtxPaint(); cv2Sync();
+    });
+  });
+})();
+/* the steps are a list of buttons: Up and Down move between them (Tab still works) */
+document.addEventListener('keydown', function(e){
+  if(!cv2On() || !/^(ArrowDown|ArrowUp)$/.test(e.key)) return;
+  var t = e.target; if(!t || !t.closest || !t.closest('#cv2-nav #v2-tabs')) return;
+  var bs = [].filter.call(document.querySelectorAll('#v2-tabs > button'), function(b){ return !b.hidden; }), i = bs.indexOf(t); if(i < 0) return;
+  bs[(i + (e.key === 'ArrowDown' ? 1 : -1) + bs.length) % bs.length].focus(); e.preventDefault();
+});
+
+/* ---------- the shared functions tell Version 2 when something changed (they behave the same in both layouts) ---------- */
+(function(){
+  var w = function(name, after, before){
+    var f = window[name]; if(typeof f !== 'function') return;
+    window[name] = function(){
+      if(before){ before.apply(this, arguments); }
+      var r = f.apply(this, arguments);
+      if(after) after.apply(this, arguments);
+      return r;
+    };
+  };
+  /* the old Current layout (?chart=current, the October chart) has none of these slots: leave Version 2 first, so every node goes home in order */
+  w('csLayout', function(){ cv2Apply(); }, function(mode){ if(mode !== 'v2') cv2Unmount(); });
+  w('openChart', function(name){ if(cv2On()){ ['alg', 'enc'].forEach(function(k){ v2Sec(k, false); }); CV2.drawer = false; cv2Side(name); cv2Sync(); cv2CtxPaint(); } cv2NavAuto(); });
+  w('v2RenderSide', function(name){ if(cv2On()) cv2Side(name || PC_CURRENT); });
+  w('v2SyncHead', function(){ if(cv2On()) cv2Sync(); });
+  ['pcStartCall', 'pcEndCall', 'pcSyncChartCall'].forEach(function(n){ w(n, function(){ if(cv2On()) cv2Sync(); }); });
+  w('showScreen', function(){ cv2NavAuto(); if(cv2On()) cv2Drawer(false, true); });
+  /* the doctor pressed Collapse or Expand: the chart leaves the app nav alone from then on */
+  w('toggleSidebarCollapse', null, function(){ var sb = v2El('sidebar'); if(sb) delete sb.dataset.auto; CV2.navUser = true; });
+  /* focus is never hidden under the sticky step bar; in the wide Version 2 the page does not scroll and the bar is the left nav */
+  w('csMeasure', function(){
+    if(!cv2On() || !cv2Wide() || typeof csOnChart !== 'function' || !csOnChart()) return;
+    document.documentElement.style.scrollPaddingTop = Math.round(csTopbarH() + 20) + 'px';
+  });
+})();
+
+/* ---------- start: ?chart=2 (a shared link) wins for this page; otherwise the viewer's stored choice; default Current ---------- */
+(function(){
+  var on = false;
+  try { on = localStorage.getItem(CV2_KEY) === '2'; } catch(e){}
+  try { var q = new URLSearchParams(location.search).get('chart'); if(q === '2') on = true; else if(q === '1') on = false; } catch(e){}
+  CV2.on = on;
+  cv2Apply();
+})();
+</script>
+  <div class="build-stamp">v2 · build 2026-11-04 16:10</div>
 </body>
 </html>
