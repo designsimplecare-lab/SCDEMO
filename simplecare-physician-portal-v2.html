@@ -7206,6 +7206,14 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-hd .v2-all{margin-left:auto;}
 #screen-patientchart #pcv-c.cs-v2 #v2-key :is(#cr-rest,#cr-medsec)[hidden]{display:none;}
 #screen-patientchart #pcv-c.cs-v2 #v2-key #cr-rest{margin-top:0;}
+/* T-040 (Daniel, 31 Oct 00:47:09): Cedar's line under a dose difference: ink words, the Cedar mark in brand, the source a quiet link that opens the letter's sentence */
+#rx-panel .rp-t3 tr.rp-cdr td{padding:0 16px 10px;}
+#rx-panel .rp-t3 .rp-why{display:flex;align-items:flex-start;gap:8px;margin:0;max-width:66ch;font-size:15px;line-height:22px;color:var(--ink);}
+#rx-panel .rp-t3 .rp-why .rp-cm{display:inline-flex;flex:none;width:20px;height:22px;color:var(--brand);}
+#rx-panel .rp-t3 .rp-why .rp-cm svg{width:20px;height:18px;margin-top:2px;}
+#rx-panel .rp-t3 .rp-why .op-lk{min-height:44px;margin:-11px 0;font-size:14px;}
+#rx-panel .rp-t3 .rp-whyq{margin:6px 0 0 28px;padding:0;max-width:66ch;font-size:15px;line-height:22px;color:var(--ink);}
+#rx-panel .rp-t3 .rp-whyq[hidden]{display:none;}
 /* T-040 (Daniel, 31 Oct 01:22:51): the drug name that travels to the pad on Continue (rxFly) */
 .rp-fly{position:fixed;z-index:400;pointer-events:none;padding:2px 8px;margin:-2px -8px;border-radius:8px;background:var(--panel);box-shadow:0 4px 14px rgba(23,24,28,.18);font-size:15px;line-height:22px;font-weight:700;color:var(--ink);white-space:nowrap;transform-origin:left top;}
 /* T-040 (Daniel, 31 Oct 00:04:09): the reason on the drug name line, a headline, quieter than the name */
@@ -13751,7 +13759,9 @@ var RXP = {
  'Gloria Mcdonald, 74F': {
   histTotal:31, pw:true, pn:{adverse:[]},
   rows:[
-   {id:'a1', key:'amlodipine-10', ind:{t:'High blood pressure', src:'Problem list, since 2019'}, by:'Dr. M. Ferreira', spec:'cardiology', pharm:'Lincoln Pharmacy, Coquitlam', ago:44, supply:90, repLeft:2, chart:true},
+   {id:'a1', key:'amlodipine-10', ind:{t:'High blood pressure', src:'Problem list, since 2019'}, by:'Dr. M. Ferreira', spec:'cardiology', pharm:'Lincoln Pharmacy, Coquitlam', ago:44, supply:90, repLeft:2, chart:true,
+    /* T-040 (Daniel, 31 Oct 00:47:09): why PharmaNet differs, as Cedar reads it from the consult letter (DEMO; the letter's line is in CS_QUOTES.cardio) */
+    why:{t:'the cardiology letter of Jul 28 increased amlodipine to 10 mg.', src:'Consults, Jul 28', quote:'I have increased her amlodipine to 10 mg daily.', by:'Dr. M. Ferreira, cardiology'}},
    {id:'a2', key:'metformin-500', ind:{t:'Type 2 diabetes', src:'Problem list, since 2021'}, by:'Simple Rx', pharm:'Lincoln Pharmacy, Coquitlam', ago:117, supply:90, repLeft:3, chart:true},
    {id:'a3', key:'zopiclone-5', ind:null, by:'Dr. S. Gill', out:true, pharm:'Lincoln Pharmacy, Coquitlam', ago:14, supply:30, repLeft:1, chart:false,
     otherFills:{n:2, by:'Dr. S. Gill', written:'2 weeks ago'}, comment:'Pharmacist comment: patient asked about a lower dose.'},
@@ -14842,6 +14852,16 @@ function rxRecRow2(st, it, pnOnly){
   } else if(!pnOnly && st.recSrc !== 'patient') pn = '<i>Not dispensed</i>';
   var cells = pnOnly ? '<td>' + pn + '</td>' : st.recSrc === 'patient' ? '<td>' + simple + '</td>' : '<td>' + simple + '</td><td>' + pn + '</td>';
   var h = '<tr class="rp-it' + (tint && !it.conf ? ' diff' : '') + (stp ? ' stp' : '') + '" data-fk="rr' + it.id + '" tabindex="-1">' + name + cells + '<td class="rp-sup">' + rxSupply(it) + '</td></tr>';
+  /* T-040 (Daniel, 31 Oct 00:47:09: "our AI is picking up ... from the cardiology report ... that this is appropriate ... then you would just press
+     reconcile"): under a dose difference, Cedar's one line on why, with its source. The source opens the letter's own sentence in place (the
+     Consults drawer sits under this panel). Hidden with Cedar off for prescribing (T-038), and once the dose is confirmed. */
+  var why = hl && !it.conf && r && r.why && cdOn('rx') ? r.why : null;
+  if(why){
+    var wo = !!(RX_UI.why || {})[it.id];
+    h += '<tr class="rp-cdr diff"><td colspan="' + cols + '"><p class="rp-why"><span class="rp-cm" aria-hidden="true">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span><span>Cedar: ' + csEsc(why.t) +
+      ' <button type="button" class="op-lk" data-fk="why' + it.id + '" aria-expanded="' + wo + '" aria-controls="rx-why' + it.id + '" onclick="RX_UI.why=RX_UI.why||{};RX_UI.why[\'' + it.id + '\']=!RX_UI.why[\'' + it.id + '\'];rxRender()">Source: ' + csEsc(why.src) + '</button></span></p>' +
+      '<blockquote class="rp-whyq" id="rx-why' + it.id + '"' + (wo ? '' : ' hidden') + '>“' + csEsc(why.quote) + '” <span class="rp-rs">' + csEsc(why.by) + '</span></blockquote></td></tr>';
+  }
   var acts = rxActsHtml(st, it);
   if(acts) h += '<tr class="rp-acr' + (tint && !it.conf ? ' diff' : '') + '"><td colspan="' + cols + '">' + acts + '</td></tr>';
   return h;
@@ -16271,6 +16291,7 @@ var CS_REL = {
 };
 var CS_QUOTES = {cardio:['I have arranged an exercise stress test for September 12 and will forward the report to you.',
   'I would ask the family physician to start bisoprolol 2.5 mg daily and titrate to heart rate.',
+  'I have increased her amlodipine to 10 mg daily.',   /* T-040 demo: matches the PharmaNet fill at 10 mg from Dr. M. Ferreira */
   'Please have a current lipid profile and HbA1c available for the September visit.']};
 function csSrc(label, sub, tab, extraTag){
   return '<button type="button" class="cs-src" onclick="csOpenFull(\'' + tab + '\',this)">' + label +
@@ -22782,6 +22803,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 11:00</div>
+  <div class="build-stamp">v2 · build 2026-11-04 11:01</div>
 </body>
 </html>
