@@ -7473,6 +7473,18 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-stamp{display:inline-flex;align-items:center;gap:6px;margin:0;min-height:44px;font-size:15px;line-height:22px;font-weight:600;color:var(--cv2-ink);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-stamp .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-stamp svg{width:18px;height:18px;color:var(--cv2-ok);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row.cv2-open{background:#F9FAFB;margin:0 -16px;padding-left:16px;padding-right:16px;}
+/* physician pass B2: the sign-off checklist, above the Sign off button */
+.cv2-chk[hidden]{display:none !important;}
+#screen-patientchart #pcv-c:not(.chart-v2) #cv2-chk{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk{margin:12px 0;padding:12px 16px;border:1px solid var(--cv2-line);border-radius:8px;background:#F9FAFB;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk .cv2-chk-h{margin:0 0 4px;font-size:15px;line-height:22px;font-weight:700;color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk ul{margin:0;padding:0;list-style:none;display:grid;gap:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk li{display:flex;align-items:center;gap:8px;min-height:44px;font-size:15px;line-height:22px;color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk li + li{border-top:1px solid var(--cv2-line);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk li > .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk li > .ic svg{width:18px;height:18px;flex:none;color:var(--cv2-ok);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk li.todo > .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk li.todo > .ic svg{color:var(--cv2-warn);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk li > span{flex:1 1 auto;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk .cv2-chk-b{flex:none;height:44px;min-height:44px;padding:0 14px;border:1px solid var(--line-strong);border-radius:8px;background:var(--panel);font-size:15px;font-weight:600;color:var(--cv2-ink);box-shadow:none;}
 /* at 1200 px and under: stacked; the steps are the horizontal bar, sticky under the top bar; the patient context is a drawer */
 @media (max-width:1200px){
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2,#screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-template-areas:"hd" "nav" "main";gap:8px;height:auto;}
@@ -23210,6 +23222,7 @@ function cv2Mount(){
 }
 function cv2Unmount(){
   if(CV2.meta && CV2.meta.parentNode) CV2.meta.parentNode.removeChild(CV2.meta);
+  var ck = v2El('cv2-chk'); if(ck) ck.remove();   /* physician pass B2: the checklist is Version 2's */
   cv2Drawer(false, true);
   cv2Restore();
 }
@@ -23417,6 +23430,79 @@ document.addEventListener('keydown', function(e){
   bs[(i + (e.key === 'ArrowDown' ? 1 : -1) + bs.length) % bs.length].focus(); e.preventDefault();
 });
 
+/* ---------- physician pass (Ani, 4 Nov: chart Version 2, physician pass, B2): the sign-off checklist ----------
+   One short list, always above the Sign off button: Critical result reviewed · Assessment written · Cedar text accepted or rejected · Problem list ·
+   Diagnosis. Each line is done, or has its own button that goes there. It WARNS and does not block (Daniel decides blocking; the question is in the
+   brief): in Version 2, Sign off no longer stops for the problem-list suggestions or "Sign off anyway" (they are lines here), and a diagnosis that is
+   only suggested is used ("786.5 · Chest pain · suggested, used"). Template text left in the note still stops it (a wrong record, not a reminder). */
+function cv2ChkLines(){
+  var r = csRow(); if(!r) return [];
+  var crit = CS.empty ? [] : csNAItems(PC_CURRENT).filter(function(x){ return x.tier === 'crit'; }), open = crit.filter(function(x){ return /^Not /.test(x.stage); });
+  var v = nsGet(), ai = nsAIList(), sugg = condSuggFor(PC_CURRENT).length;
+  var vc = t23VisitCode(r.name), dxs = !vc.dx && typeof nsDxSuggest === 'function' ? nsDxSuggest(r) : null, L = [];
+  L.push(open.length ? {ok:false, t:'Critical result not reviewed: ' + open[0].test.n + ' ' + open[0].test.v + ' ' + (open[0].test.u || ''), b:'Review', k:'crit'}
+    : {ok:true, t:crit.length ? 'Critical result reviewed' : 'No critical result'});
+  L.push(v.assessment.trim() ? {ok:true, t:'Assessment written'} : {ok:false, t:'Assessment not written', b:'Write', k:'asmt'});
+  L.push(ai.length ? {ok:false, t:'Cedar text waiting in ' + ai.map(function(k){ return NS_LBL[k]; }).join(', '), b:'Go to it', k:'ai'} : {ok:true, t:'No Cedar text waiting'});
+  L.push(sugg ? {ok:false, t:'Problem list: ' + sugg + ' suggested update' + (sugg > 1 ? 's' : ''), b:'Review', k:'prob'} : {ok:true, t:'Problem list up to date'});
+  L.push(vc.disp === 'private' ? {ok:true, t:'Private pay: no diagnosis code'}
+    : vc.dx ? {ok:true, t:'Diagnosis ' + vc.dx + ' · ' + t23DxName(vc.dx)}
+    : dxs ? {ok:true, t:'Diagnosis ' + dxs + ' · ' + t23DxName(dxs) + ' · suggested, used'}
+    : {ok:false, t:'Diagnosis not set', b:'Add', k:'dx'});
+  return L;
+}
+function cv2Chk(){
+  var el = v2El('cv2-chk'), row = v2El('vc-finrow');
+  if(!cv2On() || !PC_CURRENT){ if(el) el.hidden = true; return; }
+  if(!el && row){ el = document.createElement('div'); el.id = 'cv2-chk'; el.className = 'cv2-chk'; el.setAttribute('role', 'group'); el.setAttribute('aria-labelledby', 'cv2-chk-h'); }
+  if(!el || !row) return;
+  if(el.nextSibling !== row) row.parentNode.insertBefore(el, row);
+  var r = csRow(), off = !r || !!r.signed || csNoShow(PC_CURRENT);
+  el.hidden = off;
+  var st = v2El('v2t-sign'), tm = st && st.querySelector('.v2-tm');
+  if(off) return;
+  var L = cv2ChkLines(), n = L.filter(function(x){ return !x.ok; }).length;
+  var h = '<h4 class="cv2-chk-h" id="cv2-chk-h">Before you sign off</h4><ul>' + L.map(function(x){
+    return '<li class="' + (x.ok ? 'ok' : 'todo') + '">' + csIc(x.ok ? 'complete' : 'alert') + '<span>' + csEsc(x.t) + '</span>' +
+      (x.b ? '<button type="button" class="btn cv2-chk-b" onclick="cv2ChkGo(\'' + x.k + '\')">' + x.b + '</button>' : '') + '</li>'; }).join('') + '</ul>';
+  if(el.getAttribute('data-h') !== h){ el.innerHTML = h; el.setAttribute('data-h', h); paintPd(el); }
+  /* the Sign off step counts the open lines (a warning, never a block) */
+  if(tm){ tm.textContent = n ? String(n) : ''; st.setAttribute('aria-label', 'Sign off' + (n ? ', ' + n + (n === 1 ? ' item' : ' items') + ' to check' : '')); }
+}
+function cv2ChkGo(k){
+  if(k === 'crit'){
+    var x = csNAItems(PC_CURRENT).filter(function(y){ return y.tier === 'crit' && /^Not /.test(y.stage); })[0];
+    if(x){ CS.naOpen = CS.naOpen || {}; CS.naOpen[PC_CURRENT + '|' + x.idx] = true; renderChartAlerts(PC_CURRENT); }
+    v2Tab('review', false);
+    setTimeout(function(){ var b = document.querySelector('#vc-alerts .cv2-open .cv2-markrev'); if(b) b.focus({preventScroll:true}); }, 400);
+  } else if(k === 'asmt' || k === 'ai'){
+    v2Tab('note', false);
+    var ai = nsAIList()[0], t = k === 'ai' && ai ? document.querySelector('#ns-ai-' + ai + ' .cs-ai-b .btn') : nsTa('assessment');
+    setTimeout(function(){ if(t){ t.focus({preventScroll:true}); if(t.scrollIntoView) t.scrollIntoView({block:'center'}); } }, 400);
+  } else if(k === 'prob') openConditions();
+  else if(k === 'dx') t23OpenPick({visit:PC_CURRENT, focus:'dx'});
+}
+(function(){
+  var raf = 0;
+  document.addEventListener('input', function(e){ var t = e.target; if(!cv2On() || !t || !t.classList || !t.classList.contains('ns-ta')) return; if(raf) return; raf = requestAnimationFrame(function(){ raf = 0; cv2Chk(); }); });
+  /* Version 2: Sign off follows the checklist (warn, not block). A diagnosis that is only suggested is used. */
+  var t0 = window.t23Fin;
+  if(typeof t0 === 'function') window.t23Fin = function(mode){
+    if(cv2On() && mode === 'now'){ var r = csRow(); if(r && !r.signed){ var v = t23VisitCode(r.name); if(v.disp !== 'private' && !v.dx){ var d = nsDxSuggest(r); if(d) nsDxUse(d); } } }
+    return t0.apply(this, arguments);
+  };
+  var f0 = window.finalizeVisit;
+  if(typeof f0 === 'function') window.finalizeVisit = function(force){
+    if(force || !cv2On() || !PC_CURRENT || (csRow() || {}).signed) return f0.apply(this, arguments);
+    if(typeof nsSync === 'function') nsSync();
+    var n = v2El('vc-note-input'), txt = n ? n.value.trim() : '', br = txt.match(/\[[^\]]{3,}\]/);
+    if(br){ vcFinWarn('Today’s note still has template text: “' + br[0].slice(0, 60) + (br[0].length > 60 ? '…' : '') + '”. Sign off and finalize anyway?'); return; }
+    var nm = PC_CURRENT, keep = COND_SUGGESTIONS[nm];
+    if(keep) COND_SUGGESTIONS[nm] = [];   /* the suggestions stay suggestions; they are a checklist line, not a stop */
+    try { return f0.call(this, true); } finally { if(keep && !(COND_SUGGESTIONS[nm] || []).length) COND_SUGGESTIONS[nm] = keep; }
+  };
+})();
+
 /* ---------- the shared functions tell Version 2 when something changed (they behave the same in both layouts) ---------- */
 (function(){
   var w = function(name, after, before){
@@ -23432,7 +23518,8 @@ document.addEventListener('keydown', function(e){
   w('csLayout', function(){ cv2Apply(); }, function(mode){ if(mode !== 'v2') cv2Unmount(); });
   w('openChart', function(name){ if(cv2On()){ ['alg', 'enc'].forEach(function(k){ v2Sec(k, false); }); CV2.drawer = false; cv2Side(name); cv2Sync(); cv2CtxPaint(); } cv2NavAuto(); });
   w('v2RenderSide', function(name){ if(cv2On()) cv2Side(name || PC_CURRENT); });
-  w('v2SyncHead', function(){ if(cv2On()) cv2Sync(); });
+  w('v2SyncHead', function(){ if(cv2On()){ cv2Sync(); cv2Chk(); } });
+  ['t23RenderBillRow', 'renderConditions', 'csRenderAI'].forEach(function(n){ w(n, function(){ if(cv2On()) cv2Chk(); }); });
   w('renderChartAlerts', function(){ if(cv2On()) cv2NaCols(); });
   w('v2Tab', null, function(tab){ CV2.pressed = cv2On() && tab !== 'chart' ? {tab:tab, t:Date.now()} : null; });
   ['pcStartCall', 'pcEndCall', 'pcSyncChartCall'].forEach(function(n){ w(n, function(){ if(cv2On()) cv2Sync(); }); });
@@ -23455,6 +23542,6 @@ document.addEventListener('keydown', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 17:10</div>
+  <div class="build-stamp">v2 · build 2026-11-04 17:12</div>
 </body>
 </html>
