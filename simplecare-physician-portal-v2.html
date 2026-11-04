@@ -5243,7 +5243,7 @@
   #t23-pick .t23-row2{align-items:flex-end;}
   #t23-pick .t23-mins{font-size:15px;color:var(--ink);padding-bottom:10px;}
   /* Daniel 5 Oct (step 5): Sign off & submit claim (primary) and Finalize, submit later (secondary, outline) */
-  #screen-patientchart #pcv-c #t23-finlater{flex:1 1 100%;justify-content:center;}
+  #screen-patientchart #pcv-c #t23-finlater{flex:0 0 auto;justify-content:center;border-color:transparent;background:none;}
   #screen-patientchart #pcv-c #t23-finlater[hidden]{display:none;}
   #screen-patientchart #pcv-c #t23-finlater[aria-disabled="true"]{opacity:.55;cursor:not-allowed;}
 
@@ -7696,7 +7696,7 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
             <div class="v2-panel v2-step" id="v2p-orders" aria-labelledby="v2h-orders" tabindex="-1">
               <h2 class="v2-stepH" id="v2h-orders">Action</h2>
               <section class="v2-card" aria-labelledby="v2-ord-h">
-                <div class="v2-ch"><span class="ic" data-pdic="addon"></span><h3 id="v2-ord-h" class="vh">Orders</h3></div>
+                <h3 id="v2-ord-h" class="vh">Action</h3>
                 <!-- T-025: orders Cedar drafted from a specialist report; the doctor accepts, edits or rejects each and signs at Sign off -->
                 <section class="rm-drafts" id="rm-drafts" aria-labelledby="rm-dr-h" hidden></section>
                 <div class="v2-ord" id="v2-ord">
@@ -7900,8 +7900,8 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
               <!-- Daniel, 26 Sep: "I 'sign off' on the chart ... It means that i've finalized the visit." -->
               <!-- Daniel 5 Oct (step 5): bills are submitted when the consult is done, but he always presses submit himself.
                    MSP visit: primary "Sign off & submit claim", secondary "Finalize, submit later". Private pay: just finalize. -->
-              <button class="btn dark" id="vc-finalize" onclick="t23Fin('now')"><span class="ic" data-pdic="complete"></span><span id="vc-finalize-lbl">Sign off &amp; finalize visit</span></button>
-              <button class="btn" id="t23-finlater" onclick="t23Fin('later')" hidden><span class="ic" data-pdic="clock"></span>Finalize, submit later</button>
+              <button class="btn dark" id="vc-finalize" title="Sends this claim to MSP now. MSP processes claims at 7 PM each business day." onclick="t23Fin('now')"><span class="ic" data-pdic="complete"></span><span id="vc-finalize-lbl">Sign off &amp; finalize visit</span></button>
+              <button class="btn" id="t23-finlater" onclick="t23Fin('later')" hidden>Submit later</button>
               <button class="btn dark" id="vc-nextpt" hidden><span class="ic" data-pdic="chevr"></span><span></span></button>
             </div>
             <p class="t23-finhelp" id="t23-finhelp" hidden>Submitting sends this one claim to MSP right away. MSP processes claims at 7 PM each business day.</p>
@@ -17938,7 +17938,7 @@ function t23RenderBillRow(){
   var r = (typeof csRow === 'function') ? csRow() : null;
   if(!r){ el.hidden = true; if(help) help.hidden = true; return; }
   var sep = '<span class="t23-bsep">·</span>';
-  var h = t23Ic('claims') + '<span>Billing</span>' + sep;
+  var h = t23Ic('claims') + '<span class="vh">Billing</span>';
   if(r.signed){
     var c = t23RowClaim(r);
     h += c ? '<span>' + t23Label(c).label + '</span>' + sep + '<span>' + (c.st === 'submit' ? 'in Claims' : c.st === 'submitted' ? 'MSP processes it at 7 PM' : 'recorded') + '</span>' +
@@ -17950,21 +17950,20 @@ function t23RenderBillRow(){
   var v = t23VisitCode(r.name), btn = 'Change', focus = 'dx';
   if(v.disp === 'private') h += '<span>Private pay</span>' + sep + '<span>Private visit fee</span>' + T23_DEMO;
   else {
-    h += '<span>' + t23FeeTxt(v.fee) + '</span>' + sep +
-         (v.dx ? '<span>' + v.dx + ' · ' + t23DxName(v.dx) + '</span>' : '<span>Diagnosis not set</span>') + sep + '<span>' + t23SpanTxt(v) + '</span>';
-    if(!v.dx) btn = 'Add diagnosis';
+    var dxs = !v.dx && typeof nsDxSuggest === 'function' ? nsDxSuggest(r) : null;
+    h += '<span>' + t23FeeTxt(v.fee) + '</span>' + sep + '<span>' + t23SpanTxt(v) + '</span>' + sep +
+         (v.dx ? '<span>' + v.dx + ' · ' + t23DxName(v.dx) + '</span>' : dxs ? '<span class="t23-dxsug" id="t23-dxsug" title="Suggested from the booking reason">' + dxs + ' · ' + t23E(t23DxName(dxs)) + ' <i>suggested</i></span>' : '<span>Diagnosis not set</span>');
+    if(!v.dx) btn = dxs ? 'Change' : 'Add diagnosis';
     var cb = t23CounselBlock(v), cm = t23CallMins(v);
     if(cb){ btn = 'Add time'; focus = 'time'; h += '<span class="t23-berr">' + t23Ic('alert') + cb + '</span>'; }
     /* 21 Oct: the booking reason's obvious code is offered here, never pre-filled (moved from the Note with the diagnosis field) */
-    var dxs = !v.dx && typeof nsDxSuggest === 'function' ? nsDxSuggest(r) : null;
-    if(dxs) h += '<span class="t23-dxsug" id="t23-dxsug">Suggested from the booking reason: <b>' + dxs + ' &middot; ' + t23E(t23DxName(dxs)) + '</b></span>' +
-      '<button type="button" class="btn xs" id="t23-dxuse" onclick="nsDxUse(\'' + dxs + '\')" aria-describedby="t23-dxsug">' + t23Ic('complete') + 'Use</button>';
+    if(dxs) h += '<button type="button" class="btn xs" id="t23-dxuse" onclick="nsDxUse(\'' + dxs + '\')" aria-describedby="t23-dxsug">' + t23Ic('complete') + 'Use</button>';
     h += '<button type="button" class="btn xs" id="t23-dxbtn" onclick="t23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})">' + t23Ic('edit') + btn + '</button>';
     /* Dev answers, 6 Oct: the call lasted 20+ minutes, so counselling is offered (the doctor decides) */
     if(!t23IsCounsel(v.fee) && cm != null && cm >= T23_COUNSEL_MIN) h += '<button type="button" class="btn xs" onclick="t23Switch(\'visit\',PC_CURRENT,true)">' + t23Ic('clock') + 'Switch to counselling (' + t23FeeForAge(v.age, true) + ')</button>';
     h += t23EditedBtn(t23EditCount(v.log), 't23OpenVisit(PC_CURRENT,\'hist\')');   /* Batch B (2) */
   }
-  el.innerHTML = h; el.hidden = false; if(help) help.hidden = v.disp === 'private'; paintPd(el);
+  el.innerHTML = h; el.hidden = false; if(help) help.hidden = true; paintPd(el);
   t23SyncFin();
 }
 /* Daniel 5 Oct (step 5): the Finalize buttons follow the visit's payer. Same nodes and logic in both chart layouts
@@ -17985,7 +17984,7 @@ function t23Fin(mode){
     if(v.disp !== 'private' && !v.dx){
       /* a claim can't be submitted without a diagnosis; "Finalize, submit later" still closes the visit */
       /* 21 Oct (Daniel, 18 Oct video 2): the code is billing's, set here at the end of the chart, not in the Note */
-      toast('Add the diagnosis code to submit the claim, or choose Finalize, submit later');
+      toast('Add the diagnosis code to submit the claim, or choose Submit later');
       t23OpenPick({visit:PC_CURRENT, focus:'dx'}); return;
     }
     if(v.disp !== 'private' && t23CounselBlock(v)){ toast(t23CounselBlock(v)); t23OpenPick({visit:PC_CURRENT, focus:'time'}); return; }
@@ -18710,8 +18709,7 @@ function v2RenderKey(el, name, by){
   /* T-037 (Daniel, 31 Oct): Chart review is a short, synthesized picture of the patient, today's concern first: who this patient is, and the medications with the concerns they treat. History, past visits, investigations and consult reports moved
      to the left Patient summary ("no repetition"). Cedar's mark and the AI label stay (AI text is marked); every line names its source and opens it. */
   var groups = crMedGroups(name), sents = crSentences(name, groups);
-  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Chart review</h3><span class="v2-chip kf-ai">Cedar &middot; AI</span></div>' +
-    '<p class="kf-note">Cedar&rsquo;s short picture of this patient from the chart and the data feeds, today&rsquo;s concern first. History, results, consult reports, orders and pending items are in the Patient summary. Nothing here goes into your note without you.</p>';
+  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Chart review</h3><span class="v2-chip kf-ai">Cedar &middot; AI</span></div>';
   /* Ordered and pending lives only in the left Patient summary (Ani, 3 Nov: "it should only be on the left side"; no repetition, Daniel 31 Oct). */
   /* 2. Who this patient is: a few synthesized sentences, each opening its source */
   if(sents.length) h += '<section class="kf-sec cr-who" aria-labelledby="kf-h-who"><h4 class="kf-h" id="kf-h-who">Who this patient is</h4><div class="kf-lines">' +
@@ -18929,9 +18927,10 @@ function cwRender(){
   var who = CW.who, c = PC_CALL[who] || {secs:0}, v = typeof csVisit === 'function' ? csVisit(who) : {};
   w.className = 'callw' + (CW.hold ? ' cw-onhold' : '');
   w.innerHTML = '<button type="button" class="cw-who" onclick="cwGo()" aria-label="On call with ' + csEsc(cwName(who)) + '. Open the chart">' +
-      '<span class="cw-dot" aria-hidden="true"></span><span class="cw-txt"><span class="cw-l1"><span class="cw-st">' + (CW.hold ? 'On hold' : 'On call') + '</span> &middot; <b>' + csEsc(cwName(who)) + '</b></span>' +
-      '<span class="cw-l2"><span class="cw-rt">' + (CW.hold ? '' : 'Connected &middot; ') + pcRouteWord(c.route) + '</span> &middot; <span class="cw-time">' + pcFmt(c.secs) + '</span>' +   /* 18 Oct: Connected · phone / headset */
-      '<span class="cw-hl"' + (CW.hold ? '' : ' hidden') + '> &middot; hold <span class="cw-ht">' + pcFmt(CW.holdSecs) + '</span></span>' +
+      /* Ani, 3 Nov: no explaining words; the green dot says on call. Name, then the timer (and hold or muted when they apply) */
+      '<span class="cw-dot" aria-hidden="true"></span><span class="cw-txt"><span class="cw-l1"><b>' + csEsc(cwName(who)) + '</b></span>' +
+      '<span class="cw-l2"><span class="cw-time">' + pcFmt(c.secs) + '</span>' +
+      '<span class="cw-hl"' + (CW.hold ? '' : ' hidden') + '> &middot; on hold <span class="cw-ht">' + pcFmt(CW.holdSecs) + '</span></span>' +
       (CW.muted ? '<span> &middot; muted</span>' : '') +
       (v.callback ? '<span class="cw-num"> &middot; <span class="pc-mono">' + csEsc(v.callback) + '</span></span>' : '') + '</span></span></button>' +
     '<span class="cw-ctl" role="group" aria-label="Call controls">' +
