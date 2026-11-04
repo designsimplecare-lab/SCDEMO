@@ -11161,7 +11161,9 @@ var SC_PROPOSALS = [
    at:'01:46', owner:'moa'},
   {id:'s3', after:14, kind:'Prescription', conf:'hi',
    action:'Bisoprolol 2.5 mg once daily', prio:'urgent',
-   detail:'Initiated at cardiology&rsquo;s request. Continues amlodipine 5 mg. To Lincoln Pharmacy, Coquitlam.',
+   /* physician pass (Ani, 4 Nov: chart Version 2, physician pass, A3): Cedar no longer asserts "Continues amlodipine 5 mg"; PharmaNet shows 10 mg after
+      the cardiology letter (RXP row a1, its T-040 "why"), so the card names the difference and sends the doctor to Prescribe to confirm */
+   detail:'Initiated at cardiology&rsquo;s request. Amlodipine: PharmaNet 10 mg (cardiology, Jul 28) differs from Simple Care 5 mg. Confirm in Prescribe. To Lincoln Pharmacy, Coquitlam.',
    quote:'&ldquo;Cardiology asked that I start you on a low dose of bisoprolol, two point five milligrams once a day.&rdquo;',
    at:'02:09', owner:'moa'},
   {id:'s4', after:15, kind:'Follow-up', conf:'hi',
@@ -12333,7 +12335,7 @@ function aiReply(text){
       var who = nameMatch || qNext();
       if(who){
         var flg = who.redflag ? who.name.split(',')[0]+' flagged symptoms in pre-visit intake — review before the call.' : 'No red flags reported in intake.';
-        aiAppend('<b>'+firstLast(who.name)+'</b> — '+who.concern+'. '+flg+' Last seen Jun 25 by you; on Metformin 500mg and Amlodipine 5mg.','bot');
+        aiAppend('<b>'+firstLast(who.name)+'</b> — '+who.concern+'. '+flg+' Last seen Jun 25 by you; on Metformin 500 mg, and Amlodipine 5 mg on the Simple Care list (PharmaNet shows 10 mg since cardiology, Jul 28).','bot');   /* physician pass A3: Cedar names the difference */
         aiActionBtn('&#128203;','Open full brief',null,function(){aiDo(function(){openBrief(who.name);});});
       } else { aiAppend('Which patient would you like me to summarize?','bot'); }
     }
@@ -23359,6 +23361,6 @@ document.addEventListener('keydown', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 17:02</div>
+  <div class="build-stamp">v2 · build 2026-11-04 17:03</div>
 </body>
 </html>
