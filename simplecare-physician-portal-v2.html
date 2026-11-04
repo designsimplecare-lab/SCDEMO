@@ -5162,15 +5162,16 @@
   #screen-patientchart #pcv-c.cs-v2 .v2-notefoot:not(:has(#cs-ns-bill:not([hidden]))){display:none;}
 
   /* Orders tab: clear rows, not a toolbar */
-  #screen-patientchart #pcv-c.cs-v2 .v2-ord{display:grid;gap:8px;}
-  #screen-patientchart #pcv-c.cs-v2 .v2-orow{position:relative;display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:10px 44px 10px 16px;border:0;border-radius:12px;
+  /* Ani, 3 Nov ("too much scroll, make actions compact"): the seven actions sit as a grid of compact tiles, two rows on a laptop, not seven tall rows */
+  #screen-patientchart #pcv-c.cs-v2 .v2-ord{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));}
+  #screen-patientchart #pcv-c.cs-v2 .v2-orow{position:relative;display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:8px 14px;border:0;border-radius:12px;
     background:var(--wash);font:inherit;text-align:left;color:var(--ink);cursor:pointer;}
   #screen-patientchart #pcv-c.cs-v2 .v2-orow:hover{background:var(--line);}
   #screen-patientchart #pcv-c.cs-v2 .v2-orow > .ic,#screen-patientchart #pcv-c.cs-v2 .v2-orow > .ic svg{width:22px;height:22px;flex:none;color:var(--ink-soft);}
   #screen-patientchart #pcv-c.cs-v2 .v2-orow .v2-ot{display:grid;}
   #screen-patientchart #pcv-c.cs-v2 .v2-orow .v2-ot b{font-size:16px;line-height:22px;font-weight:600;}
   #screen-patientchart #pcv-c.cs-v2 .v2-orow .v2-ot span{font-size:14px;line-height:20px;color:var(--ink-soft);}
-  #screen-patientchart #pcv-c.cs-v2 .v2-orow .v2-go,#screen-patientchart #pcv-c.cs-v2 .v2-orow .v2-go svg{top:50%;right:16px;margin-top:-8px;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-orow .v2-go{display:none;}
   #screen-patientchart #pcv-c.cs-v2 .v2-ord-done{margin:0;font-size:15px;color:var(--ink-soft);}
   #screen-patientchart #pcv-c.cs-v2 #v2-fc-slot .cs-fc{margin:0;}
 
@@ -22615,6 +22616,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-03 21:16</div>
+  <div class="build-stamp">v2 · build 2026-11-03 21:32</div>
 </body>
 </html>
