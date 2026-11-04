@@ -6275,6 +6275,10 @@
   #screen-patientchart .cs-lo-card .v2-loh{margin:0 0 4px;}
   /* the space for the critical bar is kept only when the bar shows (it is hidden on the Review step, where Needs attention says the same) */
   #screen-patientchart #pcv-c.cs-v2[data-v2tab="review"] #v2-head .v2-top.v2-has-crit{margin-bottom:0;border-radius:0 0 16px 16px;}
+  /* Ani, 3 Nov: "do not show this on scroll". The sticky critical bar no longer follows the doctor into Note, Action and Sign off; the critical result stays in Review (Needs attention) and the Review step keeps its red count. */
+  #screen-patientchart #pcv-c.cs-v2:is([data-v2tab="note"],[data-v2tab="orders"],[data-v2tab="sign"]) #v2-crit{display:none !important;}
+  #screen-patientchart #pcv-c.cs-v2:is([data-v2tab="note"],[data-v2tab="orders"],[data-v2tab="sign"]) #v2-head .v2-top.v2-has-crit{margin-bottom:0;border-radius:0 0 16px 16px;}
+  #screen-patientchart #pcv-c.cs-v2:is([data-v2tab="note"],[data-v2tab="orders"],[data-v2tab="sign"]) #v2-top.v2-has-crit::after{border-radius:0 0 16px 16px;}
   /* reading text in the full-width Chart review stays within 66 characters (the card is wider than the two-column layout it replaced) */
   #screen-patientchart #pcv-c.cs-v2 #v2-key .v2-line :is(.v2-l0,.v2-l1,.v2-l2){max-width:66ch;}
   #screen-patientchart #pcv-c.cs-v2 #v2-key :is(.kf-q,.kf-note,.v2-q){max-width:66ch;}
