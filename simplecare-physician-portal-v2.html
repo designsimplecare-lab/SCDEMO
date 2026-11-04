@@ -6288,6 +6288,24 @@
   #screen-patientchart #pcv-c .cs-nkda{display:inline-flex;align-items:center;gap:4px;color:var(--good);font-weight:600;}
   #screen-patientchart #pcv-c .cs-nkda .ic,#screen-patientchart #pcv-c .cs-nkda svg{width:15px;height:15px;}
   #screen-patientchart #pcv-c #cs-allergy[hidden]{display:none !important;}
+  /* Ani, 3 Nov: the Sign off card, clear: three labelled facts, then the buttons on the right */
+  #screen-patientchart #pcv-c.cs-v2 #v2-sign-b .cs-foot{border-top:0;padding:4px;margin:0;background:none;}
+  #screen-patientchart #pcv-c.cs-v2 #t23-dxuse{min-height:32px;padding:0 14px;border:0;text-decoration:none;border-radius:999px;background:var(--brand);color:#fff;font-weight:600;}
+  #screen-patientchart #pcv-c.cs-v2 #t23-dxuse:hover{background:var(--brand-ink);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sign-b .t23-billrow{display:block;padding:0;margin:0 0 16px;border:0;background:none;}
+  #screen-patientchart #pcv-c.cs-v2 .t23-sum{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1.6fr);gap:12px 24px;margin:0;}
+  #screen-patientchart #pcv-c.cs-v2 .t23-sum dt{font-size:13px;line-height:18px;color:var(--ink-soft);margin:0 0 2px;}
+  #screen-patientchart #pcv-c.cs-v2 .t23-sum dd{margin:0;font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
+  #screen-patientchart #pcv-c.cs-v2 .t23-dx dd{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;}
+  #screen-patientchart #pcv-c.cs-v2 .t23-sug{display:inline-block;padding:1px 8px;border-radius:999px;background:var(--brand-wash);color:var(--brand);font-size:12px;font-weight:600;line-height:20px;vertical-align:1px;}
+  #screen-patientchart #pcv-c.cs-v2 .t23-miss{color:#8a5a00;}
+  #screen-patientchart #pcv-c.cs-v2 .t23-acts{display:inline-flex;align-items:center;gap:10px;}
+  #screen-patientchart #pcv-c.cs-v2 .t23-lk{border:0;background:none;padding:4px 2px;font:inherit;font-size:14px;font-weight:600;color:var(--brand);cursor:pointer;}
+  #screen-patientchart #pcv-c.cs-v2 .t23-lk:hover{text-decoration:underline;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sign-b .vc-finrow{display:flex;justify-content:flex-end;align-items:center;gap:12px;flex-wrap:wrap;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sign-b #vc-finalize{flex:0 0 auto;width:auto;padding:0 24px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-sign-b #t23-finlater{order:-1;}
+  @media (max-width:700px){ #screen-patientchart #pcv-c.cs-v2 .t23-sum{grid-template-columns:minmax(0,1fr);} #screen-patientchart #pcv-c.cs-v2 #v2-sign-b #vc-finalize{flex:1 1 100%;} }
 /* T-026 prescribing panel: CSS start */
 /* T-026 (Ani "do all"; Daniel's Prescription Modal requirements v2): one full-height panel over the chart, three steps.
    Paper page, white cards (depth from lightness), few strokes, ink words, colour on icons, brand blue for the primary action and the current step.
@@ -17916,15 +17934,20 @@ function t23RenderBillRow(){
   var v = t23VisitCode(r.name), btn = 'Change', focus = 'dx';
   if(v.disp === 'private') h += '<span>Private pay</span>' + sep + '<span>Private visit fee</span>' + T23_DEMO;
   else {
+    /* Ani, 3 Nov ("make clear UI here"): three labelled facts in a row (fee code, time, diagnosis); the diagnosis carries its own Use and Change */
     var dxs = !v.dx && typeof nsDxSuggest === 'function' ? nsDxSuggest(r) : null;
-    h += '<span>' + t23FeeTxt(v.fee) + '</span>' + sep + '<span>' + t23SpanTxt(v) + '</span>' + sep +
-         (v.dx ? '<span>' + v.dx + ' · ' + t23DxName(v.dx) + '</span>' : dxs ? '<span class="t23-dxsug" id="t23-dxsug" title="Suggested from the booking reason">' + dxs + ' · ' + t23E(t23DxName(dxs)) + ' <i>suggested</i></span>' : '<span>Diagnosis not set</span>');
     if(!v.dx) btn = dxs ? 'Change' : 'Add diagnosis';
     var cb = t23CounselBlock(v), cm = t23CallMins(v);
-    if(cb){ btn = 'Add time'; focus = 'time'; h += '<span class="t23-berr">' + t23Ic('alert') + cb + '</span>'; }
-    /* 21 Oct: the booking reason's obvious code is offered here, never pre-filled (moved from the Note with the diagnosis field) */
-    if(dxs) h += '<button type="button" class="btn xs" id="t23-dxuse" onclick="nsDxUse(\'' + dxs + '\')" aria-describedby="t23-dxsug">' + t23Ic('complete') + 'Use</button>';
-    h += '<button type="button" class="btn xs" id="t23-dxbtn" onclick="t23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})">' + t23Ic('edit') + btn + '</button>';
+    if(cb){ btn = 'Add time'; focus = 'time'; }
+    var dxv = v.dx ? v.dx + ' · ' + t23DxName(v.dx)
+      : dxs ? '<span id="t23-dxsug" title="Suggested from the booking reason">' + dxs + ' · ' + t23E(t23DxName(dxs)) + '</span> <span class="t23-sug">Suggested</span>'
+      : '<span class="t23-miss">Not set</span>';
+    var dxa = (dxs ? '<button type="button" class="btn xs dark" id="t23-dxuse" onclick="nsDxUse(\'' + dxs + '\')" aria-describedby="t23-dxsug">Use</button>' : '') +
+      '<button type="button" class="t23-lk" id="t23-dxbtn" onclick="t23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})">' + btn + '</button>';
+    h = '<dl class="t23-sum">' +
+      '<div><dt>Fee code</dt><dd>' + t23FeeTxt(v.fee) + '</dd></div>' +
+      '<div><dt>Time</dt><dd>' + t23SpanTxt(v) + (cb ? '<span class="t23-berr">' + t23Ic('alert') + cb + '</span>' : '') + '</dd></div>' +
+      '<div class="t23-dx"><dt>Diagnosis</dt><dd><span>' + dxv + '</span><span class="t23-acts">' + dxa + '</span></dd></div></dl>';
     /* Dev answers, 6 Oct: the call lasted 20+ minutes, so counselling is offered (the doctor decides) */
     if(!t23IsCounsel(v.fee) && cm != null && cm >= T23_COUNSEL_MIN) h += '<button type="button" class="btn xs" onclick="t23Switch(\'visit\',PC_CURRENT,true)">' + t23Ic('clock') + 'Switch to counselling (' + t23FeeForAge(v.age, true) + ')</button>';
     h += t23EditedBtn(t23EditCount(v.log), 't23OpenVisit(PC_CURRENT,\'hist\')');   /* Batch B (2) */
