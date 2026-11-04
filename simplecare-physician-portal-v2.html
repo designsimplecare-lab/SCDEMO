@@ -349,29 +349,6 @@
   .sched-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14.5px;}
   .sched-row:last-child{border-bottom:none;}
 
-  /* copilot slide-over */
-  .copilot-overlay{
-    display:none;position:fixed;inset:0;background:rgba(28,31,38,.35);z-index:40;
-  }
-  .copilot-overlay.show{display:block;}
-  .copilot-panel{
-    position:fixed;top:0;right:0;bottom:0;width:340px;background:var(--panel);
-    border-left:1px solid var(--line-strong);padding:18px;overflow-y:auto;
-    box-shadow:-8px 0 24px rgba(0,0,0,.08);
-  }
-  .copilot-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-  .copilot-head b{font-size:16px;}
-  .copilot-close{
-    background:none;border:1px dashed var(--line-strong);border-radius:6px;cursor:pointer;
-    font-family:inherit;padding:3px 9px;color:var(--ink-soft);
-  }
-  .copilot-disclaimer{
-    font-size:13px;color:var(--warn);background:var(--warn-wash);border-radius:8px;
-    padding:9px 11px;margin-top:12px;
-  }
-  .copilot-section{margin-bottom:12px;}
-  .copilot-section .k{font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-faint);margin:0 0 3px;}
-  .copilot-section .v{font-size:14.5px;margin:0;}
 
   /* calendar merge */
   .mode-toggle{display:flex;gap:0;margin-bottom:14px;border:1px solid var(--line-strong);border-radius:8px;width:fit-content;overflow:hidden;}
@@ -1710,6 +1687,10 @@
   .sc-conf{font-size:11.5px;font-weight:800;letter-spacing:.04em;flex-shrink:0;}
   .sc-conf.hi{color:var(--good);} .sc-conf.mid{color:var(--warn);}
   .sc-prop .d{font-size:13.5px;color:var(--ink-soft);margin:0 0 8px;line-height:1.5;}
+  .sc-txd{margin:0 0 10px;}
+  .sc-txd > summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--ink-soft);padding:4px 0;}
+  .sc-txd[open] > summary{margin-bottom:6px;}
+  .sc-again{border-color:transparent !important;background:none !important;}
   .sc-heard{border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:700;
     color:var(--accent-ink);cursor:pointer;padding:0;}
   .sc-heard:hover{text-decoration:underline;}
@@ -2994,7 +2975,6 @@
   th,
   .inbox-type,
   .inbox-section-label,
-  .copilot-section,
   .k,
   .stat,
   .l,
@@ -8560,21 +8540,6 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
   </div>
 </div>
 
-<!-- Copilot contextual slide-over -->
-<div class="copilot-overlay" id="copilot-overlay" onclick="if(event.target===this) closeBrief()">
-  <div class="copilot-panel">
-    <div class="copilot-head">
-      <b>Patient brief — <span id="brief-name">—</span></b>
-      <button class="copilot-close" onclick="closeBrief()">×</button>
-    </div>
-    <div class="copilot-section"><p class="k">Reason for visit</p><p class="v" id="brief-reason">—</p></div>
-    <div class="copilot-section"><p class="k">Flagged in intake</p><p class="v" id="brief-flag">—</p></div>
-    <div class="copilot-section"><p class="k">Last visit</p><p class="v">Jun 25, 2026 — Dr. Pannozzo</p></div>
-    <div class="copilot-section"><p class="k">Active medications</p><p class="v">Metformin 500mg, Amlodipine 5mg</p></div>
-    <div class="copilot-disclaimer">Verify source chart before making clinical decisions. This brief is AI-generated and may be incomplete.</div>
-  </div>
-</div>
-
 <!-- Ani, 30 Sep: the chat with the doctor's own MOA floats bottom-right, with her picture and status -->
 <button type="button" class="chat-launcher" id="chat-fab" onclick="toggleChatPanel()" aria-label="Chat with Dolly, your MOA">
   <span class="cl-av"><span class="cl-ph" id="cl-ph">D</span><span class="cl-dot on"></span></span>
@@ -10102,18 +10067,15 @@ function ackAlert(el){
 var BRIEFS = {
   'Gloria Mcdonald': {reason:'Follow up on blood pressure control', flag:'Chest pressure — reported this morning'},
 };
+/* "Open intake" and "Review intake" open the intake itself: the chart drawer's Documents, where the intake form is filed.
+   (Replaces the early "Patient brief" slide-over, which sat under the patient header and showed stale data; Ani, 3 Nov.) */
 function openBrief(name){
-  var key = name.split(',')[0].trim();
-  var b = BRIEFS[key] || {reason:'General follow-up', flag:'None reported'};
-  document.getElementById('brief-name').textContent = name;
-  document.getElementById('brief-reason').textContent = b.reason;
-  document.getElementById('brief-flag').textContent = b.flag;
-  document.getElementById('copilot-overlay').classList.add('show');
+  var base = String(name || '').split(',')[0].trim().toLowerCase();
+  var row = QUEUE_DATA.filter(function(x){ return x.name === name || x.name.split(',')[0].trim().toLowerCase() === base; })[0];
+  var full = row ? row.name : name;
+  if(full && PC_CURRENT !== full && typeof openChart === 'function') openChart(full);
+  setTimeout(function(){ if(typeof v2Tab === 'function') v2Tab('chart'); if(typeof csTab === 'function') csTab('documents', true); }, PC_CURRENT === full ? 0 : 500);
 }
-function closeBrief(){
-  document.getElementById('copilot-overlay').classList.remove('show');
-}
-
 /* ===== calendar mode toggle ===== */
 function setCalMode(mode, el){
   document.querySelectorAll('.mode-toggle button').forEach(function(b){ b.classList.remove('active'); });
@@ -11009,14 +10971,14 @@ function renderScribe(){
   if(scState === 'off'){
     /* optional tool, so secondary: Finalize is the one primary in this card */
     acts.innerHTML = '<button class="btn xs" onclick="scAskConsent()"><span class="ic" data-pcic="edit"></span> Turn on scribe</button>';
-    sub.textContent = 'Drafts the note and proposes orders while you talk. It files nothing on its own.';
+    sub.textContent = '';
     body.innerHTML = '';
     return;
   }
 
   if(scState === 'consent'){
     acts.innerHTML = '';
-    sub.textContent = 'Read this to the patient before anything is captured.';
+    sub.textContent = 'Read to the patient';
     body.innerHTML =
       '<div class="sc-consent">' +
         '<p>&ldquo;Gloria, I use a tool that listens to our call and writes my notes up for me. ' +
@@ -11040,11 +11002,10 @@ function renderScribe(){
     ? '<span class="sc-count">'+(scIdx > 0 ? SC_TURNS[Math.min(scIdx, SC_TURNS.length)-1].t : '00:00')+'</span>' +
       '<button class="btn xs" onclick="scSkip()">Skip to end</button>' +
       '<button class="btn xs" onclick="scStop()">Stop</button>'
-    : '<button class="btn xs" onclick="scReset()">Discard and start over</button>';
+    : '<button class="btn xs sc-again" onclick="scReset()">Start over</button>';
 
-  sub.innerHTML = scState==='live'
-    ? 'Recording with consent. The note below is being drafted as you speak.'
-    : '<b>'+scPending()+'</b> proposals waiting on you. Nothing has been created yet.';
+  /* Ani, 3 Nov: no explaining text. Live: the timer says it; review: just the count */
+  sub.innerHTML = scState==='live' ? 'Listening' : (scPending() ? '<b>'+scPending()+'</b> to review' : '');
 
   var turns = SC_TURNS.slice(0, scIdx).map(function(t,i){
     var isTrigger = SC_PROPOSALS.some(function(p){ return p.after === i+1; });
@@ -11060,33 +11021,28 @@ function renderScribe(){
           '<div class="sc-prop-top">'+
             '<span class="sc-kind">'+p.kind+'</span>'+
             '<b>'+p.action+'</b>'+
-            '<span class="sc-conf '+p.conf+'">'+(p.conf==='hi'?'CLEAR':'CHECK THIS')+'</span>'+
+            (p.conf==='hi' ? '' : '<span class="sc-conf '+p.conf+'">Check</span>')+
           '</div>'+
           '<p class="d">'+p.detail+'</p>'+
-          '<button class="sc-heard" onclick="scHeard(this)">What it heard &middot; '+p.at+'</button>'+
+          '<button class="sc-heard" onclick="scHeard(this)">Heard at '+p.at+'</button>'+
           '<p class="sc-quote">'+p.quote+'</p>'+
           '<div class="sc-acts">'+
             '<button class="go" onclick="scAccept(&#39;'+p.id+'&#39;)">'+
-              (p.kind==='Diagnosis' ? 'Add to note' : (p.owner==='self' ? 'Keep as my task' : 'Create task'))+'</button>'+
+              (p.kind==='Diagnosis' ? 'Add to note' : p.kind==='Prescription' ? 'Add to the pad' : (p.owner==='self' ? 'Keep as my task' : 'Create task'))+'</button>'+
             '<button onclick="scDismiss(&#39;'+p.id+'&#39;)">Dismiss</button>'+
           '</div>'+
         '</div>';
       }).join('')
-    : '<p class="sc-empty">'+(scState==='live' ? 'Listening&hellip;' : 'All proposals dealt with.')+'</p>';
+    : (scState==='live' ? '' : '<p class="sc-empty">All done</p>');
 
-  var accepted = Object.keys(scDone).filter(function(k){ return scDone[k]==='accepted'; }).length;
-  var dropped  = Object.keys(scDone).filter(function(k){ return scDone[k]==='dismissed'; }).length;
+  /* the transcript is there when wanted, folded once the call is over */
+  var tx = scState==='live' ? '<div class="sc-tx" id="sc-tx">'+turns+'</div>'
+    : (turns ? '<details class="sc-txd"><summary>Transcript</summary><div class="sc-tx" id="sc-tx">'+turns+'</div></details>' : '');
+  body.innerHTML = tx + props +
+    (chartCritical(PC_CURRENT) ? '<p class="sc-rule sc-held"><b>Waiting on the critical result:</b> assessment, plan, coding and follow-up.</p>' : '');
 
-  body.innerHTML =
-    '<div class="sc-tx" id="sc-tx">'+turns+'</div>'+
-    '<p class="sc-lbl">Proposed &mdash; not yet created</p>'+
-    props+
-    ((accepted||dropped) ? '<p class="sc-rule"><b>'+accepted+'</b> accepted &middot; <b>'+dropped+'</b> dismissed this call.</p>' : '')+
-    (chartCritical(PC_CURRENT) ? '<p class="sc-rule sc-held"><b>Held back:</b> the assessment, the plan, &ldquo;Code as stable angina&rdquo; and &ldquo;Telephone review in 4 weeks&rdquo;. They were drafted without today&rsquo;s critical result.</p>' : '')+
-    '<p class="sc-rule">The scribe suggests text for Subjective, Assessment and Plan, and what follows from it. Nothing enters your note until you accept it. It cannot create a task, send a requisition, prescribe, or release anything to the patient &mdash; <b>you press the button, every time</b>.</p>';
-
-  var tx = document.getElementById('sc-tx');
-  if(tx) tx.scrollTop = tx.scrollHeight;
+  var txe = document.getElementById('sc-tx');
+  if(txe) txe.scrollTop = txe.scrollHeight;
 }
 
 function taskFind(id){ return DOC_TASKS.filter(function(t){ return t.id===id; })[0]; }
@@ -16502,7 +16458,7 @@ document.addEventListener('keydown', function(e){
   }
   if(e.key === 'Escape' && csOnChart()){
     var fc = document.getElementById('cs-fc');
-    if(fc && !fc.hidden && !document.querySelector('.cd-panel.show, .tm-overlay.show, #copilot-overlay.show')) csCloseFull();
+    if(fc && !fc.hidden && !document.querySelector('.cd-panel.show, .tm-overlay.show')) csCloseFull();
   }
 });
 function csRenderConsults(name){
@@ -20185,7 +20141,7 @@ function kbEditable(t){
 }
 function kbBlocked(){
   if(typeof DRW_STACK !== 'undefined' && DRW_STACK.length) return true;
-  return !!document.querySelector('#t23-mfa.show, #copilot-overlay.show, .tm-overlay.show, .defer-overlay.show, .cd-panel.show, #ai-panel.show, #ai-panel.open, #dsw.show');
+  return !!document.querySelector('#t23-mfa.show, .tm-overlay.show, .defer-overlay.show, .cd-panel.show, #ai-panel.show, #ai-panel.open, #dsw.show');
 }
 function kbCall(){
   if(PC_ON_CALL){ var w = document.querySelector('#callw:not([hidden]) .cw-who'); if(w){ w.focus(); return; } }
