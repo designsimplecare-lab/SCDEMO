@@ -135,3 +135,72 @@ All 16 Version 2 positions are visible without scrolling. Gloria at 1440 is lowe
    - Should the status show the call window too?
 4. **Local server.** It returned 404 for `assets/` files (photos and the MSP code list), so "Add diagnosis" could not search codes. Sign off was
    tested through "Submit later" on visits with no suggested diagnosis. This is the environment, not the layout.
+
+## 4 Nov: physician pass (second pass)
+A physician review agent walked Gloria's full visit in Version 2 (about 33 clicks) and checked Greg and Manjit. Built the same day, one commit per item
+(`5e7a72a` A1, `62bfbaf` A2, `abb5ac7` A3, `fabb9f1` A4, `996ea4e` A5, `4d668c4` B1 and C, `74b77e1` B2, `71dd702` B3, `f974c1a` and `49113df` B5).
+
+### A. Data consistency (both layouts)
+| Item | Before | After |
+|---|---|---|
+| A1 Greg's allergy | The header and panel showed the green "No known drug allergies" tick; Prescribe showed "sulfa antibiotics (hives) · Add to chart" | One source (`ptAllergy`: the chart list plus PharmaNet reactions not yet on it) for the header, the panel, Prescribe and the order forms. The band reads "Sulfa antibiotics (hives), not yet on the chart list", with its own Add to chart; the tick never shows when any allergy is known |
+| A2 Gloria's kidney function | Prescribe: "Not on file"; the problem-list suggestion cited eGFR results | The two results are in the results data. Prescribe: "eGFR 52 mL/min · Aug 3, 8 weeks ago" (every kidney line has its age). The chart's own text puts 52 on Aug 3 and 49 on Feb 11, not 49 on Aug 3 |
+| A3 Cedar's prescription card | "Continues amlodipine 5 mg" | "Amlodipine: PharmaNet 10 mg (cardiology, Jul 28) differs from Simple Care 5 mg. Confirm in Prescribe." |
+| A4 Counts | Medications said 2 and listed 3; Manjit's Pending said 2 and listed 3 | Medications is built from Prescribe's model (`rxRecModel`): the same groups, the PharmaNet-differs line, Cedar's lines, the supply. Every count equals its lines (Gloria 8, Greg 6, Manjit 1). Pending counts its orders too (Gloria 6, Manjit 3) |
+| A5 Stale Pending | "Cardiac markers · Sent to lab" after today's result | "Result in · Today 7:50 AM" |
+
+### B. Version 2 workflow
+- **B1, review the critical in place.** "Review result" opens the row inside the chart. The open row shows:
+  - the concern;
+  - every other out-of-range value with its reference (the CK 210 High line also shows on the closed row);
+  - earlier values when there are any;
+  - the source details;
+  - one "Mark reviewed", which stamps "Reviewed 10:30 AM · Dr. Pannozzo" (the same reviewed state as the Inbox review, and no MOA task);
+  - "Open in Inbox", as a quiet link.
+
+  Gloria, before → after Mark reviewed: the header goes from "1 critical, 1 to review" to "1 to review", the Review step from 2 to 1, and the row
+  stays, stamped.
+- **B2, the sign-off checklist.** "Before you sign off" sits above the button, with five lines, each done or with a button that goes there. It warns
+  and does not block:
+  - the problem-list loop and "Sign off anyway" became lines of the checklist;
+  - a suggested diagnosis is used ("786.5 · Chest pain · suggested, used");
+  - template text left in the note still stops Sign off;
+  - no diagnosis at all still opens Your coding (the claim needs one).
+- **B3, Cedar's drafts on the Action tiles.**
+  - Prescribe, Order labs, Task and Note to patient each carry their draft, and open pre-filled from it.
+  - A tile reads "Signed 10:30 AM" or "Sent 10:30 AM" when done, and offers nothing more.
+  - The note keeps one line, "Cedar drafted 4 actions · Action".
+  - In both layouts, Cedar's "Blood work" card opens the lab form instead of creating a task.
+  - The drafts follow the T-038 switches.
+  - Cedar's suggested diagnosis is not on a tile.
+- **B4.** See A4.
+- **B5, less space above the work.**
+  - The page title and the top line go; Home and the call-window clock sit in the header.
+  - Starting a call goes to the Note.
+  - Where the work column starts: 1280 × 800, 234 → 186 px; 1440 × 900, 234 → 174 px.
+  - Note heading, 1280 / 1440: Gloria 715 / 707, Andrey 408, Carol-Anne 567, Behdis 627 / 619, Arli 520, Greg 490 / 436, Manjit 408, Korynn 520.
+
+### C. Small
+- The troponin row says "Critical" once: the value keeps only its direction, "High".
+- The open row does not repeat "Received".
+
+### Decisions (for Ani)
+- **Task and Note to patient tiles say "Sent", not "Signed".** They are sent, not signed.
+- **The header grows on narrow windows.** At 1280 the patient line and the clock take two lines, so the header is 84 px (72 px at 1440).
+- **Home is an icon button in the header.** It is a 44 px button, named "Home".
+
+### D. Questions for Daniel
+1. Should an unreviewed critical result or a blank Assessment **block** sign-off, or only warn (as built)?
+2. What should a critical troponin trigger in a virtual visit?
+3. Should a critical result ever be delegated to the MOA while the doctor is on the visit? (The in-chart review creates no MOA task.)
+
+### Proof
+- Harness: 42/129 in Current and in Version 2, the same 42 checks.
+- All 18 inline scripts pass `node --check`.
+- Version 2, all 8 charts:
+  - no console errors;
+  - the seven drawers open, close with Esc and return focus;
+  - Cedar Accept and Reject work;
+  - Sign off works on 6 visits;
+  - switching layouts keeps the note text.
+- No text under 14 px and no button under 44 px in the chart (Gloria, with a row open and Cedar's drafts showing).
