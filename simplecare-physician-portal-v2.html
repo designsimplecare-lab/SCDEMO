@@ -5018,6 +5018,7 @@
   #screen-patientchart #pcv-c.cs-v2 .v2-l1{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
   #screen-patientchart #pcv-c.cs-v2 .v2-l1 b{font-weight:700;}
   #screen-patientchart #pcv-c.cs-v2 .v2-l2{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #screen-patientchart #pcv-c.cs-v2 .v2-l2.warn{color:#8a5a00;font-weight:600;}
   #screen-patientchart #pcv-c.cs-v2 .v2-go,#screen-patientchart #pcv-c.cs-v2 .v2-go svg{position:absolute;right:8px;top:10px;width:16px;height:16px;color:var(--ink-faint);}
   #screen-patientchart #pcv-c.cs-v2 .v2-src-l{display:grid;margin:10px 0 0;padding:10px 0 0;border-top:1px solid var(--line);font-size:14px;line-height:20px;color:var(--ink-soft);}
   #screen-patientchart #pcv-c.cs-v2 .v2-sb .cs-exp{margin:2px 0 0 0;}
@@ -12837,19 +12838,18 @@ function renderLabOrders(){
     if(o.lapsed) return ['Expired · new requisition needed', 'warn'];
     if(o.fulfilmentTone === 'bad') return ['Not sent · resend', 'warn'];
     if(o.fulfilmentTone === 'warn') return ['With patient · receipt unconfirmed', 'neutral'];
-    return ['Sent to lab' + (o.validUntil && o.validUntil !== '—' ? ' · valid to ' + yr(o.validUntil).replace(/, 2027$/, ' 2027') : ''), 'ok'];
+    return ['Sent to lab', 'ok'];
   };
   var html = mine.length ? mine.map(function(o){
     var st = status(o), rev = o.tests.filter(function(t){ return t.st === 'await_review'; }).length;
     var common = o.tests.length && o.tests.every(function(t){ return t.st === o.tests[0].st; }) ? o.tests[0].st : null;
-    var tests = '<details class="lo2-t"><summary>' + o.tests.length + (o.tests.length === 1 ? ' test' : ' tests') + '</summary><ul>' +
+    var tests = '<details class="lo2-t"><summary><span class="lo2-s ' + st[1] + '">' + st[0] + '</span> · ' + o.tests.length + (o.tests.length === 1 ? ' test' : ' tests') + '</summary><ul>' +
       o.tests.map(function(t){ var s = TEST_STATE[t.st] || {label:'', tone:''};
         return '<li><span>' + t.n + '</span>' + (common ? '' : '<span class="st st-' + s.tone + '">' + s.label + '</span>') + '</li>'; }).join('') +
       '</ul>' + (common && TEST_STATE[common] && common !== 'await_review' ? '<p class="lo2-q">All: ' + TEST_STATE[common].label.toLowerCase() + '</p>' : '') + '</details>';
     return '<div class="lo2' + (st[1] === 'warn' ? ' warn' : '') + '">' +
       '<div class="lo2-h"><b>' + o.label + '</b><span class="lo2-d">' + yr(o.ordered) + '</span>' +
-        (o.standing ? '<span class="lo2-n">' + o.progress.done + '/' + o.progress.total + ' received</span>' : '') +
-        '<span class="lo2-s ' + st[1] + '">' + st[0] + '</span></div>' +
+        (o.standing ? '<span class="lo2-n">' + o.progress.done + '/' + o.progress.total + ' received</span>' : '') + '</div>' +
       (o.window ? '<p class="lo2-q">' + String(o.window).replace(/^Collection window /, 'Collect ') + '</p>' : '') +
       (o.urgent ? '<p class="lo2-q">' + (o.out && o.out.stat ? 'STAT' : o.out && o.out.prio === 'stat' ? 'Stat' : 'Urgent') + '</p>' : '') +   /* T-028: a STAT lab or Stat imaging says so */
       (rev ? '<button type="button" class="cs-link lo2-rv" onclick="if(typeof v2Tab===\'function\')v2Tab(\'review\',true)">' + rev + ' to review</button>' : '') +
@@ -16074,10 +16074,10 @@ var CS_REL = {
       ['Aug 26 &middot; Internal medicine, Dr. A. Whyte', 'ordered a 48-hour Holter; 3 recommendations not yet in your plan', 'consults']]],
     /* CARE_PLAN g1, g2, g4 (overdue); CP_PENDING Holter */
     ['Pending', [
-      ['Exercise stress test, Sep 12', 'arranged by cardiology &middot; report not back', 'careplan'],
-      ['Lipid panel and HbA1c', 'due Aug 20 &middot; not drawn', 'careplan', null, 'Overdue'],
-      ['48-hour Holter', 'ordered by internal medicine Aug 26 &middot; result not on file', 'consults'],
-      ['Cardiology review after the stress test', 'their office books it', 'careplan']]]
+      ['Exercise stress test, Sep 12', 'report not back', 'careplan'],
+      ['Lipid panel and HbA1c', 'due Aug 20', 'careplan', null, 'Overdue'],
+      ['48-hour Holter', 'result not back', 'consults'],
+      ['Cardiology review', 'cardiology books it', 'careplan']]]
   ]}
 };
 var CS_QUOTES = {cardio:['I have arranged an exercise stress test for September 12 and will forward the report to you.',
@@ -18335,9 +18335,8 @@ function v2Line(x){
   var top = lab.length > 1 ? '<span class="v2-l0">' + lab[0] + '</span>' : '';
   var main = lab.length > 1 ? v2Cap(lab.slice(1).join(', ')) : lab[0];
   return '<button type="button" class="v2-line" onclick="csOpenFull(\'' + x[2] + '\',this)">' + top +
-    '<span class="v2-l1">' + main + (x[4] ? '<span class="v2-chip warn">' + csIc('clock') + x[4] + '</span>' : '') + '</span>' +
-    (sub.length ? '<span class="v2-l2">' + v2Cap(sub[0]) + '</span>' : '') +
-    (sub.length > 1 ? '<span class="v2-l2">' + v2Cap(sub.slice(1).join(', ')) + '</span>' : '') +
+    '<span class="v2-l1">' + main + '</span>' +
+    (sub.length || x[4] ? '<span class="v2-l2' + (x[4] ? ' warn' : '') + '">' + v2Cap((x[4] ? [x[4]] : []).concat(sub).join(' · ')) + '</span>' : '') +
     '<span class="vh"> &mdash; open the source</span>' + csIc('chevr', 'v2-go') + '</button>';
 }
 function v2BP(name){
@@ -20787,9 +20786,8 @@ function rmPendRows(name, rows){
 }
 function rmPendLine(x){
   var it = INBOX_ITEMS[x[1]]; if(!it) return '';
-  return '<button type="button" class="v2-line" onclick="openReview(' + x[1] + ')"><span class="v2-l0">New report</span>' +
-    '<span class="v2-l1">' + rmEsc(it.panel) + '</span><span class="v2-l2">Cedar has read it: ' + it.cedar.recs.length + ' recommendations</span>' +
-    '<span class="v2-l2">Not reviewed &middot; received ' + rmEsc(it.received.replace(/^Today, /, 'today ')) + '</span>' +
+  return '<button type="button" class="v2-line" onclick="openReview(' + x[1] + ')">' +
+    '<span class="v2-l1">' + rmEsc(it.panel) + '</span><span class="v2-l2 warn">New · not reviewed</span>' +
     '<span class="vh"> &mdash; open the report</span>' + csIc('chevr', 'v2-go') + '</button>';
 }
 
