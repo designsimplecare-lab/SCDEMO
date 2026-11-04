@@ -13773,6 +13773,10 @@ var RXP = {
    {id:'g3', key:'atorvastatin-20', ind:null, by:'Simple Rx', pharm:'Shoppers Drug Mart, Burnaby', filled:'2026-06-26', supply:90, chart:true},
    /* T-040 (Daniel, 31 Oct 00:41:04): the same drug and strength filled from another prescriber (DEMO, invented doctor) */
    {id:'g5', key:'atorvastatin-20', ind:null, by:'Dr. J. Haldane', spec:'walk-in clinic', out:true, pharm:'London Drugs, Burnaby', ago:18, supply:30, chart:false},
+   /* T-040 (Daniel, 31 Oct 00:45:00): older fills inside the 18-month window, so the pad's PharmaNet check shows them (DEMO, invented): a finished
+      course and an as-needed drug */
+   {id:'g6', key:'azithromycin-250', ind:{t:'Chest infection', src:'Walk-in clinic'}, course:true, by:'Dr. J. Haldane', spec:'walk-in clinic', out:true, pharm:'London Drugs, Burnaby', ago:240, supply:5, chart:false},
+   {id:'g7', key:'acetaminophen-500', prn:true, qty:50, ind:{t:'Pain', src:'PharmaNet'}, by:'Dr. J. Haldane', spec:'walk-in clinic', out:true, pharm:'London Drugs, Burnaby', ago:150, chart:false},
    {id:'g4', key:'sertraline-50', ind:{t:'Depression', src:'PharmaNet'}, by:'Dr. R. Chu', spec:'psychiatry', repLeft:1, out:true, pharm:'Shoppers Drug Mart, Burnaby', ago:21, supply:30, chart:false,
     otherFills:{n:3, by:'Dr. R. Chu', written:'3 weeks ago'}}
   ],
@@ -13966,7 +13970,16 @@ function rxRegimen(st){
   st.orders.forEach(function(o){ out.push({name:o.drug, key:o.key, row:null, ord:o, text:o.drug + ' ' + o.strength, per:o.per, freq:o.freq, mg:(rxLib(o.key) || {}).mg}); });
   return out;
 }
-var RX_SG = [['allergy','Allergy'],['kidney','Kidney function'],['interaction','Interaction'],['duplicate','Duplicate'],['sedative','Sedative and age'],['maxdose','Maximum dose'],['s1a','Schedule 1A']];
+/* T-040 (Daniel, 31 Oct 00:45:00: "look at every drug over the last 18 months and ... even the PRNs would need to be flagged"): how far back the pad's
+   PharmaNet check looks. Needs Daniel to confirm the window before production (coverage check, item 31). */
+var RX_PN_MONTHS = 18;
+/* the patient's PharmaNet fills in that window: current, finished and as needed (PRN). Only patients with a PharmaNet profile (RXP). */
+function rxPnFills(name){
+  var P = RXP[name]; if(!P) return [];
+  var cut = new Date(); cut.setMonth(cut.getMonth() - RX_PN_MONTHS);
+  return P.rows.map(rxRowFrom).filter(function(r){ var f = rxFilled(r); return f && f >= cut; });
+}
+var RX_SG = [['allergy','Allergy'],['pharmanet','PharmaNet'],['kidney','Kidney function'],['interaction','Interaction'],['duplicate','Duplicate'],['sedative','Sedative and age'],['maxdose','Maximum dose'],['s1a','Schedule 1A']];
 function rxSafety(st){
   var reg = rxRegimen(st), W = [], age = rxAge(PC_CURRENT), kid = rxKidney(PC_CURRENT), al = rxAllergens(st);
   var add = function(type, e, text, src, extra){
@@ -13984,11 +13997,25 @@ function rxSafety(st){
     if(lib && lib.maxDay && lib.mg){ var day = e.per * lib.mg * rxPer(e.freq); if(day > lib.maxDay) add('maxdose', e, 'That is ' + day + ' mg a day. The limit in the drug library is ' + lib.maxDay + ' mg a day.', 'Drug library'); }
     if(lib && lib.s1a) add('s1a', e, e.name + ' is a Schedule 1A drug. It cannot be sent by fax or by electronic prescription.', 'Schedule 1A rule');
   });
+  /* T-040 (Daniel, 31 Oct 00:43:41: "as per [PharmaNet] this person's already taking this drug"; 00:45:00): a drug newly added to the pad is checked
+     against every PharmaNet fill in the last RX_PN_MONTHS months, current, finished and as needed, and the warning names PharmaNet. A Continue
+     or an Adjust dose of a drug on the list is the doctor's own choice about that drug and is not flagged. A safety warning: never behind a
+     Cedar switch. A finished fill is a short course (PharmaNet's course flag); a long-term drug stays "already taking" even when overdue. */
+  var pnF = rxPnFills(PC_CURRENT), pnDone = {};
+  reg.forEach(function(e){
+    if(!e.ord || e.ord.sent || e.ord.kind !== 'new') return;
+    var fs = pnF.filter(function(r){ return String(r.drug).toLowerCase() === String(e.name).toLowerCase(); }).sort(function(a, b){ return rxFilled(b) - rxFilled(a); });
+    if(!fs.length) return;
+    var r = fs[0], when = rxDate(rxFilled(r)), who = r.by === 'Simple Rx' ? 'Simple Care' : r.by;
+    add('pharmanet', e, r.course ? 'As per PharmaNet, filled ' + r.drug + ' ' + when + ' (finished).'
+      : 'As per PharmaNet, already taking ' + r.drug + ' (' + r.strength + (r.prn ? ' as needed' : '') + ', filled ' + when + ' by ' + who + ').', 'PharmaNet, last ' + RX_PN_MONTHS + ' months');
+    pnDone[e.ord.id] = 1;
+  });
   RX_INTER.forEach(function(pr, i){
     var a = reg.filter(function(e){ return e.name === pr[0]; })[0], b = reg.filter(function(e){ return e.name === pr[1]; })[0];
     if(a && b){ var e = (b.ord ? b : a); add('interaction', e, pr[2], 'Drug library', ':' + i); }
   });
-  var seen = {}; reg.forEach(function(e){ var k = e.name.toLowerCase(); if(seen[k]){ add('duplicate', e, e.name + ' is on this list twice.', 'This list'); } seen[k] = 1; });
+  var seen = {}; reg.forEach(function(e){ var k = e.name.toLowerCase(); if(seen[k] && !(e.ord && pnDone[e.ord.id])){ add('duplicate', e, e.name + ' is on this list twice.', 'This list'); } seen[k] = 1; });   /* T-040: said once, as per PharmaNet */
   var clear = RX_SG.filter(function(g){ return !W.some(function(w){ return w.type === g[0]; }); }).map(function(g){ return g[1]; });
   return {W:W, clear:clear, n:reg.length,
     open:W.filter(function(w){ return w.sev === 'warn' && w.ord && !w.sent && !st.overrides[w.id]; }),
@@ -14115,7 +14142,7 @@ function rxSafeHtml(st){
     var ws = sf.W.filter(function(w){ return w.type === g[0]; }); if(!ws.length) return;
     h += '<div class="rp-sg' + (ws[0].sev === 'block' ? ' blk' : '') + '"><h4>' + rxIc(ws[0].sev === 'block' ? 'crit' : 'alert') + g[1] + '</h4><ul>' + ws.map(function(w){ return rxWarnHtml(w, st); }).join('') + '</ul></div>';
   });
-  if(sf.clear.length) h += '<p class="rp-clear">' + rxIc('complete') + 'Clear: ' + csEsc(sf.clear.join(', ').toLowerCase().replace(/^./, function(c){ return c.toUpperCase(); }).replace('schedule 1a', 'Schedule 1A')) + '.</p>';
+  if(sf.clear.length) h += '<p class="rp-clear">' + rxIc('complete') + 'Clear: ' + csEsc(sf.clear.join(', ').toLowerCase().replace(/^./, function(c){ return c.toUpperCase(); }).replace('schedule 1a', 'Schedule 1A').replace('pharmanet', 'PharmaNet')) + '.</p>';
   h += '<p class="rp-note">' + (rxProfile(PC_CURRENT).pw && !st.pwOk ? 'PharmaNet screening is off until the protective word is entered.' : 'PharmaNet screening is off unless requested.') + '</p></section>';
   return h;
 }
@@ -22731,6 +22758,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 10:56</div>
+  <div class="build-stamp">v2 · build 2026-11-04 10:57</div>
 </body>
 </html>
