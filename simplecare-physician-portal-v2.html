@@ -5669,7 +5669,7 @@
   #screen-patientchart #pcv-c #ns-wrap{display:block;margin:0;border:1px solid var(--line);border-radius:12px;background:var(--panel);}
   #screen-patientchart #pcv-c #ns-wrap .ns-row{display:grid;grid-template-columns:120px minmax(0,1fr);gap:0 12px;align-items:start;padding:8px 12px 8px 14px;}
   #screen-patientchart #pcv-c #ns-wrap .ns-row + .ns-row{border-top:1px solid var(--line);}
-  #screen-patientchart #pcv-c #ns-wrap .ns-row:focus-within{background:var(--wash);}
+  /* Ani, 4 Nov: no gray on the row being typed in; keyboard focus keeps the brand bar (below) */
   #screen-patientchart #pcv-c #ns-wrap .ns-row:first-child{border-radius:12px 12px 0 0;}
   #screen-patientchart #pcv-c #ns-wrap .ns-row:last-child{border-radius:0 0 12px 12px;}
   #screen-patientchart #pcv-c #ns-wrap .ns-k{margin:0;padding-top:10px;font-size:15px;line-height:24px;font-weight:600;color:var(--ink);cursor:text;}
@@ -15458,11 +15458,15 @@ function renderChartAlerts(name){
 function vcGrow(){
   /* Batch B (1): each of the four sections grows with its own text (no nested scroll) */
   document.querySelectorAll('#ns-wrap .ns-ta').forEach(function(t){
-    if(!t.offsetParent) return;
+    if(!t.offsetParent || t.clientWidth < 160) return;
     t.style.height = 'auto';
     t.style.height = Math.max(44, t.scrollHeight + 2) + 'px';
   });
 }
+/* Ani, 4 Nov ("why you kept that gray"): measured while the new three-column chart was still settling, an empty field came out
+   about 1,170px tall. The note re-measures whenever its width changes. */
+(function(){ var w = document.getElementById('ns-wrap'), last = 0;
+  if(w && typeof ResizeObserver === 'function') new ResizeObserver(function(en){ var x = Math.round(en[0].contentRect.width); if(x !== last){ last = x; vcGrow(); } }).observe(w); })();
 
 /* ===== Finalize closes today's visit (doctor review ask 4; shadowing 2 and 3) ===== */
 function vcNoteState(row){
@@ -22805,6 +22809,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 11:06</div>
+  <div class="build-stamp">v2 · build 2026-11-04 15:00</div>
 </body>
 </html>
