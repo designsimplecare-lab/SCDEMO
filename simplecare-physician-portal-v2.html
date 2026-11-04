@@ -7452,6 +7452,27 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-note-acts .cs-tb{height:44px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-sign-b #t23-dxbtn{min-height:44px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-seeall{min-height:44px;}
+/* physician pass (Ani, 4 Nov: chart Version 2, physician pass, B1 and C): a row opens in place (every value, references, earlier values, the source, Mark
+   reviewed, Open in Inbox); the panel's other out-of-range values (CK 210 High) show on the closed row too; "Critical" once; "Received" once */
+.cv2-wdir,.cv2-revacts{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-fv .cv2-wfull{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-fv .cv2-wdir{display:inline-flex;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .v2-nad{display:block;margin:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .v2-nad > *{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .v2-nad > .cv2-also{display:block;margin:2px 0 0;font-size:14px;line-height:20px;color:var(--cv2-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .v2-nad > .cv2-also .lr-w{color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na :is(.vca-row.cv2-open,#vc-alerts .vca-row) .v2-nad:empty{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row.cv2-open .v2-nad > *,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na.na-all #vc-alerts .v2-nad > *{display:block;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row.cv2-open .v2-nad > .cv2-revacts{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin:8px 0 2px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na.na-all #vc-alerts .vca-row:not(.cv2-open) .v2-nad > .cv2-revacts{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row.cv2-open .v2-nad > .v2-metaw{display:flex;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-rcv{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-markrev{display:inline-flex;align-items:center;gap:8px;height:44px;min-height:44px;padding:0 16px;font-size:15px;font-weight:600;border-radius:8px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-markrev .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-markrev svg{width:18px;height:18px;color:#fff;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-inbox{min-height:44px;padding:0 4px;font-size:15px;font-weight:600;color:var(--accent-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-stamp{display:inline-flex;align-items:center;gap:6px;margin:0;min-height:44px;font-size:15px;line-height:22px;font-weight:600;color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-stamp .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-stamp svg{width:18px;height:18px;color:var(--cv2-ok);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row.cv2-open{background:#F9FAFB;margin:0 -16px;padding-left:16px;padding-right:16px;}
 /* at 1200 px and under: stacked; the steps are the horizontal bar, sticky under the top bar; the patient context is a drawer */
 @media (max-width:1200px){
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2,#screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-template-areas:"hd" "nav" "main";gap:8px;height:auto;}
@@ -16369,7 +16390,12 @@ function csNARowV2(x, related, also){
   var mk = x.idx + '-' + (t ? String(t.n).replace(/[^a-z0-9]/gi,'') : 'abn');
   var val, up = t && (t.f || '').indexOf('high') > -1, low = t && (t.f || '').indexOf('low') > -1;
   if(x.abn) val = '<b>' + (x.ecg ? ecgLine(it) : 'Abnormal ' + csEsc(it.panel)) + '</b>';
-  else val = '<b>' + t.n + '</b> <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span>' + lrWord(t.f, t.v);   /* T-037: the word, not an arrow */
+  else {
+    /* physician pass (Ani, 4 Nov: chart Version 2, physician pass, C): in Version 2 the severity column already says Critical, so the row's LifeLabs word
+       keeps only its direction there ("High"); Current keeps "Critical high" (cv2-wfull) */
+    var fl0 = lrFlag(t.f, t.v), dir = fl0.crit ? v2Cap(String(fl0.word).replace(/^critical\s+/i, '')) : '';
+    val = '<b>' + t.n + '</b> <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span>' + (dir ? '<span class="cv2-wfull">' + lrWord(t.f, t.v) + '</span><span class="lr-w cv2-wdir">' + dir + '</span>' : lrWord(t.f, t.v));   /* T-037: the word, not an arrow */
+  }
   val = '<span class="cv2-fv">' + val + '</span>';   /* Chart Version 2: the finding and its value are one cell of the row (an inline span in Current) */
   /* T-039 (Daniel, 31 Oct 02:56:42 "There's my note. Boom."; 01:53:50 "the first place that I start is the note"): one line per item, so the
      note comes up front. The reference interval stays on that line (Daniel, 31 Oct: "show the reference range right there"); the concern, the
@@ -16383,24 +16409,49 @@ function csNARowV2(x, related, also){
   /* T-037 (Daniel, 31 Oct): when there are any, the two earlier values with dates */
   if(!x.abn){ var pr = lrPriors(it.patient, t);
     h += (pr.length ? '<p class="v2-q lr-prev">Previous ' + lrPrevList(pr) + '</p>' : ''); }
-  if(also && also.length) h += '<p class="v2-q"><span class="vh">Info: </span>Also ' + also.map(function(a){
+  if(also && also.length) h += '<p class="v2-q cv2-also"><span class="vh">Info: </span>Also ' + also.map(function(a){
       var at = a.test, au = (at.f || '').indexOf('high') > -1;
       return '<span class="cs-also-v">' + at.n + ' ' + at.v + ' ' + (at.u || '') + ' ' + lrWord(at.f, at.v).replace('class="lr-w"', 'class="lr-w lr-lc"') + (at.ref ? ', reference ' + csEsc(lrRef(at)) : '') + '</span>';
     }).join(', ') + '</p>';
   /* Ani, 3 Nov: the source details show on hover (and keyboard focus), not on a click */
-  h += '<div class="v2-metaw"><p class="v2-q v2-meta">Received ' + csEsc(it.received) +
+  h += '<div class="v2-metaw"><p class="v2-q v2-meta"><span class="cv2-rcv">Received ' + csEsc(it.received) + '</span>' +
     '<button type="button" class="cs-info" id="cs-mi-' + mk + '" aria-describedby="cs-md-' + mk + '" aria-label="Source details">' + csIc('cardinfo') + '</button></p>' +
     '<dl class="v2-src v2-tip" id="cs-md-' + mk + '" role="tooltip">' +
       (x.tier === 'info' ? '<dt>Panel</dt><dd>Same panel as ' + csEsc(x.panelOf) + ', reviewed with it</dd>' : '<dt>Panel</dt><dd>' + csEsc(it.panel) + '</dd>') +
       '<dt>Lab</dt><dd>' + csEsc(it.lab) + '</dd>' + (x.tier === 'info' ? '' : '<dt>Responsible</dt><dd>Dr. D. Pannozzo</dd>') +
       (!x.abn && x.tier !== 'info' && attnBasis(t) ? '<dt>Why it is flagged</dt><dd>' + attnBasis(t) + '</dd>' : '') + '</dl></div>';
+  /* physician pass (Ani, 4 Nov: chart Version 2, physician pass, B1 "review the critical in place"): Version 2 only (cv2-revacts is hidden in Current).
+     One Mark reviewed that stamps who and when (the same reviewed state the Inbox review sets; no task to the MOA from here), and Open in Inbox as a
+     quiet link. */
+  h += '<div class="cv2-revacts">' + (it.reviewedAt ? '<p class="cv2-stamp" id="cv2-st-' + x.idx + '" tabindex="-1">' + csIc('complete') + 'Reviewed ' + csEsc(it.reviewedAt) + ' · ' + csEsc(it.reviewedBy || 'Dr. Pannozzo') + '</p>'
+      : it.status === 'reviewed' ? '<p class="cv2-stamp">' + csIc('complete') + 'Reviewed</p>'
+      : '<button type="button" class="btn dark cv2-markrev" onclick="naMarkRev(' + x.idx + ')"><span class="ic" data-pdic="complete"></span>Mark reviewed</button>') +
+    '<button type="button" class="cs-link cv2-inbox" onclick="openReview(' + x.idx + ')">Open in Inbox</button></div>';
+  var nOpen = !!(CS.naOpen && CS.naOpen[PC_CURRENT + '|' + x.idx]), inV2 = typeof cv2On === 'function' && cv2On();
   /* 21 Oct: an abnormal result that is not a lab (the ECG) has no "To do" label: the printed line is the title */
-  return '<div class="vca-row v2-nar cs-' + x.tier + (related ? ' cs-rel' : '') + '">' +
+  return '<div class="vca-row v2-nar cs-' + x.tier + (related ? ' cs-rel' : '') + (nOpen ? ' cv2-open' : '') + '">' +
     '<span class="ic vca-ic" role="img" aria-label="' + (x.abn ? 'Abnormal' : T.w) + '" data-pdic="' + T.ic + '"></span>' +
-    '<div class="vca-main">' + (x.abn ? '' : '<p class="v2-na-k">' + T.w + '</p>') + '<span class="cv2-na-sev" aria-hidden="true">' + (x.abn ? 'Abnormal' : T.w) + '</span>' + '<p class="vca-t">' + val + '</p><div class="v2-nad">' + h + '</div></div>' +
+    '<div class="vca-main">' + (x.abn ? '' : '<p class="v2-na-k">' + T.w + '</p>') + '<span class="cv2-na-sev" aria-hidden="true">' + (x.abn ? 'Abnormal' : T.w) + '</span>' + '<p class="vca-t">' + val + '</p><div class="v2-nad" id="cv2-nad-' + x.idx + '">' + h + '</div></div>' +
     '<div class="cs-side"><p class="cs-stage">' + csIc('clock') + '<span><span class="vh">Stage: </span>' + csEsc(x.stage) + '</span></p>' +
-      '<button type="button" class="btn" onclick="openReview(' + x.idx + ')"><span class="ic" data-pdic="eye"></span>' + x.action + '</button></div>' +
+      '<button type="button" class="btn" onclick="naRev(' + x.idx + ',this)"' + (inV2 ? ' aria-expanded="' + nOpen + '" aria-controls="cv2-nad-' + x.idx + '"' : '') + '><span class="ic" data-pdic="eye"></span>' + x.action + '</button></div>' +
   '</div>';
+}
+/* physician pass B1: in Version 2 "Review result" opens the row in place; in Current it opens the review screen as before */
+function naRev(i, b){
+  if(!(typeof cv2On === 'function' && cv2On())) return openReview(i);
+  CS.naOpen = CS.naOpen || {}; var k = PC_CURRENT + '|' + i, open = CS.naOpen[k] = !CS.naOpen[k];
+  var row = b && b.closest('.vca-row'); if(row) row.classList.toggle('cv2-open', open);
+  if(b) b.setAttribute('aria-expanded', String(open));
+  if(open){ var m = row && row.querySelector('.cv2-markrev'); if(m) m.focus({preventScroll:true}); if(row && row.scrollIntoView) row.scrollIntoView({block:'nearest'}); }
+}
+function naMarkRev(i){
+  var it = INBOX_ITEMS[i]; if(!it) return;
+  it.status = 'reviewed'; it.reviewedAt = csNow(); it.reviewedBy = 'Dr. Pannozzo';
+  if(!it.disposition) it.disposition = 'Reviewed on the chart';
+  ['renderInboxList', 'renderInboxToday', 'renderCriticals', 'renderAttnTasks', 'updateWorkCounts'].forEach(function(f){ if(typeof window[f] === 'function') try { window[f](); } catch(e){} });
+  csRefresh();
+  var st = document.getElementById('cv2-st-' + i); if(st) st.focus({preventScroll:true});
+  csSay('Reviewed ' + it.reviewedAt + ' · Dr. Pannozzo');
 }
 function csNARow(x, related, also){
   if(CS.layout === 'v2') return csNARowV2(x, related, also);
@@ -23404,6 +23455,6 @@ document.addEventListener('keydown', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 17:06</div>
+  <div class="build-stamp">v2 · build 2026-11-04 17:10</div>
 </body>
 </html>
