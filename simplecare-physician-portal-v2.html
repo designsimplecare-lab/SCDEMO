@@ -7485,6 +7485,21 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk li.todo > .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk li.todo > .ic svg{color:var(--cv2-warn);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk li > span{flex:1 1 auto;min-width:0;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-chk .cv2-chk-b{flex:none;height:44px;min-height:44px;padding:0 14px;border:1px solid var(--line-strong);border-radius:8px;background:var(--panel);font-size:15px;font-weight:600;color:var(--cv2-ink);box-shadow:none;}
+/* physician pass B3: Cedar's drafts on the Action tiles; one line in the note; the after-call cards no longer sit on top of the note */
+#screen-patientchart #pcv-c:not(.chart-v2) :is(.cv2-cd,#cv2-scline){display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #sc-block :is(.sc-prop,.sc-empty,.sc-rule){display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #sc-block.review #sc-sub{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-ord .v2-orow .v2-ot{display:flex;flex-direction:column;align-items:flex-start;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-ord .cv2-cd{display:flex;align-items:flex-start;gap:6px;margin-top:2px;font-size:14px;line-height:20px;font-weight:400;color:var(--cv2-ink);text-align:left;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-ord .cv2-cd .cs-ai-ic{display:inline-flex;flex:none;width:16px;height:18px;color:var(--accent);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-ord .cv2-cd .cs-ai-ic svg{width:16px;height:16px;margin-top:2px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-ord .cv2-cd.done{color:var(--cv2-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-ord .cv2-cd.done .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-ord .cv2-cd.done svg{width:16px;height:16px;margin-top:2px;color:var(--cv2-ok);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-ord .v2-orow.cv2-hasd{background:var(--accent-wash);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-scline{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:15px;line-height:22px;color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-scline[hidden]{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-scline .cs-ai-ic{display:inline-flex;width:18px;height:18px;color:var(--accent);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-scline .cs-link{min-height:44px;padding:0 4px;font-size:15px;font-weight:600;color:var(--accent-ink);}
 /* at 1200 px and under: stacked; the steps are the horizontal bar, sticky under the top bar; the patient context is a drawer */
 @media (max-width:1200px){
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2,#screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-template-areas:"hd" "nav" "main";gap:8px;height:auto;}
@@ -11307,6 +11322,12 @@ function scAccept(id){
     toast('Coded on the visit note — nothing sent to anyone');
     return;
   }
+  /* physician pass (Ani, 4 Nov: chart Version 2, physician pass, B3): Blood work opens the lab form pre-filled from the draft, not a task to the MOA;
+     once accepted it is not offered again */
+  if(p.kind === 'Blood work' && typeof opOpen === 'function'){
+    var pre = []; if(/lipid/i.test(p.action)) pre.push('lip-f'); if(/a1c/i.test(p.action)) pre.push('a1c');
+    renderScribe(); opOpen('lab', {pre:pre, from:'Cedar, from the call: ' + p.action}); return;
+  }
   DOC_TASKS.unshift({
     id:'sc'+Date.now(), title:p.action,
     type: SC_TYPE[p.kind] || 'Documents',
@@ -11400,7 +11421,7 @@ function renderScribe(){
           '<p class="sc-quote">'+p.quote+'</p>'+
           '<div class="sc-acts">'+
             '<button class="go" onclick="scAccept(&#39;'+p.id+'&#39;)">'+
-              (p.kind==='Diagnosis' ? 'Add to note' : p.kind==='Prescription' ? 'Add to the pad' : (p.owner==='self' ? 'Keep as my task' : 'Create task'))+'</button>'+
+              (p.kind==='Diagnosis' ? 'Add to note' : p.kind==='Prescription' ? 'Add to the pad' : p.kind==='Blood work' ? 'Open lab form' : (p.owner==='self' ? 'Keep as my task' : 'Create task'))+'</button>'+
             '<button onclick="scDismiss(&#39;'+p.id+'&#39;)">Dismiss</button>'+
           '</div>'+
         '</div>';
@@ -23503,6 +23524,77 @@ function cv2ChkGo(k){
   };
 })();
 
+/* ---------- physician pass (Ani, 4 Nov: chart Version 2, physician pass, B3): Cedar's after-call drafts belong to the actions ----------
+   In Version 2 the drafts Cedar heard on the call sit on the Action tiles ("Order labs · Cedar: Lipid profile and HbA1c"; "Prescribe · Cedar:
+   Bisoprolol 2.5 mg once daily"), not as cards on top of the note. Pressing the tile opens its form, or the pad, pre-filled from the draft; once the
+   doctor signs (or sends), the tile says "Signed 10:32" and offers nothing more. The note keeps one line, "Cedar drafted 4 actions · Action".
+   Drafts follow the T-038 switches: listening and the note for all of them, prescribing for the pad, lab and imaging orders for the forms. */
+var CV2_DK = {Prescription:'rxOpen', 'Blood work':'labOpen', Imaging:'imgOpen', Referral:'openTaskMoa', 'Follow-up':'openTaskMoa', 'Patient instructions':'msOpen'};
+var CV2_DA = {rxOpen:'rx', labOpen:'orders', imgOpen:'orders'};
+CV2.dd = {};   /* PC_CURRENT|proposal id -> {open:true} or {done:'Signed 10:32'} */
+function cv2Plain(t){ return String(t || '').replace(/&rsquo;/g, '’').replace(/&mdash;/g, '—').replace(/&[a-z]+;/g, ' ').replace(/<[^>]+>/g, ''); }
+function cv2Drafts(fn){
+  if(!cv2On() || !PC_CURRENT || !cdOn('note') || typeof scSeen === 'undefined' || !CS.sc[PC_CURRENT]) return [];
+  return scSeen.map(scFind).filter(function(p){
+    var f = p && CV2_DK[p.kind]; if(!f || (fn && f !== fn)) return false;
+    if(CV2_DA[f] && !cdOn(CV2_DA[f])) return false;
+    return scDone[p.id] !== 'dismissed' && !(CV2.dd[PC_CURRENT + '|' + p.id] || {}).done;
+  });
+}
+function cv2DraftDone(fn, word){
+  if(!fn) return;
+  var at = rxNow(), n = 0;
+  cv2Drafts(fn).forEach(function(p){ var k = PC_CURRENT + '|' + p.id; if((CV2.dd[k] || {}).open){ CV2.dd[k] = {done:word + ' ' + at}; scDone[p.id] = 'accepted'; n++; } });
+  if(n){ CV2.tileDone = CV2.tileDone || {}; CV2.tileDone[PC_CURRENT + '|' + fn] = word + ' ' + at; cv2Tiles(); }
+}
+function cv2Tiles(){
+  var ord = v2El('v2-ord'); if(!ord) return;
+  var on = cv2On(), all = on ? cv2Drafts() : [];
+  [].forEach.call(ord.querySelectorAll('.v2-orow'), function(b){
+    var fn = (b.getAttribute('onclick') || '').split('(')[0], ot = b.querySelector('.v2-ot'), sp = b.querySelector('.cv2-cd');
+    var ds = on ? cv2Drafts(fn) : [], done = on && CV2.tileDone ? CV2.tileDone[PC_CURRENT + '|' + fn] : '';
+    var h = ds.length ? '<span class="cs-ai-ic" aria-hidden="true">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span>Cedar: ' + csEsc(ds.map(function(p){ return cv2Plain(p.action); }).join('; '))
+      : done ? csIc('complete') + csEsc(done) : '';
+    if(!h){ if(sp) sp.remove(); b.classList.remove('cv2-hasd'); return; }
+    if(!sp){ sp = document.createElement('span'); sp.className = 'cv2-cd'; ot.appendChild(sp); }
+    if(sp.getAttribute('data-h') !== h){ sp.innerHTML = h; sp.setAttribute('data-h', h); paintPd(sp); }
+    sp.classList.toggle('done', !ds.length); b.classList.toggle('cv2-hasd', !!ds.length);
+  });
+  /* the note's one line */
+  var nb = v2El('v2-note-b'), ln = v2El('cv2-scline');
+  if(on && all.length && nb){
+    if(!ln){ ln = document.createElement('p'); ln.id = 'cv2-scline'; ln.className = 'cv2-scline'; nb.insertBefore(ln, nb.firstChild); }
+    var orders = all.every(function(p){ return /Prescription|Blood work|Imaging/.test(p.kind); });
+    var t = 'Cedar drafted ' + all.length + ' ' + (orders ? (all.length === 1 ? 'order' : 'orders') : (all.length === 1 ? 'action' : 'actions'));
+    var lh = '<span class="cs-ai-ic" aria-hidden="true">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span><span>' + t + '</span><button type="button" class="cs-link" onclick="v2Tab(\'orders\',true)">Action</button>';
+    if(ln.getAttribute('data-h') !== lh){ ln.innerHTML = lh; ln.setAttribute('data-h', lh); }
+    ln.hidden = false;
+  } else if(ln) ln.hidden = true;
+}
+/* a tile with drafts opens its form pre-filled (capture phase, so the tile's own onclick does not also run) */
+document.addEventListener('click', function(e){
+  var b = e.target && e.target.closest && e.target.closest('#v2-ord .v2-orow.cv2-hasd'); if(!b || !cv2On()) return;
+  var fn = (b.getAttribute('onclick') || '').split('(')[0], ds = cv2Drafts(fn); if(!ds.length) return;
+  e.stopPropagation(); e.preventDefault();
+  ds.forEach(function(p){ CV2.dd[PC_CURRENT + '|' + p.id] = {open:true}; });
+  var txt = ds.map(function(p){ return cv2Plain(p.action); }).join('; ');
+  if(fn === 'rxOpen'){
+    ds.forEach(function(p){ var lb = rxLibName(p.action.split(' ')[0]), nm = PC_CURRENT, L = RX_FROMVISIT[nm] = RX_FROMVISIT[nm] || [];
+      if(lb && !L.some(function(x){ return x.key === lb.k; })) L.push({key:lb.k, src:'From the call'}); });
+    rxOpen(); if(typeof v2RxFocus === 'function') v2RxFocus();
+  } else if(fn === 'labOpen' || fn === 'imgOpen'){
+    var pre = []; if(/lipid/i.test(txt)) pre.push('lip-f'); if(/a1c/i.test(txt)) pre.push('a1c');
+    opOpen(fn === 'labOpen' ? 'lab' : 'img', {pre:pre, from:'Cedar, from the call: ' + txt});
+  } else if(fn === 'openTaskMoa'){
+    openTaskMoa(PC_CURRENT); var tn = v2El('tm-note'); if(tn) tn.value = ds.map(function(p){ return cv2Plain(p.action) + '. ' + cv2Plain(p.detail); }).join('\n');
+    CV2.taskFrom = true;
+  } else if(fn === 'msOpen'){
+    if(!SD.draft[PC_CURRENT]) SD.draft[PC_CURRENT] = ds.map(function(p){ return cv2Plain(p.detail); }).join('\n');
+    msOpen();
+  }
+  cv2Tiles();
+}, true);
+
 /* ---------- the shared functions tell Version 2 when something changed (they behave the same in both layouts) ---------- */
 (function(){
   var w = function(name, after, before){
@@ -23519,6 +23611,14 @@ function cv2ChkGo(k){
   w('openChart', function(name){ if(cv2On()){ ['alg', 'enc'].forEach(function(k){ v2Sec(k, false); }); CV2.drawer = false; cv2Side(name); cv2Sync(); cv2CtxPaint(); } cv2NavAuto(); });
   w('v2RenderSide', function(name){ if(cv2On()) cv2Side(name || PC_CURRENT); });
   w('v2SyncHead', function(){ if(cv2On()){ cv2Sync(); cv2Chk(); } });
+  w('renderScribe', function(){ cv2Tiles(); });
+  w('v2Render', function(){ cv2Tiles(); });
+  /* the drafts become "Signed 10:32" when the doctor signs or sends them */
+  w('rxSign', function(){ if(cv2On() && rxState(PC_CURRENT).stage === 'sent') cv2DraftDone('rxOpen', 'Signed'); });
+  w('opSign', function(){ if(cv2On() && OP.done){ cv2DraftDone(OP.kind === 'img' ? 'imgOpen' : OP.kind === 'lab' ? 'labOpen' : '', 'Signed'); } });
+  w('sendTaskMoa', function(){ if(cv2On() && CV2.taskSend){ CV2.taskSend = false; cv2DraftDone('openTaskMoa', 'Sent'); } }, function(){ CV2.taskSend = !!CV2.taskFrom; });
+  w('closeTaskMoa', function(){ CV2.taskFrom = false; });
+  w('msSend', function(){ if(cv2On() && SD.ms && SD.ms.done) cv2DraftDone('msOpen', 'Sent'); });
   ['t23RenderBillRow', 'renderConditions', 'csRenderAI'].forEach(function(n){ w(n, function(){ if(cv2On()) cv2Chk(); }); });
   w('renderChartAlerts', function(){ if(cv2On()) cv2NaCols(); });
   w('v2Tab', null, function(tab){ CV2.pressed = cv2On() && tab !== 'chart' ? {tab:tab, t:Date.now()} : null; });
@@ -23542,6 +23642,6 @@ function cv2ChkGo(k){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 17:12</div>
+  <div class="build-stamp">v2 · build 2026-11-04 17:14</div>
 </body>
 </html>
