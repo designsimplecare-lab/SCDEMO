@@ -14301,14 +14301,10 @@ function rxOrderHtml(st, o){
   h += '<div class="rp-row">' + rxMoreHtml(st, o, 'btn') + (o.src === 'added' ? '<button type="button" class="btn" data-fk="rm' + o.id + '" onclick="rxAct(\'rmord\',\'' + o.id + '\')">' + rxIc('close') + 'Remove</button>' : '') + '</div>' + rxMoreHtml(st, o, 'panel') + '</div>';
   return h;
 }
-function rxFavOrders(){
-  return RX_FAVS.map(function(f){ return {drug:f.drug, strength:f.dose, form:f.form.replace(/s$/, ''), freq:f.freq, days:f.days}; });
-}
 function rxAddHtml(st, p){
   if(RX_UI.adding !== p.id) return '<button type="button" class="btn" data-fk="add' + p.id + '" onclick="rxAct(\'adding\',\'' + p.id + '\')">' + rxIc('plus') + 'Add a drug for this problem</button>';
-  var h = '<div class="rp-pop" role="group" aria-label="Add a drug for ' + csEsc(p.name) + '"><p class="rp-note"><b>Favourites</b></p><div class="rp-chips">' +
-    rxFavOrders().map(function(f, i){ return '<button type="button" class="rp-chip" data-fk="fav' + i + '" onclick="rxAct(\'addfav\',\'' + p.id + '\',' + i + ')">' + rxIc('star') + csEsc(f.drug + ' ' + f.strength) + '</button>'; }).join('') + '</div>' +
-    '<label class="rp-f rp-fw"><span>Or search the drug list</span><input type="search" id="rx-q" data-fk="q" autocomplete="off" value="' + csEsc(RX_UI.q || '') + '" oninput="rxSearch(this.value,\'' + p.id + '\')"></label>' +
+  var h = '<div class="rp-pop" role="group" aria-label="Add a drug for ' + csEsc(p.name) + '">' +
+    '<label class="rp-f rp-fw"><span>Search the drug list</span><input type="search" id="rx-q" data-fk="q" autocomplete="off" value="' + csEsc(RX_UI.q || '') + '" oninput="rxSearch(this.value,\'' + p.id + '\')"></label>' +
     '<div id="rx-sr">' + rxSearchHtml(p.id) + '</div><button type="button" class="btn" data-fk="addno" onclick="rxAct(\'adding\',null)">Cancel</button></div>';
   return h;
 }
@@ -14373,7 +14369,6 @@ function rxAddOrder(st, pid, src, extra){
   RX_UI.adding = null; RX_UI.edit = null; rxLog(st, 'Added ' + o.drug + ' ' + o.strength + ' for ' + pid); rxRender();
   var b = document.querySelector('#rx-main [data-fk="pt' + o.id + 'drug"]'); if(b) b.focus();
 }
-RX_ACT.addfav = function(pid, i){ var st = rxState(PC_CURRENT), f = rxFavOrders()[i]; rxAddOrder(st, pid, f, {days:f.days}); };
 RX_ACT.addlib = function(pid, k){ var st = rxState(PC_CURRENT), lib = rxLib(k); if(pid === 'pad') RX_UI.q = ''; rxAddOrder(st, pid, {drug:lib.name, key:lib.k, strength:lib.strength, form:lib.form, freq:lib.freq}, {days:lib.days || 30, repeats:lib.rep || 0}); };
 RX_ACT.rmord = function(oid){ var st = rxState(PC_CURRENT); st.orders = st.orders.filter(function(o){ return o.id !== oid; }); RX_UI.edit = null; rxRender(); };
 function rxBar2(st){
@@ -14875,8 +14870,7 @@ function rxPadAddHtml(){
   return '<div class="rp-padd"><label class="rp-vh" for="rx-q">Add a drug</label><input type="search" id="rx-q" data-fk="q" autocomplete="off" placeholder="Add a drug: name or DIN" value="' + csEsc(RX_UI.q || '') + '" oninput="rxSearch(this.value,\'pad\')">' +
     '<div id="rx-sr">' + rxPadSearchHtml() + '</div>' +
     '<div class="rp-quick">' + RX_QUICK.map(function(q, i){ var l = rxLib(q.key); return '<button type="button" class="rp-chip" data-fk="qk' + i + '" title="' + csEsc(l.name + ' ' + l.strength) + '" onclick="rxAct(\'quick\',' + i + ')">' + csEsc(q.label) + '</button>'; }).join('') +
-    (RX_UI.favs ? RX_FAVS.map(function(f, i){ return '<button type="button" class="rp-chip" data-fk="fv' + i + '" onclick="rxAct(\'addfav\',\'pad\',' + i + ')">' + rxIc('star') + csEsc(f.drug + ' ' + f.dose) + '</button>'; }).join('') : '') +
-    '<button type="button" class="op-lk" data-fk="favs" aria-expanded="' + !!RX_UI.favs + '" onclick="RX_UI.favs=!RX_UI.favs;rxRender()">' + (RX_UI.favs ? 'Fewer' : rxIc('star') + 'Favourites') + '</button></div></div>';
+    '</div></div>';
 }
 /* ---- after signing: anticipate the next move, only when today's note says labs or imaging come next (Daniel, 31 Oct) ---- */
 var RX_LABWORDS = [[/\blipids?\b|cholesterol/i, 'lip-f'], [/\bhba1c\b|\ba1c\b/i, 'a1c'], [/creatinine|\begfr\b|kidney function/i, 'cr'], [/\bcbc\b|blood count/i, 'hem-prof'], [/ferritin/i, 'hem-fer'], [/\btsh\b|thyroid/i, 'thy-m']];
@@ -15384,17 +15378,6 @@ function soStamp(at){
   return '<span class="so-stamp"><span class="ic" data-pdic="complete"></span>Signed off by Dr. Pannozzo &middot; ' + at + '</span>';
 }
 
-/* ----- Favourites (Daniel: "I also have my favorite's pre-populated") -----
-   DEMO DATA: invented favourites for the demo, chosen to match the demo medication lists above.
-   His real list is a question for him. Not clinical guidance. */
-var RX_FAVS = [
-  {drug:'Atorvastatin',     dose:'20 mg',  freq:'once daily',  form:'tablets',  days:90},
-  {drug:'Ramipril',         dose:'10 mg',  freq:'once daily',  form:'capsules', days:90},
-  {drug:'Amlodipine',       dose:'5 mg',   freq:'once daily',  form:'tablets',  days:90},
-  {drug:'Metformin',        dose:'500 mg', freq:'twice daily', form:'tablets',  days:90},
-  {drug:'Levothyroxine',    dose:'75 mcg', freq:'once daily',  form:'tablets',  days:90},
-  {drug:'Ferrous fumarate', dose:'300 mg', freq:'once daily',  form:'tablets',  days:90}
-];
 /* ----- Readings the patient reports (Daniel: "I get my patient's to work") -----
    DEMO DATA: home-cuff and home-scale readings, fitted to each patient's demo story (Greg's
    home BP log, Arli's weight, Gloria's home cuff in her Jun 25 note). No targets or thresholds
