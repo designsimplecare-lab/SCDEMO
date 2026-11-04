@@ -853,30 +853,38 @@ Source: `product/qa/2026-10-31-coverage-check.md`, items 92 and 150 and to-do 1.
 ### Proof: where the Note heading starts (px from the top of the window)
 | Chart | 1280 × 800 before | after | 1440 × 900 before | after |
 |---|---|---|---|---|
-| Gloria | 1783 | 697 | 1703 | 697 |
-| Andrey | 718 | 420 | 662 | 420 |
-| Carol-Anne | 998 | 562 | 998 | 562 |
-| Behdis | 1074 | 566 | 1018 | 562 |
-| Arli | 836 | 536 | 778 | 536 |
-| Greg | 1000 | 420 | 1000 | 420 |
-| Manjit | 768 | 420 | 712 | 420 |
-| Korynn | 878 | 536 | 878 | 536 |
+| Gloria | 1783 | 765 | 1703 | 734 |
+| Andrey | 718 | 488 | 662 | 488 |
+| Carol-Anne | 998 | 630 | 998 | 630 |
+| Behdis | 1074 | 630 | 1018 | 630 |
+| Arli | 836 | 604 | 778 | 604 |
+| Greg | 1000 | 488 | 1000 | 488 |
+| Manjit | 768 | 488 | 712 | 488 |
+| Korynn | 878 | 604 | 878 | 604 |
 
-"Before" is the build of 3 Nov 21:32 with the other session's 3 Nov changes (the coverage check measured 849 to 1890 on the earlier build). "After" includes the 4 Nov chart layout below. Folding alone took Gloria at 1440 from 1703 to 811; the layout took it to 697. All 16 are visible without scrolling. Console clean on all 8 charts at both sizes.
+"Before" is the build of 3 Nov 21:32 with the other session's 3 Nov changes (the coverage check measured 849 to 1890 on the earlier build). "After" is with chart layout 2 below (4 Nov). Folding alone took Gloria at 1440 from 1703 to 811; the first layout took it to 697 and layout 2 (the tab bar back above the work) to 734. All 16 are visible without scrolling. Console clean on all 8 charts at both sizes.
 
 ### Open
 - **Needs Daniel:** is one line enough for a critical result on the chart, with the concern ("Acute myocardial injury") one press away? The red count on the Review step and the critical value stay.
 
-## 4 Nov: chart layout (patient and steps left, Patient summary right)
+## 4 Nov: chart layout 2 (patient and Patient summary combined on the left; steps as tabs above the work)
 
-Source: Ani, 4 Nov: "move this to the left side panel and replace left side panel with review etc, basically left side panel will go right".
+Source: Ani, 4 Nov: "this 2 needs to be combined and review etc be on top of other section horizontal". It replaces the first 4 Nov layout
+(commit `de46fff`: patient and vertical steps on the left, Patient summary on the right), which lasted one round.
 
-- **From 1201 px, three columns,** each its own scroll box (`v2Fit`), so nothing moves when another column scrolls:
-  - **Left** (264 px; 240 px at 1201 to 1360): the name; age, sex and masked PHN on one line; the allergy line as the other session left it (a quiet tick when there are none, the band when one is named or unrecorded); Call (split, caret) and Chart stacked, full width, 48 px; the four steps as a vertical list with their counts, the current one marked (`aria-current="step"`, wash and a brand left bar; same click and scroll-spy behaviour as the bar); Save draft at the bottom.
-  - **Centre:** the step content, unchanged.
-  - **Right** (320 px; 288 px at 1201 to 1360): the Patient summary, unchanged.
-  - The old top header card is gone. `#v2-head` is now the grid's first column; the `<aside>` comes after `#v2-main` in the DOM, so the reading and Tab order is patient and steps, the work, the summary.
-- **The app nav** folds to icons on an open chart from 1201 to 1440 px and opens again when the chart is left (`navAuto`). The doctor's saved choice (`sc-nav`) is never written, and once they press Collapse or Expand themselves the chart leaves the nav alone.
-- **Under 1200 px** (was 1100) the chart stacks as before: patient, the step bar, the work, then the Patient summary under the work. (Chosen over a toggle: simpler, nothing hidden.)
-- Centre width: 586 px at 1280, 712 px at 1600. The page does not scroll at 1280 × 800.
+- **From 1201 px, two columns,** each its own scroll box (`v2Fit`):
+  - **Left** (312 px; 296 px at 1201 to 1360): ONE card. The patient heads it: name; age, sex and masked PHN on one line; the allergy line as the
+    other session left it (a quiet tick when there are none, the band when one is named or unrecorded); Call (split, caret) and Chart stacked,
+    full width, 48 px. A divider, then the Patient summary sections, unchanged in content and order (Intake summary, Medications, PMHx,
+    Investigations, Pending, Since you last saw). The "Patient summary" title is kept for screen readers only; the region is labelled
+    "Patient and Patient summary". `#v2-pt` now sits inside `#v2-sum`.
+  - **Centre:** the steps are horizontal tabs again (Review, Note, Action, Sign off with their counts; Save draft at the right end), at the top of
+    the centre column and sticky while it scrolls (`#v2-head` is the first child of `#v2-main`). Same click, `aria-current` and scroll-spy
+    behaviour as before the first layout; the spy now counts a section as current once it reaches the bottom of the tab bar.
+  - **No right column.** The centre is about 824 px wide at 1440 and 680 px at 1280 with the nav open, so the nav no longer folds on a chart
+    (the first layout's `navAuto` is removed).
+- **Under 1200 px** the chart stacks: the patient card with the summary (its sections start closed, `v2AutoOpen` returns nothing there), then the
+  tab bar (sticky to the page) and the work.
+- Kept: the note-up-front folding (T-039), the other session's final decisions, and the note-field fix of `08a1414`.
 - Harness: 42/129 before and after, the same 42 checks; no selector had to change.
+- Known, unchanged: as before, pressing Action marks Sign off when the column cannot scroll any further (the spy's end-of-page rule).
