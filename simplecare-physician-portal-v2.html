@@ -13176,6 +13176,11 @@ function renderLabOrders(){
     if(o.lapsed) return ['Expired · new requisition needed', 'warn'];
     if(o.fulfilmentTone === 'bad') return ['Not sent · resend', 'warn'];
     if(o.fulfilmentTone === 'warn') return ['With patient · receipt unconfirmed', 'neutral'];
+    /* physician pass (Ani, 4 Nov: chart Version 2, physician pass, A5): Gloria's "Cardiac markers · Sent to lab" stayed after today's troponin and CK
+       arrived. When the result for an ordered test is in (the inbox holds a value for it), the order says so, with when */
+    var got = (typeof INBOX_ITEMS !== 'undefined' ? INBOX_ITEMS : []).filter(function(x){
+      return first(x.patient) === first(o.patient) && (x.tests || []).some(function(t){ return t.v != null && o.tests.some(function(ot){ return ot.n === t.n; }); }); })[0];
+    if(got) return ['Result in · ' + String(got.received).replace(/,\s*/, ' '), 'ok'];
     return ['Sent to lab', 'ok'];
   };
   var html = mine.length ? mine.map(function(o){
