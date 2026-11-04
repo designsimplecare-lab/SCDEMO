@@ -6925,8 +6925,11 @@ body:has(#op-panel.show) #callw{z-index:360;}
 #rx-panel .rp-rec3{padding:16px 0 8px;}
 #rx-panel .rp-rec3 > :not(table){margin-left:16px;margin-right:16px;}
 #rx-panel .rp-rec3 .rp-rh .op-lk{min-height:44px;}
-#rx-panel .rp-tabs button{min-height:44px;padding:0 14px;font-size:15px;}
-#rx-panel .rp-tabs button.on{background:var(--brand-navy);color:#fff;}
+/* Ani, 3 Nov: line tabs, not a button group */
+#rx-panel .rp-tabs{display:inline-flex;gap:20px;border:0;border-radius:0;overflow:visible;}
+#rx-panel .rp-tabs button{min-height:44px;padding:0 2px;border:0;border-bottom:2px solid transparent;border-radius:0;background:none;font-size:15px;font-weight:600;color:var(--ink-soft);}
+#rx-panel .rp-tabs button:hover{color:var(--ink);}
+#rx-panel .rp-tabs button.on{background:none;color:var(--ink);border-bottom-color:var(--brand);}
 #rx-panel .rp-t3{width:100%;border-collapse:collapse;margin-top:10px;font-size:15px;line-height:22px;table-layout:fixed;}
 #rx-panel .rp-t3 thead th{padding:8px;font-size:14px;line-height:20px;font-weight:600;letter-spacing:0;text-transform:none;text-align:left;color:var(--ink-soft);}
 #rx-panel .rp-t3 thead th:nth-child(1){width:24%;}
@@ -14723,10 +14726,9 @@ function rxUpHtml(st){
       ' <button type="button" class="op-lk" data-fk="upshow" aria-expanded="' + !RX_UI.upHide + '" onclick="RX_UI.upHide=!RX_UI.upHide;rxRender()">' + (RX_UI.upHide ? 'Show the image' : 'Hide the image') + '</button>' +
       '<button type="button" class="op-lk" data-fk="upagain" onclick="rxAct(\'upagain\')">Use another file</button></figcaption>' +
       (RX_UI.upHide ? '' : st.upImg ? '<img src="' + st.upImg + '" alt="The medication list you added">' : '<p class="rp-rs">' + csEsc(st.upName || 'File') + ' is not an image, so it is not shown here.</p>') +
-      '<p class="rp-rs">Demo: Cedar’s reading is simulated, so the rows below are sample rows, not read from your file. Check every row.</p></figure>';
+      '</figure>';
   return '<div class="rp-paste" tabindex="0" data-fk="paste" aria-labelledby="rx-paste-h" aria-describedby="rx-paste-d" role="group">' +
-    '<p id="rx-paste-h"><b>Paste a screenshot here</b> with ⌘V or Ctrl+V</p>' +
-    '<p class="rp-rs" id="rx-paste-d">A pharmacy’s faxed list, a CareConnect screenshot (view-only; nothing is copied from it) or a photo of the bottles. Cedar reads it; you check every row. The image stays on this screen.</p>' +
+    '<p id="rx-paste-h"><b>Paste a screenshot</b> <span class="rp-rs" id="rx-paste-d">⌘V or Ctrl+V</span></p>' +
     '<div class="rp-row"><button type="button" class="btn rp-sm" data-fk="uppaste" onclick="rxAct(\'pastebtn\')">' + rxIc('file') + 'Paste</button>' +
     '<label class="btn rp-sm rp-file">' + rxIc('upload') + 'Upload a file<input type="file" data-fk="upfile" accept="image/*,application/pdf" onchange="rxUpFile(this,\'Uploaded file\')"></label>' +
     '<label class="btn rp-sm rp-file">' + rxIc('upload') + 'Take a photo<input type="file" data-fk="upphoto" accept="image/*" capture="environment" onchange="rxUpFile(this,\'Photo\')"></label></div></div>';
@@ -14774,7 +14776,8 @@ function rxNewListHtml(st, M){
     (rxLocked() ? '' : '<button type="button" class="btn dark" data-fk="recsign" id="rx-recsign"' + (left ? ' disabled aria-describedby="rx-nlwhy"' : '') + ' onclick="rxAct(\'recsign\')">' + rxIc('usercheck') + 'Sign off the medication list</button>') + '</div>';
   return h + '</section>';
 }
-var RX_GROUPS = [['due', 'Due for renewal', 'about ' + RX_DUE + ' days of supply or less, fewest first'], ['diff', 'PharmaNet differs', 'check with the patient, then confirm'], ['simple', 'Other Simple Care medications', '']];
+/* Ani, 3 Nov: group names only, no explaining line under them */
+var RX_GROUPS = [['due', 'Due for renewal', ''], ['diff', 'PharmaNet differs', ''], ['simple', 'Other Simple Care medications', '']];
 function rxRecHtml(st){
   var src = st.recSrc || 'pharmanet', M = rxRecModel(st), simple = M.filter(function(it){ return it.side === 'simple'; }), pn = M.filter(function(it){ return it.side === 'pn'; });
   var srcCol = src === 'upload' ? 'Uploaded file' : 'PharmaNet';
@@ -14791,7 +14794,7 @@ function rxRecHtml(st){
       var its = simple.filter(function(it){ return it.group === g[0] || (src === 'patient' && g[0] === 'simple'); });
       if(src === 'patient' && g[0] !== 'simple') return; if(!its.length) return;
       h += '<tbody><tr class="rp-grh"><th colspan="' + (src === 'patient' ? 3 : 4) + '" scope="rowgroup"><b>' + (src === 'patient' ? 'Simple Care’s list' : g[1]) + '</b> <span class="rp-cnt">' + its.length + '</span>' +
-        (g[2] && src !== 'patient' ? ' <span class="rp-rs">' + g[2] + '</span>' : src === 'patient' ? ' <span class="rp-rs">no source to compare; ask the patient about each one</span>' : '') + '</th></tr>' +
+        '</th></tr>' +
         its.map(function(it){ return rxRecRow2(st, it, false); }).join('') + '</tbody>';
     });
     h += '</table>';
@@ -14799,7 +14802,7 @@ function rxRecHtml(st){
   if(pn.length){
     var flags = cdOn('rx') ? rxCedarFlag(M) : [], lead = !simple.length;   /* T-038: off, no Cedar note; the PharmaNet rows stay */
     h += '<div class="rp-pnh' + (lead ? ' lead' : '') + '"><h4>' + (lead ? srcCol : srcCol + ': not prescribed at Simple') + ' <span class="rp-cnt">' + pn.length + '</span></h4>' +
-      '<p class="rp-rs">' + (lead ? 'No Simple Care history. Just the list, as per ' + srcCol + '. Verify each one with the patient.' : 'Prescribed elsewhere. Same order and the same choices as above.') + '</p></div>';
+      '</div>';
     if(flags.length) h += '<div class="rp-flag" role="note"><span class="rp-cm" aria-hidden="true">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span><div><p><b>Cedar flagged:</b> ' + flags.map(csEsc).join(' ') + '</p><p class="rp-rs">Source: ' + csEsc(srcCol) + ' dispense history</p></div></div>';
     h += '<table class="rp-t3 rp-pn"><thead><tr><th scope="col">Medicine</th><th scope="col">' + srcCol + '</th><th scope="col">Supply</th></tr></thead><tbody>' +
       pn.map(function(it){ return rxRecRow2(st, it, true); }).join('') + '</tbody></table>';
