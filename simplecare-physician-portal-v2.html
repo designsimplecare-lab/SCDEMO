@@ -7188,6 +7188,24 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #profile-dropdown{max-height:calc(100vh - 84px);overflow-y:auto;overscroll-behavior:contain;}
 #profile-dropdown .pd-cd-safe{margin:2px 14px 6px;font-size:14px;line-height:20px;color:var(--ink-soft);}
 :is(#screen-patientchart,#rx-panel,#op-panel) .cd-off{margin:0 0 12px;font-size:14px;line-height:20px;color:var(--ink-soft);max-width:66ch;}
+/* T-039 (Daniel, 31 Oct 02:56:42 "This is all gone. There's my note. Boom."; 01:53:50 "the first place that I start is the note"): Review is
+   folded so the Note heading shows without scrolling. Needs attention is one line per item (value, word, reference), the rest of each item
+   behind the card's Show all; Chart review shows two sentences, the rest behind its Show all. The same quiet link in both card headers. */
+#screen-patientchart #pcv-c.cs-v2 :is(#v2-na,#v2-key) .v2-all{margin:-6px 0 -6px auto;min-height:44px;padding:0 8px;font-size:15px;font-weight:600;color:var(--accent-ink);}
+#screen-patientchart #pcv-c.cs-v2 :is(#v2-na,#v2-key) .v2-all .ic,#screen-patientchart #pcv-c.cs-v2 :is(#v2-na,#v2-key) .v2-all svg{width:16px;height:16px;transition:transform .15s;}
+#screen-patientchart #pcv-c.cs-v2 :is(#v2-na,#v2-key) .v2-all[aria-expanded="true"] .ic{transform:rotate(180deg);}
+#screen-patientchart #pcv-c.cs-v2 #v2-na .v2-all[hidden]{display:none;}
+#screen-patientchart #pcv-c.cs-v2 #v2-na > .v2-ch{margin-bottom:6px;}
+#screen-patientchart #pcv-c.cs-v2 #v2-na:not(.na-all) .v2-nad,#screen-patientchart #pcv-c.cs-v2 #v2-na:not(.na-all) .v2-na-k{display:none;}
+#screen-patientchart #pcv-c.cs-v2 #v2-na:not(.na-all) #vc-alerts .vca-row{padding:6px 0;align-items:center;}
+#screen-patientchart #pcv-c.cs-v2 #v2-na:not(.na-all) #vc-alerts .cs-group:first-child .vca-row:first-child{padding-top:0;}
+#screen-patientchart #pcv-c.cs-v2 #v2-na:not(.na-all) #vc-alerts .vca-t{margin:0;}
+#screen-patientchart #pcv-c.cs-v2 #v2-na:not(.na-all) #vc-alerts .cs-relh{padding-top:4px;}
+#screen-patientchart #pcv-c.cs-v2 #v2-na:not(.na-all) #vc-alerts .cs-stage{display:none;}
+#screen-patientchart #pcv-c.cs-v2 #v2-na .v2-na-ref{margin-left:12px;font-size:15px;font-weight:400;color:var(--ink-soft);white-space:nowrap;}
+#screen-patientchart #pcv-c.cs-v2 #v2-key .kf-hd .v2-all{margin-left:auto;}
+#screen-patientchart #pcv-c.cs-v2 #v2-key :is(#cr-rest,#cr-medsec)[hidden]{display:none;}
+#screen-patientchart #pcv-c.cs-v2 #v2-key #cr-rest{margin-top:0;}
 </style>
 </head>
 <body>
@@ -7688,7 +7706,9 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
               <h2 class="v2-stepH" id="v2h-review">Review</h2>
               <div id="v2-ns-slot"></div>
               <section class="v2-card v2-na" id="v2-na" aria-labelledby="v2-na-h">
-                <div class="v2-ch"><span class="ic" data-pdic="alert"></span><h3 id="v2-na-h">Needs attention</h3><span class="v2-chip" id="v2-na-chip"></span></div>
+                <!-- T-039 (Daniel, 31 Oct 02:56:42: "This is all gone. There's my note. Boom."): one line per item; the rest of each result is behind Show all -->
+                <div class="v2-ch"><span class="ic" data-pdic="alert"></span><h3 id="v2-na-h">Needs attention</h3><span class="v2-chip" id="v2-na-chip"></span>
+                  <button type="button" class="cs-link v2-all" id="v2-na-all" aria-expanded="false" aria-controls="v2-na-b" onclick="naAll()" hidden>Show all<span class="ic" data-pdic="chevdown"></span></button></div>
                 <div id="v2-na-b"></div>
               </section>
               <!-- 21 Oct (Daniel, 18 Oct video 3: "I don't think I would like it split like that. I like it more sequential."): one column, in order: Needs attention,
@@ -15930,12 +15950,15 @@ function csNARowV2(x, related, also){
   var val, up = t && (t.f || '').indexOf('high') > -1, low = t && (t.f || '').indexOf('low') > -1;
   if(x.abn) val = '<b>' + (x.ecg ? ecgLine(it) : 'Abnormal ' + csEsc(it.panel)) + '</b>';
   else val = '<b>' + t.n + '</b> <span class="vca-v">' + t.v + ' ' + (t.u || '') + '</span>' + lrWord(t.f, t.v);   /* T-037: the word, not an arrow */
+  /* T-039 (Daniel, 31 Oct 02:56:42 "There's my note. Boom."; 01:53:50 "the first place that I start is the note"): one line per item, so the
+     note comes up front. The reference interval stays on that line (Daniel, 31 Oct: "show the reference range right there"); the concern, the
+     earlier values, the rest of the panel and the source sit in .v2-nad, folded behind the card's Show all (naAll). Nothing is removed. */
+  if(!x.abn) val += '<span class="v2-na-ref">Reference ' + csEsc(lrRef(t)) + (x.label ? ', ' + x.label.toLowerCase() : '') + '</span>';
   var h = '';
   if(!x.abn && t.concern) h += '<p class="v2-na-c">' + t.concern + '</p>';
-  /* T-037 (Daniel, 31 Oct): the reference interval and, when there are any, the two earlier values with dates */
+  /* T-037 (Daniel, 31 Oct): when there are any, the two earlier values with dates */
   if(!x.abn){ var pr = lrPriors(it.patient, t);
-    h += '<p class="v2-q">Reference ' + csEsc(lrRef(t)) + (x.label ? ', ' + x.label.toLowerCase() : '') + '</p>' +
-      (pr.length ? '<p class="v2-q lr-prev">Previous ' + lrPrevList(pr) + '</p>' : ''); }
+    h += (pr.length ? '<p class="v2-q lr-prev">Previous ' + lrPrevList(pr) + '</p>' : ''); }
   if(also && also.length) h += '<p class="v2-q"><span class="vh">Info: </span>Also ' + also.map(function(a){
       var at = a.test, au = (at.f || '').indexOf('high') > -1;
       return '<span class="cs-also-v">' + at.n + ' ' + at.v + ' ' + (at.u || '') + ' ' + lrWord(at.f, at.v).replace('class="lr-w"', 'class="lr-w lr-lc"') + (at.ref ? ', reference ' + csEsc(lrRef(at)) : '') + '</span>';
@@ -15950,7 +15973,7 @@ function csNARowV2(x, related, also){
   /* 21 Oct: an abnormal result that is not a lab (the ECG) has no "To do" label: the printed line is the title */
   return '<div class="vca-row v2-nar cs-' + x.tier + (related ? ' cs-rel' : '') + '">' +
     '<span class="ic vca-ic" role="img" aria-label="' + (x.abn ? 'Abnormal' : T.w) + '" data-pdic="' + T.ic + '"></span>' +
-    '<div class="vca-main">' + (x.abn ? '' : '<p class="v2-na-k">' + T.w + '</p>') + '<p class="vca-t">' + val + '</p>' + h + '</div>' +
+    '<div class="vca-main">' + (x.abn ? '' : '<p class="v2-na-k">' + T.w + '</p>') + '<p class="vca-t">' + val + '</p><div class="v2-nad">' + h + '</div></div>' +
     '<div class="cs-side"><p class="cs-stage">' + csIc('clock') + '<span><span class="vh">Stage: </span>' + csEsc(x.stage) + '</span></p>' +
       '<button type="button" class="btn" onclick="openReview(' + x.idx + ')"><span class="ic" data-pdic="eye"></span>' + x.action + '</button></div>' +
   '</div>';
@@ -15989,7 +16012,7 @@ function renderChartAlerts(name){
   var items = CS.empty ? [] : csNAItems(name);
   if(!items.length){
     /* Ani, 5 Oct (declutter): nothing to say, nothing shown (rule 25). Was one quiet "Nothing requiring attention" line. */
-    el.innerHTML = ''; el.hidden = true; return;
+    el.innerHTML = ''; el.hidden = true; naAllSync(name); return;
   }
   /* one card per result: the abnormal value that set the tier is the headline; the panel's other
      out-of-range values sit under it (csNARow "also"); one action. Other unresolved items from the same day
@@ -16007,6 +16030,19 @@ function renderChartAlerts(name){
   heads.forEach(function(x){ groups.push('<div class="cs-group">' + csNARow(x, false, infoOf(x.it)) + '</div>'); });
   el.innerHTML = '<h3 class="cs-h3" id="cs-na-h">Needs attention</h3>' + groups.join('');
   paintPd(el);
+  naAllSync(name);
+}
+/* T-039 (Daniel, 31 Oct 02:56:42): Needs attention is one line per item; Show all opens the rest of every item in place (per patient) */
+function naAllSync(name){
+  var b = document.getElementById('v2-na-all'), card = document.getElementById('v2-na'), el = document.getElementById('vc-alerts'); if(!b || !card) return;
+  var more = !!(el && [].some.call(el.querySelectorAll('.v2-nad'), function(d){ return d.textContent.trim(); }));
+  var open = more && !!(CS.naAll && CS.naAll[name]);
+  b.hidden = !more; b.setAttribute('aria-expanded', open); card.classList.toggle('na-all', open);
+  b.firstChild.nodeValue = open ? 'Show less' : 'Show all';
+}
+function naAll(){
+  CS.naAll = CS.naAll || {}; CS.naAll[PC_CURRENT] = !CS.naAll[PC_CURRENT];
+  naAllSync(PC_CURRENT);
 }
 
 /* ================= Today ================= */
@@ -18683,17 +18719,30 @@ function v2RenderKey(el, name, by){
   /* T-037 (Daniel, 31 Oct): Chart review is a short, synthesized picture of the patient, today's concern first: who this patient is, and the medications with the concerns they treat. History, past visits, investigations and consult reports moved
      to the left Patient summary ("no repetition"). Cedar's mark and the AI label stay (AI text is marked); every line names its source and opens it. */
   var groups = crMedGroups(name), sents = crSentences(name, groups);
-  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Chart review</h3><span class="v2-chip kf-ai">Cedar &middot; AI</span></div>';
+  /* T-039 (Daniel, 31 Oct 02:56:42 "There's my note. Boom."; 01:53:50 "the first place that I start is the note"): the first two sentences of
+     Who this patient is show; the rest, and Medications and what they treat, are folded behind Show all (a real button, aria-expanded; per patient).
+     Nothing is removed. */
+  var all = !!(CS.crAll && CS.crAll[name]), sl = function(s){ return crLine({main:s.t, src:s.src.map(function(x){ return x[0]; }).join(' &middot; '), tab:s.src[0][1], cls:'cr-s'}); };
+  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Chart review</h3><span class="v2-chip kf-ai">Cedar &middot; AI</span>' +
+    '<button type="button" class="cs-link v2-all" id="cr-all" aria-expanded="' + all + '" aria-controls="' + (sents.length > 2 ? 'cr-rest ' : '') + 'cr-medsec" onclick="crAll()">' + (all ? 'Show less' : 'Show all') + csIc('chevdown') + '</button></div>';
   /* Ordered and pending lives only in the left Patient summary (Ani, 3 Nov: "it should only be on the left side"; no repetition, Daniel 31 Oct). */
   /* 2. Who this patient is: a few synthesized sentences, each opening its source */
   if(sents.length) h += '<section class="kf-sec cr-who" aria-labelledby="kf-h-who"><h4 class="kf-h" id="kf-h-who">Who this patient is</h4><div class="kf-lines">' +
-    sents.map(function(s){ return crLine({main:s.t, src:s.src.map(function(x){ return x[0]; }).join(' &middot; '), tab:s.src[0][1], cls:'cr-s'}); }).join('') + '</div></section>';
+    sents.slice(0, 2).map(sl).join('') + '</div>' +
+    (sents.length > 2 ? '<div class="kf-lines" id="cr-rest"' + (all ? '' : ' hidden') + '>' + sents.slice(2).map(sl).join('') + '</div>' : '') + '</section>';
   /* 3. Medications and what they treat: grouped by concern, today's first; PharmaNet medicines and the prescriber; past medicines only where they matter today */
   var pnKnown = !!(RXP[name] || CR_PAST[name]);
-  h += '<section class="kf-sec cr-meds" aria-labelledby="kf-h-meds"><h4 class="kf-h" id="kf-h-meds">Medications and what they treat</h4>' +
+  h += '<section class="kf-sec cr-meds" id="cr-medsec" aria-labelledby="kf-h-meds"' + (all ? '' : ' hidden') + '><h4 class="kf-h" id="kf-h-meds">Medications and what they treat</h4>' +
     (groups.length ? '<div class="kf-lines">' + groups.map(crGroupHtml).join('') + '</div>' : '<p class="v2-q kf-q">No medications recorded in Simple Care.</p>') +
     (pnKnown ? '' : '<p class="v2-q kf-q">PharmaNet not checked for this patient yet.</p>') + '</section>';
   el.innerHTML = h; paintPd(el);
+}
+/* T-039: Show all / Show less on Chart review, in place (no re-render, so focus stays on the button) */
+function crAll(){
+  CS.crAll = CS.crAll || {}; var all = CS.crAll[PC_CURRENT] = !CS.crAll[PC_CURRENT];
+  var b = document.getElementById('cr-all'); if(!b) return;
+  b.setAttribute('aria-expanded', all); b.firstChild.nodeValue = all ? 'Show less' : 'Show all';
+  ['cr-rest', 'cr-medsec'].forEach(function(id){ var e = document.getElementById(id); if(e) e.hidden = !all; });
 }
 
 /* ---------- This visit: removed (Daniel, 12 Oct: "we can remove all of this") ----------
@@ -22588,6 +22637,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-03 21:32</div>
+  <div class="build-stamp">v2 · build 2026-11-04 10:45</div>
 </body>
 </html>
