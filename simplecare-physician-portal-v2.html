@@ -7206,6 +7206,11 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-hd .v2-all{margin-left:auto;}
 #screen-patientchart #pcv-c.cs-v2 #v2-key :is(#cr-rest,#cr-medsec)[hidden]{display:none;}
 #screen-patientchart #pcv-c.cs-v2 #v2-key #cr-rest{margin-top:0;}
+/* T-040 (Daniel, 31 Oct 00:04:09): the reason on the drug name line, a headline, quieter than the name */
+#rx-panel .rp-t3 th[scope=row] .rp-ind{font-weight:500;color:var(--ink-soft);}
+#rx-panel .rp-t3 tbody th[scope=row] > b{display:inline;}
+#rx-panel .rp-t3 tbody th[scope=row] > b + .rp-ind + .rp-ind + .rp-sub{margin-top:2px;}
+#rx-panel .rp-t3 thead th:nth-child(1){width:30%;}
 /* T-040 (Daniel, 31 Oct 00:48:56): the one primary press on a due dose difference, the panel's primary look at the action row's size */
 #rx-panel .rp-acts .rp-cc{min-height:44px;height:44px;padding:0 16px;gap:8px;border-radius:12px;font-size:15px;font-weight:600;}
 #rx-panel .rp-acts .rp-cc .ic,#rx-panel .rp-acts .rp-cc svg{width:16px;height:16px;color:#fff;}
@@ -14818,7 +14823,9 @@ function rxActsHtml(st, it){
 function rxRecRow2(st, it, pnOnly){
   var r = it.row, hl = it.kind === 'dose', stp = rxStopFor(st, it), cols = pnOnly ? 3 : (st.recSrc === 'patient' ? 3 : 4);
   var tint = hl || it.kind === 'other';   /* T-040: a fill from another prescriber is highlighted like a dose difference */
-  var name = '<th scope="row"><b>' + csEsc(it.drug) + '</b>' + (it.ind ? '<span class="rp-sub">' + csEsc(it.ind) + '</span>' : '') +
+  /* T-040 (Daniel, 31 Oct 00:04:09: "it can be helpful to know why someone's on the drug ... more of like more of a headliner"): the reason sits on the
+     name line ("Metformin · Type 2 diabetes"), 500 weight in soft ink, not as a line under it */
+  var name = '<th scope="row"><b>' + csEsc(it.drug) + '</b>' + (it.ind ? '<span class="rp-ind">&nbsp;·</span> <span class="rp-ind">' + csEsc(it.ind) + '</span>' : '') +
     (it.side === 'pn' ? '<span class="rp-sub rp-norec">' + (rxPnConf(it) ? 'On Simple Care’s list now' : 'No Simple Care record') + '</span>' : '') + '</th>';
   var simple = it.simple ? (hl ? '<mark>' + csEsc(it.sDose) + '</mark>' + csEsc(it.sText.slice(it.sDose.length)) : csEsc(it.sText)) : '';
   var pn = '';
@@ -22758,6 +22765,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 10:57</div>
+  <div class="build-stamp">v2 · build 2026-11-04 10:59</div>
 </body>
 </html>
