@@ -7865,7 +7865,7 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
             <div id="v2-side-today"></div>
             <section class="v2-sec" id="v2s-meds" data-k="meds"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-meds-b" onclick="v2Sec('meds')"><span class="ic" data-pdic="encounterlog"></span><span class="v2-st">Medications</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-meds-b" hidden></div></section>
             <!-- Chart Version 2 (Ani, 4 Nov: chart Version 2 brief, patient context groups): Allergies and Previous encounters, shown only in Version 2 (cv2Side) -->
-            <section class="v2-sec" id="v2s-alg" data-k="alg" hidden><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-alg-b" onclick="v2Sec('alg')"><span class="ic" data-pdic="cardwarn"></span><span class="v2-st">Allergies</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-alg-b" hidden></div></section>
+            <section class="v2-sec" id="v2s-alg" data-k="alg" hidden><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-alg-b" onclick="v2Sec('alg')"><span class="ic" data-pdic="cardinfo"></span><span class="v2-st">Allergies</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-alg-b" hidden></div></section>
             <section class="v2-sec" id="v2s-hist" data-k="hist"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-hist-b" onclick="v2Sec('hist')"><span class="ic" data-pdic="tasks"></span><span class="v2-st">Past Medical History (PMHx)</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-hist-b" hidden></div></section>
             <!-- T-037 (Daniel, 31 Oct: investigations belong in the left summary, not in Chart review) -->
             <section class="v2-sec" id="v2s-inv" data-k="inv"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-inv-b" onclick="v2Sec('inv')"><span class="ic" data-pdic="chartup"></span><span class="v2-st">Investigations</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-inv-b" hidden></div></section>
@@ -23128,6 +23128,17 @@ function cv2Drawer(open, quiet){
   if(on && !was){ CV2.opener = document.activeElement; var t = v2El('cv2-ctx-t'); if(t) t.focus({preventScroll:true}); }
   if(!on && was && !quiet){ var o = CV2.opener; CV2.opener = null; if(o && document.contains(o) && o.offsetParent) o.focus({preventScroll:true}); }
 }
+/* the drawer keeps keyboard focus inside it while it is open (aria-modal) */
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Tab' || !CV2.drawer) return;
+  var sd = v2El('v2-side'); if(!sd) return;
+  var f = [].filter.call(sd.querySelectorAll('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])'), function(x){ return !x.disabled && x.offsetParent; });
+  if(!f.length) return;
+  var first = f[0], last = f[f.length - 1], a = document.activeElement;
+  if(!sd.contains(a)){ first.focus(); e.preventDefault(); return; }
+  if(e.shiftKey && a === first){ last.focus(); e.preventDefault(); }
+  else if(!e.shiftKey && a === last){ first.focus(); e.preventDefault(); }
+});
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape' || !CV2.drawer) return;
   var t = e.target; if(t && t.closest && t.closest('.drawer, [role=dialog]:not(#v2-side), [role=menu]')) return;
@@ -23198,6 +23209,6 @@ document.addEventListener('keydown', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 16:10</div>
+  <div class="build-stamp">v2 · build 2026-11-04 16:24</div>
 </body>
 </html>
