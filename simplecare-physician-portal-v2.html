@@ -5166,7 +5166,7 @@
     /* Save draft keeps its name for screen readers and on hover; only the word is hidden to fit the bar */
     #screen-patientchart #pcv-c.cs-v2 #vc-savedraft{width:44px;padding:0;justify-content:center;gap:0;font-size:0;}
   }
-  @media (max-width:1100px){
+  @media (max-width:1200px){   /* Chart layout (Ani, 4 Nov): the chart stacks under 1200 px (was 1100) */
     #screen-patientchart #pcv-c.cs-v2 .v2{grid-template-columns:minmax(0,1fr);}
     #screen-patientchart #pcv-c.cs-v2 .v2-side{position:static;max-height:none;overflow:visible;}
   }
@@ -5480,7 +5480,7 @@
   @media (max-width:1360px){
     #screen-patientchart #pcv-c.cs-v2 #v2-sum .v2-sb{padding-left:16px;}
   }
-  @media (max-width:1100px){
+  @media (max-width:1200px){   /* Chart layout (Ani, 4 Nov): the chart stacks under 1200 px (was 1100) */
     #screen-patientchart #pcv-c.cs-v2 .v2-side{position:static;}
   }
   /* ===== Floating call widget (Ani, 6 Oct; moved 6 Oct: "floats bottom right, beside the MOA chat"). Fixed at the bottom
@@ -5573,7 +5573,7 @@
      scrollbar that shows on hover. The main column keeps its sticky tab bar (now stuck to the column's top, on a solid
      backdrop so nothing shows through or around its corners) and its 104 px of room at the bottom for the call widget
      and the MOA chat. Under 1100 px: stacked, the page scrolls (unchanged). */
-  @media (min-width:1101px){
+  @media (min-width:1201px){   /* Chart layout (Ani, 4 Nov): the chart stacks under 1200 px (was 1100) */
     #screen-patientchart #pcv-c.cs-v2 .v2{align-items:start;}
     #screen-patientchart #pcv-c.cs-v2 .v2-side{position:relative;top:auto;box-sizing:border-box;grid-template-columns:minmax(0,1fr);height:calc(var(--v2-h, 640px) + 14px);
       margin:-14px -14px 0 -14px;padding:14px 14px 24px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;
@@ -5949,7 +5949,7 @@
      especially important - make it more prominent"). A named allergy is a strong amber tint, never red (red is for critical results). */
   /* top:-14px = flush with the column's top edge, so scrolled cards never show in a gap above the banner; the top fade is off
      (the banner is the anchor), the bottom fade stays */
-  @media (min-width:1101px){
+  @media (min-width:1201px){   /* Chart layout (Ani, 4 Nov): the chart stacks under 1200 px (was 1100) */
     #screen-patientchart #pcv-c.cs-v2 #v2-pt{position:sticky;top:-14px;z-index:6;}
     #screen-patientchart #pcv-c.cs-v2 .v2-side.v2-ft{-webkit-mask-image:none;mask-image:none;}
     #screen-patientchart #pcv-c.cs-v2 .v2-side.v2-ft.v2-fb{-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 32px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 32px),transparent 100%);}
@@ -6225,7 +6225,7 @@
   #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-crit{border-radius:0 0 16px 16px;box-shadow:none;}
   #screen-patientchart #pcv-c.cs-v2 #v2-head .v2-top.v2-has-crit{border-radius:0;}
   #screen-patientchart #pcv-c.cs-v2 .v2-main{scroll-padding-top:16px;}
-  @media (max-width:1100px){
+  @media (max-width:1200px){   /* Chart layout (Ani, 4 Nov): the chart stacks under 1200 px (was 1100) */
     #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-acts{margin-left:0;flex:1 1 100%;justify-content:flex-start;}
     #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-facts{max-width:none;flex-basis:100%;}
     /* stacked: the page scrolls, so only the tab row stays under the top bar (the patient row scrolls away) */
@@ -7206,6 +7206,50 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2 #v2-key .kf-hd .v2-all{margin-left:auto;}
 #screen-patientchart #pcv-c.cs-v2 #v2-key :is(#cr-rest,#cr-medsec)[hidden]{display:none;}
 #screen-patientchart #pcv-c.cs-v2 #v2-key #cr-rest{margin-top:0;}
+/* Chart layout (Ani, 4 Nov: "move this to the left side panel and replace left side panel with review etc, basically left side panel will go
+   right"). From 1201 px: LEFT the patient and the steps (name; age, sex and masked PHN; the allergy line as the other session left it; Call and
+   Chart stacked; Review, Note, Action, Sign off as a vertical list with their counts, the current one marked; Save draft at the bottom), CENTRE
+   the step content, RIGHT the Patient summary, unchanged. Each column is its own scroll box (v2Fit), so the left column stays put. From 1201 to
+   1440 px the app nav folds to icons on a chart (navAuto). Under 1200 px the chart stacks as it did under 1100: patient, the step bar, the work,
+   then the Patient summary. */
+@media (min-width:1201px){
+  #screen-patientchart #pcv-c.cs-v2 #v2{grid-template-columns:264px minmax(0,1fr) 320px;gap:16px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2 > #v2-head{grid-column:1;grid-row:1;position:relative;top:auto;z-index:2;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;
+    height:var(--v2-h,640px);margin:0;padding:16px 14px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;}
+  #screen-patientchart #pcv-c.cs-v2 #v2 > #v2-head[hidden]{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2 > #v2-main{grid-column:2;grid-row:1;}
+  #screen-patientchart #pcv-c.cs-v2 #v2 > #v2-side{grid-column:3;grid-row:1;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt{padding:0 2px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-snap{display:grid;grid-template-columns:44px minmax(0,1fr);align-items:start;gap:12px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-who{min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-who .vc-nm{font-size:19px;line-height:25px;overflow-wrap:anywhere;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-facts{grid-column:1 / -1;flex:none;min-width:0;max-width:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-acts{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:2px 0 0;flex:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-acts > .btn{width:100%;min-width:0;min-height:48px;height:48px;justify-content:center;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-acts > .pc-split{display:flex;width:100%;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-acts .pc-split > .pc-split-main{flex:1 1 auto;min-width:0;height:48px;min-height:48px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-acts .pc-split > .pc-split-caret{height:48px;min-height:48px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head .v2-top{flex:1 0 auto;display:flex;flex-direction:column;align-items:stretch;gap:12px;min-height:0;margin:0;padding:12px 0 0;border-top:1px solid var(--line);border-radius:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head .v2-steps{display:flex;flex-direction:column;gap:2px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head .v2-steps > button{justify-content:space-between;width:100%;min-height:44px;padding:0 12px;border:0;border-radius:10px;font-size:16px;text-align:left;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head .v2-steps > button[aria-current="step"]{background:var(--wash);color:var(--ink);font-weight:700;box-shadow:inset 3px 0 0 var(--accent);}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head .v2-acts{margin-top:auto;display:flex;flex-direction:column;align-items:stretch;gap:8px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-draft-slot{display:block;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #vc-savedraft{width:100%;height:44px;padding:0 12px;justify-content:flex-start;gap:8px;font-size:15px;}
+  /* photo and name on the first row; age, sex and PHN on one line under them, full width; the no-allergies tick on its own line */
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-snap{grid-template-columns:40px minmax(0,1fr);align-items:center;gap:8px 12px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-photo{width:40px;height:40px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-who{display:contents;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-who > .cs-nmrow{grid-column:2;min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .cs-who > .vc-sub{grid-column:1 / -1;display:block;font-size:14px;line-height:21px;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-sub .pc-mono{white-space:nowrap;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-sub .cs-nksep{display:none;}
+  #screen-patientchart #pcv-c.cs-v2 #v2-head #v2-pt .vc-sub .cs-nkda{display:flex;margin-top:2px;}
+}
+/* 1201 to 1360 px: narrower side columns, so the centre keeps about 570 px with the nav folded */
+@media (min-width:1201px) and (max-width:1360px){
+  #screen-patientchart #pcv-c.cs-v2 #v2{grid-template-columns:240px minmax(0,1fr) 288px;}
+}
 </style>
 </head>
 <body>
@@ -7657,47 +7701,36 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
         <!-- 21 Oct (Daniel, 18 Oct video 4: "this could be a little bit more streamlined up here ... we would just combine all this ... all this would fit in here at the top,
              nice and neat. Because ... this looks like this is separate from this."): the patient card (name, age and sex, allergies, Call, Chart) and the Review / Note /
              Action / Sign off bar are ONE block across the top, above the Patient summary and the work. The PHN is not on the front (Details, one tap, shows it). -->
-        <div class="v2-head" id="v2-head" hidden>
-          <section class="v2-pt" id="v2-pt" aria-label="Patient"></section>
-          <div class="v2-top" id="v2-top">
-            <!-- Daniel, 8 Oct: one continuous encounter page, Review -> Note -> Action -> Sign off, sections of the same workspace, not tabs.
-                 The bar is a step bar: a click scrolls to the section, and the section in view is marked as you scroll. -->
-            <nav class="v2-tabs v2-steps" aria-label="This visit" id="v2-tabs">
-              <button type="button" id="v2t-review" aria-controls="v2p-review" onclick="v2Tab('review',true)"><span class="v2-tl">Review</span><span class="v2-tm"></span></button>
-              <button type="button" id="v2t-note" aria-controls="v2p-note" onclick="v2Tab('note',true)"><span class="v2-tl">Note</span><span class="v2-tm"></span></button>
-              <button type="button" id="v2t-orders" aria-controls="v2p-orders" onclick="v2Tab('orders',true)"><span class="v2-tl">Action</span><span class="v2-tm"></span></button>
-              <button type="button" id="v2t-sign" aria-controls="v2p-sign" onclick="v2Tab('sign',true)"><span class="v2-tl">Sign off</span><span class="v2-tm"></span></button>
-            </nav>
-            <div class="v2-acts" id="v2-acts">
-              <span id="v2-draft-slot"></span>
-              <span class="v2-finwrap">
-                <button type="button" class="btn dark" id="v2-fin" aria-haspopup="dialog" aria-expanded="false" aria-controls="v2-finpop" onclick="v2Fin()"><span class="ic" data-pdic="complete"></span><span class="v2-fin-l">Sign off<span class="v2-fin-x"> &amp; finalize</span></span><span class="v2-fin-n" id="v2-fin-n"></span></button>
-                <div class="v2-finpop" id="v2-finpop" role="dialog" aria-labelledby="v2-finpop-h" hidden>
-                  <div class="v2-fph"><h3 id="v2-finpop-h" tabindex="-1">Sign off &amp; finalize</h3>
-                    <button type="button" class="v2-x" onclick="v2Fin(false)" aria-label="Close">&times;</button></div>
-                  <div id="v2-finpop-b"></div>
-                </div>
-              </span>
-            </div>
-            <!-- Batch A (1): critical result bar, shown on every tab while a critical result is not reviewed -->
-            <div id="v2-crit" hidden></div>
-          </div>
-        </div>
         <div class="v2" id="v2" hidden>
-          <aside class="v2-side" id="v2-side" aria-label="Patient and context">
-            <!-- Ani, 6 Oct: "too many separate big cards". One Patient summary card; its sections are accordion rows. -->
-            <section class="v2-card v2-sum" id="v2-sum" aria-labelledby="v2-sum-h">
-            <h3 class="v2-sum-h" id="v2-sum-h">Patient summary</h3>
-            <!-- Ani, 3 Nov: the intake summary opens the left panel -->
-            <div id="v2-side-today"></div>
-            <section class="v2-sec" id="v2s-meds" data-k="meds"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-meds-b" onclick="v2Sec('meds')"><span class="ic" data-pdic="encounterlog"></span><span class="v2-st">Medications</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-meds-b" hidden></div></section>
-            <section class="v2-sec" id="v2s-hist" data-k="hist"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-hist-b" onclick="v2Sec('hist')"><span class="ic" data-pdic="tasks"></span><span class="v2-st">Past Medical History (PMHx)</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-hist-b" hidden></div></section>
-            <!-- T-037 (Daniel, 31 Oct: investigations belong in the left summary, not in Chart review) -->
-            <section class="v2-sec" id="v2s-inv" data-k="inv"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-inv-b" onclick="v2Sec('inv')"><span class="ic" data-pdic="chartup"></span><span class="v2-st">Investigations</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-inv-b" hidden></div></section>
-            <section class="v2-sec" id="v2s-pend" data-k="pend"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-pend-b" onclick="v2Sec('pend')"><span class="ic" data-pdic="clock"></span><span class="v2-st">Pending</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-pend-b" hidden></div></section>
-            <section class="v2-sec" id="v2s-since" data-k="since"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-since-b" onclick="v2Sec('since')"><span class="ic" data-pdic="reassign"></span><span class="v2-st">Since you last saw</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-since-b" hidden></div></section>
-            </section>
-          </aside>
+          <!-- Chart layout (Ani, 4 Nov: "move this to the left side panel and replace left side panel with review etc, basically left side panel will go right"):
+               the patient (name, age, sex, PHN, allergies, Call, Chart), the four steps and Save draft are the LEFT column; the step content is the centre;
+               the Patient summary is the RIGHT column. Under 1200 px the columns stack (patient and steps, the work, then the Patient summary). -->
+          <div class="v2-head" id="v2-head" hidden>
+            <section class="v2-pt" id="v2-pt" aria-label="Patient"></section>
+            <div class="v2-top" id="v2-top">
+              <!-- Daniel, 8 Oct: one continuous encounter page, Review -> Note -> Action -> Sign off, sections of the same workspace, not tabs.
+                   The bar is a step bar: a click scrolls to the section, and the section in view is marked as you scroll. -->
+              <nav class="v2-tabs v2-steps" aria-label="This visit" id="v2-tabs">
+                <button type="button" id="v2t-review" aria-controls="v2p-review" onclick="v2Tab('review',true)"><span class="v2-tl">Review</span><span class="v2-tm"></span></button>
+                <button type="button" id="v2t-note" aria-controls="v2p-note" onclick="v2Tab('note',true)"><span class="v2-tl">Note</span><span class="v2-tm"></span></button>
+                <button type="button" id="v2t-orders" aria-controls="v2p-orders" onclick="v2Tab('orders',true)"><span class="v2-tl">Action</span><span class="v2-tm"></span></button>
+                <button type="button" id="v2t-sign" aria-controls="v2p-sign" onclick="v2Tab('sign',true)"><span class="v2-tl">Sign off</span><span class="v2-tm"></span></button>
+              </nav>
+              <div class="v2-acts" id="v2-acts">
+                <span id="v2-draft-slot"></span>
+                <span class="v2-finwrap">
+                  <button type="button" class="btn dark" id="v2-fin" aria-haspopup="dialog" aria-expanded="false" aria-controls="v2-finpop" onclick="v2Fin()"><span class="ic" data-pdic="complete"></span><span class="v2-fin-l">Sign off<span class="v2-fin-x"> &amp; finalize</span></span><span class="v2-fin-n" id="v2-fin-n"></span></button>
+                  <div class="v2-finpop" id="v2-finpop" role="dialog" aria-labelledby="v2-finpop-h" hidden>
+                    <div class="v2-fph"><h3 id="v2-finpop-h" tabindex="-1">Sign off &amp; finalize</h3>
+                      <button type="button" class="v2-x" onclick="v2Fin(false)" aria-label="Close">&times;</button></div>
+                    <div id="v2-finpop-b"></div>
+                  </div>
+                </span>
+              </div>
+              <!-- Batch A (1): critical result bar, shown on every tab while a critical result is not reviewed -->
+              <div id="v2-crit" hidden></div>
+            </div>
+          </div>
           <div class="v2-main" id="v2-main">
             <!-- Batch A (2): "Visit signed off" + the next patient, right after a successful sign-off -->
             <section class="v2-card" id="v2-done" aria-labelledby="v2-done-h" hidden></section>
@@ -7758,6 +7791,20 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
             <div class="v2-panel" id="v2p-chart" role="dialog" aria-modal="true" aria-label="Chart" tabindex="-1" hidden></div>
             <button type="button" class="v2-chartx" id="v2-chartx" hidden onclick="v2Tab(V2.flowTab || 'review')" aria-label="Close chart"><span class="ic" data-pdic="close"></span>Close</button>
           </div>
+          <aside class="v2-side" id="v2-side" aria-label="Patient summary">
+            <!-- Ani, 6 Oct: "too many separate big cards". One Patient summary card; its sections are accordion rows. -->
+            <section class="v2-card v2-sum" id="v2-sum" aria-labelledby="v2-sum-h">
+            <h3 class="v2-sum-h" id="v2-sum-h">Patient summary</h3>
+            <!-- Ani, 3 Nov: the intake summary opens the left panel -->
+            <div id="v2-side-today"></div>
+            <section class="v2-sec" id="v2s-meds" data-k="meds"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-meds-b" onclick="v2Sec('meds')"><span class="ic" data-pdic="encounterlog"></span><span class="v2-st">Medications</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-meds-b" hidden></div></section>
+            <section class="v2-sec" id="v2s-hist" data-k="hist"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-hist-b" onclick="v2Sec('hist')"><span class="ic" data-pdic="tasks"></span><span class="v2-st">Past Medical History (PMHx)</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-hist-b" hidden></div></section>
+            <!-- T-037 (Daniel, 31 Oct: investigations belong in the left summary, not in Chart review) -->
+            <section class="v2-sec" id="v2s-inv" data-k="inv"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-inv-b" onclick="v2Sec('inv')"><span class="ic" data-pdic="chartup"></span><span class="v2-st">Investigations</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-inv-b" hidden></div></section>
+            <section class="v2-sec" id="v2s-pend" data-k="pend"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-pend-b" onclick="v2Sec('pend')"><span class="ic" data-pdic="clock"></span><span class="v2-st">Pending</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-pend-b" hidden></div></section>
+            <section class="v2-sec" id="v2s-since" data-k="since"><h4 class="v2-sh"><button type="button" class="v2-sbtn" aria-expanded="false" aria-controls="v2s-since-b" onclick="v2Sec('since')"><span class="ic" data-pdic="reassign"></span><span class="v2-st">Since you last saw</span><span class="v2-sn"></span><span class="v2-sc"></span><span class="ic v2-chev" data-pdic="chevdown"></span></button></h4><div class="v2-sb" id="v2s-since-b" hidden></div></section>
+            </section>
+          </aside>
         </div>
         <!-- v2.5 §3 Patient snapshot (persistent): name, age, gender as recorded, masked PHN, photo,
              allergies in three states, family doctor. No clinical counts or diagnosis badges. -->
@@ -8826,6 +8873,7 @@ function showScreen(name){
     requestAnimationFrame(syncAttnFold);
   }
   window.scrollTo(0,0);
+  if(typeof navAuto === 'function') navAuto();   /* Chart layout (Ani, 4 Nov) */
 }
 
 /* ===== live queue with real state model, mirroring patient app ===== */
@@ -11763,12 +11811,23 @@ function syncCollapseBtn(collapsed){
 function toggleSidebarCollapse(){
   var sb = document.getElementById('sidebar');
   var collapsed = sb.classList.toggle('collapsed');
+  delete sb.dataset.auto;   /* the doctor chose: the chart no longer collapses or expands it on its own (navAuto) */
   try { localStorage.setItem('sc-nav', collapsed ? 'closed' : 'open'); } catch(e){}
   syncCollapseBtn(collapsed);
   /* the icon is Mage's and stays Mage's — it turns around rather than
      being swapped for a Unicode arrow */
   document.getElementById('collapse-btn').title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
 }
+/* Chart layout (Ani, 4 Nov: "at about 1440 the app's own left nav may collapse to icons while a chart is open, if needed, so the center stays
+   at least about 600px"): from 1201 to 1440 px an open chart folds the nav to icons, and leaving the chart opens it again. The doctor's own
+   choice (sc-nav) is never written here; once they press Collapse or Expand themselves, the chart leaves the nav alone. */
+function navAuto(){
+  var sb = document.getElementById('sidebar'); if(!sb) return;
+  var want = typeof v2On === 'function' && v2On() && typeof csOnChart === 'function' && csOnChart() && window.innerWidth > 1200 && window.innerWidth <= 1440;
+  if(want && !sb.classList.contains('collapsed')){ sb.classList.add('collapsed'); sb.dataset.auto = '1'; syncCollapseBtn(true); }
+  else if(!want && sb.dataset.auto){ sb.classList.remove('collapsed'); delete sb.dataset.auto; syncCollapseBtn(false); }
+}
+window.addEventListener('resize', function(){ navAuto(); });
 
 var CATEGORIES = [
   {name:'Family Practice', active:true},
@@ -15825,7 +15884,8 @@ function csRenderSnap(name){
   if(sub) sub.innerHTML = ((r.legal && r.pref && r.legal.split(' ')[0] !== r.pref) ? 'Goes by <b>' + csEsc(r.pref) + '</b> &middot; ' : '') +
     (age ? age + ' &middot; ' : '') + csEsc(r.sex || 'Not recorded') +
     ' &middot; PHN <span class="pc-mono" aria-label="PHN ending ' + csEsc(phn.slice(-3)) + '">' + masked + '</span>' +
-    (nk ? ' &middot; <span class="cs-nkda">' + csIc('complete') + 'No known drug allergies</span>' : '');
+    /* Chart layout (Ani, 4 Nov): the separator is its own span so the left column can put the tick on its own line */
+    (nk ? '<span class="cs-nksep"> &middot; </span><span class="cs-nkda">' + csIc('complete') + 'No known drug allergies</span>' : '');
   /* v2.5 §3: allergies in three distinct states. Named is ink with a symbol (an allergy is not a critical
      result, so not red); "Not recorded" is amber with its word. The named example is v2.5 §8's, demo only. */
   var a0 = CS.allergy[name] || 'nkda', ex = (CS.allergyAdd || {})[name] || [], a = (ex.length || a0 === 'named') ? 'named' : a0,
@@ -18319,7 +18379,8 @@ function v2SumEdges(){
    doesn't scroll: the left column and the main column are each their own scroll box (overscroll contained, and a wheel
    that can't scroll the box under the mouse does nothing, so it never moves the other one). The tab bar sticks to the
    top of the main column. Under 1100 px the columns stack and the page scrolls as before. */
-function v2Wide(){ return v2On() && csOnChart() && !(window.matchMedia && window.matchMedia('(max-width:1100px)').matches); }
+/* Chart layout (Ani, 4 Nov): three columns from 1201 px; under that the chart stacks and the page scrolls (was 1100) */
+function v2Wide(){ return v2On() && csOnChart() && !(window.matchMedia && window.matchMedia('(max-width:1200px)').matches); }
 function v2Fade(){
   var sd = v2El('v2-side'); if(!sd) return;
   var on = v2Wide();
@@ -22637,6 +22698,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 10:45</div>
+  <div class="build-stamp">v2 · build 2026-11-04 10:52</div>
 </body>
 </html>
