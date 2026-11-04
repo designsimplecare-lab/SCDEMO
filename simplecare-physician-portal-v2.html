@@ -18885,7 +18885,11 @@ function v2RenderSide(name){
   var meds = by['Medications'], hist = by['History'], pend = by['Pending'], prev = by['Prior related care'];
   /* count active medicines only, so it matches Chart > Medications (a recommended, not-started one is listed but not counted) */
   var medsN = meds ? meds[1].filter(function(x){ return x[0] !== '@na' && !/not started/.test(x[1] || ''); }).length : 0;
-  v2SetSec('meds', medsN, '', meds ? v2Lines(meds, name) + src(meds) : '<p class="v2-q">No medications recorded in Simple Care.</p>', true);
+  /* physician pass (Ani, 4 Nov: chart Version 2, physician pass, A4/B4: "Medications says 2 but lists 3"): the panel's Medications is built from the same
+     model as Prescribe (rxRecModel), with its groups, the PharmaNet-differs marker and Cedar's lines; the count is the number of lines shown. Both layouts. */
+  var mp = typeof rxMedPanel === 'function' ? rxMedPanel(name) : null;
+  if(mp) v2SetSec('meds', mp.n, '', mp.h, true);
+  else v2SetSec('meds', medsN, '', meds ? v2Lines(meds, name) + src(meds) : '<p class="v2-q">No medications recorded in Simple Care.</p>', true);
   /* T-037 (Daniel, 31 Oct: "Past medical history includes consult reports; surgical history goes under it"; investigations go to the left summary, not Chart review) */
   var px = crPmhx(name, prev), inv = by['Investigations'];
   v2SetSec('hist', v2Count(hist) + px.n, '', (hist ? v2Lines(hist, name) + src(hist) : '<p class="v2-q">No conditions recorded in Simple Care.</p>') + px.h, true);
@@ -18898,7 +18902,9 @@ function v2RenderSide(name){
   if(typeof renderLabOrders === 'function') renderLabOrders();
   (function(){ var po = document.querySelector('#v2s-pend-b .v2-pend-ord'), mt = po && po.querySelector('.lab-orders-mount');
     var none = !mt || /^\s*No (lab )?orders\.?\s*$/.test(mt.textContent); if(po) po.hidden = none;
-    var sec = v2El('v2s-pend'); if(sec) sec.hidden = !pend && none; })();
+    var sec = v2El('v2s-pend'); if(sec) sec.hidden = !pend && none;
+    /* physician pass (Ani, 4 Nov: chart Version 2, physician pass, A4: "Manjit's Pending says 2 but lists 3"): the count includes the orders listed above the rows */
+    var sn = sec && sec.querySelector('.v2-sn'), cnt = v2Count(pend) + (none ? 0 : mt.querySelectorAll('.lo2').length); if(sn) sn.textContent = cnt ? String(cnt) : ''; })();
   /* Since you last saw: the chart's own section (renderSinceLast), moved here; hidden when it is */
   var slv = v2El('slv'), list = L ? (CS_SINCE[name] || csSinceGeneric(name)) : [];
   v2SetSec('since', list.length, '', null, !!(slv && !slv.hidden));
@@ -18917,6 +18923,38 @@ function v2RenderSide(name){
   v2SumEdges();
   var el = v2El('v2-key');
   if(el) v2RenderKey(el, name, by);
+}
+
+/* physician pass A4: the Patient summary's Medications from Prescribe's model (rxRecModel): Due for renewal, PharmaNet differs, Other Simple Care
+   medications, then PharmaNet's medicines not prescribed at Simple. Each line opens Chart > Medications. Cedar's lines follow the T-038 switch. */
+function rxMedPanel(name){
+  if(name !== PC_CURRENT || typeof rxRecModel !== 'function' || typeof rxState !== 'function') return null;
+  var st = rxState(name), M; try { M = rxRecModel(st); } catch(e){ return null; }
+  var plain = function(h){ return String(h || '').replace(/<span class="rp-sub">/g, ' · ').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(); };
+  var line = function(it){
+    var r = it.row, l2 = [];
+    if(it.kind === 'dose' && r) l2.push('<span class="v2-l2 cv2-mdiff">PharmaNet differs: ' + csEsc(r.strength) + ' · ' + csEsc(rxDirs(r)) + '</span>');
+    if(it.kind === 'other') it.others.forEach(function(x){ l2.push('<span class="v2-l2 cv2-mdiff">Also filled from ' + csEsc(x.by) + ', ' + csEsc(x.spec || 'not a Simple Care doctor') + ' · ' + rxDate(rxFilled(x)) + '</span>'); });
+    if(it.side === 'pn' && r) l2.push('<span class="v2-l2">' + csEsc(rxWho(r)) + (it.filled ? ' · filled ' + rxDate(it.filled) : '') + '</span>');
+    var why = it.kind === 'dose' && !it.conf && r && r.why && cdOn('rx') ? '<span class="v2-l2 cv2-mwhy"><span class="kf-src">Cedar: ' + csEsc(v2Cap(r.why.t)) + ' Source: ' + csEsc(r.why.src) + '</span></span>' : '';
+    var main = it.side === 'pn' ? csEsc(it.drug) + (r ? ' ' + csEsc(r.strength) + ' · ' + csEsc(rxDirs(r)) : '') : csEsc(it.drug) + ' ' + csEsc(it.sText);
+    return '<button type="button" class="v2-line cv2-med" onclick="csOpenFull(\'medications\',this)">' +
+      (it.ind ? '<span class="v2-l0">' + csEsc(it.ind) + '</span>' : '') + '<span class="v2-l1">' + main + '</span>' + l2.join('') + why +
+      '<span class="v2-l2">' + csEsc(plain(rxSupply(it))) + '</span><span class="vh"> &mdash; open the source</span>' + csIc('chevr', 'v2-go') + '</button>';
+  };
+  var simple = M.filter(function(it){ return it.side === 'simple'; }), pn = M.filter(function(it){ return it.side === 'pn'; }), h = '';
+  RX_GROUPS.forEach(function(g){
+    var its = simple.filter(function(it){ return it.group === g[0]; }); if(!its.length) return;
+    h += '<h5 class="v2-sub">' + g[1] + '</h5>' + its.map(line).join('');
+  });
+  if(pn.length){
+    var flags = cdOn('rx') && typeof rxCedarFlag === 'function' ? rxCedarFlag(M) : [];
+    h += '<h5 class="v2-sub">PharmaNet: not prescribed at Simple</h5>' +
+      (flags.length ? '<p class="cv2-mflag"><span class="cs-ai-ic" aria-hidden="true">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span><span><b>Cedar flagged:</b> ' + flags.map(csEsc).join(' ') + '</span></p>' : '') +
+      pn.map(line).join('');
+  }
+  if(!M.length) h = '<p class="v2-q">No medications recorded in Simple Care.</p>';
+  return {h:h, n:M.length};
 }
 
 /* ---------- T-037 Chart review and Past medical history (Daniel, 31 Oct review, section 7 "Chart view") ----------
@@ -23361,6 +23399,6 @@ document.addEventListener('keydown', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 17:03</div>
+  <div class="build-stamp">v2 · build 2026-11-04 17:06</div>
 </body>
 </html>
