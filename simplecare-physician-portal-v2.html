@@ -3717,6 +3717,8 @@
   #screen-today .al-row{border-radius:0;border-bottom:1px solid var(--line);}
   #screen-today .al-row:last-child,#screen-today #crit-list .al-row:last-child:has(+ *){border-bottom:1px solid var(--line);}
   #screen-today #attn-tasks .al-row:last-child{border-bottom:0;}
+  #screen-today #alerts-box .al-row{border-bottom:0;}
+  #screen-today #alerts-box .al-row.al-sep{border-bottom:1px solid var(--line);}
   #screen-today .al-row:has(.al-tone.crit),#screen-today .al-row:has(.al-tone.warn){border-radius:0;}
 
   /* the AI summary wears the AI mark's colours: a soft wash from its sky cyan
@@ -4295,7 +4297,7 @@
      on hover and lost its white icon. It stays brand blue, a touch brighter. */
   :root[data-theme="dark"] #screen-today .work-tabs .wt-dark:hover{background:var(--brand);border-color:var(--brand);color:#fff;filter:brightness(1.12);}
   /* Ani, 30 Sep: no divider under the last row of a list; the card edge already ends it */
-  html body #crit-list > .al-row:last-child,
+  html body #crit-list > .al-row:last-child:not(.al-sep),
   html body #screen-today .q-table tbody tr:last-child > td,
   html body #screen-tasks .tk-row:last-child,
   html body .chat-thread-row:last-child{border-bottom:0 !important;box-shadow:none;}
@@ -9888,6 +9890,10 @@ function attnToggle(){ attnOpen = !attnOpen; syncAttnFold(); }
 function syncAttnFold(){
   var box = document.getElementById('attn-clip'); if(!box) return;
   var rows = box.querySelectorAll('.al-row');
+  /* Ani, 4 Nov ("line under Frank should be on top of that"): a line between every two rows, none under the last,
+     whichever list (critical, claims, tasks) each row comes from */
+  var shown = [].filter.call(rows, function(r){ return !r.hidden && getComputedStyle(r).display !== 'none'; });
+  shown.forEach(function(r, i){ r.classList.toggle('al-sep', i < shown.length - 1); });
   var handle = document.getElementById('attn-handle');
   var hidden = rows.length - ATTN_SHOW;
   if(hidden <= 0){
@@ -23667,6 +23673,6 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 17:19</div>
+  <div class="build-stamp">v2 · build 2026-11-04 17:37</div>
 </body>
 </html>
