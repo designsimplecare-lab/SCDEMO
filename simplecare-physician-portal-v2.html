@@ -14587,6 +14587,11 @@ function rxSign(route){
   if(typeof renderMedRail === 'function') renderMedRail(name);
   if(typeof csRenderDocs === 'function' && document.getElementById('cs-docs')) csRenderDocs(name);
   rxRender();
+  /* T-040 (Daniel, 31 Oct 01:56:33: "if I go sign and fax this opens up right automatically. Why? Because the AI is anticipating my next move."):
+     when today's note calls for labs or imaging (rxNextForms), the first of them opens by itself over the panel, in place of the card; any other
+     one stays on the card. Only when the note says so, and never with Cedar off for prescribing. Closing the form comes back here. */
+  var auto = cdOn('rx') && !rxLocked() ? rxNextForms().filter(function(x){ return !(st.nextDone || {})[x.k]; })[0] : null;
+  if(auto && typeof opOpen === 'function'){ RX_ACT.next(auto.k); toast(auto.label.charAt(0).toUpperCase() + auto.label.slice(1) + ' opened, as per your note.'); return; }
   var nx = document.getElementById('rx-next'), d = document.getElementById('rx-done'); if(nx) nx.focus(); else if(d) d.focus();
 }
 /* the Documents list names what it is, the date, then the transmission status (the chart's own rule) */
@@ -22713,6 +22718,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 10:54</div>
+  <div class="build-stamp">v2 · build 2026-11-04 10:55</div>
 </body>
 </html>
