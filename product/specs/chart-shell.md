@@ -783,3 +783,58 @@ Source: `from-daniel/2026-10-31-meeting-review-of-prescribing-orders-chart.md`, 
 4. **Tier words still disagree for Behdis's potassium.** Home and the chart's card say Critical; the Inbox and the review say High. This comes from the open item of 21 Oct, waiting on his critical and flagged-result criteria in Notion. Not changed here.
 5. **The medication links** come from the demo prescribing profile, where some PharmaNet indications are invented. In production, a link needs the prescription's recorded indication, or a source Cedar can cite. **Needs `clinical-safety`.**
 6. **Surgical history and the past fluconazole fills** are invented demo data, and the Chart review sentences are demo text. Cedar's real synthesis is AI Chart Assist delivery work (B-007).
+
+
+## 3 Nov: Cedar switches (T-038)
+
+Source: `from-daniel/2026-10-18-journeys-review-videos.md`, item 2 and row 12 ("a doctor could turn on the AI for the note-taking, but turn it off for the prescriptions … we can activate it where we want it activated"), and the 31 Oct call on visit summaries (doctors "can toggle on or off in their control panel … this is where doctors have autonomy"). B-007 §2 (section-specific assist; manual workflows always stay available). The precedent was T-036's "Visit summaries by Cedar" switch. Light only, checked at 1440 px in headless Chrome (`?nologin=1`). Screenshots are local only. This section is the design record.
+
+### One-screen summary
+1. **Where the switches live.** In the profile menu, the doctor's control panel, under one heading, "Cedar helps with". There are seven switches, and each is per doctor. Every switch is On by default. In the demo the setting is kept in this browser's storage. A short line sits under the group: "Safety checks and chart data always show."
+2. **What Off means.** Cedar does not draft or suggest anything in that area, and the doctor works there by hand. Wherever Cedar's draft or suggestion would have appeared, one quiet line says so: "Cedar is off for [area]. Turn it on in your profile menu."
+3. **What is never switched off.** Safety warnings (the allergy and drug-rule warnings on the pad, kidney function on top), PharmaNet data, results, pending items and critical result flags. These are rules and data, not Cedar drafts.
+
+### The seven switches
+Each switch is a `role="switch"` button with `aria-checked` and a visible On or Off, 44 px tall, with a Mage icon. All seven are built on the same helpers: `CD_AREAS`, `cdOn`, `cdOffLine`, `cdPaint`, `cdToggle` and `cdRefresh`.
+
+| Switch (icon) | Off hides | Stays |
+|---|---|---|
+| **Listening and the note** (edit) | Cedar's listening on the call, so no listening-consent question when a call starts (`pcStartCall`, `scAskConsent`, `scStart`). The Cedar button in the note header. Every Cedar suggestion in the note: from the call (Subjective, Assessment, Plan), and the intake suggestion in Clinical concern. "Accept all". Turning it off during a call stops the listening at once (`scReset`). | The note, typed by hand. Insert. |
+| **Chart review** (eye) | Cedar's synthesized Chart review: "Who this patient is" and "Medications and what they treat" (`crSentences`, `crMedGroups`, `CR_SYN`). The card keeps its heading and shows the one line. | The left Patient summary: Medications, PMHx, Investigations, Pending and Since you last saw. |
+| **Prescribing** (chartnote) | "As per your note" drafts on the pad (`rxPadSync`; a waiting draft leaves the pad and comes back when Cedar is turned on). The "Cedar flagged" note on the PharmaNet list (`rxCedarFlag`). "Next, as per your note" after signing (`rxNextForms`). The line sits above the pad. | The allergy and kidney strip, every pad warning (`rxSafety`), the PharmaNet list, favourites, quick picks and the drug search. |
+| **Lab and imaging orders** (addon) | Lab: Suggested for today, including the suggested panel and Why; sections that open only because Cedar suggested them; the Cedar draft of the instructions to the patient (`lrInstr`). Imaging: the drafted clinical question (`imCq`), its AI mark and the "Cedar drafted it from" line. The field starts empty, and signing no longer asks to accept a draft. | Order panels, favourites, search, Copy to, "From the chart" (the plan's exam), and the chart-prefilled safety data: diabetic, metformin, weight, anticoagulants, eGFR and creatinine with their dates. |
+| **Referrals** (practice) | The suggested specialist (`rfRank`). The drafted reason, clinical summary and request. The suggested supporting documents (`rfSuggest`). The reason starts as today's concern, marked "From today's concern" because it is chart data. The summary and the request start empty. | The directory search, Enter manually, Urgent, the documents list, and the letter preview. |
+| **Documents and letters** (file) | The Cedar draft in Order → Document (`dcDraft`), "Sources the AI used" and "Draft again". The text starts empty. | The type chooser, Send by, and the preview. |
+| **Visit summaries** (chat) | The existing T-036 behaviour, unchanged. It keeps `#pd-vs` and `VS_KEY`. | Note to patient. |
+
+- **Toggling.** Each toggle shows a toast, e.g. "Cedar on for prescribing." or "Cedar off for prescribing. You will write these yourself." Any open panel for that area redraws at once: the pad, the order or referral panel, the document, Chart review, or the note. The visit summary toast now follows the same pattern.
+- **Switching back on mid-form.** A field the doctor has not touched gets Cedar's draft back (`imCdSync`, `rfCdSync`, `dcCdSync`). What the doctor typed is never replaced.
+- **Fields the doctor writes with Cedar off** carry no AI mark (the new state `man` in `opAiMk`).
+- **The menu** is now taller than some windows, so it scrolls inside itself (`#profile-dropdown` max-height). Keyboard shortcuts moved above the group.
+
+### Decisions beyond the brief (for Ani)
+1. **The intake suggestion goes too.** With Listening and the note off, the intake suggestion in Clinical concern is also hidden. Off means "the note is typed by hand", and it is a Cedar draft in the note.
+2. **One line per surface.** Each panel shows the off line once, where its first Cedar item would have been. For example, prescribing shows one line above the pad, and not a second one where the PharmaNet flag would have been.
+
+### Proof
+- All 17 inline scripts pass `node --check`.
+- Headless Chrome, Gloria's chart, 26 checks, all pass:
+  - **All On:** every area shows its Cedar content.
+  - **All Off:** each area hides it and shows its one line. The left summary still renders, and the off line measures 14 px, ink-soft, no fill.
+  - **Safety with Prescribing off:** the allergy warning for amoxicillin against a penicillin allergy still shows, and so do the allergy and kidney strip.
+  - **Imaging with orders off:** the chart-prefilled safety answers are identical to the answers with Cedar on.
+  - **Starting a call with listening off:** no consent question, and no listening.
+  - **Toggling live:** the switch, the stored value, the toast and the immediate redraw all work for prescribing, listening (mid-call), Chart review and referrals.
+  - **Console:** no errors. The local test server returned 404 for two staff photos, which is unrelated.
+- **Harness:** 42 of 129 pass before and after, the same 42 checks (the drawers suite "could not run" on this machine).
+
+### Not done, and open points
+1. **The "AI view".** Daniel described "an AI view … going from start to finish", where everything is done from the moment the call starts. Its meaning is unclear, and nothing was built for it. **Needs Daniel:** what the AI view is, and how it relates to these switches.
+2. **Per doctor, or per visit too?** The switches are per doctor. **Needs Daniel:** should a doctor also be able to turn an area off for one visit, for example for a sensitive call?
+3. **The Cedar note on PharmaNet** (several prescribers of a controlled drug) is hidden with Prescribing off, as briefed. It nudges the doctor and is not a drug rule. **Needs `clinical-safety`:** confirm it is not a safety warning.
+4. **Not covered by any switch:**
+   - the Cedar drafts from a specialist report (T-025, the Action tab, and "Cedar has read it" in Pending);
+   - the Cedar assistant in the top bar;
+   - Home and Inbox (out of scope).
+   **Needs Ani:** do these need a switch?
+5. **No harness check was added.** Test scripts belong to `qa-engineer`. The suggested check: "Prescribing off hides the note draft".

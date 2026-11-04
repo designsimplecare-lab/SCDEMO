@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Ready (waiting for Ani's go) |
+| Status | Built (demo types; Daniel to confirm types) |
 | Type | Design + build |
 | Priority | P1 |
 | Size | M |

@@ -7170,6 +7170,11 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #v2-side .lr-inv .lr-pv i{color:inherit;}
 #screen-patientchart #vcp-results .lr-t .rs-src,#screen-patientchart #vcp-results .lr-t .rs-hist{font-weight:400;}
 #screen-patientchart #vcp-results .lr-t .rs-n{display:block;font-size:16px;}
+/* T-038 (Daniel, 18 Oct and 31 Oct): the Cedar switches in the profile menu, and the one quiet line where Cedar is off (the vs-off look:
+   14px, ink-soft, no tint, no icon). The menu scrolls inside itself when it is taller than the window. */
+#profile-dropdown{max-height:calc(100vh - 84px);overflow-y:auto;overscroll-behavior:contain;}
+#profile-dropdown .pd-cd-safe{margin:2px 14px 6px;font-size:14px;line-height:20px;color:var(--ink-soft);}
+:is(#screen-patientchart,#rx-panel,#op-panel) .cd-off{margin:0 0 12px;font-size:14px;line-height:20px;color:var(--ink-soft);max-width:66ch;}
 </style>
 </head>
 <body>
@@ -7243,9 +7248,22 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
           <button class="pd-item" onclick="toggleProfileMenu();showScreen('feesettings')"><span class="pd-ic" data-pdic="feesettings"></span> Fee settings</button>
           <button class="pd-item" onclick="toggleProfileMenu();showScreen('profile')"><span class="pd-ic" data-pdic="user"></span> View profile</button>
           <!-- Batch A (4): a discreet way in to the shortcuts -->
-          <!-- T-036 (Daniel, 31 Oct): each doctor turns Cedar's visit summaries on or off (doctor autonomy) -->
-          <button class="pd-item pd-sw" id="pd-vs" role="switch" aria-checked="true" onclick="vsToggleSetting()"><span class="pd-ic" data-pdic="file"></span> Visit summaries by Cedar <span class="pd-swv">On</span></button>
           <button class="pd-item" id="pd-kb" onclick="toggleProfileMenu();kbOpen()"><span class="pd-ic" data-pdic="keyboard"></span> Keyboard shortcuts</button>
+          <div class="pd-divider"></div>
+          <!-- T-038 (Daniel, 18 Oct Loom: "turn on the AI for the note-taking, but turn it off for the prescriptions ... activate it where we want it
+               activated"; 31 Oct: doctors "can toggle on or off in their control panel ... this is where doctors have autonomy"): one group of
+               per-doctor switches, all On by default. Off = Cedar does not draft or suggest there. The visit summary switch (T-036) keeps its id and key. -->
+          <p class="pd-k" id="pd-cd-h">Cedar helps with</p>
+          <div role="group" aria-labelledby="pd-cd-h" id="pd-cd">
+          <button class="pd-item pd-sw" id="pd-cd-note" role="switch" aria-checked="true" onclick="cdToggle('note')"><span class="pd-ic" data-pdic="edit"></span> Listening and the note <span class="pd-swv">On</span></button>
+          <button class="pd-item pd-sw" id="pd-cd-review" role="switch" aria-checked="true" onclick="cdToggle('review')"><span class="pd-ic" data-pdic="eye"></span> Chart review <span class="pd-swv">On</span></button>
+          <button class="pd-item pd-sw" id="pd-cd-rx" role="switch" aria-checked="true" onclick="cdToggle('rx')"><span class="pd-ic" data-pdic="chartnote"></span> Prescribing <span class="pd-swv">On</span></button>
+          <button class="pd-item pd-sw" id="pd-cd-orders" role="switch" aria-checked="true" onclick="cdToggle('orders')"><span class="pd-ic" data-pdic="addon"></span> Lab and imaging orders <span class="pd-swv">On</span></button>
+          <button class="pd-item pd-sw" id="pd-cd-ref" role="switch" aria-checked="true" onclick="cdToggle('ref')"><span class="pd-ic" data-pdic="practice"></span> Referrals <span class="pd-swv">On</span></button>
+          <button class="pd-item pd-sw" id="pd-cd-docs" role="switch" aria-checked="true" onclick="cdToggle('docs')"><span class="pd-ic" data-pdic="file"></span> Documents and letters <span class="pd-swv">On</span></button>
+          <button class="pd-item pd-sw" id="pd-vs" role="switch" aria-checked="true" onclick="vsToggleSetting()"><span class="pd-ic" data-pdic="chat"></span> Visit summaries <span class="pd-swv">On</span></button>
+          </div>
+          <p class="pd-cd-safe">Safety checks and chart data always show.</p>
           <div class="pd-divider"></div>
           <!-- Ani, 7 Oct: one way to reach the other portals, the same place in every portal -->
           <p class="pd-k">Switch portal</p>
@@ -10741,6 +10759,53 @@ function renderService(){
       (mail && mail.checked ? ', and it goes out by email.' : '.')
     : 'On service &mdash; your windows are open and you appear in the scheduler.';
 }
+/* ---------- T-038 CEDAR SWITCHES (Daniel, 18 Oct Loom, item 2: "a doctor could turn on the AI for the note-taking, but turn it off for the
+   prescriptions ... we can activate it where we want it activated"; 31 Oct: doctors "can toggle on or off in their control panel ... this is
+   where doctors have autonomy"). One switch per area in the profile menu, per doctor, On by default (demo: this browser's storage).
+   Off = Cedar does not draft or suggest in that area; where its draft or suggestion would have been, one quiet line says so.
+   Never switched off here: safety warnings (allergy and drug rules, kidney function), PharmaNet data, results, pending items and critical
+   flags; they are rules and data, not Cedar drafts. Visit summaries keep T-036's key (VS_KEY), so nothing breaks. ---------- */
+var CD_AREAS = [
+  {k:'note', key:'sc-cedar-note', area:'listening and the note', tail:'You will type the note yourself.'},
+  {k:'review', key:'sc-cedar-review', area:'chart review', tail:'The Patient summary still shows the chart.'},
+  {k:'rx', key:'sc-cedar-rx', area:'prescribing', tail:'You will write these yourself.'},
+  {k:'orders', key:'sc-cedar-orders', area:'lab and imaging orders', tail:'You will write these yourself.'},
+  {k:'ref', key:'sc-cedar-ref', area:'referrals', tail:'You will write these yourself.'},
+  {k:'docs', key:'sc-cedar-docs', area:'documents and letters', tail:'You will write these yourself.'},
+  {k:'vs', key:'sc-visit-summary-on', area:'visit summaries', tail:'Cedar will not draft them.'}
+];
+function cdArea(k){ return CD_AREAS.filter(function(a){ return a.k === k; })[0] || null; }
+function cdOn(k){ var a = cdArea(k); if(!a) return true; try { return localStorage.getItem(a.key) !== '0'; } catch(e){ return true; } }
+function cdOffLine(k){ var a = cdArea(k); return a ? '<p class="cd-off">Cedar is off for ' + a.area + '. Turn it on in your profile menu.</p>' : ''; }
+function cdPaint(){
+  CD_AREAS.forEach(function(a){
+    var b = document.getElementById(a.k === 'vs' ? 'pd-vs' : 'pd-cd-' + a.k); if(!b) return;
+    var on = cdOn(a.k); b.setAttribute('aria-checked', on ? 'true' : 'false');
+    var v = b.querySelector('.pd-swv'); if(v) v.textContent = on ? 'On' : 'Off';
+  });
+}
+function cdToggle(k){
+  var a = cdArea(k); if(!a) return;
+  if(k === 'vs' && typeof vsToggleSetting === 'function'){ vsToggleSetting(); return; }
+  try { localStorage.setItem(a.key, cdOn(k) ? '0' : '1'); } catch(e){}
+  cdPaint();
+  toast(cdOn(k) ? 'Cedar on for ' + a.area + '.' : 'Cedar off for ' + a.area + '. ' + a.tail);
+  cdRefresh(k);
+}
+/* whatever is open for that area redraws at once (as vsToggleSetting does for the Note to patient drawer) */
+function cdRefresh(k){
+  try {
+    if(k === 'note'){
+      if(!cdOn('note') && scState !== 'off') scReset();   /* stop listening now; nothing more is drafted */
+      renderScribe(); if(typeof csRenderAI === 'function') csRenderAI(); if(typeof v2SyncHead === 'function') v2SyncHead();
+    }
+    if(k === 'review' && PC_CURRENT && typeof v2RenderSide === 'function' && document.getElementById('v2-key')) v2RenderSide(PC_CURRENT);
+    if(k === 'rx' && typeof RX_UI !== 'undefined' && RX_UI.open) rxRender();
+    if(typeof opIsOpen === 'function' && opIsOpen() && ((k === 'orders' && /^(lab|img)$/.test(OP.kind)) || (k === 'ref' && OP.kind === 'ref') || (k === 'docs' && OP.kind === 'doc'))) opRender();
+  } catch(e){}
+}
+cdPaint();
+
 /* ============================================================
    AMBIENT SCRIBE
    The AI listens, drafts the note, and proposes orders and tasks.
@@ -10830,7 +10895,10 @@ function scReset(){
   scState = 'off'; scIdx = 0; scSeen = []; scDone = {};
   renderScribe();
 }
-function scAskConsent(){ scState = 'consent'; renderScribe(); }
+function scAskConsent(){
+  if(!cdOn('note')){ toast('Cedar is off for listening and the note. Turn it on in your profile menu.'); return; }   /* T-038: no listening, so no consent to ask */
+  scState = 'consent'; renderScribe();
+}
 function scDecline(){
   scState = 'off'; renderScribe();
   toast('Cedar stays off');
@@ -13029,11 +13097,12 @@ function pcStartCall(){
     document.querySelectorAll('.pc-route-t').forEach(function(e){ e.textContent = pcRouteWord(c.route); }); };
   paint(); pcCallSum();
   clearInterval(pcInt); pcInt=setInterval(function(){ pcSecs++; c.secs = pcSecs; paint(); },1000);
-  /* Ani, 8 Oct: lots of AI for notes. Cedar starts listening with the call when consent is on file; otherwise it asks. */
+  /* Ani, 8 Oct: lots of AI for notes. Cedar starts listening with the call when consent is on file; otherwise it asks.
+     T-038: only when Cedar is on for listening and the note; off, the call starts with no listening and no consent question. */
   try{
-    if(typeof scState !== 'undefined' && scState === 'off' && PC_CURRENT && typeof csVisit === 'function'){
+    if(typeof scState !== 'undefined' && scState === 'off' && PC_CURRENT && typeof csVisit === 'function' && cdOn('note')){
       var noCon = !csVisit(PC_CURRENT).consent;   /* Daniel, 12 Oct: consent lives only here now, where Cedar starts listening */
-      setTimeout(function(){ if(PC_ON_CALL && scState === 'off'){ if(noCon) scAskConsent(); else scStart(); } }, 1300);
+      setTimeout(function(){ if(PC_ON_CALL && scState === 'off' && cdOn('note')){ if(noCon) scAskConsent(); else scStart(); } }, 1300);
     }
   }catch(e){}
 }
@@ -14514,6 +14583,8 @@ function rxNoteDrugs(){
 /* what the doctor decided today arrives on the pad as a Cedar draft: Add, Change or Ignore */
 function rxPadSync(st){
   st.padSeen = st.padSeen || {};
+  /* T-038: Cedar off for prescribing: no "As per your note" drafts; a waiting draft leaves the pad (it comes back if Cedar is turned on) */
+  if(!cdOn('rx')){ st.orders = st.orders.filter(function(o){ if(o.ai && !o.sent && o.src === 'visit'){ delete st.padSeen[o.key]; return false; } return true; }); return; }
   (RX_FROMVISIT[PC_CURRENT] || []).concat(rxNoteDrugs()).forEach(function(s){
     if(st.padSeen[s.key]) return; st.padSeen[s.key] = 1;
     var lib = rxLib(s.key); if(!lib) return;
@@ -14744,7 +14815,7 @@ function rxRecHtml(st){
     h += '</table>';
   }
   if(pn.length){
-    var flags = rxCedarFlag(M), lead = !simple.length;
+    var flags = cdOn('rx') ? rxCedarFlag(M) : [], lead = !simple.length;   /* T-038: off, no Cedar note; the PharmaNet rows stay */
     h += '<div class="rp-pnh' + (lead ? ' lead' : '') + '"><h4>' + (lead ? srcCol : srcCol + ': not prescribed at Simple') + ' <span class="rp-cnt">' + pn.length + '</span></h4>' +
       '<p class="rp-rs">' + (lead ? 'No Simple Care history. Just the list, as per ' + srcCol + '. Verify each one with the patient.' : 'Prescribed elsewhere. Same order and the same choices as above.') + '</p></div>';
     if(flags.length) h += '<div class="rp-flag" role="note"><span class="rp-cm" aria-hidden="true">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span><div><p><b>Cedar flagged:</b> ' + flags.map(csEsc).join(' ') + '</p><p class="rp-rs">Source: ' + csEsc(srcCol) + ' dispense history</p></div></div>';
@@ -14832,7 +14903,7 @@ function rxNextForms(){
   return out;
 }
 function rxNextHtml(st){
-  if(!st.status.length || rxLocked()) return '';
+  if(!st.status.length || rxLocked() || !cdOn('rx')) return '';   /* T-038: off, Cedar does not anticipate the next order */
   var N = rxNextForms().filter(function(x){ return !(st.nextDone || {})[x.k]; }); if(!N.length) return '';
   return '<section class="rp-card rp-next" aria-labelledby="rx-nx-h"><h3 id="rx-nx-h">Next, as per your note</h3>' + N.map(function(x, i){
     return '<p class="rp-rs">“' + csEsc(x.quote.length > 140 ? x.quote.slice(0, 137) + '…' : x.quote) + '”</p><button type="button" class="btn' + (i ? '' : ' dark') + '"' + (i ? '' : ' id="rx-next"') + ' data-fk="next' + x.k + '" onclick="rxAct(\'next\',\'' + x.k + '\')">' + rxIc('arrowup') + 'Open the ' + x.label + '</button>';
@@ -14842,6 +14913,7 @@ function rxPadHtml(st){
   rxPadSync(st);
   var ords = rxPadOrders(st), stops = rxStops(st), sf = rxSafety(st), h = '';
   if(st.status.length) h += '<section class="rp-card" id="rx-status" aria-label="Sent today">' + rxStatusHtml(st) + '</section>' + rxNextHtml(st);
+  if(!cdOn('rx') && !rxLocked()) h += cdOffLine('rx');   /* T-038 */
   h += '<article class="rp-paper" aria-label="Prescription pad"><header class="rp-ph2"><span class="rp-rx" aria-hidden="true">R<i>x</i></span><p class="rp-title">Prescription</p><p class="rp-dt2">' + rxDate(new Date()) + ' ' + new Date().getFullYear() + '</p></header>';
   h += ords.length || stops.length ? '<ol class="rp-pls">' + ords.map(function(o, i){ return rxPadLine(st, o, i, sf); }).join('') +
       stops.map(function(x){ return '<li class="rp-pl stop"><div class="rp-pb2"><p class="rp-pk"><i>Stop</i></p><p class="rp-pd"><b>' + csEsc(rxRowTitle(x)) + '</b></p><p class="rp-rs">' + (x.out ? 'Chart note only; prescribed by ' + csEsc(x.by) + '.' : 'A note goes to the pharmacy.') + '</p></div></li>'; }).join('') + '</ol>'
@@ -16173,6 +16245,8 @@ function csRenderAI(){
   var el = document.getElementById('cs-ai'); if(!el || !PC_CURRENT) return;
   var r = csRow(), signed = !!(r && r.signed);
   var a = csAI(PC_CURRENT), S = CS.sc[PC_CURRENT];
+  /* T-038: Cedar off for listening and the note: no Cedar text in the note at all (from the call or the intake); the doctor types it */
+  if(!cdOn('note')){ el.innerHTML = signed ? '' : cdOffLine('note'); NS_SECS.forEach(function(k){ var sl = document.getElementById('ns-ai-' + k); if(sl) sl.innerHTML = ''; }); return; }
   el.innerHTML = !signed && S && scState === 'live' ? '<p class="cs-ai-done">' + csIc('clock') + 'Cedar is listening. Drafts appear in each section.</p>' : '';
   NS_SECS.forEach(function(k){
     var slot = document.getElementById('ns-ai-' + k); if(!slot) return;
@@ -16253,6 +16327,7 @@ function nsAIEditDone(k, add){
 
 /* the scribe drafts into per-section suggestions, never straight into the doctor's note (was: n.value += ...) */
 scStart = function(){
+  if(!cdOn('note')) return;   /* T-038 */
   var cv = PC_CURRENT && csVisit(PC_CURRENT); if(cv && !cv.consent) cv.consent = 'Verbal, today ' + csNow();   /* consent given at the start of listening */
   scState = 'live'; scIdx = 0; scSeen = []; scDone = {};
   CS.sc[PC_CURRENT] = {};
@@ -16289,8 +16364,8 @@ renderScribe = function(){
   csRenderScribe0();
   /* Ani, 5 Oct: off = a small "Scribe" toggle in the note header; the scribe panel shows only once it is in use */
   var blk = document.getElementById('sc-block'), sb = document.getElementById('cs-scribe-btn'), rr = csRow();
-  if(blk) blk.hidden = scState === 'off';
-  if(sb) sb.hidden = scState !== 'off' || !!(rr && rr.signed) || (PC_CURRENT && csNoShow(PC_CURRENT));
+  if(blk) blk.hidden = scState === 'off' || !cdOn('note');
+  if(sb) sb.hidden = !cdOn('note') || scState !== 'off' || !!(rr && rr.signed) || (PC_CURRENT && csNoShow(PC_CURRENT));
   var sub = document.getElementById('sc-sub');
   if(sub && scState === 'live') sub.textContent = 'Recording with consent. Suggestions appear in Subjective, Assessment and Plan, marked as AI, until you accept them.';
   csRenderAI();
@@ -18629,6 +18704,8 @@ function v2RenderKey(el, name, by){
   var pend = by['Pending'];
   el.hidden = false;
   CS.keyOpen = CS.keyOpen || {};
+  /* T-038: Cedar off for chart review: no synthesized picture; the left Patient summary keeps every chart fact */
+  if(!cdOn('review')){ el.innerHTML = '<div class="v2-ch"><h3 id="v2-key-h">Chart review</h3></div>' + cdOffLine('review'); return; }
   /* T-037 (Daniel, 31 Oct): Chart review is a short, synthesized picture of the patient, today's concern first: who this patient is, and the medications with the concerns they treat. History, past visits, investigations and consult reports moved
      to the left Patient summary ("no repetition"). Cedar's mark and the AI label stay (AI text is marked); every line names its source and opens it. */
   var groups = crMedGroups(name), sents = crSentences(name, groups);
@@ -20234,7 +20311,7 @@ function nsFocusGap(){
 }
 /* AI text still waiting for Accept / Reject: the intake suggestion and any scribe section */
 function nsAIList(){
-  if(!PC_CURRENT) return [];
+  if(!PC_CURRENT || !cdOn('note')) return [];   /* T-038: off, nothing of Cedar's is waiting */
   var out = [], a = csAI(PC_CURRENT), S = CS.sc[PC_CURRENT] || {};
   if(a.state === 'pending' && a.text) out.push('reason');
   ['subjective', 'objective', 'assessment', 'plan'].forEach(function(k){ var x = S[k]; if(x && !x.held && (x.state === 'pending' || x.state === 'editing') && x.text) out.push(k); });
@@ -21018,7 +21095,7 @@ function vsPaintSetting(){ var b = document.getElementById('pd-vs'); if(!b) retu
 function vsToggleSetting(){
   try { localStorage.setItem(VS_KEY, vsOn() ? '0' : '1'); } catch(e){}
   vsPaintSetting();
-  toast(vsOn() ? 'Visit summaries on. Cedar drafts one for you to check and sign.' : 'Visit summaries off. Cedar will not draft them.');
+  toast(vsOn() ? 'Cedar on for visit summaries. It drafts one for you to check and sign.' : 'Cedar off for visit summaries. Cedar will not draft them.');   /* T-038: one toast pattern */
   if(SD.ms && sdEl('ms-overlay') && sdEl('ms-overlay').classList.contains('show')){ if(!vsOn()) SD.ms.mode = 'note'; msRenderBody(); }
 }
 function vsSubject(){ return 'Dr. Pannozzo – Visit Summary – ' + new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}); }
@@ -21149,6 +21226,7 @@ function opAllergy(name){
 function opNoteOpen(){ var n = document.getElementById('vc-note-input'); return !!(n && !n.readOnly && typeof nsAppend === 'function'); }
 function opMk(kind, text){ return '<span class="op-mk' + (kind === 'ai' ? '' : ' ' + kind) + '">' + rxIc(kind === 'ai' ? 'copilot' : kind === 'ok' ? 'complete' : 'file') + csEsc(text) + '</span>'; }
 function opAiMk(state, fk, acceptFn){
+  if(state === 'man') return '';   /* T-038: Cedar off, the doctor writes the field; no AI mark */
   /* "AI draft" until the doctor accepts or edits it (spec 2, common) */
   if(state === 'draft') return opMk('ai', 'AI draft') + '<button type="button" class="btn op-q" data-fk="' + fk + '" onclick="' + acceptFn + '">' + rxIc('complete') + 'Accept</button>';
   if(state === 'ok') return opMk('ok', 'Accepted');
@@ -21579,7 +21657,7 @@ function lrInstrDraft(s){
   else if(sel['gtt-c'] || sel['gtt-n']) t.push('Fasting test: please do not eat before this test. The lab will tell you how long it takes.');
   return t.join(' ');
 }
-function lrInstr(s){ return s.instrEdited ? s.instr : lrInstrDraft(s); }
+function lrInstr(s){ return s.instrEdited ? s.instr : cdOn('orders') ? lrInstrDraft(s) : ''; }   /* T-038: off, no Cedar draft */
 function lrOvRow(k, label, value, empty, body){
   var open = !!(OP.st.ovr || {})[k];
   return '<div class="op-ovr"><button type="button" class="op-ovb" data-fk="ov-' + k + '" aria-expanded="' + open + '" aria-controls="lr-ov-' + k + '" onclick="lrOv(\'' + k + '\')">' +
@@ -21618,10 +21696,10 @@ function lrOverviewHtml(){
   return h + '</div></section>';
 }
 /* sections the doctor will likely use open (Cedar's suggestions, what is chosen); the rest closed (Daniel: anticipatory) */
-function lrSugIds(){ var ai = LR_AI[PC_CURRENT]; if(!ai) return []; var ids = ai.sug.map(function(x){ return x.id; }); if(ai.panel){ var p = LR_PANELS.filter(function(x){ return x.k === ai.panel.k; })[0]; if(p) ids = ids.concat(p.ids); } return ids; }
+function lrSugIds(){ var ai = cdOn('orders') ? LR_AI[PC_CURRENT] : null; if(!ai) return []; var ids = ai.sug.map(function(x){ return x.id; }); if(ai.panel){ var p = LR_PANELS.filter(function(x){ return x.k === ai.panel.k; })[0]; if(p) ids = ids.concat(p.ids); } return ids; }
 function lrSecLikely(s){ var ids = lrSugIds(); return s.groups.some(function(g){ return g.items.some(function(it){ return ids.indexOf(it.id) > -1; }); }); }
 function lrMain(){
-  var s = OP.st, name = PC_CURRENT, ai = LR_AI[name], h = '', sel = lrSel(), miss = lrMissing();
+  var s = OP.st, name = PC_CURRENT, ai = cdOn('orders') ? LR_AI[name] : null, h = '', sel = lrSel(), miss = lrMissing();   /* T-038 */
   OP._penShown = false;
   if(s.preFrom) h += '<p class="op-note op-pre">' + opMk('chart', 'Ticked for you') + ' ' + csEsc(sel.map(lrShort).join(', ')) + '. ' + csEsc(s.preFrom) + '</p>';
   /* 1. the overview: copy to, instructions, diagnosis, medications, standing orders */
@@ -21629,6 +21707,7 @@ function lrMain(){
   /* 2. search */
   h += '<div class="op-f op-search"><label for="lr-q" class="op-vh">Add a test</label><input type="search" id="lr-q" data-fk="q" autocomplete="off" placeholder="Add a test: TSH, ferritin, urine culture" value="' + csEsc(s.q) + '" oninput="lrSearch(this.value)"></div>' +
     '<div class="op-sr" id="lr-sr">' + lrSearchHtml() + '</div>';
+  if(!cdOn('orders')) h += cdOffLine('orders');   /* T-038: in place of Suggested for today */
   /* 3. Cedar's suggested tests in one horizontal row, and a suggested panel; nothing is added until tapped */
   if(ai && (ai.sug.length || ai.panel)){
     var allIn = ai.sug.every(function(x){ return lrHas(x.id); }), pp = ai.panel ? LR_PANELS.filter(function(x){ return x.k === ai.panel.k; })[0] : null;
@@ -21849,7 +21928,7 @@ function imFresh(name){
   var dm = metf || /type 2 diabetes/i.test(((PT_LAST[name] || {}).note || {}).A || '');
   var wt = ((PT_READINGS[name] || {}).wt || []), w = wt.length ? String(wt[wt.length - 1][1]) : '';
   var anti = meds.filter(function(m){ return IM_ANTI[m.drug]; });
-  return {mod:'', exam:'', prio:'routine', cq:imCq(name), cqSt:'draft', note:true, site:{any:false, spec:''}, prev:'', copies:'', open:{},
+  return {mod:'', exam:'', prio:'routine', cq:cdOn('orders') ? imCq(name) : '', cqSt:cdOn('orders') ? 'draft' : 'man', note:true, site:{any:false, spec:''}, prev:'', copies:'', open:{},
     safe:{diab:dm ? 'yes' : '', diabFrom:dm ? (metf ? 'On metformin; type 2 diabetes on the chart' : 'Type 2 diabetes on the chart') : '',
       metf:metf ? 'yes' : 'no', metfFrom:metf ? 'On the medication list' : 'Not on the medication list',
       breast:'', preg:'', lmp:'', gpa:'', ht:'', wt:w, wtFrom:w ? 'Patient-reported, ' + wt[wt.length - 1][0] : '', rxn:'', rxnDet:'',
@@ -21876,8 +21955,15 @@ function imExamIn(v){
 }
 function imSafe(k, v){ var sf = OP.st.safe; sf[k] = sf[k] === v ? '' : v; if(k === 'diab') sf.diabFrom = ''; if(k === 'metf') sf.metfFrom = ''; if(k === 'anti') sf.antiFrom = ''; opRender(); }   /* a second press clears */
 function imSafeIn(k, v){ OP.st.safe[k] = v; if(k === 'wt') OP.st.safe.wtFrom = ''; opSoft(); }
+/* T-038: Cedar switched while the form is open: an untouched Cedar draft leaves; an empty field gets the draft back when Cedar is on */
+function imCdSync(s){
+  if(!s) return;
+  if(!cdOn('orders') && s.cqSt === 'draft'){ s.cq = ''; s.cqSt = 'man'; }
+  else if(cdOn('orders') && s.cqSt === 'man' && !s.cq.trim()){ s.cq = imCq(PC_CURRENT); s.cqSt = 'draft'; }
+}
 function imCqIn(v){
-  var s = OP.st; s.cq = v; s.cqSt = 'edited';
+  var s = OP.st; s.cq = v; if(s.cqSt === 'man') { opSoft(); var w0 = document.getElementById('im-wc'); if(w0) w0.innerHTML = imWcHtml(v); return; }
+  s.cqSt = 'edited';
   var mk = document.getElementById('im-cq-mk'); if(mk && !mk.getAttribute('data-ed')){ mk.setAttribute('data-ed', '1'); mk.innerHTML = opMk('ok', 'Edited by you'); paintPd(mk); }
   var wc = document.getElementById('im-wc'); if(wc) wc.innerHTML = imWcHtml(v);
   opSoft();
@@ -21910,6 +21996,7 @@ function imExamList(){
 }
 var IM_LABN = {egfr:'eGFR', cr:'Creatinine', inr:'INR', plt:'Platelets'};
 function imMissing(){
+  imCdSync(OP.st);
   var s = OP.st, sf = s.safe, k = imAsk(s), out = [];
   if(!s.mod) out.push(['Choose a modality', 'mod-X-Ray']);
   if(!s.exam.trim()) out.push(['Exam requested', 'exam']);
@@ -21964,6 +22051,7 @@ function imFold(k, title, sum, body){
     (sum ? '<span class="op-cnt op-cq">' + csEsc(sum) + '</span>' : '') + rxIc('chevdown') + '</button></h3><div class="op-sbd" id="im-fold-' + k + '"' + (open ? '' : ' hidden') + '>' + (open ? body : '') + '</div></section>';
 }
 function imMain(){
+  imCdSync(OP.st);
   var s = OP.st, sf = s.safe, name = PC_CURRENT, k = imAsk(s), fr = IM_FROM[name], h = '', miss = imMissing();
   if(fr && !(s.mod === fr.mod && s.exam === fr.exam)) h += '<section class="op-card" aria-labelledby="im-fr-h"><h3 id="im-fr-h">From the chart</h3><ul class="op-sug"><li><div><b>' + csEsc(fr.mod + ': ' + fr.exam) + '</b><p class="op-why">' + csEsc(fr.why) + '</p><p class="op-src">' + csEsc(fr.src) + '</p></div>' +
     '<button type="button" class="btn" data-fk="usefr" onclick="imUseFrom()">' + rxIc('plus') + 'Use it</button></li></ul></section>';
@@ -21978,9 +22066,9 @@ function imMain(){
       return '<button type="button" class="op-sb" data-fk="pr-' + p[0] + '" aria-pressed="' + (s.prio === p[0]) + '" onclick="imSet(\'prio\', \'' + p[0] + '\')">' + p[1] + '</button>'; }).join('') + '</div></section>';
   /* 2. ONE field: the clinical question is the pertinent history (Daniel, 31 Oct) */
   h += '<section class="op-card" aria-labelledby="im-cq-h"><div class="op-hrow"><h3 id="im-cq-h"><label for="im-cq">Pertinent history / medications</label></h3><span id="im-cq-mk" class="op-lrow">' + opAiMk(s.cqSt, 'cqok', 'imCqOk()') + '</span></div>' +
-    '<p class="op-note">The clinical question for the radiologist, in one line.</p>' +
+    '<p class="op-note">The clinical question for the radiologist, in one line.</p>' + (s.cqSt === 'man' && !cdOn('orders') ? cdOffLine('orders') : '') +
     '<textarea id="im-cq" rows="2" data-fk="cq" aria-describedby="im-wc" oninput="imCqIn(this.value)">' + csEsc(s.cq) + '</textarea>' +
-    '<p class="op-src"><span id="im-wc">' + imWcHtml(s.cq) + '</span> · Cedar drafted it from: Intake, today' + (PT_LAST[name] ? '; Visit note, ' + csEsc(PT_LAST[name].date.replace(/, 2026$/, '')) : '') + '; Medication list</p></section>';
+    '<p class="op-src"><span id="im-wc">' + imWcHtml(s.cq) + '</span>' + (s.cqSt === 'man' ? '' : ' · Cedar drafted it from: Intake, today' + (PT_LAST[name] ? '; Visit note, ' + csEsc(PT_LAST[name].date.replace(/, 2026$/, '')) : '') + '; Medication list') + '</p></section>';
   /* 3. safety: only what applies to this exam and this patient (no card at all when nothing applies) */
   if(s.mod && (k.contrast || k.preg || k.breast || k.size)){
     h += '<section class="op-card" aria-labelledby="im-sf-h"><h3 id="im-sf-h">Patient safety risk assessment</h3>';
@@ -22137,7 +22225,7 @@ var RF_REQ = {
 };
 /* Cedar's pick: the specialist already following the patient if they take referrals, then taking referrals, then the nearest */
 function rfRank(name){
-  var c = RF_CTX[name]; if(!c) return [];
+  var c = RF_CTX[name]; if(!c || !cdOn('ref')) return [];   /* T-038: off, no suggested specialist; the directory search stays */
   var rk = {yes:0, wait:1, no:2};
   return RF_DIR.map(function(d, i){ return {d:d, i:i, km:rfKm(name, d), follow:c.follow === d.n}; }).filter(function(x){ return x.d.s === c.s; })
     .sort(function(a, b){ return (b.follow && a.d.take !== 'no') - (a.follow && b.d.take !== 'no') || rk[a.d.take] - rk[b.d.take] || (a.km || 999) - (b.km || 999); });
@@ -22157,6 +22245,7 @@ function rfDocs(name){
 }
 /* Cedar suggests the source reports that matter for this referral, with a reason; it never ticks them, and never suggests the visit note */
 function rfSuggest(name, s){
+  if(!cdOn('ref')) return {};   /* T-038 */
   var docs = rfDocs(name), spec = rfWho(s).s || (RF_CTX[name] || {}).s, sug = {};
   var labs = docs.filter(function(d){ return d.k === 'lab' && d.flagged.length; });
   if(labs[0]) sug[labs[0].id] = 'The source report for ' + labs[0].flagged.join(' and ') + ' (' + labs[0].d.toLowerCase() + ').';
@@ -22182,9 +22271,26 @@ function rfSumDraft(name){
 }
 function rfFresh(name){
   var d = rfSumDraft(name), c = RF_CTX[name];
-  return {who:null, q:'', manual:false, man:{n:'', s:'', c:'', city:'', f:''}, urg:false,
+  return rfCdSync({who:null, q:'', manual:false, man:{n:'', s:'', c:'', city:'', f:''}, urg:false,
     reason:c ? c.reason : (sdRow() || {}).concern || '', reasonFrom:!c, reasonSt:c ? 'draft' : 'ok', reasonSrc:c ? c.reasonSrc : [],
-    sum:d.t, sumSrc:d.src, sumSt:'draft', req:RF_REQ[name] || 'Please assess and advise on investigation and management.', reqSt:'draft', att:{}, note:true};
+    sum:d.t, sumSrc:d.src, sumSt:'draft', req:RF_REQ[name] || 'Please assess and advise on investigation and management.', reqSt:'draft', att:{}, note:true});
+}
+/* T-038: Cedar off for referrals: no drafted reason, summary or request. The reason starts as today's concern (chart data, marked so);
+   switched back on, a field still untouched gets Cedar's draft again. */
+function rfCdSync(s){
+  if(!s) return s;
+  var concern = (sdRow() || {}).concern || '';
+  if(!cdOn('ref')){
+    if(s.reasonSt === 'draft'){ s.reason = concern; s.reasonFrom = true; s.reasonSt = 'man'; s.reasonSrc = []; }
+    if(s.sumSt === 'draft'){ s.sum = ''; s.sumSrc = []; s.sumSt = 'man'; }
+    if(s.reqSt === 'draft'){ s.req = ''; s.reqSt = 'man'; }
+  } else {
+    var f = null, fr = function(){ return f || (f = rfFresh(PC_CURRENT)); };
+    if(s.reasonSt === 'man' && s.reasonFrom && s.reason === concern){ s.reason = fr().reason; s.reasonFrom = fr().reasonFrom; s.reasonSt = fr().reasonSt; s.reasonSrc = fr().reasonSrc; }
+    if(s.sumSt === 'man' && !s.sum.trim()){ s.sum = fr().sum; s.sumSrc = fr().sumSrc; s.sumSt = 'draft'; }
+    if(s.reqSt === 'man' && !s.req.trim()){ s.req = fr().req; s.reqSt = 'draft'; }
+  }
+  return s;
 }
 function rfQ(v){ OP.st.q = v; var el = document.getElementById('rf-who'); if(el){ el.innerHTML = rfWhoList(); paintPd(el); } }
 function rfPickWho(i){ var s = OP.st; s.who = i; s.manual = false; s.q = ''; OP.focusNext = 'whochg'; opRender(); }
@@ -22217,6 +22323,7 @@ function rfWhoList(){
   }).join('') + '</ul>';
 }
 function rfMissing(){
+  rfCdSync(OP.st);
   var s = OP.st, w = rfWho(s), out = [];
   if(!w.n.trim()) out.push(s.manual ? 'Write the specialist’s name.' : 'Choose a specialist, or enter one manually.');
   else if(!w.s.trim()) out.push('Write the specialty.');
@@ -22229,7 +22336,9 @@ function rfMissing(){
   return out;
 }
 function rfMain(){
+  rfCdSync(OP.st);
   var s = OP.st, name = PC_CURRENT, w = rfWho(s), R = rfRank(name), h = '';
+  if(!cdOn('ref')) h += cdOffLine('ref');   /* T-038 */
   h += '<section class="op-card" aria-labelledby="rf-sp-h"><h3 id="rf-sp-h">Specialist</h3>';
   if(s.who != null){
     h += '<div class="op-chosen"><div><b>' + csEsc(w.n + ' · ' + w.s) + '</b><span>' + csEsc(rfDirLine(name, w) + ' · fax ' + w.f) + '</span></div><button type="button" class="btn" data-fk="whochg" onclick="rfChange()">' + rxIc('edit') + 'Change</button></div>';
@@ -22256,13 +22365,13 @@ function rfMain(){
     '<div class="op-f op-mt"><div class="op-lrow"><label for="rf-reason">Reason for referral</label>' + (s.reasonFrom && s.reason ? opMk('chart', 'From today’s concern') : '<span id="rf-reason-mk" class="op-lrow">' + opAiMk(s.reasonSt, 'reasonok', 'rfOk(\'reason\')') + '</span>') + '</div>' +
       '<textarea id="rf-reason" rows="2" data-fk="reason" oninput="rfIn(\'reason\', this.value)">' + csEsc(s.reason) + '</textarea>' + (s.reasonSrc.length ? '<p class="op-src">Cedar used: ' + csEsc(s.reasonSrc.join('; ')) + '</p>' : '') + '</div>' +
     '<div class="op-f op-mt"><div class="op-lrow"><label for="rf-sum">Clinical summary</label><span id="rf-sum-mk" class="op-lrow">' + opAiMk(s.sumSt, 'sumok', 'rfOk(\'sum\')') + '</span></div>' +
-      '<textarea id="rf-sum" rows="5" data-fk="sum" oninput="rfIn(\'sum\', this.value)">' + csEsc(s.sum) + '</textarea><p class="op-src">Cedar used: ' + csEsc(s.sumSrc.join('; ')) + '</p></div>' +
+      '<textarea id="rf-sum" rows="5" data-fk="sum" oninput="rfIn(\'sum\', this.value)">' + csEsc(s.sum) + '</textarea>' + (s.sumSrc.length ? '<p class="op-src">Cedar used: ' + csEsc(s.sumSrc.join('; ')) + '</p>' : '') + '</div>' +
     '<div class="op-f op-mt"><div class="op-lrow"><label for="rf-req">Request</label><span id="rf-req-mk" class="op-lrow">' + opAiMk(s.reqSt, 'reqok', 'rfOk(\'req\')') + '</span></div>' +
       '<p class="op-note" id="rf-req-h">What you specifically want the specialist to do</p>' +
       '<textarea id="rf-req" rows="2" data-fk="req" aria-describedby="rf-req-h" oninput="rfIn(\'req\', this.value)">' + csEsc(s.req) + '</textarea></div></section>';
   var docs = rfDocs(name), sug = rfSuggest(name, s), n = Object.keys(s.att).length;
   h += '<section class="op-card" aria-labelledby="rf-at-h"><div class="op-hrow"><h3 id="rf-at-h">Supporting documents</h3><span class="op-note" aria-live="polite">' + n + ' of 5</span></div>' +
-    '<p class="op-note">Specialists check the source documents: the lab report, the imaging report, a consult letter. Cedar suggests the ones that matter and says why; none is ticked for you.</p><ul class="op-att">' +
+    '<p class="op-note">Specialists check the source documents: the lab report, the imaging report, a consult letter.' + (cdOn('ref') ? ' Cedar suggests the ones that matter and says why; none is ticked for you.' : '') + '</p><ul class="op-att">' +
     docs.map(function(d){ var on = !!s.att[d.id], dis = !on && n >= 5;
       return '<li><label class="op-t"><input type="checkbox" data-fk="att-' + d.id + '"' + (on ? ' checked' : '') + (dis ? ' disabled' : '') + ' onchange="rfAtt(\'' + d.id + '\', this.checked)"><span>' + csEsc(d.n) + '<span class="op-td">' + csEsc(d.t) + '</span>' +
         (sug[d.id] ? '<span class="op-sgw">' + rxIc('copilot') + 'Suggested: ' + csEsc(sug[d.id]) + '</span>' : '') + '</span></label></li>'; }).join('') + '</ul>' +
@@ -22363,7 +22472,14 @@ function dcFresh(name, type){
 function dcSetType(s, k, name){
   var t = dcType(k), dr = dcDraft(k, name);
   s.type = k; s.text = dr.t; s.src = dr.src; s.textSt = 'draft'; s.send = t.send;
+  dcCdSync(s);
   if(k === 'patient' || k === 'work'){ s.to = ''; }
+}
+/* T-038: Cedar off for documents and letters: no draft, the text starts empty; switched back on, an empty untouched text gets the draft */
+function dcCdSync(s){
+  if(!s || !s.type) return;
+  if(!cdOn('docs') && s.textSt === 'draft'){ s.text = ''; s.src = []; s.textSt = 'man'; }
+  else if(cdOn('docs') && s.textSt === 'man' && !s.text.trim()){ var dr = dcDraft(s.type, PC_CURRENT); s.text = dr.t; s.src = dr.src; s.textSt = 'draft'; }
 }
 function dcPick(k){ dcSetType(OP.st, k, PC_CURRENT); OP.focusNext = 'dctext'; opRender(); }
 function dcChange(){ var s = OP.st; s.type = ''; OP.focusNext = 'type-work'; opRender(); }
@@ -22376,6 +22492,7 @@ function dcIn(k, v){
 function dcOk(){ OP.st.textSt = 'ok'; OP.focusNext = 'dctext'; opRender(); }
 function dcSend(v){ OP.st.send = v; opRender(); }
 function dcMissing(){
+  dcCdSync(OP.st);
   var s = OP.st, out = [];
   if(!s.type) return ['Choose a document type.'];
   if(s.type === 'form' && !s.form.trim()) out.push('Write the name of the form.');
@@ -22387,9 +22504,11 @@ function dcMissing(){
   return out;
 }
 function dcMain(){
+  dcCdSync(OP.st);
   var s = OP.st, h = '';
   if(!s.type){
-    return '<section class="op-card" aria-labelledby="dc-ty-h"><h3 id="dc-ty-h">What do you want to write?</h3><p class="op-note">The AI drafts it from today’s visit. You edit, preview and sign it. Nothing is sent before you press a sign button.</p></section>' +
+    return '<section class="op-card" aria-labelledby="dc-ty-h"><h3 id="dc-ty-h">What do you want to write?</h3>' + (cdOn('docs') ? '<p class="op-note">The AI drafts it from today’s visit. You edit, preview and sign it. Nothing is sent before you press a sign button.</p>'
+      : cdOffLine('docs') + '<p class="op-note">You write it, preview and sign it. Nothing is sent before you press a sign button.</p>') + '</section>' +
       '<div class="op-types" role="group" aria-labelledby="dc-ty-h">' + DC_TYPES.map(function(t){
         return '<button type="button" class="op-type" data-fk="type-' + t.k + '" onclick="dcPick(\'' + t.k + '\')"><b>' + rxIc('file') + csEsc(t.n) + '</b><span>' + csEsc(t.d) + '</span></button>'; }).join('') + '</div>';
   }
@@ -22397,9 +22516,10 @@ function dcMain(){
   h += '<section class="op-card" aria-labelledby="dc-tx-h"><div class="op-hrow"><h3 id="dc-tx-h">' + csEsc(t.n) + '</h3><button type="button" class="btn op-q" data-fk="dcchg" onclick="dcChange()">' + rxIc('edit') + 'Change type</button></div>';
   if(s.type === 'form') h += '<div class="op-f" style="margin-bottom:12px"><label for="dc-form">Name of the form</label><input type="text" id="dc-form" data-fk="dcform" placeholder="For example, an insurance claim form" value="' + csEsc(s.form) + '" oninput="dcIn(\'form\', this.value)"></div>';
   h += '<div class="op-f"><div class="op-lrow"><label for="dc-text">The document</label><span id="dc-mk" class="op-lrow">' + opAiMk(s.textSt, 'dcok', 'dcOk()') + '</span></div>' +
+    (s.textSt === 'man' ? cdOffLine('docs') : '') +
     '<textarea id="dc-text" rows="12" data-fk="dctext" oninput="dcIn(\'text\', this.value)">' + csEsc(s.text) + '</textarea>' +
-    '<p class="op-src">Sources the AI used: ' + csEsc(s.src.join('; ')) + '</p>' +
-    '<div><button type="button" class="btn op-q" data-fk="redraft" onclick="dcRedraft()">' + rxIc('copilot') + 'Draft again from today’s visit</button></div></div></section>';
+    (s.textSt === 'man' ? '' : '<p class="op-src">Sources the AI used: ' + csEsc(s.src.join('; ')) + '</p>' +
+    '<div><button type="button" class="btn op-q" data-fk="redraft" onclick="dcRedraft()">' + rxIc('copilot') + 'Draft again from today’s visit</button></div>') + '</div></section>';
   h += '<section class="op-card" aria-labelledby="dc-sd-h"><h3 id="dc-sd-h">Send by</h3><div class="op-seg" role="group" aria-labelledby="dc-sd-h">' + DC_SEND.map(function(o){
       return '<button type="button" class="op-sb" data-fk="send-' + o[0] + '" aria-pressed="' + (s.send === o[0]) + '" onclick="dcSend(\'' + o[0] + '\')">' + csEsc(o[1]) + '</button>'; }).join('') + '</div>';
   if(s.send === 'fax') h += '<div class="op-grid" style="margin-top:12px"><div class="op-f"><label for="dc-to">To</label><input type="text" id="dc-to" data-fk="dcto" placeholder="Name and organization" value="' + csEsc(s.to) + '" oninput="dcIn(\'to\', this.value)"></div>' +
@@ -22495,6 +22615,6 @@ function opUpload(inp){
 
 /* OP:END (the imaging, referral and document forms are added above this line) */
 </script>
-  <div class="build-stamp">v2 · build 2026-11-03 09:27</div>
+  <div class="build-stamp">v2 · build 2026-11-03 21:16</div>
 </body>
 </html>
