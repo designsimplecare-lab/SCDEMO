@@ -7684,7 +7684,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
           <p class="pd-k" id="pd-cd-h">Cedar helps with</p>
           <div role="group" aria-labelledby="pd-cd-h" id="pd-cd">
           <button class="pd-item pd-sw" id="pd-cd-note" role="switch" aria-checked="true" onclick="cdToggle('note')"><span class="pd-ic" data-pdic="edit"></span> Listening and the note <span class="pd-swv">On</span></button>
-          <button class="pd-item pd-sw" id="pd-cd-review" role="switch" aria-checked="true" onclick="cdToggle('review')"><span class="pd-ic" data-pdic="eye"></span> Chart review <span class="pd-swv">On</span></button>
+          <button class="pd-item pd-sw" id="pd-cd-review" role="switch" aria-checked="true" onclick="cdToggle('review')"><span class="pd-ic" data-pdic="eye"></span> Clinical summary <span class="pd-swv">On</span></button>
           <button class="pd-item pd-sw" id="pd-cd-rx" role="switch" aria-checked="true" onclick="cdToggle('rx')"><span class="pd-ic" data-pdic="chartnote"></span> Prescribing <span class="pd-swv">On</span></button>
           <button class="pd-item pd-sw" id="pd-cd-orders" role="switch" aria-checked="true" onclick="cdToggle('orders')"><span class="pd-ic" data-pdic="addon"></span> Lab and imaging orders <span class="pd-swv">On</span></button>
           <button class="pd-item pd-sw" id="pd-cd-ref" role="switch" aria-checked="true" onclick="cdToggle('ref')"><span class="pd-ic" data-pdic="practice"></span> Referrals <span class="pd-swv">On</span></button>
@@ -11205,7 +11205,7 @@ function renderService(){
    flags; they are rules and data, not Cedar drafts. Visit summaries keep T-036's key (VS_KEY), so nothing breaks. ---------- */
 var CD_AREAS = [
   {k:'note', key:'sc-cedar-note', area:'listening and the note', tail:'You will type the note yourself.'},
-  {k:'review', key:'sc-cedar-review', area:'chart review', tail:'The Patient summary still shows the chart.'},
+  {k:'review', key:'sc-cedar-review', area:'the clinical summary',   /* Daniel, 4 Nov call 01:16:43: "Clinical summary" (was chart review) */ tail:'The Patient summary still shows the chart.'},
   {k:'rx', key:'sc-cedar-rx', area:'prescribing', tail:'You will write these yourself.'},
   {k:'orders', key:'sc-cedar-orders', area:'lab and imaging orders', tail:'You will write these yourself.'},
   {k:'ref', key:'sc-cedar-ref', area:'referrals', tail:'You will write these yourself.'},
@@ -19400,7 +19400,8 @@ function v2RenderKey(el, name, by){
   el.hidden = false;
   CS.keyOpen = CS.keyOpen || {};
   /* T-038: Cedar off for chart review: no synthesized picture; the left Patient summary keeps every chart fact */
-  if(!cdOn('review')){ el.innerHTML = '<div class="v2-ch"><h3 id="v2-key-h">Chart review</h3></div>' + cdOffLine('review'); return; }
+  /* Daniel, 4 Nov call 01:16:43: "Clinical summary. Clinical summary." — the heading (was Chart review); Ani 01:19:10: "first phase, just a regular clinical summary" */
+  if(!cdOn('review')){ el.innerHTML = '<div class="v2-ch"><h3 id="v2-key-h">Clinical summary</h3></div>' + cdOffLine('review'); return; }
   /* T-037 (Daniel, 31 Oct): Chart review is a short, synthesized picture of the patient, today's concern first: who this patient is, and the medications with the concerns they treat. History, past visits, investigations and consult reports moved
      to the left Patient summary ("no repetition"). Cedar's mark and the AI label stay (AI text is marked); every line names its source and opens it. */
   var groups = crMedGroups(name), sents = crSentences(name, groups);
@@ -19408,7 +19409,7 @@ function v2RenderKey(el, name, by){
      Who this patient is show; the rest, and Medications and what they treat, are folded behind Show all (a real button, aria-expanded; per patient).
      Nothing is removed. */
   var all = !!(CS.crAll && CS.crAll[name]), sl = function(s){ return crLine({main:s.t, src:s.src.map(function(x){ return x[0]; }).join(' &middot; '), tab:s.src[0][1], cls:'cr-s'}); };
-  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Chart review</h3><span class="v2-chip kf-ai">Cedar &middot; AI</span>' +
+  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Clinical summary</h3><span class="v2-chip kf-ai">Cedar &middot; AI</span>' +
     '<button type="button" class="cs-link v2-all" id="cr-all" aria-expanded="' + all + '" aria-controls="' + (sents.length > 2 ? 'cr-rest ' : '') + 'cr-medsec" onclick="crAll()">' + (all ? 'Show less' : 'Show all') + csIc('chevdown') + '</button></div>';
   /* Ordered and pending lives only in the left Patient summary (Ani, 3 Nov: "it should only be on the left side"; no repetition, Daniel 31 Oct). */
   /* 2. Who this patient is: a few synthesized sentences, each opening its source */
@@ -23775,6 +23776,6 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-05 12:21</div>
+  <div class="build-stamp">v2 · build 2026-11-05 12:22</div>
 </body>
 </html>
