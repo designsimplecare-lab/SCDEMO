@@ -7593,6 +7593,14 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 /* Daniel, 4 Nov call 01:02:59 on "Acute myocardial injury": "you keep that ... it emphasizes the seriousness of this value": in Version 2 the concern is
    the second line under the finding on the closed row (it was folded); the Also line is gone (csNARowV2) */
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .v2-nad > .v2-na-c{display:block;margin:2px 0 0;font-size:15px;line-height:22px;font-weight:400;color:var(--cv2-ink);}
+/* Daniel, 4 Nov call 00:21:20-00:22:56 ("front and center ... It goes at the top"): the pharmacy beside No known drug allergies (csRenderSnap). The name is
+   ink like the allergy line; the word Pharmacy is quiet. Current's left card puts each on its own line, as it does the allergy tick. */
+#screen-patientchart #pcv-c .cs-pharm b{color:var(--ink);font-weight:600;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-pharm b{color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-l2.cs-hasph{display:block;margin-top:2px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-l2.cs-hasph > span:first-child:is(.cs-nksep,.cs-phsep){display:none;}
+#screen-patientchart #pcv-c.cs-v2 #v2-sum > #v2-pt .vc-sub .cs-phsep{display:none;}
+#screen-patientchart #pcv-c.cs-v2 #v2-sum > #v2-pt .vc-sub .cs-pharm{display:block;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -14957,7 +14965,8 @@ function rxBar3(st){
     '<button type="button" class="btn dark" id="rx-moa" data-fk="moa"' + (why ? ' disabled' : '') + ' onclick="rxSign(\'moa\')">' + rxIc('taskmoa') + 'Sign and ask ' + csEsc(moa) + ' to send ' + noun + '</button>';
 }
 RX_ACT.phedit = function(){ RX_UI.pharmEdit = true; rxRender(); };
-RX_ACT.pharm = function(i){ rxState(PC_CURRENT).pharm = RX_PHARMS[i]; RX_UI.pharmEdit = false; rxRender(); };
+RX_ACT.pharm = function(i){ rxState(PC_CURRENT).pharm = RX_PHARMS[i]; RX_UI.pharmEdit = false; rxRender();
+  if(typeof csRenderSnap === 'function' && PC_CURRENT) csRenderSnap(PC_CURRENT); };   /* Daniel, 4 Nov call 00:22:56: the header's pharmacy follows a change here */
 RX_ACT.prev = function(i){ RX_UI.prev = RX_UI.prev === i ? null : i; rxRender(); };
 RX_ACT.again = function(){ var st = rxState(PC_CURRENT); st.stage = 'edit'; st.step = 2; st.done[2] = false; RX_UI.prev = null; rxRender(); };
 /* Daniel, 26 Sep: "if I am f***ing around, she sends it. If I think she'll f*** it up, then i send it." Two equal routes; neither is the default.
@@ -16363,6 +16372,8 @@ function ptAllergy(name){
   });
   return {state:(chart.length || pending.length) ? 'named' : a0, chart:chart, pending:pending};
 }
+/* the patient's pharmacy: the one picked in Prescribe for this visit, else the chart's (Daniel, 4 Nov call 00:22:56: "patients like to change their pharmacy all the time") */
+function ptPharm(name){ var st = typeof RX_STATE !== 'undefined' && RX_STATE[name]; return (st && st.pharm) || ptChart(name).pharm || ''; }
 function ptAllergyAdd(i){
   if(typeof RX_ACT !== 'undefined' && RX_ACT.addal) RX_ACT.addal(i);
   if(typeof csRefresh === 'function') csRefresh();
@@ -16383,7 +16394,12 @@ function csRenderSnap(name){
     (age ? age + ' &middot; ' : '') + csEsc(r.sex || 'Not recorded') +
     ' &middot; PHN&nbsp;<span class="pc-mono" aria-label="PHN ending ' + csEsc(phn.slice(-3)) + '">' + masked + '</span>' +
     /* Chart layout (Ani, 4 Nov): the separator is its own span so the left column can put the tick on its own line */
-    (nk ? '<span class="cs-nksep"> &middot; </span><span class="cs-nkda">' + csIc('complete') + 'No known drug allergies</span>' : '');
+    /* Daniel, 4 Nov call 00:22:56: "I want that pharmacy information right here. It's as important as no known drug allergies. It goes at the top."
+       The patient's pharmacy on the allergy line, from the chart (ptChart) or the one chosen in Prescribe; none on file, nothing shown. In Version 2 the
+       two take the card's second line together (cs-l2.cs-hasph); without a pharmacy the line is as it was. */
+    ((nk || ptPharm(name)) ? '<span class="cs-l2' + (ptPharm(name) ? ' cs-hasph' : '') + '">' +
+      (nk ? '<span class="cs-nksep"> &middot; </span><span class="cs-nkda">' + csIc('complete') + 'No known drug allergies</span>' : '') +
+      (ptPharm(name) ? '<span class="cs-phsep"> &middot; </span><span class="cs-pharm"><span class="cs-pharm-k">Pharmacy </span><b>' + csEsc(ptPharm(name)) + '</b></span>' : '') + '</span>' : '');
   /* v2.5 §3: allergies in three distinct states. Named is ink with a symbol (an allergy is not a critical
      result, so not red); "Not recorded" is amber with its word. The named example is v2.5 §8's, demo only. */
   var a = AL.state,
@@ -23776,6 +23792,6 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-05 12:22</div>
+  <div class="build-stamp">v2 · build 2026-11-05 12:27</div>
 </body>
 </html>
