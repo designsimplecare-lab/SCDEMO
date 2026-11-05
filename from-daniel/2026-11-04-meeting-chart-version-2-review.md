@@ -94,6 +94,46 @@ Comprehensive care drawer (about a day); the LifeLabs document reorganised into 
 addenda; evidence on finding a patient chart; clinical workflow documents; review the prescription modal with Ani (next call); send all
 recordings.
 
+## Every point, and where it stands (checked against the full transcript, 5 Nov)
+| Time | Point | Status |
+|---|---|---|
+| 00:07:14 | PHN, sex, name stay in the header | Built |
+| 00:07:14 | No known drug allergies stays | Built |
+| 00:08:41 | Call with two options | Built |
+| 00:09:57 | Chart button = comprehensive care drawer | Waits for Daniel's spec ("give me like a day") |
+| 00:11:19 | Test tracking: requisition → sent → collected → reported → cleared → reviewed | Built in the result panel (Tracking) |
+| 00:12:29 | Clear vs review with patient | Built: Clear and Reviewed with patient, each stamped |
+| 00:12:29 | Patient portal shows the result was cleared | Not built (patient portal file); next |
+| 00:17:39 | Practice view, Cedar outreach | Phase 2 |
+| 00:20:34 | Pharmacy at the top beside allergies | Built |
+| 00:23:59 / 00:51:49 | Save draft; autosave | Built: autosave after typing stops, Save draft kept (Ani's table) |
+| 00:28:07 | Calendar of past day sheets | Built: the date opens a calendar, any day's sheet |
+| 00:28:07 | "Queue" is the day sheet | Built |
+| 00:30:55 | Fast way to find a chart; AI search as backup | Built (Ctrl+K search); AI recall search is phase 2 |
+| 00:42:47 | Whole row opens the chart | Built |
+| 00:43:48 | Cedar can be dragged anywhere | Built |
+| 00:44:43 | The small dot | Now a filled blue chip for the current window |
+| 00:45:48 | Animated mark | Phase 2 |
+| 00:50:09 | Version 2 chosen; patient summary on the left | Built |
+| 00:51:49 | Make it even more compact | Ongoing |
+| 00:53:11 | Save / sign / sign and lock / addendum terms | Waits for Daniel; built per Ani's button table |
+| 00:56:03 | Troponin and ECG are critical, red | Built |
+| 00:57:41 | LifeLabs tiers critical / high, Notion reorganised | Waits for Daniel's Notion update |
+| 00:59:32 | Click opens the source in the chart, never the Inbox | Built (side panel, full result and source) |
+| 01:01:46 | No eye icon, no "Also CK" line; keep the concern line | Built |
+| 01:05:27 | "Also waiting for cardiac markers" contradiction | Built |
+| 01:09:08 | Always show reference and received date | Built |
+| 01:09:08–01:19:10 | Clinical summary: today-focused, sources, optional, on for him | Built (one sentence, Show more panel) |
+| 01:19:10 | Cedar follows him everywhere | Phase 2 |
+| 01:20:22 | One text box for the note | Built as a document with SOAP headings, still one box |
+| 01:21:27 | Billing fields stay; checklist and end summary removed | Built |
+| 01:22:32 | Patient summary left and closed | Built |
+| 01:23:30 | Earnings / Claims in the nav during a visit | Open: nav collapses to icons in the chart; ask Daniel |
+| 01:25:56 | Step tabs close to the work | Built: tabs fixed above the scrolling work |
+| 01:33:17 | Fast-track A→E workflow | Phase 2; Daniel writes the workflows |
+| 01:36:00 | Prescription modal review | Next call |
+| 01:37:04 | Sesame brand | Brand work, outside the portal |
+
 ## Built after the call (4–5 Nov)
 Built in chart Version 2 (4–5 Nov):
 - §1 Header: PHN, NKDA and the pharmacy at the top; the visit status chip is gone (Ani, 5 Nov).
