@@ -3662,6 +3662,7 @@
   /* where you are now: the live window, active filters, active tabs */
   #screen-today .qwin button.on{background:var(--brand);border-color:var(--brand);color:#fff;}
   #screen-today .qwin button .qwin-now{background:var(--brand);}
+  #screen-today .qwin button.now,#screen-today .qwin button.now:hover{background:var(--brand);border-color:var(--brand);color:#fff;}
   #screen-today .qwin button.on .qwin-now{background:#fff;}
   #screen-today .qf-btn.on{background:var(--brand-wash);border-color:var(--brand);}
   #screen-today .qf-btn.on .qf-k{color:var(--ink-soft);}
@@ -9921,8 +9922,8 @@ function renderWinBar(){
   var host = document.getElementById('qwin'); if(!host) return;
   var live = shownWin();
   host.innerHTML = WIN_ORDER.map(function(w){
-    return '<button type="button" onclick="winPick(&#39;'+w+'&#39;)" aria-label="Go to the '+winName(w).toLowerCase()+', '+winLabel(w)+'">'+
-      (w === live ? '<span class="qwin-now" title="The window the clock is in"></span>' : '')+
+    /* Ani, 5 Nov ("instead of the dot just have a blue filled background"): the window the clock is in is a filled blue chip */
+    return '<button type="button"'+(w === live ? ' class="now" title="The window the clock is in"' : '')+' onclick="winPick(&#39;'+w+'&#39;)" aria-label="Go to the '+winName(w).toLowerCase()+', '+winLabel(w)+(w === live ? ', the current window' : '')+'">'+
       winLabel(w)+'</button>';
   }).join('');
 }
