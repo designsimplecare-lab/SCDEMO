@@ -16506,9 +16506,10 @@ function csNARowV2(x, related, also){
     '<button type="button" class="cs-link cv2-inbox" onclick="openReview(' + x.idx + ')">Open in Inbox</button></div>';
   var nOpen = !!(CS.naOpen && CS.naOpen[PC_CURRENT + '|' + x.idx]), inV2 = typeof cv2On === 'function' && cv2On();
   /* 21 Oct: an abnormal result that is not a lab (the ECG) has no "To do" label: the printed line is the title */
+  /* Ani, 4 Nov: the severity word follows Daniel's tiers (Portals, Physician Portal spec: "Abnormal ≠ actionable. Tiers: Critical · To do · Info"), so an ECG reads To do */
   return '<div class="vca-row v2-nar cs-' + x.tier + (related ? ' cs-rel' : '') + (nOpen ? ' cv2-open' : '') + '">' +
-    '<span class="ic vca-ic" role="img" aria-label="' + (x.abn ? 'Abnormal' : T.w) + '" data-pdic="' + T.ic + '"></span>' +
-    '<div class="vca-main">' + (x.abn ? '' : '<p class="v2-na-k">' + T.w + '</p>') + '<span class="cv2-na-sev" aria-hidden="true">' + (x.abn ? 'Abnormal' : T.w) + '</span>' + '<p class="vca-t">' + val + '</p><div class="v2-nad" id="cv2-nad-' + x.idx + '">' + h + '</div></div>' +
+    '<span class="ic vca-ic" role="img" aria-label="' + T.w + '" data-pdic="' + T.ic + '"></span>' +
+    '<div class="vca-main">' + (x.abn ? '' : '<p class="v2-na-k">' + T.w + '</p>') + '<span class="cv2-na-sev" aria-hidden="true">' + T.w + '</span>' + '<p class="vca-t">' + val + '</p><div class="v2-nad" id="cv2-nad-' + x.idx + '">' + h + '</div></div>' +
     '<div class="cs-side"><p class="cs-stage">' + csIc('clock') + '<span><span class="vh">Stage: </span>' + csEsc(x.stage) + '</span></p>' +
       '<button type="button" class="btn" onclick="naRev(' + x.idx + ',this)"' + (inV2 ? ' aria-expanded="' + nOpen + '" aria-controls="cv2-nad-' + x.idx + '"' : '') + '><span class="ic" data-pdic="eye"></span>' + x.action + '</button></div>' +
   '</div>';
@@ -23696,6 +23697,6 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 21:55</div>
+  <div class="build-stamp">v2 · build 2026-11-04 22:52</div>
 </body>
 </html>
