@@ -4897,7 +4897,7 @@
   #screen-patientchart #pcv-c .cs-ns-acts .cs-done .ic,#screen-patientchart #pcv-c .cs-ns-acts .cs-done svg{width:18px;height:18px;color:var(--good);}
   #screen-patientchart #pcv-c .cs-ns-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0;padding:10px 16px;border-radius:12px;background:var(--wash);font-size:14px;color:var(--ink);}
   #screen-patientchart #pcv-c .cs-ns-line > .ic,#screen-patientchart #pcv-c .cs-ns-line > .ic svg{width:16px;height:16px;color:var(--ink-soft);}
-  #screen-patientchart #pcv-c.cs-ns-on :is(#cs-ai,#cs-acts,#sc-block,#cs-scribe-btn,#vc-finrow,#t23-finhelp,#cs-finwhy,#t23-billrow,#vc-finwarn){display:none !important;}
+  #screen-patientchart #pcv-c.cs-ns-on :is(#cs-ai,#cs-acts,#sc-block,#cs-scribe-btn,#cs-dict-btn,#vc-finrow,#t23-finhelp,#cs-finwhy,#t23-billrow,#vc-finwarn){display:none !important;}
   #screen-patientchart #pcv-c.cs-ns-on .cs-note .vc-note{min-height:140px;}
   #screen-patientchart #pcv-c.cs-ns-on .cs-foot:not(:has(#cs-ns-bill:not([hidden]))){display:none;}
   #screen-patientchart #pcv-c .cs-ns-bill{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0;font-size:14px;color:var(--ink);}
@@ -7458,6 +7458,9 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-sign-b dt{font-size:14px;line-height:20px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-sign-b .t23-sug{font-size:14px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-note-acts .cs-tb{height:44px;}
+#screen-patientchart #pcv-c.cs-v2 #v2-note-acts #cs-dict-btn.on{background:var(--brand-wash);color:var(--ink);}
+#screen-patientchart #pcv-c.cs-v2 #v2-note-acts #cs-dict-btn.on .ic,#screen-patientchart #pcv-c.cs-v2 #v2-note-acts #cs-dict-btn.on svg{color:var(--brand);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap #ns-note::placeholder{color:var(--ink-faint);opacity:1;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-sign-b #t23-dxbtn{min-height:44px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-seeall{min-height:44px;}
 /* physician pass (Ani, 4 Nov: chart Version 2, physician pass, B1 and C): a row opens in place (every value, references, earlier values, the source, Mark
@@ -8483,6 +8486,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
             <div class="vc-h cs-nh"><span class="ic" data-pcic="edit"></span><h3 id="cs-note-h" tabindex="-1">Today&rsquo;s note</h3>
               <span class="right cs-nh-r"><span class="cs-saved" id="cs-saved" aria-live="polite"></span>
                 <button type="button" class="cs-tb" id="cs-scribe-btn" onclick="scAskConsent()" title="Cedar listens to the call, drafts the note and proposes orders. Nothing goes in without you."><span class="cs-scdot" aria-hidden="true"></span>Cedar</button>
+                <button type="button" class="cs-tb" id="cs-dict-btn" aria-pressed="false" onclick="dictToggle()" title="Speak your note; the words go into the note box"><span class="ic" data-pdic="mic"></span><span class="cs-dict-l">Dictate</span></button>
                 <button type="button" class="cs-tb" id="vc-savedraft" title="Save draft" onclick="csDraft();toast('Draft saved')"><span class="ic" data-pdic="edit"></span>Save draft</button></span></div>
             <!-- v2.5 §7: AI text is visually distinct from chart facts until accepted -->
             <div id="cs-ai"></div>
@@ -8541,7 +8545,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
               <!-- Daniel, 4 Nov call 01:20:22: "I want one text box ... I would literally just want a text box", e.g. to paste the transcript; Ani: "just the
                    input text big input field". Version 2 only (hidden in Current); the step's own "Note" heading labels it. Key 'note' (nsTa redirects to it). -->
               <div class="ns-row" id="ns-r-note"><label class="ns-k" for="ns-note" id="ns-k-note">Note</label>
-                <div class="ns-f"><textarea class="ns-ta" id="ns-note" data-sec="note" rows="8" aria-labelledby="v2h-note"></textarea></div></div>
+                <div class="ns-f"><textarea class="ns-ta" id="ns-note" data-sec="note" rows="8" aria-labelledby="v2h-note" placeholder="Subjective&#10;&#10;Objective&#10;&#10;Assessment&#10;&#10;Plan"></textarea></div></div>
             </div>
             <!-- the five sections, composed ("Clinical concern: ...", "Subjective: ...") for the gates, the signed record and the tick -->
             <textarea class="vc-note" id="vc-note-input" tabindex="-1" aria-hidden="true" hidden></textarea>
@@ -13687,6 +13691,7 @@ function setChartVer(v){
 }
 var WIN_TEXT = {'8-10':'8:00\u201310:00','10-2':'10:00\u20132:00','2-5':'2:00\u20135:00','5-7':'5:00\u20137:00'};
 function openChart(name){
+  if(typeof DICT !== 'undefined' && DICT && DICT.on) dictStop();   /* dictation never carries into another patient's note */
   var r = QUEUE_DATA.find(function(x){ return x.name===name; }); if(!r) return;
   PC_CURRENT = name;
   var base = name.split(',')[0].trim();
@@ -17230,6 +17235,41 @@ function cedarAcceptAll(){
   csSay('Cedar\'s drafts added to your note. Edit anything before you sign off.');
 }
 if(typeof csRenderAI === 'function' && !csRenderAI._cedar){ var _csRA = csRenderAI; csRenderAI = function(){ var r = _csRA.apply(this, arguments); try{ cedarBar(); }catch(e){} return r; }; csRenderAI._cedar = true; }
+/* Ani, 5 Nov (Vero's toolbar has a microphone; "yes"): Dictate. The doctor speaks and the words go into the note box at the end, as he says them;
+   Stop (or leaving the chart) ends it. Nothing is sent or signed; the text is his to edit. Uses the browser's speech recognition where it has one. */
+var DICT = {rec:null, on:false, who:null};
+function dictTa(){ return nsOne() ? nsEl('note') : nsTa(nsTarget('subjective')); }
+function dictUI(){
+  var b = document.getElementById('cs-dict-btn'); if(!b) return;
+  b.setAttribute('aria-pressed', String(DICT.on)); b.classList.toggle('on', DICT.on);
+  b.querySelector('.cs-dict-l').textContent = DICT.on ? 'Stop dictating' : 'Dictate';
+  b.querySelector('.ic').innerHTML = ICONS[DICT.on ? 'micoff' : 'mic'];
+}
+function dictStop(){ if(DICT.rec) try { DICT.rec.stop(); } catch(e){} }
+function dictToggle(){
+  if(DICT.on){ dictStop(); return; }
+  var ta = dictTa(); if(!ta || !PC_CURRENT) return;
+  if(ta.readOnly){ toast('This visit is signed off, so the note is read-only'); return; }
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ toast('Dictation needs a browser with speech recognition, such as Chrome or Edge'); return; }
+  var rec = new SR(); rec.lang = 'en-CA'; rec.continuous = true; rec.interimResults = true;
+  var base = ta.value, sep = base && !/\s$/.test(base) ? (/[.!?]$/.test(base.trim()) ? ' ' : '\n') : '';
+  DICT.rec = rec; DICT.who = PC_CURRENT;
+  rec.onresult = function(e){
+    if(DICT.who !== PC_CURRENT){ dictStop(); return; }
+    var fin = '', mid = '';
+    for(var i = 0; i < e.results.length; i++){ var t = e.results[i][0].transcript; if(e.results[i].isFinal) fin += t; else mid += t; }
+    var txt = (fin + mid).trim(); if(!txt) return;
+    ta.value = base + sep + txt.charAt(0).toUpperCase() + txt.slice(1);
+    ta.dispatchEvent(new Event('input', {bubbles:true}));
+    ta.scrollTop = ta.scrollHeight;
+  };
+  rec.onerror = function(e){ toast(e.error === 'not-allowed' || e.error === 'service-not-allowed' ? 'Allow the microphone to dictate' : e.error === 'no-speech' ? 'Nothing heard. Dictation stopped' : 'Dictation stopped'); };
+  rec.onend = function(){ DICT.on = false; DICT.rec = null; dictUI(); if(typeof nsSync === 'function') try { nsSync(); } catch(e){} csSay('Dictation stopped. The words are in your note.'); };
+  try { rec.start(); } catch(e){ toast('Dictation could not start'); return; }
+  DICT.on = true; dictUI(); csSay('Dictating. Speak your note.');
+  ta.focus({preventScroll:true});
+}
 /* while Cedar has two or more drafts waiting: Accept all, above the note */
 function cedarBar(){
   var host = document.getElementById('v2-note-acts'); if(!host) return;
@@ -17298,6 +17338,8 @@ renderScribe = function(){
   var blk = document.getElementById('sc-block'), sb = document.getElementById('cs-scribe-btn'), rr = csRow();
   if(blk) blk.hidden = scState === 'off' || !cdOn('note');
   if(sb) sb.hidden = !cdOn('note') || scState !== 'off' || !!(rr && rr.signed) || (PC_CURRENT && csNoShow(PC_CURRENT));
+  /* Dictate: not on a signed note or a no-show (no note to write) */
+  var db = document.getElementById('cs-dict-btn'); if(db){ db.hidden = !!(rr && rr.signed) || !!(PC_CURRENT && csNoShow(PC_CURRENT)); if(db.hidden && typeof DICT !== 'undefined' && DICT.on) dictStop(); }
   var sub = document.getElementById('sc-sub');
   if(sub && scState === 'live') sub.textContent = 'Recording with consent. Suggestions appear in Subjective, Assessment and Plan, marked as AI, until you accept them.';
   csRenderAI();
@@ -19103,6 +19145,7 @@ function v2Mount(){
   v2Move(v2El('slv'), v2El('v2s-since-b'));
   v2Move(v2El('cs-saved'), v2El('v2-saved-slot'));
   v2Move(v2El('cs-scribe-btn'), v2El('v2-note-acts'));
+  v2Move(v2El('cs-dict-btn'), v2El('v2-note-acts'));
   v2Move(q('#cs-acts .cs-ins'), v2El('v2-note-acts'));
   v2Move(v2El('cs-ai'), v2El('v2-note-b'));
   v2Move(v2El('sc-block'), v2El('v2-note-b'));
