@@ -60,3 +60,41 @@ voice; break-glass. The authorization matrix, purpose-of-use rules and audit are
 (e.g. a reason prompt, an unauthorized result).
 
 All demo patients are invented. No real identifiers in this public repo.
+
+## Built (5 Nov 2026, `simplecare-physician-portal-v2.html`)
+- **One search control.** Ctrl+K / ⌘K from any screen, even while typing; the top-bar search button; the Home field (it no longer filters
+  the day sheet: typing, a click or Enter opens the one search with what was typed). Listed under Keyboard shortcuts.
+- **Clues.** PHN (full or digits), name, date of birth, birth year while typing. On Enter: "I think 1985" / "about 1985" (±2 years), ranges
+  and decades, "not …", visit date ("seen Jun 25"), clinician ("Dr. …", "locum"), pharmacy, place. Fuzzy names are deterministic: a small
+  nickname map, Mc/Mac, edit distance, a sounds-alike key. The chips under the box show what was understood, and which clues wait for Enter.
+- **Candidate cards.** Recorded name, date of birth and age, PHN masked to its last 3 digits, last visit, chart-state label, one sourced
+  context line or "No verified clinical summary", then matching and conflicting evidence. Labels, never scores.
+- **Grouping.** Best match (an exact identifier, or a stronger match that would sit under a weaker one), today's day sheet (with a Today
+  badge outside that group), recent, other patients, possible duplicates last.
+- **Narrowing.** One question at a time (born when, where they live, recorded sex) with Not sure and Neither; ruled-out patients sit
+  behind a disclosure. Two patients sharing a surname, address and phone get a side-by-side "what tells them apart" table.
+- **Selection.** Click or Enter on a card only; an exact PHN still needs it. Focus moves to the patient's name on the chart. The arrow keys
+  move a highlight while focus stays in the box; a card under the pointer or the highlight keeps its place when results update.
+- **Chart states.** Inactive or transferred, and deceased: a label beside the name, a status line on the patient card, and the blocked
+  actions say why (Prescribe, Order labs, Order imaging, Refer; Document too when deceased) on the Action tiles and on every other button
+  that opens them. Merged: the old record opens a redirect view, then the surviving chart with a notice. Suspected duplicate: its own group
+  with a warning. Not on your panel: a reason prompt before the chart opens.
+- **Two-identifier check.** Over the prescribing panel and the lab, imaging and referral panel until the doctor ticks "Name and date of
+  birth match" and "PHN ending … matches". The panels themselves are unchanged. Recorded as "Identity confirmed 11:19" in the panel header;
+  asked again whenever a chart is selected. "They don't match" stops drafting and offers Task MOA.
+- **Safe mode.** Toggle in the top bar (labelled only while on) and in the search footer. A warning stays in the footer while it is off.
+  In safe mode: no suggestions, no cards, no recent list; Enter on a full PHN, or a full name with date of birth, shows one row with the name only.
+- **Screen states.** Idle (recent patients), loading (identity results stay, a placeholder below), results, no result, ambiguous, Phase 2+
+  "not available yet" (symptoms, medicines, descriptions), cohort ("belongs in the reporting tool"), worklists ("unbilled this week" opens
+  Claims). Session states from the address: `?search=degraded`, `?search=abroad`, `?search=unauthorized`.
+- **Demo patients.** Invented: an inactive (transferred) chart, a deceased chart, a merged record and its surviving chart, a suspected
+  duplicate, two patients sharing a surname, address and phone, a patient last seen in March, a second Gloria and a second Kathleen, and one
+  patient on another physician's panel. The earlier and later day sheets' patients are searchable too. None joins today's day sheet; an
+  off-sheet chart reads "No visit today". Today's patients now have a recorded date of birth (the banner showed one date for everyone).
+
+### Left out
+- Saved shortlists, interrupted-search recovery, the stale-index state and audit logging (spec §3, §9): backend or later.
+- Safe mode by default in patient-facing sessions: this portal has no patient-facing session to switch on.
+- Hiding the day sheet itself in safe mode: the spec lists search surfaces only. **Needs Ani.**
+- **Needs Daniel:** the reason list in the prompt (two placeholders until D4); whether "clinical drafts" on a deceased chart includes
+  documents and the note (documents are blocked, the note is not); whether Call and Sign off should show on a chart with no visit today.

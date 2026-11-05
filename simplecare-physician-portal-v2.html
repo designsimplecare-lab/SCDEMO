@@ -24528,7 +24528,11 @@ function psRender(){
   paintPd(document.getElementById('ps-clues'));
   var keys = psOpts().map(function(o){ return o.getAttribute('data-k'); });
   if(PS.active && keys.indexOf(PS.active) < 0) PS.active = '';
-  if(y0 !== null){ var el2 = document.getElementById(psId(pin)); if(el2) body.scrollTop += el2.getBoundingClientRect().top - y0; }
+  if(y0 !== null){ var el2 = document.getElementById(psId(pin)); if(el2){
+    body.scrollTop += el2.getBoundingClientRect().top - y0;
+    var rem = y0 - el2.getBoundingClientRect().top;   /* scrolling could not make up for rows removed above it: hold it with space until the pointer leaves */
+    if(rem > 1){ PS.pad = (PS.pad || 0) + rem; body.style.paddingTop = (8 + PS.pad) + 'px'; }
+  } }
   psSyncActive();
   var dis = PS.mode === 'abroad' || PS.mode === 'unauthorized';
   if(q){ q.disabled = dis; q.setAttribute('aria-expanded', String(keys.length > 0)); }
@@ -24590,7 +24594,9 @@ function psRunFull(){
     PS.loadT = setTimeout(function(){ PS.loading = false; psRender(); }, 550);
   } else psRender();
 }
+function psUnpad(){ var b = document.getElementById('ps-body'); PS.pad = 0; if(b) b.style.paddingTop = ''; }
 function psInput(){
+  psUnpad();
   PS.ran = ''; PS.ans = {}; PS.asked = []; PS.view = null; PS.active = ''; PS.loading = false; PS.showHidden = false; clearTimeout(PS.loadT);
   clearTimeout(PS.inT); PS.inT = setTimeout(psRender, 90);
 }
@@ -24617,7 +24623,7 @@ function psOpen(text){
 }
 function psClose(keepFocus){
   var ov = document.getElementById('ps-ov'); if(!ov || !PS.open) return;
-  PS.open = false; PS.view = null; PS.loading = false; clearTimeout(PS.loadT); clearTimeout(PS.inT);
+  PS.open = false; PS.view = null; PS.loading = false; clearTimeout(PS.loadT); clearTimeout(PS.inT); psUnpad();
   ov.classList.remove('show');
   var l = document.getElementById('ps-live'); if(l) l.textContent = '';
   var op = PS.opener; PS.opener = null;
@@ -24787,7 +24793,7 @@ function psGateClose(g){ var isRx = g.parentNode.id === 'rx-sheet'; g.removeAttr
       var o = e.target.closest('[role="option"]'); if(o) psPick(o.getAttribute('data-k'));
     });
     body.addEventListener('pointerover', function(e){ var o = e.target.closest('[role="option"]'); PS.hover = o ? o.getAttribute('data-k') : ''; });
-    body.addEventListener('pointerleave', function(){ PS.hover = ''; });
+    body.addEventListener('pointerleave', function(){ PS.hover = ''; if(PS.pad && !PS.active) psUnpad(); });
   }
   /* the chart: off-sheet patients join QUEUE_DATA only while their chart is open, so the day sheet never shows them */
   var psDetach = function(keep){ for(var i = QUEUE_DATA.length - 1; i >= 0; i--) if(QUEUE_DATA[i].psOff && QUEUE_DATA[i].name !== keep) QUEUE_DATA.splice(i, 1); };
@@ -24855,6 +24861,6 @@ function psGateClose(g){ var isRx = g.parentNode.id === 'rx-sheet'; g.removeAttr
   if(scr) new MutationObserver(function(){ if(raf) return; raf = requestAnimationFrame(function(){ raf = 0; if(scr.classList.contains('active')) psMarkTiles(); }); }).observe(scr, {childList:true, subtree:true});
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-05 13:24</div>
+  <div class="build-stamp">v2 · build 2026-11-05 13:27</div>
 </body>
 </html>
