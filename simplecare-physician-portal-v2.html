@@ -7622,6 +7622,136 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap .ns-row:not(#ns-r-note) > .ns-k,#screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap .ns-row:not(#ns-r-note) .ns-ta{display:none;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap .ns-row:not(#ns-r-note) .ns-ai:not(:empty){padding:12px 16px 0;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap #ns-r-note:has(.ns-ta:focus-visible){box-shadow:inset 3px 0 0 var(--brand);}
+/* ===== Patient search, Phases 0 and 1 (Daniel's patient search spec v2.3, 5 Nov; Ani owns the Phase 0 and 1 wireframes) =====
+   SimpleCare Paper: white panel on the cool page, depth from lightness, few strokes, tags unstroked and barely tinted, colour on icons,
+   brand blue for the current state only. Light mode only (Ani, 4 Oct). */
+#ps-ov{display:none;position:fixed;inset:0;z-index:230;background:rgba(23,24,28,.28);align-items:flex-start;justify-content:center;padding:9vh 32px 32px;}
+#ps-ov.show{display:flex;}
+#ps-ov #ps-dlg{display:flex;flex-direction:column;width:min(760px,100%);max-height:min(82vh,860px);background:var(--panel);border-radius:20px;box-shadow:0 2px 6px rgba(23,24,28,.06),0 24px 64px rgba(23,24,28,.18);color:var(--ink);font-size:15px;line-height:22px;overflow:hidden;}
+#ps-ov .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0;padding:0;}
+#ps-ov .ic{display:inline-flex;width:20px;height:20px;flex:none;}
+#ps-ov .ic svg{width:100%;height:100%;}
+#ps-ov .ps-bar{flex:none;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 22px;border-bottom:1px solid var(--line);}
+#ps-ov .ps-bar > .ic{color:var(--ink-soft);width:22px;height:22px;}
+#ps-ov #ps-q{flex:1;min-width:0;height:48px;border:0;background:none;font:inherit;font-size:18px;line-height:26px;color:var(--ink);outline:none;}
+#ps-ov #ps-q::placeholder{color:var(--ink-faint);}
+#ps-ov #ps-q:disabled{background:none;}
+#ps-ov .ps-x{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:12px;background:none;color:var(--ink-soft);cursor:pointer;padding:0;}
+#ps-ov .ps-x:hover{background:var(--wash);color:var(--ink);}
+#ps-ov :is(button,input,[tabindex]):focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+#ps-ov .ps-bar:focus-within{box-shadow:inset 0 -2px 0 var(--accent);}
+#ps-ov #ps-clues{flex:none;display:flex;flex-wrap:wrap;gap:8px;padding:0 20px;}
+#ps-ov #ps-clues:not(:empty){padding:12px 20px 0;}
+/* one tag spec (Ani): 15px/500, 40px tall, no stroke, barely tinted */
+#ps-ov .ps-chip,#ps-ov .ps-tag,#screen-patientchart #ps-st{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px;border:0;border-radius:10px;background:var(--wash);color:var(--ink);font-size:15px;font-weight:500;line-height:20px;white-space:nowrap;}
+#ps-ov .ps-chip .ic,#ps-ov .ps-tag .ic,#screen-patientchart #ps-st .ic{width:18px;height:18px;color:var(--ink-soft);}
+#ps-ov .ps-chip.ps-pend{color:var(--ink-soft);}
+#ps-ov .ps-chip.ps-pend .ic{color:var(--warn);}
+#ps-ov .ps-tag.ps-t-day{background:var(--accent-wash);}
+#ps-ov .ps-tag.ps-t-day .ic{color:var(--accent);}
+#ps-ov .ps-tag.ps-t-warn .ic,#screen-patientchart #ps-st.ps-t-warn .ic{color:var(--warn);}
+#ps-ov #ps-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:8px 12px 12px;}
+#ps-ov #ps-body:empty{display:none;}
+#ps-ov .ps-gh{margin:14px 10px 6px;font-size:14px;font-weight:600;line-height:20px;color:var(--ink-soft);}
+#ps-ov .ps-card{position:relative;display:flex;flex-direction:column;gap:4px;padding:12px 52px 12px 14px;border-radius:14px;cursor:pointer;}
+#ps-ov .ps-card:hover{background:var(--wash);}
+#ps-ov .ps-card.on{background:var(--wash);box-shadow:inset 0 0 0 2px var(--accent);}
+#ps-ov .ps-c1{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;min-height:40px;}
+#ps-ov .ps-nm{font-size:16px;font-weight:700;line-height:22px;color:var(--ink);}
+#ps-ov .ps-c2{display:flex;flex-wrap:wrap;gap:2px 0;font-size:14.5px;line-height:21px;color:var(--ink-soft);}
+#ps-ov .ps-c2 > span + span::before{content:"·";margin:0 8px;color:var(--ink-faint);}
+#ps-ov .ps-c3{max-width:66ch;font-size:15px;line-height:22px;color:var(--ink);}
+#ps-ov .ps-src{color:var(--ink-soft);}
+#ps-ov .ps-ev{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:14px;line-height:20px;color:var(--ink);}
+#ps-ov .ps-ev > span{display:inline-flex;align-items:center;gap:6px;}
+#ps-ov .ps-ev .ic{width:16px;height:16px;}
+#ps-ov .ps-ok .ic{color:var(--good);}
+#ps-ov .ps-cf .ic{color:var(--warn);}
+#ps-ov .ps-go{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--ink-faint);}
+#ps-ov .ps-card.on .ps-go{color:var(--accent);}
+#ps-ov .ps-work{padding-top:6px;padding-bottom:6px;}
+#ps-ov :is(.ps-note,.ps-conf,.ps-ask){display:flex;gap:10px;align-items:flex-start;margin:8px 2px;padding:12px 14px;border-radius:14px;background:var(--wash);font-size:15px;line-height:22px;color:var(--ink);}
+#ps-ov :is(.ps-note,.ps-conf) > .ic{margin-top:1px;color:var(--warn);}
+#ps-ov .ps-note > span{max-width:66ch;}
+#ps-ov .ps-note.ps-quiet{background:none;padding:4px 14px;color:var(--ink-soft);}
+#ps-ov .ps-note.ps-quiet > .ic{color:var(--ink-soft);}
+#ps-ov .ps-ch{margin:0 0 8px;font-weight:600;max-width:66ch;}
+#ps-ov .ps-ct{border-collapse:collapse;font-size:15px;line-height:22px;}
+#ps-ov .ps-ct th{padding:2px 24px 2px 0;text-align:left;font-size:14px;font-weight:600;color:var(--ink-soft);}
+#ps-ov .ps-ct td{padding:2px 24px 2px 0;}
+#ps-ov .ps-ask{flex-direction:column;gap:10px;}
+#ps-ov .ps-ah{margin:0;font-weight:600;}
+#ps-ov .ps-aa{display:flex;flex-wrap:wrap;gap:8px;}
+#ps-ov .ps-ab{height:44px;padding:0 16px;border:1px solid var(--line-strong);border-radius:999px;background:var(--panel);font:inherit;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;}
+#ps-ov .ps-ab:hover{border-color:var(--ink);}
+#ps-ov .ps-state{display:flex;gap:12px;align-items:flex-start;padding:22px 16px;}
+#ps-ov .ps-state > .ic{width:22px;height:22px;color:var(--ink-soft);margin-top:1px;}
+#ps-ov .ps-sh{margin:0;font-size:16px;font-weight:700;line-height:22px;}
+#ps-ov .ps-sl{margin:4px 0 0;max-width:66ch;color:var(--ink-soft);}
+#ps-ov .ps-load{display:flex;flex-direction:column;gap:10px;padding:12px 14px;}
+#ps-ov .ps-load span{display:block;height:18px;border-radius:9px;background:linear-gradient(90deg,var(--wash),var(--paper),var(--wash));background-size:200% 100%;animation:psShimmer 1.1s linear infinite;}
+#ps-ov .ps-load span:nth-child(2){width:72%;}
+#ps-ov .ps-load span:nth-child(3){width:48%;}
+@keyframes psShimmer{from{background-position:200% 0;}to{background-position:-200% 0;}}
+@media (prefers-reduced-motion: reduce){#ps-ov .ps-load span{animation:none;}}
+#ps-ov .ps-hid{margin:8px 10px 0;}
+#ps-ov .ps-link{min-height:44px;padding:0;border:0;background:none;font:inherit;font-size:15px;font-weight:600;color:var(--accent-ink);cursor:pointer;}
+#ps-ov .ps-hl{margin:0;padding:0 0 0 18px;font-size:15px;line-height:24px;}
+/* merged-record redirect, reason prompt and the two-identifier check share one card layout */
+#ps-ov .ps-view{padding:16px 14px 8px;}
+:is(#ps-ov,#rx-sheet,#op-sheet) .ps-vh{display:flex;align-items:center;gap:10px;margin:0 0 8px;font-size:18px;font-weight:700;line-height:26px;color:var(--ink);outline-offset:4px;}
+:is(#ps-ov,#rx-sheet,#op-sheet) .ps-vh .ic{display:inline-flex;width:22px;height:22px;color:var(--warn);}
+:is(#rx-sheet,#op-sheet) .ps-vh .ic svg{width:100%;height:100%;}
+:is(#ps-ov,#rx-sheet,#op-sheet) .ps-vl{margin:0 0 12px;max-width:66ch;font-size:15px;line-height:22px;color:var(--ink);padding:0;}
+:is(#ps-ov,#rx-sheet,#op-sheet) .ps-gid{display:flex;flex-wrap:wrap;gap:12px 32px;margin:0 0 16px;padding:14px 16px;border-radius:14px;background:var(--wash);}
+:is(#ps-ov,#rx-sheet,#op-sheet) .ps-gid dt{margin:0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+:is(#ps-ov,#rx-sheet,#op-sheet) .ps-gid dd{margin:2px 0 0;font-size:16px;font-weight:700;line-height:22px;color:var(--ink);}
+:is(#ps-ov,#rx-sheet,#op-sheet) .ps-chk{display:flex;align-items:center;gap:12px;min-height:44px;font-size:15px;line-height:22px;color:var(--ink);cursor:pointer;}
+:is(#ps-ov,#rx-sheet,#op-sheet) .ps-chk input{width:20px;height:20px;margin:0;accent-color:var(--accent);flex:none;}
+#ps-ov .ps-rs{margin:0;padding:0;border:0;}
+:is(#ps-ov,#rx-sheet,#op-sheet) .ps-vacts{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;margin-top:16px;}
+:is(#ps-ov,#rx-sheet,#op-sheet) .ps-vacts .btn{height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 18px;font-size:15px;font-weight:600;border-radius:999px;}
+:is(#ps-ov,#rx-sheet,#op-sheet) .ps-vacts .btn .ic{display:inline-flex;width:18px;height:18px;}
+:is(#ps-ov,#rx-sheet,#op-sheet) .ps-vacts .btn .ic svg{width:100%;height:100%;}
+:is(#ps-ov,#rx-sheet,#op-sheet) .ps-vacts .btn.dark:disabled{opacity:.45;cursor:not-allowed;}
+#ps-ov .ps-foot{flex:none;display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;padding:10px 16px 10px 22px;border-top:1px solid var(--line);}
+#ps-ov .ps-warn{display:flex;align-items:center;gap:8px;margin:0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+#ps-ov .ps-warn[hidden]{display:none;}
+#ps-ov .ps-warn .ic{width:18px;height:18px;color:var(--warn);}
+#ps-ov .ps-safe{height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 16px;border:1px solid var(--line-strong);border-radius:999px;background:var(--panel);font:inherit;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;}
+#ps-ov .ps-safe[aria-checked="true"]{background:var(--accent);border-color:var(--accent);color:#fff;}
+#ps-ov .ps-keys{margin:0 0 0 auto;font-size:14px;line-height:20px;color:var(--ink-soft);}
+#ps-ov .ps-keys kbd{display:inline-block;min-width:22px;margin:0 2px;padding:0 6px;border-radius:6px;background:var(--wash);font:inherit;font-size:14px;text-align:center;color:var(--ink);}
+/* the Home field opens the search; its shortcut sits inside it */
+#screen-today .q-search .ps-kbd{flex:none;margin:0 4px 0 6px;padding:0 6px;border-radius:6px;background:var(--panel);font:inherit;font-size:14px;line-height:22px;color:var(--ink-soft);}
+#screen-today .q-search.has-value .ps-kbd{display:none;}
+#screen-today .q-search:has(.ps-kbd){min-width:320px;}
+/* top bar: Find a patient, and safe mode (labelled only while on, in the current-state blue) */
+.topbar #ps-tb,.topbar #ps-safe-tb{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:54px;height:54px;padding:0;border:0;border-radius:999px;background:#fff;box-shadow:0 1px 2px rgba(23,24,28,.05);color:var(--ink);cursor:pointer;font:inherit;font-size:15px;font-weight:600;}
+.topbar #ps-tb .ic,.topbar #ps-safe-tb .ic{display:inline-flex;width:22px;height:22px;}
+.topbar #ps-tb .ic svg,.topbar #ps-safe-tb .ic svg{width:100%;height:100%;}
+.topbar #ps-tb:hover,.topbar #ps-safe-tb:hover{background:var(--wash);}
+.topbar #ps-tb:focus-visible,.topbar #ps-safe-tb:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.topbar #ps-safe-tb .ps-safe-l{display:none;}
+.topbar #ps-safe-tb.on{width:auto;padding:0 20px 0 16px;background:var(--accent);color:#fff;}
+.topbar #ps-safe-tb.on .ps-safe-l{display:inline;}
+/* chart states on the patient card (spec §8) */
+#screen-patientchart #ps-st[hidden],#screen-patientchart #ps-stbar[hidden]{display:none;}
+#screen-patientchart #ps-st.ps-t-mut .ic{color:var(--ink-soft);}
+#screen-patientchart #ps-stbar{display:flex;gap:8px;align-items:flex-start;margin:10px 0 0;padding:10px 12px;max-width:66ch;border-radius:12px;background:var(--wash);font-size:15px;line-height:22px;color:var(--ink);}
+#screen-patientchart #ps-stbar .ic{display:inline-flex;flex:none;width:18px;height:18px;margin-top:2px;color:var(--warn);}
+#screen-patientchart #ps-stbar.ps-mut .ic{color:var(--ink-soft);}
+#screen-patientchart #ps-stbar .ic svg,#screen-patientchart #ps-st .ic svg{width:100%;height:100%;}
+#screen-patientchart [data-ps-blk]{cursor:not-allowed;}
+#screen-patientchart .v2-orow[data-ps-blk]{background:var(--paper);}
+#screen-patientchart .v2-orow[data-ps-blk] .v2-ot b{color:var(--ink-soft);}
+#screen-patientchart .v2-orow .ps-why{display:block;font-size:14px;line-height:20px;font-weight:400;color:var(--ink-soft);}
+/* the two-identifier check over the prescribing and order panels (spec §6) */
+#rx-panel #rx-sheet.ps-gated,#op-panel #op-sheet.ps-gated{position:relative;}
+#rx-panel #rx-sheet > .ps-gate,#op-panel #op-sheet > .ps-gate{position:absolute;left:0;right:0;bottom:0;z-index:6;display:flex;align-items:flex-start;justify-content:center;padding:48px 24px;background:rgba(241,241,239,.94);overflow-y:auto;}
+#rx-panel #rx-sheet > .ps-gate[hidden],#op-panel #op-sheet > .ps-gate[hidden]{display:none;}
+#rx-panel #rx-sheet > .ps-gate .ps-gcard,#op-panel #op-sheet > .ps-gate .ps-gcard{width:min(580px,100%);padding:24px;border-radius:20px;background:var(--panel);box-shadow:var(--shadow-card);}
+#rx-panel #rx-sub .ps-idok,#op-panel #op-sub .ps-idok{color:var(--ink-soft);}
 </style>
 </head>
 <body>
@@ -7676,6 +7806,10 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
            The countdown lives where he looks, in the current call-window band of the queue and in the chart's top line (qClockUpdate). -->
       <!-- Ani, 4 Nov ("why can not you just add V2 demo button"): the chart layout switch in the top bar, shown only on a chart; same choice as the profile menu -->
       <span class="tb-lay" role="group" aria-label="Chart layout"><button type="button" id="tb-lay-1" aria-pressed="true" onclick="cv2Set(false)">Current</button><button type="button" id="tb-lay-2" aria-pressed="false" onclick="cv2Set(true)">Version 2</button></span>
+      <!-- Daniel's patient search spec v2.3 §3 (5 Nov): the one search control, on every screen (Ctrl+K / ⌘K), and the screen-share safe mode
+           toggle beside it ("Provide a prominent manual toggle"). Safe mode shows its label only while it is on (display by exception). -->
+      <button type="button" class="ps-tbb" id="ps-tb" onclick="psOpen()" aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K" title="Find a patient" aria-label="Find a patient"><span class="ic" data-pdic="search"></span></button>
+      <button type="button" class="ps-tbb ps-safe-tb" id="ps-safe-tb" onclick="psSafe()" aria-pressed="false" title="Safe mode for screen sharing" aria-label="Safe mode for screen sharing"><span class="ic" data-pdic="eyeoff"></span><span class="ps-safe-l">Safe mode</span></button>
       <button class="chat-fab theme-btn" id="theme-btn" onclick="toggleTheme()" title="Switch to dark" aria-label="Switch to dark"><span class="ic" id="theme-icon"></span></button>
       <!-- Ani, 30 Sep: the Cedar sits in the top bar, and the MOA chat is the floating button -->
       <button class="chat-fab ai-fab" id="ai-fab" onclick="openAI()" title="Cedar" aria-label="Cedar"><span class="ic ai-fab-ic"></span></button>
@@ -7795,7 +7929,10 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
             <div class="q-tools">
               <div class="q-search">
                 <span class="ic" data-pdic="search"></span>
-                <input type="text" id="queue-search" placeholder="Search by name, PHN, DOB" oninput="filterQueueSearch(this.value)">
+                <!-- Daniel's patient search spec v2.3 §3 (5 Nov): "One search control is reachable from the queue, chart, inbox and worklists (Ctrl+K)".
+                     This field no longer filters the day sheet on its own; typing, a click or Enter opens the one search (psFromField) with what was typed. -->
+                <input type="text" id="queue-search" placeholder="Search by name, PHN, DOB" autocomplete="off" aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K" oninput="psFromField(this)" onclick="psFromField(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();psFromField(this);}">
+                <kbd class="ps-kbd" id="ps-kbd-home" aria-hidden="true">Ctrl K</kbd>
                 <button class="q-clear" id="queue-search-clear" onclick="clearQueueSearch()" title="Clear">&times;</button>
               </div>
             </div>
@@ -8208,12 +8345,14 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
           <div class="cs-snap">
             <span class="vc-av cs-photo" role="img" aria-label="Photo placeholder. The dated photo the patient supplies at intake shows here."><span class="ic" data-pdic="user"></span></span>
             <div class="cs-who">
-              <div class="cs-nmrow"><h2 class="vc-nm" data-f="name">--</h2><span class="cs-newpt" id="cs-newpt" hidden>New patient</span></div>
+              <div class="cs-nmrow"><h2 class="vc-nm" data-f="name">--</h2><span class="cs-newpt" id="cs-newpt" hidden>New patient</span><span class="ps-st" id="ps-st" hidden></span></div>
               <p class="vc-sub" id="cs-sub"></p>
             </div>
             <div class="cs-facts">
               <p class="cs-fact" id="cs-allergy"></p>
               <p class="cs-fact cs-fd" id="cs-fd"></p>
+              <!-- Daniel's patient search spec v2.3 §8 (5 Nov): inactive, deceased, merged and suspected-duplicate charts carry a prominent status and their action limits -->
+              <p class="ps-stbar" id="ps-stbar" hidden></p>
             </div>
             <div class="vc-acts">
               <!-- 18 Oct (Daniel, 17 Oct Loom: "you can use your cellular data or you can use Wi-Fi ... the doctor could choose one or the other"): Call is a split button; the main part uses the last route, the caret offers Phone or Headset -->
@@ -9215,6 +9354,27 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
       <aside class="op-rail" id="op-rail" aria-label="Summary"></aside>
     </div>
     <footer class="op-bar" id="op-bar"></footer>
+  </div>
+</div>
+<!-- Daniel's patient search spec v2.3 §3 (5 Nov), Phases 0 and 1: one search control, opened with Ctrl+K / ⌘K from any screen.
+     "Recognition over recall": candidates with their evidence and conflicts; the doctor picks one. Search never opens a chart by itself.
+     Filled by psRender(). Joins the shared drawer stack for Escape and the focus trap. -->
+<div class="ps-ov" id="ps-ov" onclick="if(event.target===this) psClose()">
+  <div class="ps-dlg" id="ps-dlg" role="dialog" aria-modal="true" aria-labelledby="ps-h">
+    <h2 class="vh" id="ps-h">Find a patient</h2>
+    <div class="ps-bar">
+      <span class="ic" data-pdic="search"></span>
+      <input type="text" id="ps-q" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ps-list" aria-describedby="ps-keys" autocomplete="off" spellcheck="false" placeholder="Name, PHN, date of birth, visit date, clinician or pharmacy">
+      <button type="button" class="ps-x" onclick="psClose()" aria-label="Close search"><span class="ic" data-pdic="close"></span></button>
+    </div>
+    <div class="ps-clues" id="ps-clues"></div>
+    <div class="ps-body" id="ps-body"></div>
+    <div class="ps-foot" id="ps-foot">
+      <p class="ps-warn" id="ps-warn"><span class="ic" data-pdic="alert"></span><span>Screen sharing can’t be detected here. Turn on safe mode before you share.</span></p>
+      <button type="button" class="ps-safe" id="ps-safe" role="switch" aria-checked="false" onclick="psSafe()"><span class="ic" data-pdic="eyeoff"></span>Safe mode</button>
+      <p class="ps-keys" id="ps-keys"><kbd>↑</kbd><kbd>↓</kbd> move <kbd>Enter</kbd> open or search <kbd>Esc</kbd> close</p>
+    </div>
+    <p class="vh" id="ps-live" role="status" aria-live="polite" aria-atomic="true"></p>
   </div>
 </div>
 
@@ -13474,7 +13634,8 @@ function openChart(name){
     pref: r.pref || base.split(' ')[0],
     /* REQ-ID-01/03: the name the patient goes by, worded as the queue row words it */
     demo: ((r.pref && r.legal && r.legal.split(' ')[0] !== r.pref) ? 'Preferred: ' + r.pref + ' \u00b7 ' : '') + ageTxt + ' \u00b7 ' + sexTxt,
-    dob: 'Mar 10, 1952',
+    /* Daniel's patient search spec v2.3 §6 (5 Nov): the banner shows the recorded date of birth, the same one search and the two-identifier check show (it was one fixed date for everyone) */
+    dob: (typeof psDobText === 'function' && psDobText(name)) || 'Mar 10, 1952',
     sex: sexTxt,
     phn: ptChart(name).phn,
     concern: r.concern,
@@ -23933,6 +24094,767 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-05 12:47</div>
+<script>
+/* ===================== Patient search, Phases 0 and 1 =====================
+   Daniel's patient search spec v2.3 (5 Nov 2026; brief product/specs/patient-search.md). Ani owns "Phase 0 and 1 wireframes, including safe-mode limits".
+   Principle (spec): "recognition over recall. Show a short list with evidence and any conflicting clues; a person chooses."
+   - One control: Ctrl+K / ⌘K from any screen, the Home field and the top-bar button (§3). Identity matches update while typing; plain-language
+     clues (approximate years, "not …", visit date, clinician, pharmacy, place) run on Enter.
+   - Deterministic matching only: normalised names, a small nickname map, edit distance and a sounds-alike key. No Cedar call, no network.
+   - Never opens a chart by itself: a click or Enter on a card opens it (§2: "Never open a chart because a query looks like an exact identifier").
+   - Chart states (§8), screen-share safe mode (§3), the two-identifier check before a prescription, order or referral draft (§6).
+   Session states with no control in the product (outside Canada, Cedar unavailable, role without search) come from the address:
+   ?search=abroad, ?search=degraded, ?search=unauthorized. Every patient added here is invented demo data (the repo is public);
+   none of them is on today's day sheet. */
+var PS = {open:false, opener:null, view:null, ran:'', ans:{}, asked:[], active:'', hover:'', recent:[], idok:{}, via:null, viaNext:null,
+          safe:false, mode:'', html:'', liveT:0, inT:0, loadT:0, loading:false, showHidden:false, safeHit:null};
+try { PS.mode = (new URLSearchParams(location.search).get('search') || '').toLowerCase(); } catch(e){}
+try { PS.safe = localStorage.getItem('sc-ps-safe') === '1'; } catch(e){}
+/* recorded identity for today's day sheet (invented demo data); the PHN and pharmacy stay in PT_CHART */
+var PS_PEOPLE = {
+  'Gloria Mcdonald, 74F':      {dob:'1952-03-10', city:'Coquitlam', ph:'0142', addr:'a1'},
+  'Andrey Abushakhmanov, 24M': {dob:'2002-05-02', city:'Burnaby',   ph:'2291', addr:'a2'},
+  'Carol-Anne Feldman, 44F':   {dob:'1982-01-19', city:'Coquitlam', ph:'7730', addr:'a3'},
+  'Behdis Maleki, 35F':        {dob:'1991-08-07', city:'Kamloops',  ph:'5168', addr:'a4'},
+  'K Arli Eyre, 41':           {dob:'1985-02-14', city:'Langford',  ph:'3307', addr:'a5'},
+  'Greg':                      {dob:'1968-09-03', city:'Burnaby',   ph:'8814', addr:'a6'},
+  'Manjit':                    {dob:'1960-04-22', city:'Surrey',    ph:'6402', addr:'a7'},
+  'Korynn':                    {dob:'1996-12-01', city:'Victoria',  ph:'1975', addr:'a8'}
+};
+/* patients who are not on today's day sheet: the earlier and later day sheets (OTHER_DAYS), then the invented ones that show each state.
+   seen: the day sheet they were on (-2, -1) or are booked on (+1, +2). state: inactive | deceased | duplicate. panel 'other': not on your panel. */
+var PS_OFF = [
+  {name:'Priya Raman, 39F', legal:'Priya Raman', sex:'Female', dob:'1987-06-12', city:'Burnaby', phn:'9650 214 563', pharm:'London Drugs, Burnaby', seen:-2},
+  {name:'Tom Alvarez, 61M', legal:'Thomas Alvarez', pref:'Tom', sex:'Male', dob:'1965-02-08', city:'Surrey', phn:'9650 302 781', pharm:'Shoppers Drug Mart, Surrey', seen:-2},
+  {name:'Nadia Hassan, 28F', legal:'Nadia Hassan', sex:'Female', dob:'1998-03-30', city:'Richmond', phn:'9650 455 019', last:'2026-04-09', why:'Prescription renewal'},
+  {name:'Owen Brady, 45M', legal:'Owen Patrick Brady', pref:'Owen', sex:'Male', dob:'1981-07-21', city:'Kelowna', phn:'9650 588 240', seen:-1},
+  {name:'Grace Lin, 52F', legal:'Grace Lin', sex:'Female', dob:'1974-10-03', city:'Vancouver', phn:'9650 671 335', seen:-1},
+  {name:'Karen Anderson, 58F', legal:'Karen Anderson', sex:'Female', dob:'1968-01-15', city:'Langley', phn:'9650 733 902', last:'2025-11-04', why:'Annual review', seen:1},
+  {name:'Eric Janusson, 34M', legal:'Eric Janusson', sex:'Male', dob:'1992-05-27', city:'Squamish', phn:'9650 806 447', last:'2026-06-30', why:'Follow up appointment', seen:1},
+  {name:'Stephanie Calibaba, 41F', legal:'Stephanie Calibaba', pref:'Steph', sex:'Female', dob:'1985-08-19', city:'Langford', phn:'9650 849 113', last:'2026-08-11', why:'Thyroid recheck', seen:1},
+  {name:'Marcus Webb, 66M', legal:'Marcus Webb', sex:'Male', dob:'1960-09-09', city:'Nanaimo', phn:'9650 912 604', last:'2026-05-20', why:'Diabetes review', seen:2},
+  /* invented, one per chart state (spec §8) */
+  {name:'Wren Talbot-Moss, 47F', legal:'Wren Talbot-Moss', sex:'Female', dob:'1979-06-30', city:'Penticton', phn:'9650 270 318', last:'2026-05-14', why:'Thyroid follow-up',
+   state:'inactive', stateAt:'Aug 12, 2026'},
+  {name:'Alistair Fenwick-Dunne, 88M', legal:'Alistair Fenwick-Dunne', pref:'Al', sex:'Male', dob:'1937-11-21', city:'Kelowna', phn:'9650 160 227', last:'2026-06-02', why:'Heart failure review',
+   state:'deceased', stateAt:'Jul 3, 2026'},
+  {name:'Mabel Joan Quist, 69F', legal:'Mabel Joan Quist', pref:'Mabel', sex:'Female', dob:'1957-10-09', city:'Vernon', phn:'9650 803 512', last:'2026-10-20', why:'Knee pain'},
+  {name:'Desmond Faulk, 52M', legal:'Desmond Faulk', pref:'Des', sex:'Male', dob:'1974-02-02', city:'Prince George', phn:'9650 615 044', last:'2026-09-09', why:'Sleep apnea follow-up'},
+  {name:'Desmond Faulke, 52M', legal:'Desmond Faulke', sex:'Male', dob:'1974-02-02', city:'Prince George', phn:'', state:'duplicate', dupOf:'Desmond Faulk, 52M', stateAt:'Oct 30, 2026'},
+  /* two patients sharing a surname, address and phone (spec §11 safety scenario: "the system cannot silently select one") */
+  {name:'Rowan Ashdown, 46M', legal:'Rowan Ashdown', sex:'Male', dob:'1980-04-11', city:'Nelson', phn:'9650 377 120', ph:'4410', addr:'n1', last:'2026-08-08', why:'Shoulder pain'},
+  {name:'Robin Ashdown, 19F', legal:'Robin Ashdown', sex:'Female', dob:'2007-01-23', city:'Nelson', phn:'9650 377 935', ph:'4410', addr:'n1', last:'2026-10-14', why:'Acne'},
+  /* last seen months ago, not on today's day sheet */
+  {name:'Duncan Macdonald, 61M', legal:'Duncan Macdonald', sex:'Male', dob:'1965-07-19', city:'Kamloops', phn:'9650 528 661', pharm:'Save-On-Foods Pharmacy, Kamloops', last:'2026-03-18', why:'Gout flare'},
+  {name:'Gloria Feng, 38F', legal:'Gloria Feng', sex:'Female', dob:'1988-09-27', city:'Richmond', phn:'9650 190 473', pharm:'London Drugs, Richmond', last:'2026-09-02', why:'Ear infection', clin:'locum'},
+  {name:'Kathleen Moreau, 39F', legal:'Kathleen Moreau', pref:'Kate', sex:'Female', dob:'1987-05-05', city:'Victoria', phn:'9650 664 208', last:'2026-07-07', why:'Migraine'},
+  {name:'Ezra Quintal, 33M', legal:'Ezra Quintal', sex:'Male', dob:'1993-03-03', city:'Squamish', phn:'9650 941 386', last:'2025-12-01', why:'Asthma review', panel:'other'}
+];
+/* a merged record: the old identifier redirects to the surviving chart (spec §8 "Merged") */
+var PS_MERGED = [{key:'psm:Mabel Quist', legal:'Mabel Quist', sex:'Female', dob:'1957-10-09', city:'Vernon', phn:'', into:'Mabel Joan Quist, 69F', stateAt:'Oct 2, 2026'}];
+var PS_NICK = [['greg','gregory'],['kathleen','kathy','kath','kate','katie'],['tom','thomas','tommy'],['steph','stephanie'],['al','alistair','ali'],
+  ['des','desmond'],['rob','robert','bob','robbie'],['andy','andrew','drew'],['liz','elizabeth','beth','betty'],['meg','margaret','maggie','peggy'],
+  ['ed','edward','eddie'],['will','william','bill','billy'],['jim','james','jimmy'],['dunc','duncan'],['marc','marcus'],['nat','nadia','natalie'],['caro','carol']];
+var PS_MON = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,sept:9,oct:10,nov:11,dec:12,january:1,february:2,march:3,april:4,june:6,july:7,august:8,september:9,october:10,november:11,december:12};
+var PS_MON_TXT = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+/* Phase 2+ (spec §5 Clinical, Narrative; §10): recognised so the demo can say "not yet", never matched */
+var PS_CLIN = /\b(rash|pain|cough|fever|diabet\w*|warfarin|inr|labs?|bloodwork|blood|pressure|bp|meds?|medications?|medicines?|renew\w*|refill|prescriptions?|rx|depress\w*|anxiety|asthma|infection|headache|migraine|surgery|pregnan\w*|allerg\w*|chest|heart|thyroid|cholesterol|sick|symptoms?|diagnos\w*|results?|x-?ray|ultrasound|mri|ct|scan|apixaban|eliquis|metformin|insulin|with|who|had|has|remember|case|ago|yesterday|last (?:fall|spring|summer|winter|year|month|week)|this (?:fall|spring|summer|winter))\b/g;
+var PS_STOP = /^(but|recent|patients|without|everyone|all|any|born|in|on|the|a|an|from|of|and|by|seen|visit|visited|saw|patient|named|called|mr|mrs|ms|miss|dr|phn|dob|i|think|maybe|at|for|last|lives|living|aged|age|y|yo|years|old|is|was)$/;
+
+function psNorm(s){ return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/['’]s\b/g, '').replace(/['’]/g, '').replace(/\s+/g, ' ').trim(); }
+function psEsc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function psD(iso){ var p = String(iso || '').split('-').map(Number); return p.length === 3 ? new Date(p[0], p[1] - 1, p[2]) : null; }
+function psFmt(iso){ var d = psD(iso); return d ? PS_MON_TXT[d.getMonth() + 1] + ' ' + d.getDate() + ', ' + d.getFullYear() : ''; }
+function psAge(iso){ var d = psD(iso); if(!d) return ''; var n = new Date(), a = n.getFullYear() - d.getFullYear(); if(n.getMonth() < d.getMonth() || (n.getMonth() === d.getMonth() && n.getDate() < d.getDate())) a--; return a; }
+function psIsoOff(off){ var d = new Date(); d.setDate(d.getDate() + off); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function psIsoFromTxt(t){ var m = String(t || '').match(/^([A-Z][a-z]{2}) (\d{1,2}), (\d{4})$/); return m ? m[3] + '-' + String(PS_MON[m[1].toLowerCase()]).padStart(2, '0') + '-' + m[2].padStart(2, '0') : ''; }
+function psMask(phn){ var d = String(phn || '').replace(/\D/g, ''); return d ? '•••• ••• ' + d.slice(-3) : ''; }
+function psNow(){ var d = new Date(), h = d.getHours() % 12 || 12; return h + ':' + String(d.getMinutes()).padStart(2, '0'); }
+function psMc(t){ return t.replace(/^mac(?=[a-z]{3})/, 'mc'); }
+function psSoundex(s){
+  s = s.replace(/[^a-z]/g, ''); if(!s) return '';
+  var c = {b:1,f:1,p:1,v:1,c:2,g:2,j:2,k:2,q:2,s:2,x:2,z:2,d:3,t:3,l:4,m:5,n:5,r:6}, out = s[0], last = c[s[0]] || 0;
+  for(var i = 1; i < s.length && out.length < 4; i++){ var k = c[s[i]] || 0; if(k && k !== last) out += k; if(s[i] !== 'h' && s[i] !== 'w') last = k; }
+  return (out + '000').slice(0, 4);
+}
+function psLev(a, b, cap){
+  if(Math.abs(a.length - b.length) > cap) return cap + 1;
+  var prev = [], cur, i, j; for(j = 0; j <= b.length; j++) prev[j] = j;
+  for(i = 1; i <= a.length; i++){
+    cur = [i]; var lo = i;
+    for(j = 1; j <= b.length; j++){ cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); if(cur[j] < lo) lo = cur[j]; }
+    if(lo > cap) return cap + 1; prev = cur;
+  }
+  return prev[b.length];
+}
+function psNick(a, b){ return PS_NICK.some(function(g){ return g.indexOf(a) > -1 && g.indexOf(b) > -1; }); }
+/* one query word against one recorded name part: {s, how}. A ranking label, never a probability (spec §2). */
+function psTok(q, n, first){
+  if(q === n) return {s:1, how:'exact'};
+  if(psMc(q) === psMc(n)) return {s:.9, how:'spelling'};
+  if(psNick(q, n)) return {s:.85, how:'nickname'};
+  if(q.length === 1) return first && n[0] === q ? {s:.5, how:'initial'} : {s:0};
+  if(q.length >= 2 && n.indexOf(q) === 0) return {s:.75, how:'partial'};
+  if(q.length >= 4 && psLev(psMc(q), psMc(n), 1) <= 1) return {s:.7, how:'spelling'};
+  if(q.length >= 7 && psLev(q, n, 2) <= 2) return {s:.6, how:'spelling'};
+  if(q.length >= 4 && q[0] === n[0] && psSoundex(q) === psSoundex(n)) return {s:.6, how:'sounds'};
+  return {s:0};
+}
+
+/* ---------- the directory: today's day sheet, the other day sheets and the invented patients ---------- */
+function psFmtSeen(off){ return psFmt(psIsoOff(off)); }
+function psRowFor(name){
+  var o = PS_OFF.filter(function(x){ return x.name === name; })[0]; if(!o) return null;
+  var age = psAge(o.dob);
+  return {pos:0, name:o.name, legal:o.legal, pref:o.pref || o.legal.split(' ')[0], age:age + 'Y', sex:o.sex, plan:'MSP', card:'verified',
+          concern:'No visit booked', win:'8-10', status:'psnone', wait:'—', redflag:false, bill:'msp-paid', psOff:true};
+}
+function psDir(){
+  var out = [], seen = {};
+  var add = function(p){ if(seen[p.key]) return; seen[p.key] = 1;
+    p.parts = []; psNorm(p.legal).split(' ').forEach(function(w, i){ p.parts.push({t:w, first:i === 0}); if(w.indexOf('-') > -1) w.split('-').forEach(function(h){ p.parts.push({t:h, first:i === 0}); }); });
+    if(p.pref && psNorm(p.pref) !== p.parts[0].t) p.parts.push({t:psNorm(p.pref), first:true});
+    var ws = psNorm(p.legal).split(' '); p.lastN = ws[ws.length - 1];
+    p.y = p.dob ? +p.dob.slice(0, 4) : 0; p.phnD = String(p.phn || '').replace(/\D/g, '');
+    out.push(p); };
+  (typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : []).forEach(function(r){
+    if(r.psOff) return;
+    var x = PS_PEOPLE[r.name] || {}, c = (typeof PT_CHART !== 'undefined' && PT_CHART[r.name]) || {}, l = (typeof PT_LAST !== 'undefined' && PT_LAST[r.name]) || null;
+    add({key:r.name, legal:r.legal || r.name.split(',')[0], pref:r.pref, sex:r.sex || '', dob:x.dob || '', city:x.city || '', phn:c.phn && c.phn !== '—' ? c.phn : '',
+         pharm:c.pharm || '', ph:x.ph, addr:x.addr, last:l ? psIsoFromTxt(l.date) : '', why:l ? l.why : '', clin:'Dr. Pannozzo', today:r, chart:true});
+  });
+  PS_OFF.forEach(function(o){
+    var last = o.seen < 0 ? psIsoOff(o.seen) : (o.last || '');
+    var why = o.why || '';
+    if(o.seen < 0 && typeof OTHER_DAYS !== 'undefined'){ var d = (OTHER_DAYS[String(o.seen)] || []).filter(function(x){ return x.name === o.name; })[0]; if(d){ why = d.concern; if(d.status === 'noshow') last = ''; } }
+    var next = '';
+    if(o.seen > 0 && typeof OTHER_DAYS !== 'undefined'){ var n = (OTHER_DAYS[String(o.seen)] || []).filter(function(x){ return x.name === o.name; })[0]; if(n) next = psIsoOff(o.seen) + '|' + n.concern; }
+    add({key:o.name, legal:o.legal, pref:o.pref, sex:o.sex, dob:o.dob, city:o.city, phn:o.phn, pharm:o.pharm || '', ph:o.ph, addr:o.addr, last:last, why:why,
+         clin:o.clin === 'locum' ? 'a locum physician' : 'Dr. Pannozzo', state:o.state || '', stateAt:o.stateAt || '', dupOf:o.dupOf || '', panel:o.panel || 'own', next:next, chart:true});
+  });
+  PS_MERGED.forEach(function(m){ add({key:m.key, legal:m.legal, sex:m.sex, dob:m.dob, city:m.city, phn:m.phn, state:'merged', into:m.into, stateAt:m.stateAt, chart:false}); });
+  out.forEach(function(p){ p.recent = PS.recent.indexOf(p.key) > -1; });
+  return out;
+}
+function psPerson(key){ return psDir().filter(function(p){ return p.key === key; })[0] || null; }
+function psDobText(name){ var p = psPerson(name); return p && p.dob ? psFmt(p.dob) : ''; }
+
+/* ---------- reading the query (spec §5: identity Phase 0 exact / Phase 1 fuzzy; visit circumstances and negative or uncertain clues Phase 1 basic) ---------- */
+function psParse(raw){
+  var C = {raw:raw, names:[], not:[], phn:'', phnPart:'', dob:'', year:0, yr:null, visit:null, clin:'', pharm:'', place:'', sex:'', un:[], cohort:false, work:''};
+  var q = ' ' + psNorm(raw).replace(/[,;]/g, ' ') + ' ';
+  var cut = function(re, fn){ q = q.replace(re, function(){ fn.apply(null, arguments); return ' '; }); };
+  if(/\b(unbilled|claims?|billing)\b/.test(q)) C.work = 'claims'; else if(/\btasks?\b/.test(q)) C.work = 'tasks'; else if(/\binbox\b/.test(q)) C.work = 'inbox';
+  q = q.replace(/\b(unbilled|claims?|billing|tasks?|inbox|this week|today)\b/g, ' ');
+  if(/\b(patients|all patients|everyone)\b|\bwithout\b/.test(q)) C.cohort = true;
+  cut(/\b(?:not|except|excluding|but not)\s+([a-z][a-z-]+)/g, function(m, w){ C.not.push(w); });
+  cut(/(?:^|\s)-([a-z][a-z-]+)/g, function(m, w){ C.not.push(w); });
+  cut(/\b(\d{4})[ -]?(\d{3})[ -]?(\d{3})\b/g, function(m, a, b, c){ C.phn = a + b + c; });
+  cut(/\b((?:19|20)\d\d)-(\d{1,2})-(\d{1,2})\b/g, function(m, y, mo, d){ C.dob = y + '-' + mo.padStart(2, '0') + '-' + d.padStart(2, '0'); });
+  cut(/\b(\d{1,2})\/(\d{1,2})\/((?:19|20)\d\d)\b/g, function(m, d, mo, y){ C.dob = y + '-' + mo.padStart(2, '0') + '-' + d.padStart(2, '0'); });
+  var MON = '(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sept?(?:ember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)';
+  cut(new RegExp('\\b(?:seen|visit(?:ed)?|saw|last visit)\\s+(?:on\\s+)?' + MON + '\\s+(\\d{1,2})(?:\\s+((?:19|20)\\d\\d))?\\b', 'g'), function(m, mo, d, y){ C.visit = {m:PS_MON[mo], d:+d, y:y ? +y : 0}; });
+  cut(new RegExp('\\b' + MON + '\\s+(\\d{1,2})\\s+visit\\b', 'g'), function(m, mo, d){ C.visit = {m:PS_MON[mo], d:+d, y:0}; });
+  cut(new RegExp('\\b' + MON + '\\s+(\\d{1,2})\\s+((?:19|20)\\d\\d)\\b', 'g'), function(m, mo, d, y){ C.dob = y + '-' + String(PS_MON[mo]).padStart(2, '0') + '-' + d.padStart(2, '0'); });
+  cut(new RegExp('\\b(\\d{1,2})\\s+' + MON + '\\s+((?:19|20)\\d\\d)\\b', 'g'), function(m, d, mo, y){ C.dob = y + '-' + String(PS_MON[mo]).padStart(2, '0') + '-' + d.padStart(2, '0'); });
+  cut(/\b(?:between\s+)?((?:19|20)\d\d)\s*(?:-|–|to|and)\s*((?:19|20)\d\d)\b/g, function(m, a, b){ a = +a; b = +b; C.yr = {lo:Math.min(a, b), hi:Math.max(a, b), label:'Born ' + Math.min(a, b) + '–' + Math.max(a, b)}; });
+  cut(/\b((?:19|20)\d)0s\b/g, function(m, d){ C.yr = {lo:+d * 10, hi:+d * 10 + 9, label:'Born in the ' + d + '0s'}; });
+  cut(/(?:\b(?:i think|maybe|about|around|circa|approx(?:imately)?|roughly)\s+(?:born\s+)?(?:in\s+)?|~\s*)((?:19|20)\d\d)\b\??/g, function(m, y){ y = +y; C.yr = {lo:y - 2, hi:y + 2, label:'Born about ' + y, soft:true}; });
+  cut(/\b((?:19|20)\d\d)\?/g, function(m, y){ y = +y; C.yr = {lo:y - 2, hi:y + 2, label:'Born about ' + y, soft:true}; });
+  cut(/\b(?:born\s+(?:in\s+)?)?((?:19|20)\d\d)\b/g, function(m, y){ C.year = +y; });
+  cut(/\b(?:dr\.?|doctor)\s+([a-z-]+)/g, function(m, w){ C.clin = w; });
+  cut(/\blocum\b/g, function(){ C.clin = 'locum'; });
+  cut(/\b(london drugs|shoppers(?: drug mart)?|lincoln(?: pharmacy)?|save[- ]on(?:[- ]foods)?(?: pharmacy)?)\b/g, function(m, w){ C.pharm = w.split(' ')[0].replace(/-.*/, ''); });
+  cut(/\b(prince george|coquitlam|burnaby|kamloops|langford|surrey|victoria|richmond|kelowna|vancouver|langley|squamish|nanaimo|penticton|vernon|nelson)\b/g, function(m, w){ C.place = w; });
+  cut(/\bfrom\s+([a-z]+)\b/g, function(m, w){ C.place = w; });
+  cut(/\b(man|male|boy|woman|female|girl)\b/g, function(m, w){ C.sex = /^(man|male|boy)$/.test(w) ? 'Male' : 'Female'; });
+  cut(PS_CLIN, function(m){ C.un.push(m.trim()); });
+  q.split(' ').forEach(function(w){
+    w = w.replace(/[^a-z0-9-]/g, ''); if(!w || PS_STOP.test(w)) return;
+    if(/^\d{3,9}$/.test(w)){ C.phnPart = w; return; }
+    if(/^[a-z][a-z-]*$/.test(w)) C.names.push(w);
+  });
+  if(C.cohort) C.names = [];   /* a cohort question is never read as a name */
+  C.unShow = C.un.filter(function(w){ return !/^(with|who|had|has|remember|case|ago|yesterday)$/.test(w); });
+  C.plain = !!(C.not.length || C.yr || C.visit || C.clin || C.pharm || C.place);   /* run on Enter (spec §3) */
+  C.any = !!(C.names.length || C.phn || C.phnPart || C.dob || C.year || C.plain || C.sex);
+  return C;
+}
+function psPlainOn(C){ return C.plain && PS.ran === C.raw && PS.mode !== 'degraded' && !PS.loading; }
+
+/* ---------- matching one person: evidence, conflicts, a score for ordering and a tier (3 exact identifier, 2 strong, 1 partial) ---------- */
+function psMatch(p, C, full){
+  var ev = [], cf = [], score = 0, hows = [], hit = false;
+  if(C.names.length){
+    var ok = C.names.every(function(t){
+      var best = {s:0};
+      p.parts.forEach(function(n){ var r = psTok(t, n.t, n.first); if(r.s > best.s){ best = r; best.part = n.t; } });
+      if(!best.s && t.length > 3 && /s$/.test(t)) p.parts.forEach(function(n){ var r = psTok(t.slice(0, -1), n.t, n.first); if(r.s > best.s){ best = r; best.part = n.t; } });
+      if(!best.s) return false; score += best.s * 10; hows.push(best); return true;
+    });
+    if(!ok) return null;
+    hit = true;
+    var allExact = hows.every(function(h){ return h.how === 'exact'; });
+    var nick = hows.filter(function(h){ return h.how === 'nickname'; })[0], sp = hows.some(function(h){ return h.how === 'spelling'; }), so = hows.some(function(h){ return h.how === 'sounds'; });
+    ev.push(allExact ? 'Name' : nick ? 'Nickname of ' + nick.part.charAt(0).toUpperCase() + nick.part.slice(1) : sp ? 'Close spelling' : so ? 'Sounds alike' : 'Partial name');
+    p._exactName = allExact && hows.length >= 2;
+    p._allExact = allExact;
+  }
+  if(full && C.not.length){
+    var out = C.not.filter(function(w){ return p.parts.some(function(n){ return n.t === w || psNick(w, n.t); }) || psNorm(p.city) === w; });
+    if(out.length) return {p:p, excluded:'Not ' + out[0].charAt(0).toUpperCase() + out[0].slice(1)};
+  }
+  var idOnly = !C.names.length;
+  if(C.phn){ if(p.phnD === C.phn){ score += 100; ev.unshift('PHN'); hit = true; } else return null; }
+  if(C.phnPart){ if(p.phnD && p.phnD.indexOf(C.phnPart) > -1){ score += 20; ev.push('PHN digits'); hit = true; } else if(idOnly) return null; }
+  if(C.dob){ if(p.dob === C.dob){ score += 40; ev.push('Date of birth'); hit = true; } else if(idOnly && !C.phn) return null; else if(p.dob){ score -= 10; cf.push('Born ' + psFmt(p.dob)); } }
+  if(C.year){ if(p.y === C.year){ score += 10; ev.push('Born ' + C.year); hit = true; } else if(idOnly && !C.phn && !C.dob) return null; else if(p.y){ score -= 8; cf.push('Born ' + p.y + ', not ' + C.year); } }
+  if(C.sex && p.sex){ if(p.sex === C.sex){ score += 2; } else { if(idOnly && !hit) return null; score -= 6; cf.push('Recorded as ' + p.sex.toLowerCase()); } }
+  if(full && C.yr){ if(p.y >= C.yr.lo && p.y <= C.yr.hi){ score += 6; ev.push('Born ' + p.y); hit = true; } else if(idOnly && !hit) return null; else if(p.y){ score -= 6; cf.push('Born ' + p.y + ', outside ' + C.yr.lo + '–' + C.yr.hi); } }
+  if(full && C.place){ if(psNorm(p.city) === C.place){ score += 6; ev.push('Lives in ' + p.city); hit = true; } else if(idOnly) return null; else if(p.city){ score -= 6; cf.push('Lives in ' + p.city); } }
+  /* "Missing evidence is unknown, not absent" (spec §5): a different pharmacy, clinician or visit date is no evidence, not a conflict */
+  if(full && C.pharm){ if(psNorm(p.pharm).indexOf(C.pharm) > -1){ score += 6; ev.push('Pharmacy ' + p.pharm); hit = true; } else if(idOnly) return null; }
+  if(full && C.clin){ var cm = C.clin === 'locum' ? /locum/.test(p.clin) : psNorm(p.clin).indexOf(C.clin) > -1; if(cm){ score += 4; ev.push('Seen by ' + p.clin); hit = true; } else if(idOnly) return null; }
+  if(full && C.visit){ var vd = psD(p.last); if(vd && vd.getMonth() + 1 === C.visit.m && vd.getDate() === C.visit.d && (!C.visit.y || vd.getFullYear() === C.visit.y)){ score += 8; ev.push('Visit ' + psFmt(p.last)); hit = true; } else if(idOnly) return null; }
+  if(!hit) return null;
+  var tier = (C.phn && p.phnD === C.phn) || (p._allExact && C.names.length && C.dob && p.dob === C.dob) ? 3 :
+             ((C.names.length && p._allExact && !cf.length) || (idOnly && C.dob && p.dob === C.dob) ? 2 : 1);
+  if(p.state === 'duplicate' || p.state === 'merged') tier = Math.min(tier, 2);
+  return {p:p, ev:ev, cf:cf, score:score, tier:tier};
+}
+function psGroup(p){ return p.today ? 'today' : p.recent ? 'recent' : 'other'; }
+var PS_GROUP_TXT = {best:'Best match', today:'On today’s day sheet', recent:'Recent', other:'Other patients', dup:'Possible duplicate records'};
+/* the narrowing questions, one at a time (spec §3 "one question at a time with “Not sure” and “Neither” options") */
+var PS_ASK = [
+  {k:'dec', q:'Born when?', v:function(p){ return p.y ? Math.floor(p.y / 10) * 10 + 's' : ''; }},
+  {k:'city', q:'Where do they live?', v:function(p){ return p.city; }},
+  {k:'sex', q:'Recorded sex?', v:function(p){ return p.sex; }}
+];
+function psSearch(C){
+  var full = psPlainOn(C), dir = psDir(), res = [], excl = [];
+  dir.forEach(function(p){ var m = psMatch(p, C, full); if(!m) return; if(m.excluded) excl.push(m); else res.push(m); });
+  Object.keys(PS.ans).forEach(function(k){
+    var a = PS_ASK.filter(function(x){ return x.k === k; })[0], v = PS.ans[k];
+    res = res.filter(function(m){
+      if(m.p.state === 'duplicate') return true;
+      var keep = v === '__neither' ? false : a.v(m.p) === v;
+      if(!keep) excl.push({p:m.p, excluded:v === '__neither' ? 'Neither' : a.q.replace('?', '') + ': ' + v});
+      return keep;
+    });
+  });
+  res.sort(function(a, b){ return b.tier - a.tier || b.score - a.score || a.p.legal.localeCompare(b.p.legal); });
+  return {C:C, full:full, res:res, excl:excl};
+}
+
+/* ---------- rendering ---------- */
+function psIc(k){ return '<span class="ic" data-pdic="' + k + '"></span>'; }
+function psId(key){ return 'ps-o-' + String(key).replace(/[^A-Za-z0-9]+/g, '-'); }
+function psTag(txt, ic, cls){ return '<span class="ps-tag' + (cls ? ' ' + cls : '') + '">' + (ic ? psIc(ic) : '') + '<span>' + psEsc(txt) + '</span></span>'; }
+function psStateTag(p){
+  if(p.state === 'inactive') return psTag('Inactive · transferred out', 'alert', 'ps-t-warn');
+  if(p.state === 'deceased') return psTag('Deceased', 'flag', 'ps-t-mut');
+  if(p.state === 'merged') return psTag('Merged record', 'reassign', 'ps-t-warn');
+  if(p.state === 'duplicate') return psTag('Possible duplicate', 'alert', 'ps-t-warn');
+  return '';
+}
+function psCard(m, sect){
+  var p = m.p, safe = PS.safe, id = psId(p.key);
+  var tags = psStateTag(p);
+  if(p.today && sect !== 'today') tags += psTag('Today · ' + ((typeof WIN_TEXT !== 'undefined' && WIN_TEXT[p.today.win]) || p.today.win), 'calendar', 'ps-t-day');
+  if(p.panel === 'other') tags += psTag('Not on your panel', 'user', 'ps-t-mut');
+  var l2 = [];
+  if(p.dob) l2.push('Born ' + psFmt(p.dob) + ' · ' + psAge(p.dob)); else l2.push('Date of birth not recorded');
+  l2.push(p.phn ? 'PHN ' + psMask(p.phn) : 'No PHN on record');
+  l2.push(p.last ? 'Last visit ' + psFmt(p.last) : 'No visits yet');
+  var ctx;
+  if(p.state === 'merged') ctx = '<span>Merged into ' + psEsc((psPerson(p.into) || {}).legal || '') + ' on ' + psEsc(p.stateAt) + '</span>';
+  else if(p.state === 'duplicate') ctx = '<span>May be the same person as ' + psEsc((psPerson(p.dupOf) || {}).legal || '') + '. Not merged.</span><span class="ps-src"> · registered ' + psEsc(p.stateAt) + '</span>';
+  else if(p.panel === 'other') ctx = '<span class="ps-src">Context shows once you give a reason to open the chart</span>';
+  else if(p.state === 'inactive') ctx = '<span>Transferred out ' + psEsc(p.stateAt) + '</span><span class="ps-src"> · chart status</span>';
+  else if(p.state === 'deceased') ctx = '<span>Died ' + psEsc(p.stateAt) + '</span><span class="ps-src"> · chart status</span>';
+  else if(p.next) ctx = '<span>Booked ' + psEsc(psFmt(p.next.split('|')[0])) + ': ' + psEsc(p.next.split('|')[1]) + '</span><span class="ps-src"> · day sheet</span>';
+  else if(p.why && p.last) ctx = '<span>' + psEsc(p.why) + '</span><span class="ps-src"> · visit note, ' + psEsc(psFmt(p.last)) + '</span>';
+  else ctx = '<span class="ps-src">No verified clinical summary</span>';
+  var ev = (m.ev || []).length ? '<span class="ps-ok">' + psIc('complete') + '<span>' + psEsc(m.ev.join(' · ')) + '</span></span>' : '';
+  var cf = (m.cf || []).length ? '<span class="ps-cf">' + psIc('alert') + '<span>' + psEsc(m.cf.join(' · ')) + '</span></span>' : '';
+  return '<div class="ps-card' + (PS.active === p.key ? ' on' : '') + '" role="option" id="' + id + '" data-k="' + psEsc(p.key) + '" aria-selected="' + (PS.active === p.key) + '">' +
+    '<div class="ps-c1"><span class="ps-nm">' + psEsc(p.legal) + '</span>' + tags + '</div>' +
+    (safe ? '' : '<div class="ps-c2">' + l2.map(function(x){ return '<span>' + psEsc(x) + '</span>'; }).join('') + '</div>' +
+    '<div class="ps-c3">' + ctx + '</div>' + (ev || cf ? '<div class="ps-ev">' + ev + cf + '</div>' : '')) +
+    '<span class="ps-go" aria-hidden="true">' + psIc('chevr') + '</span></div>';
+}
+function psState(ic, h, line, extra){ return '<div class="ps-state">' + psIc(ic) + '<div><p class="ps-sh">' + psEsc(h) + '</p>' + (line ? '<p class="ps-sl">' + line + '</p>' : '') + (extra || '') + '</div></div>'; }
+function psChip(txt, ic, cls){ return '<span class="ps-chip' + (cls ? ' ' + cls : '') + '">' + (ic ? psIc(ic) : '') + '<span>' + psEsc(txt) + '</span></span>'; }
+function psClues(C, full){
+  var h = [], pend = function(t){ return PS.mode === 'degraded' ? psChip(t, 'alert', 'ps-pend') : (C.plain && !full ? psChip(t, 'clock', 'ps-pend') : psChip(t)); };
+  C.names.forEach(function(n){ h.push(psChip('Name: ' + n)); });
+  if(C.phn) h.push(psChip('PHN ' + psMask(C.phn)));
+  if(C.phnPart) h.push(psChip('PHN digits ' + C.phnPart));
+  if(C.dob) h.push(psChip('Born ' + psFmt(C.dob)));
+  if(C.year) h.push(psChip('Born ' + C.year));
+  if(C.sex) h.push(psChip(C.sex));
+  if(C.yr) h.push(pend(C.yr.label));
+  C.not.forEach(function(n){ h.push(pend('Not ' + n)); });
+  if(C.visit) h.push(pend('Visit ' + PS_MON_TXT[C.visit.m] + ' ' + C.visit.d + (C.visit.y ? ', ' + C.visit.y : '')));
+  if(C.clin) h.push(pend(C.clin === 'locum' ? 'Seen by a locum' : 'Seen by Dr. ' + C.clin.charAt(0).toUpperCase() + C.clin.slice(1)));
+  if(C.pharm) h.push(pend('Pharmacy: ' + C.pharm));
+  if(C.place) h.push(pend('Lives in ' + C.place.replace(/\b\w/g, function(c){ return c.toUpperCase(); })));
+  Object.keys(PS.ans).forEach(function(k){ var v = PS.ans[k]; h.push(psChip(v === '__neither' ? 'Neither of these' : k === 'dec' ? 'Born in the ' + v : k === 'city' ? 'Lives in ' + v : 'Recorded ' + v.toLowerCase(), 'complete')); });
+  return h.join('');
+}
+function psConflicts(res){
+  var seen = {}, out = [];
+  res.forEach(function(a){ res.forEach(function(b){
+    if(a === b || !a.p.addr || a.p.addr !== b.p.addr || a.p.ph !== b.p.ph || a.p.lastN !== b.p.lastN) return;
+    var k = [a.p.key, b.p.key].sort().join('|'); if(seen[k]) return; seen[k] = 1; out.push([a.p, b.p]);
+  }); });
+  return out;
+}
+function psBody(){
+  var q = document.getElementById('ps-q'), raw = q ? q.value : '', C = psParse(raw);
+  var clues = document.getElementById('ps-clues');
+  if(PS.mode === 'abroad'){ if(clues) clues.innerHTML = ''; return psState('alert', 'Patient search is off outside Canada', 'Access from outside Canada needs an approved exception.'); }
+  if(PS.mode === 'unauthorized'){ if(clues) clues.innerHTML = ''; return psState('alert', 'Patient search isn’t available for your role here', 'Ask the clinic administrator if you need it.'); }
+  if(PS.view && PS.view.k === 'merge') return psMergeView(PS.view.key);
+  if(PS.view && PS.view.k === 'reason') return psReasonView(PS.view.key);
+  var top = PS.mode === 'degraded' ? '<p class="ps-note">' + psIc('alert') + '<span>Cedar is unavailable. Exact name, PHN and date of birth searches still work.</span></p>' : '';
+  if(!raw.trim()){
+    if(clues) clues.innerHTML = '';
+    if(PS.safe) return top + psState('eyeoff', 'Safe mode is on', 'Suggestions and recent patients are hidden. Enter a full PHN, or a full name and date of birth, then press Enter.');
+    var rec = psDir().filter(function(p){ return p.recent && p.chart; }).sort(function(a, b){ return PS.recent.indexOf(a.key) - PS.recent.indexOf(b.key); }).slice(0, 5);
+    if(!rec.length) return top;
+    return top + '<div role="listbox" id="ps-list" aria-label="Recent patients"><div role="group" aria-labelledby="ps-g-recent"><p class="ps-gh" id="ps-g-recent">Recent</p>' +
+      rec.map(function(p){ return psCard({p:p, ev:[], cf:[]}, 'recent'); }).join('') + '</div></div>';
+  }
+  var S = psSearch(C);
+  if(clues) clues.innerHTML = psClues(C, S.full);
+  var notes = '';
+  if(C.un.length) notes += '<p class="ps-note">' + psIc('cardinfo') + '<span>Searching by symptoms, medicines or a description isn’t available yet' + (C.unShow.length ? ' (' + psEsc(C.unShow.map(function(w){ return '“' + w + '”'; }).join(', ')) + ')' : '') + '.</span></p>';
+  if(C.cohort) notes += '<p class="ps-note">' + psIc('cardinfo') + '<span>Searches across many patients belong in the reporting tool, not here.</span></p>';
+  if(C.plain && !S.full && PS.mode !== 'degraded' && !PS.loading) notes += '<p class="ps-note ps-quiet">' + psIc('clock') + '<span>Press Enter to search with every clue.</span></p>';
+  if(C.plain && PS.mode === 'degraded' && PS.ran === C.raw) notes += '<p class="ps-note">' + psIc('alert') + '<span>Plain-language clues weren’t used while Cedar is unavailable.</span></p>';
+  var work = '';
+  if(C.work && !PS.safe){
+    var W = {claims:['Claims', 'claims'], tasks:['Tasks', 'tasks'], inbox:['Inbox', 'inbox']}[C.work];
+    work = '<div role="group" aria-labelledby="ps-g-work"><p class="ps-gh" id="ps-g-work">Worklists</p><div class="ps-card ps-work' + (PS.active === 'go:' + W[1] ? ' on' : '') + '" role="option" id="ps-o-go-' + W[1] + '" data-k="go:' + W[1] + '" aria-selected="' + (PS.active === 'go:' + W[1]) + '">' +
+      '<div class="ps-c1"><span class="ps-nm">Open ' + W[0] + '</span></div><span class="ps-go" aria-hidden="true">' + psIc('chevr') + '</span></div></div>';
+  }
+  /* safe mode (spec §3): no autocomplete, no candidate cards, no recent list; only an exact identifier, after Enter, gives one row with the name alone */
+  if(PS.safe){
+    PS.safeHit = null;
+    if(PS.ran !== C.raw) return top + notes + psState('eyeoff', 'Suggestions are hidden in safe mode', 'Press Enter to look up a full PHN, or a full name and date of birth.');
+    var ex = S.res.filter(function(m){ return m.tier === 3 && m.p.chart; });
+    if(ex.length !== 1) return top + notes + psState('eyeoff', 'No exact match', 'Candidate lists are hidden in safe mode.');
+    PS.safeHit = ex[0].p.key;
+    return top + '<div role="listbox" id="ps-list" aria-label="Exact match"><div role="group" aria-labelledby="ps-g-best"><p class="ps-gh" id="ps-g-best">Exact match</p>' + psCard(ex[0], 'best') + '</div></div>';
+  }
+  var load = PS.loading ? '<div class="ps-load" role="presentation"><span></span><span></span><span></span></div>' : '';
+  if(!S.res.length && !work){
+    if(!C.any || load || C.un.length || C.cohort || (C.plain && !S.full)) return top + notes + load;
+    if(S.excl.length) return top + notes + psState('search', 'None of these', 'Every match was ruled out by your answers. Try a PHN or date of birth.', psHiddenHtml(S));
+    return top + notes + psState('search', 'No patient matches', 'Check the spelling, or search by PHN or date of birth.');
+  }
+  /* grouping and ranking (spec §3): today's day sheet, recent, other; a stronger match is never left below a weaker one; exact identifiers first */
+  var dup = S.res.filter(function(m){ return m.p.state === 'duplicate'; }), main = S.res.filter(function(m){ return m.p.state !== 'duplicate'; });
+  var order = ['today', 'recent', 'other'], best = [], groups = {today:[], recent:[], other:[]};
+  var bestTier = main.reduce(function(t, m){ return Math.max(t, m.tier); }, 0);
+  main.forEach(function(m){ groups[psGroup(m.p)].push(m); });
+  if(bestTier >= 2){
+    var lift = bestTier === 3;
+    if(!lift){ var weakAbove = false; order.forEach(function(g){ groups[g].forEach(function(m){ if(m.tier === bestTier && weakAbove) lift = true; }); if(groups[g].some(function(m){ return m.tier < bestTier; })) weakAbove = true; }); }
+    if(lift){ best = main.filter(function(m){ return m.tier === bestTier; }); order.forEach(function(g){ groups[g] = groups[g].filter(function(m){ return best.indexOf(m) < 0; }); }); }
+  }
+  var sect = function(k, list){ if(!list.length) return ''; return '<div role="group" aria-labelledby="ps-g-' + k + '"><p class="ps-gh" id="ps-g-' + k + '">' + (k === 'best' && bestTier === 3 ? 'Exact match' : PS_GROUP_TXT[k]) + '</p>' + list.map(function(m){ return psCard(m, k); }).join('') + '</div>'; };
+  /* conflicts shown, never resolved silently (spec §11 safety scenario) */
+  var conf = psConflicts(main).map(function(pair){
+    return '<div class="ps-conf" role="note">' + psIc('alert') + '<div><p class="ps-ch">' + psEsc(pair[0].legal) + ' and ' + psEsc(pair[1].legal) + ' share a surname, address and phone.</p>' +
+      '<table class="ps-ct"><caption class="vh">What tells them apart</caption><thead><tr><th scope="col">First name</th><th scope="col">Born</th><th scope="col">PHN</th></tr></thead><tbody>' +
+      pair.map(function(p){ return '<tr><td>' + psEsc(p.legal.split(' ')[0]) + '</td><td>' + psEsc(psFmt(p.dob)) + '</td><td>' + psEsc(psMask(p.phn)) + '</td></tr>'; }).join('') + '</tbody></table></div></div>';
+  }).join('');
+  var ask = psAskHtml(S, best.length ? best : main);
+  return top + notes + conf + ask + '<div role="listbox" id="ps-list" aria-label="Patients">' + work + sect('best', best) + order.map(function(g){ return sect(g, groups[g]); }).join('') +
+    (dup.length ? '<div role="group" aria-labelledby="ps-g-dup"><p class="ps-gh" id="ps-g-dup">' + PS_GROUP_TXT.dup + '</p>' + dup.map(function(m){ return psCard(m, 'dup'); }).join('') + '</div>' : '') +
+    '</div>' + load + psHiddenHtml(S);
+}
+function psHiddenHtml(S){
+  if(!S.excl.length) return '';
+  return '<div class="ps-hid"><button type="button" class="ps-link" aria-expanded="' + PS.showHidden + '" onclick="PS.showHidden=!PS.showHidden;psRender()">Ruled out by your clues (' + S.excl.length + ')</button>' +
+    (PS.showHidden ? '<ul class="ps-hl">' + S.excl.map(function(m){ return '<li>' + psEsc(m.p.legal) + ' <span class="ps-src">· ' + psEsc(m.excluded) + '</span></li>'; }).join('') + '</ul>' : '') + '</div>';
+}
+/* ambiguous: two or more close candidates of the same strength. One question, the first attribute that tells them apart. */
+function psAskHtml(S, pool){
+  var top = pool.filter(function(m){ return m.p.state !== 'duplicate' && m.p.chart; });
+  if(top.length < 2 || top[0].tier !== top[1].tier || top[0].tier === 3) return '';
+  var cand = top.filter(function(m){ return m.tier === top[0].tier; });
+  if(cand.length > 6 || (top[0].tier < 2 && PS.ran !== S.C.raw)) return '';   /* not while a first letter or two are typed */
+  var a = PS_ASK.filter(function(x){
+    if(PS.ans[x.k] || PS.asked.indexOf(x.k) > -1) return false;
+    var vs = {}; cand.forEach(function(m){ var v = x.v(m.p); if(v) vs[v] = 1; }); return Object.keys(vs).length >= 2;
+  })[0];
+  if(!a) return '';
+  var vals = []; cand.forEach(function(m){ var v = a.v(m.p); if(v && vals.indexOf(v) < 0) vals.push(v); }); vals.sort();
+  return '<div class="ps-ask" role="group" aria-labelledby="ps-ask-h"><p class="ps-ah" id="ps-ask-h">' + cand.length + ' close matches. ' + psEsc(a.q) + '</p><div class="ps-aa">' +
+    vals.map(function(v){ return '<button type="button" class="ps-ab" data-ps-ans="' + a.k + '" data-v="' + psEsc(v) + '">' + psEsc(v) + '</button>'; }).join('') +
+    '<button type="button" class="ps-ab" data-ps-ans="' + a.k + '" data-v="__notsure">Not sure</button><button type="button" class="ps-ab" data-ps-ans="' + a.k + '" data-v="__neither">Neither</button></div></div>';
+}
+/* merged record: the old identifier redirects, identity is confirmed again (spec §8) */
+function psMergeView(key){
+  var old = psPerson(key), to = old && psPerson(old.into); if(!old || !to) return '';
+  return '<div class="ps-view" role="group" aria-labelledby="ps-v-h"><p class="ps-vh" id="ps-v-h" tabindex="-1">' + psIc('reassign') + '<span>This record was merged</span></p>' +
+    '<p class="ps-vl">' + psEsc(old.legal) + '’s old record was merged into ' + psEsc(to.legal) + '’s chart on ' + psEsc(old.stateAt) + '.</p>' +
+    '<dl class="ps-gid"><div><dt>Name</dt><dd>' + psEsc(to.legal) + '</dd></div><div><dt>Born</dt><dd>' + psEsc(psFmt(to.dob)) + ' · ' + psAge(to.dob) + '</dd></div><div><dt>PHN</dt><dd>' + psEsc(psMask(to.phn)) + '</dd></div></dl>' +
+    '<div class="ps-vacts"><button type="button" class="btn" onclick="psBack()">' + psIc('chevl') + 'Back to results</button>' +
+    '<button type="button" class="btn dark" onclick="psOpenChart(\'' + psEsc(to.key) + '\',{from:\'' + psEsc(old.legal) + '\',at:\'' + psEsc(old.stateAt) + '\'})">' + psIc('chartnote') + 'Open ' + psEsc(to.legal.split(' ')[0]) + '’s chart</button></div></div>';
+}
+/* outside your established duties: a reason before the chart opens (spec §1 purpose of use; D4 decides the list) */
+var PS_REASONS = ['Covering for their physician', 'Following up a result or task'];
+function psReasonView(key){
+  var p = psPerson(key); if(!p) return '';
+  return '<div class="ps-view" role="group" aria-labelledby="ps-v-h"><p class="ps-vh" id="ps-v-h" tabindex="-1">' + psIc('user') + '<span>' + psEsc(p.legal) + ' isn’t on your panel</span></p>' +
+    '<fieldset class="ps-rs"><legend class="ps-vl">Why are you opening this chart?</legend>' +
+    PS_REASONS.map(function(r, i){ return '<label class="ps-chk"><input type="radio" name="ps-reason" value="' + i + '" onchange="psReasonPick()"><span>' + psEsc(r) + '</span></label>'; }).join('') + '</fieldset>' +
+    '<div class="ps-vacts"><button type="button" class="btn" onclick="psBack()">' + psIc('chevl') + 'Back to results</button>' +
+    '<button type="button" class="btn dark" id="ps-reason-go" disabled onclick="psOpenChart(\'' + psEsc(p.key) + '\')">' + psIc('chartnote') + 'Open chart</button></div></div>';
+}
+function psReasonPick(){ var b = document.getElementById('ps-reason-go'); if(b) b.disabled = !document.querySelector('input[name="ps-reason"]:checked'); }
+function psBack(){ PS.view = null; psRender(); var q = document.getElementById('ps-q'); if(q) q.focus(); }
+function psOpts(){ return [].slice.call(document.querySelectorAll('#ps-body [role="option"]')); }
+function psRender(){
+  var body = document.getElementById('ps-body'), q = document.getElementById('ps-q'); if(!body) return;
+  /* a result under the pointer or keyboard focus never moves (spec §3, §9): note where it sits, and put it back after the update */
+  var pin = PS.active || PS.hover, el = pin ? document.getElementById(psId(pin)) : null, y0 = el ? el.getBoundingClientRect().top : null;
+  var html = psBody();
+  if(html !== PS.html){ body.innerHTML = html; PS.html = html; paintPd(body); }
+  paintPd(document.getElementById('ps-clues'));
+  var keys = psOpts().map(function(o){ return o.getAttribute('data-k'); });
+  if(PS.active && keys.indexOf(PS.active) < 0) PS.active = '';
+  if(y0 !== null){ var el2 = document.getElementById(psId(pin)); if(el2) body.scrollTop += el2.getBoundingClientRect().top - y0; }
+  psSyncActive();
+  var dis = PS.mode === 'abroad' || PS.mode === 'unauthorized';
+  if(q){ q.disabled = dis; q.setAttribute('aria-expanded', String(keys.length > 0)); }
+  var w = document.getElementById('ps-warn'), s = document.getElementById('ps-safe');
+  if(w) w.hidden = PS.safe;
+  if(s){ s.setAttribute('aria-checked', String(PS.safe)); }
+  clearTimeout(PS.liveT);
+  PS.liveT = setTimeout(psAnnounce, 450);
+}
+function psAnnounce(){
+  var l = document.getElementById('ps-live'); if(!l || !PS.open) return;
+  var n = psOpts().filter(function(o){ return !/^go:/.test(o.getAttribute('data-k')); }).length, q = (document.getElementById('ps-q') || {}).value || '';
+  var t = '';
+  if(PS.loading) t = 'Searching';
+  else if(PS.view) t = '';
+  else if(q.trim() && !PS.safe) t = n ? (n === 1 ? '1 patient matches' : n + ' patients match') + '. Use the arrow keys to choose, then Enter.' : (document.querySelector('#ps-body .ps-state') ? document.querySelector('#ps-body .ps-sh').textContent : '');
+  else if(PS.safe && q.trim()) t = n ? 'Exact match found. Press the down arrow, then Enter.' : '';
+  if(l.textContent !== t) l.textContent = t;
+}
+function psSyncActive(){
+  var q = document.getElementById('ps-q');
+  psOpts().forEach(function(o){ var on = o.getAttribute('data-k') === PS.active; o.classList.toggle('on', on); o.setAttribute('aria-selected', String(on)); });
+  if(!q) return;
+  var a = PS.active ? document.getElementById(PS.active.indexOf('go:') === 0 ? 'ps-o-go-' + PS.active.slice(3) : psId(PS.active)) : null;
+  if(a){ q.setAttribute('aria-activedescendant', a.id); a.scrollIntoView({block:'nearest'}); } else q.removeAttribute('aria-activedescendant');
+}
+function psMove(d){
+  var keys = psOpts().map(function(o){ return o.getAttribute('data-k'); }); if(!keys.length) return;
+  var i = keys.indexOf(PS.active);
+  i = i < 0 ? (d > 0 ? 0 : keys.length - 1) : Math.max(0, Math.min(keys.length - 1, i + d));
+  PS.active = keys[i]; psSyncActive();
+}
+/* the deliberate selection (spec §2, §4.6): a click or Enter on a card */
+function psPick(key){
+  if(!key) return;
+  if(key.indexOf('go:') === 0){ psClose(true); showScreen(key.slice(3)); return; }
+  var p = psPerson(key); if(!p) return;
+  if(p.state === 'merged'){ PS.view = {k:'merge', key:key}; psRender(); psFocusView(); return; }
+  if(p.panel === 'other'){ PS.view = {k:'reason', key:key}; psRender(); psFocusView(); return; }
+  psOpenChart(key);
+}
+function psFocusView(){ var h = document.getElementById('ps-v-h'); if(h) h.focus(); var l = document.getElementById('ps-live'); if(l && h) l.textContent = h.textContent; }
+function psOpenChart(key, via){
+  PS.viaNext = via ? {to:key, from:via.from, at:via.at} : null;
+  psClose(true);
+  openChart(key);
+  /* focus lands on the identity banner's name, so a keyboard or screen-reader user starts from who the chart belongs to */
+  var h = [].slice.call(document.querySelectorAll('#screen-patientchart h2[data-f="name"], #screen-patientchart h1[data-f="name"]')).filter(function(x){ return x.getClientRects().length; })[0];
+  if(h){ h.setAttribute('tabindex', '-1'); h.focus({preventScroll:true}); }
+}
+function psRunFull(){
+  var q = document.getElementById('ps-q'); if(!q) return;
+  var raw = q.value; if(!raw.trim()) return;
+  PS.ran = raw; PS.active = '';
+  var C = psParse(raw);
+  /* plain-language clues are the slower path: a short loading state, then the results (identity results never wait) */
+  if(C.plain && PS.mode !== 'degraded' && !PS.safe){
+    PS.loading = true; psRender(); clearTimeout(PS.loadT);
+    PS.loadT = setTimeout(function(){ PS.loading = false; psRender(); }, 550);
+  } else psRender();
+}
+function psInput(){
+  PS.ran = ''; PS.ans = {}; PS.asked = []; PS.view = null; PS.active = ''; PS.loading = false; PS.showHidden = false; clearTimeout(PS.loadT);
+  clearTimeout(PS.inT); PS.inT = setTimeout(psRender, 90);
+}
+function psCanOpen(){
+  if(typeof opIsOpen === 'function' && opIsOpen()){ toast('Finish or close the open form first'); return false; }
+  if(typeof RX_UI !== 'undefined' && RX_UI.open){
+    if(RX_UI.trap){ toast('Finish or close Prescribe first'); return false; }
+    rxClose(true);   /* opened on its own for a renewal and not used yet: its work is kept */
+  }
+  return true;
+}
+function psOpen(text){
+  var ov = document.getElementById('ps-ov'), q = document.getElementById('ps-q'); if(!ov || !q) return;
+  if(PS.open){ if(typeof text === 'string' && text){ q.value = text; psInput(); } q.focus(); q.select(); return; }
+  if(!psCanOpen()) return;
+  var a = document.activeElement; PS.opener = (a && a !== document.body) ? a : null;
+  PS.open = true; PS.view = null; PS.ran = ''; PS.ans = {}; PS.asked = []; PS.active = ''; PS.hover = ''; PS.html = ''; PS.showHidden = false;
+  q.value = typeof text === 'string' ? text : '';
+  ov.classList.add('show');
+  paintPd(ov);
+  psRender();
+  q.focus({preventScroll:true});
+  try { q.setSelectionRange(q.value.length, q.value.length); } catch(e){}
+}
+function psClose(keepFocus){
+  var ov = document.getElementById('ps-ov'); if(!ov || !PS.open) return;
+  PS.open = false; PS.view = null; PS.loading = false; clearTimeout(PS.loadT); clearTimeout(PS.inT);
+  ov.classList.remove('show');
+  var l = document.getElementById('ps-live'); if(l) l.textContent = '';
+  var op = PS.opener; PS.opener = null;
+  if(keepFocus !== true && op && document.contains(op) && op.getClientRects().length) op.focus({preventScroll:true});
+}
+function psFromField(el){ var v = el.value; el.value = ''; var w = el.closest('.q-search'); if(w) w.classList.remove('has-value'); psOpen(v); }
+function psSafe(on){
+  PS.safe = typeof on === 'boolean' ? on : !PS.safe;
+  try { localStorage.setItem('sc-ps-safe', PS.safe ? '1' : '0'); } catch(e){}
+  var b = document.getElementById('ps-safe-tb'); if(b){ b.setAttribute('aria-pressed', String(PS.safe)); b.classList.toggle('on', PS.safe); }
+  document.body.classList.toggle('ps-safe-on', PS.safe);
+  PS.active = ''; PS.hover = '';
+  if(PS.open) psRender();
+  toast(PS.safe ? 'Safe mode on: patient suggestions and recent lists are hidden' : 'Safe mode off');
+}
+
+/* ---------- chart states (spec §8) and the action blocks ---------- */
+var PS_BLOCKS = {inactive:['rx', 'lab', 'img', 'ref'], deceased:['rx', 'lab', 'img', 'ref', 'doc']};
+var PS_KIND_FN = {rx:'rxOpen', lab:'labOpen', img:'imgOpen', ref:'refOpen', doc:'docOpen'};
+var PS_KIND_TXT = {rx:'New prescriptions', lab:'New lab orders', img:'New imaging orders', ref:'New referrals', doc:'New documents'};
+function psBlocked(name){ var p = name && psPerson(name); return (p && PS_BLOCKS[p.state]) || []; }
+function psBlockWhy(k, name){
+  var p = psPerson(name || PC_CURRENT); if(!p) return '';
+  return p.state === 'inactive' ? PS_KIND_TXT[k] + ' are blocked until staff reactivate this chart' : PS_KIND_TXT[k] + ' are blocked on a deceased patient’s chart';
+}
+function psBlockSay(k){ toast(psBlockWhy(k)); }
+function psChartState(name){
+  var p = psPerson(name), tag = document.getElementById('ps-st'), bar = document.getElementById('ps-stbar');
+  var via = PS.via && PS.via.to === name ? PS.via : null;
+  var t = '', b = '', ic = 'alert', cls = '';
+  if(p && p.state === 'inactive'){ t = 'Inactive · transferred out'; b = 'Transferred out ' + p.stateAt + '. You can view this chart. New prescriptions, orders and referrals are blocked until staff reactivate it.'; }
+  else if(p && p.state === 'deceased'){ t = 'Deceased'; ic = 'flag'; cls = 'ps-t-mut'; b = 'Died ' + p.stateAt + '. Prescriptions and clinical drafts are blocked.'; }
+  else if(p && p.state === 'duplicate'){ t = 'Possible duplicate'; b = 'May be the same person as ' + ((psPerson(p.dupOf) || {}).legal || 'another chart') + '. Not merged: staff review it. Confirm identity before any action.'; }
+  if(via){ ic = 'reassign'; b = 'Opened from ' + via.from + '’s old record, merged into this chart on ' + via.at + '. Confirm identity before any action.'; }
+  if(tag){ tag.hidden = !t; tag.className = 'ps-st ps-tag ' + (cls || 'ps-t-warn'); tag.innerHTML = t ? psIc(ic === 'reassign' ? 'alert' : ic) + '<span>' + psEsc(t) + '</span>' : ''; paintPd(tag); }
+  if(bar){ bar.hidden = !b; bar.innerHTML = b ? psIc(ic) + '<span>' + psEsc(b) + '</span>' : ''; bar.classList.toggle('ps-mut', ic === 'flag'); paintPd(bar); }
+  if(p && p.today === undefined && p.chart && typeof pcFill === 'function') pcFill({visitline:'No visit today'});
+  psMarkTiles();
+}
+/* the Action tiles and every other way in say so, on the button itself (one rule for every screen with that pattern) */
+function psMarkTiles(){
+  var scr = document.getElementById('screen-patientchart'); if(!scr) return;
+  var blk = (typeof PC_CURRENT !== 'undefined' && PC_CURRENT) ? psBlocked(PC_CURRENT) : [];
+  Object.keys(PS_KIND_FN).forEach(function(k){
+    var on = blk.indexOf(k) > -1;
+    scr.querySelectorAll('[onclick*="' + PS_KIND_FN[k] + '("]').forEach(function(b){
+      if(on && b.getAttribute('data-ps-blk') !== k){
+        b.setAttribute('data-ps-blk', k); b.setAttribute('aria-disabled', 'true');
+        if(!b.hasAttribute('data-ps-title')) b.setAttribute('data-ps-title', b.getAttribute('title') || '');
+        b.setAttribute('title', psBlockWhy(k));
+      } else if(!on && b.hasAttribute('data-ps-blk')){
+        b.removeAttribute('data-ps-blk'); b.removeAttribute('aria-disabled');
+        var t0 = b.getAttribute('data-ps-title'); if(t0) b.setAttribute('title', t0); else b.removeAttribute('title'); b.removeAttribute('data-ps-title');
+      }
+      var ot = b.classList.contains('v2-orow') ? b.querySelector('.v2-ot') : null, why = ot && ot.querySelector('.ps-why');
+      if(ot && on && !why){ var s = document.createElement('span'); s.className = 'ps-why'; s.textContent = PS_BLOCK_SHORT[(psPerson(PC_CURRENT) || {}).state] || 'Blocked'; ot.appendChild(s); }
+      else if(ot && !on && why) why.remove();
+    });
+  });
+}
+var PS_BLOCK_SHORT = {inactive:'Blocked: chart inactive', deceased:'Blocked: patient deceased'};
+
+/* ---------- the two-identifier check (spec §6) ----------
+   "Before a prescription, order or referral draft starts, show the recorded full name and date of birth, plus the last digits of the PHN …
+   The physician deliberately confirms two identifiers against the visit context, and the confirmation is recorded with the action."
+   It sits over the prescribing panel and the order/referral panel until confirmed: the panels themselves are unchanged. It is asked again
+   whenever a chart is selected (openChart). */
+var PS_CHECK = {rx:'prescribe', lab:'order labs', img:'order imaging', ref:'refer'};
+function psGate(kind, passive){
+  var isRx = kind === 'rx', sheet = document.getElementById(isRx ? 'rx-sheet' : 'op-sheet'); if(!sheet) return;
+  var g = sheet.querySelector(':scope > .ps-gate');
+  var locked = isRx && typeof rxLocked === 'function' && rxLocked();
+  var need = !!PS_CHECK[kind] && typeof PC_CURRENT !== 'undefined' && PC_CURRENT && !PS.idok[PC_CURRENT] && !locked;
+  if(g && g.getAttribute('data-stop') === '1' && need) return;   /* "They don't match" stays until closed */
+  if(!need){ if(g){ g.hidden = true; } sheet.classList.remove('ps-gated'); psStamp(kind); return; }
+  var p = psPerson(PC_CURRENT) || {legal:PC_CURRENT.split(',')[0]};
+  if(!g){ g = document.createElement('div'); g.className = 'ps-gate'; sheet.appendChild(g); }
+  var hd = sheet.querySelector(':scope > header'); g.style.top = (hd ? hd.offsetHeight : 0) + 'px';
+  var sig = kind + '|' + PC_CURRENT;
+  if(g.getAttribute('data-sig') !== sig || g.hidden){
+    g.setAttribute('data-sig', sig); g.removeAttribute('data-stop');
+    var last = p.phn ? String(p.phn).replace(/\D/g, '').slice(-3) : '';
+    g.innerHTML = '<div class="ps-gcard" role="group" aria-labelledby="ps-g-h">' +
+      '<p class="ps-vh" id="ps-g-h" tabindex="-1">' + psIc('usercheck') + '<span>Confirm the patient before you ' + PS_CHECK[kind] + '</span></p>' +
+      '<dl class="ps-gid"><div><dt>Name</dt><dd>' + psEsc(p.legal) + '</dd></div><div><dt>Born</dt><dd>' + (p.dob ? psEsc(psFmt(p.dob)) + ' · ' + psAge(p.dob) : 'Not recorded') + '</dd></div>' +
+      '<div><dt>PHN ending</dt><dd>' + (last ? psEsc(last) : 'Not recorded') + '</dd></div></dl>' +
+      '<label class="ps-chk"><input type="checkbox" data-ps-c="nd"><span>Name and date of birth match the patient I’m treating</span></label>' +
+      (last ? '<label class="ps-chk"><input type="checkbox" data-ps-c="phn"><span>PHN ending ' + psEsc(last) + ' matches</span></label>' : '') +
+      '<div class="ps-vacts"><button type="button" class="btn" data-ps-g="no">' + psIc('close') + 'They don’t match</button>' +
+      '<button type="button" class="btn dark" data-ps-g="ok" disabled>' + psIc('complete') + 'Confirm and continue</button></div></div>';
+    paintPd(g);
+  }
+  g.hidden = false; sheet.classList.add('ps-gated');
+  if(!passive){ var c = g.querySelector('input'); if(c) setTimeout(function(){ if(!g.hidden) c.focus({preventScroll:true}); }, 0); }
+}
+function psStamp(kind){
+  var sub = document.getElementById(kind === 'rx' ? 'rx-sub' : 'op-sub'); if(!sub) return;
+  var ok = typeof PC_CURRENT !== 'undefined' && PS.idok[PC_CURRENT], s = sub.querySelector('.ps-idok');
+  if(ok && PS_CHECK[kind] && !s){ s = document.createElement('span'); s.className = 'ps-idok'; sub.appendChild(s); }
+  if(s){ if(ok && PS_CHECK[kind]) s.textContent = ' · Identity confirmed ' + ok.at; else s.remove(); }
+}
+function psGateOk(g){
+  var sheet = g.parentNode, kind = sheet.id === 'rx-sheet' ? 'rx' : ((typeof OP !== 'undefined' && OP.kind) || 'lab');
+  PS.idok[PC_CURRENT] = {at:psNow(), kind:kind};
+  g.hidden = true; sheet.classList.remove('ps-gated'); psStamp(kind);
+  var h = document.getElementById(kind === 'rx' ? 'rx-ttl' : 'op-ttl'); if(h) h.focus({preventScroll:true});
+  var l = document.getElementById('ps-live'); if(l) l.textContent = 'Identity confirmed';
+  toast('Identity confirmed ' + PS.idok[PC_CURRENT].at);
+}
+function psGateStop(g){
+  g.setAttribute('data-stop', '1');
+  g.innerHTML = '<div class="ps-gcard" role="group" aria-labelledby="ps-g-h"><p class="ps-vh" id="ps-g-h" tabindex="-1">' + psIc('alert') + '<span>Drafting stopped</span></p>' +
+    '<p class="ps-vl">Check the identity with the patient. If the chart is wrong, ask your MOA to reconcile it.</p>' +
+    '<div class="ps-vacts"><button type="button" class="btn" data-ps-g="close">' + psIc('close') + 'Close</button>' +
+    '<button type="button" class="btn dark" data-ps-g="moa">' + psIc('taskmoa') + 'Task MOA</button></div></div>';
+  paintPd(g);
+  var h = document.getElementById('ps-g-h'); if(h) h.focus();
+}
+function psGateClose(g){ var isRx = g.parentNode.id === 'rx-sheet'; g.removeAttribute('data-stop'); g.removeAttribute('data-sig'); if(isRx) rxClose(); else opClose(); }
+
+/* ---------- wiring ---------- */
+(function(){
+  if(typeof STATUS_LABEL !== 'undefined') Object.defineProperty(STATUS_LABEL, 'psnone', {value:'No visit today', enumerable:false});   /* not a day-sheet status: kept out of its menus */
+  PS_OFF.forEach(function(o){ if(typeof PT_CHART !== 'undefined' && !PT_CHART[o.name]) PT_CHART[o.name] = {phn:o.phn || '—', pharm:o.pharm || ''}; });
+  /* returning patients off today's day sheet get their last visit on the chart, so it reads as a returning patient, not a new one (invented demo data) */
+  psDir().forEach(function(p){
+    if(!p.chart || p.today || !p.last || typeof PT_LAST === 'undefined' || PT_LAST[p.key]) return;
+    PT_LAST[p.key] = {date:psFmt(p.last), why:p.why || 'Visit', plan:[], ask:[], pending:[],
+      note:{S:(p.why || 'Visit') + '.', O:'Virtual visit.', A:(p.why || 'Visit') + '.', P:'Follow up as needed.'}};
+  });
+  /* recently opened: the last two day sheets, then every chart opened here */
+  PS_OFF.filter(function(o){ return o.seen < 0; }).sort(function(a, b){ return b.seen - a.seen; }).forEach(function(o){ PS.recent.push(o.name); });
+  var hk = document.getElementById('ps-kbd-home'); if(hk && typeof KB !== 'undefined') hk.textContent = KB.mac ? '⌘K' : 'Ctrl K';
+  var tb = document.getElementById('ps-tb'); if(tb && typeof KB !== 'undefined') tb.title = 'Find a patient (' + (KB.mac ? '⌘K' : 'Ctrl+K') + ')';
+  paintPd(document.querySelector('.topbar')); paintPd(document.getElementById('ps-ov'));
+  if(PS.safe){ var sb = document.getElementById('ps-safe-tb'); if(sb){ sb.setAttribute('aria-pressed', 'true'); sb.classList.add('on'); } document.body.classList.add('ps-safe-on'); }
+  /* the shared drawer stack: Escape closes the top layer, Tab stays inside */
+  var ov = document.getElementById('ps-ov');
+  if(ov && typeof DRW_CLOSE !== 'undefined'){
+    DRW_CLOSE['ps-ov'] = function(){ psClose(); };
+    new MutationObserver(function(){
+      var on = ov.classList.contains('show'), was = DRW_STACK.some(function(l){ return l.id === 'ps-ov'; });
+      if(on && !was) drwOpened(ov); else if(!on && was) drwClosed(ov);
+    }).observe(ov, {attributes:true, attributeFilter:['class']});
+  }
+  /* Ctrl+K / ⌘K from anywhere, typing or not (spec §3) */
+  document.addEventListener('keydown', function(e){
+    if(!(e.metaKey || e.ctrlKey) || e.altKey || e.shiftKey || (e.key !== 'k' && e.key !== 'K')) return;
+    e.preventDefault(); e.stopPropagation(); psOpen();
+  }, true);
+  var q = document.getElementById('ps-q');
+  if(q){
+    q.addEventListener('input', psInput);
+    q.addEventListener('keydown', function(e){
+      if(e.key === 'ArrowDown'){ e.preventDefault(); psMove(1); }
+      else if(e.key === 'ArrowUp'){ e.preventDefault(); psMove(-1); }
+      else if(e.key === 'Enter'){ e.preventDefault(); if(PS.active) psPick(PS.active); else psRunFull(); }
+    });
+  }
+  var body = document.getElementById('ps-body');
+  if(body){
+    body.addEventListener('click', function(e){
+      var a = e.target.closest('[data-ps-ans]');
+      if(a){ var k = a.getAttribute('data-ps-ans'), v = a.getAttribute('data-v');
+        if(v === '__notsure') PS.asked.push(k); else PS.ans[k] = v;
+        PS.active = ''; psRender(); var qq = document.getElementById('ps-q'); if(qq) qq.focus(); return; }
+      var o = e.target.closest('[role="option"]'); if(o) psPick(o.getAttribute('data-k'));
+    });
+    body.addEventListener('pointerover', function(e){ var o = e.target.closest('[role="option"]'); PS.hover = o ? o.getAttribute('data-k') : ''; });
+    body.addEventListener('pointerleave', function(){ PS.hover = ''; });
+  }
+  /* the chart: off-sheet patients join QUEUE_DATA only while their chart is open, so the day sheet never shows them */
+  var psDetach = function(keep){ for(var i = QUEUE_DATA.length - 1; i >= 0; i--) if(QUEUE_DATA[i].psOff && QUEUE_DATA[i].name !== keep) QUEUE_DATA.splice(i, 1); };
+  if(typeof openChart === 'function'){
+    var oc = openChart;
+    openChart = function(name){
+      psDetach(name);
+      if(!QUEUE_DATA.some(function(x){ return x.name === name; })){ var r = psRowFor(name); if(r) QUEUE_DATA.push(r); }
+      PS.idok = {};   /* §6: confirm again when a chart is selected */
+      PS.via = PS.viaNext; PS.viaNext = null;
+      var out = oc.apply(this, arguments);
+      try { psChartState(name); } catch(err){ if(window.console) console.error(err); }
+      PS.recent = [name].concat(PS.recent.filter(function(k){ return k !== name; })).slice(0, 12);
+      return out;
+    };
+  }
+  baWrap('showScreen', function(r, name){ if(name !== 'patientchart'){ psDetach(''); } if(PS.open) psClose(true); });
+  baWrap('kbRender', function(){
+    var dl = document.querySelector('#kb-body [aria-labelledby="kb-h2"] .kb-list'); if(!dl || dl.querySelector('.ps-kbrow')) return;
+    var row = document.createElement('div'); row.className = 'kb-row ps-kbrow';
+    row.innerHTML = '<dt>' + kbKeys(kbMod(), 'K') + '</dt><dd>Find a patient</dd>'; dl.insertBefore(row, dl.firstChild);
+  });
+  if(typeof kbRender === 'function') kbRender();
+  /* action blocks before the panels open; the check over them after */
+  if(typeof rxOpen === 'function'){
+    var ro = rxOpen;
+    rxOpen = function(auto){
+      if(typeof PC_CURRENT !== 'undefined' && PC_CURRENT && psBlocked(PC_CURRENT).indexOf('rx') > -1){ if(auto !== true) psBlockSay('rx'); return; }
+      var out = ro.apply(this, arguments); psGate('rx', auto === true); return out;
+    };
+  }
+  if(typeof opOpen === 'function'){
+    var oo = opOpen;
+    opOpen = function(kind){
+      if(typeof PC_CURRENT !== 'undefined' && PC_CURRENT && psBlocked(PC_CURRENT).indexOf(kind) > -1){ psBlockSay(kind); return; }
+      var out = oo.apply(this, arguments); psGate(kind); return out;
+    };
+  }
+  baWrap('rxRender', function(){ if(RX_UI.open) psGate('rx', true); });
+  baWrap('opRender', function(){ if(typeof OP !== 'undefined' && opIsOpen()) psGate(OP.kind, true); });
+  document.addEventListener('change', function(e){
+    var c = e.target.closest && e.target.closest('.ps-gate [data-ps-c]'); if(!c) return;
+    var g = c.closest('.ps-gate'), all = [].slice.call(g.querySelectorAll('[data-ps-c]')), ok = g.querySelector('[data-ps-g="ok"]');
+    if(ok) ok.disabled = !all.every(function(x){ return x.checked; });
+  });
+  document.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('.ps-gate [data-ps-g]'); if(!b) return;
+    var g = b.closest('.ps-gate'), a = b.getAttribute('data-ps-g');
+    if(a === 'ok') psGateOk(g); else if(a === 'no') psGateStop(g); else if(a === 'close') psGateClose(g);
+    else if(a === 'moa'){ var who = PC_CURRENT; psGateClose(g); setTimeout(function(){ openTaskMoa(who); }, 50); }
+  });
+  /* keyboard: while the check shows, Tab stays inside it */
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Tab') return;
+    var g = document.querySelector('.ps-gated > .ps-gate:not([hidden])'); if(!g || !g.closest('.show')) return;
+    var f = [].slice.call(g.querySelectorAll('input:not([disabled]),button:not([disabled])')).filter(function(x){ return x.getClientRects().length; }); if(!f.length) return;
+    var x = g.parentNode.querySelector(':scope > header button');   /* the panel's own close stays reachable */
+    if(x) f.push(x);
+    var i = f.indexOf(document.activeElement);
+    e.preventDefault(); e.stopPropagation();
+    f[i < 0 ? 0 : (i + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+  }, true);
+  /* re-rendered chart parts keep their block marks */
+  var scr = document.getElementById('screen-patientchart'), raf = 0;
+  if(scr) new MutationObserver(function(){ if(raf) return; raf = requestAnimationFrame(function(){ raf = 0; if(scr.classList.contains('active')) psMarkTiles(); }); }).observe(scr, {childList:true, subtree:true});
+})();
+</script>
+  <div class="build-stamp">v2 · build 2026-11-05 13:24</div>
 </body>
 </html>
