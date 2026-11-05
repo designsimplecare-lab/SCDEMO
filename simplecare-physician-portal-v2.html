@@ -19754,7 +19754,12 @@ function crToday(name){
   if(RXP[name] || CR_PAST[name]) from.push('PharmaNet');
   if(PT_LAST[name]) from.push('your visit notes');
   var lc = function(t){ t = String(t).replace(/\.$/, ''); return t.charAt(0).toLowerCase() + t.slice(1); };
-  var sum = 'Here for ' + lc(why.main) + (rel.length ? '; ' + lc(rel[0].main) : '') + '.';
+  /* the summary sentence leaves out the age-and-sex line crSentences opens with (the header already says it); the drawer keeps it */
+  /* the reason is quoted as the intake words it ("Requests renewal ...", "Reviewing lab results ..."), so no "Here for" in front; a last visit for
+     something else is not related to today and stays out of the sentence */
+  var skip = (!CR_SYN[name] && rxRow(name)) ? 1 : 0, lead = rel[skip];
+  if(lead && /^Last seen /.test(lead.main)) lead = null;
+  var sum = v2Cap(String(why.main).replace(/\.$/, '')) + (lead ? '; ' + lc(lead.main) : '') + '.';
   return {why:why, rel:rel, other:other, from:from, sum:sum};
 }
 /* the detail behind Show more: Here today for, Relevant to today and Not related to today, each line with its source (Daniel, 4 Nov call 01:16:43:
