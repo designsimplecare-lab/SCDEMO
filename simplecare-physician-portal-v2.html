@@ -16501,8 +16501,12 @@ function csNAItems(name){
    the ECG card's title is the report line printed on the ECG, word for word (ECG Critical v2.0: the source phrase is shown verbatim and never reinterpreted).
    The demo line is the item's own `interp`; an ECG with none keeps "Abnormal ECG". */
 function ecgLine(it){ return csEsc((it && it.interp) || traceFlag(it)); }
+/* Daniel, 4 Nov call 01:05:27 ("this is critical too ... this little yellow thing I don't like"; 01:04:14 "No, that's not what I said"): in Version 2 the ECG
+   row reads Critical with the red critical icon, and the header counts it as critical. Display only: the item's tier stays labTier's/csNAItems' (the
+   critical bar, the checklist and Home read a lab value from crit items), and Current is unchanged. */
+function naSevTier(x){ return x && x.ecg && typeof cv2On === 'function' && cv2On() ? 'crit' : x.tier; }
 function csNARowV2(x, related, also){
-  var T = CS_TIER[x.tier], it = x.it, t = x.test;
+  var sev = naSevTier(x), T = CS_TIER[sev], it = x.it, t = x.test;
   var mk = x.idx + '-' + (t ? String(t.n).replace(/[^a-z0-9]/gi,'') : 'abn');
   var val, up = t && (t.f || '').indexOf('high') > -1, low = t && (t.f || '').indexOf('low') > -1;
   if(x.abn) val = '<b>' + (x.ecg ? ecgLine(it) : 'Abnormal ' + csEsc(it.panel)) + '</b>';
@@ -16546,8 +16550,9 @@ function csNARowV2(x, related, also){
     '<button type="button" class="cs-link cv2-inbox" onclick="openReview(' + x.idx + ')">Open in Inbox</button></div>';
   var nOpen = !!(CS.naOpen && CS.naOpen[PC_CURRENT + '|' + x.idx]), inV2 = typeof cv2On === 'function' && cv2On();
   /* 21 Oct: an abnormal result that is not a lab (the ECG) has no "To do" label: the printed line is the title */
-  /* Ani, 4 Nov: the severity word follows Daniel's tiers (Portals, Physician Portal spec: "Abnormal ≠ actionable. Tiers: Critical · To do · Info"), so an ECG reads To do */
-  return '<div class="vca-row v2-nar cs-' + x.tier + (related ? ' cs-rel' : '') + (nOpen ? ' cv2-open' : '') + '">' +
+  /* Ani, 4 Nov: the severity word follows Daniel's tiers (Portals, Physician Portal spec: "Abnormal ≠ actionable. Tiers: Critical · To do · Info").
+     Daniel, 4 Nov call 01:05:27: the ECG is Critical in Version 2 (naSevTier), not To do. */
+  return '<div class="vca-row v2-nar cs-' + sev + (related ? ' cs-rel' : '') + (nOpen ? ' cv2-open' : '') + '">' +
     '<span class="ic vca-ic" role="img" aria-label="' + T.w + '" data-pdic="' + T.ic + '"></span>' +
     '<div class="vca-main">' + (x.abn ? '' : '<p class="v2-na-k">' + T.w + '</p>') + '<span class="cv2-na-sev" aria-hidden="true">' + T.w + '</span>' + '<p class="vca-t">' + val + '</p><div class="v2-nad" id="cv2-nad-' + x.idx + '">' + h + '</div></div>' +
     '<div class="cs-side"><p class="cs-stage">' + csIc('clock') + '<span><span class="vh">Stage: </span>' + csEsc(x.stage) + '</span></p>' +
@@ -16563,7 +16568,7 @@ function naRev(i, b){
 }
 function naDrwOpen(i){
   var it = INBOX_ITEMS[i], r = CS.naRows && CS.naRows[i]; if(!it || !r) return;
-  var x = r.x, t = x.test, T = CS_TIER[x.tier], ov = document.getElementById('na-drw'), card = document.getElementById('na-drw-card');
+  var x = r.x, t = x.test, T = CS_TIER[naSevTier(x)], ov = document.getElementById('na-drw'),   /* Daniel, 4 Nov call 01:05:27: the ECG panel says Critical, as its row does */ card = document.getElementById('na-drw-card');
   CS.naDrw = i;
   /* the eyebrow already says Critical, so the title keeps only the direction (as the Version 2 row does); the reference is in the table, not repeated */
   var fl0 = !x.abn && lrFlag(t.f, t.v), dir = fl0 && fl0.crit ? '<span class="lr-w">' + v2Cap(String(fl0.word).replace(/^critical\s+/i, '')) + '</span>' : (x.abn ? '' : lrWord(t.f, t.v));
@@ -23425,7 +23430,7 @@ function cv2Sync(){
   var r = csRow(); if(!r) return;
   /* the same items, tiers and stages as Needs attention (csNAItems); a word with the count, so severity is never colour alone */
   var items = CS.empty ? [] : csNAItems(PC_CURRENT).filter(function(x){ return x.tier !== 'info' && /^Not /.test(x.stage); });
-  var crit = items.filter(function(x){ return x.tier === 'crit'; }).length, other = items.length - crit;
+  var crit = items.filter(function(x){ return naSevTier(x) === 'crit'; }).length, other = items.length - crit;   /* Daniel, 4 Nov call 01:05:27: the ECG counts as critical, as its row says */
   var words = [crit ? crit + ' critical' : '', other ? other + ' to review' : ''].filter(Boolean).join(', ');
   var st = cv2Status(r);
   var h = (items.length ? '<button type="button" class="cv2-al' + (crit ? ' crit' : '') + '" onclick="cv2GoAlerts()" aria-label="Clinical alerts: ' + words + '. Go to the alerts">' +
@@ -23765,6 +23770,6 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 23:03</div>
+  <div class="build-stamp">v2 · build 2026-11-05 12:20</div>
 </body>
 </html>
