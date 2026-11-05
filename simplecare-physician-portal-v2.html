@@ -7569,6 +7569,18 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button .v2-ti{display:inline-flex;flex:none;width:18px;height:18px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button .v2-ti svg{width:18px;height:18px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button .v2-tm:empty{display:none;}
+/* Daniel, 4 Nov call 01:22:32, Ani, 5 Nov ("we were talking to move this to the left side"): the patient summary is on the left of the work, closed to
+   its rail by default; the arrow points the way the panel moves. Under 1200 px its drawer opens from the left. */
+@media (min-width:1201px){
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2{grid-template-columns:300px minmax(0,1fr);grid-template-areas:"hd hd" "side nav" "side main";}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2{grid-template-columns:56px minmax(0,1fr);}
+}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-ctx-t .ic{transform:rotate(180deg);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-ctx-t[aria-expanded="false"] .ic{transform:none;}
+@media (max-width:1200px){
+  #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-drawer-on #v2 > #v2-side{left:0;right:auto;border-width:0 1px 0 0;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-ctx-t .ic{transform:none;}
+}
   /* Ani, 4 Nov: the top-bar chart layout switch, only while a chart is open */
   .topbar .tb-lay{display:none;align-items:center;gap:2px;padding:2px;border-radius:10px;background:var(--wash);}
   .main:has(#screen-patientchart.active) .topbar .tb-lay{display:inline-flex;}
@@ -23765,7 +23777,7 @@ function opUpload(inp){
    Sign off; red only for critical values and their icon; every Cedar line follows its T-038 switch).
    ============================================================ */
 var CV2 = {on:false, moved:[], meta:null, drawer:false, opener:null};
-var CV2_KEY = 'sc-chart-version', CV2_CTX = 'sc-cv2-ctx';
+var CV2_KEY = 'sc-chart-version', CV2_CTX = 'sc-cv2-ctx-left';
 function cv2On(){ return !!CV2.on && typeof v2On === 'function' && v2On(); }
 /* one breakpoint for both layouts: from 1201 px the columns are scroll boxes (v2Wide); at 1200 and under the chart stacks */
 function cv2Wide(){ return !(window.matchMedia && window.matchMedia('(max-width:1200px)').matches); }
@@ -23902,7 +23914,9 @@ function cv2Side(name){
 }
 function cv2CtxStored(){ try { return localStorage.getItem(CV2_CTX); } catch(e){ return null; } }
 /* open by default at 1440 px and wider, collapsed to its rail below; the doctor's own choice is remembered (this browser) */
-function cv2CtxOpen(){ var s = cv2CtxStored(); return s ? s === 'open' : window.innerWidth >= 1440; }
+/* Daniel, 4 Nov call 01:22:32 ("can we move this to the left?" ... "it shouldn't be open. Should be closed"); Ani, 5 Nov: closed by default at every
+   width; the doctor's own choice is remembered (this browser) */
+function cv2CtxOpen(){ var s = cv2CtxStored(); return s ? s === 'open' : false; }
 function cv2CtxPaint(){
   var root = v2El('pcv-c'); if(!root || !cv2On()) return;
   var wide = cv2Wide(), open = wide ? cv2CtxOpen() : true;
