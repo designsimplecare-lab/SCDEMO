@@ -7741,6 +7741,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-patientchart #ps-stbar{display:flex;gap:8px;align-items:flex-start;margin:10px 0 0;padding:10px 12px;max-width:66ch;border-radius:12px;background:var(--wash);font-size:15px;line-height:22px;color:var(--ink);}
 #screen-patientchart #ps-stbar .ic{display:inline-flex;flex:none;width:18px;height:18px;margin-top:2px;color:var(--warn);}
 #screen-patientchart #ps-stbar.ps-mut .ic{color:var(--ink-soft);}
+#screen-patientchart #pcv-c.cs-v2 #v2-notices:has(#ps-stbar:not([hidden])){display:block;}
+#screen-patientchart #pcv-c.cs-v2 #v2-notices > #ps-stbar{margin:0 0 12px;background:var(--panel);}
 #screen-patientchart #ps-stbar .ic svg,#screen-patientchart #ps-st .ic svg{width:100%;height:100%;}
 #screen-patientchart [data-ps-blk]{cursor:not-allowed;}
 #screen-patientchart .v2-orow[data-ps-blk]{background:var(--paper);}
@@ -24656,7 +24658,16 @@ function psChartState(name){
   if(tag){ tag.hidden = !t; tag.className = 'ps-st ps-tag ' + (cls || 'ps-t-warn'); tag.innerHTML = t ? psIc(ic === 'reassign' ? 'alert' : ic) + '<span>' + psEsc(t) + '</span>' : ''; paintPd(tag); }
   if(bar){ bar.hidden = !b; bar.innerHTML = b ? psIc(ic) + '<span>' + psEsc(b) + '</span>' : ''; bar.classList.toggle('ps-mut', ic === 'flag'); paintPd(bar); }
   if(p && p.today === undefined && p.chart && typeof pcFill === 'function') pcFill({visitline:'No visit today'});
+  psPlaceBar();
   psMarkTiles();
+}
+/* Version 2's compact header hides the facts row, so there the status line sits above the work, in the notices slot */
+function psPlaceBar(){
+  var bar = document.getElementById('ps-stbar'), facts = document.querySelector('#screen-patientchart .cs-facts'), slot = document.getElementById('v2-notices');
+  if(!bar || !facts || !slot) return;
+  var v2 = typeof cv2On === 'function' && cv2On();
+  if(v2 && bar.parentNode !== slot) slot.insertBefore(bar, slot.firstChild);
+  else if(!v2 && bar.parentNode !== facts) facts.appendChild(bar);
 }
 /* the Action tiles and every other way in say so, on the button itself (one rule for every screen with that pattern) */
 function psMarkTiles(){
@@ -24828,6 +24839,7 @@ function psGateClose(g){ var isRx = g.parentNode.id === 'rx-sheet'; g.removeAttr
     };
   }
   baWrap('rxRender', function(){ if(RX_UI.open) psGate('rx', true); });
+  baWrap('cv2Apply', function(){ psPlaceBar(); });
   baWrap('opRender', function(){ if(typeof OP !== 'undefined' && opIsOpen()) psGate(OP.kind, true); });
   document.addEventListener('change', function(e){
     var c = e.target.closest && e.target.closest('.ps-gate [data-ps-c]'); if(!c) return;
@@ -24856,6 +24868,6 @@ function psGateClose(g){ var isRx = g.parentNode.id === 'rx-sheet'; g.removeAttr
   if(scr) new MutationObserver(function(){ if(raf) return; raf = requestAnimationFrame(function(){ raf = 0; if(scr.classList.contains('active')) psMarkTiles(); }); }).observe(scr, {childList:true, subtree:true});
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-05 13:27</div>
+  <div class="build-stamp">v2 · build 2026-11-05 13:30</div>
 </body>
 </html>
