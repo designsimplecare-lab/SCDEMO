@@ -734,6 +734,10 @@
   .qwin button.on .qwin-now{background:#fff;}
   .qwin .qwin-sep{width:1px;height:20px;background:var(--line);margin:0 4px;flex:none;}
 
+  .q-visit .q-note{display:flex;align-items:center;gap:6px;margin:6px 0 0 4px;font-size:14px;line-height:20px;color:var(--ink-soft);white-space:nowrap;}
+  .q-visit .q-note .ic{display:inline-flex;width:16px;height:16px;flex:none;}
+  .q-visit .q-note .ic svg{width:16px;height:16px;}
+  .q-visit .q-note.ok .ic{color:var(--ok, #2f7d4f);}
   .qf-row{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;min-width:0;}
   .qf{position:relative;}
   .qf-btn{
@@ -9996,7 +10000,7 @@ function renderQueue(){
   var source = (dayOffset === 0) ? QUEUE_DATA : (OTHER_DAYS[String(dayOffset)] || []);
   var rows = source.filter(function(r){
     var winOk   = (!qfAny('win')   || qfHas('win', r.win));
-    var visitOk = (!qfAny('visit') || qfHas('visit', STATUS_LABEL[r.status]));
+    var visitOk = (!qfAny('visit') || qfHas('visit', STATUS_LABEL[r.status]) || (qfHas('visit', '@draft') && qNoteDraft(r)));
     var billOk  = (!qfAny('bill')  || qfHas('bill', r.bill));
     var cardOk  = (!qfAny('card')  || qfHas('card', r.card));
     if(!visitOk || !billOk || !cardOk) return false;
@@ -10102,7 +10106,7 @@ function renderQueue(){
             '<span class="q-demo">'+(r.age||'')+', '+(r.sex||'')+'</span>'+
           '</span>'+
         '</span></div></td>'+
-      '<td class="q-visit">'+statusPill+'</td>'+
+      '<td class="q-visit">'+statusPill+qNoteTag(r)+'</td>'+
       '<td class="q-bill">'+billCell+'</td>'+
       '<td class="q-card">'+cardCell+'</td>'+
       '<td class="q-concern">'+
@@ -10385,12 +10389,22 @@ var QF = { win:[], visit:[], bill:[], card:[] };
 function qfHas(key, val){ return QF[key].indexOf(val) > -1; }
 function qfAny(key){ return QF[key].length > 0; }
 
+/* Ani, 5 Nov ("when the doctor saves as draft and comes back to the day sheet, should the doctor see that status draft?"): the note's state sits
+   under the visit status, not in place of it: the call and the note change independently (a call can be Completed with its note unsigned).
+   Daniel, 4 Nov call 00:51:49: doctors "save, return, alter, then sign". */
+function qNoteDraft(r){ return !r.signed && typeof CS !== 'undefined' && CS.draft && !!CS.draft[r.name] && !!(CS.draftAt && CS.draftAt[r.name]); }
+function qNoteTag(r){
+  if(r.signed) return '<span class="q-note ok"><span class="ic" data-pdic="complete" aria-hidden="true"></span>Signed' + (r.signed.at ? ' &middot; ' + r.signed.at : '') + '</span>';
+  if(qNoteDraft(r)) return '<span class="q-note"><span class="ic" data-pdic="edit" aria-hidden="true"></span>Note draft &middot; ' + CS.draftAt[r.name] + '</span>';
+  return '';
+}
 function qfVisitOptions(){
   var seen = [], out = [{v:'all', l:'All'}];
   Object.keys(STATUS_LABEL).forEach(function(k){
     var l = STATUS_LABEL[k];
     if(seen.indexOf(l) === -1){ seen.push(l); out.push({v:l, l:l}); }
   });
+  out.push({v:'@draft', l:'Note draft, not signed'});   /* every unsigned note at the end of the day */
   return out;
 }
 function qfBillOptions(){
@@ -16568,6 +16582,7 @@ var CS = {empty:false, allergy:{}, visit:{}, ai:{}, sc:{}, draft:{}, stripOpen:{
           /* Ani, 5 Oct: chart layout v2 (csLayout, script at the end). Only presentation reads this. */
           layout:'current'};
 try { CS.draft = JSON.parse(sessionStorage.getItem('sc-cs-draft') || '{}') || {}; } catch(e){ CS.draft = {}; }
+try { CS.draftAt = JSON.parse(sessionStorage.getItem('sc-cs-draft-at') || '{}') || {}; } catch(e){ CS.draftAt = {}; }
 
 function csEsc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function csIc(k, cls){ return '<span class="ic' + (cls ? ' ' + cls : '') + '" data-pdic="' + k + '"></span>'; }
@@ -17312,6 +17327,10 @@ function csDraft(){
   nsSync();
   CS.draft[PC_CURRENT] = nsGet();   /* {reason, subjective, objective, assessment, plan}; an older draft with findings migrates in nsSet */
   try { sessionStorage.setItem('sc-cs-draft', JSON.stringify(CS.draft)); } catch(e){}
+  /* Ani, 5 Nov: a saved draft shows on the day sheet ("Note draft · 3:06 PM") until the note is signed */
+  CS.draftAt = CS.draftAt || {}; CS.draftAt[PC_CURRENT] = csNow();
+  try { sessionStorage.setItem('sc-cs-draft-at', JSON.stringify(CS.draftAt)); } catch(e){}
+  if(typeof renderQueue === 'function') try { renderQueue(); } catch(e){}
   var s = document.getElementById('cs-saved'); if(s){ s.innerHTML = csIc('complete') + 'Draft saved &middot; ' + csNow(); paintPd(s); }
 }
 
