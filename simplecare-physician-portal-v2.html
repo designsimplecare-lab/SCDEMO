@@ -7590,6 +7590,9 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #na-drw .drw-ft > .tm-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:0;}
   #na-drw .drw-ft .btn{min-height:44px;font-size:14px;}
   #na-drw .drw-ft .cv2-stamp{display:inline-flex;align-items:center;gap:6px;margin:0;font-size:15px;color:var(--ink);}
+/* Daniel, 4 Nov call 01:02:59 on "Acute myocardial injury": "you keep that ... it emphasizes the seriousness of this value": in Version 2 the concern is
+   the second line under the finding on the closed row (it was folded); the Also line is gone (csNARowV2) */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .v2-nad > .v2-na-c{display:block;margin:2px 0 0;font-size:15px;line-height:22px;font-weight:400;color:var(--cv2-ink);}
 </style>
 </head>
 <body>
@@ -16529,7 +16532,9 @@ function csNARowV2(x, related, also){
   /* T-037 (Daniel, 31 Oct): when there are any, the two earlier values with dates */
   if(!x.abn){ var pr = lrPriors(it.patient, t);
     h += (pr.length ? '<p class="v2-q lr-prev">Previous ' + lrPrevList(pr) + '</p>' : ''); }
-  if(also && also.length) h += '<p class="v2-q cv2-also"><span class="vh">Info: </span>Also ' + also.map(function(a){
+  /* Ani and Daniel, 4 Nov call 01:01:46 (Ani: "this 'High, reference 30–200 U/L', all this information you don't need, you just need the title troponin 0.42
+     High" — Daniel: "Yep"): no "Also CK …" line in the Version 2 row; the panel's other values stay in the result side panel (naDrwOpen). Current keeps it. */
+  if(also && also.length && !(typeof cv2On === 'function' && cv2On())) h += '<p class="v2-q cv2-also"><span class="vh">Info: </span>Also ' + also.map(function(a){
       var at = a.test, au = (at.f || '').indexOf('high') > -1;
       return '<span class="cs-also-v">' + at.n + ' ' + at.v + ' ' + (at.u || '') + ' ' + lrWord(at.f, at.v).replace('class="lr-w"', 'class="lr-w lr-lc"') + (at.ref ? ', reference ' + csEsc(lrRef(at)) : '') + '</span>';
     }).join(', ') + '</p>';
@@ -23770,6 +23775,6 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-05 12:20</div>
+  <div class="build-stamp">v2 · build 2026-11-05 12:21</div>
 </body>
 </html>
