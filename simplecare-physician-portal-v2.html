@@ -7749,8 +7749,9 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 
       <!-- Live queue + Inbox in one card, switched by tabs -->
       <div class="work-tabs">
+          <!-- Daniel, 4 Nov call 00:28:07: "This is your day sheet ... don't even call it queue ... It's just a day sheet." (the heading was Queue) -->
           <div class="lq-head">
-            <span class="sect-title">Queue <span class="wt-count" id="wt-queue-count">0</span></span>
+            <span class="sect-title">Day sheet <span class="wt-count" id="wt-queue-count">0</span></span>
           </div>
           <button class="wt-new" onclick="showScreen('registerpatient')" title="Register a new patient">
             <span class="ic" data-pcic="newpatient"></span> New patient
@@ -9542,7 +9543,7 @@ function renderQueueChip(today, cw, rows, cwi){
     ? '<span class="dot"></span>Showing now'
     : '<span class="dot"></span>Showing whole day';
   chip.title = live
-    ? 'The queue follows the call windows. Click to see the whole day.'
+    ? 'The day sheet follows the call windows. Click to see the whole day.'   /* Daniel, 4 Nov call 00:28:07: "It's just a day sheet" */
     : 'Click to follow the call window that is running now.';
 }
 
@@ -9896,7 +9897,7 @@ function renderQueue(){
   body.innerHTML = html;
   if(!rows.length){
     var msg = queueSearch ? ('No patients match \u201c'+queueSearch+'\u201d.')
-                          : (dayOffset===0 ? 'No patients in the queue right now.' : 'Nothing booked for this day.');
+                          : (dayOffset===0 ? 'No patients on the day sheet right now.' : 'Nothing booked for this day.');   /* Daniel, 4 Nov call 00:28:07: "It's just a day sheet" */
     body.innerHTML = '<tr><td colspan="6"><p class="q-noresult">'+msg+'</p></td></tr>';
   }
   /* the whole row is the way into the chart, so it has to behave like one */
@@ -23792,6 +23793,6 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-05 12:27</div>
+  <div class="build-stamp">v2 · build 2026-11-05 12:29</div>
 </body>
 </html>
