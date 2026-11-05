@@ -23680,14 +23680,9 @@ function cv2Status(r){
 function cv2Sync(){
   if(!cv2On() || !PC_CURRENT || !CV2.meta) return;
   var r = csRow(); if(!r) return;
-  /* the same items, tiers and stages as Needs attention (csNAItems); a word with the count, so severity is never colour alone */
-  var items = CS.empty ? [] : csNAItems(PC_CURRENT).filter(function(x){ return x.tier !== 'info' && /^Not /.test(x.stage); });
-  var crit = items.filter(function(x){ return naSevTier(x) === 'crit'; }).length, other = items.length - crit;   /* Daniel, 4 Nov call 01:05:27: the ECG counts as critical, as its row says */
-  var words = [crit ? crit + ' critical' : '', other ? other + ' to review' : ''].filter(Boolean).join(', ');
+  /* Ani, 5 Nov ("remove this"): no alert count chip in the header; Needs attention below already shows the items */
   var st = cv2Status(r);
-  var h = (items.length ? '<button type="button" class="cv2-al' + (crit ? ' crit' : '') + '" onclick="cv2GoAlerts()" aria-label="Clinical alerts: ' + words + '. Go to the alerts">' +
-      csIc(crit ? 'crit' : 'alert') + '<span>' + words + '</span></button>' : '') +
-    '<span class="cv2-st' + (st.k ? ' ' + st.k : '') + '">' + csIc(st.ic) + '<span><span class="vh">Visit status: </span>' + st.t + '</span></span>' +
+  var h = '<span class="cv2-st' + (st.k ? ' ' + st.k : '') + '">' + csIc(st.ic) + '<span><span class="vh">Visit status: </span>' + st.t + '</span></span>' +
     '<button type="button" class="btn cv2-ctx-open" aria-haspopup="dialog" aria-expanded="' + !!CV2.drawer + '" aria-controls="v2-side" onclick="cv2Drawer(true)">' + csIc('tasks') + 'Patient summary</button>';
   if(CV2.meta.getAttribute('data-h') !== h){ CV2.meta.innerHTML = h; CV2.meta.setAttribute('data-h', h); paintPd(CV2.meta); }
 }
