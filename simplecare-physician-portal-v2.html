@@ -7555,6 +7555,41 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   .topbar .tb-lay button:hover{color:var(--ink);}
   .topbar .tb-lay button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(23,24,28,.08);}
   .topbar .tb-lay button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  /* Ani, 4 Nov: Version 2 Needs attention rows open the result in a side panel; the whole row is the target (the row's button stretched over it) */
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar{position:relative;cursor:pointer;border-radius:8px;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar:hover{background:var(--wash);}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cs-side,
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cs-side .btn{position:static;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cs-side .btn::after{content:"";position:absolute;inset:0;border-radius:8px;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cs-side .btn:focus-visible{outline:none;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cs-side .btn:focus-visible::after{outline:2px solid var(--accent);outline-offset:-2px;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .v2-metaw,
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cv2-revacts{display:none !important;}
+  #na-drw.drw-ov{display:none;position:fixed;inset:0;z-index:200;padding:0;background:rgba(23,24,28,.42);align-items:stretch;justify-content:flex-end;overflow:hidden;}
+  #na-drw.drw-ov.show{display:flex;animation:drwFade 240ms ease-out;}
+  #na-drw.drw-ov.drw-stacked{background:rgba(23,24,28,.16);animation:none;}
+  #na-drw > #na-drw-card.drw{position:relative;box-sizing:border-box;margin:0;width:min(560px,100vw) !important;max-width:100vw !important;height:100%;max-height:none !important;display:flex;flex-direction:column;padding:0;border-radius:0;background:var(--panel);overflow:hidden;}
+  @media (prefers-reduced-motion: reduce){ #na-drw.drw-ov.show{animation:none;} }
+  #na-drw .drw-hd{flex:none;position:relative;padding:20px 72px 16px 24px;border-bottom:1px solid var(--line);}
+  #na-drw .drw-hd .bl-eyebrow{margin:0 0 4px;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  #na-drw .drw-hd .tm-title{font-size:20px;font-weight:700;line-height:1.35;margin:0 0 6px;color:var(--ink);}
+  #na-drw .drw-hd .tm-sub{font-size:14.5px;color:var(--ink-soft);margin:0;line-height:1.5;}
+  #na-drw .drw-x{position:absolute;top:14px;right:16px;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;background:none;color:var(--ink-soft);cursor:pointer;padding:0;}
+  #na-drw .drw-x:hover{background:var(--wash);color:var(--ink);}
+  #na-drw .drw-x:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #na-drw .drw-x svg{width:22px;height:22px;}
+  #na-drw .drw-bd{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:16px 24px 24px;font-size:15px;line-height:22px;color:var(--ink);}
+  #na-drw .drw-bd p{margin:0 0 10px;max-width:66ch;}
+  #na-drw .na-d-k{color:var(--ink-soft);}
+  #na-drw .na-d-q{color:var(--ink-soft);}
+  #na-drw .na-d-tbl{margin:8px 0 16px;}
+  #na-drw .na-d-src{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;margin:0;font-size:15px;}
+  #na-drw .na-d-src dt{color:var(--ink-soft);}
+  #na-drw .na-d-src dd{margin:0;}
+  #na-drw .drw-ft{flex:none;padding:14px 24px;border-top:1px solid var(--line);background:var(--panel);}
+  #na-drw .drw-ft > .tm-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:0;}
+  #na-drw .drw-ft .btn{min-height:44px;font-size:14px;}
+  #na-drw .drw-ft .cv2-stamp{display:inline-flex;align-items:center;gap:6px;margin:0;font-size:15px;color:var(--ink);}
 </style>
 </head>
 <body>
@@ -8943,6 +8978,10 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
     <div id="ern-drw-body"></div>
     <div class="tm-actions"><button type="button" class="btn" onclick="ernDrwClose()">Close</button></div>
   </div>
+</div>
+<!-- Ani, 4 Nov ("remove all this, make this all section clickable, open result as a side panel"): a Needs attention row opens its result here (Version 2) -->
+<div class="tm-overlay drw-ov" id="na-drw" onclick="if(event.target===this) naDrwClose()">
+  <div class="tm-card drw" id="na-drw-card" role="dialog" aria-modal="true" aria-labelledby="na-drw-ttl"></div>
 </div>
 <div class="tm-overlay drw-ov" id="kb-overlay" onclick="if(event.target===this) kbClose()">
   <div class="tm-card drw" id="kb-card" role="dialog" aria-modal="true" aria-labelledby="kb-ttl">
@@ -16500,7 +16539,8 @@ function csNARowV2(x, related, also){
   /* physician pass (Ani, 4 Nov: chart Version 2, physician pass, B1 "review the critical in place"): Version 2 only (cv2-revacts is hidden in Current).
      One Mark reviewed that stamps who and when (the same reviewed state the Inbox review sets; no task to the MOA from here), and Open in Inbox as a
      quiet link. */
-  h += '<div class="cv2-revacts">' + (it.reviewedAt ? '<p class="cv2-stamp" id="cv2-st-' + x.idx + '" tabindex="-1">' + csIc('complete') + 'Reviewed ' + csEsc(it.reviewedAt) + ' · ' + csEsc(it.reviewedBy || 'Dr. Pannozzo') + '</p>'
+  CS.naRows = CS.naRows || {}; if(x.tier !== 'info' || !CS.naRows[x.idx]) CS.naRows[x.idx] = {x:x, also:also || []};   /* for the result side panel */
+  if(false) h += '<div class="cv2-revacts">' + (it.reviewedAt ? '<p class="cv2-stamp" id="cv2-st-' + x.idx + '" tabindex="-1">' + csIc('complete') + 'Reviewed ' + csEsc(it.reviewedAt) + ' · ' + csEsc(it.reviewedBy || 'Dr. Pannozzo') + '</p>'
       : it.status === 'reviewed' ? '<p class="cv2-stamp">' + csIc('complete') + 'Reviewed</p>'
       : '<button type="button" class="btn dark cv2-markrev" onclick="naMarkRev(' + x.idx + ')"><span class="ic" data-pdic="complete"></span>Mark reviewed</button>') +
     '<button type="button" class="cs-link cv2-inbox" onclick="openReview(' + x.idx + ')">Open in Inbox</button></div>';
@@ -16511,24 +16551,51 @@ function csNARowV2(x, related, also){
     '<span class="ic vca-ic" role="img" aria-label="' + T.w + '" data-pdic="' + T.ic + '"></span>' +
     '<div class="vca-main">' + (x.abn ? '' : '<p class="v2-na-k">' + T.w + '</p>') + '<span class="cv2-na-sev" aria-hidden="true">' + T.w + '</span>' + '<p class="vca-t">' + val + '</p><div class="v2-nad" id="cv2-nad-' + x.idx + '">' + h + '</div></div>' +
     '<div class="cs-side"><p class="cs-stage">' + csIc('clock') + '<span><span class="vh">Stage: </span>' + csEsc(x.stage) + '</span></p>' +
-      '<button type="button" class="btn" onclick="naRev(' + x.idx + ',this)"' + (inV2 ? ' aria-expanded="' + nOpen + '" aria-controls="cv2-nad-' + x.idx + '"' : '') + '><span class="ic" data-pdic="eye"></span>' + x.action + '</button></div>' +
+      '<button type="button" class="btn" onclick="naRev(' + x.idx + ',this)"' + (inV2 ? ' aria-haspopup="dialog"' : '') + '><span class="ic" data-pdic="eye"></span>' + x.action + '</button></div>' +
   '</div>';
 }
-/* physician pass B1: in Version 2 "Review result" opens the row in place; in Current it opens the review screen as before */
+/* Ani, 4 Nov ("remove all this, make this all section clickable, open result as a side panel"): in Version 2 the whole row opens the result in a
+   side panel (the drawer stack: Escape, focus kept inside, back to the row's button on close). Mark reviewed and Open in Inbox moved from the row into
+   the panel's footer. Current still opens the review screen. */
 function naRev(i, b){
   if(!(typeof cv2On === 'function' && cv2On())) return openReview(i);
-  CS.naOpen = CS.naOpen || {}; var k = PC_CURRENT + '|' + i, open = CS.naOpen[k] = !CS.naOpen[k];
-  var row = b && b.closest('.vca-row'); if(row) row.classList.toggle('cv2-open', open);
-  if(b) b.setAttribute('aria-expanded', String(open));
-  if(open){ var m = row && row.querySelector('.cv2-markrev'); if(m) m.focus({preventScroll:true}); if(row && row.scrollIntoView) row.scrollIntoView({block:'nearest'}); }
+  naDrwOpen(i);
 }
+function naDrwOpen(i){
+  var it = INBOX_ITEMS[i], r = CS.naRows && CS.naRows[i]; if(!it || !r) return;
+  var x = r.x, t = x.test, T = CS_TIER[x.tier], ov = document.getElementById('na-drw'), card = document.getElementById('na-drw-card');
+  CS.naDrw = i;
+  /* the eyebrow already says Critical, so the title keeps only the direction (as the Version 2 row does); the reference is in the table, not repeated */
+  var fl0 = !x.abn && lrFlag(t.f, t.v), dir = fl0 && fl0.crit ? '<span class="lr-w">' + v2Cap(String(fl0.word).replace(/^critical\s+/i, '')) + '</span>' : (x.abn ? '' : lrWord(t.f, t.v));
+  var title = x.abn ? ecgLine(it) : csEsc(t.n) + ' <span class="vca-v">' + csEsc(t.v + ' ' + (t.u || '')) + '</span> ' + dir;
+  var b = '';
+  if(!x.abn){
+    if(t.concern) b += '<p class="na-d-c">' + t.concern + '</p>';
+    var pr = lrPriors(it.patient, t); if(pr.length) b += '<p class="na-d-q">Previous ' + lrPrevList(pr) + '</p>';
+  }
+  var rows = x.abn ? (it.measures || []).map(function(m){ return '<tr><th scope="row">' + csEsc(m.n) + '</th><td>' + csEsc(m.v) + '</td></tr>'; })
+                   : (it.tests || []).map(function(m){ return '<tr><th scope="row">' + csEsc(m.n) + '</th><td><span class="vca-v">' + csEsc(m.v + ' ' + (m.u || '')) + '</span> ' + (m.f ? lrWord(m.f, m.v) : '') + '</td><td>' + csEsc(lrRef(m)) + '</td></tr>'; });
+  if(rows.length) b += '<div class="na-d-tbl"><table class="lr-t"><thead><tr><th scope="col">' + (x.abn ? 'Measure' : 'Test') + '</th><th scope="col">Result</th>' + (x.abn ? '' : '<th scope="col">Reference</th>') + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></div>';
+  b += '<dl class="na-d-src"><dt>Lab</dt><dd>' + csEsc(it.lab) + '</dd><dt>Responsible</dt><dd>Dr. D. Pannozzo</dd>' +
+    (!x.abn && attnBasis(t) ? '<dt>Why it is flagged</dt><dd>' + attnBasis(t) + '</dd>' : '') + '<dt>Stage</dt><dd>' + csEsc(x.stage) + '</dd></dl>';
+  var rev = it.reviewedAt ? '<p class="cv2-stamp" id="na-d-st" tabindex="-1">' + csIc('complete') + 'Reviewed ' + csEsc(it.reviewedAt) + ' · ' + csEsc(it.reviewedBy || 'Dr. Pannozzo') + '</p>'
+    : it.status === 'reviewed' ? '<p class="cv2-stamp">' + csIc('complete') + 'Reviewed</p>'
+    : '<button type="button" class="btn dark" onclick="naMarkRev(' + i + ')"><span class="ic" data-pdic="complete"></span>Mark reviewed</button>';
+  card.innerHTML = '<p class="bl-eyebrow">' + T.w + '</p><p class="tm-title" id="na-drw-ttl">' + title + '</p>' +
+    '<p class="tm-sub">' + csEsc(it.panel) + ' · Received ' + csEsc(it.received) + '</p>' +
+    '<div class="na-d-bd">' + b + '</div>' +
+    '<div class="tm-actions"><button type="button" class="btn" onclick="naDrwClose();openReview(' + i + ')">Open in Inbox</button>' + rev + '</div>';
+  paintPd(card);
+  ov.classList.add('show');
+}
+function naDrwClose(){ var o = document.getElementById('na-drw'); if(o) o.classList.remove('show'); CS.naDrw = null; }
 function naMarkRev(i){
   var it = INBOX_ITEMS[i]; if(!it) return;
   it.status = 'reviewed'; it.reviewedAt = csNow(); it.reviewedBy = 'Dr. Pannozzo';
   if(!it.disposition) it.disposition = 'Reviewed on the chart';
   ['renderInboxList', 'renderInboxToday', 'renderCriticals', 'renderAttnTasks', 'updateWorkCounts'].forEach(function(f){ if(typeof window[f] === 'function') try { window[f](); } catch(e){} });
   csRefresh();
-  var st = document.getElementById('cv2-st-' + i); if(st) st.focus({preventScroll:true});
+  if(CS.naDrw === i){ naDrwOpen(i); var st = document.getElementById('na-d-st'); if(st) st.focus({preventScroll:true}); }
   csSay('Reviewed ' + it.reviewedAt + ' · Dr. Pannozzo');
 }
 function csNARow(x, related, also){
@@ -20476,7 +20543,8 @@ var DRW_CLOSE = {
   'ao-overlay':   function(){ closeAddOn(); },
   'cp-overlay':   function(){ closeCpTriage(); },
   'cd-panel':     function(){ closeConditions(); },
-  't23-mfa':      function(){ t23MfaClose(); }
+  't23-mfa':      function(){ t23MfaClose(); },
+  'na-drw':       function(){ naDrwClose(); }
 };
 var DRW_HEAD = '.bl-eyebrow,.defer-ttl,.bl-who,.tm-title,.tm-sub,.defer-what,.cd-hd';
 var DRW_FOOT = '.defer-acts,.tm-actions';
@@ -23546,9 +23614,9 @@ function cv2Chk(){
 function cv2ChkGo(k){
   if(k === 'crit'){
     var x = csNAItems(PC_CURRENT).filter(function(y){ return y.tier === 'crit' && /^Not /.test(y.stage); })[0];
-    if(x){ CS.naOpen = CS.naOpen || {}; CS.naOpen[PC_CURRENT + '|' + x.idx] = true; renderChartAlerts(PC_CURRENT); }
     v2Tab('review', false);
-    setTimeout(function(){ var b = document.querySelector('#vc-alerts .cv2-open .cv2-markrev'); if(b) b.focus({preventScroll:true}); }, 400);
+    /* Ani, 4 Nov: the critical opens in the result side panel, where Mark reviewed is */
+    if(x) setTimeout(function(){ naDrwOpen(x.idx); }, 300);
   } else if(k === 'asmt' || k === 'ai'){
     v2Tab('note', false);
     var ai = nsAIList()[0], t = k === 'ai' && ai ? document.querySelector('#ns-ai-' + ai + ' .cs-ai-b .btn') : nsTa('assessment');
@@ -23697,6 +23765,6 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 22:52</div>
+  <div class="build-stamp">v2 · build 2026-11-04 23:03</div>
 </body>
 </html>
