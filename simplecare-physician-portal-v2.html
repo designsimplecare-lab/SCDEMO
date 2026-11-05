@@ -7631,6 +7631,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #pcv-c .v2-nar:hover .cv2-na-go{color:var(--ink);}
   #pcv-c .cv2-na-go:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   #pcv-c .cv2-na-go svg{width:20px;height:20px;}
+  #pcv-c .cs-iflag{display:flex;align-items:flex-start;gap:8px;margin:8px 0 0;font-size:15px;line-height:22px;color:var(--ink);}
+  #pcv-c .cs-iflag .ic,#pcv-c .cs-iflag svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--ink-soft);}
   #pcv-c .cr-otherb{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin:4px 0 0;font-size:15px;color:var(--ink-soft);}
   #pcv-c .cr-otherb .ic{transition:transform .15s;}
   #pcv-c .cr-otherb[aria-expanded="true"] .ic{transform:rotate(180deg);}
@@ -8567,8 +8569,14 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
               <span class="cs-ins">
                 <button type="button" class="cs-tb" id="cs-ins-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="cs-ins-menu" onclick="csInsMenu()"><span class="ic" data-pdic="plus"></span>Insert</button>
                 <span class="cs-ins-menu" id="cs-ins-menu" role="menu" aria-label="Insert" hidden>
-                  <button type="button" role="menuitem" onclick="csInsMenu(false);vcInsert('Follow-up template')">Follow-up template</button>
-                  <button type="button" role="menuitem" onclick="csInsMenu(false);vcInsert('Normal exam')">Normal exam</button>
+                  <!-- Starter templates (5 Nov), drafted for Daniel to correct: product/specs/note-templates.md. Words the doctor must fill sit in [brackets];
+                       signing asks first while any are left (REQ-CH-07). -->
+                  <button type="button" role="menuitem" onclick="csInsMenu(false);ndTpl('followup')">Follow-up visit</button>
+                  <button type="button" role="menuitem" onclick="csInsMenu(false);ndTpl('results')">Result follow-up</button>
+                  <button type="button" role="menuitem" onclick="csInsMenu(false);ndTpl('renewal')">Prescription renewal</button>
+                  <button type="button" role="menuitem" onclick="csInsMenu(false);ndTpl('uti')">Urinary symptoms</button>
+                  <button type="button" role="menuitem" onclick="csInsMenu(false);ndTpl('sick')">Sick note visit</button>
+                  <button type="button" role="menuitem" onclick="csInsMenu(false);ndTpl('exam')">Normal virtual exam</button>
                   <button type="button" role="menuitem" onclick="csInsMenu(false);prOpenForm()">Reading from patient</button>
                 </span>
               </span>
@@ -17113,11 +17121,14 @@ function csRenderToday(name){
     /* 21 Oct (Daniel, 18 Oct video 3: first "Intake summary": "the summary from what the patient said ... you have to fill out the questionnaire, or you talk to the AI,
        and then it's just the intake summary."): the Today card is the Intake summary, brief, in one column under Needs attention. */
     el.innerHTML = '<div class="v2-ch">' + csIc('today') + '<h3 id="cs-today-h">Intake summary</h3>' +
-      (f ? '<span class="v2-chip warn" title="' + (f.words ? 'Patient: &ldquo;' + csEsc(f.words) + '&rdquo;' + (when ? ' · ' + csEsc(when) : '') : '') + '">' + csIc('alert') + 'Flagged</span>' : '') +
+
       '<span class="v2-cr"><button type="button" class="cs-link" onclick="openBrief(PC_CURRENT)">Open intake</button></span></div>' +
       /* Ani, 7 Oct: one line, not Reason + Summary + What they flagged (it said the same thing three times) */
       '<p class="v2-big">' + csEsc(sum || r.concern) + '</p>' +
-      (r.words ? '<p class="v2-q">&ldquo;' + csEsc(r.words) + '&rdquo;</p>' : '');
+      (r.words ? '<p class="v2-q">&ldquo;' + csEsc(r.words) + '&rdquo;</p>' : '') +
+      /* Ani, 5 Nov ("what does this flagged mean?"): the intake flag says what and when, in plain words on the card, not a yellow "Flagged" chip with
+         the words hidden in a tooltip (Daniel, 4 Nov call 01:05:27: "this little yellow thing I don't like") */
+      (f ? '<p class="cs-iflag">' + csIc('alert') + '<span>Intake flag: ' + (f.words ? csEsc(f.words.charAt(0).toLowerCase() + f.words.slice(1)) + (when ? ', ' + csEsc(when.charAt(0).toLowerCase() + when.slice(1)) : '') : 'see the intake') + '</span></p>' : '');
     paintPd(el); return;
   }
   var words = r.words ? '<p class="cs-sum">&ldquo;' + csEsc(r.words) + '&rdquo; <span class="cs-cap">&middot; patient&rsquo;s words, from booking</span></p>' : '';
@@ -17526,6 +17537,48 @@ function ndCaretIn(label){
   var last = h, n = h.nextElementSibling; while(n && !/^H[1-6]$/.test(n.tagName)){ last = n; n = n.nextElementSibling; }
   d.focus({preventScroll:true}); var r = document.createRange(); r.selectNodeContents(last); r.collapse(false); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
   last.scrollIntoView({block:'nearest'});
+}
+/* Starter note templates (Ani, 5 Nov: "draft starter version"), written for Daniel to correct: product/specs/note-templates.md. Each part goes under
+   its own heading; the first [bracket] is selected so the doctor types straight over it. Nothing clinical is chosen for him: medicines, doses and
+   findings are brackets. */
+var ND_TPL = {
+  followup:{subjective:'- Follow-up of [problem] from [date]\n- Since then: [better / same / worse]\n- Treatment: [taking as prescribed, side effects]',
+    objective:'- [Findings or home readings]', assessment:'- [Problem], [improving / stable / not improved]',
+    plan:'- [Continue / change treatment]\n- Follow up in [time frame], sooner if [warning signs]'},
+  results:{subjective:'- Follow-up of [test] ordered on [date] for [reason]\n- Current symptoms: [none / describe]',
+    objective:'- [Test]: [value] [units] (reference [range]), [date]', assessment:'- [Interpretation of the result]',
+    plan:'- Result reviewed with the patient\n- [Repeat test / treatment / referral]\n- Next step: [when]'},
+  renewal:{subjective:'- Requesting renewal of [medicine, strength, directions]\n- Taking as prescribed: [yes / no]\n- Side effects: [none / describe]',
+    objective:'- [Home readings or last labs, with dates]', assessment:'- [Condition], [stable] on current treatment',
+    plan:'- Renewed [medicine] for [duration], [repeats]\n- Monitoring due: [labs, date]\n- Next review: [date]'},
+  uti:{subjective:'- Painful urination for [days], frequency [yes / no], urgency [yes / no]\n- Blood in urine: [yes / no]\n- Fever, flank pain, vaginal discharge: [denies / describe]\n- Possibly pregnant: [no / yes]\n- Previous urinary infections: [none / when]',
+    objective:'- Virtual visit, no examination', assessment:'- [Uncomplicated cystitis, suspected]',
+    plan:'- [Treatment, dose, duration]\n- Urine culture: [ordered / not needed]\n- Seek care if fever, flank pain, vomiting, or no better in 48 hours'},
+  sick:{subjective:'- Off [work / school] since [date] with [symptoms]', objective:'- Virtual visit, no examination',
+    assessment:'- [Acute illness]; expected to return [date]', plan:'- Work or school note for [dates], without a diagnosis\n- Return sooner if [warning signs]'},
+  exam:{objective:'- Virtual visit by [phone / video]\n- Speaking in full sentences, no audible distress\n- [Video: appears well, alert and oriented]\n- Home readings: [BP, heart rate, temperature, if available]'}
+};
+function ndTpl(k){
+  var T = ND_TPL[k]; if(!T) return;
+  var one = nsOne(), ta = nsEl('note'); if(one && (!ta || ta.readOnly)) return;
+  ['subjective', 'objective', 'assessment', 'plan'].forEach(function(sec){
+    if(!T[sec]) return;
+    if(one) ta.value = ndUnder(ta.value, NS_LBL[sec], T[sec]); else nsAppend(sec, T[sec], '\n');
+  });
+  nsSync(); if(typeof csDraft === 'function') csDraft();
+  if(one) setTimeout(ndFirstBracket, 0);
+}
+/* select the first [ ... ] in the document, so typing replaces it */
+function ndFirstBracket(){
+  var d = ndDoc(); if(!d) return;
+  var w = document.createTreeWalker(d, NodeFilter.SHOW_TEXT), n;
+  while((n = w.nextNode())){
+    var i = n.textContent.indexOf('['); if(i < 0) continue;
+    var j = n.textContent.indexOf(']', i); if(j < 0) continue;
+    d.focus({preventScroll:true}); var r = document.createRange(); r.setStart(n, i); r.setEnd(n, j + 1);
+    var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    (n.parentNode.scrollIntoView ? n.parentNode : d).scrollIntoView({block:'nearest'}); return;
+  }
 }
 /* Cedar, Dictate and Insert join the document's toolbar */
 function ndTools(){
