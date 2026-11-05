@@ -733,10 +733,6 @@
   }
   .qwin button.on .qwin-now{background:#fff;}
   .qwin .qwin-sep{width:1px;height:20px;background:var(--line);margin:0 4px;flex:none;}
-  .qf-btn .qwin-now,.qwin-opt .qwin-now{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none;}
-  .qwin-opt .qwin-dotslot{display:inline-flex;align-items:center;justify-content:center;width:8px;flex:none;}
-  .qwin-opt.sel .qwin-now{background:#fff;}
-  #qwin .qf-menu{min-width:180px;}
 
   .qf-row{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;min-width:0;}
   .qf{position:relative;}
@@ -7962,7 +7958,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
                 <button class="q-clear" id="queue-search-clear" onclick="clearQueueSearch()" title="Clear">&times;</button>
               </div>
             </div>
-            <div class="qf-row" id="qwin"></div>
+            <div class="qwin" id="qwin" role="group" aria-label="Call window"></div>
             <div class="qf-row" id="qf-row"></div>
           </div>
 
@@ -9902,31 +9898,14 @@ function qvToggle(){ QV = (QV === 'current') ? 'all' : 'current'; renderQueue();
    what he asked the default to be. Picking a window pins the queue to it. */
 /* 21 Oct (Daniel, 18 Oct video 6: "I don't really understand [Live]. I think it should just be eliminated. I think it should just be your call windows."):
    the Live chip is gone. The chips that stay are for jumping to a window: each opens that window's band and scrolls to it. */
-/* 5 Nov (Ani: "have this a drop down as well"): the call windows sit in one dropdown beside Visit status and Billing status. It still jumps
-   to a window (opens its band and scrolls to it); nothing is filtered out. The blue dot marks the window the clock is in. */
-var QWIN_PICK = null;
 function renderWinBar(){
   var host = document.getElementById('qwin'); if(!host) return;
-  var live = shownWin(), cur = QWIN_PICK || live;
-  var m = document.getElementById('qf-menu-win'), wasOpen = !!(m && m.classList.contains('show'));
-  var dot = function(w){ return w === live ? '<span class="qwin-now" title="The window the clock is in" aria-hidden="true"></span>' : ''; };
-  host.innerHTML = '<div class="qf" data-qf="win">'+
-    '<button type="button" class="qf-btn" aria-haspopup="menu" aria-expanded="'+wasOpen+'" onclick="qfToggle(&#39;win&#39;);this.setAttribute(&#39;aria-expanded&#39;,document.getElementById(&#39;qf-menu-win&#39;).classList.contains(&#39;show&#39;))">'+
-      '<span class="qf-k">Call window</span>'+dot(cur)+'<span class="qf-v">'+winLabel(cur)+'</span><span class="qf-caret"></span>'+
-    '</button>'+
-    '<div class="qf-menu'+(wasOpen?' show':'')+'" id="qf-menu-win" role="menu" aria-label="Call window">'+
-      WIN_ORDER.map(function(w){
-        return '<button type="button" class="qf-opt qwin-opt'+(w===cur?' sel':'')+'" role="menuitemradio" aria-checked="'+(w===cur)+'"'+
-          ' onclick="winMenuPick(&#39;'+w+'&#39;)" aria-label="'+winName(w)+', '+winLabel(w)+(w===live?', now':'')+'">'+
-          '<span class="qwin-dotslot">'+dot(w)+'</span>'+winLabel(w)+'</button>';
-      }).join('')+
-    '</div></div>';
-}
-function winMenuPick(w){
-  QWIN_PICK = w;
-  document.querySelectorAll('.qf-menu').forEach(function(m){ m.classList.remove('show'); });
-  renderWinBar();
-  winPick(w);
+  var live = shownWin();
+  host.innerHTML = WIN_ORDER.map(function(w){
+    return '<button type="button" onclick="winPick(&#39;'+w+'&#39;)" aria-label="Go to the '+winName(w).toLowerCase()+', '+winLabel(w)+'">'+
+      (w === live ? '<span class="qwin-now" title="The window the clock is in"></span>' : '')+
+      winLabel(w)+'</button>';
+  }).join('');
 }
 
 /* 21 Oct (Daniel, video 5: "I wouldn't say 'later today', I would want to know what call window you are referring to. So there's the first, this would be
