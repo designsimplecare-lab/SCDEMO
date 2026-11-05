@@ -7552,6 +7552,18 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #cv2-save{flex-direction:row;align-items:center;margin:0 0 0 auto;padding:0;border:0;}
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-save #vc-savedraft{width:auto;}
 }
+/* Ani, 5 Nov ("I like how Slack does their UIs ... these tabs compared to ours are more simple"): the steps read as plain tabs, an outline icon and
+   a word, the current one in bold with a line under it that sits on the bar's own bottom edge; no filled block. The bar stays directly above the work
+   (Daniel, 4 Nov call 01:27:07: "close the gap"). Counts stay as they were (red only for a critical). */
+#v2-tabs .v2-ti{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #cv2-nav{padding:0 8px 0 4px;min-height:52px;border-radius:8px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs{flex-direction:row;align-self:stretch;gap:4px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button{width:auto;justify-content:flex-start;gap:8px;min-height:52px;padding:0 12px;border-radius:0;background:none;font-size:16px;font-weight:500;color:var(--cv2-soft);box-shadow:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button:hover{background:none;color:var(--cv2-ink);box-shadow:inset 0 -2px 0 var(--cv2-line);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button[aria-current="step"]{background:none;color:var(--cv2-ink);font-weight:700;box-shadow:inset 0 -3px 0 var(--accent);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button .v2-ti{display:inline-flex;flex:none;width:18px;height:18px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button .v2-ti svg{width:18px;height:18px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button .v2-tm:empty{display:none;}
   /* Ani, 4 Nov: the top-bar chart layout switch, only while a chart is open */
   .topbar .tb-lay{display:none;align-items:center;gap:2px;padding:2px;border-radius:10px;background:var(--wash);}
   .main:has(#screen-patientchart.active) .topbar .tb-lay{display:inline-flex;}
@@ -7563,10 +7575,10 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar{position:relative;cursor:pointer;border-radius:8px;}
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar:hover{background:var(--wash);}
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cs-side,
-  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cs-side .btn{position:static;}
-  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cs-side .btn::after{content:"";position:absolute;inset:0;border-radius:8px;}
-  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cs-side .btn:focus-visible{outline:none;}
-  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cs-side .btn:focus-visible::after{outline:2px solid var(--accent);outline-offset:-2px;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cs-side :is(.btn,.cv2-na-go){position:static;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cs-side :is(.btn,.cv2-na-go)::after{content:"";position:absolute;inset:0;border-radius:8px;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cs-side :is(.btn,.cv2-na-go):focus-visible{outline:none;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cs-side :is(.btn,.cv2-na-go):focus-visible::after{outline:2px solid var(--accent);outline-offset:-2px;}
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .v2-metaw,
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar .cv2-revacts{display:none !important;}
   #na-drw.drw-ov{display:none;position:fixed;inset:0;z-index:200;padding:0;background:rgba(23,24,28,.42);align-items:stretch;justify-content:flex-end;overflow:hidden;}
@@ -7593,6 +7605,14 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #na-drw .drw-ft{flex:none;padding:14px 24px;border-top:1px solid var(--line);background:var(--panel);}
   #na-drw .drw-ft > .tm-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:0;}
   #na-drw .drw-ft .btn{min-height:44px;font-size:14px;}
+  #pcv-c .cv2-na-go{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:0;border-radius:8px;background:none;color:var(--ink-faint);cursor:pointer;}
+  #pcv-c .v2-nar:hover .cv2-na-go{color:var(--ink);}
+  #pcv-c .cv2-na-go:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #pcv-c .cv2-na-go svg{width:20px;height:20px;}
+  #pcv-c .cr-otherb{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin:4px 0 0;font-size:15px;color:var(--ink-soft);}
+  #pcv-c .cr-otherb .ic{transition:transform .15s;}
+  #pcv-c .cr-otherb[aria-expanded="true"] .ic{transform:rotate(180deg);}
+  #pcv-c .cr-from{margin:8px 0 0;font-size:14px;line-height:20px;color:var(--ink-faint);max-width:66ch;}
   #na-drw .drw-ft .cv2-stamp{display:inline-flex;align-items:center;gap:6px;margin:0;font-size:15px;color:var(--ink);}
 /* Daniel, 4 Nov call 01:02:59 on "Acute myocardial injury": "you keep that ... it emphasizes the seriousness of this value": in Version 2 the concern is
    the second line under the finding on the closed row (it was folded); the Also line is gone (csNARowV2) */
@@ -8265,10 +8285,10 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
                 <!-- Daniel, 8 Oct: one continuous encounter page, Review -> Note -> Action -> Sign off, sections of the same workspace, not tabs.
                      The bar is a step bar: a click scrolls to the section, and the section in view is marked as you scroll. -->
                 <nav class="v2-tabs v2-steps" aria-label="This visit" id="v2-tabs">
-                  <button type="button" id="v2t-review" aria-controls="v2p-review" onclick="v2Tab('review',true)"><span class="v2-tl">Review</span><span class="v2-tm"></span></button>
-                  <button type="button" id="v2t-note" aria-controls="v2p-note" onclick="v2Tab('note',true)"><span class="v2-tl">Note</span><span class="v2-tm"></span></button>
-                  <button type="button" id="v2t-orders" aria-controls="v2p-orders" onclick="v2Tab('orders',true)"><span class="v2-tl">Action</span><span class="v2-tm"></span></button>
-                  <button type="button" id="v2t-sign" aria-controls="v2p-sign" onclick="v2Tab('sign',true)"><span class="v2-tl">Sign off</span><span class="v2-tm"></span></button>
+                  <button type="button" id="v2t-review" aria-controls="v2p-review" onclick="v2Tab('review',true)"><span class="ic v2-ti" data-pdic="file" aria-hidden="true"></span><span class="v2-tl">Review</span><span class="v2-tm"></span></button>
+                  <button type="button" id="v2t-note" aria-controls="v2p-note" onclick="v2Tab('note',true)"><span class="ic v2-ti" data-pdic="edit" aria-hidden="true"></span><span class="v2-tl">Note</span><span class="v2-tm"></span></button>
+                  <button type="button" id="v2t-orders" aria-controls="v2p-orders" onclick="v2Tab('orders',true)"><span class="ic v2-ti" data-pdic="tasks" aria-hidden="true"></span><span class="v2-tl">Action</span><span class="v2-tm"></span></button>
+                  <button type="button" id="v2t-sign" aria-controls="v2p-sign" onclick="v2Tab('sign',true)"><span class="ic v2-ti" data-pdic="usercheck" aria-hidden="true"></span><span class="v2-tl">Sign off</span><span class="v2-tm"></span></button>
                 </nav>
                 <div class="v2-acts" id="v2-acts">
                   <span id="v2-draft-slot"></span>
@@ -16812,7 +16832,10 @@ function csNARowV2(x, related, also){
     '<span class="ic vca-ic" role="img" aria-label="' + T.w + '" data-pdic="' + T.ic + '"></span>' +
     '<div class="vca-main">' + (x.abn ? '' : '<p class="v2-na-k">' + T.w + '</p>') + '<span class="cv2-na-sev" aria-hidden="true">' + T.w + '</span>' + '<p class="vca-t">' + val + '</p><div class="v2-nad" id="cv2-nad-' + x.idx + '">' + h + '</div></div>' +
     '<div class="cs-side"><p class="cs-stage">' + csIc('clock') + '<span><span class="vh">Stage: </span>' + csEsc(x.stage) + '</span></p>' +
-      '<button type="button" class="btn" onclick="naRev(' + x.idx + ',this)"' + (inV2 ? ' aria-haspopup="dialog"' : '') + '><span class="ic" data-pdic="eye"></span>' + x.action + '</button></div>' +
+      /* Daniel, 4 Nov call 01:01:46 (the eye icon: "Nope"; "I want to click on this right here"): in Version 2 the row itself is the control, so
+         its button shows only a chevron; the words stay for a screen reader */
+      (inV2 ? '<button type="button" class="cv2-na-go" onclick="naRev(' + x.idx + ',this)" aria-haspopup="dialog"><span class="vh">' + x.action + '</span>' + csIc('chevr') + '</button></div>'
+        : '<button type="button" class="btn" onclick="naRev(' + x.idx + ',this)"><span class="ic" data-pdic="eye"></span>' + x.action + '</button></div>') +
   '</div>';
 }
 /* Ani, 4 Nov ("remove all this, make this all section clickable, open result as a side panel"): in Version 2 the whole row opens the result in a
@@ -19666,33 +19689,64 @@ function v2RenderKey(el, name, by){
   /* T-038: Cedar off for chart review: no synthesized picture; the left Patient summary keeps every chart fact */
   /* Daniel, 4 Nov call 01:16:43: "Clinical summary. Clinical summary." — the heading (was Chart review); Ani 01:19:10: "first phase, just a regular clinical summary" */
   if(!cdOn('review')){ el.innerHTML = '<div class="v2-ch"><h3 id="v2-key-h">Clinical summary</h3></div>' + cdOffLine('review'); return; }
-  /* T-037 (Daniel, 31 Oct): Chart review is a short, synthesized picture of the patient, today's concern first: who this patient is, and the medications with the concerns they treat. History, past visits, investigations and consult reports moved
-     to the left Patient summary ("no repetition"). Cedar's mark and the AI label stay (AI text is marked); every line names its source and opens it. */
-  var groups = crMedGroups(name), sents = crSentences(name, groups);
-  /* T-039 (Daniel, 31 Oct 02:56:42 "There's my note. Boom."; 01:53:50 "the first place that I start is the note"): the first two sentences of
-     Who this patient is show; the rest, and Medications and what they treat, are folded behind Show all (a real button, aria-expanded; per patient).
-     Nothing is removed. */
-  var all = !!(CS.crAll && CS.crAll[name]), sl = function(s){ return crLine({main:s.t, src:s.src.map(function(x){ return x[0]; }).join(' &middot; '), tab:s.src[0][1], cls:'cr-s'}); };
-  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Clinical summary</h3><span class="v2-chip kf-ai">Cedar &middot; AI</span>' +
-    '<button type="button" class="cs-link v2-all" id="cr-all" aria-expanded="' + all + '" aria-controls="' + (sents.length > 2 ? 'cr-rest ' : '') + 'cr-medsec" onclick="crAll()">' + (all ? 'Show less' : 'Show all') + csIc('chevdown') + '</button></div>';
-  /* Ordered and pending lives only in the left Patient summary (Ani, 3 Nov: "it should only be on the left side"; no repetition, Daniel 31 Oct). */
-  /* 2. Who this patient is: a few synthesized sentences, each opening its source */
-  if(sents.length) h += '<section class="kf-sec cr-who" aria-labelledby="kf-h-who"><h4 class="kf-h" id="kf-h-who">Who this patient is</h4><div class="kf-lines">' +
-    sents.slice(0, 2).map(sl).join('') + '</div>' +
-    (sents.length > 2 ? '<div class="kf-lines" id="cr-rest"' + (all ? '' : ' hidden') + '>' + sents.slice(2).map(sl).join('') + '</div>' : '') + '</section>';
-  /* 3. Medications and what they treat: grouped by concern, today's first; PharmaNet medicines and the prescriber; past medicines only where they matter today */
-  var pnKnown = !!(RXP[name] || CR_PAST[name]);
-  h += '<section class="kf-sec cr-meds" id="cr-medsec" aria-labelledby="kf-h-meds"' + (all ? '' : ' hidden') + '><h4 class="kf-h" id="kf-h-meds">Medications and what they treat</h4>' +
-    (groups.length ? '<div class="kf-lines">' + groups.map(crGroupHtml).join('') + '</div>' : '<p class="v2-q kf-q">No medications recorded in Simple Care.</p>') +
-    (pnKnown ? '' : '<p class="v2-q kf-q">PharmaNet not checked for this patient yet.</p>') + '</section>';
+  /* Daniel, 4 Nov call 01:10:17–01:19:10, Ani 5 Nov: the clinical summary is about why the patient is here today, "not reviewing their chart ...
+     reviewing this person in the context of everything that has ever happened". Cedar reads the booking, the clinical intake, PharmaNet, the lab
+     results and the earlier notes, and shows only what bears on today's problem: past history, medicines, results and open work, each with its
+     source ("We have to show where the AI is pulling the data from"). Anything else on the chart sits behind one quiet disclosure. */
+  var C = crToday(name), open = !!(CS.crAll && CS.crAll[name]);
+  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Clinical summary</h3><span class="v2-chip kf-ai">Cedar &middot; AI</span></div>';
+  h += '<section class="kf-sec cr-why" aria-labelledby="kf-h-why"><h4 class="kf-h" id="kf-h-why">Here today for</h4><div class="kf-lines">' + crLine(C.why) + '</div></section>';
+  if(C.rel.length) h += '<section class="kf-sec cr-rel" aria-labelledby="kf-h-rel"><h4 class="kf-h" id="kf-h-rel">Relevant to today</h4><div class="kf-lines">' + C.rel.map(crLine).join('') + '</div></section>';
+  else h += '<p class="v2-q kf-q">Nothing else on the chart relates to today&rsquo;s concern.</p>';
+  if(C.other.length) h += '<button type="button" class="cs-link cr-otherb" id="cr-all" aria-expanded="' + open + '" aria-controls="cr-rest" onclick="crAll()">' + csIc('chevdown') +
+      '<span>Not related to today (' + C.other.length + ')</span></button>' +
+    '<div class="kf-lines cr-other" id="cr-rest"' + (open ? '' : ' hidden') + '>' + C.other.map(crLine).join('') + '</div>';
+  h += '<p class="cr-from">Cedar read ' + crList(C.from) + '. Check the source before acting.</p>';
   el.innerHTML = h; paintPd(el);
 }
-/* T-039: Show all / Show less on Chart review, in place (no re-render, so focus stays on the button) */
+/* today's reason, the chart facts that bear on it, and the rest (Daniel, 4 Nov call 01:17:44: "why are you here? ... I am nauseated. Then the AI
+   is gonna say, huh, nausea. Okay, what medications?"). A patient Cedar has read in full has a written summary (CR_TODAY); the others get the same
+   three parts from the chart, matched on the words of today's concern. */
+var CR_TODAY = {
+  'Gloria Mcdonald, 74F': {
+    why:{main:'Chest pressure on exertion for 3 days, eased by rest', sub:'Booked as a follow-up for the chest pressure first seen Jun 25', src:'Clinical intake &middot; Booking', tab:'documents'},
+    rel:[
+      {top:'Today', main:'Critical troponin I 0.42 µg/L and an ECG showing atrial fibrillation', sub:'Both arrived this morning, before the call; see Needs attention', src:'LifeLabs &middot; ECG report, today', tab:'results'},
+      {top:'History', main:'Exertional chest pressure since Jun 25, cause not yet established', sub:'Cardiology saw her Jul 28; stress test booked Sep 12, report not back', src:'Visit note, Jun 25 &middot; Consult, Jul 28', tab:'documents'},
+      {top:'Risk factors', main:'Hypertension and type 2 diabetes', sub:'HbA1c 7.1 % on Mar 12; lipid panel and HbA1c due Aug 20, not drawn', src:'Problem list &middot; LifeLabs', tab:'problems'},
+      {top:'Medicines', main:'Cardiology asked you to start bisoprolol 2.5 mg daily', sub:'Asked Jul 28; not on the chart yet', src:'Consult, Jul 28', tab:'consults'},
+      {top:'Medicines', main:'Ibuprofen 400 mg as needed, from Dr. S. Gill', sub:'An anti-inflammatory can raise blood pressure and cardiovascular risk; not on the Simple Care list', src:'PharmaNet', tab:'medications'},
+      {top:'Medicines', main:'Amlodipine 5 mg daily and acetylsalicylic acid 81 mg daily', sub:'Acetylsalicylic acid is over the counter, as she reported', src:'Medications &middot; Clinical intake', tab:'medications'}
+    ],
+    other:[
+      {main:'Osteoporosis: denosumab 60 mg every 6 months', src:'Medications', tab:'medications'},
+      {main:'Sleep: zopiclone 5 mg at bedtime, from Dr. S. Gill', src:'PharmaNet', tab:'medications'},
+      {main:'Pain: tramadol 50 mg as needed, from Dr. S. Gill and Dr. K. Brar', src:'PharmaNet', tab:'medications'}
+    ],
+    from:['the booking', 'the clinical intake', 'PharmaNet', 'LifeLabs', 'your visit notes', 'the cardiology consult']
+  }
+};
+function crToday(name){
+  if(CR_TODAY[name]) return CR_TODAY[name];
+  var r = rxRow(name) || {}, intake = csIntakeSummary(name) || '', groups = crMedGroups(name);
+  var why = {main:v2Cap(String(intake || r.concern || 'Reason not given').replace(/\.$/, '')), sub:intake && r.concern ? 'Booked as: ' + r.concern : '', src:intake ? 'Clinical intake &middot; Booking' : 'Booking', tab:'documents'};
+  var rel = [], other = [], from = ['the booking'];
+  if(intake) from.push('the clinical intake');
+  crSentences(name, groups).forEach(function(x){ rel.push({main:x.t.replace(/^Relevant to today: /, ''), src:x.src.map(function(y){ return y[0]; }).join(' &middot; '), tab:x.src[0][1]}); });
+  groups.forEach(function(g){
+    if(!g.items.length) return;
+    var l = {main:(g.name === 'No indication on file' ? '' : g.name + ': ') + g.items.map(function(i){ return i.t; }).join('; '), src:g.items.some(function(i){ return i.off; }) ? 'PharmaNet' : 'Medications', tab:'medications'};
+    (g.today ? rel : other).push(l);
+  });
+  if(RXP[name] || CR_PAST[name]) from.push('PharmaNet');
+  if(PT_LAST[name]) from.push('your visit notes');
+  return {why:why, rel:rel, other:other, from:from};
+}
+/* Not related to today: shown or hidden in place (no re-render, so focus stays on the button) */
 function crAll(){
   CS.crAll = CS.crAll || {}; var all = CS.crAll[PC_CURRENT] = !CS.crAll[PC_CURRENT];
-  var b = document.getElementById('cr-all'); if(!b) return;
-  b.setAttribute('aria-expanded', all); b.firstChild.nodeValue = all ? 'Show less' : 'Show all';
-  ['cr-rest', 'cr-medsec'].forEach(function(id){ var e = document.getElementById(id); if(e) e.hidden = !all; });
+  var b = document.getElementById('cr-all'), e = document.getElementById('cr-rest'); if(!b) return;
+  b.setAttribute('aria-expanded', all); if(e) e.hidden = !all;
 }
 
 /* ---------- This visit: removed (Daniel, 12 Oct: "we can remove all of this") ----------
@@ -23725,9 +23779,8 @@ function cv2Sync(){
   if(!cv2On() || !PC_CURRENT || !CV2.meta) return;
   var r = csRow(); if(!r) return;
   /* Ani, 5 Nov ("remove this"): no alert count chip in the header; Needs attention below already shows the items */
-  var st = cv2Status(r);
-  var h = '<span class="cv2-st' + (st.k ? ' ' + st.k : '') + '">' + csIc(st.ic) + '<span><span class="vh">Visit status: </span>' + st.t + '</span></span>' +
-    '<button type="button" class="btn cv2-ctx-open" aria-haspopup="dialog" aria-expanded="' + !!CV2.drawer + '" aria-controls="v2-side" onclick="cv2Drawer(true)">' + csIc('tasks') + 'Patient summary</button>';
+  /* Ani, 5 Nov ("remove this"): no visit status chip ("In queue") in the header either */
+  var h = '<button type="button" class="btn cv2-ctx-open" aria-haspopup="dialog" aria-expanded="' + !!CV2.drawer + '" aria-controls="v2-side" onclick="cv2Drawer(true)">' + csIc('tasks') + 'Patient summary</button>';
   if(CV2.meta.getAttribute('data-h') !== h){ CV2.meta.innerHTML = h; CV2.meta.setAttribute('data-h', h); paintPd(CV2.meta); }
 }
 /* Needs attention: one quiet column header over the dense rows (decorative: each row's cells carry their own words for a screen reader) */
@@ -23740,7 +23793,7 @@ function cv2NaCols(){
 }
 function cv2GoAlerts(){
   v2Tab('review', false);
-  setTimeout(function(){ var b = document.querySelector('#vc-alerts .cs-side .btn'); if(b) b.focus({preventScroll:true}); }, 60);
+  setTimeout(function(){ var b = document.querySelector('#vc-alerts .cs-side :is(.btn,.cv2-na-go)'); if(b) b.focus({preventScroll:true}); }, 60);
 }
 
 /* ---------- right: the patient context. Allergies and Previous encounters join the existing sections (same data, nothing new) ---------- */
@@ -23898,8 +23951,12 @@ function cv2Chk(){
   if(!el || !row) return;
   if(el.nextSibling !== row) row.parentNode.insertBefore(el, row);
   var r = csRow(), off = !r || !!r.signed || csNoShow(PC_CURRENT);
-  el.hidden = off;
   var st = v2El('v2t-sign'), tm = st && st.querySelector('.v2-tm');
+  /* Ani, 5 Nov ("we discussed we do not need this"); Daniel, 4 Nov call 01:21:27 ("get rid of this ... that's going to upset me"): no "Before you
+     sign off" list in Version 2, and so no count on the Sign off step */
+  off = true;
+  el.hidden = off;
+  if(tm){ tm.textContent = ''; st.setAttribute('aria-label', 'Sign off'); }
   if(off) return;
   var L = cv2ChkLines(), n = L.filter(function(x){ return !x.ok; }).length;
   var h = '<h4 class="cv2-chk-h" id="cv2-chk-h">Before you sign off</h4><ul>' + L.map(function(x){

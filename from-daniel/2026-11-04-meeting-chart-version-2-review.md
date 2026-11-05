@@ -95,4 +95,14 @@ addenda; evidence on finding a patient chart; clinical workflow documents; revie
 recordings.
 
 ## Built after the call (4–5 Nov)
-Row → side drawer (1409fb7). The rest of sections 1–5 and 9 is being built in chart Version 2; sections 6–8 wait for the next call.
+Built in chart Version 2 (4–5 Nov):
+- §1 Header: PHN, NKDA and the pharmacy at the top; the visit status chip is gone (Ani, 5 Nov).
+- §2 Needs attention: red and Critical for the troponin and the ECG; the whole row opens the result in a side drawer showing the full result
+  (tier, other results waiting, every value with reference and earlier values, AI caption, source document as received). Mark reviewed is in the
+  drawer; Open in Inbox and the eye button are gone.
+- §3 Clinical summary: on by default with a switch; built around today's reason: "Here today for", then "Relevant to today" (past history,
+  medicines, results and open work that bear on it, each with its source), the rest behind "Not related to today", and the sources Cedar read.
+- §4 Note: one large text box. §5 Sign off: billing fields stay; "Before you sign off" removed (Ani, 5 Nov). Button names from Ani's table.
+- §8 Step tabs: plain tabs (icon and word, the current one underlined), directly above the work (Ani, 5 Nov: Slack as the reference).
+- §9 Day sheet (was Queue); patient search (Ctrl+K).
+Sections 6 and 7 wait for the next call.
