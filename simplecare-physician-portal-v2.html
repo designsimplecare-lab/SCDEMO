@@ -7601,6 +7601,17 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-l2.cs-hasph > span:first-child:is(.cs-nksep,.cs-phsep){display:none;}
 #screen-patientchart #pcv-c.cs-v2 #v2-sum > #v2-pt .vc-sub .cs-phsep{display:none;}
 #screen-patientchart #pcv-c.cs-v2 #v2-sum > #v2-pt .vc-sub .cs-pharm{display:block;margin-top:2px;}
+/* Ani, 5 Nov: sign-off button definitions (Version 2): Submit claim, Complete encounter, Sign and finalize, Add addendum in one row; the addenda under the signed note */
+#screen-patientchart #pcv-c #vc-finrow > .btn[hidden]{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-adm{margin:12px 0 0;max-width:66ch;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-adm[hidden]{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-adm .cv2-adm-i{padding:10px 0;border-top:1px solid var(--cv2-line);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-adm .cv2-adm-h{margin:0 0 4px;font-size:14px;line-height:20px;color:var(--cv2-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-adm .cv2-adm-t{margin:0;font-size:15px;line-height:23px;color:var(--cv2-ink);white-space:pre-wrap;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-adm .cv2-adm-k{display:block;margin:12px 0 6px;font-size:14px;color:var(--cv2-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-adm .cv2-adm-ta{display:block;width:100%;box-sizing:border-box;min-height:104px;padding:10px 12px;font:inherit;font-size:15px;line-height:23px;color:var(--cv2-ink);background:#fff;border:1px solid var(--cv2-line);border-radius:8px;resize:vertical;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-adm .cv2-adm-a{display:flex;justify-content:flex-end;gap:8px;margin-top:10px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-adm .cv2-adm-a .btn{height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 18px;font-size:15px;font-weight:600;}
 </style>
 </head>
 <body>
@@ -11002,19 +11013,23 @@ function finalizeVisit(force){
     var br = txt.match(/\[[^\]]{3,}\]/);
     if(br){ vcFinWarn('Today\u2019s note still has template text: \u201c' + br[0].slice(0, 60) + (br[0].length > 60 ? '\u2026' : '') + '\u201d. Sign off and finalize anyway?'); return; }
   }
-  if(PC_ON_CALL && PC_CALL_WHO === PC_CURRENT) pcEndCall();
+  /* Ani, 5 Nov: sign-off button definitions ("Sign and finalize: authenticate and finalize the clinical note"; "Complete encounter: close the visit
+     workflow, independently of billing"; "Submit claim: without requiring note signature or encounter completion"). In Version 2 signing locks the
+     note only: the call, the visit status and the claim are left to Complete encounter (cv2Complete) and Submit claim (cv2Claim). Current unchanged. */
+  var cv2Sign = typeof cv2On === 'function' && cv2On();
+  if(PC_ON_CALL && PC_CALL_WHO === PC_CURRENT && !cv2Sign) pcEndCall();
   if(!r){ toast('Visit signed off'); return; }
   /* shadowing 2: "The patient leaves the queue at once." */
-  r.status = 'done'; r.wait = '\u2014';
+  if(!cv2Sign){ r.status = 'done'; r.wait = '\u2014'; }
   r.signed = {at: new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}), note: txt, secs: typeof nsGet === 'function' ? nsGet() : null};
   /* T-023 (spec part 5): Finalize closes the visit only. It sets the disposition and puts the claim in
      Claims for sign-off; nothing goes to MSP here (Ani, 3 Oct: billing follows the PRD; CNF-09). */
-  var billNote = (typeof t23OnFinalize === 'function') ? t23OnFinalize(r) : '';
+  var billNote = (!cv2Sign && typeof t23OnFinalize === 'function') ? t23OnFinalize(r) : '';
   if(typeof renderQueue==='function') renderQueue();
   if(typeof updateWorkCounts==='function') updateWorkCounts();
-  pcFill({visitline: 'Visit completed \u00b7 today \u00b7 signed off ' + r.signed.at, statuslbl: STATUS_LABEL[r.status]});
+  if(!cv2Sign) pcFill({visitline: 'Visit completed \u00b7 today \u00b7 signed off ' + r.signed.at, statuslbl: STATUS_LABEL[r.status]});
   vcNoteState(r);
-  toast('Signed off by Dr. Pannozzo \u00b7 ' + (r.pref || r.name.split(',')[0]) + ' moved to Completed' + billNote);
+  toast(cv2Sign ? 'Signed and finalized by Dr. Pannozzo \u00b7 the note is locked' : 'Signed off by Dr. Pannozzo \u00b7 ' + (r.pref || r.name.split(',')[0]) + ' moved to Completed' + billNote);
 }
 function condApprove(id){
   var name = PC_CURRENT;
@@ -15858,7 +15873,7 @@ function vcNoteState(row){
   if(stamp){
     stamp.hidden = !signed;
     /* Daniel, 26 Sep: "The Doctor has approved this, meaning my a** is on the line." The name and time are the point. */
-    stamp.innerHTML = signed ? '<span class="ic" data-pdic="complete"></span><span><b>Signed off by Dr. Pannozzo &middot; today ' + row.signed.at + '</b> &middot; visit finalized, read-only</span>' : '';
+    stamp.innerHTML = signed ? '<span class="ic" data-pdic="complete"></span><span><b>' + (typeof cv2On === 'function' && cv2On() ? 'Signed and finalized' : 'Signed off') + ' by Dr. Pannozzo &middot; today ' + row.signed.at + '</b> &middot; ' + (typeof cv2On === 'function' && cv2On() ? 'read-only' : 'visit finalized, read-only') + '</span>' : '';   /* Ani, 5 Nov: sign-off button definitions */
   }
   var hide = function(id, h){ var e = document.getElementById(id); if(e) e.hidden = h; };
   hide('vc-chips', signed); hide('vc-finalize', signed); hide('vc-savedraft', signed); hide('vc-finwarn', true);
@@ -15874,9 +15889,11 @@ function vcNoteState(row){
 }
 function vcFinWarn(msg){
   var w = document.getElementById('vc-finwarn'); if(!w) return;
+  var c2 = typeof cv2On === 'function' && cv2On();   /* Ani, 5 Nov: sign-off button definitions, "Sign and finalize" in Version 2 */
+  if(c2) msg = String(msg).replace('Sign off and finalize anyway?', 'Sign and finalize anyway?');
   w.innerHTML = '<span class="ic" data-pdic="alert"></span><p>' + msg + '</p>' +
     '<button type="button" class="btn" onclick="document.getElementById(\'vc-finwarn\').hidden=true;document.getElementById(\'vc-finalize\').hidden=false;if(window.t23SyncFin)t23SyncFin();nsFocusGap()"><span class="ic" data-pdic="edit"></span>Keep writing</button>' +
-    '<button type="button" class="btn dark" onclick="finalizeVisit(true)"><span class="ic" data-pdic="complete"></span>Sign off anyway</button>';
+    '<button type="button" class="btn dark" onclick="finalizeVisit(true)"><span class="ic" data-pdic="complete"></span>' + (c2 ? 'Sign and finalize anyway' : 'Sign off anyway') + '</button>';
   w.hidden = false;
   var fb = document.getElementById('vc-finalize'); if(fb) fb.hidden = true;
   var fl = document.getElementById('t23-finlater'); if(fl) fl.hidden = true;
@@ -18562,7 +18579,7 @@ function t23OnFinalize(r){
   if(!r || r.claimId) return '';
   var v = t23VisitCode(r.name);
   var c = {id:'q' + r.pos, who:firstLast(r.name), date:'2026-10-03', win:r.win, age:v.age, mins:v.mins, start:v.start, stop:v.stop, flags:[], hist:(v.log || []).slice(), at:t23Now()};
-  c.hist.push([t23Stamp(), 'Dr. Pannozzo', 'Visit signed off; claim created']);
+  c.hist.push([t23Stamp(), 'Dr. Pannozzo', typeof cv2On === 'function' && cv2On() ? 'Claim created' : 'Visit signed off; claim created']);
   var suffix;
   if(v.disp === 'msp' || v.disp === 'recip'){
     c.fee = v.fee; c.dx = v.dx;
@@ -18572,12 +18589,14 @@ function t23OnFinalize(r){
       /* "Sign off & submit claim": the visit is finalized AND this one claim is submitted, after the code check.
          Cancelling the code check leaves the claim in Needs submission. */
       var cid = c.id;
+      var own = typeof cv2On === 'function' && cv2On();   /* Ani, 5 Nov: sign-off button definitions: Version 2's Submit claim, on its own */
       setTimeout(function(){
-        t23Signoff([cid], 'visit', function(at){
-          var cc = t23C(cid); cc.st = 'submitted'; cc.signed = at; cc.sub = 'Sent to MSP ' + at + ' at sign-off · MSP processes it at 7 PM';
-          t23Log(cc, 'Dr. Pannozzo', 'Sent to MSP at sign-off (his sign-off)');
-          toast('Signed off · claim sent to MSP · MSP processes it at 7 PM');
-        }, function(){ toast('Visit signed off · the claim is in Claims, Needs submission'); t23RenderBillRow(); });
+        t23Signoff([cid], own ? 'claim' : 'visit', function(at){
+          var cc = t23C(cid); cc.st = 'submitted'; cc.signed = at; cc.sub = 'Sent to MSP ' + at + (own ? '' : ' at sign-off') + ' · MSP processes it at 7 PM';
+          t23Log(cc, 'Dr. Pannozzo', own ? 'Sent to MSP (his sign-off)' : 'Sent to MSP at sign-off (his sign-off)');
+          toast(own ? 'Claim sent to MSP · MSP processes it at 7 PM' : 'Signed off · claim sent to MSP · MSP processes it at 7 PM');
+          if(own) t23RenderBillRow();
+        }, function(){ toast(own ? 'The claim is in Claims, Needs submission' : 'Visit signed off · the claim is in Claims, Needs submission'); t23RenderBillRow(); });
       }, 0);
       suffix = ' · submitting the claim';
     } else suffix = ' · claim in Claims, Needs submission';
@@ -18598,7 +18617,8 @@ function t23RenderBillRow(){
   if(!r){ el.hidden = true; if(help) help.hidden = true; return; }
   var sep = '<span class="t23-bsep">·</span>';
   var h = t23Ic('claims') + '<span class="vh">Billing</span>';
-  if(r.signed){
+  /* Ani, 5 Nov: sign-off button definitions: in Version 2 the claim is its own action, so the fields stay until it exists */
+  if(typeof cv2On === 'function' && cv2On() ? !!r.claimId : r.signed){
     var c = t23RowClaim(r);
     h += c ? '<span>' + t23Label(c).label + '</span>' + sep + '<span>' + (c.st === 'submit' ? 'in Claims' : c.st === 'submitted' ? 'MSP processes it at 7 PM' : 'recorded') + '</span>' +
       (c.st === 'submit' ? '<button type="button" class="btn xs" onclick="t23SubmitOne(\'' + c.id + '\')">' + t23Ic('arrowup') + 'Submit claim</button>' : '') +
@@ -18639,6 +18659,9 @@ function t23SyncFin(){
   var msp = !!(r && t23VisitCode(r.name).disp !== 'private');
   lbl.textContent = msp ? 'Sign off & submit claim' : 'Sign off & finalize visit';
   later.hidden = !r || !msp || !!r.signed || b.hidden;
+  /* Ani, 5 Nov: sign-off button definitions: Version 2 says "Sign and finalize", and Submit claim is its own button, so no Submit later */
+  if(typeof cv2On === 'function' && cv2On()){ lbl.textContent = 'Sign and finalize'; later.hidden = true; }
+  if(typeof cv2FinSync === 'function') cv2FinSync();
   if(b.getAttribute('aria-disabled') === 'true') later.setAttribute('aria-disabled', 'true'); else later.removeAttribute('aria-disabled');
 }
 function t23Fin(mode){
@@ -20775,7 +20798,7 @@ function nxdRender(){
     h = '<p class="v2d-next">Next: <b>' + csEsc(n.legal || csBase(n.name)) + '</b>' + dot + csEsc(winLabel(n.win)) + dot + csEsc(mode) + '</p>';
   } else h = '<p class="v2d-next">That&rsquo;s everyone for now.</p>';
   el.innerHTML = '<span class="ic v2d-ok" data-pdic="complete"></span>' +
-    '<div class="v2d-txt"><h3 id="v2-done-h" tabindex="-1">Visit signed off</h3>' + h + '</div>' +
+    '<div class="v2d-txt"><h3 id="v2-done-h" tabindex="-1">' + (typeof cv2On === 'function' && cv2On() ? 'Encounter completed' : 'Visit signed off') + '</h3>' + h + '</div>' +
     '<div class="v2d-acts">' +
       (n ? '<button type="button" class="btn dark" id="v2-done-open"><span class="ic" data-pdic="chevr"></span>Open chart</button>' : '') +
       '<button type="button" class="btn" id="v2-done-home"><span class="ic" data-pdic="today"></span>Back to Home</button></div>';
@@ -20792,7 +20815,7 @@ function nxdFocus(){
   var was = null;
   baWrap('finalizeVisit', function(){
     var r = typeof csRow === 'function' ? csRow() : null;
-    if(was && r && r.name === was && r.signed){
+    if(was && r && r.name === was && r.signed && !(typeof cv2On === 'function' && cv2On())){   /* Version 2: the card follows Complete encounter (cv2Complete) */
       NXD.for = was;
       if(typeof v2Fin === 'function') v2Fin(false, true);
       nxdRender(); setTimeout(nxdFocus, 60);
@@ -21079,7 +21102,7 @@ document.addEventListener('input', function(e){
    the same T23.visit[name].dx the claim reads. The one-tap suggestion built on 7 Oct (the booking reason's obvious code, never pre-filled) moved there with it.
    Each code is in the BC MSP list (assets/data/bc-msp-diagnostic-codes.json, checked 7 Oct). */
 var NS_DX_SUGGEST = {'Follow up — chest pressure noted':'786.5', 'Yeast infection':'112.1', 'Rx renewal':'V68.1'};
-function nsDxSuggest(r){ return r && !r.signed ? NS_DX_SUGGEST[r.concern] || null : null; }
+function nsDxSuggest(r){ return r && (!r.signed || (typeof cv2On === 'function' && cv2On() && !r.claimId)) ? NS_DX_SUGGEST[r.concern] || null : null; }   /* Ani, 5 Nov: in Version 2 the claim can follow the signature */
 function nsRenderDx(){}   /* an empty hook: older callers (note reset, read-only, billing re-render) still call it */
 function nsDxUse(code){
   if(!PC_CURRENT || !code) return;
@@ -23446,6 +23469,7 @@ document.addEventListener('keydown', function(e){
 
 /* ---------- header: relevant alerts and the visit status (display by exception: no alert line when nothing is waiting) ---------- */
 function cv2Status(r){
+  if(r.status === 'done') return {t:STATUS_LABEL.done || 'Completed', ic:'complete', k:'ok'};   /* Ani, 5 Nov: Complete encounter closes the visit; signing alone says Signed */
   if(r.signed) return {t:'Signed', ic:'complete', k:'ok'};
   if(PC_ON_CALL && PC_CALL_WHO === PC_CURRENT) return {t:'On call', ic:'phone', k:'on'};
   if(typeof csNoShow === 'function' && csNoShow(PC_CURRENT)) return {t:STATUS_LABEL.noshow || 'No-show', ic:'phone', k:''};
@@ -23642,6 +23666,75 @@ function cv2Chk(){
   /* the Sign off step counts the open lines (a warning, never a block) */
   if(tm){ tm.textContent = n ? String(n) : ''; st.setAttribute('aria-label', 'Sign off' + (n ? ', ' + n + (n === 1 ? ' item' : ' items') + ' to check' : '')); }
 }
+/* ---------- Ani, 5 Nov: sign-off button definitions (Version 2) ----------
+   Save draft: unfinished, editable, unsigned (the step bar's, unchanged). Sign and finalize: authenticates and finalizes the note (#vc-finalize; it locks).
+   Complete encounter: closes the visit workflow, independently of billing. Submit claim: an MSP claim, without a signed note or a completed encounter
+   (the diagnosis and time checks stay). Add addendum: only once the note is signed. "Before you sign off" warns and never blocks. */
+function cv2FinSync(){
+  var row = v2El('vc-finrow'), b = v2El('vc-finalize'); if(!row || !b) return;
+  var on = cv2On(), r = on && PC_CURRENT ? csRow() : null;
+  var mk = function(id, ic, txt, fn){ var e = v2El(id); if(!e){ e = document.createElement('button'); e.type = 'button'; e.id = id; e.className = 'btn';
+      e.innerHTML = '<span class="ic" data-pdic="' + ic + '"></span>' + txt; e.onclick = fn; row.insertBefore(e, b); paintPd(e); } return e; };
+  var claim = mk('cv2-claim', 'arrowup', 'Submit claim', cv2Claim), done = mk('cv2-done', 'usercheck', 'Complete encounter', cv2Complete), add = mk('cv2-addm', 'plus', 'Add addendum', cv2AddOpen);
+  var ns = !!(r && csNoShow(PC_CURRENT));
+  claim.hidden = !r || !!r.claimId || ns || t23VisitCode(r.name).disp === 'private';
+  done.hidden = !r || r.status === 'done';
+  add.hidden = !r || !r.signed;
+  var nx = v2El('vc-nextpt'); if(nx && r && r.status !== 'done') nx.hidden = true;
+  if(b.getAttribute('data-t0') === null) b.setAttribute('data-t0', b.title || '');
+  b.title = on ? '' : b.getAttribute('data-t0');
+  cv2AddRender();
+}
+function cv2Claim(){
+  var r = csRow(); if(!r || r.claimId) return;
+  var v = t23VisitCode(r.name); if(v.disp === 'private') return;
+  if(!v.dx){ var d = nsDxSuggest(r); if(d){ nsDxUse(d); v = t23VisitCode(r.name); } }   /* as before in Version 2: a suggested diagnosis is used */
+  if(!v.dx){ toast('Add the diagnosis code to submit the claim'); t23OpenPick({visit:PC_CURRENT, focus:'dx'}); return; }
+  if(t23CounselBlock(v)){ toast(t23CounselBlock(v)); t23OpenPick({visit:PC_CURRENT, focus:'time'}); return; }
+  T23.finMode = 'now';
+  t23OnFinalize(r);
+  t23RenderBillRow();
+}
+function cv2Complete(){
+  var r = csRow(); if(!r || r.status === 'done') return;
+  if(PC_ON_CALL && PC_CALL_WHO === PC_CURRENT) pcEndCall();
+  r.status = 'done'; r.wait = '\u2014';
+  /* private pay has no claim to submit: the card on file is charged when the encounter closes (it was charged at sign-off) */
+  var bill = t23VisitCode(r.name).disp === 'private' && !r.claimId ? t23OnFinalize(r) : '';
+  if(typeof renderQueue === 'function') renderQueue();
+  if(typeof updateWorkCounts === 'function') updateWorkCounts();
+  pcFill({visitline: 'Visit completed \u00b7 today', statuslbl: STATUS_LABEL[r.status]});
+  if(typeof csRefresh === 'function') csRefresh();
+  NXD.for = PC_CURRENT; nxdRender(); setTimeout(nxdFocus, 60);
+  toast('Encounter completed \u00b7 ' + (r.pref || r.name.split(',')[0]) + ' moved to Completed' + bill);
+}
+function cv2AddOpen(){
+  var r = csRow(); if(!r || !r.signed) return;
+  CV2.addOpen = PC_CURRENT; v2Tab('note', false); cv2AddRender();
+  setTimeout(function(){ var t = v2El('cv2-adm-ta'); if(t){ t.focus({preventScroll:true}); if(t.scrollIntoView) t.scrollIntoView({block:'center'}); } }, 300);
+}
+function cv2AddRender(){
+  var st = v2El('vc-signed'); if(!st) return;
+  var el = v2El('cv2-adm'), r = cv2On() && PC_CURRENT ? csRow() : null;
+  if(!r || !r.signed){ if(el){ el.hidden = true; el.innerHTML = ''; } return; }
+  if(!el){ el = document.createElement('div'); el.id = 'cv2-adm'; st.parentNode.insertBefore(el, st.nextSibling); }
+  var L = r.signed.addenda || [], open = CV2.addOpen === PC_CURRENT, keep = open && v2El('cv2-adm-ta') ? v2El('cv2-adm-ta').value : '';
+  var h = L.map(function(a){ return '<div class="cv2-adm-i"><p class="cv2-adm-h">Addendum &middot; Dr. Pannozzo &middot; today ' + csEsc(a.at) + '</p><p class="cv2-adm-t">' + csEsc(a.text) + '</p></div>'; }).join('') +
+    (open ? '<div class="cv2-adm-f"><label class="cv2-adm-k" for="cv2-adm-ta">Addendum</label><textarea id="cv2-adm-ta" class="cv2-adm-ta" rows="4"></textarea>' +
+      '<div class="cv2-adm-a"><button type="button" class="btn" onclick="cv2AddCancel()"><span class="ic" data-pdic="close"></span>Cancel</button>' +
+      '<button type="button" class="btn dark" onclick="cv2AddSave()"><span class="ic" data-pdic="plus"></span>Add addendum</button></div></div>' : '');
+  if(el.getAttribute('data-h') !== h){ el.innerHTML = h; el.setAttribute('data-h', h); paintPd(el); var t = v2El('cv2-adm-ta'); if(t && keep) t.value = keep; }
+  el.hidden = !h;
+}
+function cv2AddCancel(){ CV2.addOpen = null; cv2AddRender(); var b = v2El('cv2-addm'); if(b && !b.hidden) b.focus({preventScroll:true}); }
+function cv2AddSave(){
+  var r = csRow(), t = v2El('cv2-adm-ta'); if(!r || !r.signed || !t) return;
+  var x = t.value.trim(); if(!x){ toast('Write the addendum first'); t.focus(); return; }
+  var at = new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+  (r.signed.addenda = r.signed.addenda || []).push({at:at, text:x, by:'Dr. Pannozzo'});
+  CV2.addOpen = null; cv2AddRender();
+  toast('Addendum added \u00b7 Dr. Pannozzo \u00b7 today ' + at);
+}
 function cv2ChkGo(k){
   if(k === 'crit'){
     var x = csNAItems(PC_CURRENT).filter(function(y){ return y.tier === 'crit' && /^Not /.test(y.stage); })[0];
@@ -23661,7 +23754,8 @@ function cv2ChkGo(k){
   /* Version 2: Sign off follows the checklist (warn, not block). A diagnosis that is only suggested is used. */
   var t0 = window.t23Fin;
   if(typeof t0 === 'function') window.t23Fin = function(mode){
-    if(cv2On() && mode === 'now'){ var r = csRow(); if(r && !r.signed){ var v = t23VisitCode(r.name); if(v.disp !== 'private' && !v.dx){ var d = nsDxSuggest(r); if(d) nsDxUse(d); } } }
+    /* Ani, 5 Nov: sign-off button definitions: Sign and finalize signs the note, with no billing check; the diagnosis check moved to Submit claim (cv2Claim) */
+    if(cv2On()){ T23.finMode = 'later'; return finalizeVisit(); }
     return t0.apply(this, arguments);
   };
   var f0 = window.finalizeVisit;
@@ -23796,6 +23890,6 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-05 12:39</div>
+  <div class="build-stamp">v2 · build 2026-11-05 12:41</div>
 </body>
 </html>
