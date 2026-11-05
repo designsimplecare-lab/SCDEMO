@@ -12867,8 +12867,10 @@ function openReview(i){
   var others = INBOX_ITEMS.filter(function(x){ return x !== it && x.patient === it.patient && x.status === 'received'; });
   if(others.length){
     document.getElementById('rv-facts').insertAdjacentHTML('beforeend',
-      '<p class="rv-also">Also waiting for '+it.patient.split(' ')[0]+': '+others.map(function(x){
-        return '<a href="#" onclick="openReview('+INBOX_ITEMS.indexOf(x)+');return false">'+x.panel+'</a>'; }).join(', ')+'</p>');
+      /* Daniel, 4 Nov call 01:05:27: "how come it says also waiting for ... cardiac markers? You have cardiac markers ... That's a cardiac marker right
+         there." These results have arrived and wait only for review, so the line says that, with when each came in (was "Also waiting for <name>:"). */
+      '<p class="rv-also">Also to review for '+it.patient.split(' ')[0]+': '+others.map(function(x){
+        return '<a href="#" onclick="openReview('+INBOX_ITEMS.indexOf(x)+');return false">'+x.panel+'</a>'+(x.received ? ', received '+x.received.replace(/^Today/, 'today') : ''); }).join('; ')+'</p>');
   }
   /* a reviewed result says what was decided */
   if(it.disposition){
@@ -23793,6 +23795,6 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-05 12:29</div>
+  <div class="build-stamp">v2 · build 2026-11-05 12:30</div>
 </body>
 </html>
