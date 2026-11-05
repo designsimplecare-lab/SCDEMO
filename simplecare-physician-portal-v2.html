@@ -7548,6 +7548,13 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #cv2-save{flex-direction:row;align-items:center;margin:0 0 0 auto;padding:0;border:0;}
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-save #vc-savedraft{width:auto;}
 }
+  /* Ani, 4 Nov: the top-bar chart layout switch, only while a chart is open */
+  .topbar .tb-lay{display:none;align-items:center;gap:2px;padding:2px;border-radius:10px;background:var(--wash);}
+  .main:has(#screen-patientchart.active) .topbar .tb-lay{display:inline-flex;}
+  .topbar .tb-lay button{min-height:44px;min-width:64px;padding:0 14px;border:0;border-radius:8px;background:none;font:inherit;font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
+  .topbar .tb-lay button:hover{color:var(--ink);}
+  .topbar .tb-lay button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(23,24,28,.08);}
+  .topbar .tb-lay button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 </style>
 </head>
 <body>
@@ -7600,6 +7607,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
       <div class="topbar-right">
       <!-- 21 Oct (Daniel, 18 Oct video 5, on the pill "11:54 AM New York · 1h 6m left": "we could probably just eliminate that"): the pill is gone.
            The countdown lives where he looks, in the current call-window band of the queue and in the chart's top line (qClockUpdate). -->
+      <!-- Ani, 4 Nov ("why can not you just add V2 demo button"): the chart layout switch in the top bar, shown only on a chart; same choice as the profile menu -->
+      <span class="tb-lay" role="group" aria-label="Chart layout"><button type="button" id="tb-lay-1" aria-pressed="true" onclick="cv2Set(false)">Current</button><button type="button" id="tb-lay-2" aria-pressed="false" onclick="cv2Set(true)">Version 2</button></span>
       <button class="chat-fab theme-btn" id="theme-btn" onclick="toggleTheme()" title="Switch to dark" aria-label="Switch to dark"><span class="ic" id="theme-icon"></span></button>
       <!-- Ani, 30 Sep: the Cedar sits in the top bar, and the MOA chat is the floating button -->
       <button class="chat-fab ai-fab" id="ai-fab" onclick="openAI()" title="Cedar" aria-label="Cedar"><span class="ic ai-fab-ic"></span></button>
@@ -23290,6 +23299,7 @@ function cv2Unmount(){
   cv2Restore();
 }
 function cv2Radios(){
+  [['tb-lay-1', !CV2.on], ['tb-lay-2', !!CV2.on]].forEach(function(x){ var b = v2El(x[0]); if(b) b.setAttribute('aria-pressed', String(x[1])); });
   [['pd-cl-1', !CV2.on], ['pd-cl-2', !!CV2.on]].forEach(function(x){
     var b = v2El(x[0]); if(!b) return;
     b.setAttribute('aria-checked', String(x[1])); b.tabIndex = x[1] ? 0 : -1;
@@ -23686,6 +23696,6 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-04 17:42</div>
+  <div class="build-stamp">v2 · build 2026-11-04 21:55</div>
 </body>
 </html>
