@@ -733,6 +733,10 @@
   }
   .qwin button.on .qwin-now{background:#fff;}
   .qwin .qwin-sep{width:1px;height:20px;background:var(--line);margin:0 4px;flex:none;}
+  .qf-btn .qwin-now,.qwin-opt .qwin-now{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none;}
+  .qwin-opt .qwin-dotslot{display:inline-flex;align-items:center;justify-content:center;width:8px;flex:none;}
+  .qwin-opt.sel .qwin-now{background:#fff;}
+  #qwin .qf-menu{min-width:180px;}
 
   .qf-row{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;min-width:0;}
   .qf{position:relative;}
@@ -3210,8 +3214,8 @@
 
   /* surfaces: no strokes around cards, rows or values */
   #screen-inbox > .box{border-color:transparent;}
-  #screen-review .rv-cols > div > .box{border-color:transparent;}
-  #screen-review .rv-cols{gap:24px;}
+  :is(#screen-review,#na-drw) .rv-cols > div > .box{border-color:transparent;}
+  :is(#screen-review,#na-drw) .rv-cols{gap:24px;}
   /* room at the foot so the Assistant launcher never sits on a row's button */
   #screen-inbox,#screen-review{padding-bottom:96px;}
   #screen-inbox .inbox-row.ix{scroll-margin-bottom:96px;}
@@ -3317,90 +3321,90 @@
   #screen-review .btn:not(.dark){background:var(--panel);border:1px solid var(--ink);color:var(--ink);}
   #screen-review .btn .ic,#screen-review .btn svg{width:17px;height:17px;flex-shrink:0;}
   #screen-review .btn:not(.dark) .ic{color:var(--ink);}
-  #screen-review .btn:focus-visible,#screen-review .pc-back:focus-visible,#screen-review .rv-win:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #screen-review .btn:focus-visible,#screen-review .pc-back:focus-visible,:is(#screen-review,#na-drw) .rv-win:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   #screen-review .pc-back{height:44px;gap:8px;margin:0 0 16px;padding:0 18px 0 14px;border:1px solid var(--ink);border-radius:999px;background:var(--panel);color:var(--ink);font-size:15px;font-weight:600;}
   #screen-review .pc-back .ic{color:var(--ink);}
 
   /* reading order: title, one meta line, the tier and why, values, AI caption */
   #screen-review #rv-sub{display:none;}
-  #screen-review .rv-paneltitle{margin:0 0 4px;font-size:20px;font-weight:600;line-height:28px;letter-spacing:0;color:var(--ink);}
-  #screen-review .rv-facts{display:block;margin:0 0 20px;}
-  #screen-review .rv-meta{margin:0;font-size:15px;line-height:22px;color:var(--ink-soft);}
-  #screen-review .rv-tier{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;margin:12px 0 0;font-size:15px;line-height:22px;color:var(--ink);}
-  #screen-review .rv-tier b{font-weight:600;}
-  #screen-review .rv-tier .ic{display:inline-flex;width:17px;height:17px;flex-shrink:0;}
-  #screen-review .rv-tier .ic svg{width:17px;height:17px;color:inherit;}
-  #screen-review .rv-tier.crit .ic{color:var(--crit);}
-  #screen-review .rv-tier.warn .ic{color:var(--warn);}
-  #screen-review .rv-tier span:not(.ic){color:var(--ink-soft);}
-  #screen-review .rv-ai{display:block;margin:0 0 24px;padding:14px 16px;border:0;border-radius:12px;background:var(--wash);color:var(--ink);}
-  :root[data-theme="dark"] #screen-review .rv-ai{background:var(--wash);color:var(--ink);}
-  #screen-review .rv-aitag{display:inline-flex;align-items:center;gap:6px;margin:0 0 4px;padding:0;border-radius:0;background:none;font-size:14px;font-weight:600;line-height:20px;letter-spacing:0;color:var(--ink-soft);}
-  #screen-review .rv-aitag svg{width:16px;height:16px;}
-  #screen-review .rv-ai p{margin:0;font-size:16px;line-height:24px;color:var(--ink);}
-  #screen-review .rv-ai em{display:block;margin-top:4px;font-style:normal;font-size:14px;line-height:20px;color:var(--ink-faint);}
+  :is(#screen-review,#na-drw) .rv-paneltitle{margin:0 0 4px;font-size:20px;font-weight:600;line-height:28px;letter-spacing:0;color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-facts{display:block;margin:0 0 20px;}
+  :is(#screen-review,#na-drw) .rv-meta{margin:0;font-size:15px;line-height:22px;color:var(--ink-soft);}
+  :is(#screen-review,#na-drw) .rv-tier{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;margin:12px 0 0;font-size:15px;line-height:22px;color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-tier b{font-weight:600;}
+  :is(#screen-review,#na-drw) .rv-tier .ic{display:inline-flex;width:17px;height:17px;flex-shrink:0;}
+  :is(#screen-review,#na-drw) .rv-tier .ic svg{width:17px;height:17px;color:inherit;}
+  :is(#screen-review,#na-drw) .rv-tier.crit .ic{color:var(--crit);}
+  :is(#screen-review,#na-drw) .rv-tier.warn .ic{color:var(--warn);}
+  :is(#screen-review,#na-drw) .rv-tier span:not(.ic){color:var(--ink-soft);}
+  :is(#screen-review,#na-drw) .rv-ai{display:block;margin:0 0 24px;padding:14px 16px;border:0;border-radius:12px;background:var(--wash);color:var(--ink);}
+  :root[data-theme="dark"] :is(#screen-review,#na-drw) .rv-ai{background:var(--wash);color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-aitag{display:inline-flex;align-items:center;gap:6px;margin:0 0 4px;padding:0;border-radius:0;background:none;font-size:14px;font-weight:600;line-height:20px;letter-spacing:0;color:var(--ink-soft);}
+  :is(#screen-review,#na-drw) .rv-aitag svg{width:16px;height:16px;}
+  :is(#screen-review,#na-drw) .rv-ai p{margin:0;font-size:16px;line-height:24px;color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-ai em{display:block;margin-top:4px;font-style:normal;font-size:14px;line-height:20px;color:var(--ink-faint);}
 
   /* results table: no fills, the value beside its name, arrows carry the tier */
-  #screen-review .rv-results{margin:0 0 16px;}
-  #screen-review .rv-row{grid-template-columns:minmax(0,220px) 170px 150px minmax(0,1fr);column-gap:16px;min-height:44px;padding:10px 12px;border-bottom:0;border-radius:10px;background:transparent;font-size:16px;line-height:24px;}
-  #screen-review .rv-row.crit{background:var(--paper);}
-  :root[data-theme="dark"] #screen-review .rv-row.crit{background:var(--wash);}
-  #screen-review .rv-n{font-weight:500;color:var(--ink);}
-  #screen-review .rv-v{display:inline-flex;align-items:baseline;gap:5px;font-weight:400;color:var(--ink);}
-  #screen-review .rv-row.abn .rv-v,#screen-review .rv-row.crit .rv-v{font-weight:600;color:var(--ink);}
-  #screen-review .rv-row.crit .rv-v{color:var(--crit-text);}
-  #screen-review .rv-v i{font-style:normal;font-size:14px;font-weight:400;color:var(--ink-faint);}
+  :is(#screen-review,#na-drw) .rv-results{margin:0 0 16px;}
+  :is(#screen-review,#na-drw) .rv-row{grid-template-columns:minmax(0,220px) 170px 150px minmax(0,1fr);column-gap:16px;min-height:44px;padding:10px 12px;border-bottom:0;border-radius:10px;background:transparent;font-size:16px;line-height:24px;}
+  :is(#screen-review,#na-drw) .rv-row.crit{background:var(--paper);}
+  :root[data-theme="dark"] :is(#screen-review,#na-drw) .rv-row.crit{background:var(--wash);}
+  :is(#screen-review,#na-drw) .rv-n{font-weight:500;color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-v{display:inline-flex;align-items:baseline;gap:5px;font-weight:400;color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-row.abn .rv-v,:is(#screen-review,#na-drw) .rv-row.crit .rv-v{font-weight:600;color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-row.crit .rv-v{color:var(--crit-text);}
+  :is(#screen-review,#na-drw) .rv-v i{font-style:normal;font-size:14px;font-weight:400;color:var(--ink-faint);}
   /* colour on the wrapper, inherited by the glyph (the svg is .ic too) */
-  #screen-review .rv-dir{display:inline-flex;align-self:center;width:17px;height:17px;color:var(--ink-faint);}
-  #screen-review .rv-dir svg{display:block;width:17px;height:17px;color:inherit;}
-  #screen-review .rv-row.alert .rv-dir{color:var(--warn);}
-  #screen-review .rv-row.crit .rv-dir{color:var(--crit);}
-  #screen-review .rv-row.alert .rv-dir svg *,#screen-review .rv-row.crit .rv-dir svg *{stroke-width:2.4;}
-  #screen-review .rv-ref,#screen-review .rv-prior{font-size:14px;line-height:20px;color:var(--ink-soft);}
-  #screen-review .rv-narr{margin:0;padding:0;border-radius:0;background:none;font-size:16px;line-height:24px;color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-dir{display:inline-flex;align-self:center;width:17px;height:17px;color:var(--ink-faint);}
+  :is(#screen-review,#na-drw) .rv-dir svg{display:block;width:17px;height:17px;color:inherit;}
+  :is(#screen-review,#na-drw) .rv-row.alert .rv-dir{color:var(--warn);}
+  :is(#screen-review,#na-drw) .rv-row.crit .rv-dir{color:var(--crit);}
+  :is(#screen-review,#na-drw) .rv-row.alert .rv-dir svg *,:is(#screen-review,#na-drw) .rv-row.crit .rv-dir svg *{stroke-width:2.4;}
+  :is(#screen-review,#na-drw) .rv-ref,:is(#screen-review,#na-drw) .rv-prior{font-size:14px;line-height:20px;color:var(--ink-soft);}
+  :is(#screen-review,#na-drw) .rv-narr{margin:0;padding:0;border-radius:0;background:none;font-size:16px;line-height:24px;color:var(--ink);}
 
   /* the source document: a header that stays when the sheet is hidden */
-  #screen-review .rv-srchd{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:24px 0 12px;}
-  #screen-review .rv-doclbl{margin:0;font-size:16px;font-weight:600;line-height:24px;letter-spacing:0;color:var(--ink);}
-  #screen-review .rv-doc{margin-top:0;padding-top:0;border-top:0;}
-  #screen-review .doc-brand,#screen-review .doc-tag,#screen-review .doc-ttl,#screen-review .doc-tbl th{letter-spacing:0;}
-  #screen-review .doc-tbl,#screen-review .doc-pt,#screen-review .doc-meta{font-size:14px;}
-  #screen-review .doc-tbl th,#screen-review .doc-legend,#screen-review .doc-foot,#screen-review .doc-hid,#screen-review .doc-tag{font-size:13px;}
+  :is(#screen-review,#na-drw) .rv-srchd{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:24px 0 12px;}
+  :is(#screen-review,#na-drw) .rv-doclbl{margin:0;font-size:16px;font-weight:600;line-height:24px;letter-spacing:0;color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-doc{margin-top:0;padding-top:0;border-top:0;}
+  :is(#screen-review,#na-drw) .doc-brand,:is(#screen-review,#na-drw) .doc-tag,:is(#screen-review,#na-drw) .doc-ttl,:is(#screen-review,#na-drw) .doc-tbl th{letter-spacing:0;}
+  :is(#screen-review,#na-drw) .doc-tbl,:is(#screen-review,#na-drw) .doc-pt,:is(#screen-review,#na-drw) .doc-meta{font-size:14px;}
+  :is(#screen-review,#na-drw) .doc-tbl th,:is(#screen-review,#na-drw) .doc-legend,:is(#screen-review,#na-drw) .doc-foot,:is(#screen-review,#na-drw) .doc-hid,:is(#screen-review,#na-drw) .doc-tag{font-size:13px;}
 
   /* the decision: two 44px pills, stacked */
-  #screen-review .rv-decide .box-title{margin:0 0 14px;}
-  #screen-review .rv-choice{display:flex;flex-direction:column;gap:10px;}
-  #screen-review .rv-opt{display:flex;align-items:center;gap:10px;width:100%;height:44px;padding:0 18px;border:1px solid var(--ink);border-radius:999px;background:var(--panel);color:var(--ink);font-family:inherit;font-size:15px;font-weight:600;line-height:20px;text-align:left;white-space:nowrap;cursor:pointer;}
-  #screen-review .rv-opt .ic{display:inline-flex;width:17px;height:17px;flex-shrink:0;color:inherit;}
-  #screen-review .rv-opt .ic svg{width:17px;height:17px;color:inherit;}
-  #screen-review .rv-opt:hover{background:var(--wash);}
-  #screen-review .rv-opt.on{background:var(--ink-dark);border-color:var(--ink-dark);color:var(--panel);}
+  :is(#screen-review,#na-drw) .rv-decide .box-title{margin:0 0 14px;}
+  :is(#screen-review,#na-drw) .rv-choice{display:flex;flex-direction:column;gap:10px;}
+  :is(#screen-review,#na-drw) .rv-opt{display:flex;align-items:center;gap:10px;width:100%;height:44px;padding:0 18px;border:1px solid var(--ink);border-radius:999px;background:var(--panel);color:var(--ink);font-family:inherit;font-size:15px;font-weight:600;line-height:20px;text-align:left;white-space:nowrap;cursor:pointer;}
+  :is(#screen-review,#na-drw) .rv-opt .ic{display:inline-flex;width:17px;height:17px;flex-shrink:0;color:inherit;}
+  :is(#screen-review,#na-drw) .rv-opt .ic svg{width:17px;height:17px;color:inherit;}
+  :is(#screen-review,#na-drw) .rv-opt:hover{background:var(--wash);}
+  :is(#screen-review,#na-drw) .rv-opt.on{background:var(--ink-dark);border-color:var(--ink-dark);color:var(--panel);}
   /* pressing Follow-up again would re-draft and wipe the doctor's edits */
   #screen-review #rv-yes.on{pointer-events:none;}
-  #screen-review .rv-opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
-  #screen-review .rv-nohint{margin:12px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
-  #screen-review .rv-commit{margin:0 0 14px;padding:0;border-radius:0;background:none;font-size:14px;line-height:20px;color:var(--ink-soft);}
-  #screen-review .rv-done{display:flex;flex-direction:column;flex-wrap:nowrap;gap:10px;}
-  #screen-review .rv-done .btn{width:100%;flex:none;}
+  :is(#screen-review,#na-drw) .rv-opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  :is(#screen-review,#na-drw) .rv-nohint{margin:12px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  :is(#screen-review,#na-drw) .rv-commit{margin:0 0 14px;padding:0;border-radius:0;background:none;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  :is(#screen-review,#na-drw) .rv-done{display:flex;flex-direction:column;flex-wrap:nowrap;gap:10px;}
+  :is(#screen-review,#na-drw) .rv-done .btn{width:100%;flex:none;}
 
   /* the right rail: one flat surface, readable labels, 44px choices */
-  #screen-review .rv-side{position:static;padding:4px 0 20px;border-radius:22px;background:var(--panel);box-shadow:0 6px 22px rgba(28,31,38,.06);}
-  :root[data-theme="dark"] #screen-review .rv-side{box-shadow:var(--shadow-card);}
-  #screen-review .rv-side .box{margin:0;padding:20px 24px 4px;border:0;border-radius:0;box-shadow:none;background:transparent;}
-  #screen-review .rv-side .box-title{margin:0 0 12px;font-size:16px;font-weight:600;line-height:24px;letter-spacing:0;color:var(--ink);}
-  #screen-review .rv-hint{margin:0 0 12px;font-size:14px;line-height:20px;color:var(--ink-soft);}
-  #screen-review .rv-field{margin:12px 0 0;}
-  #screen-review .rv-field label{margin:0 0 6px;font-size:14px;font-weight:500;line-height:20px;letter-spacing:0;color:var(--ink-soft);}
-  #screen-review .rv-field input,#screen-review .rv-field textarea,#screen-review .rv-exp input,#screen-review .rv-exp textarea{padding:10px 12px;font-size:15px;line-height:22px;color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-side{position:static;padding:4px 0 20px;border-radius:22px;background:var(--panel);box-shadow:0 6px 22px rgba(28,31,38,.06);}
+  :root[data-theme="dark"] :is(#screen-review,#na-drw) .rv-side{box-shadow:var(--shadow-card);}
+  :is(#screen-review,#na-drw) .rv-side .box{margin:0;padding:20px 24px 4px;border:0;border-radius:0;box-shadow:none;background:transparent;}
+  :is(#screen-review,#na-drw) .rv-side .box-title{margin:0 0 12px;font-size:16px;font-weight:600;line-height:24px;letter-spacing:0;color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-hint{margin:0 0 12px;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  :is(#screen-review,#na-drw) .rv-field{margin:12px 0 0;}
+  :is(#screen-review,#na-drw) .rv-field label{margin:0 0 6px;font-size:14px;font-weight:500;line-height:20px;letter-spacing:0;color:var(--ink-soft);}
+  :is(#screen-review,#na-drw) .rv-field input,:is(#screen-review,#na-drw) .rv-field textarea,:is(#screen-review,#na-drw) .rv-exp input,:is(#screen-review,#na-drw) .rv-exp textarea{padding:10px 12px;font-size:15px;line-height:22px;color:var(--ink);}
   #screen-review #rv-draft .rv-aimark{font-size:14px;}
-  #screen-review .rv-pick,#screen-review .rv-act{min-height:44px;font-size:15px;border-bottom:0;}
-  #screen-review .rv-act i{font-size:14px;color:var(--ink-soft);}
-  #screen-review .rv-exp{padding:0 0 12px 28px;}
-  #screen-review .rv-wins{gap:8px;}
-  #screen-review .rv-win{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:1px solid var(--line-strong);border-radius:999px;background:var(--panel);font-size:15px;font-weight:500;color:var(--ink);}
-  #screen-review .rv-win .ic{display:inline-flex;width:17px;height:17px;flex-shrink:0;color:var(--ink);}
-  #screen-review .rv-win .ic svg{width:17px;height:17px;color:inherit;}
-  #screen-review .rv-win.on{border-color:var(--ink);background:var(--wash);color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-pick,:is(#screen-review,#na-drw) .rv-act{min-height:44px;font-size:15px;border-bottom:0;}
+  :is(#screen-review,#na-drw) .rv-act i{font-size:14px;color:var(--ink-soft);}
+  :is(#screen-review,#na-drw) .rv-exp{padding:0 0 12px 28px;}
+  :is(#screen-review,#na-drw) .rv-wins{gap:8px;}
+  :is(#screen-review,#na-drw) .rv-win{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:1px solid var(--line-strong);border-radius:999px;background:var(--panel);font-size:15px;font-weight:500;color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-win .ic{display:inline-flex;width:17px;height:17px;flex-shrink:0;color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-win .ic svg{width:17px;height:17px;color:inherit;}
+  :is(#screen-review,#na-drw) .rv-win.on{border-color:var(--ink);background:var(--wash);color:var(--ink);}
   /* with a draft showing, its contact text is what Accept sends; the MOA box
      below would print the same paragraph a second time */
   #screen-review #rv-draft[style*="block"] ~ .box #exp-moa{display:none;}
@@ -3451,36 +3455,36 @@
   #screen-inbox .ix-disclose[aria-expanded="true"] > .ic{transform:none;}
 
   /* review: the back button and the chart side by side */
-  #screen-review .rv-top{display:flex;align-items:center;gap:8px;margin:0 0 16px;}
-  #screen-review .rv-top .pc-back{margin:0;}
-  #screen-review .rv-also{margin:8px 0 0;font-size:15px;line-height:22px;color:var(--ink-soft);}
-  #screen-review .rv-also b{font-weight:600;color:var(--ink);}
-  #screen-review .rv-also a{color:var(--ink);text-decoration:underline;text-underline-offset:2px;}
+  :is(#screen-review,#na-drw) .rv-top{display:flex;align-items:center;gap:8px;margin:0 0 16px;}
+  :is(#screen-review,#na-drw) .rv-top .pc-back{margin:0;}
+  :is(#screen-review,#na-drw) .rv-also{margin:8px 0 0;font-size:15px;line-height:22px;color:var(--ink-soft);}
+  :is(#screen-review,#na-drw) .rv-also b{font-weight:600;color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-also a{color:var(--ink);text-decoration:underline;text-underline-offset:2px;}
   /* a chosen option reads as chosen, not as a second primary button */
-  #screen-review .rv-opt.on{background:var(--wash);border:2px solid var(--ink);color:var(--ink);padding:0 17px;}
-  :root[data-theme="dark"] #screen-review .rv-opt.on{background:var(--wash);border-color:var(--ink);color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-opt.on{background:var(--wash);border:2px solid var(--ink);color:var(--ink);padding:0 17px;}
+  :root[data-theme="dark"] :is(#screen-review,#na-drw) .rv-opt.on{background:var(--wash);border-color:var(--ink);color:var(--ink);}
   /* the draft shows its whole text, with no resize grabbers */
   #screen-review #rv-draft textarea{field-sizing:content;resize:none;min-height:44px;}
   /* results: one left edge with the card, numbers right-aligned in a column */
-  #screen-review .rv-results{margin:0 -12px 16px;}
-  #screen-review .rv-row{grid-template-columns:minmax(0,1fr) 150px 120px 130px;}
-  #screen-review .rv-num{display:inline-block;min-width:4ch;text-align:right;font-variant-numeric:tabular-nums;}
-  #screen-review .rv-v i{display:inline-block;min-width:52px;}
-  #screen-review .rv-prior{white-space:nowrap;}
-  #screen-review .rv-narr.rv-org{margin:0 12px 8px;}
+  :is(#screen-review,#na-drw) .rv-results{margin:0 -12px 16px;}
+  :is(#screen-review,#na-drw) .rv-row{grid-template-columns:minmax(0,1fr) 150px 120px 130px;}
+  :is(#screen-review,#na-drw) .rv-num{display:inline-block;min-width:4ch;text-align:right;font-variant-numeric:tabular-nums;}
+  :is(#screen-review,#na-drw) .rv-v i{display:inline-block;min-width:52px;}
+  :is(#screen-review,#na-drw) .rv-prior{white-space:nowrap;}
+  :is(#screen-review,#na-drw) .rv-narr.rv-org{margin:0 12px 8px;}
   /* the results block hangs 12px into the card padding so table rows line up;
      a narrative line has no row padding, so it takes the 12px back */
-  #screen-review .rv-results > .rv-narr:not(.rv-org){padding:0 12px;}
+  :is(#screen-review,#na-drw) .rv-results > .rv-narr:not(.rv-org){padding:0 12px;}
   /* both review cards share one surface language */
-  #screen-review .rv-side{border-radius:20px;box-shadow:0 1px 2px rgba(23,24,28,.04),0 8px 24px rgba(23,24,28,.05);}
+  :is(#screen-review,#na-drw) .rv-side{border-radius:20px;box-shadow:0 1px 2px rgba(23,24,28,.04),0 8px 24px rgba(23,24,28,.05);}
   /* the source document is paper on a desk: no stroke, and a scan does not
      invert in dark mode -- its colours are printed for white */
-  #screen-review .rv-doc{padding:16px;border-radius:12px;background:var(--paper);}
-  #screen-review .doc-sheet{border-color:transparent;box-shadow:0 1px 3px rgba(23,24,28,.10);}
-  #screen-review .doc-tbl th:nth-child(2){text-align:right;}
-  :root[data-theme="dark"] #screen-review .rv-doc{background:var(--wash);}
-  :root[data-theme="dark"] #screen-review .doc-sheet{background:#fff;color:#1a1a1a;border-color:transparent;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 2px 10px rgba(0,0,0,.5);}
-  :root[data-theme="dark"] #screen-review .doc-ecg{background:#FDF3F4;}
+  :is(#screen-review,#na-drw) .rv-doc{padding:16px;border-radius:12px;background:var(--paper);}
+  :is(#screen-review,#na-drw) .doc-sheet{border-color:transparent;box-shadow:0 1px 3px rgba(23,24,28,.10);}
+  :is(#screen-review,#na-drw) .doc-tbl th:nth-child(2){text-align:right;}
+  :root[data-theme="dark"] :is(#screen-review,#na-drw) .rv-doc{background:var(--wash);}
+  :root[data-theme="dark"] :is(#screen-review,#na-drw) .doc-sheet{background:#fff;color:#1a1a1a;border-color:transparent;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 2px 10px rgba(0,0,0,.5);}
+  :root[data-theme="dark"] :is(#screen-review,#na-drw) .doc-ecg{background:#FDF3F4;}
 
   /* ============================================================
      Home, 24 Sep -- brought onto the inbox's patterns, so the portal
@@ -3652,8 +3656,8 @@
   .btn.dark,.work-tabs .wt-dark,#screen-review .btn.dark,#screen-patientchart .btn.dark{background:var(--brand);border-color:var(--brand);color:#fff;}
   .btn.dark:hover,.work-tabs .wt-dark:hover{background:var(--brand-ink);border-color:var(--brand-ink);}
   .btn.dark .ic,.work-tabs .wt-dark .ic,#screen-review .btn.dark .ic{color:#fff;}
-  #screen-review .rv-opt.on{background:var(--brand-wash);border-color:var(--brand);color:var(--ink);}
-  #screen-review .rv-opt.on .ic{color:var(--brand);}
+  :is(#screen-review,#na-drw) .rv-opt.on{background:var(--brand-wash);border-color:var(--brand);color:var(--ink);}
+  :is(#screen-review,#na-drw) .rv-opt.on .ic{color:var(--brand);}
 
   /* where you are now: the live window, active filters, active tabs */
   #screen-today .qwin button.on{background:var(--brand);border-color:var(--brand);color:#fff;}
@@ -3667,8 +3671,8 @@
 
   /* headings lead: bigger, heavier, a brand icon */
   #screen-today .sect-title,#screen-inbox .inbox-section-label{font-size:22px;font-weight:700;letter-spacing:-.01em;}
-  #pcv-c .vc-h h4,#screen-review .rv-paneltitle{font-weight:700;}
-  #pcv-c .vc-h > .ic,#screen-review .rv-side .box-title .ic{color:var(--brand);}
+  #pcv-c .vc-h h4,:is(#screen-review,#na-drw) .rv-paneltitle{font-weight:700;}
+  #pcv-c .vc-h > .ic,:is(#screen-review,#na-drw) .rv-side .box-title .ic{color:var(--brand);}
 
   /* one tone per priority band: tinted heading labels */
   #screen-inbox .ix-secttl{display:inline-flex;padding:4px 12px 4px 10px;border-radius:999px;background:var(--wash);}
@@ -3724,8 +3728,8 @@
   /* the AI summary wears the AI mark's colours: a soft wash from its sky cyan
      to its brand blue, so the block reads as AI at a glance (Ani: "make gray
      background gradient"). Text stays ink and passes AA on both ends. */
-  #screen-review .rv-ai{background:linear-gradient(120deg,#E9F8FF 0%,#EEF1FF 60%,#F1EEFF 100%);}
-  :root[data-theme="dark"] #screen-review .rv-ai{background:linear-gradient(120deg,rgba(95,221,255,.14) 0%,rgba(79,140,255,.14) 60%,rgba(67,83,232,.18) 100%);}
+  :is(#screen-review,#na-drw) .rv-ai{background:linear-gradient(120deg,#E9F8FF 0%,#EEF1FF 60%,#F1EEFF 100%);}
+  :root[data-theme="dark"] :is(#screen-review,#na-drw) .rv-ai{background:linear-gradient(120deg,rgba(95,221,255,.14) 0%,rgba(79,140,255,.14) 60%,rgba(67,83,232,.18) 100%);}
 
   /* Last vitals on one line: four across, label over value (Ani: "this all should be one line") */
   #pcv-c .vc-vitals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
@@ -4013,7 +4017,7 @@
   :root{--measure:66ch;}
   :is(#screen-inbox,#today-inbox-preview) .ix-body > :is(.ix-panelrow,.ix-find,.ix-disp){max-width:var(--measure);}
   :is(#screen-inbox,#today-inbox-preview) .ix-find:not(:has(> .ix-v)){overflow-wrap:break-word;}
-  #screen-review .rv-narr,#screen-review .rv-ai p,#pcv-c .vc-sub2,#pcv-c .cp-det{max-width:var(--measure);}
+  :is(#screen-review,#na-drw) .rv-narr,:is(#screen-review,#na-drw) .rv-ai p,#pcv-c .vc-sub2,#pcv-c .cp-det{max-width:var(--measure);}
   /* culture sensitivities: one class per line, the label in its own column so the drug lists align */
   html body :is(#screen-inbox,#today-inbox-preview) .ix-sens{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:2px 12px;}
   html body :is(#screen-inbox,#today-inbox-preview) .ix-sens > span{display:contents;}
@@ -7568,7 +7572,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #na-drw.drw-ov{display:none;position:fixed;inset:0;z-index:200;padding:0;background:rgba(23,24,28,.42);align-items:stretch;justify-content:flex-end;overflow:hidden;}
   #na-drw.drw-ov.show{display:flex;animation:drwFade 240ms ease-out;}
   #na-drw.drw-ov.drw-stacked{background:rgba(23,24,28,.16);animation:none;}
-  #na-drw > #na-drw-card.drw{position:relative;box-sizing:border-box;margin:0;width:min(560px,100vw) !important;max-width:100vw !important;height:100%;max-height:none !important;display:flex;flex-direction:column;padding:0;border-radius:0;background:var(--panel);overflow:hidden;}
+  #na-drw > #na-drw-card.drw{position:relative;box-sizing:border-box;margin:0;width:min(800px,100vw) !important;max-width:100vw !important;height:100%;max-height:none !important;display:flex;flex-direction:column;padding:0;border-radius:0;background:var(--panel);overflow:hidden;}
   @media (prefers-reduced-motion: reduce){ #na-drw.drw-ov.show{animation:none;} }
   #na-drw .drw-hd{flex:none;position:relative;padding:20px 72px 16px 24px;border-bottom:1px solid var(--line);}
   #na-drw .drw-hd .bl-eyebrow{margin:0 0 4px;font-size:14px;font-weight:600;color:var(--ink-soft);}
@@ -7938,7 +7942,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
                 <button class="q-clear" id="queue-search-clear" onclick="clearQueueSearch()" title="Clear">&times;</button>
               </div>
             </div>
-            <div class="qwin" id="qwin" role="group" aria-label="Call window"></div>
+            <div class="qf-row" id="qwin"></div>
             <div class="qf-row" id="qf-row"></div>
           </div>
 
@@ -9878,14 +9882,31 @@ function qvToggle(){ QV = (QV === 'current') ? 'all' : 'current'; renderQueue();
    what he asked the default to be. Picking a window pins the queue to it. */
 /* 21 Oct (Daniel, 18 Oct video 6: "I don't really understand [Live]. I think it should just be eliminated. I think it should just be your call windows."):
    the Live chip is gone. The chips that stay are for jumping to a window: each opens that window's band and scrolls to it. */
+/* 5 Nov (Ani: "have this a drop down as well"): the call windows sit in one dropdown beside Visit status and Billing status. It still jumps
+   to a window (opens its band and scrolls to it); nothing is filtered out. The blue dot marks the window the clock is in. */
+var QWIN_PICK = null;
 function renderWinBar(){
   var host = document.getElementById('qwin'); if(!host) return;
-  var live = shownWin();
-  host.innerHTML = WIN_ORDER.map(function(w){
-    return '<button type="button" onclick="winPick(&#39;'+w+'&#39;)" aria-label="Go to the '+winName(w).toLowerCase()+', '+winLabel(w)+'">'+
-      (w === live ? '<span class="qwin-now" title="The window the clock is in"></span>' : '')+
-      winLabel(w)+'</button>';
-  }).join('');
+  var live = shownWin(), cur = QWIN_PICK || live;
+  var m = document.getElementById('qf-menu-win'), wasOpen = !!(m && m.classList.contains('show'));
+  var dot = function(w){ return w === live ? '<span class="qwin-now" title="The window the clock is in" aria-hidden="true"></span>' : ''; };
+  host.innerHTML = '<div class="qf" data-qf="win">'+
+    '<button type="button" class="qf-btn" aria-haspopup="menu" aria-expanded="'+wasOpen+'" onclick="qfToggle(&#39;win&#39;);this.setAttribute(&#39;aria-expanded&#39;,document.getElementById(&#39;qf-menu-win&#39;).classList.contains(&#39;show&#39;))">'+
+      '<span class="qf-k">Call window</span>'+dot(cur)+'<span class="qf-v">'+winLabel(cur)+'</span><span class="qf-caret"></span>'+
+    '</button>'+
+    '<div class="qf-menu'+(wasOpen?' show':'')+'" id="qf-menu-win" role="menu" aria-label="Call window">'+
+      WIN_ORDER.map(function(w){
+        return '<button type="button" class="qf-opt qwin-opt'+(w===cur?' sel':'')+'" role="menuitemradio" aria-checked="'+(w===cur)+'"'+
+          ' onclick="winMenuPick(&#39;'+w+'&#39;)" aria-label="'+winName(w)+', '+winLabel(w)+(w===live?', now':'')+'">'+
+          '<span class="qwin-dotslot">'+dot(w)+'</span>'+winLabel(w)+'</button>';
+      }).join('')+
+    '</div></div>';
+}
+function winMenuPick(w){
+  QWIN_PICK = w;
+  document.querySelectorAll('.qf-menu').forEach(function(m){ m.classList.remove('show'); });
+  renderWinBar();
+  winPick(w);
 }
 
 /* 21 Oct (Daniel, video 5: "I wouldn't say 'later today', I would want to know what call window you are referring to. So there's the first, this would be
@@ -12938,19 +12959,21 @@ function narrDoc(it, body){
     '<div class="doc-foot"><span>Received '+it.received+'</span><span>'+it.lab+'</span><span>Page 1 of 1</span></div>'+
   '</div>';
 }
-function renderSourceDoc(it){
-  var m=document.getElementById('rv-doc'); if(!m) return;
-  if(it.cedar){ m.innerHTML = rmReportDoc(it); m.style.display = 'block'; return; }   /* T-025: each paragraph is a target for Cedar's source links */
-  /* the heading lives outside #rv-doc now, so hiding the document keeps it */
-  m.innerHTML =
-    (it.kind==='trace' ? ecgDoc(it) : ((it.tests||[]).length ? labDoc(it)
+function rvDocHTML(it){
+  if(it.cedar) return rmReportDoc(it);   /* T-025: each paragraph is a target for Cedar's source links */
+  return it.kind==='trace' ? ecgDoc(it) : ((it.tests||[]).length ? labDoc(it)
       : narrDoc(it, it.kind==='culture'
           ? '<p class="doc-narr">'+it.organism+' '+it.growth+'.'+(it.specimen ? ' '+it.specimen+'.' : '')+'</p>'+
             '<table class="doc-tbl"><thead><tr><th>Antibiotic</th><th>Result</th></tr></thead><tbody>'+
             it.sens.map(function(x){ return '<tr><td>'+x.ab+'</td><td>'+x.r+'</td></tr>'; }).join('')+'</tbody></table>'+
             '<div class="doc-legend">S susceptible &nbsp;&nbsp; I intermediate &nbsp;&nbsp; R resistant</div>'
           : '<p class="doc-narr">'+(it.impression||it.outcome||it.interp||'Report text as received.')+
-            (it.recall ? '<br>'+it.recall : '')+'</p>')));
+            (it.recall ? '<br>'+it.recall : '')+'</p>'));
+}
+function renderSourceDoc(it){
+  var m=document.getElementById('rv-doc'); if(!m) return;
+  /* the heading lives outside #rv-doc now, so hiding the document keeps it */
+  m.innerHTML = rvDocHTML(it);
   m.style.display='block';
 }
 function rvToggleSource(){
@@ -13014,21 +13037,14 @@ function rvSetReturn(){
   if(lbl) lbl.textContent = (RV_RETURN === 'today') ? 'Back to home' : 'Back to inbox';
 }
 
-function openReview(i){
-  var it = INBOX_ITEMS[i]; if(!it) return;
-  rvSetReturn();
-  RV_I = i; RV_FOLLOW = null;
-  document.getElementById('rv-title').textContent = it.patient;
-  document.getElementById('rv-sub').textContent = it.panel;
-  document.getElementById('rv-panel').textContent = it.panel;
-
+function rvFactsHTML(it, openFn){
   /* One meta line, then -- only when there is one -- the tier and the rule
      that set it. SimpleCare re-derives the tier from the LifeLabs standard,
      so it no longer claims to be "as reported by the laboratory". */
   var tier = labTier(it), hits = (it.tests||[]).filter(function(t){ return t.f && /^(crit|alert)-/.test(t.f); });
   var lead = hits.filter(function(t){ return t.f.indexOf('crit')===0; })[0] || hits[0];
   var leadTxt = lead ? lead.n + ' ' + lead.v + (lead.u ? ' ' + lead.u : '') : '';
-  document.getElementById('rv-facts').innerHTML =
+  var h =
     '<p class="rv-meta">'+it.type+' · '+it.lab+' · received '+it.received+'</p>'+
     (tier
       ? '<p class="rv-tier '+(tier==='critical'?'crit':'warn')+'"><span class="ic" data-pdic="'+(tier==='critical'?'crit':'alert')+'"></span>'+
@@ -13036,14 +13052,34 @@ function openReview(i){
         (lead && lead.basis ? '<span>'+lead.basis+'</span>' : '')+'</p>'
       : '');
 
+  /* other results for the same patient still waiting -- a troponin read
+     without the ECG that came in five minutes later is read out of context */
+  var others = INBOX_ITEMS.filter(function(x){ return x !== it && x.patient === it.patient && x.status === 'received'; });
+  if(others.length){
+    h += (
+      /* Daniel, 4 Nov call 01:05:27: "how come it says also waiting for ... cardiac markers? You have cardiac markers ... That's a cardiac marker right
+         there." These results have arrived and wait only for review, so the line says that, with when each came in (was "Also waiting for <name>:").
+         The words keep "also waiting" (UC-12 12-3, REQ-RV-06). */
+      '<p class="rv-also">Also waiting for review: '+others.map(function(x){
+        return '<a href="#" onclick="'+openFn+'('+INBOX_ITEMS.indexOf(x)+');return false">'+x.panel+'</a>'+(x.received ? ', received '+x.received.replace(/^Today/, 'today') : ''); }).join('; ')+'</p>');
+  }
+  /* a reviewed result says what was decided */
+  if(it.disposition){
+    h += '<p class="rv-also"><b>Reviewed</b> · '+it.disposition+'</p>';
+  }
+  return h;
+}
+function rvAiHTML(it){
+  var tier = labTier(it), hits = (it.tests||[]).filter(function(t){ return t.f && /^(crit|alert)-/.test(t.f); });
+  var lead = hits.filter(function(t){ return t.f.indexOf('crit')===0; })[0] || hits[0];
+  var leadTxt = lead ? lead.n + ' ' + lead.v + (lead.u ? ' ' + lead.u : '') : '';
   /* the AI line names the value, and it comes after the values it describes.
      It never gives an all-clear under an abnormal finding: narrative results
      (ECG, imaging, screening, cultures) have no lab tier to go on. */
   var narrAbn = it.abnormalTrace || it.abnormal || (it.kind === 'screening' && !it.outcomeOk) ||
                 (it.kind === 'culture' && (it.sens||[]).some(function(x){ return x.r !== 'S'; }));
   var outN = (it.tests||[]).filter(function(t){ return t.f; }).length;
-  document.getElementById('rv-ai').innerHTML =
-    '<span class="rv-aitag">'+(typeof AI_MARK !== 'undefined' ? AI_MARK : '')+'AI summary</span>'+
+  return '<span class="rv-aitag">'+(typeof AI_MARK !== 'undefined' ? AI_MARK : '')+'AI summary</span>'+
     '<p>'+(tier === 'critical'
       ? 'A critical value is present: '+leadTxt+'. Verify against the source report before acting.'
       : (tier === 'alert'
@@ -13053,29 +13089,12 @@ function openReview(i){
               : (outN ? 'No critical or alert values. '+outN+' outside the reference range.' : 'All values are within the reference range.'))))+
     ' <em>Assistive only — the source report remains authoritative.</em></p>';
 
-  /* other results for the same patient still waiting -- a troponin read
-     without the ECG that came in five minutes later is read out of context */
-  var others = INBOX_ITEMS.filter(function(x){ return x !== it && x.patient === it.patient && x.status === 'received'; });
-  if(others.length){
-    document.getElementById('rv-facts').insertAdjacentHTML('beforeend',
-      /* Daniel, 4 Nov call 01:05:27: "how come it says also waiting for ... cardiac markers? You have cardiac markers ... That's a cardiac marker right
-         there." These results have arrived and wait only for review, so the line says that, with when each came in (was "Also waiting for <name>:").
-         The words keep "also waiting" (UC-12 12-3, REQ-RV-06). */
-      '<p class="rv-also">Also waiting for review: '+others.map(function(x){
-        return '<a href="#" onclick="openReview('+INBOX_ITEMS.indexOf(x)+');return false">'+x.panel+'</a>'+(x.received ? ', received '+x.received.replace(/^Today/, 'today') : ''); }).join('; ')+'</p>');
-  }
-  /* a reviewed result says what was decided */
-  if(it.disposition){
-    document.getElementById('rv-facts').insertAdjacentHTML('beforeend', '<p class="rv-also"><b>Reviewed</b> · '+it.disposition+'</p>');
-  }
-  /* the chart, one click away, where one exists */
-  var chp = it.patient.replace(/'/g,''), chb = document.getElementById('rv-chart');
-  if(chb){ chb.hidden = !inboxHasChart(chp); chb.onclick = function(){ fastTrack(chp); }; }
-
+}
+function rvResultsHTML(it){
   var tests = it.tests || [];
   /* T-037 (Daniel, 31 Oct): the LifeLabs layout, value in Out of range or Within range, the word instead of the arrow, the reference interval
      and the two earlier values with dates, all visible without a click */
-  document.getElementById('rv-results').innerHTML = tests.length
+  return tests.length
     ? lrTable(tests.map(function(t){ return {n:t.n, v:t.v, u:t.u, ref:t.ref, f:t.f, prior:lrPriors(it.patient, t)}; }), {label:it.panel + ' results'})
     /* a culture has no tests and no narrative, so it used to print "See
        source report" -- the organism and sensitivities are shown instead */
@@ -13087,6 +13106,24 @@ function openReview(i){
               '<span class="rv-ref"></span><span class="rv-prior"></span></div>';
           }).join('')
         : '<p class="rv-narr">'+(it.kind==='trace' ? traceFlag(it)+'. Read the tracing below.' : (it.impression||it.outcome||'See source report.'))+'</p>');
+
+}
+function openReview(i){
+  var it = INBOX_ITEMS[i]; if(!it) return;
+  rvSetReturn();
+  RV_I = i; RV_FOLLOW = null;
+  document.getElementById('rv-title').textContent = it.patient;
+  document.getElementById('rv-sub').textContent = it.panel;
+  document.getElementById('rv-panel').textContent = it.panel;
+
+  document.getElementById('rv-facts').innerHTML = rvFactsHTML(it, 'openReview');
+  document.getElementById('rv-ai').innerHTML = rvAiHTML(it);
+  /* the chart, one click away, where one exists */
+  var chp = it.patient.replace(/'/g,''), chb = document.getElementById('rv-chart');
+  if(chb){ chb.hidden = !inboxHasChart(chp); chb.onclick = function(){ fastTrack(chp); }; }
+
+  var tests = it.tests || [];
+  document.getElementById('rv-results').innerHTML = rvResultsHTML(it);
 
   document.getElementById('rv-unmapped').innerHTML = '';
   renderSourceDoc(it);
@@ -16785,32 +16822,37 @@ function naRev(i, b){
   if(!(typeof cv2On === 'function' && cv2On())) return openReview(i);
   naDrwOpen(i);
 }
+/* Ani, 5 Nov ("you should show all results here, we do not want the user to go to the Inbox to review it"): the side panel shows the whole result,
+   the same as the Inbox review: what it is and when it came in, the tier and its rule, other results waiting, every value with its reference and
+   earlier values, the AI caption, and the source document as received. Open in Inbox is gone (Daniel, 4 Nov call: "We stay in the chart always"). */
 function naDrwOpen(i){
-  var it = INBOX_ITEMS[i], r = CS.naRows && CS.naRows[i]; if(!it || !r) return;
-  var x = r.x, t = x.test, T = CS_TIER[naSevTier(x)], ov = document.getElementById('na-drw'),   /* Daniel, 4 Nov call 01:05:27: the ECG panel says Critical, as its row does */ card = document.getElementById('na-drw-card');
-  CS.naDrw = i;
-  /* the eyebrow already says Critical, so the title keeps only the direction (as the Version 2 row does); the reference is in the table, not repeated */
-  var fl0 = !x.abn && lrFlag(t.f, t.v), dir = fl0 && fl0.crit ? '<span class="lr-w">' + v2Cap(String(fl0.word).replace(/^critical\s+/i, '')) + '</span>' : (x.abn ? '' : lrWord(t.f, t.v));
-  var title = x.abn ? ecgLine(it) : csEsc(t.n) + ' <span class="vca-v">' + csEsc(t.v + ' ' + (t.u || '')) + '</span> ' + dir;
-  var b = '';
-  if(!x.abn){
-    if(t.concern) b += '<p class="na-d-c">' + t.concern + '</p>';
-    var pr = lrPriors(it.patient, t); if(pr.length) b += '<p class="na-d-q">Previous ' + lrPrevList(pr) + '</p>';
-  }
-  var rows = x.abn ? (it.measures || []).map(function(m){ return '<tr><th scope="row">' + csEsc(m.n) + '</th><td>' + csEsc(m.v) + '</td></tr>'; })
-                   : (it.tests || []).map(function(m){ return '<tr><th scope="row">' + csEsc(m.n) + '</th><td><span class="vca-v">' + csEsc(m.v + ' ' + (m.u || '')) + '</span> ' + (m.f ? lrWord(m.f, m.v) : '') + '</td><td>' + csEsc(lrRef(m)) + '</td></tr>'; });
-  if(rows.length) b += '<div class="na-d-tbl"><table class="lr-t"><thead><tr><th scope="col">' + (x.abn ? 'Measure' : 'Test') + '</th><th scope="col">Result</th>' + (x.abn ? '' : '<th scope="col">Reference</th>') + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></div>';
-  b += '<dl class="na-d-src"><dt>Lab</dt><dd>' + csEsc(it.lab) + '</dd><dt>Responsible</dt><dd>Dr. D. Pannozzo</dd>' +
-    (!x.abn && attnBasis(t) ? '<dt>Why it is flagged</dt><dd>' + attnBasis(t) + '</dd>' : '') + '<dt>Stage</dt><dd>' + csEsc(x.stage) + '</dd></dl>';
+  var it = INBOX_ITEMS[i]; if(!it) return;
+  var r = CS.naRows && CS.naRows[i], x = r && r.x, ov = document.getElementById('na-drw'), card = document.getElementById('na-drw-card');
+  var moved = CS.naDrw !== i; CS.naDrw = i;
+  /* the lab tier line says Critical for a lab; a narrative result (the ECG) carries its tier in the eyebrow, as its row does */
+  var T = x ? CS_TIER[naSevTier(x)] : null, eb = (!labTier(it) && T) ? '<p class="bl-eyebrow">' + T.w + '</p>' : '';
+  var b = rvFactsHTML(it, 'naDrwOpen') +
+    '<div class="rv-results">' + rvResultsHTML(it) + '</div>' +
+    '<div class="rv-ai">' + rvAiHTML(it) + '</div>' +
+    '<div class="rv-srchd"><h3 class="rv-doclbl">Source document — as received</h3>' +
+      '<button type="button" class="btn" id="na-d-srcbtn" aria-expanded="true" aria-controls="na-d-doc" onclick="naDrwSrc()"><span class="ic" data-pdic="eyeoff"></span><span>Hide source document</span></button></div>' +
+    '<div class="rv-doc" id="na-d-doc">' + rvDocHTML(it) + '</div>';
   var rev = it.reviewedAt ? '<p class="cv2-stamp" id="na-d-st" tabindex="-1">' + csIc('complete') + 'Reviewed ' + csEsc(it.reviewedAt) + ' · ' + csEsc(it.reviewedBy || 'Dr. Pannozzo') + '</p>'
     : it.status === 'reviewed' ? '<p class="cv2-stamp">' + csIc('complete') + 'Reviewed</p>'
     : '<button type="button" class="btn dark" onclick="naMarkRev(' + i + ')"><span class="ic" data-pdic="complete"></span>Mark reviewed</button>';
-  card.innerHTML = '<p class="bl-eyebrow">' + T.w + '</p><p class="tm-title" id="na-drw-ttl">' + title + '</p>' +
-    '<p class="tm-sub">' + csEsc(it.panel) + ' · Received ' + csEsc(it.received) + '</p>' +
+  card.innerHTML = eb + '<p class="tm-title" id="na-drw-ttl">' + csEsc(it.panel) + '</p>' +
     '<div class="na-d-bd">' + b + '</div>' +
-    '<div class="tm-actions"><button type="button" class="btn" onclick="naDrwClose();openReview(' + i + ')">Open in Inbox</button>' + rev + '</div>';
+    '<div class="tm-actions">' + rev + '</div>';
   paintPd(card);
   ov.classList.add('show');
+  if(moved) setTimeout(function(){ var bd = card.querySelector('.drw-bd'); if(bd) bd.scrollTop = 0; }, 0);
+}
+function naDrwSrc(){
+  var d = document.getElementById('na-d-doc'), bt = document.getElementById('na-d-srcbtn'); if(!d || !bt) return;
+  var open = !d.hidden; d.hidden = open;
+  bt.setAttribute('aria-expanded', String(!open));
+  bt.innerHTML = '<span class="ic" data-pdic="' + (open ? 'eye' : 'eyeoff') + '"></span><span>' + (open ? 'Show' : 'Hide') + ' source document</span>';
+  paintPd(bt);
 }
 function naDrwClose(){ var o = document.getElementById('na-drw'); if(o) o.classList.remove('show'); CS.naDrw = null; }
 function naMarkRev(i){
