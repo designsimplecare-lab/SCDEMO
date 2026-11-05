@@ -7612,6 +7612,16 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-adm .cv2-adm-ta{display:block;width:100%;box-sizing:border-box;min-height:104px;padding:10px 12px;font:inherit;font-size:15px;line-height:23px;color:var(--cv2-ink);background:#fff;border:1px solid var(--cv2-line);border-radius:8px;resize:vertical;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-adm .cv2-adm-a{display:flex;justify-content:flex-end;gap:8px;margin-top:10px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-adm .cv2-adm-a .btn{height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 18px;font-size:15px;font-weight:600;}
+/* Daniel, 4 Nov call 01:19:10-01:21:27 ("I want one text box ... what if I want to data dump here?"; Ani: "just the input text big input field"):
+   Version 2's Note is one tall box that grows with its text (vcGrow). The five section fields are hidden there; their Cedar cards stay, above the box. */
+#screen-patientchart #pcv-c #ns-wrap #ns-r-note{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap #ns-r-note{display:block;padding:0;border-top:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap #ns-k-note{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap #ns-note{min-height:320px;padding:14px 16px;font-size:16px;line-height:24px;resize:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap .ns-row:not(#ns-r-note){display:block;padding:0;border-top:0;box-shadow:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap .ns-row:not(#ns-r-note) > .ns-k,#screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap .ns-row:not(#ns-r-note) .ns-ta{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap .ns-row:not(#ns-r-note) .ns-ai:not(:empty){padding:12px 16px 0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap #ns-r-note:has(.ns-ta:focus-visible){box-shadow:inset 3px 0 0 var(--brand);}
 </style>
 </head>
 <body>
@@ -8349,6 +8359,10 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
               <div class="ns-row" id="ns-r-plan"><label class="ns-k" for="ns-plan">Plan</label>
                 <div class="ns-f"><textarea class="ns-ta" id="ns-plan" data-sec="plan" rows="1" placeholder="Treatment, follow-up, safety netting"></textarea>
                   <div class="ns-ai" id="ns-ai-plan"></div></div></div>
+              <!-- Daniel, 4 Nov call 01:20:22: "I want one text box ... I would literally just want a text box", e.g. to paste the transcript; Ani: "just the
+                   input text big input field". Version 2 only (hidden in Current); the step's own "Note" heading labels it. Key 'note' (nsTa redirects to it). -->
+              <div class="ns-row" id="ns-r-note"><label class="ns-k" for="ns-note" id="ns-k-note">Note</label>
+                <div class="ns-f"><textarea class="ns-ta" id="ns-note" data-sec="note" rows="8" aria-labelledby="v2h-note"></textarea></div></div>
             </div>
             <!-- the five sections, composed ("Clinical concern: ...", "Subjective: ...") for the gates, the signed record and the tick -->
             <textarea class="vc-note" id="vc-note-input" tabindex="-1" aria-hidden="true" hidden></textarea>
@@ -16937,7 +16951,7 @@ function nsAIHtml(k, x){
   if(x.state === 'pending' && x.text){
     return '<div class="cs-ai" role="group" aria-labelledby="ns-aik-' + k + '">' +
       '<p class="cs-ai-k" id="ns-aik-' + k + '"><span class="cs-ai-ic">' + AI_MARK.replace('url(#aiGrad)','currentColor') + '</span>' +
-        (scribe ? 'Cedar · from the call' : 'Cedar · from intake') + '</p>' +
+        (typeof nsOne === 'function' && nsOne() ? 'Cedar · ' + NS_LBL[k] + ', ' : 'Cedar · ') + (scribe ? 'from the call' : 'from intake') + '</p>' +   /* Version 2: one box, so the card names its section */
       '<p class="cs-ai-t">' + csEsc(x.text) + '</p>' +
       '<div class="cs-ai-a"><span class="cs-cap"></span>' +
       '<span class="cs-ai-b"><button type="button" class="btn xs" onclick="csAIAccept(\'' + k + '\')"><span class="ic" data-pdic="complete"></span>Accept</button>' +
@@ -16963,6 +16977,8 @@ function nsAIObj(k){ return k === 'reason' ? csAI(PC_CURRENT) : ((CS.sc[PC_CURRE
 function csAIAccept(k){
   k = k || 'reason';
   var x = nsAIObj(k), n = document.getElementById('vc-note-input'); if(!x || !n || n.readOnly) return;
+  /* Daniel, 4 Nov call 01:20:22 ("you can node it up all you want"): in Version 2's one box Cedar's section text keeps its section word */
+  if(nsOne()) nsAppend(k, NS_LBL[k] + ':\n' + x.text, '\n\n'); else
   nsAppend(k, x.text, k === 'reason' ? ' ' : '\n');
   x.state = 'accepted'; csDraft(); csRenderAI(); if(typeof v2SyncHead === 'function') v2SyncHead(); cedarBar();
   csSay('Added to ' + NS_LBL[k] + '. It is now your text.'); nsTa(k).focus();
@@ -16970,7 +16986,7 @@ function csAIAccept(k){
 function cedarAcceptAll(){
   var l = typeof nsAIList === 'function' ? nsAIList() : []; if(!l.length) return;
   var n = document.getElementById('vc-note-input'); if(!n || n.readOnly) return;
-  l.forEach(function(k){ var x = nsAIObj(k); if(x && x.state === 'pending' && x.text){ nsAppend(k, x.text, k === 'reason' ? ' ' : '\n'); x.state = 'accepted'; } });
+  l.forEach(function(k){ var x = nsAIObj(k); if(x && x.state === 'pending' && x.text){ if(nsOne()) nsAppend(k, NS_LBL[k] + ':\n' + x.text, '\n\n'); else nsAppend(k, x.text, k === 'reason' ? ' ' : '\n'); x.state = 'accepted'; } });
   csDraft(); csRenderAI(); if(typeof v2SyncHead === 'function') v2SyncHead(); cedarBar();
   csSay('Cedar\'s drafts added to your note. Edit anything before you sign off.');
 }
@@ -18933,7 +18949,7 @@ function v2Tab(tab, focus, noScroll){
   }
 }
 function nsFirstField(){ var l = nsFields(); return l.length ? l[0] : null; }
-function nsFields(){ return NS_SECS.map(nsTa).filter(function(t){ return t && t.offsetParent; }); }
+function nsFields(){ return NS_SECS.map(nsEl).filter(function(t){ return t && t.offsetParent; }); }
 /* scroll spy: the section at the top of the workspace is the current step */
 (function(){
   var tick = null;
@@ -21023,24 +21039,46 @@ baWrap('cwPlace', function(){
    textarea. #vc-note-input stays as a hidden mirror holding the composed text ("Reason: ...\n\nFindings: ..."), so the
    existing gates (template text), the signed record and the review screen read one string. Writers go through nsAppend.
    ============================================================ */
-var NS_SECS = ['reason', 'subjective', 'objective', 'assessment', 'plan'];
+var NS_SECS = ['reason', 'subjective', 'objective', 'assessment', 'plan', 'note'];   /* 'note': Version 2's one box (Daniel, 4 Nov call 01:20:22) */
 /* Daniel, 11 Oct (9:02 PM): "Clinical Concern not reason". The section key stays 'reason' (drafts and signed records use it); only the words change. */
-var NS_LBL = {reason:'Clinical concern', subjective:'Subjective', objective:'Objective', assessment:'Assessment', plan:'Plan'};
+var NS_LBL = {reason:'Clinical concern', subjective:'Subjective', objective:'Objective', assessment:'Assessment', plan:'Plan', note:'Note'};
 var NS = {last:null, dx:{open:false, q:'', act:0, res:[]}};
-function nsTa(k){ return document.getElementById('ns-' + k); }
-function nsGet(){ var o = {}; NS_SECS.forEach(function(k){ var t = nsTa(k); o[k] = t ? t.value : ''; }); return o; }
+/* Daniel, 4 Nov call 01:20:22 ("I want one text box"): in Version 2 every section writer and focus (Insert, PharmaNet lines, readings, Cedar's
+   Accept, the checklist's Write) goes to the one box, #ns-note; nsEl is the field itself. nsGet / nsSet / nsReadOnly read and write the real fields. */
+function nsOne(){ return typeof cv2On === 'function' && cv2On() && !!document.getElementById('ns-note'); }
+function nsEl(k){ return document.getElementById('ns-' + k); }
+function nsTa(k){ return k !== 'note' && nsOne() ? nsEl('note') : nsEl(k); }
+function nsGet(){ var o = {}; NS_SECS.forEach(function(k){ var t = nsEl(k); o[k] = t ? t.value : ''; }); return o; }
+/* the text sits where the layout shows it: Version 2 folds the five sections into the one box ("Assessment:\n…"), Current puts the one box's text
+   in Subjective. Run on every nsSet (drafts, signed records) and when the layout switches, so nothing is ever in a hidden field. */
+function nsNorm(){
+  var one = nsEl('note'); if(!one) return;
+  if(nsOne()){
+    var parts = [];
+    NS_SECS.forEach(function(k){ if(k === 'note') return; var t = nsEl(k); if(t && t.value.trim()){ parts.push(NS_LBL[k] + ':\n' + t.value.trim()); t.value = ''; } });
+    if(parts.length) one.value = parts.join('\n\n') + (one.value.trim() ? '\n\n' + one.value.trim() : '');
+  } else if(one.value.trim()){
+    /* a block under its own section word ("Assessment:" on a line) goes back to that section; free text goes to Subjective */
+    var by = {}, cur = 'subjective', names = {};
+    NS_SECS.forEach(function(k){ if(k !== 'note') names[NS_LBL[k].toLowerCase()] = k; });
+    one.value.split('\n').forEach(function(line){ var m = line.trim().match(/^([A-Za-z ]+):$/), k = m && names[m[1].toLowerCase()];
+      if(k){ cur = k; return; } (by[cur] = by[cur] || []).push(line); });
+    Object.keys(by).forEach(function(k){ var t = by[k].join('\n').trim(), f = nsEl(k); if(t && f) f.value = (f.value.trim() ? f.value.replace(/\s+$/, '') + '\n\n' : '') + t; });
+    one.value = '';
+  }
+}
 function nsSet(o){
   o = o || {};
   /* Daniel, 11 Oct: Findings became Subjective and Objective. A draft or signed record saved with Findings opens it in Subjective, so nothing is lost. */
   if(o.findings && !o.subjective){ o = JSON.parse(JSON.stringify(o)); o.subjective = o.findings; delete o.findings; }
-  NS_SECS.forEach(function(k){ var t = nsTa(k); if(t) t.value = o[k] || ''; });
+  NS_SECS.forEach(function(k){ var t = nsEl(k); if(t) t.value = o[k] || ''; });
   NS.last = null; NS.dx = {open:false, q:'', act:0, res:[]};
-  nsSync(); nsRenderDx(); if(typeof vcGrow === 'function') vcGrow();
+  nsNorm(); nsSync(); nsRenderDx(); if(typeof vcGrow === 'function') vcGrow();
 }
 function nsSync(){
   var n = document.getElementById('vc-note-input'); if(!n) return;
   var v = nsGet(), parts = [];
-  NS_SECS.forEach(function(k){ var t = (v[k] || '').trim(); if(t) parts.push(NS_LBL[k] + ':\n' + t); });
+  NS_SECS.forEach(function(k){ var t = (v[k] || '').trim(); if(t) parts.push(k === 'note' ? t : NS_LBL[k] + ':\n' + t); });   /* the one box is the doctor's text as typed */
   /* 21 Oct: the note is the doctor's words only; the ICD-9 code is billing's (Daniel, 18 Oct video 2) */
   n.value = parts.join('\n\n');
 }
@@ -21051,9 +21089,10 @@ function nsAppend(k, text, sep){
 }
 /* the section the doctor was last in; otherwise the item's own default */
 function nsTarget(def){ return NS.last && NS_SECS.indexOf(NS.last) > -1 && !(nsTa(NS.last) || {}).readOnly && (nsTa(NS.last) || {}).offsetParent ? NS.last : def; }
-function nsReadOnly(on){ NS_SECS.forEach(function(k){ var t = nsTa(k); if(t){ t.readOnly = on; t.classList.toggle('signed', on); } }); nsRenderDx(); }
-function nsDone(){ var v = nsGet(); return !!(v.assessment.trim() && v.plan.trim()); }
+function nsReadOnly(on){ NS_SECS.forEach(function(k){ var t = nsEl(k); if(t){ t.readOnly = on; t.classList.toggle('signed', on); } }); nsRenderDx(); }
+function nsDone(){ var v = nsGet(); if(nsOne()) return !!(document.getElementById('vc-note-input') || {value:''}).value.trim(); return !!(v.assessment.trim() && v.plan.trim()); }
 function nsMissing(){
+  if(nsOne()) return (document.getElementById('vc-note-input') || {value:''}).value.trim() ? '' : 'Today\u2019s note is empty.';   /* one box: no sections to ask for */
   var v = nsGet(), a = !v.assessment.trim(), p = !v.plan.trim();
   return a && p ? 'Assessment and Plan are empty.' : a ? 'Assessment is empty.' : p ? 'Plan is empty.' : '';
 }
@@ -23443,6 +23482,8 @@ function cv2Apply(){
     if(typeof v2SumEdges === 'function') v2SumEdges();
   }
   cv2Radios();
+  /* Daniel, 4 Nov call 01:20:22: the note's text follows the layout (one box in Version 2, the sections in Current) */
+  if(was !== want && typeof nsNorm === 'function'){ nsNorm(); if(typeof nsSync === 'function') nsSync(); if(PC_CURRENT && typeof csDraft === 'function' && !(csRow() || {}).signed) csDraft(); }
   if(was !== want && PC_CURRENT && typeof csOnChart === 'function' && csOnChart()){
     /* same nodes, so the note text, the open drawers and the Cedar drafts are untouched; only the layout-specific parts render again */
     if(typeof csRefresh === 'function') csRefresh();
@@ -23639,7 +23680,9 @@ function cv2ChkLines(){
   var vc = t23VisitCode(r.name), dxs = !vc.dx && typeof nsDxSuggest === 'function' ? nsDxSuggest(r) : null, L = [];
   L.push(open.length ? {ok:false, t:'Critical result not reviewed: ' + open[0].test.n + ' ' + open[0].test.v + ' ' + (open[0].test.u || ''), b:'Review', k:'crit'}
     : {ok:true, t:crit.length ? 'Critical result reviewed' : 'No critical result'});
-  L.push(v.assessment.trim() ? {ok:true, t:'Assessment written'} : {ok:false, t:'Assessment not written', b:'Write', k:'asmt'});
+  /* Daniel, 4 Nov call 01:20:22: one text box, so the line asks only whether there is a note (a warning, never a block) */
+  var noteTxt = (v2El('vc-note-input') || {value:''}).value.trim();
+  L.push(noteTxt ? {ok:true, t:'Note written'} : {ok:false, t:'Note is empty', b:'Write', k:'asmt'});
   L.push(ai.length ? {ok:false, t:'Cedar text waiting in ' + ai.map(function(k){ return NS_LBL[k]; }).join(', '), b:'Go to it', k:'ai'} : {ok:true, t:'No Cedar text waiting'});
   L.push(sugg ? {ok:false, t:'Problem list: ' + sugg + ' suggested update' + (sugg > 1 ? 's' : ''), b:'Review', k:'prob'} : {ok:true, t:'Problem list up to date'});
   L.push(vc.disp === 'private' ? {ok:true, t:'Private pay: no diagnosis code'}
@@ -23890,6 +23933,6 @@ document.addEventListener('click', function(e){
   cv2Apply();
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-05 12:41</div>
+  <div class="build-stamp">v2 · build 2026-11-05 12:47</div>
 </body>
 </html>
