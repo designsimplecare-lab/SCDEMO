@@ -1,0 +1,221 @@
+/* ============================================================================
+ * SimpleCare design system → physician portal bridge
+ * ----------------------------------------------------------------------------
+ * Restyles simplecare-physician-portal-v2.html with the SimpleCare design
+ * system without rewriting it. Load after the page's own <style> and after
+ * simplecare-tokens.css (exported from the design system repo with
+ * `npm run export:css -- <SCDEMO>/assets/design-system`).
+ *
+ * 1. The portal's own variables (--ink, --paper, --accent, …) are pointed at
+ *    design-system tokens, so every rule that uses them follows the brand:
+ *    navy #162660 ink on #ECF2FB, Inter, the system's status colours.
+ * 2. A few Slack-like details the variables can't reach: 8px controls,
+ *    rounded-square avatars, quiet menus with a navy highlight.
+ *
+ * To change a colour, change the design system and re-export; edit this file
+ * only to change which token a portal variable uses.
+ * ========================================================================= */
+
+/* ---- 1. Colour: Light ------------------------------------------------------ */
+:root {
+  --ink: var(--color-navy-900);
+  --ink-dark: var(--color-navy-900);
+  --ink-2: var(--color-grey-700);
+  --ink-soft: var(--color-grey-700);
+  --ink-faint: var(--color-grey-600);
+
+  --paper: var(--color-grey-200);
+  --panel: var(--color-grey-0);
+  --wash: var(--color-grey-50);
+  --line: var(--color-grey-300);
+  --line-strong: var(--color-grey-400);
+
+  --accent: var(--color-navy-900);
+  --accent-ink: var(--color-navy-700);
+  --accent-wash: var(--color-navy-100);
+  --brand: var(--color-navy-900);
+  --brand-ink: var(--color-navy-700);
+  --brand-wash: var(--color-navy-100);
+  --brand-line: var(--color-navy-300);
+  --brand-navy: var(--color-navy-900);
+
+  --good: var(--color-success-700);
+  --good-wash: var(--color-success-50);
+  --good-line: var(--color-success-300);
+  --warn: var(--color-warning-700);
+  --warn-wash: var(--color-warning-50);
+  --warn-line: var(--color-warning-300);
+  --crit: var(--color-error-600);
+  --crit-ink: var(--color-error-700);
+  --crit-text: var(--color-error-700);
+  --crit-wash: var(--color-error-50);
+  --crit-line: var(--color-error-300);
+  --badge: var(--color-error-600);
+
+  --tag-info: var(--color-navy-50);
+  --tag-info-ic: var(--color-navy-600);
+  --tag-warn: var(--color-warning-25);
+  --tag-warn-ic: var(--color-warning-700);
+  --tag-bad: var(--color-error-25);
+  --tag-bad-ic: var(--color-error-650);
+
+  --q-hoverbar-solid: var(--color-grey-50);
+  --shadow-card: 0 1px 2px rgb(22 38 96 / 0.04), 0 8px 24px rgb(22 38 96 / 0.06);
+}
+
+/* ---- 1. Colour: Dark (the portal's theme toggle) --------------------------- */
+:root[data-theme="dark"] {
+  --ink: var(--color-grey-200);
+  --ink-dark: var(--color-grey-200);
+  --ink-2: var(--color-grey-400);
+  --ink-soft: var(--color-grey-400);
+  --ink-faint: var(--color-grey-450);
+
+  --paper: var(--color-grey-950);
+  --panel: var(--color-grey-900);
+  --wash: var(--color-grey-800);
+  --line: var(--color-grey-750);
+  --line-strong: var(--color-grey-700);
+
+  --accent: var(--color-navy-600);
+  --accent-ink: var(--color-navy-300);
+  --accent-wash: rgb(142 169 235 / 0.16);
+  --brand: var(--color-navy-600);
+  --brand-ink: var(--color-navy-300);
+  --brand-wash: rgb(142 169 235 / 0.16);
+  --brand-line: rgb(142 169 235 / 0.35);
+
+  --good: var(--color-success-400);
+  --good-wash: rgb(74 222 128 / 0.14);
+  --good-line: rgb(74 222 128 / 0.4);
+  --warn: var(--color-warning-400);
+  --warn-wash: rgb(250 194 21 / 0.14);
+  --warn-line: rgb(250 194 21 / 0.4);
+  --crit: var(--color-error-400);
+  --crit-ink: var(--color-error-400);
+  --crit-text: var(--color-error-300);
+  --crit-wash: rgb(239 68 68 / 0.16);
+  --crit-line: rgb(239 68 68 / 0.45);
+  --badge: var(--color-error-500);
+
+  --q-hoverbar-solid: var(--panel);
+}
+
+/* The patient chart (v2) sets its own palette; point it at the same tokens. */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 {
+  --cv2-bg: var(--color-grey-50);
+  --cv2-line: var(--color-grey-300);
+  --cv2-ink: var(--color-navy-900);
+  --cv2-soft: var(--color-grey-600);
+  --cv2-wash: var(--color-grey-100);
+  --cv2-crit: var(--color-error-600);
+  --cv2-warn: var(--color-warning-600);
+  --cv2-ok: var(--color-success-700);
+}
+:root:not([data-theme="dark"]) #screen-patientchart #pcv-c.cs-v2.chart-v2 {
+  --ink: var(--color-navy-900);
+  --ink-soft: var(--color-grey-700);
+  --line: var(--color-grey-300);
+  --crit: var(--color-error-600);
+  --good: var(--color-success-700);
+}
+
+/* The page: the brand's flat #ECF2FB instead of the grey-to-cream gradient. */
+html body { background: var(--paper); }
+
+/* Indigo the old palette hard-coded (not through a variable) → brand navy. */
+.btn.dark,
+.win-chip.active {
+  background: var(--accent);
+  box-shadow: none;
+}
+.ai-head { background: var(--gradient-agent); }
+.ai-launcher .spark,
+.ai-head .spark { background: linear-gradient(135deg, var(--color-navy-600), var(--color-navy-300)); }
+.ai-launcher { box-shadow: 0 12px 30px rgb(22 38 96 / 0.28); }
+.stat.feature {
+  background: linear-gradient(135deg, var(--color-navy-900) 0%, var(--color-navy-700) 100%);
+  box-shadow: 0 10px 28px rgb(22 38 96 / 0.24);
+}
+.ai-tag {
+  border-color: var(--brand-line);
+  color: var(--brand-ink);
+  background: var(--brand-wash);
+}
+html body .topbar .ai-fab {
+  background: var(--gradient-agent) !important;
+  box-shadow: 0 4px 14px rgb(22 38 96 / 0.28);
+}
+html body .topbar .ai-fab:hover { box-shadow: 0 6px 18px rgb(22 38 96 / 0.36); }
+#screen-earnings .sw.paid,
+#screen-earnings .ern-tip .k.paid { background: var(--accent); }
+#screen-earnings .ern-wd.slow path { fill: var(--accent); }
+/* The earnings chart sets its bar colour from script, as a fill attribute; CSS outranks it. */
+#screen-earnings [fill="#4353E8" i] { fill: var(--accent); }
+/* The AI mark's gradient stops → the brand's agent gradient. */
+stop[stop-color="#5FDDFF" i] { stop-color: #8cc6f0; }
+stop[stop-color="#4F8CFF" i] { stop-color: #3c6ab2; }
+stop[stop-color="#4353E8" i] { stop-color: var(--color-navy-900); }
+#screen-earnings .ern-bar.on .ern-hit,
+#screen-earnings .ern-wd:hover .ern-hit { fill: rgb(22 38 96 / 0.06); }
+
+/* Dark: the top bar's search and safe-mode buttons are painted white by a style
+ * the page injects from script, which left their light icons invisible. */
+:root[data-theme="dark"] .topbar .ps-tbb { background: var(--panel) !important; }
+
+/* ---- 1. Type: Inter --------------------------------------------------------- */
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01"; /* Inter's straight-sided 1 and open digits read well in tables */
+}
+#rx-panel :is(.rp-aitag, .rp-acc, .rp-pw2, .rp-asper, .rp-soft, .rp-sl2 button, .rp-padd .rp-rs, .rp-dym),
+#rx-panel .rp-paper :is(button, input, .rp-pop, .rp-more) {
+  font-family: var(--font-sans);
+}
+
+/* ---- 2. Slack-like details ------------------------------------------------- */
+
+/* Controls: 8px corners (the design system's --radius-control) on buttons,
+ * filter buttons and the profile trigger. Status chips and round icon buttons
+ * stay round, as chips and icon buttons do in the design system. The page
+ * makes buttons pills in many screen-specific rules (some with IDs), so this
+ * one rule needs !important to reach them all. */
+:is(.btn, .al-btn, .wt-new, .qf-btn, .ps-tbb, .profile-trigger) {
+  border-radius: var(--radius-control) !important;
+}
+.btn.xs { border-radius: 6px !important; }
+
+/* Avatars: rounded squares (--radius-avatar), like Slack. */
+.topbar .avatar,
+.chat-thread-avatar,
+.q-avatar,
+.pc-avatar,
+.vc-av {
+  border-radius: var(--radius-avatar);
+}
+
+/* Menus: 8px corners, a hairline border, a soft shadow… */
+.nav-flyout,
+.qf-menu,
+.q-statusmenu,
+html body .profile-dropdown,
+#screen-patientchart #pcv-c .cs-ins-menu,
+#screen-patientchart #pcv-c.cs-v2 #v2-note-acts .cs-ins-menu {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  box-shadow: 0 4px 12px rgb(22 38 96 / 0.08), 0 1px 3px rgb(22 38 96 / 0.06);
+}
+/* …and the row under the pointer fills with the brand colour. */
+.nav-flyout-item:hover,
+.q-statusmenu button:hover,
+#screen-patientchart #pcv-c .cs-ins-menu button:hover,
+#screen-patientchart #pcv-c.cs-v2 #v2-note-acts .cs-ins-menu button:hover {
+  background: var(--color-surface-primary-default);
+  color: var(--color-text-primary-default);
+}
+.nav-flyout-item,
+.q-statusmenu button,
+#screen-patientchart #pcv-c .cs-ins-menu button,
+#screen-patientchart #pcv-c.cs-v2 #v2-note-acts .cs-ins-menu button {
+  border-radius: 6px;
+}
