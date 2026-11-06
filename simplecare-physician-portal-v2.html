@@ -1667,10 +1667,6 @@
   @keyframes scpulse{0%,100%{opacity:1;}50%{opacity:.3;}}
   .sc-sub{font-size:13px;color:var(--ink-faint);margin:0 0 12px;line-height:1.5;}
 
-  .sc-consent{background:var(--wash);border-radius:11px;padding:14px 16px;}
-  .sc-consent p{font-size:14px;color:var(--ink-soft);line-height:1.55;margin:0 0 10px;max-width:62ch;}
-  .sc-consent ul{margin:0 0 12px;padding-left:18px;font-size:14px;color:var(--ink-soft);line-height:1.7;}
-  .sc-consent .acts{display:flex;gap:8px;flex-wrap:wrap;}
 
   .sc-tx{background:var(--wash);border-radius:10px;padding:10px 12px;max-height:150px;
     overflow-y:auto;margin-bottom:14px;}
@@ -5737,7 +5733,7 @@
   /* Batch B (1): the scribe panel's transcript and counts were 11.5–13.5 px; nothing a physician reads is under 14 px */
   #screen-patientchart #pcv-c #sc-block .sc-sub,#screen-patientchart #pcv-c #sc-block .sc-sub b,#screen-patientchart #pcv-c #sc-block .sc-count,
   #screen-patientchart #pcv-c #sc-block .sc-turn .x,#screen-patientchart #pcv-c #sc-block .sc-turn .w,#screen-patientchart #pcv-c #sc-block .sc-prop,
-  #screen-patientchart #pcv-c #sc-block .sc-prop *,#screen-patientchart #pcv-c #sc-block .sc-consent,#screen-patientchart #pcv-c #sc-block .sc-consent *,
+  #screen-patientchart #pcv-c #sc-block .sc-prop *,
   #screen-patientchart #pcv-c #sc-block .sc-lbl,#screen-patientchart #pcv-c #sc-block .sc-rule,#screen-patientchart #pcv-c #sc-block .sc-rule b{font-size:max(14px, 1em);}
   #screen-patientchart #pcv-c #sc-block .sc-turn .w{font-size:14px;}
 
@@ -8550,7 +8546,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
                  MOA chat covered it at the bottom), and the AI suggestion is a slim banner above the note. -->
             <div class="vc-h cs-nh"><span class="ic" data-pcic="edit"></span><h3 id="cs-note-h" tabindex="-1">Today&rsquo;s note</h3>
               <span class="right cs-nh-r"><span class="cs-saved" id="cs-saved" aria-live="polite"></span>
-                <button type="button" class="cs-tb" id="cs-scribe-btn" onclick="scAskConsent()" title="Cedar listens to the call, drafts the note and proposes orders. Nothing goes in without you."><span class="cs-scdot" aria-hidden="true"></span>Cedar</button>
+                <button type="button" class="cs-tb" id="cs-scribe-btn" onclick="scTurnOn()" title="Cedar listens to the call, drafts the note and proposes orders. Nothing goes in without you."><span class="cs-scdot" aria-hidden="true"></span>Cedar</button>
                 <button type="button" class="cs-tb" id="cs-dict-btn" aria-pressed="false" onclick="dictToggle()" title="Speak your note; the words go into the note box"><span class="ic" data-pdic="mic"></span><span class="cs-dict-l">Dictate</span></button>
                 <button type="button" class="cs-tb" id="vc-savedraft" title="Save draft" onclick="csDraft();toast('Draft saved')"><span class="ic" data-pdic="edit"></span>Save draft</button></span></div>
             <!-- v2.5 §7: AI text is visually distinct from chart facts until accepted -->
@@ -11676,20 +11672,17 @@ function scReset(){
   scState = 'off'; scIdx = 0; scSeen = []; scDone = {};
   renderScribe();
 }
-function scAskConsent(){
-  if(!cdOn('note')){ toast('Cedar is off for listening and the note. Turn it on in your profile menu.'); return; }   /* T-038: no listening, so no consent to ask */
-  scState = 'consent'; renderScribe();
-}
-function scDecline(){
-  scState = 'off'; renderScribe();
-  toast('Cedar stays off');
+/* Ani, 5 Nov: there is no consent step in the product; turning Cedar on starts listening */
+function scTurnOn(){
+  if(!cdOn('note')){ toast('Cedar is off for listening and the note. Turn it on in your profile menu.'); return; }   /* T-038 */
+  scStart();
 }
 function scStart(){
   scState = 'live'; scIdx = 0; scSeen = []; scDone = {};
   renderScribe();
   clearInterval(scTimer);
   scTimer = setInterval(scTick, 1100);
-  toast('Cedar is listening · consent on file');
+  toast('Cedar is listening');
 }
 /* Doctor review ask 1: the scripted call drafts "ASSESSMENT: Stable exertional angina. No
    features of instability" and "Telephone review in four weeks" -- written before today's
@@ -11790,30 +11783,9 @@ function renderScribe(){
 
   if(scState === 'off'){
     /* optional tool, so secondary: Finalize is the one primary in this card */
-    acts.innerHTML = '<button class="btn xs" onclick="scAskConsent()"><span class="ic" data-pcic="edit"></span> Turn on scribe</button>';
+    acts.innerHTML = '<button class="btn xs" onclick="scTurnOn()"><span class="ic" data-pcic="edit"></span> Turn on scribe</button>';
     sub.textContent = '';
     body.innerHTML = '';
-    return;
-  }
-
-  if(scState === 'consent'){
-    acts.innerHTML = '';
-    sub.textContent = 'Read to the patient';
-    body.innerHTML =
-      '<div class="sc-consent">' +
-        '<p>&ldquo;Gloria, I use a tool that listens to our call and writes my notes up for me. ' +
-        'It helps me stay on the phone with you instead of typing. Are you happy for me to turn it on?&rdquo;</p>' +
-        '<ul>' +
-          '<li>Audio is transcribed, then discarded &mdash; only the text is kept</li>' +
-          '<li>It stays inside the practice record. Nothing is used to train anything</li>' +
-          '<li>She can ask you to turn it off at any point in the call</li>' +
-          '<li>Declining changes nothing about her care</li>' +
-        '</ul>' +
-        '<div class="acts">' +
-          '<button class="btn xs dark" onclick="scStart()">She agreed &mdash; start</button>' +
-          '<button class="btn xs" onclick="scDecline()">She declined</button>' +
-        '</div>' +
-      '</div>';
     return;
   }
 
@@ -13912,8 +13884,7 @@ function pcStartCall(){
      T-038: only when Cedar is on for listening and the note; off, the call starts with no listening and no consent question. */
   try{
     if(typeof scState !== 'undefined' && scState === 'off' && PC_CURRENT && typeof csVisit === 'function' && cdOn('note')){
-      var noCon = !csVisit(PC_CURRENT).consent;   /* Daniel, 12 Oct: consent lives only here now, where Cedar starts listening */
-      setTimeout(function(){ if(PC_ON_CALL && scState === 'off' && cdOn('note')){ if(noCon) scAskConsent(); else scStart(); } }, 1300);
+      setTimeout(function(){ if(PC_ON_CALL && scState === 'off' && cdOn('note')) scStart(); }, 1300);
     }
   }catch(e){}
 }
@@ -16709,8 +16680,7 @@ function csVisit(name){
   });
 }
 /* Daniel, 12 Oct: "we can remove all of this" (the This visit block: phone, callback, consent). "We would know this information."
-   Nothing about the visit blocks Finalize any more. Consent is asked only where Cedar needs it: when the doctor starts Cedar's
-   listening and consent is not on file (pcStartCall / scAskConsent). */
+   Nothing about the visit blocks Finalize any more. (Ani, 5 Nov: no consent step anywhere.) */
 function csStripDone(name){ return true; }
 function csMissing(name){ return []; }
 /* a missed call or a no-show, before the doctor reaches the patient (Ani, 5 Oct: a simple no-show state) */
@@ -17633,7 +17603,7 @@ scStart = function(){
   renderScribe(); csRenderAI();
   clearInterval(scTimer);
   scTimer = setInterval(scTick, 1100);
-  toast('Recording. ' + csPref(csRow()) + ' consented at the start of the call.');
+  toast('Cedar is listening');
 };
 /* SC_NOTE blocks → sections: SUBJECTIVE and BACKGROUND are Subjective (was Findings, Daniel 11 Oct), ASSESSMENT is Assessment, PLAN is Plan.
    The call has no examination or vitals, so Cedar drafts nothing for Objective. */
@@ -17668,7 +17638,7 @@ renderScribe = function(){
   /* Dictate: not on a signed note or a no-show (no note to write) */
   var db = document.getElementById('cs-dict-btn'); if(db){ db.hidden = !!(rr && rr.signed) || !!(PC_CURRENT && csNoShow(PC_CURRENT)); if(db.hidden && typeof DICT !== 'undefined' && DICT.on) dictStop(); }
   var sub = document.getElementById('sc-sub');
-  if(sub && scState === 'live') sub.textContent = 'Recording with consent. Suggestions appear in Subjective, Assessment and Plan, marked as AI, until you accept them.';
+  if(sub && scState === 'live') sub.textContent = 'Listening';
   csRenderAI();
 };
 
