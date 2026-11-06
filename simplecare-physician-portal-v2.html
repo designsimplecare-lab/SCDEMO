@@ -7735,7 +7735,6 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #ps-ov .ps-nm{font-size:16px;font-weight:700;line-height:22px;color:var(--ink);}
 #ps-ov .ps-c2{display:flex;flex-wrap:wrap;gap:2px 0;font-size:14.5px;line-height:21px;color:var(--ink-soft);}
 #ps-ov .ps-c2 > span + span::before{content:"·";margin:0 8px;color:var(--ink-faint);}
-#ps-ov .ps-c3{max-width:66ch;font-size:15px;line-height:22px;color:var(--ink);}
 #ps-ov .ps-src{color:var(--ink-soft);}
 #ps-ov .ps-ev{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:14px;line-height:20px;color:var(--ink);}
 #ps-ov .ps-ev > span{display:inline-flex;align-items:center;gap:6px;}
@@ -7790,13 +7789,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 :is(#ps-ov,#rx-sheet,#op-sheet) .ps-vacts .btn .ic svg{width:100%;height:100%;}
 :is(#ps-ov,#rx-sheet,#op-sheet) .ps-vacts .btn.dark:disabled{opacity:.45;cursor:not-allowed;}
 #ps-ov .ps-foot{flex:none;display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;padding:10px 16px 10px 22px;border-top:1px solid var(--line);}
-#ps-ov .ps-warn{display:flex;align-items:center;gap:8px;margin:0;font-size:14px;line-height:20px;color:var(--ink-soft);}
-#ps-ov .ps-warn[hidden]{display:none;}
-#ps-ov .ps-warn .ic{width:18px;height:18px;color:var(--warn);}
 #ps-ov .ps-safe{height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 16px;border:1px solid var(--line-strong);border-radius:999px;background:var(--panel);font:inherit;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;}
 #ps-ov .ps-safe[aria-checked="true"]{background:var(--accent);border-color:var(--accent);color:#fff;}
-#ps-ov .ps-keys{margin:0 0 0 auto;font-size:14px;line-height:20px;color:var(--ink-soft);}
-#ps-ov .ps-keys kbd{display:inline-block;min-width:22px;margin:0 2px;padding:0 6px;border-radius:6px;background:var(--wash);font:inherit;font-size:14px;text-align:center;color:var(--ink);}
 /* the Home field opens the search; its shortcut sits inside it */
 #screen-today .q-search .ps-kbd{flex:none;margin:0 4px 0 6px;padding:0 6px;border-radius:6px;background:var(--panel);font:inherit;font-size:14px;line-height:22px;color:var(--ink-soft);}
 #screen-today .q-search.has-value .ps-kbd{display:none;}
@@ -9478,15 +9472,13 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
     <h2 class="vh" id="ps-h">Find a patient</h2>
     <div class="ps-bar">
       <span class="ic" data-pdic="search"></span>
-      <input type="text" id="ps-q" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ps-list" aria-describedby="ps-keys" autocomplete="off" spellcheck="false" placeholder="Name, PHN, date of birth, visit date, clinician or pharmacy">
+      <input type="text" id="ps-q" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ps-list" autocomplete="off" spellcheck="false" placeholder="Search patients">
       <button type="button" class="ps-x" onclick="psClose()" aria-label="Close search"><span class="ic" data-pdic="close"></span></button>
     </div>
     <div class="ps-clues" id="ps-clues"></div>
     <div class="ps-body" id="ps-body"></div>
     <div class="ps-foot" id="ps-foot">
-      <p class="ps-warn" id="ps-warn"><span class="ic" data-pdic="alert"></span><span>Screen sharing can’t be detected here. Turn on safe mode before you share.</span></p>
       <button type="button" class="ps-safe" id="ps-safe" role="switch" aria-checked="false" onclick="psSafe()"><span class="ic" data-pdic="eyeoff"></span>Safe mode</button>
-      <p class="ps-keys" id="ps-keys"><kbd>↑</kbd><kbd>↓</kbd> move <kbd>Enter</kbd> open or search <kbd>Esc</kbd> close</p>
     </div>
     <p class="vh" id="ps-live" role="status" aria-live="polite" aria-atomic="true"></p>
   </div>
@@ -24844,30 +24836,19 @@ function psStateTag(p){
   if(p.state === 'duplicate') return psTag('Possible duplicate', 'alert', 'ps-t-warn');
   return '';
 }
+/* Ani, 5 Nov ("so much explanation; just show the name and patient details, the rest on click"): the name, then age · sex · PHN.
+   Only what changes the choice stays: a chart state (inactive, deceased, merged, duplicate), not on your panel, and a mismatch with what was typed. */
 function psCard(m, sect){
   var p = m.p, safe = PS.safe, id = psId(p.key);
   var tags = psStateTag(p);
-  if(p.today && sect !== 'today') tags += psTag('Today · ' + ((typeof WIN_TEXT !== 'undefined' && WIN_TEXT[p.today.win]) || p.today.win), 'calendar', 'ps-t-day');
   if(p.panel === 'other') tags += psTag('Not on your panel', 'user', 'ps-t-mut');
   var l2 = [];
-  if(p.dob) l2.push('Born ' + psFmt(p.dob) + ' · ' + psAge(p.dob)); else l2.push('Date of birth not recorded');
-  l2.push(p.phn ? 'PHN ' + psMask(p.phn) : 'No PHN on record');
-  l2.push(p.last ? 'Last visit ' + psFmt(p.last) : 'No visits yet');
-  var ctx;
-  if(p.state === 'merged') ctx = '<span>Merged into ' + psEsc((psPerson(p.into) || {}).legal || '') + ' on ' + psEsc(p.stateAt) + '</span>';
-  else if(p.state === 'duplicate') ctx = '<span>May be the same person as ' + psEsc((psPerson(p.dupOf) || {}).legal || '') + '. Not merged.</span><span class="ps-src"> · registered ' + psEsc(p.stateAt) + '</span>';
-  else if(p.panel === 'other') ctx = '<span class="ps-src">Context shows once you give a reason to open the chart</span>';
-  else if(p.state === 'inactive') ctx = '<span>Transferred out ' + psEsc(p.stateAt) + '</span><span class="ps-src"> · chart status</span>';
-  else if(p.state === 'deceased') ctx = '<span>Died ' + psEsc(p.stateAt) + '</span><span class="ps-src"> · chart status</span>';
-  else if(p.next) ctx = '<span>Booked ' + psEsc(psFmt(p.next.split('|')[0])) + ': ' + psEsc(p.next.split('|')[1]) + '</span><span class="ps-src"> · day sheet</span>';
-  else if(p.why && p.last) ctx = '<span>' + psEsc(p.why) + '</span><span class="ps-src"> · visit note, ' + psEsc(psFmt(p.last)) + '</span>';
-  else ctx = '<span class="ps-src">No verified clinical summary</span>';
-  var ev = (m.ev || []).length ? '<span class="ps-ok">' + psIc('complete') + '<span>' + psEsc(m.ev.join(' · ')) + '</span></span>' : '';
-  var cf = (m.cf || []).length ? '<span class="ps-cf">' + psIc('alert') + '<span>' + psEsc(m.cf.join(' · ')) + '</span></span>' : '';
+  if(p.dob) l2.push(psAge(p.dob)); if(p.sex) l2.push(p.sex);
+  l2.push(p.phn ? 'PHN ' + psMask(p.phn) : 'No PHN');
+  var cf = (m.cf || []).length ? '<div class="ps-ev"><span class="ps-cf">' + psIc('alert') + '<span>' + psEsc(m.cf.join(' · ')) + '</span></span></div>' : '';
   return '<div class="ps-card' + (PS.active === p.key ? ' on' : '') + '" role="option" id="' + id + '" data-k="' + psEsc(p.key) + '" aria-selected="' + (PS.active === p.key) + '">' +
     '<div class="ps-c1"><span class="ps-nm">' + psEsc(p.legal) + '</span>' + tags + '</div>' +
-    (safe ? '' : '<div class="ps-c2">' + l2.map(function(x){ return '<span>' + psEsc(x) + '</span>'; }).join('') + '</div>' +
-    '<div class="ps-c3">' + ctx + '</div>' + (ev || cf ? '<div class="ps-ev">' + ev + cf + '</div>' : '')) +
+    (safe ? '' : '<div class="ps-c2">' + l2.map(function(x){ return '<span>' + psEsc(x) + '</span>'; }).join('') + '</div>' + cf) +
     '<span class="ps-go" aria-hidden="true">' + psIc('chevr') + '</span></div>';
 }
 function psState(ic, h, line, extra){ return '<div class="ps-state">' + psIc(ic) + '<div><p class="ps-sh">' + psEsc(h) + '</p>' + (line ? '<p class="ps-sl">' + line + '</p>' : '') + (extra || '') + '</div></div>'; }
@@ -25023,8 +25004,7 @@ function psRender(){
   psSyncActive();
   var dis = PS.mode === 'abroad' || PS.mode === 'unauthorized';
   if(q){ q.disabled = dis; q.setAttribute('aria-expanded', String(keys.length > 0)); }
-  var w = document.getElementById('ps-warn'), s = document.getElementById('ps-safe');
-  if(w) w.hidden = PS.safe;
+  var s = document.getElementById('ps-safe');
   if(s){ s.setAttribute('aria-checked', String(PS.safe)); }
   clearTimeout(PS.liveT);
   PS.liveT = setTimeout(psAnnounce, 450);
