@@ -1014,7 +1014,7 @@
      should still be there when the day sheet has scrolled past it */
   .topbar{
     position:sticky;top:0;z-index:60;border-bottom:none;
-    background:rgba(226,229,233,.82);
+    background:color-mix(in srgb, var(--paper) 86%, transparent);   /* Ani, 5 Nov ("why is this top part gray"): the page's own background token, not the old grey */
     -webkit-backdrop-filter:saturate(180%) blur(14px);
     backdrop-filter:saturate(180%) blur(14px);
   }
@@ -7431,7 +7431,6 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main .v2-orow{border-radius:8px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main #ns-wrap{border-color:var(--cv2-line);border-radius:8px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main #ns-wrap .cs-ai{border-radius:8px;}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-sec.v2-open{background:#F9FAFB;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-sec + .v2-sec,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side #v2-side-today + .v2-sec{border-top-color:var(--cv2-line);}
 /* Ani's sizes inside Version 2 (shared parts that measured under them: the billing row's labels 13px and its Suggested tag 12px; Cedar and Insert 36px;
    Change 30px; See all 32px). Version 2 only; Current is left as it is. */
@@ -7443,6 +7442,81 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap #ns-note::placeholder{color:var(--ink-faint);opacity:1;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-sign-b #t23-dxbtn{min-height:44px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-seeall{min-height:44px;}
+/* Patient summary rows (Ani, 5 Nov: compact, scannable clinical panel). One row component (smRow): primary fact, status tag, one quiet line;
+   detail folds behind the row. Hairlines between rows, no cards; status is a word with an icon, colour only supports it. */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-sec.v2-open{background:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-sb{padding:0 16px 12px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-grp + .sm-grp{margin-top:12px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-gh{display:flex;align-items:center;gap:6px;margin:4px 0 2px;font-size:13px;line-height:18px;font-weight:600;color:var(--ink-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-gn{font-weight:400;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-grp.att > .sm-gh{color:var(--ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-row{display:block;position:relative;box-sizing:border-box;width:calc(100% + 32px);margin:0 -16px;padding:8px 40px 8px 16px;border:0;border-top:1px solid var(--line);border-radius:0;background:none;box-shadow:none;text-align:left;font:inherit;color:var(--ink);cursor:pointer;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-gh + .sm-row{border-top:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side button.sm-row:hover,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side details.sm-row > summary:hover{background:var(--wash);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side button.sm-row:focus-visible,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side details.sm-row > summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side details.sm-row{padding:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side details.sm-row > summary{display:block;position:relative;padding:8px 40px 8px 16px;list-style:none;cursor:pointer;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side details.sm-row > summary::-webkit-details-marker{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-static{cursor:default;padding-right:16px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-chev,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-chev svg{position:absolute;top:10px;right:14px;width:16px;height:16px;color:var(--ink-faint);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-chev svg{position:static;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side details.sm-row[open] > summary .sm-chev{transform:rotate(180deg);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-r1{display:flex;align-items:baseline;gap:8px;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-t{flex:1 1 auto;min-width:0;font-size:15px;line-height:20px;font-weight:600;color:var(--ink);overflow-wrap:anywhere;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-t b{font-weight:600;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-dose{font-weight:400;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-as{display:inline-flex;align-items:center;gap:6px;flex:none;font-size:14px;line-height:20px;color:var(--ink-soft);white-space:nowrap;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-as b{font-size:15px;font-weight:700;color:var(--ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-r2{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;margin-top:2px;font-size:13px;line-height:18px;color:var(--ink-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-s{min-width:0;overflow-wrap:anywhere;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-tag,#screen-patientchart #pcv-c.cs-v2.chart-v2 :is(#v2-side,#cs-today) .sm-tag{display:inline-flex;align-items:center;gap:4px;padding:0 6px;border-radius:4px;background:var(--wash);font-size:12px;line-height:18px;font-weight:600;color:var(--ink);white-space:nowrap;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .sm-tag :is(.ic,svg){width:12px;height:12px;flex:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .sm-tag.att{background:var(--warn-wash);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .sm-tag.att :is(.ic,svg){color:var(--warn);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .sm-tag.crit{background:var(--crit-wash);color:var(--crit-text);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .sm-tag.ok{background:var(--good-wash);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .sm-tag.ok :is(.ic,svg){color:var(--good);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .sm-tag.ai{background:var(--brand-wash);color:var(--brand-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-sc .sm-tag{font-weight:600;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-det{padding:0 16px 10px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:2px 12px;margin:0;font-size:13px;line-height:18px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-dl dt{color:var(--ink-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-dl dd{margin:0;min-width:0;color:var(--ink);overflow-wrap:anywhere;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-dl .lr-pv{display:block;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-q,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-dl .lr-pv i{font-style:normal;color:var(--ink-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-src{display:inline-flex;align-items:center;gap:4px;min-height:44px;margin:2px 0 -10px;font-size:13px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-ai{display:flex;gap:8px;margin:6px 0;padding:8px 10px;border-radius:8px;background:var(--brand-wash);font-size:13px;line-height:18px;color:var(--ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-gh + .sm-ai{margin-top:2px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-ai .cs-ai-ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-ai .cs-ai-ic svg{flex:none;width:16px;height:16px;margin-top:1px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-ai p{margin:0;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-ai-k{display:block;font-weight:600;color:var(--brand-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-ai-src{color:var(--ink-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-note{margin:6px 0 0;font-size:13px;line-height:18px;color:var(--ink-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-dh{margin:0 0 4px;font-size:13px;font-weight:600;color:var(--ink-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-det .cs-quote{margin:0;font-size:13px;line-height:18px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-ul{margin:0;padding-left:18px;font-size:13px;line-height:18px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-ul li{display:list-item;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-det .lo2-q{margin:4px 0 0;font-size:13px;color:var(--ink-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-spark{display:inline-flex;color:var(--ink-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-spark svg{width:44px;height:18px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .sm-add{margin-top:6px;}
+/* the header row: name, count, attention tag, chevron */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-sbtn{gap:8px;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-sbtn .v2-st{flex:1 1 auto;min-width:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-sbtn :is(.v2-sn,.v2-sc,.v2-chev){flex:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-sbtn .v2-sc[hidden]{display:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side .v2-sbtn .v2-sn{font-weight:400;color:var(--ink-soft);}
+/* intake: the concern, then the flag on its own line */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cs-today .sm-flag{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:6px 0 0;font-size:13px;line-height:18px;color:var(--ink-soft);}
+/* Since you last saw: the section header already names it; each change is a tagged row */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side #slv .cs-h3{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side #slv .cs-hd .cs-cap{margin:0 0 4px;font-size:13px;color:var(--ink-soft);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side #slv .cs-since{margin:0;padding:0;list-style:none;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side #slv .cs-since li{display:flex;align-items:baseline;gap:8px;margin:0;padding:8px 0;border-top:1px solid var(--line);font-size:14px;line-height:20px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side #slv .cs-since li:first-child{border-top:0;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side #slv .cs-kind{display:inline-flex;align-items:center;gap:4px;flex:none;padding:0 6px;border-radius:4px;background:var(--wash);font-size:12px;line-height:18px;font-weight:600;color:var(--ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side #slv .cs-kind :is(.ic,svg){width:12px;height:12px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side #slv .cs-txt .cs-cap{color:var(--ink-soft);font-size:13px;}
 /* physician pass (Ani, 4 Nov: chart Version 2, physician pass, B1 and C): a row opens in place (every value, references, earlier values, the source, Mark
    reviewed, Open in Inbox); the panel's other out-of-range values (CK 210 High) show on the closed row too; "Critical" once; "Received" once */
 .cv2-wdir,.cv2-revacts{display:none;}
@@ -7644,7 +7718,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-b:hover{background:var(--wash);color:var(--ink);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-b:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-b .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-b svg{width:20px;height:20px;}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-redo .ic{transform:scaleX(-1);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-redo .ic{display:inline-flex;transform:scaleX(-1);}   /* Ani, 5 Nov ("why are there two back buttons"): an inline span ignores transform, so Redo drew Undo's arrow */
 #screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-b.on{background:var(--brand-wash);color:var(--brand-ink);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-doc b{font-weight:700;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-doc ol{margin:0;padding-left:24px;}
@@ -17037,7 +17111,8 @@ function csRenderToday(name){
       (r.words ? '<p class="v2-q">&ldquo;' + csEsc(r.words) + '&rdquo;</p>' : '') +
       /* Ani, 5 Nov ("what does this flagged mean?"): the intake flag says what and when, in plain words on the card, not a yellow "Flagged" chip with
          the words hidden in a tooltip (Daniel, 4 Nov call 01:05:27: "this little yellow thing I don't like") */
-      (f ? '<p class="cs-iflag">' + csIc('alert') + '<span>Intake flag: ' + (f.words ? csEsc(f.words.charAt(0).toLowerCase() + f.words.slice(1)) + (when ? ', ' + csEsc(when.charAt(0).toLowerCase() + when.slice(1)) : '') : 'see the intake') + '</span></p>' : '');
+      /* Ani, 5 Nov: the flag sits apart from the concern, and its words are left out when the concern already says them */
+      (f ? '<p class="sm-flag">' + smTag('Intake flag', 'att', 'alert') + '<span class="sm-s">' + [f.words && !kfWords(f.words).every(function(w){ return kfWords(sum || r.concern).indexOf(w) > -1; }) ? csEsc(v2Cap(f.words)) : '', csEsc(when)].filter(Boolean).join(' · ') + '</span></p>' : '');
     paintPd(el); return;
   }
   var words = r.words ? '<p class="cs-sum">&ldquo;' + csEsc(r.words) + '&rdquo; <span class="cs-cap">&middot; patient&rsquo;s words, from booking</span></p>' : '';
@@ -19546,6 +19621,8 @@ document.addEventListener('keydown', function(e){
 /* ---------- sidebar sections: collapsed by default, title + count + chevron ---------- */
 function v2Sec(k, open){
   if(open === undefined) open = !V2.open[k];
+  /* Ani, 5 Nov: one Patient summary section open at a time in Version 2 */
+  if(open && typeof cv2On === 'function' && cv2On()) Object.keys(V2.open).forEach(function(o){ if(o !== k && V2.open[o]) v2Sec(o, false); });
   V2.open[k] = open;
   var s = v2El('v2s-' + k); if(!s) return;
   var b = s.querySelector('.v2-sbtn'), body = v2El('v2s-' + k + '-b');
@@ -19697,6 +19774,75 @@ function v2SeeAll(k, tab){
   p.innerHTML = '<button type="button" class="cs-link v2-seeall" data-tab="' + tab + '" onclick="csOpenFull(\'' + tab + '\',this)" aria-label="See all ' + (V2_SEEALL[tab] || t) + ' in the Chart tab">See all' + csIc('chevr') + '</button>';
   b.appendChild(p); paintPd(p);
 }
+/* ============================================================
+   PATIENT SUMMARY ROWS (Ani, 5 Nov: the Patient summary as a compact, scannable clinical panel; same sections, same records, same sources).
+   One row for every section: the primary fact, a status tag (always a word, never colour alone) and one quiet secondary line. Detail
+   (prescriber, fills, repeats, earlier values, what a consultant wrote) folds behind the row and ends with the button that opens the source.
+   ============================================================ */
+var SM_OPEN = {};   /* rows the doctor opened stay open through re-renders, per patient */
+function smTag(t, k, ic){ return '<span class="sm-tag' + (k ? ' ' + k : '') + '">' + (ic ? csIc(ic) : '') + '<span>' + t + '</span></span>'; }
+function smGroup(title, items, k, tail, empty){
+  if(!items.length && !tail && !empty) return '';
+  return '<div class="sm-grp' + (k ? ' ' + k : '') + '"><h5 class="sm-gh">' + title + (items.length ? '<span class="sm-gn">' + items.length + '</span>' : '') + '</h5>' +
+    items.join('') + (tail || '') + (!items.length && empty ? '<p class="sm-note">' + empty + '</p>' : '') + '</div>';
+}
+function smDl(pairs){
+  pairs = pairs.filter(function(p){ return p && p[1]; });
+  return pairs.length ? '<dl class="sm-dl">' + pairs.map(function(p){ return '<dt>' + p[0] + '</dt><dd>' + p[1] + '</dd>'; }).join('') + '</dl>' : '';
+}
+function smRow(o){
+  var head = '<span class="sm-r1"><span class="sm-t">' + o.t + '</span>' + (o.aside ? '<span class="sm-as">' + o.aside + '</span>' : '') + '</span>' +
+    (o.s || o.tag ? '<span class="sm-r2">' + (o.tag || '') + (o.s ? '<span class="sm-s">' + o.s + '</span>' : '') + '</span>' : '');
+  var cls = 'sm-row' + (o.cls ? ' ' + o.cls : '');
+  if(o.det){
+    var key = (PC_CURRENT || '') + '|' + o.k;
+    return '<details class="' + cls + '" data-sm="' + csEsc(key) + '"' + (SM_OPEN[key] ? ' open' : '') + '><summary>' + head + csIc('chevdown', 'sm-chev') + '</summary>' +
+      '<div class="sm-det">' + o.det + (o.go ? '<button type="button" class="cs-link sm-src" onclick="' + o.go + '">' + (o.goT || 'Open source') + csIc('chevr') + '</button>' : '') + '</div></details>';
+  }
+  if(!o.go) return '<div class="' + cls + ' sm-static">' + head + (o.after || '') + '</div>';
+  return '<button type="button" class="' + cls + '" onclick="' + o.go + '">' + head + '<span class="vh"> &mdash; ' + (o.goT || 'open the source') + '</span>' + csIc('chevr', 'sm-chev') + '</button>';
+}
+document.addEventListener('toggle', function(e){ var d = e.target; if(d && d.matches && d.matches('details.sm-row[data-sm]')) SM_OPEN[d.getAttribute('data-sm')] = d.open; }, true);
+/* Cedar's words stay apart from the records: their own tinted block, named */
+function smAI(t, label){
+  return '<div class="sm-ai"><span class="cs-ai-ic" aria-hidden="true">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span><p><span class="sm-ai-k">' + (label || 'Cedar') + '</span>' + t + '</p></div>';
+}
+function smCount(n, one, many){ return n + ' ' + (n === 1 ? one : many); }
+/* a section header's attention mark: icon and number, the words in the tooltip and for screen readers */
+function smChip(n, words, k, ic){ return '<span class="sm-tag ' + k + '" title="' + n + ' ' + words + '">' + csIc(ic) + '<span aria-hidden="true">' + n + '</span><span class="vh">' + n + ' ' + words + '</span></span>'; }
+/* Pending (Ani, 5 Nov): Overdue, New / not reviewed, Awaiting results, Scheduled; due dates on the right, the action state as a tag */
+function smPendFill(){
+  var b = v2El('v2s-pend-b'), box = b && b.querySelector('.sm-pend'), name = PC_CURRENT; if(!box || !name) return;
+  var pend = v2Rows(name)['Pending'], G = {over:[], neu:[], wait:[], sched:[]};
+  (pend ? pend[1] : []).forEach(function(x){
+    if(x[0] === '@na' || x[0] === '@bp') return;
+    if(x[0] === '@rm'){ var it = INBOX_ITEMS[x[1]]; if(it) G.neu.push(smRow({t:rmEsc(it.panel), tag:smTag('Not reviewed', 'att', 'eye'), go:'openReview(' + x[1] + ')', goT:'open the report', cls:'att'})); return; }
+    var sub = String(x[1] || ''), k = x[4] === 'Overdue' || /overdue/i.test(sub) ? 'over' : /not back|awaiting|waiting/i.test(sub) ? 'wait' : 'sched';
+    var due = sub.match(/\bdue ([A-Z][a-z]{2} \d{1,2})/), rest = due ? sub.replace(due[0], '').replace(/^[\s,·]+|[\s,·]+$/g, '') : sub;
+    G[k].push(smRow({t:x[0], aside:due ? 'Due ' + due[1] : '', tag:k === 'over' ? smTag('Overdue', 'att', 'clock') : '', s:v2Cap(rest), go:'csOpenFull(\'' + x[2] + '\',this)', cls:k === 'over' ? 'att' : ''}));
+  });
+  /* lab and imaging orders, from the shared mount renderLabOrders fills */
+  [].forEach.call(b.querySelectorAll('.lab-orders-mount .lo2'), function(o, i){
+    var st = (o.querySelector('.lo2-s') || {}).textContent || '', t = (o.querySelector('.lo2-h b') || {}).textContent || 'Order';
+    var k = o.classList.contains('warn') ? 'over' : /^Result in/.test(st) ? 'neu' : 'wait';
+    var ul = o.querySelector('.lo2-t ul'), n = ul ? ul.children.length : 0, extra = [].map.call(o.querySelectorAll(':scope > .lo2-q, :scope > .lo2-rv'), function(e){ return e.outerHTML; }).join('');
+    G[k].push(smRow({k:'ord-' + i, t:csEsc(t), aside:csEsc((o.querySelector('.lo2-d') || {}).textContent || ''), tag:smTag(csEsc(st.split(' · ')[0]), k === 'wait' ? '' : 'att', k === 'over' ? 'alert' : k === 'neu' ? 'eye' : 'clock'),
+      s:smCount(n, 'test', 'tests'), det:(ul ? '<ul class="sm-ul">' + ul.innerHTML + '</ul>' : '') + extra, cls:k === 'wait' ? '' : 'att'}));
+  });
+  box.innerHTML = smGroup('Overdue', G.over, 'att') + smGroup('New / not reviewed', G.neu, 'att') + smGroup('Awaiting results', G.wait) + smGroup('Scheduled', G.sched);
+  var n = G.over.length + G.neu.length + G.wait.length + G.sched.length, sec = v2El('v2s-pend');
+  if(sec){
+    sec.hidden = !n;
+    var sn = sec.querySelector('.v2-sn'), sc = sec.querySelector('.v2-sc');
+    if(sn) sn.textContent = n ? String(n) : '';
+    if(sc){ var chip = G.over.length ? smChip(G.over.length, 'overdue', 'att', 'clock') : G.neu.length ? smChip(G.neu.length, 'new, not reviewed', 'att', 'eye') : ''; sc.innerHTML = chip; sc.hidden = !chip; }
+  }
+  paintPd(sec || b); v2SumEdges();
+}
+(function(){
+  var r0 = renderLabOrders;
+  renderLabOrders = function(){ var x = r0.apply(this, arguments); if(document.querySelector('#v2s-pend-b .sm-pend')) smPendFill(); return x; };
+})();
 function v2RenderSide(name){
   if(!v2On() || !name) return;
   var by = v2Rows(name), L = PT_LAST[name];
@@ -19711,23 +19857,16 @@ function v2RenderSide(name){
   /* physician pass (Ani, 4 Nov: chart Version 2, physician pass, A4/B4: "Medications says 2 but lists 3"): the panel's Medications is built from the same
      model as Prescribe (rxRecModel), with its groups, the PharmaNet-differs marker and Cedar's lines; the count is the number of lines shown. Both layouts. */
   var mp = typeof rxMedPanel === 'function' ? rxMedPanel(name) : null;
-  if(mp) v2SetSec('meds', mp.n, '', mp.h, true);
+  if(mp) v2SetSec('meds', mp.n, mp.att ? smChip(mp.att, mp.att === 1 ? 'needs attention' : 'need attention', 'att', 'alert') : '', mp.h, true);
   else v2SetSec('meds', medsN, '', meds ? v2Lines(meds, name) + src(meds) : '<p class="v2-q">No medications recorded in Simple Care.</p>', true);
   /* T-037 (Daniel, 31 Oct: "Past medical history includes consult reports; surgical history goes under it"; investigations go to the left summary, not Chart review) */
-  var px = crPmhx(name, prev), inv = by['Investigations'];
-  v2SetSec('hist', v2Count(hist) + px.n, '', (hist ? v2Lines(hist, name) + src(hist) : '<p class="v2-q">No conditions recorded in Simple Care.</p>') + px.h, true);
+  var px = crPmhx(name, prev, hist), inv = by['Investigations'];
+  v2SetSec('hist', px.n, '', px.h, true);
   var invH = typeof lrInvHtml === 'function' ? lrInvHtml(name) : {h:inv ? v2Lines(inv, name) : '', n:v2Count(inv)};
-  v2SetSec('inv', invH.n, '', invH.h, !!invH.n);
-  var over = pend ? pend[1].filter(function(x){ return x[4] === 'Overdue'; }).length : 0;
-  /* Orders and pending, in one place: the left Pending section (Ani, 3 Nov). New orders (lab, imaging) land here via the shared lab-orders mount. */
-  v2SetSec('pend', v2Count(pend), over ? '<span class="v2-chip warn">' + csIc('clock') + over + ' overdue</span>' : '',
-    '<div class="v2-pend-ord"><h5 class="kf-h5">Orders</h5><div class="lab-orders-mount"></div></div>' + (pend ? v2Lines(pend, name) : ''), true);
-  if(typeof renderLabOrders === 'function') renderLabOrders();
-  (function(){ var po = document.querySelector('#v2s-pend-b .v2-pend-ord'), mt = po && po.querySelector('.lab-orders-mount');
-    var none = !mt || /^\s*No (lab )?orders\.?\s*$/.test(mt.textContent); if(po) po.hidden = none;
-    var sec = v2El('v2s-pend'); if(sec) sec.hidden = !pend && none;
-    /* physician pass (Ani, 4 Nov: chart Version 2, physician pass, A4: "Manjit's Pending says 2 but lists 3"): the count includes the orders listed above the rows */
-    var sn = sec && sec.querySelector('.v2-sn'), cnt = v2Count(pend) + (none ? 0 : mt.querySelectorAll('.lo2').length); if(sn) sn.textContent = cnt ? String(cnt) : ''; })();
+  v2SetSec('inv', invH.n, invH.out ? smChip(invH.out, 'abnormal', invH.crit ? 'crit' : 'att', invH.crit ? 'crit' : 'alert') : '', invH.h, !!invH.n);
+  /* Pending in workflow groups (smPendFill); the lab orders' shared mount stays hidden here and feeds the groups (Ani, 3 Nov: orders and pending in one place) */
+  v2SetSec('pend', 0, '', '<div class="lab-orders-mount" hidden></div><div class="sm-pend"></div>', true);
+  if(typeof renderLabOrders === 'function') renderLabOrders(); else smPendFill();
   /* Since you last saw: the chart's own section (renderSinceLast), moved here; hidden when it is */
   var slv = v2El('slv'), list = L ? (CS_SINCE[name] || csSinceGeneric(name)) : [];
   v2SetSec('since', list.length, '', null, !!(slv && !slv.hidden));
@@ -19750,34 +19889,43 @@ function v2RenderSide(name){
 
 /* physician pass A4: the Patient summary's Medications from Prescribe's model (rxRecModel): Due for renewal, PharmaNet differs, Other Simple Care
    medications, then PharmaNet's medicines not prescribed at Simple. Each line opens Chart > Medications. Cedar's lines follow the T-038 switch. */
+/* Medications in three groups (Ani, 5 Nov): Needs attention (Cedar's safety alerts, then PharmaNet differs, overdue renewals, doses due), Active
+   medications, Other medications (PharmaNet, not prescribed at Simple Care). Built from the same model as Prescribe (rxRecModel). Each row: the drug and
+   strength, directions and indication, the status as a tag; prescriber, fills, repeats and source fold behind it. */
 function rxMedPanel(name){
   if(name !== PC_CURRENT || typeof rxRecModel !== 'function' || typeof rxState !== 'function') return null;
   var st = rxState(name), M; try { M = rxRecModel(st); } catch(e){ return null; }
+  if(!M.length) return {h:'<p class="v2-q">No medications recorded in Simple Care.</p>', n:0, att:0};
   var plain = function(h){ return String(h || '').replace(/<span class="rp-sub">/g, ' · ').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(); };
-  var line = function(it){
-    var r = it.row, l2 = [];
-    if(it.kind === 'dose' && r) l2.push('<span class="v2-l2 cv2-mdiff">PharmaNet differs: ' + csEsc(r.strength) + ' · ' + csEsc(rxDirs(r)) + '</span>');
-    if(it.kind === 'other') it.others.forEach(function(x){ l2.push('<span class="v2-l2 cv2-mdiff">Also filled from ' + csEsc(x.by) + ', ' + csEsc(x.spec || 'not a Simple Care doctor') + ' · ' + rxDate(rxFilled(x)) + '</span>'); });
-    if(it.side === 'pn' && r) l2.push('<span class="v2-l2">' + csEsc(rxWho(r)) + (it.filled ? ' · filled ' + rxDate(it.filled) : '') + '</span>');
-    var why = it.kind === 'dose' && !it.conf && r && r.why && cdOn('rx') ? '<span class="v2-l2 cv2-mwhy"><span class="kf-src">Cedar: ' + csEsc(v2Cap(r.why.t)) + ' Source: ' + csEsc(r.why.src) + '</span></span>' : '';
-    var main = it.side === 'pn' ? csEsc(it.drug) + (r ? ' ' + csEsc(r.strength) + ' · ' + csEsc(rxDirs(r)) : '') : csEsc(it.drug) + ' ' + csEsc(it.sText);
-    return '<button type="button" class="v2-line cv2-med" onclick="csOpenFull(\'medications\',this)">' +
-      (it.ind ? '<span class="v2-l0">' + csEsc(it.ind) + '</span>' : '') + '<span class="v2-l1">' + main + '</span>' + l2.join('') + why +
-      '<span class="v2-l2">' + csEsc(plain(rxSupply(it))) + '</span><span class="vh"> &mdash; open the source</span>' + csIc('chevr', 'v2-go') + '</button>';
+  var lead = function(h){ var m = String(h || '').match(/<b>(.*?)<\/b>/); return m ? m[1] : plain(h); };
+  var flags = cdOn('rx') && typeof rxCedarFlag === 'function' ? rxCedarFlag(M) : [];
+  var flagged = function(it){ return flags.some(function(f){ return f.toLowerCase().indexOf(String(it.drug).toLowerCase()) > -1; }); };
+  var row = function(it){
+    var r = it.row, pn = it.side === 'pn', sup = rxSupply(it);
+    var parts = pn ? [r ? r.strength : '', r ? rxDirs(r) : ''] : String(it.sText || '').split(' · ');
+    var tag = it.group === 'diff' ? smTag('PharmaNet differs', 'att', 'alert') : it.group === 'due' ? smTag(lead(sup), 'att', 'clock') : it.kind === 'short' ? smTag('Finished') : '';
+    if(pn && flagged(it)) tag += smTag('Cedar flag', 'ai');
+    var det = smDl([
+      ['Status', csEsc(plain(sup))],
+      it.kind === 'dose' && r ? ['PharmaNet', csEsc(r.strength + ' · ' + rxDirs(r))] : null,
+      ['Prescriber', r ? csEsc(rxWho(r)) : ''],
+      ['Filled', pn && it.filled ? rxDate(it.filled) : ''],
+      ['Also filled', (it.others || []).map(function(x){ return csEsc(x.by + ', ' + (x.spec || 'not a Simple Care doctor')) + ' · ' + rxDate(rxFilled(x)); }).join('<br>')],
+      ['Source', pn ? 'PharmaNet' : 'Simple Care record']
+    ]);
+    if(it.kind === 'dose' && !it.conf && r && r.why && cdOn('rx')) det += smAI(csEsc(v2Cap(r.why.t)) + ' <span class="sm-ai-src">Source: ' + csEsc(r.why.src) + '</span>');
+    return smRow({k:'med-' + it.side + '-' + it.drug, t:csEsc(it.drug) + (parts[0] ? ' <span class="sm-dose">' + csEsc(parts[0]) + '</span>' : ''), tag:tag,
+      s:[parts.slice(1).join(' · '), it.ind].filter(Boolean).map(csEsc).join(' · '), det:det, go:'csOpenFull(\'medications\',this)', goT:'Open in Medications',
+      cls:it.group === 'due' || it.group === 'diff' ? 'att' : ''});
   };
-  var simple = M.filter(function(it){ return it.side === 'simple'; }), pn = M.filter(function(it){ return it.side === 'pn'; }), h = '';
-  RX_GROUPS.forEach(function(g){
-    var its = simple.filter(function(it){ return it.group === g[0]; }); if(!its.length) return;
-    h += '<h5 class="v2-sub">' + g[1] + '</h5>' + its.map(line).join('');
-  });
-  if(pn.length){
-    var flags = cdOn('rx') && typeof rxCedarFlag === 'function' ? rxCedarFlag(M) : [];
-    h += '<h5 class="v2-sub">PharmaNet: not prescribed at Simple</h5>' +
-      (flags.length ? '<p class="cv2-mflag"><span class="cs-ai-ic" aria-hidden="true">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span><span><b>Cedar flagged:</b> ' + flags.map(csEsc).join(' ') + '</span></p>' : '') +
-      pn.map(line).join('');
-  }
-  if(!M.length) h = '<p class="v2-q">No medications recorded in Simple Care.</p>';
-  return {h:h, n:M.length};
+  var rank = function(it){ return it.group === 'diff' ? 0 : /overdue/.test(plain(rxSupply(it))) ? 1 : 2; };
+  var att = M.filter(function(it){ return it.side === 'simple' && (it.group === 'due' || it.group === 'diff'); }).sort(function(a, b){ return rank(a) - rank(b); });
+  var act = M.filter(function(it){ return it.side === 'simple' && att.indexOf(it) < 0; }), oth = M.filter(function(it){ return it.side === 'pn'; });
+  var na = flags.length + att.length;
+  var h = (na ? '<div class="sm-grp att"><h5 class="sm-gh">Needs attention<span class="sm-gn">' + na + '</span></h5>' +
+      flags.map(function(f){ return smAI(csEsc(f), 'Cedar &middot; safety alert'); }).join('') + att.map(row).join('') + '</div>' : '') +
+    smGroup('Active medications', act.map(row)) + smGroup('Other medications', oth.map(row));
+  return {h:h, n:M.length, att:na};
 }
 
 /* ---------- T-037 Chart review and Past medical history (Daniel, 31 Oct review, section 7 "Chart view") ----------
@@ -19911,12 +20059,18 @@ function crConsults(name){
   var P2 = CP_PENDING[name]; if(P2) out.push([P2.src, P2.recs.length + ' recommendations not yet in your plan', 'consults']);
   return out;
 }
-function crPmhx(name, prev){
-  var surg = PT_SURG[name] || [], h = '', n = surg.length;
-  h += '<h5 class="v2-sub">Surgical history</h5>' + (surg.length ? surg.map(function(s){ return v2Line([s[0], s[1], 'problems']); }).join('') : '<p class="v2-q">Not recorded in Simple Care.</p>');
-  var cons = CS_REL[name] ? (prev ? prev[1].filter(function(x){ return !/&middot;\s*you$/.test(x[0]); }) : []) : crConsults(name);
-  if(cons.length){ h += '<h5 class="v2-sub">Consult reports</h5>' + v2Lines([null, cons], name); n += cons.length; }
-  return {h:h, n:n};
+function crPmhx(name, prev, hist){
+  var cond = hist ? hist[1].filter(function(x){ return x[0].charAt(0) !== '@'; }).map(function(x){ return smRow({t:x[0], s:v2Cap(x[1] || ''), go:'csOpenFull(\'' + x[2] + '\',this)'}); }) : [];
+  var surg = (PT_SURG[name] || []).map(function(x){ return smRow({t:csEsc(x[0]), aside:csEsc(x[1]), go:'csOpenFull(\'problems\',this)'}); });
+  var cons = (CS_REL[name] ? (prev ? prev[1].filter(function(x){ return !/&middot;\s*you$/.test(x[0]); }) : []) : crConsults(name)).map(function(x, i){
+    var lab = v2Parts(x[0]), q = x[3] && CS_QUOTES[x[3]];
+    var o = {k:'cons-' + i, t:lab.length > 1 ? lab.slice(1).join(', ') : lab[0], aside:lab.length > 1 ? lab[0] : '', s:v2Cap(x[1] || ''), go:'csOpenFull(\'' + x[2] + '\',this)', goT:'Open the report'};
+    if(q) o.det = '<p class="sm-dh">What they wrote</p><div class="cs-quote">' + q.map(function(t){ return '<p>&ldquo;' + t + '&rdquo;</p>'; }).join('') + '</div>';
+    return smRow(o);
+  });
+  var h = smGroup('Medical conditions', cond, '', hist && hist[2] ? '<p class="sm-note">' + hist[2] + '</p>' : '', 'No conditions recorded in Simple Care.') +
+    smGroup('Surgical history', surg, '', '', 'Not recorded in Simple Care.') + smGroup('Consultation reports', cons);
+  return {h:h, n:cond.length + surg.length + cons.length};
 }
 
 /* T-037 (Daniel, 31 Oct: investigations belong in the left summary; results the LifeLabs way): the latest results, critical and out of range first,
@@ -19925,18 +20079,29 @@ function crPmhx(name, prev){
 function lrInvHtml(name){
   if(typeof rsSync === 'function') rsSync(name);
   var na = CS.empty ? [] : csNAItems(name).filter(function(x){ return x.test; }).map(function(x){ return x.test.n; });
-  var list = rsSorted(name).map(function(o){ return o.t; }).filter(function(t){ return !(na.indexOf(t.n) > -1 && rsLast(t)[0] === 'Today'); }).slice(0, 4);
-  var h = list.map(function(t){
-    var p = rsLast(t), fl = lrFlag(p[2], p[1]), pr = lrTwo(t.pts.slice(0, -1));
-    return '<button type="button" class="v2-line lr-inv" onclick="csOpenFull(\'results\',this)"><span class="v2-l0">' + t.n + '</span>' +
-      '<span class="v2-l1"><span class="lr-v' + (fl.crit ? ' crit' : '') + '">' + p[1] + '</span> ' + t.u + ' ' + (fl.out ? lrWord(p[2], p[1]) : '<span class="lr-w in">Within range</span>') + '</span>' +
-      '<span class="v2-l2">Reference ' + lrRef(t) + '</span>' +
-      '<span class="v2-l2">' + p[0] + ', ' + (p[3] === 'patient' ? 'uploaded by patient' : p[3]) + '</span>' +
-      '<span class="v2-l2">' + (pr.length ? 'Previous ' + lrPrevList(pr) : 'No previous result') + '</span>' +
-      '<span class="vh"> &mdash; open the source</span>' + csIc('chevr', 'v2-go') + '</button>';
-  }).join('');
-  var bp = v2BP(name);
-  return {h:h + bp, n:list.length + (bp ? 1 : 0)};
+  var list = rsSorted(name).map(function(o){ return o.t; }).filter(function(t){ return !(na.indexOf(t.n) > -1 && rsLast(t)[0] === 'Today'); });
+  var out = [], inr = [], crit = false;
+  list.forEach(function(t){
+    var p = rsLast(t), fl = lrFlag(p[2], p[1]), pr = lrTwo(t.pts.slice(0, -1)), ref = lrRef(t);
+    var nums = t.pts.map(function(x){ return parseFloat(x[1]); });
+    var spark = t.pts.length > 1 && nums.every(function(v){ return !isNaN(v); }) ? '<span class="sm-spark">' + prSpark([nums], 44, 18) + '</span>' : '';
+    var arrow = fl.out && /high|low/i.test(fl.word) ? '<span aria-hidden="true">' + (fl.up ? '&uarr;' : '&darr;') + '</span> ' : '';
+    var tag = fl.crit ? smTag(fl.word, 'crit', 'crit') : fl.out ? smTag(arrow + fl.word, 'att') : smTag('Normal', 'ok');
+    if(fl.crit) crit = true;
+    (fl.out ? out : inr).push(smRow({k:'inv-' + t.n, t:t.n, aside:spark + '<b>' + p[1] + '</b> ' + t.u, tag:tag,
+      s:[ref ? 'Ref ' + ref : '', p[0], pr.length ? 'prev ' + pr[0].v : ''].filter(Boolean).join(' · '),
+      det:smDl([['Previous', pr.length ? lrPrevList(pr) : 'No previous result'], ['Reference', ref], ['Collected', p[0]], ['Source', p[3] === 'patient' ? 'Uploaded by patient' : p[3]]]),
+      go:'csOpenFull(\'results\',this)', goT:'Open in Results', cls:fl.out ? 'att' : ''}));
+  });
+  var bp = (PT_READINGS[name] || {}).bp || [], home = [];
+  if(bp.length){
+    var last = bp[bp.length - 1];
+    var sp = bp.length > 1 ? '<span class="sm-spark">' + prSpark([bp.map(function(x){ return +x[1].split('/')[0]; }), bp.map(function(x){ return +x[1].split('/')[1]; })], 44, 18) + '</span>' : '';
+    home.push(smRow({k:'inv-bp', t:'Home BP', aside:sp + '<b>' + last[1] + '</b> mmHg', s:last[0] + ' · ' + smCount(bp.length, 'reading', 'readings') + ' since ' + bp[0][0],
+      det:smDl([['Readings', bp.slice().reverse().map(function(x){ return x[1] + ' <span class="sm-q">' + x[0] + '</span>'; }).join('<br>')], ['Source', 'Home cuff, patient-reported']]),
+      go:'csOpenFull(\'results\',this)', goT:'Open in Results'}));
+  }
+  return {h:smGroup('Out of range', out, 'att') + smGroup('Within range', inr) + smGroup('Home readings', home), n:out.length + inr.length + home.length, out:out.length, crit:crit};
 }
 
 /* ---------- Cedar · Key clinical findings (Daniel, 11 Oct) ----------
@@ -19999,13 +20164,10 @@ function kfVisits(name, concern){
   list.sort(function(a, b){ return (b.related ? 1 : 0) - (a.related ? 1 : 0); });
   return list;
 }
-function kfVisitLine(x){
+function kfVisitLine(x, i){
   var v = x.v;
-  return '<button type="button" class="v2-line" onclick="csOpenFull(\'documents\',this)"><span class="v2-l0">' + csEsc(csShort(v.date)) + '</span>' +
-    '<span class="v2-l1">' + csEsc(v.why) + (x.related ? '<span class="v2-chip">Related to today</span>' : '') + '</span>' +
-    '<span class="v2-l2">Decided: ' + csEsc((v.plan || []).slice(0, 2).join('; ')) + '</span>' +
-    '<span class="v2-l2"><span class="kf-src">Source: Visit note</span></span>' +
-    '<span class="vh"> &mdash; open the visit note</span>' + csIc('chevr', 'v2-go') + '</button>';
+  return smRow({k:'enc-' + i, t:csEsc(v.why), aside:csEsc(csShort(v.date)), tag:x.related ? smTag('Related to today', 'ai') : '',
+    det:smDl([['Decided', (v.plan || []).map(csEsc).join('<br>')]]), go:'csOpenFull(\'documents\',this)', goT:'Open the visit note'});
 }
 function v2RenderKey(el, name, by){
   var pend = by['Pending'];
@@ -24143,15 +24305,17 @@ function cv2Side(name){
   if(!cv2On() || !name || typeof v2SetSec !== 'function') return;
   /* physician pass A1: the same source as the header and Prescribe (ptAllergy) */
   var AL = ptAllergy(name), n = AL.chart.length + AL.pending.length;
-  var body = n ? AL.chart.map(function(x){ return '<p class="cv2-alg-l">' + csIc('cardwarn') + '<span><b>' + csEsc(x.label) + '</b>' + (x.rx ? '<span class="cv2-alg-r">' + csEsc(v2Cap(x.rx)) + '</span>' : '') + '</span></p>'; }).join('') +
-      AL.pending.map(function(x){ return '<p class="cv2-alg-l">' + csIc('cardwarn') + '<span><b>' + csEsc(x.label) + '</b><span class="cv2-alg-r">' + csEsc(v2Cap(x.rx)) + ', PharmaNet' + (x.when ? ', ' + csEsc(x.when) : '') + '</span><span class="cv2-alg-r">Not yet on the chart list</span></span></p>' +
-        '<p class="cv2-alg-a"><button type="button" class="btn cs-al-add" onclick="ptAllergyAdd(' + x.idx + ')" aria-label="Add ' + csEsc(x.label) + ' to the chart allergies"><span class="ic" data-pdic="plus"></span>Add to chart</button></p>'; }).join('')
-    : AL.state === 'none' ? '<p class="cv2-alg-l">' + csIc('alert') + '<span><b>Not recorded</b></span></p>'
-    : '<p class="cv2-alg-l cv2-alg-ok">' + csIc('complete') + '<span>No known drug allergies</span></p>';
-  v2SetSec('alg', n, '', body, true);
-  /* Previous encounters: the doctor's earlier Simple Care visits (PT_LAST), the one related to today's concern marked; each opens its note */
+  /* Ani, 5 Nov: a compact status, three distinct states: known allergies, no known drug allergies, status not recorded */
+  var body = n ? AL.chart.map(function(x){ return smRow({t:csEsc(x.label), tag:smTag('Allergy', 'crit', 'cardwarn'), s:x.rx ? csEsc(v2Cap(x.rx)) : ''}); }).join('') +
+      AL.pending.map(function(x){ return smRow({t:csEsc(x.label), tag:smTag('Not on chart list', 'att', 'cardwarn'), s:csEsc(v2Cap(x.rx)) + ' · PharmaNet' + (x.when ? ' · ' + csEsc(x.when) : ''),
+        after:'<button type="button" class="btn cs-al-add sm-add" onclick="ptAllergyAdd(' + x.idx + ')" aria-label="Add ' + csEsc(x.label) + ' to the chart allergies"><span class="ic" data-pdic="plus"></span>Add to chart</button>'}); }).join('')
+    : AL.state === 'none' ? smRow({t:'Allergy status unknown', tag:smTag('Not recorded', 'att', 'alert')})
+    : smRow({t:'No known drug allergies'});
+  var chip = n ? smChip(n, n === 1 ? 'known allergy' : 'known allergies', 'crit', 'cardwarn') : AL.state === 'none' ? smTag('Unknown', 'att', 'alert') : smTag('NKDA', 'ok', 'complete');
+  v2SetSec('alg', 0, chip, body, true);
+  /* Previous encounters: the doctor's earlier Simple Care visits (PT_LAST), collapsed; the header shows the count and the latest date */
   var vis = typeof kfVisits === 'function' ? kfVisits(name, '') : [];
-  v2SetSec('enc', vis.length, '', vis.map(kfVisitLine).join(''), !!vis.length);
+  v2SetSec('enc', vis.length, vis.length ? smTag(csEsc(csShort(vis[0].v.date))) : '', vis.map(kfVisitLine).join(''), !!vis.length);
   if(vis.length) v2SeeAll('enc', 'timeline');
   v2SumEdges();
   if(!cv2CtxOpen() && cv2Wide()) cv2Rail();
