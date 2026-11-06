@@ -129,33 +129,53 @@ html body { background: var(--paper); }
   background: var(--accent);
   box-shadow: none;
 }
-.ai-head { background: var(--gradient-agent); }
-.ai-launcher .spark,
-.ai-head .spark { background: linear-gradient(135deg, var(--color-navy-600), var(--color-navy-300)); }
-.ai-launcher { box-shadow: 0 12px 30px rgb(22 38 96 / 0.28); }
 .stat.feature {
   background: linear-gradient(135deg, var(--color-navy-900) 0%, var(--color-navy-700) 100%);
   box-shadow: 0 10px 28px rgb(22 38 96 / 0.24);
 }
-.ai-tag {
-  border-color: var(--brand-line);
-  color: var(--brand-ink);
-  background: var(--brand-wash);
-}
+
+/* AI (Cedar): SimpleCare's AI gradient from simplecare.ca, pale blue-grey to
+ * pale yellow (--gradient-ai), with navy on it (--color-on-ai), in light and
+ * dark. Every surface the page painted with --gradient-agent follows. */
+:root,
+:root[data-theme="dark"] { --gradient-agent: var(--gradient-ai); }
 html body .topbar .ai-fab {
-  background: var(--gradient-agent) !important;
-  box-shadow: 0 4px 14px rgb(22 38 96 / 0.28);
+  background: var(--gradient-ai) !important;
+  color: var(--color-on-ai);
+  box-shadow: 0 2px 8px rgb(22 38 96 / 0.12);
 }
-html body .topbar .ai-fab:hover { box-shadow: 0 6px 18px rgb(22 38 96 / 0.36); }
+html body .topbar .ai-fab:hover { box-shadow: 0 4px 14px rgb(22 38 96 / 0.18); }
+/* The page forces the AI icon white with !important; navy on the pale gradient. */
+html body .topbar .ai-fab .ic,
+html body .topbar .ai-fab svg { color: var(--color-on-ai) !important; }
+.ai-launcher { color: var(--color-on-ai); box-shadow: 0 8px 24px rgb(22 38 96 / 0.16); }
+.ai-head,
+.ai-head b,
+.ai-head .subh,
+.ai-head .close,
+#ai-panel .ai-head .pd-grip,
+.rv-aitag,
+.ai-banner .sp,
+.vd-cophd .sp { color: var(--color-on-ai); }
+.ai-head .subh { opacity: 0.75; }
+#ai-panel .ai-head .pd-grip:hover { background: rgb(22 38 96 / 0.08); color: var(--color-on-ai); }
+.ai-launcher .spark,
+.ai-head .spark { background: rgb(255 255 255 / 0.6); color: var(--color-on-ai); }
+.ai-tag {
+  border-color: var(--color-brand-ai-start);
+  color: var(--color-on-ai);
+  background: var(--gradient-ai);
+}
 #screen-earnings .sw.paid,
 #screen-earnings .ern-tip .k.paid { background: var(--accent); }
 #screen-earnings .ern-wd.slow path { fill: var(--accent); }
 /* The earnings chart sets its bar colour from script, as a fill attribute; CSS outranks it. */
 #screen-earnings [fill="#4353E8" i] { fill: var(--accent); }
-/* The AI mark's gradient stops → the brand's agent gradient. */
-stop[stop-color="#5FDDFF" i] { stop-color: #8cc6f0; }
-stop[stop-color="#4F8CFF" i] { stop-color: #3c6ab2; }
-stop[stop-color="#4353E8" i] { stop-color: var(--color-navy-900); }
+/* The AI mark (the page's #aiGrad, drawn on icons): SimpleCare's AI blue-to-
+ * yellow, in the deeper version that shows on white and dark surfaces. */
+stop[stop-color="#5FDDFF" i] { stop-color: var(--color-brand-ai-mark-start); }
+stop[stop-color="#4F8CFF" i] { stop-color: color-mix(in oklab, var(--color-brand-ai-mark-start), var(--color-brand-ai-mark-end)); }
+stop[stop-color="#4353E8" i] { stop-color: var(--color-brand-ai-mark-end); }
 #screen-earnings .ern-bar.on .ern-hit,
 #screen-earnings .ern-wd:hover .ern-hit { fill: rgb(22 38 96 / 0.06); }
 
