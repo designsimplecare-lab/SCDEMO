@@ -709,8 +709,6 @@
   /* search gives way before anything else when the bar runs out of room */
   /* search belongs with the filters it narrows, inside the table's card */
   .q-toolbar .q-tools{margin-left:auto;min-width:0;flex:0 1 auto;order:3;}
-  .q-toolbar .q-search{min-width:0;max-width:100%;}
-  .q-search:focus-within{background:var(--panel);border-color:var(--line-strong);}
 
   /* ===== day sheet filters — one dropdown per thing you can narrow by ===== */
   /* Daniel: "I want them call windows like here like boom boom boom boom."
@@ -773,7 +771,6 @@
     color:var(--accent-ink);cursor:pointer;padding:0 4px;
   }
   .qf-clear:hover{text-decoration:underline;}
-  .q-toolbar .q-search input{min-width:0;width:100%;}
   .work-tabs .wt-new{margin-left:0;}
   .work-tabs .sect-title{margin-right:auto;}
   .win-strip{background:var(--wash);border-radius:22px;padding:4px;gap:2px;display:inline-flex;width:auto;flex-wrap:nowrap;margin:0;}
@@ -1003,16 +1000,6 @@
     border-radius:50%;background:var(--accent-wash);color:var(--accent-ink);font-size:15px;font-weight:800;
     font-variant-numeric:tabular-nums;}
   .q-pos.done{background:var(--wash);color:var(--ink-faint);font-weight:600;}
-  .q-search{display:inline-flex;align-items:center;gap:7px;background:var(--wash);border:1px solid transparent;
-    border-radius:999px;padding:0 8px 0 14px;height:38px;min-width:250px;transition:border-color .12s;}
-  .q-search:focus-within{border-color:var(--accent);}
-  .q-search .ic{width:17px;height:17px;color:var(--ink-faint);flex-shrink:0;}
-  .q-search input{border:none;outline:none;background:none;font-family:inherit;font-size:14px;color:var(--ink);
-    flex:1;min-width:0;padding:0;}
-  .q-search input::placeholder{color:var(--ink-faint);}
-  .q-clear{display:none;border:none;background:var(--wash);color:var(--ink-soft);border-radius:50%;
-    width:20px;height:20px;line-height:1;cursor:pointer;font-family:inherit;font-size:15.5px;flex-shrink:0;}
-  .q-search.has-value .q-clear{display:block;}
   .q-noresult{font-size:14.5px;color:var(--ink-faint);padding:18px 4px;}
 
   /* ============================================================
@@ -2393,7 +2380,6 @@
   /* the placeholder names three things you can search by, so the field
      has to be wide enough to show all three */
   .q-toolbar .q-tools{flex:0 0 auto;}
-  .q-toolbar .q-search{flex:0 0 268px;min-width:268px;}
   .q-toolbar{flex-wrap:wrap;row-gap:10px;}
 
   /* the presence dot belongs on the icon's shoulder, not adrift in the
@@ -2529,7 +2515,6 @@
   .q-table .status-pill{font-size:15px;}
   .q-pos,.q-pos.done{font-size:16px;}
   .work-tabs .wt-new{font-size:15.5px;}
-  .q-search input,.q-search input::placeholder{font-size:15px;}
   .qf-btn{font-size:14.5px;}
   .q-hoverbar .btn{font-size:14.5px;}
   .al-who b{font-size:16px;}
@@ -2546,8 +2531,6 @@
   .q-toolbar .day-nav::before{display:none;}
 
   /* the field says what it is */
-  .q-search .ic{width:18px;height:18px;color:var(--ink-faint);flex-shrink:0;display:inline-flex;}
-  .q-search .ic svg{width:100%;height:100%;display:block;}
 
   /* the larger type needs its columns back: 'MSP · Check required' wanted
      178px in a 168px cell, and 'Technical Support' broke to two lines */
@@ -2605,7 +2588,6 @@
   /* one icon size across the product: 24x24, the grid Mage draws on */
   .ic,
   .nav-icon .ic,
-  .q-search .ic,
   .q-hoverbar .btn .ic,
   .q-table td.q-card .q-ver .ic,
   .work-tabs .wt-new .ic,
@@ -2686,7 +2668,6 @@
     background:#FFFFFF;border-color:#FFFFFF;color:#000;
   }
   :root[data-theme="dark"] .q-table td.q-bill button.bill-pill:hover::after{border-right-color:#000;border-bottom-color:#000;}
-  :root[data-theme="dark"] .q-search{background:var(--wash);}
   :root[data-theme="dark"] .profile-trigger{background:var(--panel);}
   :root[data-theme="dark"] .pf-status{box-shadow:0 0 0 2.5px var(--panel);}
 
@@ -3540,9 +3521,7 @@
   #screen-today .qwin button{height:44px;padding:0 16px;font-size:15px;}
   #screen-today .qf-btn{height:44px;min-height:44px;font-size:15px;}
   #screen-today .qf-btn .qf-v{font-weight:600;}
-  #screen-today .q-search{min-height:44px;}
-  #screen-today .q-search input{font-size:15px;}
-
+    
   /* table header and window separators: readable, and quiet */
   #screen-today .q-table th{font-size:14px;font-weight:500;letter-spacing:0;color:var(--ink-soft);}
   #screen-today .q-sep td{background:transparent;}
@@ -7792,9 +7771,6 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #ps-ov .ps-safe{height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 16px;border:1px solid var(--line-strong);border-radius:999px;background:var(--panel);font:inherit;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;}
 #ps-ov .ps-safe[aria-checked="true"]{background:var(--accent);border-color:var(--accent);color:#fff;}
 /* the Home field opens the search; its shortcut sits inside it */
-#screen-today .q-search .ps-kbd{flex:none;margin:0 4px 0 6px;padding:0 6px;border-radius:6px;background:var(--panel);font:inherit;font-size:14px;line-height:22px;color:var(--ink-soft);}
-#screen-today .q-search.has-value .ps-kbd{display:none;}
-#screen-today .q-search:has(.ps-kbd){min-width:320px;}
 /* top bar: Find a patient, and safe mode (labelled only while on, in the current-state blue) */
 .topbar #ps-tb,.topbar #ps-safe-tb{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:54px;height:54px;padding:0;border:0;border-radius:999px;background:#fff;box-shadow:0 1px 2px rgba(23,24,28,.05);color:var(--ink);cursor:pointer;font:inherit;font-size:15px;font-weight:600;}
 .topbar #ps-tb .ic,.topbar #ps-safe-tb .ic{display:inline-flex;width:22px;height:22px;}
@@ -8025,14 +8001,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
               <span class="day-count" id="day-count"></span>
             </div>
             <div class="q-tools">
-              <div class="q-search">
-                <span class="ic" data-pdic="search"></span>
-                <!-- Daniel's patient search spec v2.3 §3 (5 Nov): "One search control is reachable from the queue, chart, inbox and worklists (Ctrl+K)".
-                     This field no longer filters the day sheet on its own; typing, a click or Enter opens the one search (psFromField) with what was typed. -->
-                <input type="text" id="queue-search" placeholder="Search by name, PHN, DOB" autocomplete="off" aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K" oninput="psFromField(this)" onclick="psFromField(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();psFromField(this);}">
-                <kbd class="ps-kbd" id="ps-kbd-home" aria-hidden="true">Ctrl K</kbd>
-                <button class="q-clear" id="queue-search-clear" onclick="clearQueueSearch()" title="Clear">&times;</button>
-              </div>
+              <!-- Ani, 5 Nov: one search. The top bar's search (Ctrl+K) is the only one; it lists today's day sheet first. -->
             </div>
             <div class="qwin" id="qwin" role="group" aria-label="Call window"></div>
             <div class="qf-row" id="qf-row"></div>
@@ -10420,18 +10389,6 @@ function editWindow(name){
   r.winLen = WIN_LENGTHS[(i+1) % WIN_LENGTHS.length];
   renderQueue();
   toast(firstLast(name)+' \u00b7 call window set to '+r.winLen+' min');
-}
-function filterQueueSearch(v){
-  queueSearch = v || '';
-  var wrap = document.querySelector('.q-search');
-  if(wrap) wrap.classList.toggle('has-value', !!queueSearch);
-  renderQueue();
-}
-function clearQueueSearch(){
-  var inp = document.getElementById('queue-search');
-  if(inp) inp.value = '';
-  filterQueueSearch('');
-  if(inp) inp.focus();
 }
 function firstLast(n){ return n.split(',')[0].trim(); }
 function qInitials(n){ var p=firstLast(n).split(' ').filter(Boolean); return (((p[0]||'')[0]||'')+((p[1]||'')[0]||'')).toUpperCase(); }
@@ -25096,7 +25053,6 @@ function psClose(keepFocus){
   var op = PS.opener; PS.opener = null;
   if(keepFocus !== true && op && document.contains(op) && op.getClientRects().length) op.focus({preventScroll:true});
 }
-function psFromField(el){ var v = el.value; el.value = ''; var w = el.closest('.q-search'); if(w) w.classList.remove('has-value'); psOpen(v); }
 function psSafe(on){
   PS.safe = typeof on === 'boolean' ? on : !PS.safe;
   try { localStorage.setItem('sc-ps-safe', PS.safe ? '1' : '0'); } catch(e){}
