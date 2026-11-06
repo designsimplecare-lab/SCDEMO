@@ -14895,11 +14895,7 @@ function rxRender(){
   m.scrollTop = sm; ra.scrollTop = sr; if(bd) bd.scrollTop = sb;
   var t = fk && sh.querySelector('[data-fk="' + fk.replace(/"/g, '') + '"]');
   if(!t && fp) t = sh.querySelector('[data-fk="' + fp + '"]');
-  if(t && inSheet){
-    t.focus({preventScroll:true});
-    /* a design-system button renders its inside a moment later; focus it once it can take focus */
-    if(t.tagName.indexOf('SC-') === 0){ var tries = 0, again = function(){ if(document.activeElement === t || !t.isConnected || ++tries > 10) return; t.focus({preventScroll:true}); requestAnimationFrame(again); }; requestAnimationFrame(again); }
-  }
+  if(t && inSheet) t.focus({preventScroll:true});
   var ot = document.getElementById('rx-ovt'); if(ot){ if(ev != null) ot.value = ev; if(RX_UI.ovFocus){ ot.focus(); RX_UI.ovFocus = false; } }
   if(typeof v2SyncHead === 'function' && v2On()) v2SyncHead();
 }
