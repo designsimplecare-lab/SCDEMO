@@ -7651,6 +7651,9 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-b:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-b .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-b svg{width:20px;height:20px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-redo .ic{transform:scaleX(-1);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-b.on{background:var(--brand-wash);color:var(--brand-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-doc b{font-weight:700;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-doc ol{margin:0;padding-left:24px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-sep{width:1px;height:24px;margin:0 6px;background:var(--line);flex:none;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-tools{display:flex;align-items:center;flex:1 1 auto;min-width:0;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 .nd-tools #v2-note-acts{display:flex;align-items:center;gap:4px;width:100%;margin:0;}
@@ -17329,18 +17332,23 @@ var ND_SOAP = ['Subjective', 'Objective', 'Assessment', 'Plan'];
 var ND_HINT = {Subjective:'History of present illness, symptoms, relevant history', Objective:'Examination findings, vitals, investigations',
   Assessment:'Clinical impressions and diagnoses', Plan:'Treatment, follow-up, safety netting'};
 function ndEsc(t){ return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+/* bold, italic and underline live in the text as **bold**, *italic* and __underline__ (Ani, 5 Nov: "why are you not adding italic, bold formatting for notes") */
+function ndFmt(t){
+  return ndEsc(t).replace(/\*\*(\S(?:.*?\S)?)\*\*/g, '<b>$1</b>').replace(/__(\S(?:.*?\S)?)__/g, '<u>$1</u>')
+    .replace(/(^|[^*\w])\*(\S(?:.*?\S)?)\*(?![*\w])/g, '$1<i>$2</i>');
+}
 function ndHead(line){ var m = line.match(/^\s*([A-Z][A-Za-z0-9 ,'’\/()\-]{0,40}):\s*$/); return m ? m[1].trim() : null; }
 /* text → document */
 function ndHtml(text){
-  var lines = String(text || '').replace(/\r/g, '').split('\n'), out = [], ul = null, heads = [];
-  var flush = function(){ if(ul){ out.push('<ul>' + ul.join('') + '</ul>'); ul = null; } };
+  var lines = String(text || '').replace(/\r/g, '').split('\n'), out = [], ul = null, lt = 'ul', heads = [];
+  var flush = function(){ if(ul){ out.push('<' + lt + '>' + ul.join('') + '</' + lt + '>'); ul = null; } };
   lines.forEach(function(L){
     var h = ndHead(L);
     if(h){ flush(); heads.push(h.toLowerCase()); out.push('<h4>' + ndEsc(h) + '</h4>'); return; }
-    var b = L.match(/^\s*[-•*]\s+(.*)$/);
-    if(b){ (ul = ul || []).push('<li>' + ndEsc(b[1]) + '</li>'); return; }
+    var b = L.match(/^\s*[-•*]\s+(.*)$/), n = !b && L.match(/^\s*\d+[.)]\s+(.*)$/);
+    if(b || n){ var k = b ? 'ul' : 'ol'; if(ul && lt !== k) flush(); lt = k; (ul = ul || []).push('<li>' + ndFmt((b || n)[1]) + '</li>'); return; }
     flush();
-    if(L.trim()) out.push('<p>' + ndEsc(L) + '</p>');
+    if(L.trim()) out.push('<p>' + ndFmt(L) + '</p>');
   });
   flush();
   /* the four SOAP headings are always there to write under; the ones the text lacks follow it, each with its hint */
@@ -17352,13 +17360,24 @@ function ndHtml(text){
 function ndText(doc){
   var blocks = [], cur = {h:null, lines:[]};
   var push = function(){ blocks.push(cur); };
-  var lineOf = function(n){ return (n.innerText || n.textContent || '').replace(/ /g, ' ').replace(/\s+$/, ''); };
+  var mark = {B:'**', STRONG:'**', I:'*', EM:'*', U:'__'};
+  var inl = function(n){
+    if(n.nodeType === 3) return n.textContent;
+    if(n.nodeType !== 1) return '';
+    if(n.tagName === 'BR') return '\n';
+    var t = [].map.call(n.childNodes, inl).join(''), m = mark[n.tagName];
+    if(/^(DIV|P)$/.test(n.tagName)) return '\n' + t;
+    if(!m || !t.trim()) return t;
+    var a = t.match(/^\s*/)[0], z = t.match(/\s*$/)[0];
+    return a + m + t.trim() + m + z;
+  };
+  var lineOf = function(n){ return inl(n).replace(/^\n/, '').replace(/ /g, ' ').replace(/\s+$/, ''); };
   [].forEach.call(doc.childNodes, function(n){
     if(n.nodeType === 3){ if(n.textContent.trim()) cur.lines.push(n.textContent.trim()); return; }
     if(n.nodeType !== 1) return;
     var tag = n.tagName;
     if(/^H[1-6]$/.test(tag)){ push(); cur = {h:lineOf(n).replace(/:$/, '').trim(), lines:[]}; return; }
-    if(tag === 'UL' || tag === 'OL'){ [].forEach.call(n.querySelectorAll('li'), function(li){ var t = lineOf(li).trim(); if(t) cur.lines.push('- ' + t); }); return; }
+    if(tag === 'UL' || tag === 'OL'){ var i = 0; [].forEach.call(n.querySelectorAll('li'), function(li){ var t = lineOf(li).trim(); if(t) cur.lines.push((tag === 'OL' ? (++i) + '. ' : '- ') + t); }); return; }
     if(tag === 'BR') return;
     lineOf(n).split('\n').forEach(function(t){ if(t.trim()) cur.lines.push(t); });
   });
@@ -17369,7 +17388,7 @@ function ndText(doc){
 function ndDoc(){ return document.getElementById('nd-doc'); }
 function ndRender(){
   var d = ndDoc(), ta = nsEl('note'); if(!d || !ta) return;
-  d.innerHTML = ndHtml(ta.value);
+  d.innerHTML = ndHtml(ta.value); ndState();
   ndRO();
 }
 function ndRO(){
@@ -17384,7 +17403,16 @@ function ndWrite(){
   ta.dispatchEvent(new Event('input', {bubbles:true}));
   if(typeof nsSync === 'function') nsSync();
 }
-function ndCmd(c){ var d = ndDoc(); if(!d || d.getAttribute('contenteditable') !== 'true') return; d.focus(); document.execCommand(c, false, null); ndWrite(); }
+function ndCmd(c){ var d = ndDoc(); if(!d || d.getAttribute('contenteditable') !== 'true') return; d.focus(); document.execCommand(c, false, null); ndWrite(); ndState(); }
+/* B, I, U and the lists show pressed while the caret sits in that formatting */
+function ndState(){
+  var d = ndDoc(), sel = window.getSelection(); if(!d) return;
+  var inDoc = sel.rangeCount && d.contains(sel.anchorNode);
+  document.querySelectorAll('#nd .nd-b[data-cmd]').forEach(function(b){
+    var on = false; if(inDoc) try { on = document.queryCommandState(b.getAttribute('data-cmd')); } catch(e){}
+    b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on));
+  });
+}
 function ndCaretEnd(d){ var r = document.createRange(); r.selectNodeContents(d); r.collapse(false); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); }
 function ndInit(){
   var ta = nsEl('note'); if(!ta || document.getElementById('nd')) return;
@@ -17393,7 +17421,12 @@ function ndInit(){
       '<button type="button" class="nd-b" onclick="ndCmd(\'undo\')" aria-label="Undo" title="Undo"><span class="ic" data-pdic="reopen"></span></button>' +
       '<button type="button" class="nd-b nd-redo" onclick="ndCmd(\'redo\')" aria-label="Redo" title="Redo"><span class="ic" data-pdic="reopen"></span></button>' +
       '<span class="nd-sep" aria-hidden="true"></span>' +
-      '<button type="button" class="nd-b" onclick="ndCmd(\'insertUnorderedList\')" aria-label="Bulleted list" title="Bulleted list"><span class="ic" data-pdic="tasks"></span></button>' +
+      '<button type="button" class="nd-b" data-cmd="bold" onclick="ndCmd(\'bold\')" aria-pressed="false" aria-label="Bold" title="Bold (⌘B)"><span class="ic" data-pdic="bold"></span></button>' +
+      '<button type="button" class="nd-b" data-cmd="italic" onclick="ndCmd(\'italic\')" aria-pressed="false" aria-label="Italic" title="Italic (⌘I)"><span class="ic" data-pdic="italic"></span></button>' +
+      '<button type="button" class="nd-b" data-cmd="underline" onclick="ndCmd(\'underline\')" aria-pressed="false" aria-label="Underline" title="Underline (⌘U)"><span class="ic" data-pdic="underline"></span></button>' +
+      '<span class="nd-sep" aria-hidden="true"></span>' +
+      '<button type="button" class="nd-b" data-cmd="insertUnorderedList" onclick="ndCmd(\'insertUnorderedList\')" aria-pressed="false" aria-label="Bulleted list" title="Bulleted list"><span class="ic" data-pdic="tasks"></span></button>' +
+      '<button type="button" class="nd-b" data-cmd="insertOrderedList" onclick="ndCmd(\'insertOrderedList\')" aria-pressed="false" aria-label="Numbered list" title="Numbered list"><span class="ic" data-pdic="listnum"></span></button>' +
       '<span class="nd-sep" aria-hidden="true"></span>' +
       '<span class="nd-tools" id="nd-tools"></span></div>' +
     '<div class="nd-doc" id="nd-doc" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="v2h-note" spellcheck="true"></div>';
@@ -17409,6 +17442,7 @@ function ndInit(){
   var d = ndDoc();
   d.addEventListener('input', function(){ var p = d.querySelector('p[data-ph]'); ndWrite(); });
   d.addEventListener('focus', function(){ NS.last = 'note'; });
+  document.addEventListener('selectionchange', ndState);
   /* a paste is plain text; section words in it ("Assessment:") become headings */
   d.addEventListener('paste', function(e){
     var t = (e.clipboardData || window.clipboardData).getData('text/plain'); if(!t) return;
@@ -21507,6 +21541,10 @@ function navTip(btn){
    Cmd/Ctrl+Enter only OPENS the Sign off popover: the checks, warnings and code check stay exactly as they are.
    Anywhere: G then H / C / E / T / I = Home / Claims / Earnings / Tasks / Inbox (within 1.5 s); "?" = this list.
    Nothing fires while a drawer or the code check is open (Escape still closes the top drawer, as before). */
+ICONS.bold = '<svg xmlns="http://www.w3.org/2000/svg" class="ic" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 5h6a3.5 3.5 0 0 1 0 7H7zm0 7h7a3.5 3.5 0 0 1 0 7H7z"/></svg>';
+ICONS.italic = '<svg xmlns="http://www.w3.org/2000/svg" class="ic" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 5h8M6 19h8m.5-14l-5 14"/></svg>';
+ICONS.underline = '<svg xmlns="http://www.w3.org/2000/svg" class="ic" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 4v7a5 5 0 0 0 10 0V4M5 20h14"/></svg>';
+ICONS.listnum = '<svg xmlns="http://www.w3.org/2000/svg" class="ic" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6h10M10 12h10M10 18h10M4 5l1.5-1v5M4 9h3m-3 6.5a1.5 1.5 0 1 1 2.6 1L4 20h3"/></svg>';
 ICONS.keyboard = '<svg xmlns="http://www.w3.org/2000/svg" class="ic" aria-hidden="true" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.981 6.583H4.02c-.701 0-1.269.647-1.269 1.444v7.946c0 .797.568 1.444 1.269 1.444h15.96c.701 0 1.269-.647 1.269-1.444V8.027c0-.797-.568-1.444-1.269-1.444M9.357 13.806h5.286m2.748 0h1.058m-11.84 0H5.55m.001-3.612H6.61m2.885 0h1.057m2.896 0h1.057m2.886 0h1.058"/></svg>';   /* Mage "keyboard" */
 var KB = {g:0, mac:/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)};
 function kbMod(){ return KB.mac ? '⌘' : 'Ctrl'; }
