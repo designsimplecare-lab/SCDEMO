@@ -7212,7 +7212,7 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #rx-panel .rp-acts .rp-cc{min-height:44px;height:44px;padding:0 16px;gap:8px;border-radius:12px;font-size:15px;font-weight:600;}
 #rx-panel .rp-acts .rp-cc .ic,#rx-panel .rp-acts .rp-cc svg{width:16px;height:16px;color:#fff;}
 /* Chart layout 2 (Ani, 4 Nov: "this 2 needs to be combined and review etc be on top of other section horizontal"; replaces the first 4 Nov layout).
-   From 1201 px: ONE left column (312 px, its own scroll box, v2Fit) holding one card: the patient (name; age, sex and masked PHN on one line; the
+   From 1201 px: ONE left column (312 px, its own scroll box, v2Fit) holding one card: the patient (name; age, sex and PHN on one line; the
    allergy line as the other session left it; Call and Chart stacked) above a divider, then the Patient summary sections, unchanged. The steps
    are horizontal tabs again, at the top of the centre column and sticky while it scrolls, with Save draft at their right end. No right column.
    Under 1200 px the left column stacks above the work and its sections start closed. */
@@ -7280,7 +7280,7 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #v2-side{position:relative;top:auto;height:auto;min-height:0;margin:0;padding:0 0 24px;-webkit-mask-image:none;mask-image:none;}
   body.cw-on #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #v2-side{padding-bottom:96px;}
 }
-/* the header: one row at 1440 (name; age, sex, masked PHN and the allergy tick; the allergy band when named or unrecorded; alerts; status; Call; Chart) */
+/* the header: one row at 1440 (name; age, sex, PHN and the allergy tick; the allergy band when named or unrecorded; alerts; status; Call; Chart) */
 /* Ani, 5 Nov ("remove white background"): the patient header sits on the page, no card */
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd{display:block;box-sizing:border-box;padding:8px 8px 8px 16px;background:none;border:0;border-radius:8px;box-shadow:none;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt{position:static;top:auto;z-index:auto;display:block;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;}
@@ -15250,7 +15250,7 @@ function rxPreviewHtml(e, st){
   var r = rxRow(PC_CURRENT), phn = ptChart(PC_CURRENT).phn || '', al = rxAllergens(st).map(function(a){ return a.label + ' (' + a.rx + ')'; });
   return '<div class="rp-fax" role="region" aria-label="Fax preview"><p class="rp-fh"><b>Prescription</b> · ' + rxIso(new Date()) + '</p>' +
     '<p>Prescriber: Dr. Daniel Pannozzo, SimpleCare. College registration and contact details are printed from the prescriber’s profile.</p>' +
-    '<p>Patient: ' + csEsc(r ? r.legal : '') + ' · ' + (r ? parseInt(r.age, 10) : '') + ' · ' + csEsc(r ? r.sex : '') + ' · PHN ending ' + csEsc(phn.slice(-3)) + '</p>' +
+    '<p>Patient: ' + csEsc(r ? r.legal : '') + ' · ' + (r ? parseInt(r.age, 10) : '') + ' · ' + csEsc(r ? r.sex : '') + ' · PHN ' + csEsc(psPhn(phn)) + '</p>' +
     '<p>Allergies: ' + csEsc(al.length ? al.join(', ') : 'none known') + '</p>' +
     '<ul>' + e.orders.map(function(o){ return '<li><b>' + csEsc(o.drug + ' ' + o.strength) + '</b> · ' + csEsc(o.instr) + ' · quantity ' + o.qty + ' · ' + csEsc(rxRepText(o.repeats)) + (o.sub ? ' · ' + csEsc(o.sub) : '') + '</li>'; }).join('') + '</ul>' +
     '<p>To: ' + csEsc(e.pharm) + '</p><p><b>Signed by ' + RX_DR + ', ' + e.signedAt + '</b></p></div>';
@@ -16727,17 +16727,17 @@ function csRenderSnap(name){
   var r = csRow(); if(!r) return;
   var phn = ptChart(name).phn || '';
   var age = r.age ? r.age.replace(/Y$/,'') : '';
-  /* B-006: v2 showed the full PHN here; v2.5 asks for a masked PHN */
-  var masked = phn && phn !== '—' ? '&bull;&bull;&bull;&bull; &bull;&bull;&bull; ' + phn.slice(-3) : 'Not recorded';
+  /* Ani, 5 Nov ("all PHN should be open"): the full PHN (v2.5's masked PHN is reversed) */
+  var full = phn && phn !== '—' ? csEsc(psPhn(phn)) : 'Not recorded';
   var sub = document.getElementById('cs-sub');
   /* 21 Oct (Daniel, 18 Oct video 4: "it's good to know the patient, it's good to know the PHN, but this is redundant information at this point ... it's not something
      that should be front and center."): the front says name, age and sex. The PHN (masked) is one tap away behind Details. */
-  /* Ani, 3 Nov: no "Details" link; the masked PHN sits on the line, and no known allergies joins it as a quiet tick
+  /* Ani, 3 Nov: no "Details" link; the PHN sits on the line, and no known allergies joins it as a quiet tick
      (a named or unrecorded allergy keeps its own band, Daniel 11 Oct) */
   var AL = ptAllergy(name), nk = AL.state === 'nkda';   /* A1: one source; a PharmaNet-only allergy also removes the tick */
   if(sub) sub.innerHTML = ((r.legal && r.pref && r.legal.split(' ')[0] !== r.pref) ? 'Goes by <b>' + csEsc(r.pref) + '</b> &middot; ' : '') +
     (age ? age + ' &middot; ' : '') + csEsc(r.sex || 'Not recorded') +
-    ' &middot; PHN&nbsp;<span class="pc-mono" aria-label="PHN ending ' + csEsc(phn.slice(-3)) + '">' + masked + '</span>' +
+    ' &middot; PHN&nbsp;<span class="pc-mono">' + full + '</span>' +
     /* Chart layout (Ani, 4 Nov): the separator is its own span so the left column can put the tick on its own line */
     /* Daniel, 4 Nov call 00:22:56: "I want that pharmacy information right here. It's as important as no known drug allergies. It goes at the top."
        The patient's pharmacy on the allergy line, from the chart (ptChart) or the one chosen in Prescribe; none on file, nothing shown. In Version 2 the
@@ -24767,7 +24767,8 @@ function psFmt(iso){ var d = psD(iso); return d ? PS_MON_TXT[d.getMonth() + 1] +
 function psAge(iso){ var d = psD(iso); if(!d) return ''; var n = new Date(), a = n.getFullYear() - d.getFullYear(); if(n.getMonth() < d.getMonth() || (n.getMonth() === d.getMonth() && n.getDate() < d.getDate())) a--; return a; }
 function psIsoOff(off){ var d = new Date(); d.setDate(d.getDate() + off); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 function psIsoFromTxt(t){ var m = String(t || '').match(/^([A-Z][a-z]{2}) (\d{1,2}), (\d{4})$/); return m ? m[3] + '-' + String(PS_MON[m[1].toLowerCase()]).padStart(2, '0') + '-' + m[2].padStart(2, '0') : ''; }
-function psMask(phn){ var d = String(phn || '').replace(/\D/g, ''); return d ? '•••• ••• ' + d.slice(-3) : ''; }
+/* Ani, 5 Nov ("all PHN should be open"): the full PHN everywhere, grouped 4 3 3 */
+function psPhn(phn){ var d = String(phn || '').replace(/\D/g, ''); return d.length === 10 ? d.slice(0, 4) + ' ' + d.slice(4, 7) + ' ' + d.slice(7) : String(phn || ''); }
 function psNow(){ var d = new Date(), h = d.getHours() % 12 || 12; return h + ':' + String(d.getMinutes()).padStart(2, '0'); }
 function psMc(t){ return t.replace(/^mac(?=[a-z]{3})/, 'mc'); }
 function psSoundex(s){
@@ -24964,7 +24965,7 @@ function psCard(m, sect){
   if(p.panel === 'other') tags += psTag('Not on your panel', 'user', 'ps-t-mut');
   var l2 = [];
   if(p.dob) l2.push(psAge(p.dob)); if(p.sex) l2.push(p.sex);
-  l2.push(p.phn ? 'PHN ' + psMask(p.phn) : 'No PHN');
+  l2.push(p.phn ? 'PHN ' + psPhn(p.phn) : 'No PHN');
   var cf = (m.cf || []).length ? '<div class="ps-ev"><span class="ps-cf">' + psIc('alert') + '<span>' + psEsc(m.cf.join(' · ')) + '</span></span></div>' : '';
   return '<div class="ps-card' + (PS.active === p.key ? ' on' : '') + '" role="option" id="' + id + '" data-k="' + psEsc(p.key) + '" aria-selected="' + (PS.active === p.key) + '">' +
     '<div class="ps-c1"><span class="ps-nm">' + psEsc(p.legal) + '</span>' + tags + '</div>' +
@@ -24976,7 +24977,7 @@ function psChip(txt, ic, cls){ return '<span class="ps-chip' + (cls ? ' ' + cls 
 function psClues(C, full){
   var h = [], pend = function(t){ return PS.mode === 'degraded' ? psChip(t, 'alert', 'ps-pend') : (C.plain && !full ? psChip(t, 'clock', 'ps-pend') : psChip(t)); };
   C.names.forEach(function(n){ h.push(psChip('Name: ' + n)); });
-  if(C.phn) h.push(psChip('PHN ' + psMask(C.phn)));
+  if(C.phn) h.push(psChip('PHN ' + psPhn(C.phn)));
   if(C.phnPart) h.push(psChip('PHN digits ' + C.phnPart));
   if(C.dob) h.push(psChip('Born ' + psFmt(C.dob)));
   if(C.year) h.push(psChip('Born ' + C.year));
@@ -25057,7 +25058,7 @@ function psBody(){
   var conf = psConflicts(main).map(function(pair){
     return '<div class="ps-conf" role="note">' + psIc('alert') + '<div><p class="ps-ch">' + psEsc(pair[0].legal) + ' and ' + psEsc(pair[1].legal) + ' share a surname, address and phone.</p>' +
       '<table class="ps-ct"><caption class="vh">What tells them apart</caption><thead><tr><th scope="col">First name</th><th scope="col">Born</th><th scope="col">PHN</th></tr></thead><tbody>' +
-      pair.map(function(p){ return '<tr><td>' + psEsc(p.legal.split(' ')[0]) + '</td><td>' + psEsc(psFmt(p.dob)) + '</td><td>' + psEsc(psMask(p.phn)) + '</td></tr>'; }).join('') + '</tbody></table></div></div>';
+      pair.map(function(p){ return '<tr><td>' + psEsc(p.legal.split(' ')[0]) + '</td><td>' + psEsc(psFmt(p.dob)) + '</td><td>' + psEsc(psPhn(p.phn)) + '</td></tr>'; }).join('') + '</tbody></table></div></div>';
   }).join('');
   var ask = psAskHtml(S, best.length ? best : main);
   return top + notes + conf + ask + '<div role="listbox" id="ps-list" aria-label="Patients">' + work + sect('best', best) + order.map(function(g){ return sect(g, groups[g]); }).join('') +
@@ -25090,7 +25091,7 @@ function psMergeView(key){
   var old = psPerson(key), to = old && psPerson(old.into); if(!old || !to) return '';
   return '<div class="ps-view" role="group" aria-labelledby="ps-v-h"><p class="ps-vh" id="ps-v-h" tabindex="-1">' + psIc('reassign') + '<span>This record was merged</span></p>' +
     '<p class="ps-vl">' + psEsc(old.legal) + '’s old record was merged into ' + psEsc(to.legal) + '’s chart on ' + psEsc(old.stateAt) + '.</p>' +
-    '<dl class="ps-gid"><div><dt>Name</dt><dd>' + psEsc(to.legal) + '</dd></div><div><dt>Born</dt><dd>' + psEsc(psFmt(to.dob)) + ' · ' + psAge(to.dob) + '</dd></div><div><dt>PHN</dt><dd>' + psEsc(psMask(to.phn)) + '</dd></div></dl>' +
+    '<dl class="ps-gid"><div><dt>Name</dt><dd>' + psEsc(to.legal) + '</dd></div><div><dt>Born</dt><dd>' + psEsc(psFmt(to.dob)) + ' · ' + psAge(to.dob) + '</dd></div><div><dt>PHN</dt><dd>' + psEsc(psPhn(to.phn)) + '</dd></div></dl>' +
     '<div class="ps-vacts"><button type="button" class="btn" onclick="psBack()">' + psIc('chevl') + 'Back to results</button>' +
     '<button type="button" class="btn dark" onclick="psOpenChart(\'' + psEsc(to.key) + '\',{from:\'' + psEsc(old.legal) + '\',at:\'' + psEsc(old.stateAt) + '\'})">' + psIc('chartnote') + 'Open ' + psEsc(to.legal.split(' ')[0]) + '’s chart</button></div></div>';
 }
@@ -25300,13 +25301,13 @@ function psGate(kind, passive){
   var sig = kind + '|' + PC_CURRENT;
   if(g.getAttribute('data-sig') !== sig || g.hidden){
     g.setAttribute('data-sig', sig); g.removeAttribute('data-stop');
-    var last = p.phn ? String(p.phn).replace(/\D/g, '').slice(-3) : '';
+    var phnF = p.phn ? psPhn(p.phn) : '';
     g.innerHTML = '<div class="ps-gcard" role="group" aria-labelledby="ps-g-h">' +
       '<p class="ps-vh" id="ps-g-h" tabindex="-1">' + psIc('usercheck') + '<span>Confirm the patient before you ' + PS_CHECK[kind] + '</span></p>' +
       '<dl class="ps-gid"><div><dt>Name</dt><dd>' + psEsc(p.legal) + '</dd></div><div><dt>Born</dt><dd>' + (p.dob ? psEsc(psFmt(p.dob)) + ' · ' + psAge(p.dob) : 'Not recorded') + '</dd></div>' +
-      '<div><dt>PHN ending</dt><dd>' + (last ? psEsc(last) : 'Not recorded') + '</dd></div></dl>' +
+      '<div><dt>PHN</dt><dd>' + (phnF ? psEsc(phnF) : 'Not recorded') + '</dd></div></dl>' +
       '<label class="ps-chk"><input type="checkbox" data-ps-c="nd"><span>Name and date of birth match the patient I’m treating</span></label>' +
-      (last ? '<label class="ps-chk"><input type="checkbox" data-ps-c="phn"><span>PHN ending ' + psEsc(last) + ' matches</span></label>' : '') +
+      (phnF ? '<label class="ps-chk"><input type="checkbox" data-ps-c="phn"><span>PHN ' + psEsc(phnF) + ' matches</span></label>' : '') +
       '<div class="ps-vacts"><button type="button" class="btn" data-ps-g="no">' + psIc('close') + 'They don’t match</button>' +
       '<button type="button" class="btn dark" data-ps-g="ok" disabled>' + psIc('complete') + 'Confirm and continue</button></div></div>';
     paintPd(g);
