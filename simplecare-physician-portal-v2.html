@@ -9763,7 +9763,7 @@ function qWinOpen(w, today, cw, all){
 }
 function qWinBand(w, count, open, live){
   /* the design system's group row: a toggle (caret, label, count) and, for the running window, the clock on the right */
-  return SC.html('TableGroupRow', {colSpan:7, label:winTitle(w), count:count, expanded:open, meta:live ? qClockText('band') + ' · ' + qClockText('time') : undefined,
+  return SC.html('TableGroupRow', {colSpan:7, label:winTitle(w), count:count, expanded:open, meta:live ? SC.raw('<span data-qclock="bandtime">' + qClockText('band') + ' · ' + qClockText('time') + '</span>') : undefined,
     className:'q-sep q-win' + (live ? ' live' : ''), 'data-win':w});
 }
 function qwinSet(w, open){
@@ -9910,8 +9910,6 @@ function renderQueue(){
     });
     body.addEventListener('click', function(e){ var b = e.target.closest('tr.q-win button[aria-expanded]'); if(b) qwinToggle(b.closest('tr').getAttribute('data-win')); });
   }
-  /* the running window's clock keeps ticking (qClockTick updates [data-qclock]) */
-  var gm = body.querySelector('tr.q-win.live td > div > span:last-child'); if(gm) gm.setAttribute('data-qclock', 'bandtime');
   renderQueueChip(today, cw, rows, cwi);
   renderWinBar();
   document.querySelectorAll('#queue-body [data-pdic]').forEach(function(el){
