@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SimpleCare design system: HTML reference</title>
+<link rel="stylesheet" href="simplecare-tokens.css">
+<link rel="stylesheet" href="simplecare-ui.css">
+<script src="simplecare-icons.js"></script>
+<script src="simplecare-ui.js" defer></script>
+<style>
+  body { margin: 0; padding: 32px; background: var(--color-surface-default-2x-light); color: var(--color-text-default-body);
+         font-family: var(--font-sans); font-size: var(--text-body-2); }
+  h1 { font-size: var(--text-heading-4); margin: 0 0 4px; }
+  h2 { font-size: var(--text-subtitle-1); margin: 32px 0 12px; }
+  p.lead { color: var(--color-text-default-caption); margin: 0 0 8px; max-width: 70ch; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .card { background: var(--color-surface-default-lightest); border: 1px solid var(--color-border-default-x-light);
+          border-radius: var(--radius-xs); padding: 16px; }
+  code { font-size: 13px; background: var(--color-surface-default-3x-light); padding: 1px 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<h1>SimpleCare design system in plain HTML</h1>
+<p class="lead">Every piece on this page is drawn by the design system. Use the same tags and calls in the portal; never rebuild a component by hand. <button type="button" id="theme">Toggle dark</button></p>
+
+<h2>Icons · <code>SC.icon('search', { size: 20 })</code> · <code>&lt;sc-icon name="search"&gt;</code></h2>
+<div class="card row" id="icons"></div>
+
+<h2>Buttons · <code>&lt;sc-button variant="primary" start-icon="add"&gt;New patient&lt;/sc-button&gt;</code></h2>
+<div class="card row">
+  <sc-button variant="primary" start-icon="add">New patient</sc-button>
+  <sc-button variant="secondary-main" start-icon="edit">Task MOA</sc-button>
+  <sc-button variant="secondary-alt">Secondary alt</sc-button>
+  <sc-button variant="tertiary-main" start-icon="refresh-undo">Undo</sc-button>
+  <sc-button variant="tertiary-filled">Tertiary filled</sc-button>
+  <sc-button variant="link">Link</sc-button>
+  <sc-button variant="primary" intent="destructive" start-icon="delete-remove">Delete</sc-button>
+  <sc-button variant="tertiary-main" start-icon="search" label="Search"></sc-button>
+  <sc-button variant="primary" size="small">Small</sc-button>
+  <sc-button variant="primary" loading>Saving</sc-button>
+  <sc-button variant="primary" disabled>Disabled</sc-button>
+</div>
+
+<h2>Avatars, badges, tags · <code>&lt;sc-avatar name="…" badge="online"&gt;</code> · <code>&lt;sc-tag color="success"&gt;</code></h2>
+<div class="card row">
+  <sc-avatar name="Gloria McDonald" size="x-large" badge="online"></sc-avatar>
+  <sc-avatar name="Andrey Abushakhmanov" size="large"></sc-avatar>
+  <sc-avatar src="../dr-pannozzo.jpg" name="Dr. Daniel Pannozzo" size="medium" badge="on-call"></sc-avatar>
+  <sc-avatar size="small"></sc-avatar>
+  <sc-badge status="online"></sc-badge> <sc-badge status="busy"></sc-badge>
+  <sc-badge count="13"></sc-badge> <sc-badge count="120" max="99"></sc-badge>
+  <sc-tag color="success" start-icon="check-circle">Verified</sc-tag>
+  <sc-tag color="error">Critical</sc-tag>
+  <sc-tag color="warning">Due soon</sc-tag>
+  <sc-tag>Neutral</sc-tag>
+</div>
+
+<h2>Chips, checkbox, switch · fire <code>change</code></h2>
+<div class="card row">
+  <sc-chip selected>8:00–10:00</sc-chip><sc-chip>10:00–2:00</sc-chip><sc-chip>2:00–5:00</sc-chip>
+  <sc-checkbox label="Select all"></sc-checkbox>
+  <sc-checkbox label="Indeterminate" indeterminate></sc-checkbox>
+  <sc-switch label="Safe mode" checked></sc-switch>
+  <span id="log" style="color: var(--color-text-default-caption)"></span>
+</div>
+
+<h2>Table, tabs, menu · <code>SC.html(name, props, ...children)</code></h2>
+<p class="lead">Markup from the real components, for pages that build HTML in script. A child is text, a nested component <code>['Tag', { color: 'success' }, 'Verified']</code>, or <code>SC.raw(html)</code>. Styled by <code>simplecare-ui.css</code>; the page adds behaviour.</p>
+<div class="card" id="html"></div>
+
+<script>
+  document.getElementById('theme').onclick = function () {
+    var r = document.documentElement; r.dataset.theme = r.dataset.theme === 'dark' ? 'light' : 'dark';
+  };
+  document.getElementById('icons').innerHTML = ['search', 'home', 'calendar', 'chat-message', 'notification', 'settings', 'user', 'file', 'phone', 'video-on', 'check-circle', 'warning', 'error', 'clock-time', 'delete-remove', 'edit', 'add', 'menu-dots-horizontal']
+    .map(function (n) { return '<span title="' + n + '">' + SC.icon(n, { size: 24 }) + '</span>'; }).join('');
+  document.addEventListener('change', function (e) {
+    if (e.target.tagName.indexOf('SC-') === 0) document.getElementById('log').textContent =
+      e.target.tagName.toLowerCase() + ' → ' + (e.target.checked ?? e.target.selected);
+  });
+  window.addEventListener('DOMContentLoaded', function () {
+    var rows = [['Gloria Anne McDonald', 'Preferred: Gloria · 74Y, Female', 'Verified', 'success'],
+                ['Andrey Abushakhmanov', 'Preferred: Andrey · 24Y, Male', 'Out of province', 'warning']];
+    var table = SC.html('Table', { 'aria-label': 'Day sheet' },
+      ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Patient'], ['TableHead', {}, 'Health card'], ['TableHead', { type: 'empty' }]]],
+      ['TableBody', {}].concat(rows.map(function (r) {
+        return ['TableRow', {},
+          ['TableCell', {}, ['TableCellContent', { strong: true, label: r[0], secondary: r[1] }]],
+          ['TableCell', {}, ['TableCellContent', { type: 'tags' }, ['Tag', { color: r[3] }, r[2]]]],
+          ['TableCell', {}, ['TableCellContent', { type: 'actions', revealOnHover: true },
+            ['Button', { variant: 'tertiary-main', size: 'medium', startIcon: 'menu-dots-horizontal', 'aria-label': 'More' }]]]];
+      })));
+    var tabs = SC.html('Tabs', { defaultValue: 'review' }, ['TabList', { 'aria-label': 'This visit' },
+      ['Tab', { value: 'review', startIcon: 'file' }, 'Review'], ['Tab', { value: 'note', startIcon: 'edit' }, 'Note'],
+      ['Tab', { value: 'sign', startIcon: 'user-check' }, 'Sign off']]);
+    var menu = SC.html('MenuList', { 'aria-label': 'Status' },
+      ['MenuItem', { startIcon: 'check-circle', description: 'On shift. Calls on Simple web and mobile.' }, 'Available'],
+      ['MenuItem', { startIcon: 'user-group' }, 'In meeting'], ['MenuItem', { startIcon: 'logout' }, 'Sign out']);
+    document.getElementById('html').innerHTML = table + '<div style="height:24px"></div>' + tabs +
+      '<div style="height:24px"></div><div style="width:320px">' + menu + '</div>';
+  });
+</script>
+</body>
+</html>
