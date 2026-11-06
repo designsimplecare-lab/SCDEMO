@@ -7681,15 +7681,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #pcv-c .cr-more{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:15px;}
 </style>
 <style>
-/* Day sheet on the design system's Table (Ani, 6 Nov). Only behaviour pieces are styled here: the click-through tag's plain button,
-   and the window row's clock beside its toggle. */
-.ds-tagbtn{display:inline-flex;align-items:center;gap:2px;margin:0;padding:0;border:0;border-radius:var(--radius-2xs);background:none;font:inherit;color:var(--ink-soft);cursor:pointer;}
-.ds-tagbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
-.ds-tagbtn .sv-icon{flex:none;}
-#queue-body tr.q-win td{white-space:nowrap;}
-#queue-body td.q-concern{width:40%;max-width:0;}   /* the concern takes the room left and shortens with an ellipsis (full text in the tooltip) */
-#queue-body tr.q-win .q-sepbtn[aria-expanded="false"] .sv-icon{transform:rotate(-90deg);}
-#queue-body tr.q-win :is(.q-sepclock,.q-septime){margin-left:12px;font-size:14px;color:var(--ink-soft);}
+/* Day sheet on the design system's Table (Ani, 6 Nov): the concern takes the room left and shortens with an ellipsis (the full text is its title) */
+#queue-body td.q-concern{width:40%;max-width:0;}
 </style>
 <!-- SimpleCare design system: tokens + Inter, then the bridge that maps this page onto them (assets/design-system/). Keep these two links last in <head>. -->
 <link rel="stylesheet" href="assets/design-system/simplecare-tokens.css">
@@ -9464,20 +9457,20 @@ var STATUS_CLOSED = ['done','noshow','declined','admincancel'];
 function statusClosed(s){ return STATUS_CLOSED.indexOf(s) > -1; }
 /* icons for the five newer statuses come from the Mage map (ICONS is declared further down, so it is read when a row is drawn) */
 var STATUS_ICO2 = {calldropped:'hangup', declined:'close', pendingmoa:'taskmoa', needsreview:'eye', admincancel:'calendar'};
-/* a design-system Tag (SC.html); with a click it sits in an unstyled button with the design system's dropdown arrow (no interactive Tag in the design system yet) */
+/* a design-system Tag (SC.html); one that opens a menu or the card sheet is the Tag as a button with the dropdown arrow (the row's click handler opens it) */
 var DS_TONE = {ok:'success', warn:'warning', bad:'error', info:'information'};
-function dsTag(label, color, icon, click, attrs){
+function dsTag(label, color, icon, act, more){
   var p = {color:color || 'neutral'}; if(icon) p.startIcon = icon;
-  var t = SC.html('Tag', p, label);
-  if(!click) return t;
-  return '<button type="button" class="ds-tagbtn"' + (attrs || '') + ' onclick="event.stopPropagation();' + click + '">' + t + SC.icon('arrow-dropdown-down', {size:16}) + '</button>';
+  if(act){ p.as = 'button'; p.endIcon = 'arrow-dropdown-down'; p['data-act'] = act; p['aria-haspopup'] = act === 'card' ? 'dialog' : 'menu'; p['aria-expanded'] = false; }
+  for(var k in (more || {})) p[k] = more[k];
+  return SC.html('Tag', p, label);
 }
 var STATUS_TAG = {waiting:['information','clock-time'], next:['information','clock-time'], delayed:['information','clock-time'], progress:['information','phone-call'], scheduled:['information','calendar'],
   missed:['error','phone-missed'], dropped:['error','phone-missed'], calldropped:['warning','phone-disconnect'], done:['success','check-circle'], noshow:['neutral','user-cross'],
   declined:['neutral','x'], pendingmoa:['purple','user-assign'], needsreview:['warning','eye-on'], admincancel:['neutral','calendar']};
 function qStatusTag(r){
   var t = STATUS_TAG[r.status] || ['neutral', ''];
-  return dsTag(STATUS_LABEL[r.status], t[0], t[1], 'openStatusMenu(this,\'' + esc1(r.name) + '\')', ' aria-haspopup="true" title="Change visit status"');
+  return dsTag(STATUS_LABEL[r.status], t[0], t[1], 'status', {title:'Change visit status'});
 }
 function statusIcon(k){
   if(STATUS_ICON[k]) return STATUS_ICON[k];
@@ -9701,7 +9694,7 @@ function qClockText(kind, now){
 function qClockUpdate(now){
   now = now || new Date();
   document.querySelectorAll('[data-qclock]').forEach(function(el){
-    var t = qClockText(el.getAttribute('data-qclock'), now);
+    var k = el.getAttribute('data-qclock'), t = k === 'bandtime' ? qClockText('band', now) + ' · ' + qClockText('time', now) : qClockText(k, now);
     if(el.textContent !== t) el.textContent = t;
   });
 }
@@ -9769,19 +9762,17 @@ function qWinOpen(w, today, cw, all){
   return Object.prototype.hasOwnProperty.call(QWIN_OPEN, w) ? !!QWIN_OPEN[w] : (w === cw);
 }
 function qWinBand(w, count, open, live){
-  var clock = live ? SC.raw('<span class="q-sepclock" data-qclock="band">' + qClockText('band') + '</span><span class="q-septime" data-qclock="time">' + qClockText('time') + '</span>') : '';
-  /* a group header row; the design system has no group row yet, so it is a full-width cell holding the design system's Button */
-  return SC.html('TableRow', {className:'q-sep q-win' + (live ? ' live' : ''), 'data-win':w},
-    ['TableCell', {colSpan:7}, ['Button', {variant:'tertiary-main', size:'small', startIcon:'arrow-expand-down', className:'q-sepbtn', 'aria-expanded':String(open), 'data-win':w,
-      'aria-label':winTitle(w) + ', ' + count + (count === 1 ? ' patient' : ' patients')}, winTitle(w) + ' · ' + count], clock]);
+  /* the design system's group row: a toggle (caret, label, count) and, for the running window, the clock on the right */
+  return SC.html('TableGroupRow', {colSpan:7, label:winTitle(w), count:count, expanded:open, meta:live ? qClockText('band') + ' · ' + qClockText('time') : undefined,
+    className:'q-sep q-win' + (live ? ' live' : ''), 'data-win':w});
 }
 function qwinSet(w, open){
   QWIN_OPEN[w] = !!open;
-  var b = document.querySelector('#queue-body tr.q-win[data-win="' + w + '"] .q-sepbtn'); if(b) b.setAttribute('aria-expanded', String(!!open));
+  var b = document.querySelector('#queue-body tr.q-win[data-win="' + w + '"] button[aria-expanded]'); if(b){ b.setAttribute('aria-expanded', String(!!open)); b.closest('tr').setAttribute('data-expanded', String(!!open)); }
   document.querySelectorAll('#queue-body tr[data-win="' + w + '"]:not(.q-win)').forEach(function(r){ r.hidden = !open; });
 }
 function qwinToggle(w){
-  var b = document.querySelector('#queue-body tr.q-win[data-win="' + w + '"] .q-sepbtn');
+  var b = document.querySelector('#queue-body tr.q-win[data-win="' + w + '"] button[aria-expanded]');
   qwinSet(w, b ? b.getAttribute('aria-expanded') !== 'true' : true);
 }
 
@@ -9794,7 +9785,7 @@ function winPick(w){
     return;
   }
   qwinSet(w, true);
-  var b = document.querySelector('#queue-body tr.q-win[data-win="' + w + '"] .q-sepbtn');
+  var b = document.querySelector('#queue-body tr.q-win[data-win="' + w + '"] button[aria-expanded]');
   if(b){ b.scrollIntoView({block:'start', behavior: (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'auto' : 'smooth'}); b.focus({preventScroll:true}); }
 }
 
@@ -9815,7 +9806,7 @@ function shownWin(){
   return real;
 }
 function qSep(label, count, carry){
-  return SC.html('TableRow', {className:'q-sep' + (carry ? ' carry' : '')}, ['TableCell', {colSpan:7}, ['TableCellContent', {strong:true, label:label + ' · ' + count}]]);
+  return SC.html('TableGroupRow', {colSpan:7, label:label, count:count, className:'q-sep' + (carry ? ' carry' : '')});
 }
 
 function renderQueue(){
@@ -9878,22 +9869,21 @@ function renderQueue(){
     if(!closed && isNext) acts.push(['Button', {variant:'tertiary-main', size:'small', startIcon:'phone', 'data-act':'call', 'aria-label':'Call ' + (r.legal || r.name)}, 'Call']);
     acts.push(['Button', {variant:'tertiary-main', size:'small', startIcon:'user-assign', 'data-act':'task', 'aria-label':'Task MOA about ' + (r.legal || r.name)}, 'Task MOA']);
     var ai = AI_SUMMARY[r.name];
-    var props = {className:(r.redflag ? 'redflag' : '') + (isNext ? ' q-next' : ''), tabIndex:0, 'data-name':r.name, 'aria-label':'Open chart: ' + (r.legal || r.name)};
+    var props = {className:(r.redflag ? 'redflag' : '') + (isNext ? ' q-next' : ''), current:isNext, tabIndex:0, 'data-name':r.name, 'aria-label':'Open chart: ' + (r.legal || r.name)};
     if(hiddenWin){ props.hidden = true; props['data-win'] = hiddenWin; }
     var patient = ['TableCellContent', {strong:true, label:r.legal || r.name, secondary:'Preferred: ' + (r.pref || r.name.split(' ')[0]) + ' · ' + (r.age || '') + ', ' + (r.sex || '')}];
-    if(isNext) patient.push(['Tag', {color:'information'}, 'Next']);
     return SC.html('TableRow', props,
       ['TableCell', {}, ['TableCellContent', {type:'number', label:inQueue ? String(++qSeq) : '—'}]],
       ['TableCell', {}, patient],
       ['TableCell', {className:'q-visit'}, ['TableCellContent', {type:'tags'}, SC.raw(qStatusTag(r) + qNoteTag(r))]],
       ['TableCell', {className:'q-bill'}, ['TableCellContent', {type:'tags'}, SC.raw(t23BillCell(r))]],
       ['TableCell', {className:'q-card'}, ['TableCellContent', {type:'tags'}, SC.raw(t23CardCell(r))]],
-      ['TableCell', {className:'q-concern', title:r.concern + (ai ? '. ' + ai : '')}, ['TableCellContent', {label:r.concern, secondary:ai || undefined}]],
-      ['TableCell', {}, ['TableCellContent', {type:'actions', revealOnHover:true}].concat(acts)]);
+      ['TableCell', {className:'q-concern'}, ['TableCellContent', {label:r.concern, secondary:ai || undefined}]],
+      ['TableCell', {}, ['TableCellContent', {type:'actions', revealOnHover:true, overlay:true}].concat(acts)]);
   }
 
   var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {'aria-label':'Queue position'}, '#'], ['TableHead', {}, 'Patient'], ['TableHead', {}, 'Visit status'],
-    ['TableHead', {}, 'Billing status'], ['TableHead', {}, 'Health card'], ['TableHead', {}, 'Clinical concern'], ['TableHead', {'aria-label':'Actions'}, '']]];
+    ['TableHead', {}, 'Billing status'], ['TableHead', {}, 'Health card'], ['TableHead', {}, 'Clinical concern'], ['TableHead', {type:'empty', className:'w-0 p-0', 'aria-label':'Actions'}, '']]];
   if(!rows.length){
     var msg = queueSearch ? ('No patients match “'+queueSearch+'”.')
                           : (dayOffset===0 ? 'No patients on the day sheet right now.' : 'Nothing booked for this day.');   /* Daniel, 4 Nov call 00:28:07: "It's just a day sheet" */
@@ -9906,7 +9896,11 @@ function renderQueue(){
     /* the whole row is the way into the chart; Call and Task MOA are buttons in its last cell */
     body.addEventListener('click', function(e){
       var a = e.target.closest('[data-act]'), tr = e.target.closest('tr[data-name]'); if(!tr) return;
-      if(a){ e.stopPropagation(); var n = tr.getAttribute('data-name'); if(a.getAttribute('data-act') === 'call') callPatient(n); else openTaskMoa(n); return; }
+      if(a){
+        e.stopPropagation(); var n = tr.getAttribute('data-name'), k = a.getAttribute('data-act');
+        if(k === 'call') callPatient(n); else if(k === 'task') openTaskMoa(n); else if(k === 'status') openStatusMenu(a, n); else if(k === 'bill') openBillMenu(a, n); else if(k === 'card') openCard(n);
+        return;
+      }
       if(e.target.closest('button,a,input')) return;
       openChart(tr.getAttribute('data-name'));
     });
@@ -9914,8 +9908,10 @@ function renderQueue(){
       var tr = e.target.closest && e.target.closest('tr[data-name]');
       if(tr && e.target === tr && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); openChart(tr.getAttribute('data-name')); }
     });
-    body.addEventListener('click', function(e){ var b = e.target.closest('.q-sepbtn'); if(b) qwinToggle(b.getAttribute('data-win')); });
+    body.addEventListener('click', function(e){ var b = e.target.closest('tr.q-win button[aria-expanded]'); if(b) qwinToggle(b.closest('tr').getAttribute('data-win')); });
   }
+  /* the running window's clock keeps ticking (qClockTick updates [data-qclock]) */
+  var gm = body.querySelector('tr.q-win.live td > div > span:last-child'); if(gm) gm.setAttribute('data-qclock', 'bandtime');
   renderQueueChip(today, cw, rows, cwi);
   renderWinBar();
   document.querySelectorAll('#queue-body [data-pdic]').forEach(function(el){
@@ -18922,7 +18918,7 @@ function t23BillCell(r){
   if(k === 'msp-none') return '<span class="t23-none" aria-label="No claim yet. The visit isn’t finished." title="No claim yet. The visit isn’t finished.">—</span>';
   if(k === 'noshow') return '<span class="t23-ns">No-show</span>';
   var c0 = t23RowClaim(r); if(c0 && c0.payer !== 'private'){ var L0 = t23Label(c0); b = {label:L0.label, tone:L0.tone, open:b.open}; }   /* Dev's 7 states (6 Oct) */
-  return dsTag(b.label, DS_TONE[b.tone], '', b.open ? 'openBillMenu(this,\'' + esc1(r.name) + '\')' : '', b.open ? ' aria-haspopup="menu"' : '');
+  return dsTag(b.label, DS_TONE[b.tone], '', b.open ? 'bill' : '');
 }
 function t23SyncQueue(){ if(typeof renderQueue === 'function') renderQueue(); updateClaimCount(); }
 /* REQ-BIL-01: the next step first, Details second. No "Sign off & submit" here (CNF-10, TAIL-04). */
@@ -19090,9 +19086,9 @@ function t23CardCell(r){
   var cs = CARD_STATUS[r.card];
   if(!cs) return '<span class="t23-none">—</span>';
   var ic = {verified:'check-circle', check:'warning', invalid:'error', ended:'error', private:'information'}[r.card] || 'warning';
-  if(r.card === 'verified') return '<span title="Checked ' + (r.cardChecks ? r.cardChecks[0].at : 'today') + ', for today’s visit">' + dsTag('Verified', 'success', ic) + '</span>';
-  if(cs.plain) return '<span title="' + cs.why + '">' + dsTag(cs.label, 'information', ic) + '</span>';
-  return dsTag(cs.label, DS_TONE[cs.tone], ic, 'openCard(\'' + esc1(r.name) + '\')');
+  if(r.card === 'verified') return dsTag('Verified', 'success', ic, '', {title:'Checked ' + (r.cardChecks ? r.cardChecks[0].at : 'today') + ', for today’s visit'});
+  if(cs.plain) return dsTag(cs.label, 'information', ic, '', {title:cs.why});
+  return dsTag(cs.label, DS_TONE[cs.tone], ic, 'card');
 }
 openCard = function(name){
   var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0]; if(!r) return;
