@@ -106,7 +106,7 @@ repo (`Simple - master`: tokens, components and Storybook) and reaches the proto
 `assets/design-system/`: `simplecare-tokens.css` (every token, Light and Dark, plus Lato) and
 `portal-bridge.css`, which points the page's own variables (`--ink`, `--paper`, `--accent`, …) at
 those tokens. Read `assets/design-system/README.md` before styling anything.
-- Navy `#162660` is the ink and the primary; the page is `#ECF2FB`; the typeface is Lato.
+- Navy `#162660` is the ink and the primary; the page is a soft grey `#EEF0F3`; the typeface is Lato.
 - Use the page variables or the tokens (`var(--color-navy-900)`), never a hex value.
 - The two `<link>`s to `assets/design-system/` stay last in `<head>` of
   `simplecare-physician-portal-v2.html`. Fetch before committing that page so they aren't dropped.
