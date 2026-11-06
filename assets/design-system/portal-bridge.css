@@ -194,6 +194,65 @@ body {
   border-radius: var(--radius-avatar);
 }
 
+/* Every person photo too: the top-bar profile photo, the MOA chat launcher and
+ * chat panel, and the small avatars in lists and calls. */
+html body :is(.pf-photo, .mini-av, .vd-av, .chat-launcher .cl-ph, #chat-panel .cha-ph) {
+  border-radius: var(--radius-avatar);
+}
+
+/* Patient chart tabs (Review · Note · Action · Sign off), like Slack's channel
+ * tabs: the row sits flush on the page with a hairline under it (no boxed
+ * card), labels are 15px, the selected one is bold with a 2px navy underline,
+ * icons follow the label colour, and counts are plain text after the label
+ * (red only when something is critical) instead of coloured pills. The page
+ * styles these with four-ID selectors, so these lead with `:root body`. */
+:root body #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #cv2-nav {
+  min-height: 48px;
+  padding: 0 4px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--paper);
+}
+:root body #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs { gap: 24px; }
+:root body #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button {
+  gap: 6px;
+  min-height: 48px;
+  padding: 0 2px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  box-shadow: none;
+}
+:root body #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button:hover {
+  color: var(--ink);
+  box-shadow: none;
+}
+:root body #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button[aria-current="step"] {
+  color: var(--ink);
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+:root body #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs > button .v2-ti { color: currentColor; }
+:root body #screen-patientchart #pcv-c.cs-v2 .v2-badge,
+:root body #screen-patientchart #pcv-c.cs-v2 #v2t-sign .v2-tm:not(:empty) {
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  font-weight: 500;
+  color: var(--ink-faint);
+}
+:root body #screen-patientchart #pcv-c.cs-v2 .v2-badge.crit {
+  font-weight: 600;
+  color: var(--crit-text);
+}
+:root body #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-save #vc-savedraft {
+  height: 36px;
+  font-size: 15px;
+}
+
 /* Menus: 8px corners, a hairline border, a soft shadow… */
 .nav-flyout,
 .qf-menu,
