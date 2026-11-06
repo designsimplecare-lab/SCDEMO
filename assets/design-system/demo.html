@@ -65,8 +65,16 @@
   <span id="log" style="color: var(--color-text-default-caption)"></span>
 </div>
 
+<h2>Fields and toggle · <code>&lt;sc-input&gt;</code> · <code>&lt;sc-search&gt;</code> · <code>&lt;sc-toggle&gt;</code> · read <code>el.value</code></h2>
+<div class="card row" style="align-items:flex-start">
+  <div style="width:280px"><sc-search label="Search patients" clearable></sc-search></div>
+  <div style="width:280px"><sc-input label="Reason for visit" hint="e.g. chest pain" clearable></sc-input></div>
+  <div style="width:280px"><sc-input label="PHN" value="9650 115 886" error="Check the number"></sc-input></div>
+  <sc-toggle label="Theme" value="light" items='[{"value":"light","label":"Light","icon":"light-mode"},{"value":"dark","label":"Dark","icon":"dark-mode"}]'></sc-toggle>
+</div>
+
 <h2>Table, tabs, menu · <code>SC.html(name, props, ...children)</code></h2>
-<p class="lead">Markup from the real components, for pages that build HTML in script. A child is text, a nested component <code>['Tag', { color: 'success' }, 'Verified']</code>, or <code>SC.raw(html)</code>. Styled by <code>simplecare-ui.css</code>; the page adds behaviour.</p>
+<p class="lead">Markup from the real components (any component in the library), for pages that build HTML in script. A child is text, a nested component <code>['Tag', { color: 'success' }, 'Verified']</code>, or <code>SC.raw(html)</code>. Styled by <code>simplecare-ui.css</code>; the page adds behaviour.</p>
 <div class="card" id="html"></div>
 
 <script>
@@ -77,7 +85,7 @@
     .map(function (n) { return '<span title="' + n + '">' + SC.icon(n, { size: 24 }) + '</span>'; }).join('');
   document.addEventListener('change', function (e) {
     if (e.target.tagName.indexOf('SC-') === 0) document.getElementById('log').textContent =
-      e.target.tagName.toLowerCase() + ' → ' + (e.target.checked ?? e.target.selected);
+      e.target.tagName.toLowerCase() + ' → ' + (/^SC-(TOGGLE|INPUT|SEARCH)$/.test(e.target.tagName) ? e.target.value : (e.target.checked ?? e.target.selected));
   });
   window.addEventListener('DOMContentLoaded', function () {
     var rows = [['Gloria Anne McDonald', 'Preferred: Gloria · 74Y, Female', 'Verified', 'success'],

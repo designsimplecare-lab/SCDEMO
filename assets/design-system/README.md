@@ -32,6 +32,7 @@ Put these four lines last in the page's `<head>`, after its own `<style>`, in th
 | `simplecare-ui.js`, `.css` | The `<sc-*>` tags and `SC.html()`, rendered by the real React components. |
 | `check.mjs` | Lists anything the page still draws by hand. |
 | `demo.html` | The reference. |
+| `MIGRATION.md` | What replaces each hand-built piece of the portal, and in what order. |
 
 ## Use it
 
@@ -51,6 +52,8 @@ root so page CSS can't bend them:
 <sc-badge status="online"></sc-badge>   <sc-badge count="13"></sc-badge>
 <sc-chip selected>8:00–10:00</sc-chip>
 <sc-checkbox label="Select all"></sc-checkbox>   <sc-switch label="Safe mode" checked></sc-switch>
+<sc-input label="Reason for visit" clearable></sc-input>   <sc-search label="Search patients"></sc-search>
+<sc-toggle value="light" items='[{"value":"light","label":"Light"},{"value":"dark","label":"Dark"}]'></sc-toggle>
 ```
 
 Attributes are the component props in kebab-case (see Storybook). `click`
@@ -75,11 +78,10 @@ SC.html('Tabs', { defaultValue: 'review' }, ['TabList', { 'aria-label': 'This vi
 ```
 
 A child is text (escaped), a nested component `[name, props, ...children]`, or
-`SC.raw(html)` for HTML the page already has. Available components: Avatar,
-AvatarCircle, Badge, BadgeCount, Button, Checkbox, Chip, ClinicalTag,
-CountdownTag, Icon, Menu, MenuItem, MenuItemActions, MenuList, MenuSection,
-Switch, Tab, TabList, TabPanel, Tabs, Table and its parts, Tag, Tooltip. To add
-a component, ask in the design system repo.
+`SC.raw(html)` for HTML the page already has. Any component in
+the library works (Table, Tabs, MenuList, Dialog, Drawer, TopBar, MainNavigation,
+Chart, Empty, Skeleton…); see Storybook for props. `MIGRATION.md` maps each
+hand-built piece of the portal to its component.
 
 **Colours, type, corners** for the page's own layout, which isn't a component:
 use the portal variables (`var(--ink)`, `var(--accent)`, `var(--line)`…) or the
