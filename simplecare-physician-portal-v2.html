@@ -18122,10 +18122,9 @@ function t23DaysLeft(c){
 }
 function t23LeftChip(n, from, last){
   if(n == null) return '';
-  var w = n < 0 ? 'Past the deadline' : n === 0 ? 'Last day today' : n + (n === 1 ? ' day left' : ' days left');
-  var cls = n <= T23_CRIT ? 'crit' : n <= T23_STRONG ? 'warn strong' : n <= T23_AMBER ? 'warn' : '';
+  /* the design system's DeadlineTag: amber from T23_AMBER days, red from T23_CRIT; the tooltip says which deadline it is */
   var tip = (last ? 'Last day ' + t23FDWd(last) + '. ' : '') + (from === 'rej' ? '90 days from the statement date that refused it' : '90 days after the visit; the visit day is day 0');
-  return '<span class="t23-days ' + cls + '" title="' + tip + '">' + t23Ic(n <= T23_STRONG ? 'alert' : 'clock') + w + '</span>';
+  return SC.html('DeadlineTag', {daysLeft:n, warnAt:T23_AMBER, criticalAt:T23_CRIT, title:tip});
 }
 function t23DaysChip(c){ var L = t23LastDay(c); return t23LeftChip(t23DaysLeft(c), c.st === 'submit' && !c.dl ? 'sub' : 'rej', L && L.d); }
 /* demo hook: t23DemoDays('c18', 2) sets a claim's days left, to see the 48-hour tone */
@@ -18216,26 +18215,22 @@ function t23Seg(){
 function t23Stats(){
   var sw = document.getElementById('cl-stats'); if(!sw) return;
   var sum = function(a){ return a.reduce(function(t, c){ return t + t23Amt(c); }, 0); };
-  /* Ani, 6 Oct: one slim summary strip: label, then the count and its amount on one line */
-  var st = function(k, v, s){ return '<div class="cl-stat"><p class="k">' + k + '</p><p class="vs"><span class="v">' + v + '</span><span class="s">' + s + '</span></p></div>'; };
+  /* Ani, 6 Oct: one slim summary strip; 6 Nov: the design system's StatGroup (label, the count, its amount) */
+  var st = function(k, v, d, tone){ var p = {label:k, value:String(v), detail:d}; if(tone && v) p.tone = tone; return ['Stat', p]; };
   if(T23.view === 'private'){
     var due = CLAIMS.filter(function(c){ return c.st === 'pri-due'; }), pd = CLAIMS.filter(function(c){ return c.st === 'pri-paid'; });
-    sw.innerHTML = '<div class="cl-stats t23-stats2">' +
-      st('Outstanding', due.length, t23Money(sum(due)) + ' outstanding' + T23_DEMO) +
-      st('Paid', pd.length, t23Money(sum(pd)) + ' paid' + T23_DEMO) + '</div>';
+    sw.innerHTML = SC.html('StatGroup', {'aria-label':'Private pay summary'}, st('Outstanding', due.length, t23Money(sum(due)) + ' outstanding', 'warning'), st('Paid', pd.length, t23Money(sum(pd)) + ' paid'));
     return;
   }
-  /* Daniel 5 Oct: three MSP tiles. "With MSP", "Ready to sign off" and "Needs your decision" are gone. */
-  /* Real data (Ani, 6 Oct): "Paid this cycle" = MSP claims paid on the most recent payment date */
+  /* Daniel 5 Oct: three MSP tiles. Real data (Ani, 6 Oct): "Paid this cycle" = MSP claims paid on the most recent payment date */
   var lastPay = t23LastPay();
   var ns = t23NeedsSub(), rej = t23Rej(), paid = t23Paid().filter(function(c){ return c.paidOn && c.paidOn === lastPay; });
   var rejSum = rej.reduce(function(t, c){ return t + (c.st === 'adjusted' ? t23Amt(c) - c.paid : t23Amt(c)); }, 0);
   var paidSum = paid.reduce(function(t, c){ return t + (c.paid || 0); }, 0);
-  sw.innerHTML = '<div class="cl-stats t23-stats3">' +
-    st('Needs submission', ns.length, t23Money(sum(ns)) + ' expected' + T23_DEMO) +
-    st('Refused by MSP', rej.length, t23Money(rejSum) + ' not paid' + T23_DEMO) +
-    st('Paid this cycle', paid.length, t23Money(paidSum) + (lastPay ? ' · Paid ' + t23F(lastPay) : ' paid')) +
-  '</div>';
+  sw.innerHTML = SC.html('StatGroup', {'aria-label':'Claims summary'},
+    st('Needs submission', ns.length, t23Money(sum(ns)) + ' expected', 'warning'),
+    st('Refused by MSP', rej.length, t23Money(rejSum) + ' not paid', 'error'),
+    st('Paid this cycle', paid.length, t23Money(paidSum) + (lastPay ? ' · Paid ' + t23F(lastPay) : ' paid')));
 }
 
 /* Claims on the design system's Table (Ani, 6 Nov). Every claim is a TableRow (id t23-c-…, data-c for the click handler); its status is the
