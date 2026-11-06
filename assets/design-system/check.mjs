@@ -113,7 +113,8 @@ function suggest(literal) {
 function suggestFor(prop, literal) {
   if (/shadow/.test(prop)) return 'var(--shadow-card), or var(--shadow-elevation-1 | 2 | 3) for things that float';
   if (prop === 'color' && /^(#fff(fff)?|rgba?\(\s*255[\s,]+255[\s,]+255[\s,]*(1|1\.0)?\s*\))$/i.test(literal)) {
-    return 'var(--color-text-primary-default) (text on a filled button or chip)';
+    // White text sits on a filled accent; the page's --on-accent pairs with its --accent in light and dark.
+    return pageVars['--on-accent'] ? 'var(--on-accent) (text and icons on a filled accent)' : 'var(--color-grey-0)';
   }
   return suggest(literal);
 }

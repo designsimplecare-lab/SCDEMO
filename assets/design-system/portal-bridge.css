@@ -59,6 +59,9 @@
   --tag-bad: var(--color-error-25);
   --tag-bad-ic: var(--color-error-650);
 
+  /* Text and icons on a filled accent (primary buttons, selected chips). */
+  --on-accent: var(--color-grey-0);
+
   --q-hoverbar-solid: var(--color-grey-50);
   --shadow-card: 0 1px 2px rgb(22 38 96 / 0.04), 0 8px 24px rgb(22 38 96 / 0.06);
 }
@@ -98,26 +101,23 @@
   --crit-line: rgb(239 68 68 / 0.45);
   --badge: var(--color-error-500);
 
+  --on-accent: var(--color-grey-0);
   --q-hoverbar-solid: var(--panel);
 }
 
-/* The patient chart (v2) sets its own palette; point it at the same tokens. */
+/* The patient chart (v2) has its own variable names; point them at the page's
+ * variables, so the chart follows light and dark and sits on the same page
+ * colour as every other screen (no lighter chart area, no band under the top
+ * bar or behind the tabs). */
 #screen-patientchart #pcv-c.cs-v2.chart-v2 {
-  --cv2-bg: var(--color-grey-50);
-  --cv2-line: var(--color-grey-300);
-  --cv2-ink: var(--color-navy-900);
-  --cv2-soft: var(--color-grey-600);
-  --cv2-wash: var(--color-grey-100);
-  --cv2-crit: var(--color-error-600);
-  --cv2-warn: var(--color-warning-600);
-  --cv2-ok: var(--color-success-700);
-}
-:root:not([data-theme="dark"]) #screen-patientchart #pcv-c.cs-v2.chart-v2 {
-  --ink: var(--color-navy-900);
-  --ink-soft: var(--color-grey-700);
-  --line: var(--color-grey-300);
-  --crit: var(--color-error-600);
-  --good: var(--color-success-700);
+  --cv2-bg: var(--paper);
+  --cv2-line: var(--line);
+  --cv2-ink: var(--ink);
+  --cv2-soft: var(--ink-faint);
+  --cv2-wash: var(--wash);
+  --cv2-crit: var(--crit);
+  --cv2-warn: var(--warn);
+  --cv2-ok: var(--good);
 }
 
 /* The page: the brand's flat soft grey (#EEF0F3) instead of the grey-to-cream gradient. */
@@ -184,6 +184,12 @@ body { font-family: var(--font-sans); }
 }
 .btn.xs { border-radius: 6px !important; }
 
+/* Top bar: every icon button (search, safe mode, theme, the AI mark) is the
+ * same 8px rounded square; the page drew some as circles. */
+html body .topbar :is(.chat-fab, .ps-tbb) { border-radius: var(--radius-control); }
+/* The collapsed left rail too: its icon buttons were circles. */
+html body .sidebar.collapsed .nav-btn { border-radius: var(--radius-control); }
+
 /* Avatars: rounded squares (--radius-avatar), like Slack. */
 .topbar .avatar,
 .chat-thread-avatar,
@@ -211,6 +217,8 @@ html body :is(.pf-photo, .mini-av, .vd-av, .chat-launcher .cl-ph, #chat-panel .c
   border: 0;
   border-bottom: 1px solid var(--line);
   border-radius: 0;
+  /* The page colour, so the row has no background of its own; opaque only so
+   * content scrolling under the sticky row doesn't show through. */
   background: var(--paper);
 }
 :root body #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav #v2-tabs { gap: 24px; }
