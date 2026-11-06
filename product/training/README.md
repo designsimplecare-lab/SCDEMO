@@ -12,7 +12,7 @@ people, the rules and the process, and can apply them to real SimpleCare situati
    - **Product** (`product-manager`, `ux-researcher`, `market-strategist`): `product/use-cases.md`
      and `research/patient-entry-flows/README.md`.
    - **Design** (`ux-designer`, `content-designer`, `accessibility`, `frontend-engineer`,
-     `brand-designer`): `simplecare-design-system.html`, skimmed.
+     `brand-designer`): `assets/design-system/README.md`.
    - **Safety and trust** (`clinical-safety`, `privacy-security`, `qa-engineer`, `patient-chat-qa`):
      `product/reports/clinical-safety-hazard-log.md`.
    - **Build** (`tech-lead`, `integrations-engineer`, `ai-engineer`, `billing-msp`):

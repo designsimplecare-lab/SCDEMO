@@ -45,7 +45,7 @@ change by change. Evidence from the screenshots (in the Figma file):
 - Live v2: https://designsimplecare-lab.github.io/SCDEMO/simplecare-physician-portal-v2.html (build 2026-09-30 13:51)
 - `product/requirements.md`: REQ-HQ-01…17 (HQ-13 is replaced by Ani's 30 Sep decision: navigation open by default) and REQ-UI-01…07
 - `from-daniel/2026-09-29-home-feedback.md`
-- **Design system: SC – Design System (Figma)**, https://www.figma.com/design/XoYpGAbbNZUHkKwWDT56g3/SC---Design-System. Ani, 30 Sep: design uses only this library (Lato, navy primary #2C438A, Mapped Light/Dark variables). `simplecare-design-system.html` is older and replaced by it.
+- **Design system: the SimpleCare design system** (Ani, 5 Nov; D-107), loaded from `assets/design-system/` (see its README): navy #162660, Lato, Light/Dark tokens. It replaces SC – Design System (Figma, D-100) and the old SimpleCare Paper page.
 
 ## Output
 - The Figma file above: "Explorations" and "Final + spec" pages.

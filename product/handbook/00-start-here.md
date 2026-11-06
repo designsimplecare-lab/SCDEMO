@@ -60,7 +60,7 @@ The end-to-end journey (see `research/patient-entry-flows/README.md`):
 - `simplecare-physician-portal-v2.html`. This is **v2**, the active one. v1 is hidden from the demo.
 - `simplecare-moa-portal.html`
 - `simplecare-patient-portal-v2.html`
-- `simplecare-design-system.html` (SimpleCare Paper)
+- Design system: the SimpleCare design system, loaded from `assets/design-system/` (see its README)
 
 ## Glossary
 | Term | Meaning |

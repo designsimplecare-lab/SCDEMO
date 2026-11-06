@@ -101,20 +101,24 @@ blocks your task, say so; don't work around it.
 **No dark-mode work for now** (Ani, 4 Oct 2026): design and verify in light mode only. Leave the existing
 dark theme as it is; don't extend or test it. Dark mode comes back later.
 
-**For now, build in the demo's own design system** (Ani, 3 Oct 2026: "use the design system we already
-have in our demo, do not use Figma yet, we will do it later when we are done"). That means the CSS
-variables, font, components, icons and dark theme already in `simplecare-physician-portal-v2.html`. The
-move to the Figma library described below happens **later**, as its own task.
+**The design system is the SimpleCare design system** (Ani, 5 Nov 2026; D-107). It lives in its own
+repo (`Simple - master`: tokens, components and Storybook) and reaches the prototypes as plain CSS in
+`assets/design-system/`: `simplecare-tokens.css` (every token, Light and Dark, plus Lato) and
+`portal-bridge.css`, which points the page's own variables (`--ink`, `--paper`, `--accent`, …) at
+those tokens. Read `assets/design-system/README.md` before styling anything.
+- Navy `#162660` is the ink and the primary; the page is `#ECF2FB`; the typeface is Lato.
+- Use the page variables or the tokens (`var(--color-navy-900)`), never a hex value.
+- The two `<link>`s to `assets/design-system/` stay last in `<head>` of
+  `simplecare-physician-portal-v2.html`. Fetch before committing that page so they aren't dropped.
+- Colour, type, corners and component looks change in the design system repo, then re-export
+  (`npm run export:css`). Screens, layout and behaviour change here.
+- The old SimpleCare Paper page (`simplecare-design-system.html`) and the "SC – Design System"
+  Figma token notes are retired.
 
-**The target design system is "SC – Design System" in Figma**
-(https://www.figma.com/design/XoYpGAbbNZUHkKwWDT56g3/SC---Design-System). Ani, 30 Sep 2026: once the migration starts, design
-work uses only its components, Mapped variables (Light and Dark), Lato text styles and Elevation
-styles. The v2 prototype (bright blue #4353E8, warm greys, system font) and
-`simplecare-design-system.html` predate it, and v2 moves to it after the Home redesign (T-020). The
-rules below still apply on top of the library.
+The rules below still apply on top.
 21. **Text is ink, and colour goes on icons.**
     - The primary colour is for primary actions and the current state: navy `surface/primary/default`
-      (#2C438A) in SC – Design System. (v2 still uses #4353E8 until it moves to the library.)
+      (#162660) in the SimpleCare design system.
     - Red is critical only: a critical value is the only red text.
 22. **Sizes.**
     - Nothing a physician reads is under 14px.

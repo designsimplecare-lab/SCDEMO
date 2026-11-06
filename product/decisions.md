@@ -1087,6 +1087,7 @@ with Ani approving (D-91). From 3 Oct 2026, design needs the ux-designer agent +
   bright blue #4353E8 and system font as the target. The primary colour becomes navy #2C438A.
   The rules in handbook section E still apply on top.
 - **Source:** `813fd68`; `product/handbook/01-rules.md` §E; T-020.
+- **Reversed:** 5 Nov 2026, D-107 (the SimpleCare design system).
 
 ### D-101 · 30 Sep 2026 · Three SimpleCare requirement documents become sources
 - **Decided:** three documents are sources for the spec. The full text is git-ignored; they are
@@ -1212,6 +1213,20 @@ with Ani approving (D-91). From 3 Oct 2026, design needs the ux-designer agent +
 - **Open:** OQ-76 (four tier vocabularies), OQ-91 (Chart View v2.1 and four companion specs),
   OQ-92 (Home vs chart tiers).
 - **Source:** B-006 §2; CV25 §1-§10.
+
+## November
+
+### D-107 · 5 Nov 2026 · The SimpleCare design system replaces SimpleCare Paper and the Figma token notes
+- **Decided:** the prototypes use the SimpleCare design system (repo `Simple - master`), loaded as
+  plain CSS from `assets/design-system/`: navy #162660 ink and primary on #ECF2FB, Lato, the
+  system's status colours, Slack-like details (8px buttons, rounded-square avatars). The old
+  SimpleCare Paper page and the "SC – Design System" token notes are removed.
+- **By:** Ani.
+- **Quote:** "apply this design system to my new portal"; "remove old design system" (5 Nov 2026).
+- **Replaced:** D-100 (SC – Design System in Figma as the target) and handbook rule E's "build in
+  the demo's own design system"; `simplecare-design-system.html` (SimpleCare Paper) and
+  `product/design/sc-design-system-tokens.md`. REQ-UI-10 is superseded.
+- **Source:** `823be78`, `08f6dfe`, `bc0da7c`; `assets/design-system/README.md`; handbook §E.
 
 ## Changelog
 

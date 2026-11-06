@@ -1928,8 +1928,8 @@ draggable button showing the doctor's MOA.**
   https://www.figma.com/design/XoYpGAbbNZUHkKwWDT56g3/SC---Design-System).
 - Accept: a design for review names the library components and variables it uses. The primary is
   navy #2C438A in the library.
-- Status: not built in v2. v2 (bright blue #4353E8, system font) and `simplecare-design-system.html`
-  predate the library; v2 moves to it after the Home redesign (T-020).
+- Status: superseded by D-107 (5 Nov 2026): v2 uses the SimpleCare design system through
+  `assets/design-system/` (navy #162660, Lato). The old SimpleCare Paper page is retired.
 - Priority: P1 (T-020).
 
 ---
