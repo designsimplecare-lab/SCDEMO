@@ -54,7 +54,9 @@ root so page CSS can't bend them:
 ```
 
 Attributes are the component props in kebab-case (see Storybook). `click`
-bubbles as usual. Checkbox, switch and chip fire `change`; read `.checked` or
+bubbles as usual, and `el.focus()` focuses the control inside. For a toggle
+button set `pressed="true"` or `pressed="false"` (screen readers hear it); show the chosen one
+with the variant, e.g. `variant="primary" start-icon="check"`. Checkbox, switch and chip fire `change`; read `.checked` or
 `.selected`, or set them from script.
 
 **Bigger pieces: `SC.html`.** Use it for tables, tabs, menus and tooltips the page
