@@ -9437,9 +9437,9 @@ function stTag(status, act, more){
 }
 var STATUS_KEY = {waiting:'in-queue', next:'in-queue', delayed:'in-queue', progress:'in-queue', scheduled:'in-queue', missed:'call-back', dropped:'call-back',
   calldropped:'call-dropped', done:'completed', noshow:'no-show', declined:'declined', pendingmoa:'pending-moa', needsreview:'needs-review', admincancel:'admin-cancelled'};
-var CARD_KEY = {verified:'card-verified', check:'card-check', invalid:'card-invalid', ended:'card-invalid', oop:'out-of-province', 'oop-qc':'out-of-province', 'private':'private-pay'};
+var CARD_KEY = {verified:'card-verified', check:'card-check', invalid:'card-invalid', ended:'card-ended', oop:'out-of-province', 'oop-qc':'out-of-province', 'private':'private-pay'};
 var CLAIM_KEY = {submit:'claim-submit', submitted:'claim-submitted', appeal:'claim-submitted', held:'claim-held', rejmoa:'claim-rejected', rejected:'claim-rejected', dispute:'claim-rejected',
-  adjusted:'claim-review', paid:'claim-paid', 'pri-due':'payment-due', 'pri-paid':'payment-paid'};
+  adjusted:'claim-review', paid:'claim-paid', closed:'claim-closed', 'pri-due':'payment-due', 'pri-paid':'payment-paid'};
 var BILL_KEY = {'msp-submit':'claim-submit', 'msp-submitted':'claim-submitted', 'pri-due':'payment-due', 'pri-paid':'payment-paid'};
 function qStatusTag(r){
   return stTag(STATUS_KEY[r.status] || 'in-queue', 'status', {title:'Change visit status', label:STATUS_LABEL[r.status]});
@@ -18885,7 +18885,6 @@ function t23BillCell(r){
   var act = b.open ? 'bill' : '', c0 = t23RowClaim(r);
   if(c0 && c0.payer !== 'private'){   /* Dev's 7 states (6 Oct); a blocker or a part payment keeps its own words */
     var L0 = t23Label(c0), st = t23Blocker(c0) ? 'claim-review' : CLAIM_KEY[c0.st];
-    if(!st) return SC.html('Tag', {color:'neutral'}, L0.label);   /* "Closed — not paid": no StatusTag yet */
     return stTag(st, act, L0.label !== (T23_ST[c0.st] || {}).label || st === 'claim-review' ? {label:L0.label} : {});
   }
   return stTag(BILL_KEY[k] || 'claim-submit', act, {label:b.label});
