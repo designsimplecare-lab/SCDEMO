@@ -11663,7 +11663,7 @@ var scSeen = [];         // proposals surfaced
 var scDone = {};         // id -> 'accepted' | 'dismissed'
 
 function scReset(){
-  clearInterval(scTimer); scTimer = null;
+  clearInterval(scTimer); scAudioStop(); scTimer = null;
   scState = 'off'; scIdx = 0; scSeen = []; scDone = {};
   renderScribe();
 }
@@ -11672,13 +11672,25 @@ function scTurnOn(){
   if(!cdOn('note')){ toast('Cedar is off for listening and the note. Turn it on in your profile menu.'); return; }   /* T-038 */
   scStart();
 }
-function scStart(){
-  scState = 'live'; scIdx = 0; scSeen = []; scDone = {};
-  renderScribe();
-  clearInterval(scTimer);
-  scTimer = setInterval(scTick, 1100);
-  toast('Cedar is listening');
+/* Ani, 6 Nov ("can we have sound, Daniel and the patient talking, in the demo"): Gloria's call plays as sound, one recorded line per turn
+   (assets/audio/call-gloria/NN.m4a: generic synthetic voices, not anyone's real voice), and the transcript moves with the voices.
+   The script is Gloria's, so other patients' calls stay silent and run on the timer. */
+var SC_AUDIO = {el:null, on:true, ext:null};
+function scAudioFor(){ return /^Gloria Mcdonald/.test(PC_CURRENT || ''); }
+function scPlayNext(){
+  if(scState !== 'live') return;
+  if(scIdx >= SC_TURNS.length){ scStop(); return; }
+  scIdx++; scStep(); renderScribe();
+  var a = SC_AUDIO.el || (SC_AUDIO.el = new Audio()), next = function(ms){ clearTimeout(scTimer); scTimer = setTimeout(scPlayNext, ms); };
+  /* AAC where the browser plays it (Chrome, Safari, Edge); WAV when it can't (some Chromium builds say they can, then fail: fall back once and remember) */
+  var base = 'assets/audio/call-gloria/' + String(scIdx).padStart(2, '0'), go = function(ext){ a.src = base + '.' + ext; a.muted = !SC_AUDIO.on; var pr = a.play(); if(pr && pr.catch) pr.catch(function(){}); };
+  SC_AUDIO.ext = SC_AUDIO.ext || (a.canPlayType('audio/mp4; codecs="mp4a.40.2"') ? 'm4a' : 'wav');
+  a.onended = function(){ next(450); };
+  a.onerror = function(){ if(SC_AUDIO.ext === 'm4a'){ SC_AUDIO.ext = 'wav'; go('wav'); } else next(1100); };
+  go(SC_AUDIO.ext);
 }
+function scAudioStop(){ var a = SC_AUDIO.el; if(a){ a.onended = a.onerror = null; a.pause(); } clearTimeout(scTimer); }
+function scSound(){ SC_AUDIO.on = !SC_AUDIO.on; if(SC_AUDIO.el) SC_AUDIO.el.muted = !SC_AUDIO.on; renderScribe(); }
 /* Doctor review ask 1: the scripted call drafts "ASSESSMENT: Stable exertional angina. No
    features of instability" and "Telephone review in four weeks" -- written before today's
    critical troponin existed. With an unsigned critical result on the chart, the scribe keeps
@@ -11711,12 +11723,12 @@ function scTick(){
   renderScribe();
 }
 function scSkip(){
-  clearInterval(scTimer);
+  clearInterval(scTimer); scAudioStop();
   while(scIdx < SC_TURNS.length){ scIdx++; scStep(); }
   scStop();
 }
 function scStop(){
-  clearInterval(scTimer); scTimer = null;
+  clearInterval(scTimer); scAudioStop(); scTimer = null;
   scState = 'review'; renderScribe();
   toast('Recording stopped. ' + scPending() + ' proposals waiting on you.');
 }
@@ -11787,6 +11799,7 @@ function renderScribe(){
   /* live or review */
   acts.innerHTML = scState==='live'
     ? '<span class="sc-count">'+(scIdx > 0 ? SC_TURNS[Math.min(scIdx, SC_TURNS.length)-1].t : '00:00')+'</span>' +
+      (scAudioFor() ? '<sc-button variant="tertiary-main" size="small" start-icon="' + (SC_AUDIO.on ? 'volume-up' : 'volume-mute') + '" label="' + (SC_AUDIO.on ? 'Mute the call' : 'Unmute the call') + '" title="' + (SC_AUDIO.on ? 'Mute' : 'Unmute') + '" pressed="' + !SC_AUDIO.on + '" onclick="scSound()"></sc-button>' : '') +
       '<button class="btn xs" onclick="scSkip()">Skip to end</button>' +
       '<button class="btn xs" onclick="scStop()">Stop</button>'
     : '<button class="btn xs sc-again" onclick="scReset()">Start over</button>';
@@ -13902,6 +13915,7 @@ function pcDropCall(){
 function pcEndCall(){
   var who = PC_CALL_WHO || PC_CURRENT;
   PC_ON_CALL = false; PC_CALL_WHO = null;
+  if(typeof scState !== 'undefined' && scState === 'live') scStop();   /* the call is over: Cedar stops listening and the sound stops */
   var c = PC_CALL[who];
   if(who === PC_CURRENT && document.querySelector('#pcv-c .vc-acts .btn.dark')) pcCallBtns(c && c.calls ? (c.dropped ? 'Redial' : 'Call again') : 'Call', false);
   pcCallSum();
@@ -17640,8 +17654,8 @@ scStart = function(){
   scState = 'live'; scIdx = 0; scSeen = []; scDone = {};
   CS.sc[PC_CURRENT] = {};
   renderScribe(); csRenderAI();
-  clearInterval(scTimer);
-  scTimer = setInterval(scTick, 1100);
+  clearInterval(scTimer); scAudioStop();
+  if(scAudioFor()) scPlayNext(); else scTimer = setInterval(scTick, 1100);   /* Gloria's call plays as sound (scPlayNext) */
   toast('Cedar is listening');
 };
 /* SC_NOTE blocks → sections: SUBJECTIVE and BACKGROUND are Subjective (was Findings, Daniel 11 Oct), ASSESSMENT is Assessment, PLAN is Plan.
