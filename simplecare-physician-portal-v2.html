@@ -14895,8 +14895,11 @@ function rxRender(){
   m.scrollTop = sm; ra.scrollTop = sr; if(bd) bd.scrollTop = sb;
   var t = fk && sh.querySelector('[data-fk="' + fk.replace(/"/g, '') + '"]');
   if(!t && fp) t = sh.querySelector('[data-fk="' + fp + '"]');
-  if(t && t.shadowRoot) t = t.shadowRoot.querySelector('button') || t;   /* a design-system button: focus its own button */
-  if(t && inSheet) t.focus({preventScroll:true});
+  if(t && inSheet){
+    t.focus({preventScroll:true});
+    /* a design-system button renders its inside a moment later; focus it once it can take focus */
+    if(t.tagName.indexOf('SC-') === 0){ var tries = 0, again = function(){ if(document.activeElement === t || !t.isConnected || ++tries > 10) return; t.focus({preventScroll:true}); requestAnimationFrame(again); }; requestAnimationFrame(again); }
+  }
   var ot = document.getElementById('rx-ovt'); if(ot){ if(ev != null) ot.value = ev; if(RX_UI.ovFocus){ ot.focus(); RX_UI.ovFocus = false; } }
   if(typeof v2SyncHead === 'function' && v2On()) v2SyncHead();
 }
@@ -15526,7 +15529,7 @@ function rxActsHtml(st, it){
   var o = rxItemOrder(st, it), stp = rxStopFor(st, it), cf = rxConfirmed(st, it), dz = it.kind === 'dose' && !it.conf && !(o && o.kind === 'change');
   var b = function(k, label, on, extra, icon){
     /* Ani, 6 Nov: the design system's button (secondary, medium); the chosen action is the primary one with a tick */
-    return '<sc-button variant="' + (on ? 'primary' : 'secondary-main') + '" size="medium"' + (on ? ' start-icon="check"' : icon ? ' start-icon="' + icon + '"' : '') + ' data-fk="a' + k + it.id + '" aria-pressed="' + !!on + '"' + (extra || '') + ' onclick="rxAct(\'' + k + '\',\'' + it.id + '\')">' + label + '</sc-button>';
+    return '<sc-button variant="' + (on ? 'primary' : 'secondary-main') + '" size="medium"' + (on ? ' start-icon="check"' : icon ? ' start-icon="' + icon + '"' : '') + ' data-fk="a' + k + it.id + '" pressed="' + !!on + '"' + (extra || '') + ' onclick="rxAct(\'' + k + '\',\'' + it.id + '\')">' + label + '</sc-button>';
   };
   var h = '<div class="rp-acts" role="group" aria-label="' + csEsc(it.drug) + '">', sent = !o && st.orders.some(function(x){ return x.sent && x.drug === it.drug; });
   if(sent) return h + b('cont', 'Continue', true, ' disabled') + '<span class="rp-state">Prescribed today</span></div>';
