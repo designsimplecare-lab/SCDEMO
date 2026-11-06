@@ -78,7 +78,9 @@ SC.html('Tabs', { defaultValue: 'review' }, ['TabList', { 'aria-label': 'This vi
 ```
 
 A child is text (escaped), a nested component `[name, props, ...children]`, or
-`SC.raw(html)` for HTML the page already has. Any component in
+`SC.raw(html)` for HTML the page already has. Props that take content
+(`meta`, `description`, an icon node…) accept the same:
+`SC.html('TableGroupRow', { colSpan: 5, label: '5:00–7:00 PM', meta: SC.raw('<span data-qclock>…</span>') })`. Any component in
 the library works (Table, Tabs, MenuList, Dialog, Drawer, TopBar, MainNavigation,
 Chart, Empty, Skeleton…); see Storybook for props. `MIGRATION.md` maps each
 hand-built piece of the portal to its component.
