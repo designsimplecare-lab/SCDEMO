@@ -9845,7 +9845,7 @@ function renderQueue(){
     var ai = AI_SUMMARY[r.name];
     var props = {className:(r.redflag ? 'redflag' : '') + (isNext ? ' q-next' : ''), current:isNext, tabIndex:0, 'data-name':r.name, 'aria-label':'Open chart: ' + (r.legal || r.name)};
     if(hiddenWin){ props.hidden = true; props['data-win'] = hiddenWin; }
-    var patient = ['TableCellContent', {strong:true, label:r.legal || r.name, secondary:'Preferred: ' + (r.pref || r.name.split(' ')[0]) + ' · ' + (r.age || '') + ', ' + (r.sex || '')}];
+    var patient = ['TableCellContent', {strong:true, label:r.legal || r.name, secondary:(r.pref && r.legal && r.legal.split(' ')[0] !== r.pref ? r.pref + ' · ' : '') + (r.age || '') + ', ' + (r.sex || '')}];   /* Ani, 6 Nov: no "Preferred:" word; the name they go by only when it differs */
     return SC.html('TableRow', props,
       ['TableCell', {}, ['TableCellContent', {type:'number', label:inQueue ? String(++qSeq) : '—'}]],
       ['TableCell', {}, patient],
@@ -13451,7 +13451,7 @@ function openChart(name){
     initials: pcInitials(r.legal || name),
     pref: r.pref || base.split(' ')[0],
     /* REQ-ID-01/03: the name the patient goes by, worded as the queue row words it */
-    demo: ((r.pref && r.legal && r.legal.split(' ')[0] !== r.pref) ? 'Preferred: ' + r.pref + ' \u00b7 ' : '') + ageTxt + ' \u00b7 ' + sexTxt,
+    demo: ((r.pref && r.legal && r.legal.split(' ')[0] !== r.pref) ? r.pref + ' \u00b7 ' : '') + ageTxt + ' \u00b7 ' + sexTxt,
     /* Daniel's patient search spec v2.3 §6 (5 Nov): the banner shows the recorded date of birth, the same one search and the two-identifier check show (it was one fixed date for everyone) */
     dob: (typeof psDobText === 'function' && psDobText(name)) || 'Mar 10, 1952',
     sex: sexTxt,
