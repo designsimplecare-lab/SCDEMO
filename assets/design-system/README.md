@@ -6,7 +6,7 @@ linked at the end of its `<head>`:
 
 | File | What | Edit? |
 | --- | --- | --- |
-| `simplecare-tokens.css`, `fonts/` | Every design-system token as a CSS variable (light, and dark under `[data-theme="dark"]`), plus Inter | No: exported. In the design system repo run `npm run export:css -- "<path to SCDEMO>/assets/design-system"` |
+| `simplecare-tokens.css`, `fonts/` | Every design-system token as a CSS variable (light, and dark under `[data-theme="dark"]`), plus Lato, the SimpleCare typeface | No: exported. In the design system repo run `npm run export:css -- "<path to SCDEMO>/assets/design-system"` |
 | `portal-bridge.css` | Points the portal's variables (`--ink`, `--paper`, `--accent`, …) at those tokens, plus a few Slack-like details (8px buttons, rounded-square avatars, navy menu highlight) | Yes, to change which token a portal variable uses |
 
 When adding to the portal: use the portal variables (`var(--ink)`, `var(--accent)`,

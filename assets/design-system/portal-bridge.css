@@ -8,7 +8,7 @@
  *
  * 1. The portal's own variables (--ink, --paper, --accent, …) are pointed at
  *    design-system tokens, so every rule that uses them follows the brand:
- *    navy #162660 ink on #ECF2FB, Inter, the system's status colours.
+ *    navy #162660 ink on #ECF2FB, Lato, the system's status colours.
  * 2. A few Slack-like details the variables can't reach: 8px controls,
  *    rounded-square avatars, quiet menus with a navy highlight.
  *
@@ -163,11 +163,10 @@ stop[stop-color="#4353E8" i] { stop-color: var(--color-navy-900); }
  * the page injects from script, which left their light icons invisible. */
 :root[data-theme="dark"] .topbar .ps-tbb { background: var(--panel) !important; }
 
-/* ---- 1. Type: Inter --------------------------------------------------------- */
-body {
-  font-family: var(--font-sans);
-  font-feature-settings: "cv11", "ss01"; /* Inter's straight-sided 1 and open digits read well in tables */
-}
+/* ---- 1. Type: Lato ---------------------------------------------------------- */
+/* Lato has Regular 400, Bold 700 and Black 900; the page's 500, 600 and 800
+ * resolve to the nearest of those. */
+body { font-family: var(--font-sans); }
 #rx-panel :is(.rp-aitag, .rp-acc, .rp-pw2, .rp-asper, .rp-soft, .rp-sl2 button, .rp-padd .rp-rs, .rp-dym),
 #rx-panel .rp-paper :is(button, input, .rp-pop, .rp-more) {
   font-family: var(--font-sans);
