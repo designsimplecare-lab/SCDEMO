@@ -9427,20 +9427,22 @@ var STATUS_CLOSED = ['done','noshow','declined','admincancel'];
 function statusClosed(s){ return STATUS_CLOSED.indexOf(s) > -1; }
 /* icons for the five newer statuses come from the Mage map (ICONS is declared further down, so it is read when a row is drawn) */
 var STATUS_ICO2 = {calldropped:'hangup', declined:'close', pendingmoa:'taskmoa', needsreview:'eye', admincancel:'calendar'};
-/* a design-system Tag (SC.html); one that opens a menu or the card sheet is the Tag as a button with the dropdown arrow (the row's click handler opens it) */
-var DS_TONE = {ok:'success', warn:'warning', bad:'error', info:'information'};
-function dsTag(label, color, icon, act, more){
-  var p = {color:color || 'neutral'}; if(icon) p.startIcon = icon;
+/* Ani, 6 Nov ("use our statuses"): every status is the design system's StatusTag, which owns the wording, colour and icon; the page only maps
+   its own state to a StatusTag key. One that opens a menu or the card sheet is a button with the dropdown arrow (the row's click handler opens it). */
+function stTag(status, act, more){
+  var p = {status:status};
   if(act){ p.as = 'button'; p.endIcon = 'arrow-dropdown-down'; p['data-act'] = act; p['aria-haspopup'] = act === 'card' ? 'dialog' : 'menu'; p['aria-expanded'] = false; }
   for(var k in (more || {})) p[k] = more[k];
-  return SC.html('Tag', p, label);
+  return SC.html('StatusTag', p);
 }
-var STATUS_TAG = {waiting:['information','clock-time'], next:['information','clock-time'], delayed:['information','clock-time'], progress:['information','phone-call'], scheduled:['information','calendar'],
-  missed:['error','phone-missed'], dropped:['error','phone-missed'], calldropped:['warning','phone-disconnect'], done:['success','check-circle'], noshow:['neutral','user-cross'],
-  declined:['neutral','x'], pendingmoa:['purple','user-assign'], needsreview:['warning','eye-on'], admincancel:['neutral','calendar']};
+var STATUS_KEY = {waiting:'in-queue', next:'in-queue', delayed:'in-queue', progress:'in-queue', scheduled:'in-queue', missed:'call-back', dropped:'call-back',
+  calldropped:'call-dropped', done:'completed', noshow:'no-show', declined:'declined', pendingmoa:'pending-moa', needsreview:'needs-review', admincancel:'admin-cancelled'};
+var CARD_KEY = {verified:'card-verified', check:'card-check', invalid:'card-invalid', ended:'card-invalid', oop:'out-of-province', 'oop-qc':'out-of-province', 'private':'private-pay'};
+var CLAIM_KEY = {submit:'claim-submit', submitted:'claim-submitted', appeal:'claim-submitted', held:'claim-held', rejmoa:'claim-rejected', rejected:'claim-rejected', dispute:'claim-rejected',
+  adjusted:'claim-review', paid:'claim-paid', 'pri-due':'payment-due', 'pri-paid':'payment-paid'};
+var BILL_KEY = {'msp-submit':'claim-submit', 'msp-submitted':'claim-submitted', 'pri-due':'payment-due', 'pri-paid':'payment-paid'};
 function qStatusTag(r){
-  var t = STATUS_TAG[r.status] || ['neutral', ''];
-  return dsTag(STATUS_LABEL[r.status], t[0], t[1], 'status', {title:'Change visit status'});
+  return stTag(STATUS_KEY[r.status] || 'in-queue', 'status', {title:'Change visit status', label:STATUS_LABEL[r.status]});
 }
 function statusIcon(k){
   if(STATUS_ICON[k]) return STATUS_ICON[k];
@@ -10143,8 +10145,8 @@ function qfAny(key){ return QF[key].length > 0; }
    Daniel, 4 Nov call 00:51:49: doctors "save, return, alter, then sign". */
 function qNoteDraft(r){ return !r.signed && typeof CS !== 'undefined' && CS.draft && !!CS.draft[r.name] && !!(CS.draftAt && CS.draftAt[r.name]); }
 function qNoteTag(r){
-  if(r.signed) return dsTag('Signed' + (r.signed.at ? ' · ' + r.signed.at : ''), 'success', 'signature');
-  if(qNoteDraft(r)) return dsTag('Note draft · ' + CS.draftAt[r.name], 'neutral', 'draft');
+  if(r.signed) return SC.html('Tag', {color:'success', startIcon:'signature'}, 'Signed' + (r.signed.at ? ' · ' + r.signed.at : ''));
+  if(qNoteDraft(r)) return SC.html('Tag', {color:'neutral', startIcon:'draft'}, 'Note draft · ' + CS.draftAt[r.name]);
   return '';
 }
 function qfVisitOptions(){
@@ -18880,8 +18882,13 @@ function t23BillCell(r){
   r.bill = k;
   if(k === 'msp-none') return '<span class="t23-none" aria-label="No claim yet. The visit isn’t finished." title="No claim yet. The visit isn’t finished.">—</span>';
   if(k === 'noshow') return '<span class="t23-ns">No-show</span>';
-  var c0 = t23RowClaim(r); if(c0 && c0.payer !== 'private'){ var L0 = t23Label(c0); b = {label:L0.label, tone:L0.tone, open:b.open}; }   /* Dev's 7 states (6 Oct) */
-  return dsTag(b.label, DS_TONE[b.tone], '', b.open ? 'bill' : '');
+  var act = b.open ? 'bill' : '', c0 = t23RowClaim(r);
+  if(c0 && c0.payer !== 'private'){   /* Dev's 7 states (6 Oct); a blocker or a part payment keeps its own words */
+    var L0 = t23Label(c0), st = t23Blocker(c0) ? 'claim-review' : CLAIM_KEY[c0.st];
+    if(!st) return SC.html('Tag', {color:'neutral'}, L0.label);   /* "Closed — not paid": no StatusTag yet */
+    return stTag(st, act, L0.label !== (T23_ST[c0.st] || {}).label || st === 'claim-review' ? {label:L0.label} : {});
+  }
+  return stTag(BILL_KEY[k] || 'claim-submit', act, {label:b.label});
 }
 function t23SyncQueue(){ if(typeof renderQueue === 'function') renderQueue(); updateClaimCount(); }
 /* REQ-BIL-01: the next step first, Details second. No "Sign off & submit" here (CNF-10, TAIL-04). */
@@ -19048,10 +19055,10 @@ function t23CardWords(r){
 function t23CardCell(r){
   var cs = CARD_STATUS[r.card];
   if(!cs) return '<span class="t23-none">—</span>';
-  var ic = {verified:'check-circle', check:'warning', invalid:'error', ended:'error', private:'information'}[r.card] || 'warning';
-  if(r.card === 'verified') return dsTag('Verified', 'success', ic, '', {title:'Checked ' + (r.cardChecks ? r.cardChecks[0].at : 'today') + ', for today’s visit'});
-  if(cs.plain) return dsTag(cs.label, 'information', ic, '', {title:cs.why});
-  return dsTag(cs.label, DS_TONE[cs.tone], ic, 'card');
+  var key = CARD_KEY[r.card] || 'card-check', more = {label:cs.label};
+  if(r.card === 'verified'){ more.title = 'Checked ' + (r.cardChecks ? r.cardChecks[0].at : 'today') + ', for today’s visit'; return stTag(key, '', more); }
+  if(cs.plain){ more.title = cs.why; return stTag(key, '', more); }
+  return stTag(key, 'card', more);
 }
 openCard = function(name){
   var r = QUEUE_DATA.filter(function(x){ return x.name === name; })[0]; if(!r) return;
