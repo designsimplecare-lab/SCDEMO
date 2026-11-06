@@ -3633,7 +3633,7 @@
   :root[data-theme="dark"]{--brand:#7C89FF;--brand-ink:#A9B1FF;--brand-wash:#1E2340;--brand-line:#3A4380;}
 
   /* primary actions in brand blue */
-  .btn.dark,.work-tabs .wt-dark,#screen-review .btn.dark,#screen-patientchart .btn.dark{background:var(--brand);border-color:var(--brand);color:var(--color-grey-0);}
+  .btn.dark,.work-tabs .wt-dark,#screen-review .btn.dark,#screen-patientchart .btn.dark{background:var(--brand);border-color:var(--brand);color:var(--on-accent);}
   .btn.dark:hover,.work-tabs .wt-dark:hover{background:var(--brand-ink);border-color:var(--brand-ink);}
   .btn.dark .ic,.work-tabs .wt-dark .ic,#screen-review .btn.dark .ic{color:#fff;}
   :is(#screen-review,#na-drw) .rv-opt.on{background:var(--brand-wash);border-color:var(--brand);color:var(--ink);}
@@ -6120,7 +6120,7 @@
   #screen-patientchart .pc-split > .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;min-height:44px;margin:0;border:0;font-size:15px;font-weight:700;line-height:20px;}
   #screen-patientchart .pc-split > .btn .ic,#screen-patientchart .pc-split > .btn .ic svg{width:20px;height:20px;flex:none;}
   #screen-patientchart .pc-split > .pc-split-main{flex:1 1 auto;padding:0 16px;border-radius:var(--radius-round) var(--radius-2xs) var(--radius-2xs) var(--radius-round);white-space:nowrap;}
-  #screen-patientchart .pc-split > .pc-split-caret{flex:none;width:44px;padding:0;border-radius:var(--radius-2xs) var(--radius-round) var(--radius-round) var(--radius-2xs);background:var(--accent);color:var(--color-grey-0);box-shadow:none;}
+  #screen-patientchart .pc-split > .pc-split-caret{flex:none;width:44px;padding:0;border-radius:var(--radius-2xs) var(--radius-round) var(--radius-round) var(--radius-2xs);background:var(--accent);color:var(--on-accent);box-shadow:none;}
   #screen-patientchart .pc-split > .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;position:relative;z-index:1;}
   #screen-patientchart .pc-split > .pc-split-caret[aria-expanded="true"]{background:var(--accent-ink);opacity:1;}
   /* after a call (Call again, Redial) the pair is an outline, as the single button was */
@@ -6144,7 +6144,7 @@
   #screen-patientchart #pcv-c.cs-ns-on .cs-snap .vc-acts > .pc-split{display:none;}
   /* the older dock: its green Call */
   #screen-patientchart #pcv-d .pc-split-vd{display:flex;width:100%;}
-  #screen-patientchart #pcv-d .pc-split-vd > .btn{height:52px;min-height:52px;font-size:16px;font-weight:800;background:var(--color-success-600);color:var(--color-grey-0);box-shadow:none;}
+  #screen-patientchart #pcv-d .pc-split-vd > .btn{height:52px;min-height:52px;font-size:16px;font-weight:800;background:var(--color-success-600);color:var(--on-accent);box-shadow:none;}
   #screen-patientchart #pcv-d .pc-split-vd > .pc-split-main{border-radius:var(--radius-smaller) var(--radius-2xs) var(--radius-2xs) var(--radius-smaller);}
   #screen-patientchart #pcv-d .pc-split-vd > .pc-split-caret{border-radius:var(--radius-2xs) var(--radius-smaller) var(--radius-smaller) var(--radius-2xs);}
   #screen-patientchart #pcv-d .pc-split-vd > .pc-split-caret[aria-expanded="true"]{background:var(--color-success-650);}
@@ -6277,7 +6277,7 @@
   #screen-patientchart #pcv-c #cs-allergy[hidden]{display:none !important;}
   /* Ani, 3 Nov: the Sign off card, clear: three labelled facts, then the buttons on the right */
   #screen-patientchart #pcv-c.cs-v2 #v2-sign-b .cs-foot{border-top:0;padding:4px;margin:0;background:none;}
-  #screen-patientchart #pcv-c.cs-v2 #t23-dxuse{min-height:32px;padding:0 14px;border:0;text-decoration:none;border-radius:var(--radius-round);background:var(--brand);color:var(--color-grey-0);font-weight:600;}
+  #screen-patientchart #pcv-c.cs-v2 #t23-dxuse{min-height:32px;padding:0 14px;border:0;text-decoration:none;border-radius:var(--radius-round);background:var(--brand);color:var(--on-accent);font-weight:600;}
   #screen-patientchart #pcv-c.cs-v2 #t23-dxuse:hover{background:var(--brand-ink);}
   #screen-patientchart #pcv-c.cs-v2 #v2-sign-b .t23-billrow{display:block;padding:0;margin:0 0 16px;border:0;background:none;}
   #screen-patientchart #pcv-c.cs-v2 .t23-sum{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1.6fr);gap:12px 24px;margin:0;}
@@ -6482,10 +6482,6 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
 #rx-panel .rp-rec2 > *:not(table){margin-left:16px;margin-right:16px;}
 #rx-panel .rp-rh{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;}
 #rx-panel .rp-rh h3{margin:0;font-size:17px;}
-#rx-panel .rp-tabs{display:inline-flex;border:1px solid var(--line-strong);border-radius:8px;overflow:hidden;}
-#rx-panel .rp-tabs button{min-height:34px;padding:0 12px;border:0;border-left:1px solid var(--line-strong);background:var(--panel);font:inherit;font-size:14px;color:var(--ink);cursor:pointer;}
-#rx-panel .rp-tabs button:first-child{border-left:0;}
-#rx-panel .rp-tabs button.on{background:var(--brand-navy);color:#fff;}
 #rx-panel .rp-up{display:grid;gap:8px;margin-top:12px;padding:12px;border-radius:10px;background:var(--wash);}
 #rx-panel .rp-sum{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:12px;font-size:14px;color:var(--ink-soft);}
 #rx-panel .rp-grow{flex:1;}
@@ -6913,10 +6909,6 @@ body:has(#op-panel.show) #callw{z-index:360;}
 #rx-panel .rp-rec3 > :not(table){margin-left:16px;margin-right:16px;}
 #rx-panel .rp-rec3 .rp-rh .op-lk{min-height:44px;}
 /* Ani, 3 Nov: line tabs, not a button group */
-#rx-panel .rp-tabs{display:inline-flex;gap:20px;border:0;border-radius:0;overflow:visible;}
-#rx-panel .rp-tabs button{min-height:44px;padding:0 2px;border:0;border-bottom:2px solid transparent;border-radius:0;background:none;font-size:15px;font-weight:600;color:var(--ink-soft);}
-#rx-panel .rp-tabs button:hover{color:var(--ink);}
-#rx-panel .rp-tabs button.on{background:none;color:var(--ink);border-bottom-color:var(--brand);}
 #rx-panel .rp-t3{width:100%;border-collapse:collapse;margin-top:10px;font-size:15px;line-height:22px;table-layout:fixed;}
 #rx-panel .rp-t3 thead th{padding:8px;font-size:14px;line-height:20px;font-weight:600;letter-spacing:0;text-transform:none;text-align:left;color:var(--ink-soft);}
 #rx-panel .rp-t3 thead th:nth-child(1){width:24%;}
@@ -6940,13 +6932,7 @@ body:has(#op-panel.show) #callw{z-index:360;}
 #rx-panel .rp-cnt{display:inline-block;min-width:24px;margin-left:4px;padding:0 6px;border-radius:999px;background:var(--wash);font-size:14px;line-height:22px;font-weight:600;text-align:center;color:var(--ink-soft);}
 #rx-panel .rp-sup b{font-weight:700;}
 #rx-panel .rp-acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
-#rx-panel .rp-act{min-height:44px;padding:0 14px;border:1px solid var(--line-strong);border-radius:12px;background:var(--panel);font:inherit;font-size:15px;font-weight:600;line-height:20px;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
-#rx-panel .rp-act:hover:not(:disabled){border-color:var(--ink);}
-#rx-panel .rp-act[aria-pressed=true]{background:var(--brand);border-color:var(--brand);color:#fff;}
-#rx-panel .rp-act[aria-pressed=true] .ic,#rx-panel .rp-act[aria-pressed=true] svg{color:#fff;}
-#rx-panel .rp-act:disabled{opacity:.5;cursor:not-allowed;}
-#rx-panel .rp-act[aria-pressed=true]:disabled{opacity:.75;}
-#rx-panel .rp-act .ic,#rx-panel .rp-act svg{width:16px;height:16px;}
+#rx-panel .rp-srctabs{margin:4px 0 12px;border-bottom:1px solid var(--line);}
 #rx-panel .rp-state{font-size:14px;line-height:20px;color:var(--ink-soft);margin-left:4px;}
 #rx-panel .rp-pnh{margin-top:24px !important;padding-top:16px;border-top:2px solid var(--line-strong);}
 #rx-panel .rp-pnh.lead{margin-top:12px !important;padding-top:0;border-top:0;}
@@ -7209,8 +7195,6 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #rx-panel .rp-t3 tbody th[scope=row] > b + .rp-ind + .rp-ind + .rp-sub{margin-top:2px;}
 #rx-panel .rp-t3 thead th:nth-child(1){width:30%;}
 /* T-040 (Daniel, 31 Oct 00:48:56): the one primary press on a due dose difference, the panel's primary look at the action row's size */
-#rx-panel .rp-acts .rp-cc{min-height:44px;height:44px;padding:0 16px;gap:8px;border-radius:12px;font-size:15px;font-weight:600;}
-#rx-panel .rp-acts .rp-cc .ic,#rx-panel .rp-acts .rp-cc svg{width:16px;height:16px;color:#fff;}
 /* Chart layout 2 (Ani, 4 Nov: "this 2 needs to be combined and review etc be on top of other section horizontal"; replaces the first 4 Nov layout).
    From 1201 px: ONE left column (312 px, its own scroll box, v2Fit) holding one card: the patient (name; age, sex and PHN on one line; the
    allergy line as the other session left it; Call and Chart stacked) above a divider, then the Patient summary sections, unchanged. The steps
@@ -7262,7 +7246,6 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #profile-dropdown .pd-rad[aria-checked="false"] .pd-ic{visibility:hidden;}
 #profile-dropdown .pd-rad[aria-checked="true"]{font-weight:600;}
 #profile-dropdown .pd-rad[aria-checked="true"] .pd-ic{color:var(--accent);}
-:root[data-theme="dark"] #screen-patientchart #pcv-c.cs-v2.chart-v2{--cv2-line:var(--line);--cv2-ink:var(--ink);--cv2-soft:var(--ink-soft);--cv2-wash:var(--wash);--cv2-bg:var(--paper);}   /* the bridge sets --cv2-* for light only; dark points them at the theme (until the bridge does) */
 /* the visit status moves into the header, so the top line keeps only Home and the window clock */
 #screen-patientchart:has(#pcv-c.chart-v2) .cs-crumb [data-f="visitline"]{display:none;}
 #screen-patientchart:has(#pcv-c.chart-v2) .cs-crumb > span[aria-hidden="true"]{display:none;}
@@ -7529,7 +7512,7 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .vca-row.cv2-open .v2-nad > .v2-metaw{display:flex;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-rcv{display:none;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-markrev{display:inline-flex;align-items:center;gap:8px;height:44px;min-height:44px;padding:0 16px;font-size:15px;font-weight:600;border-radius:var(--radius-xs);}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-markrev .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-markrev svg{width:18px;height:18px;color:var(--color-grey-0);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-markrev .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-markrev svg{width:18px;height:18px;color:var(--on-accent);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-inbox{min-height:44px;padding:0 4px;font-size:15px;font-weight:600;color:var(--accent-ink);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-stamp{display:inline-flex;align-items:center;gap:6px;margin:0;min-height:44px;font-size:15px;line-height:22px;font-weight:600;color:var(--cv2-ink);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-stamp .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-na #vc-alerts .cv2-stamp svg{width:18px;height:18px;color:var(--cv2-ok);}
@@ -14912,6 +14895,7 @@ function rxRender(){
   m.scrollTop = sm; ra.scrollTop = sr; if(bd) bd.scrollTop = sb;
   var t = fk && sh.querySelector('[data-fk="' + fk.replace(/"/g, '') + '"]');
   if(!t && fp) t = sh.querySelector('[data-fk="' + fp + '"]');
+  if(t && t.shadowRoot) t = t.shadowRoot.querySelector('button') || t;   /* a design-system button: focus its own button */
   if(t && inSheet) t.focus({preventScroll:true});
   var ot = document.getElementById('rx-ovt'); if(ot){ if(ev != null) ot.value = ev; if(RX_UI.ovFocus){ ot.focus(); RX_UI.ovFocus = false; } }
   if(typeof v2SyncHead === 'function' && v2On()) v2SyncHead();
@@ -15527,20 +15511,29 @@ function rxWho(r){
   if(r.by === 'Simple Rx') return 'Simple Care';
   return r.by + (r.spec ? ', ' + r.spec : '') + ' · not a Simple Care doctor';
 }
+function rxSrcTab(e){ var t = e.target.closest('[role=tab]'); if(t) rxAct('recsrc', t.getAttribute('data-fk').slice(3)); }
+/* arrow keys move along the tabs (WAI-ARIA tabs, automatic activation) */
+function rxSrcKey(e){
+  if(!/^(ArrowLeft|ArrowRight|Home|End)$/.test(e.key)) return;
+  var ts = [].slice.call(e.currentTarget.querySelectorAll('[role=tab]')), i = ts.indexOf(e.target.closest('[role=tab]')); if(i < 0) return;
+  var n = e.key === 'Home' ? 0 : e.key === 'End' ? ts.length - 1 : (i + (e.key === 'ArrowRight' ? 1 : -1) + ts.length) % ts.length;
+  e.preventDefault(); rxAct('recsrc', ts[n].getAttribute('data-fk').slice(3));
+}
 function rxSrcName(st){ return (RX_SRC2.filter(function(x){ return x[0] === (st.recSrc || 'pharmanet'); })[0] || [])[1]; }
 /* the actions on one drug. The chosen one shows as pressed; the row never moves. */
 function rxActsHtml(st, it){
   if(rxLocked()) return '';
   var o = rxItemOrder(st, it), stp = rxStopFor(st, it), cf = rxConfirmed(st, it), dz = it.kind === 'dose' && !it.conf && !(o && o.kind === 'change');
   var b = function(k, label, on, extra, icon){
-    return '<button type="button" class="rp-act" data-fk="a' + k + it.id + '" aria-pressed="' + !!on + '"' + (extra || '') + ' onclick="rxAct(\'' + k + '\',\'' + it.id + '\')">' + (on ? rxIc('complete') : icon ? rxIc(icon) : '') + label + '</button>';
+    /* Ani, 6 Nov: the design system's button (secondary, medium); the chosen action is the primary one with a tick */
+    return '<sc-button variant="' + (on ? 'primary' : 'secondary-main') + '" size="medium"' + (on ? ' start-icon="check"' : icon ? ' start-icon="' + icon + '"' : '') + ' data-fk="a' + k + it.id + '" aria-pressed="' + !!on + '"' + (extra || '') + ' onclick="rxAct(\'' + k + '\',\'' + it.id + '\')">' + label + '</sc-button>';
   };
   var h = '<div class="rp-acts" role="group" aria-label="' + csEsc(it.drug) + '">', sent = !o && st.orders.some(function(x){ return x.sent && x.drug === it.drug; });
   if(sent) return h + b('cont', 'Continue', true, ' disabled') + '<span class="rp-state">Prescribed today</span></div>';
   /* T-040 (Daniel, 31 Oct 00:48:56: "sometimes you need to reconcile and sometimes you need to prescribe and sometimes you got to do both"): a dose
      difference that is also due (or out) gets one primary press that confirms the PharmaNet version and puts it on the pad. Confirm and
      Adjust dose stay; a difference that is not due is unchanged. */
-  if(dz && !o && !stp && it.due && it.side === 'simple') h += '<button type="button" class="btn dark rp-cc" data-fk="acc2' + it.id + '" onclick="rxAct(\'confcont\',\'' + it.id + '\')">' + rxIc('complete') + 'Confirm ' + csEsc(it.row.strength) + ' and continue</button>';
+  if(dz && !o && !stp && it.due && it.side === 'simple') h += '<sc-button variant="primary" size="medium" start-icon="check" data-fk="acc2' + it.id + '" onclick="rxAct(\'confcont\',\'' + it.id + '\')">Confirm ' + csEsc(it.row.strength) + ' and continue</sc-button>';
   h += b('cont', 'Continue', o && o.kind !== 'change', dz && !o ? ' disabled aria-describedby="rx-dz' + it.id + '"' : '');
   h += b('adj', 'Adjust dose', o && o.kind === 'change');
   h += b('stp', 'Stop', !!stp);
@@ -15663,11 +15656,14 @@ var RX_GROUPS = [['due', 'Due for renewal', ''], ['diff', 'PharmaNet differs', '
 function rxRecHtml(st){
   var src = st.recSrc || 'pharmanet', M = rxRecModel(st), simple = M.filter(function(it){ return it.side === 'simple'; }), pn = M.filter(function(it){ return it.side === 'pn'; });
   var srcCol = src === 'upload' ? 'Uploaded file' : 'PharmaNet';
-  var h = '<section class="rp-card rp-rec3"><div class="rp-rh"><h3>Medications</h3><div class="rp-tabs" role="group" aria-label="Compare with">' + RX_SRC2.map(function(s){
-    return '<button type="button" class="' + (src === s[0] ? 'on' : '') + '" data-fk="src' + s[0] + '" aria-pressed="' + (src === s[0]) + '" onclick="rxAct(\'recsrc\',\'' + s[0] + '\')">' + csEsc(s[1]) + (s[0] === 'pharmanet' && src === s[0] ? ' · live ' + (st.pnAt || (st.pnAt = rxNow())) : '') + '</button>';
-  }).join('') + '</div><span class="rp-grow"></span>' +
+  /* Ani, 6 Nov ("tabs are inside the frame, it should be outside, as we do in the chart"): one tab pattern, the design system's Tabs, flush above the card */
+  var tabs = SC.html('Tabs', {defaultValue:src}, ['TabList', {'aria-label':'Compare with'}].concat(RX_SRC2.map(function(s){
+    return ['Tab', {value:s[0]}, s[1] + (s[0] === 'pharmanet' && src === s[0] ? ' · live ' + (st.pnAt || (st.pnAt = rxNow())) : '')]; })))
+    .replace(/ aria-controls="[^"]*"/g, '').replace(/id="([^"]*)-tab-(\w+)"/g, 'id="$1-tab-$2" data-fk="src$2"');
+  var h = '<div class="rp-rh"><h3>Medications</h3><span class="rp-grow"></span>' +
     /* kept as a secondary action (see the spec, 31 Oct changes): the MOA asks the pharmacy when the doctor cannot settle the list on the call */
-    (src === 'patient' ? '' : st.askPharm ? '<span class="rp-src">Pharmacy asked to verify · ' + st.askPharm + '</span>' : '<button type="button" class="op-lk" data-fk="askph" onclick="rxAct(\'askph\')">Ask the pharmacy to verify</button>') + '</div>';
+    (src === 'patient' ? '' : st.askPharm ? '<span class="rp-src">Pharmacy asked to verify · ' + st.askPharm + '</span>' : '<button type="button" class="op-lk" data-fk="askph" onclick="rxAct(\'askph\')">Ask the pharmacy to verify</button>') + '</div>' +
+    '<div class="rp-srctabs" onclick="rxSrcTab(event)" onkeydown="rxSrcKey(event)">' + tabs + '</div><section class="rp-card rp-rec3">';
   if(src === 'upload') h += rxUpHtml(st);
   if(src === 'upload' && !st.upDone && !simple.length){ h += '</section>' + rxNewListHtml(st, M); return h; }
   if(simple.length){
