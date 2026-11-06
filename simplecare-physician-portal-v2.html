@@ -7562,12 +7562,6 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-ctx-t .ic{transform:none;}
 }
   /* Ani, 4 Nov: the top-bar chart layout switch, only while a chart is open */
-  .topbar .tb-lay{display:none;align-items:center;gap:2px;padding:2px;border-radius:10px;background:var(--wash);}
-  .main:has(#screen-patientchart.active) .topbar .tb-lay{display:inline-flex;}
-  .topbar .tb-lay button{min-height:44px;min-width:64px;padding:0 14px;border:0;border-radius:8px;background:none;font:inherit;font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
-  .topbar .tb-lay button:hover{color:var(--ink);}
-  .topbar .tb-lay button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(23,24,28,.08);}
-  .topbar .tb-lay button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   /* Ani, 4 Nov: Version 2 Needs attention rows open the result in a side panel; the whole row is the target (the row's button stretched over it) */
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar{position:relative;cursor:pointer;border-radius:8px;}
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #vc-alerts .vca-row.v2-nar:hover{background:var(--wash);}
@@ -7827,9 +7821,6 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #pcv-c .cr-sum{margin:0 0 8px;font-size:16px;line-height:24px;color:var(--ink);max-width:66ch;}
   #pcv-c .cr-more{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:15px;}
 </style>
-<!-- SimpleCare design system: tokens + Inter, then the bridge that maps this page onto them (assets/design-system/). -->
-<link rel="stylesheet" href="assets/design-system/simplecare-tokens.css">
-<link rel="stylesheet" href="assets/design-system/portal-bridge.css">
 </head>
 <body>
 
@@ -7881,8 +7872,6 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
       <div class="topbar-right">
       <!-- 21 Oct (Daniel, 18 Oct video 5, on the pill "11:54 AM New York · 1h 6m left": "we could probably just eliminate that"): the pill is gone.
            The countdown lives where he looks, in the current call-window band of the queue and in the chart's top line (qClockUpdate). -->
-      <!-- Ani, 4 Nov ("why can not you just add V2 demo button"): the chart layout switch in the top bar, shown only on a chart; same choice as the profile menu -->
-      <span class="tb-lay" role="group" aria-label="Chart layout"><button type="button" id="tb-lay-1" aria-pressed="true" onclick="cv2Set(false)">Current</button><button type="button" id="tb-lay-2" aria-pressed="false" onclick="cv2Set(true)">Version 2</button></span>
       <!-- Daniel's patient search spec v2.3 §3 (5 Nov): the one search control, on every screen (Ctrl+K / ⌘K), and the screen-share safe mode
            toggle beside it ("Provide a prominent manual toggle"). Safe mode shows its label only while it is on (display by exception). -->
       <button type="button" class="ps-tbb" id="ps-tb" onclick="psOpen()" aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K" title="Find a patient" aria-label="Find a patient"><span class="ic" data-pdic="search"></span></button>
@@ -7909,14 +7898,6 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
           <button class="pd-item" onclick="toggleProfileMenu();showScreen('profile')"><span class="pd-ic" data-pdic="user"></span> View profile</button>
           <!-- Batch A (4): a discreet way in to the shortcuts -->
           <button class="pd-item" id="pd-kb" onclick="toggleProfileMenu();kbOpen()"><span class="pd-ic" data-pdic="keyboard"></span> Keyboard shortcuts</button>
-          <div class="pd-divider"></div>
-          <!-- Chart Version 2 (Ani, 4 Nov: chart Version 2 brief): two chart layouts on the same data and code, so they can be compared.
-               Per viewer (this browser), default Current; ?chart=2 opens Version 2 for a shared link. cv2Set() in the CHART VERSION 2 script. -->
-          <p class="pd-k" id="pd-cl-h">Chart layout</p>
-          <div role="radiogroup" aria-labelledby="pd-cl-h" id="pd-cl">
-          <button class="pd-item pd-rad" id="pd-cl-1" role="radio" aria-checked="true" tabindex="0" onclick="cv2Set(false)"><span class="pd-ic" data-pdic="complete"></span> Current</button>
-          <button class="pd-item pd-rad" id="pd-cl-2" role="radio" aria-checked="false" tabindex="-1" onclick="cv2Set(true)"><span class="pd-ic" data-pdic="complete"></span> Version 2</button>
-          </div>
           <div class="pd-divider"></div>
           <!-- T-038 (Daniel, 18 Oct Loom: "turn on the AI for the note-taking, but turn it off for the prescriptions ... activate it where we want it
                activated"; 31 Oct: doctors "can toggle on or off in their control panel ... this is where doctors have autonomy"): one group of
@@ -24058,7 +24039,7 @@ function opUpload(inp){
    Sign off; red only for critical values and their icon; every Cedar line follows its T-038 switch).
    ============================================================ */
 var CV2 = {on:false, moved:[], meta:null, drawer:false, opener:null};
-var CV2_KEY = 'sc-chart-version', CV2_CTX = 'sc-cv2-ctx-left';
+var CV2_CTX = 'sc-cv2-ctx-left';
 function cv2On(){ return !!CV2.on && typeof v2On === 'function' && v2On(); }
 /* one breakpoint for both layouts: from 1201 px the columns are scroll boxes (v2Wide); at 1200 and under the chart stacks */
 function cv2Wide(){ return !(window.matchMedia && window.matchMedia('(max-width:1200px)').matches); }
@@ -24098,13 +24079,6 @@ function cv2Unmount(){
   cv2Drawer(false, true);
   cv2Restore();
 }
-function cv2Radios(){
-  [['tb-lay-1', !CV2.on], ['tb-lay-2', !!CV2.on]].forEach(function(x){ var b = v2El(x[0]); if(b) b.setAttribute('aria-pressed', String(x[1])); });
-  [['pd-cl-1', !CV2.on], ['pd-cl-2', !!CV2.on]].forEach(function(x){
-    var b = v2El(x[0]); if(!b) return;
-    b.setAttribute('aria-checked', String(x[1])); b.tabIndex = x[1] ? 0 : -1;
-  });
-}
 function cv2Apply(){
   var root = v2El('pcv-c'); if(!root) return;
   var want = cv2On(), was = root.classList.contains('chart-v2');
@@ -24119,7 +24093,6 @@ function cv2Apply(){
     ['alg', 'enc'].forEach(function(k){ var s = v2El('v2s-' + k); if(s) s.hidden = true; });
     if(typeof v2SumEdges === 'function') v2SumEdges();
   }
-  cv2Radios();
   /* Daniel, 4 Nov call 01:20:22: the note's text follows the layout (one box in Version 2, the sections in Current) */
   if(was !== want && typeof nsNorm === 'function'){ nsNorm(); if(typeof nsSync === 'function') nsSync(); if(PC_CURRENT && typeof csDraft === 'function' && !(csRow() || {}).signed) csDraft(); }
   if(was !== want && PC_CURRENT && typeof csOnChart === 'function' && csOnChart()){
@@ -24133,19 +24106,6 @@ function cv2Apply(){
   if(typeof v2Fit === 'function'){ v2Fit(); requestAnimationFrame(function(){ v2Fit(); }); }
   paintPd(v2El('v2'));
 }
-/* the profile menu's Chart layout (radio-style): per viewer, in this browser's storage */
-function cv2Set(on){
-  CV2.on = !!on;
-  try { localStorage.setItem(CV2_KEY, CV2.on ? '2' : '1'); } catch(e){}
-  cv2Apply();
-  if(typeof toast === 'function') toast('Chart layout: ' + (CV2.on ? 'Version 2' : 'Current'));
-}
-/* arrow keys move the choice inside the radio group (WAI-ARIA radio group pattern) */
-document.addEventListener('keydown', function(e){
-  var t = e.target; if(!t || !t.closest || !t.closest('#pd-cl') || !/^(ArrowDown|ArrowUp|ArrowLeft|ArrowRight)$/.test(e.key)) return;
-  var on = !CV2.on; cv2Set(on); var b = v2El(on ? 'pd-cl-2' : 'pd-cl-1'); if(b) b.focus(); e.preventDefault();
-});
-
 /* ---------- header: relevant alerts and the visit status (display by exception: no alert line when nothing is waiting) ---------- */
 function cv2Status(r){
   if(r.status === 'done') return {t:STATUS_LABEL.done || 'Completed', ic:'complete', k:'ok'};   /* Ani, 5 Nov: Complete encounter closes the visit; signing alone says Signed */
@@ -24562,14 +24522,9 @@ document.addEventListener('click', function(e){
   });
 })();
 
-/* ---------- start: ?chart=2 (a shared link) wins for this page; otherwise the viewer's stored choice; default Current ---------- */
-(function(){
-  var on = false;
-  try { on = localStorage.getItem(CV2_KEY) === '2'; } catch(e){}
-  try { var q = new URLSearchParams(location.search).get('chart'); if(q === '2') on = true; else if(q === '1') on = false; } catch(e){}
-  CV2.on = on;
-  cv2Apply();
-})();
+/* ---------- start: Version 2 is the only chart layout (Ani, 5 Nov: "remove, only keep Version 2") ---------- */
+CV2.on = true;
+cv2Apply();
 </script>
 <script>
 /* ===================== Patient search, Phases 0 and 1 =====================
