@@ -827,35 +827,23 @@
   /* critical results band */
   #alerts-box{border-color:var(--line);}
   #crit-list{margin-bottom:2px;}
-  .al-row{display:grid;grid-template-columns:3px 1.5fr 1fr .9fr .8fr 1.6fr auto;align-items:center;gap:14px;
-    padding:11px 4px 11px 0;border-bottom:1px solid var(--wash);cursor:pointer;}
-  .al-row:last-of-type{border-bottom:none;}
-  .al-row:hover,
-  .al-row:focus-within{background:#FDF7F6;}
-  .al-mark{width:3px;height:26px;border-radius:2px;background:var(--crit);}
-  .al-who{display:flex;align-items:baseline;gap:7px;min-width:0;}
-  .al-who b{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .al-who i{font-style:normal;font-size:12.5px;color:var(--ink-faint);font-weight:600;}
-  .al-test{font-size:14.5px;color:var(--ink-soft);}
-  .al-val{font-size:16.5px;font-weight:800;color:var(--crit);font-variant-numeric:tabular-nums;white-space:nowrap;}
-  .al-val u{text-decoration:none;font-size:12.5px;font-weight:600;opacity:.75;}
-  .al-val em{font-style:normal;font-size:14.5px;}
-  .al-val.flagtext{font-size:14.5px;font-weight:600;color:var(--warn);}
-  .al-ref{font-size:13px;color:var(--ink-faint);font-variant-numeric:tabular-nums;white-space:nowrap;}
-  .al-src{font-size:13px;color:var(--ink-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   /* same pattern as the day sheet: the action is not a column. It floats
      over the right of the row on hover so the alert reads as one line of
      clinical fact, not a row of buttons. */
-  .al-row{position:relative;}
-  .al-acts{position:absolute;right:0;top:0;bottom:0;display:flex;align-items:center;
-    gap:6px;padding:0 4px 0 34px;pointer-events:none;}
-  .al-acts::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;
-    transition:opacity .12s ease;
-    background:linear-gradient(to right, rgba(253,247,246,0) 0%, #FDF7F6 34px, #FDF7F6 100%);}
-  .al-row:hover .al-acts::before,
-  .al-row:focus-within .al-acts::before{opacity:1;}
-  .al-row:hover .al-acts,
-  .al-row:focus-within .al-acts{pointer-events:auto;}
   
   
   
@@ -863,7 +851,12 @@
   
   
   
-  @media(max-width:1150px){ .al-row{grid-template-columns:3px 1.4fr 1fr .9fr auto;} .al-ref,.al-src{display:none;} }
+  
+  
+  
+  
+  
+  @media(max-width:1150px){   }
   .crit-row{display:flex;gap:12px;align-items:flex-start;padding:13px 15px;margin-bottom:8px;border-radius:12px;
     background:var(--crit-wash);border:1px solid #E8B7AF;}
   .crit-row:last-child{margin-bottom:0;}
@@ -2465,10 +2458,10 @@
   
   
   
-  .al-who b{font-size:16px;}
-  .al-test{font-size:15.5px;}
-  .al-val{font-size:17.5px;}
-  .al-src{font-size:14px;}
+  
+  
+  
+  
   .pd-item{font-size:15.5px;}
   
 
@@ -2665,11 +2658,11 @@
   }
 
   /* a task on the attention band is amber unless it is urgent */
-  #attn-tasks .al-row{cursor:pointer;}
-  #attn-tasks .al-row:hover{background:var(--wash);}
-  #attn-tasks .al-row.warnrow .al-mark{background:var(--warn);}
+  
+  
+  
 
-  #attn-tasks .al-val{font-weight:700;}
+  
   #attn-tasks .due-late{color:var(--crit);}
   #attn-tasks .due-soon{color:var(--warn);}
   #attn-tasks .due-later{color:var(--ink-soft);font-weight:600;}
@@ -2690,8 +2683,7 @@
   }
 
   /* row hover went to a near-white pink, which is the flash on the alerts */
-  :root[data-theme="dark"] .al-row:hover,
-  :root[data-theme="dark"] .al-row:focus-within{background:rgba(255,255,255,.06);}
+  
   
   :root[data-theme="dark"] .sec.err{background:rgba(255,69,58,.12);}
 
@@ -2808,8 +2800,8 @@
   }
   .lab-tier.critical{background:var(--crit-wash);color:var(--crit);}
   .lab-tier.alert{background:var(--warn-wash);color:var(--warn);}
-  #alerts-box .al-row.tier-alert .al-mark{background:var(--warn);}
-  #alerts-box .al-row.tier-alert .al-val{color:var(--warn);}
+  
+  
 
   /* Red was doing too much work: the card, its border, and the test chip
      were all tinted, on every flagged row. The severity lives in the value
@@ -2874,12 +2866,12 @@
   /* the coloured bar on each attention row is gone — the tier chip and the
      value already say how severe it is, and a third mark saying the same
      thing was just noise down the left edge */
-  #alerts-box .al-mark,#attn-tasks .al-mark{display:none;}
+  
 
   /* Removing the mark meant removing its column too — .al-row is a grid with
      a fixed 3px first track, so display:none shifted every cell one column
      left and the name landed in the 3px slot. */
-  #alerts-box .al-row{grid-template-columns:1.5fr 1fr 0.9fr 0.8fr 1.6fr auto;}
+  
 
   /* the flagged card sits on grey, with no outline */
   
@@ -3279,31 +3271,31 @@
   #screen-today .box{border-color:transparent;}
 
   /* attention band: the inbox row language */
-  #screen-today .al-row{border-bottom:0;border-radius:12px;padding-top:10px;padding-bottom:10px;min-height:56px;}
-  #screen-today .al-row + .al-row{border-top:0;}
-  #screen-today .al-row:hover{background:var(--paper);}
-  :root[data-theme="dark"] #screen-today .al-row:hover{background:var(--wash);}
-  #screen-today .al-who{display:flex;align-items:center;gap:8px;}
-  #screen-today .al-who b{font-size:17px;font-weight:600;color:var(--ink);}
-  #screen-today .al-who i{font-style:normal;font-size:14px;font-weight:400;color:var(--ink-faint);}
-  #screen-today .al-tone{display:inline-flex;flex:0 0 17px;width:17px;height:17px;}
-  #screen-today .al-tone svg{width:17px;height:17px;color:inherit;}
-  #screen-today .al-tone.crit{color:var(--crit);}
-  #screen-today .al-tone.warn{color:var(--warn);}
-  #screen-today .al-test{font-size:16px;font-weight:400;color:var(--ink);}
-  #screen-today .al-test .lab-tier{display:none;}
-  #screen-today .al-val,#screen-today .al-val.flagtext,#screen-today .al-val[class*="due-"]{display:inline-flex;align-items:center;gap:6px;font-size:16px;font-weight:600;color:var(--ink);}
-  #screen-today .al-val b{font-weight:600;color:var(--ink);}
-  #screen-today .al-val.critical b{color:var(--crit-text);}
-  #screen-today .al-val u{text-decoration:none;font-size:14px;font-weight:400;color:var(--ink-faint);}
-  #screen-today .al-dir,#screen-today .al-clock{display:inline-flex;width:17px;height:17px;flex:0 0 17px;color:var(--ink-faint);}
-  #screen-today .al-dir svg,#screen-today .al-clock svg{width:17px;height:17px;color:inherit;}
-  #screen-today .al-val.critical .al-dir{color:var(--crit);}
-  #screen-today .al-val.critical .al-dir svg *{stroke-width:2.4;}
-  #screen-today .al-val.due-late .al-clock{color:var(--warn);}
-  #screen-today .al-val.due-later,#screen-today .al-val.due-soon{font-weight:500;}
-  #screen-today .al-ref{font-size:14px;color:var(--ink-faint);}
-  #screen-today .al-src{font-size:14px;color:var(--ink-soft);}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  #screen-today .al-dir{display:inline-flex;width:17px;height:17px;flex:0 0 17px;color:var(--ink-faint);}
+  #screen-today .al-dir svg{width:17px;height:17px;color:inherit;}
+  
+  
+  
+  
+  
+  
   #screen-today .al-concern{font-weight:600;color:var(--ink);}
   /* 44px outline pills with a black Mage icon -- never a red fill */
   
@@ -3465,11 +3457,11 @@
   /* rows that need you carry a coloured edge, not a coloured fill */
   
   
-  #screen-today .al-row:has(.al-tone.crit){box-shadow:inset 4px 0 0 var(--crit);}
-  #screen-today .al-row:has(.al-tone.warn){box-shadow:inset 4px 0 0 var(--warn);}
+  
+  
   
   /* an edge reads as a bar, not a bracket: square the left corners and make room */
-  #screen-today .al-row:has(.al-tone.crit),#screen-today .al-row:has(.al-tone.warn){border-radius:4px 12px 12px 4px;padding-left:24px;}
+  
   
 
   /* status chips get their tone back, softly */
@@ -3496,12 +3488,12 @@
   
   
   /* the attention band on Home, the same way */
-  #screen-today .al-row{border-radius:0;border-bottom:1px solid var(--line);}
-  #screen-today .al-row:last-child,#screen-today #crit-list .al-row:last-child:has(+ *){border-bottom:1px solid var(--line);}
-  #screen-today #attn-tasks .al-row:last-child{border-bottom:0;}
-  #screen-today #alerts-box .al-row{border-bottom:0;}
-  #screen-today #alerts-box .al-row.al-sep{border-bottom:1px solid var(--line);}
-  #screen-today .al-row:has(.al-tone.crit),#screen-today .al-row:has(.al-tone.warn){border-radius:0;}
+  
+  
+  
+  
+  
+  
 
   /* the AI summary wears the AI mark's colours: a soft wash from its sky cyan
      to its brand blue, so the block reads as AI at a glance (Ani: "make gray
@@ -3997,11 +3989,11 @@
   /* ===== T-008 (Daniel, 29 Sep markup): the attention row is icon, patient, test, value =====
      "I eliminated the extra stuff that isn't needed - crossed off". Three columns, aligned down
      the band; the hover actions still float over the right. */
-  #screen-today #alerts-box .al-row{grid-template-columns:minmax(0,300px) minmax(0,240px) minmax(0,1fr);}
-  #screen-today #alerts-box .al-ref,#screen-today #alerts-box .al-src{display:none;}
+  
+  
   /* High (Daniel, 27 Sep: "Critical and High belong"): words stay ink, the amber is on the icons */
-  #screen-today #alerts-box .al-row.tier-alert .al-val{color:var(--ink);}
-  #screen-today #alerts-box .al-row.tier-alert .al-dir{color:var(--warn);}
+  
+  
 
   /* ===== T-009 (Ani, 29 Sep): Messages is a primary left-nav item =====
      "make chat one big menu on the left nav so it becomes more primary". Counts are brand blue,
@@ -4052,7 +4044,7 @@
      on hover and lost its white icon. It stays brand blue, a touch brighter. */
   
   /* Ani, 30 Sep: no divider under the last row of a list; the card edge already ends it */
-  html body #crit-list > .al-row:last-child:not(.al-sep),html body #screen-tasks .tk-row:last-child,html body .chat-thread-row:last-child{border-bottom:0 !important;box-shadow:none;}
+  html body #screen-tasks .tk-row:last-child,html body .chat-thread-row:last-child{border-bottom:0 !important;box-shadow:none;}
   /* Ani, 30 Sep: hover must stay readable. Tag-style controls (billing, visit status, health card) fill
      with ink on hover or focus, with white text, icon and caret, matching the outline buttons. */
   
@@ -4916,10 +4908,10 @@
     #screen-patientchart #pcv-c.cs-v2 .v2-side{position:static;max-height:none;overflow:visible;}
   }
   /* Daniel 5 Oct (step 2): the stale-date claim on Home is amber, never red, and opens Claims */
-  #alerts-box .al-row.t23-stale-row{cursor:pointer;}
-  #alerts-box .al-row.t23-stale-row .al-tone svg{color:var(--warn);}
-  #alerts-box .al-row.t23-stale-row .al-val{color:var(--warn);font-size:14.5px;font-weight:600;}
-  #alerts-box .al-row.t23-stale-row i{font-style:normal;}
+  
+  
+  
+  
   /* Daniel 5 Oct (step 3): Claims. "MSP | Private pay" segmented switch; Rejected first, then Needs submission;
      one Submit claim per claim; day countdown chips: neutral, amber <=10, stronger amber <=5, red only <=2 (critical). */
   #screen-claims #t23-seg{margin:0 0 16px;}
@@ -6901,9 +6893,9 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 :is(#screen-inbox,#today-inbox-preview) .lr-l .lr-pv{display:inline-block;white-space:nowrap;}
 :is(#screen-inbox,#today-inbox-preview) .lr-l .lr-pv:not(:last-child)::after{content:",";margin-right:4px;}
 /* Home attention row and Needs attention: the word and the reference interval in quiet ink */
-#screen-today .al-val .lr-w{margin-left:6px;font-size:14.5px;}
-#screen-today .al-val .lr-aref{display:block;font-size:14px;font-weight:500;color:var(--ink-soft);}
-@media (max-width:1180px){ #screen-today .al-row .al-val{flex-wrap:wrap;white-space:normal;} #screen-today .al-val .lr-w{display:flex;flex-basis:100%;margin:2px 0 0;white-space:normal;} #screen-today .al-val .lr-aref{flex-basis:100%;} }
+
+
+@media (max-width:1180px){    }
 #screen-patientchart .vca-t .lr-w{margin-left:6px;font-size:15px;}
 #screen-patientchart .lr-prev .lr-pv{display:inline;}
 #screen-patientchart .lr-prev .lr-pv:not(:last-child)::after{content:",";margin-right:4px;}
@@ -7640,11 +7632,12 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-today .q-toolbar .day-nav{order:3;margin:0 0 0 auto;display:flex;align-items:center;gap:4px;}
 #screen-today .qf-wrap{position:relative;}
 /* Ani, 6 Nov ("do we need this gap between the table and where the table starts"): the table sits in the card unframed and runs to its edges; the card's padding stays around the toolbar only */
+#screen-today #attn-clip{margin:-22px -24px;border-radius:var(--radius-md);overflow:hidden;}   /* Needs your attention: the table fills its card */
 #screen-today #q-tablewrap{margin:0 -24px -22px;border-radius:0 0 var(--radius-md) var(--radius-md);overflow:hidden;}
 #screen-today .qf-pop{position:absolute;top:calc(100% + 4px);z-index:30;min-width:260px;}
 /* Needs your attention: the design system's buttons show on hover or focus, over the row's own fade (as the old .al-btn did) */
-#screen-today .al-acts sc-button{position:relative;z-index:1;opacity:0;transition:opacity .12s ease;}
-#screen-today .al-row:is(:hover,:focus-within) .al-acts sc-button{opacity:1;}   /* tabs sit on the page, above the list */
+
+   /* tabs sit on the page, above the list */
 #screen-claims .t23-quiet{margin:0 0 4px;}
 #screen-claims #t23-seg{margin:0 0 16px;}
 </style>
@@ -7709,7 +7702,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
            toggle beside it ("Provide a prominent manual toggle"). Safe mode shows its label only while it is on (display by exception). -->
       <!-- Ani, 6 Nov ("have search open, with the text: search by name, PHN, what we had initially"): an open search field, the design system's;
            typing (or a click) opens the patient search with the text in it; Ctrl/⌘K still opens it -->
-      <sc-search id="ps-tb" start-icon="search" label="Search by name, PHN or date of birth" placeholder="Search by name, PHN or date of birth" aria-keyshortcuts="Control+K Meta+K"></sc-search>
+      <sc-search id="ps-tb" start-icon="search" placeholder="Search by name, PHN or date of birth" aria-keyshortcuts="Control+K Meta+K"></sc-search>
       <button type="button" class="ps-tbb ps-safe-tb" id="ps-safe-tb" onclick="psSafe()" aria-pressed="false" title="Safe mode for screen sharing" aria-label="Safe mode for screen sharing"><span class="ic" data-pdic="eyeoff"></span><span class="ps-safe-l">Safe mode</span></button>
       <button class="chat-fab theme-btn" id="theme-btn" onclick="toggleTheme()" title="Switch to dark" aria-label="Switch to dark"><span class="ic" id="theme-icon"></span></button>
       <!-- Ani, 30 Sep: the Cedar sits in the top bar, and the MOA chat is the floating button -->
@@ -7772,23 +7765,9 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 
       <p class="sect-title">Needs your attention</p>
       <div class="box" id="alerts-box">
-        <div id="attn-clip">
-        <div id="crit-list"></div>
-        <div class="al-row" data-intake="Gloria Mcdonald">
-          <span class="al-mark"></span>
-          <span class="al-who"><span class="ic al-tone warn" role="img" aria-label="flagged" data-pdic="alert"></span><b>Gloria Mcdonald</b><i>74F</i></span>
-          <span class="al-test">Intake flag</span>
-          <span class="al-val flagtext">&ldquo;Chest pressure&rdquo;</span>
-          <!-- Daniel, 29 Sep markup: everything after the value is crossed off ("I eliminated the extra
-               stuff that isn't needed"). The action stays on hover. -->
-          <span class="al-acts">
-            <sc-button variant="tertiary-main" size="medium" start-icon="eye-on" onclick="openBrief('Gloria Mcdonald')">Review intake</sc-button>
-          </span>
-        </div>
-        <div id="attn-tasks"></div>
-        <!-- Daniel 5 Oct (step 2): the one billing exception on Home, an MSP claim about to go stale-dated -->
-        <div id="t23-stale"></div>
-        </div>
+        <!-- Ani, 6 Nov: Storybook › Table › "Slack-style · Needs your attention": one table, framed:false in its card, most urgent first, one quiet
+             button per row; no coloured bars, no red value. Built by renderCriticals (results, the intake flag, the stale MSP claim). -->
+        <div id="attn-clip"></div>
         <button class="attn-handle" id="attn-handle" onclick="attnToggle()" hidden></button>
       </div>
 
@@ -9919,66 +9898,19 @@ var attnOpen = false;
 function attnToggle(){ attnOpen = !attnOpen; syncAttnFold(); }
 function syncAttnFold(){
   var box = document.getElementById('attn-clip'); if(!box) return;
-  var rows = box.querySelectorAll('.al-row');
-  /* Ani, 4 Nov ("line under Frank should be on top of that"): a line between every two rows, none under the last,
-     whichever list (critical, claims, tasks) each row comes from */
-  var shown = [].filter.call(rows, function(r){ return !r.hidden && getComputedStyle(r).display !== 'none'; });
-  shown.forEach(function(r, i){ r.classList.toggle('al-sep', i < shown.length - 1); });
-  var handle = document.getElementById('attn-handle');
+  var rows = [].slice.call(box.querySelectorAll('tr[data-attn]')), handle = document.getElementById('attn-handle');
   var hidden = rows.length - ATTN_SHOW;
-  if(hidden <= 0){
-    box.classList.remove('folded','open');
-    if(handle) handle.hidden = true;
-    box.style.removeProperty('--attn-h');
-    return;
-  }
-  if(handle) handle.hidden = false;
-  box.classList.add('folded');
-  box.classList.toggle('open', attnOpen);
-  if(!attnOpen){
-    /* Measure where the cut should fall rather than guessing a pixel height.
-       Only when the thing is actually laid out: a render while the screen is
-       hidden measures every rect as zero and would fold the card shut. */
-    if(box.offsetParent !== null){
-      var cut = rows[ATTN_SHOW];
-      var h = Math.round(cut.getBoundingClientRect().top - box.getBoundingClientRect().top);
-      if(h > 0) box.style.setProperty('--attn-h', h + 'px');
-    }
-  }
+  /* more than ATTN_SHOW rows: the rest wait behind "N more" */
+  rows.forEach(function(r, i){ r.hidden = !attnOpen && hidden > 0 && i >= ATTN_SHOW; });
   if(handle){
-    handle.innerHTML = attnOpen
-      ? '<span>Show less</span><span class="attn-chev up"></span>'
-      : '<span>' + hidden + ' more</span><span class="attn-chev"></span>';
+    handle.hidden = hidden <= 0;
+    handle.innerHTML = attnOpen ? '<span>Show less</span><span class="attn-chev up"></span>' : '<span>' + hidden + ' more</span><span class="attn-chev"></span>';
     handle.setAttribute('aria-expanded', attnOpen ? 'true' : 'false');
   }
 }
 
 function renderAttnTasks(){
-  var host = document.getElementById('attn-tasks'); if(!host) return;
-  /* Daniel, 29 Sep markup: the whole task row ("Rebook EDS referral · 4d overdue · Referrals ·
-     ...") is crossed off. Tasks live on the Tasks screen, not on Home. The builder below is kept
-     so the band can take tasks back if he asks; it is not called. */
-  host.innerHTML = '';
-  syncAttnFold();
-  return;
-  host.innerHTML = attnTasks().map(function(t){
-    var overdue = t.dueIn < 0;
-    var when = overdue ? (Math.abs(t.dueIn) + 'd overdue')
-             : (t.dueIn === 0 ? 'due today' : 'due in ' + t.dueIn + 'd');
-    /* red means late. Everything else is a date, not an alarm. */
-    var whenTone = overdue ? 'late' : (t.dueIn === 0 ? 'soon' : 'later');
-    /* the words stay ink; a clock carries lateness -- amber once it is
-       overdue, grey otherwise. Red is kept for critical results. */
-    return '<div class="al-row '+(t.prio==='urgent'?'':'warnrow')+'" onclick="showScreen(\'tasks\')" title="Open in Tasks">'+
-      '<span class="al-mark"></span>'+
-      '<span class="al-who"><span class="ic al-tone none" aria-hidden="true"></span><b>'+(t.patient||'—')+'</b><i>'+t.chart+'</i></span>'+
-      '<span class="al-test">'+t.title+'</span>'+
-      '<span class="al-val due-'+whenTone+'"><span class="ic al-clock" aria-hidden="true" data-pdic="clock"></span>'+when+'</span>'+
-      '<span class="al-ref">&nbsp;</span>'+
-      '<span class="al-src">'+t.type+' &middot; '+(t.to||'unassigned')+'</span>'+
-    '</div>';
-  }).join('');
-  paintPd(host);
+  /* Daniel, 29 Sep markup: tasks live on the Tasks screen, not on Home; Needs your attention is results, the intake flag and the stale claim (renderCriticals) */
   syncAttnFold();
 }
 
@@ -9990,58 +9922,61 @@ function attnBasis(t){
   var b = t && t.basis ? t.basis : '';
   return (t && t.f && t.f.indexOf('alert') === 0) ? b.replace(/\s*·\s*LifeLabs BC alert limit$/, '') : b;
 }
+/* the intake flags that reach Home (doctor review ask 5: a patient with a result and a flag is one row, one decision) */
+var ATTN_INTAKE = [{patient:'Gloria Mcdonald', age:'74F', flag:'Chest pressure'}];
+function attnAgeSex(a){ var m = String(a || '').match(/^(\d+)\s*([MF])?/); return m ? m[1] + (m[2] ? ', ' + (m[2] === 'F' ? 'Female' : 'Male') : '') : String(a || ''); }
 function renderCriticals(){
-  var list=document.getElementById('crit-list');
-  if(!list || typeof INBOX_ITEMS === 'undefined') return;
-  /* Daniel: "So as to not overwhelm the doctor - we are keeping it to
-     critical values."
-
-     So the band is critical only. Alert-tier results are still flagged, but
-     in the Inbox, where the doctor goes looking — they do not interrupt the
-     top of Home. The way an alert reaches this band is through the
-     SimpleCare escalation table, which is deliberate rather than automatic:
-     troponin and lactate are there because he put them there. */
-  /* Daniel, 27 Sep: "Critical and High belong." (from-daniel/2026-09-27-answers-round-2.md,
-     rule 16b.) This supersedes the critical-only quote above. Critical sorts first. */
-  var open = INBOX_ITEMS.filter(function(it){
-    var tr = labTier(it);
-    return (tr === 'critical' || tr === 'alert') && it.status === 'received';
-  }).sort(function(a,b){ return (labTier(a)==='critical'?0:1) - (labTier(b)==='critical'?0:1); });
-  /* doctor review ask 5: "Gloria takes two rows. That's one patient and one decision."
-     The intake flag folds into her result row, as a second reason and a second button. */
-  var intakeRows = [].slice.call(document.querySelectorAll('#attn-clip .al-row[data-intake]'));
-  intakeRows.forEach(function(r){ r.style.display = ''; });
-  list.innerHTML = open.map(function(c){
-    var idx = INBOX_ITEMS.indexOf(c);
-    var ir = intakeRows.filter(function(r){ return r.dataset.intake === c.patient; })[0], flag = '';
-    if(ir){ ir.style.display = 'none'; var ft = ir.querySelector('.flagtext'); flag = ft ? ft.textContent : ''; }
-    var tier = labTier(c);
-    var pick = tier === 'critical' ? 'crit' : 'alert';
-    var cx = c.tests.filter(function(t){ return t.f && t.f.indexOf(pick) === 0; })[0];
-    var dir = cx.f.indexOf('high')>-1 ? '&uarr;' : '&darr;';
-    /* the inbox's language: a red circle marks the critical row, the words
-       stay ink, and the value is the one piece of red text */
-    var up = cx.f.indexOf('high') > -1;
-    /* 21 Oct: every lab row here reads Critical (red icon, red value); the amber rows below are the other urgent things (claims) */
-    return '<div class="al-row" onclick="openReview('+idx+')"'+
-      (attnBasis(cx) ? ' title="'+attnBasis(cx)+'"' : '')+'>'+
-      '<span class="al-mark"></span>'+
-      '<span class="al-who"><span class="ic al-tone crit" role="img" aria-label="critical" data-pdic="crit"></span>'+
-        '<b>'+c.patient+'</b><i>'+(c.age||'')+'</i></span>'+
-      '<span class="al-test">'+cx.n+'</span>'+
-      /* T-037 (Daniel, 31 Oct: "explain or replace the arrow", the reference range "right there"): the word and the reference interval, quiet */
-      '<span class="al-val critical"><b>'+cx.v+'</b> <u>'+cx.u+'</u>'+lrWord(cx.f, cx.v)+
-        (cx.ref ? '<span class="lr-aref">Reference '+cx.ref+'</span>' : '')+'</span>'+
-      /* Daniel, 29 Sep markup: the reference range, the diagnosis text and the source are crossed
-         off. The row is the icon, the patient, the test and the value with its arrow. The range,
-         the basis and the intake flag are one click away, on the review (and "Review intake"). */
-      '<span class="al-acts">'+
-        '<sc-button variant="tertiary-main" size="medium" start-icon="eye-on" onclick="event.stopPropagation();openReview('+idx+')">Review result</sc-button>'+
-        (flag ? '<sc-button variant="tertiary-main" size="medium" start-icon="eye-on" onclick="event.stopPropagation();openBrief(\''+c.patient.replace(/'/g,'')+'\')">Review intake</sc-button>' : '')+
-      '</span></div>';
-  }).join('');
-  paintPd(list);
+  var box = document.getElementById('attn-clip');
+  if(!box || typeof INBOX_ITEMS === 'undefined') return;
+  if(typeof SC === 'undefined' || !SC.html){ if(!renderCriticals.waiting){ renderCriticals.waiting = true; document.addEventListener('DOMContentLoaded', function(){ renderCriticals.waiting = false; renderCriticals(); }); } return; }
+  /* Daniel, 27 Sep (rule 16b): "Critical and High belong." Critical first. */
+  var open = INBOX_ITEMS.filter(function(it){ var tr = labTier(it); return (tr === 'critical' || tr === 'alert') && it.status === 'received'; })
+    .sort(function(a,b){ return (labTier(a)==='critical'?0:1) - (labTier(b)==='critical'?0:1); });
+  var rows = [];
+  open.forEach(function(c){
+    var tier = labTier(c), cx = c.tests.filter(function(t){ return t.f && t.f.indexOf(tier === 'critical' ? 'crit' : 'alert') === 0; })[0];
+    var fl = ATTN_INTAKE.filter(function(x){ return x.patient === c.patient; })[0];
+    rows.push({rank:tier === 'critical' ? 0 : 1, act:'result', idx:INBOX_ITEMS.indexOf(c), who:c.patient, sub:attnAgeSex(c.age),
+      what:cx.n, whatSub:fl ? 'Intake flag: ' + fl.flag.toLowerCase() : '', val:cx.v + ' ' + cx.u, ref:cx.ref ? 'Reference ' + cx.ref : '',
+      sev:['StatusTag', tier === 'critical' ? {status:'critical', label:lrFlag(cx.f, cx.v).word} : {status:'high', label:lrFlag(cx.f, cx.v).word}]});
+  });
+  ATTN_INTAKE.forEach(function(x){
+    if(open.some(function(c){ return c.patient === x.patient; })) return;
+    rows.push({rank:3, act:'intake', who:x.patient, sub:attnAgeSex(x.age), what:'Intake flag', val:'“' + x.flag + '”', sev:['StatusTag', {status:'needs-review'}]});
+  });
+  var L = typeof t23StaleList === 'function' ? t23StaleList() : [];
+  if(L.length){
+    var cl = L[0];
+    rows.push({rank:2, act:'claim', claim:cl.id, who:cl.who, sub:t23F(cl.date) + ' visit', what:L.length > 1 ? L.length + ' MSP claims not submitted' : 'MSP claim not submitted', val:'',
+      sev:['DeadlineTag', {daysLeft:t23DaysLeft(cl)}]});
+  }
+  rows.sort(function(a, b){ return a.rank - b.rank; });
+  var BTN = {result:['eye-on', 'Review result'], intake:['eye-on', 'Review intake'], claim:['file', 'Open in Claims']};
+  box.innerHTML = rows.length ? SC.html('Table', {'aria-label':'Needs your attention', framed:false},
+    ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Patient'], ['TableHead', {}, 'What'], ['TableHead', {}, 'Result'], ['TableHead', {}, 'Severity'], ['TableHead', {type:'empty', 'aria-label':'Actions'}, '']]],
+    ['TableBody', {}].concat(rows.map(function(r){
+      return ['TableRow', {tabIndex:0, 'data-attn':r.act, 'data-idx':r.idx != null ? String(r.idx) : '', 'data-who':r.who, 'data-claim':r.claim || '', 'aria-label':BTN[r.act][1] + ': ' + r.who},
+        ['TableCell', {}, ['TableCellContent', {strong:true, label:r.who, secondary:r.sub}]],
+        ['TableCell', {}, ['TableCellContent', {label:r.what, secondary:r.whatSub || undefined}]],
+        ['TableCell', {}, r.val ? ['TableCellContent', {strong:true, label:r.val, secondary:r.ref || undefined}] : ['TableCellContent', {label:'—'}]],
+        ['TableCell', {}, ['TableCellContent', {type:'tags'}, r.sev]],
+        ['TableCell', {}, ['TableCellContent', {type:'actions'}, ['Button', {variant:'tertiary-main', size:'medium', startIcon:BTN[r.act][0], 'data-go':'1'}, BTN[r.act][1]]]]];
+    }))) : '';
+  var bx = document.getElementById('alerts-box'); if(bx) bx.hidden = !rows.length;
+  syncAttnFold();
 }
+/* a row and its one button do the same thing */
+function attnGo(tr){
+  var k = tr.getAttribute('data-attn');
+  if(k === 'result') openReview(+tr.getAttribute('data-idx'));
+  else if(k === 'intake') openBrief(tr.getAttribute('data-who'));
+  else if(k === 'claim') t23GoClaim(tr.getAttribute('data-claim'));
+}
+(function(){
+  var box = document.getElementById('attn-clip'); if(!box) return;
+  box.addEventListener('click', function(e){ var tr = e.target.closest('tr[data-attn]'); if(tr) attnGo(tr); });
+  box.addEventListener('keydown', function(e){ var tr = e.target.closest && e.target.closest('tr[data-attn]'); if(tr && e.target === tr && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); attnGo(tr); } });
+})();
 function ackCritical(i){
   var it = INBOX_ITEMS[i]; if(!it) return;
   it.status = 'reviewed';
@@ -19118,23 +19053,7 @@ function t23StaleList(){
   return CLAIMS.filter(function(c){ return c.st === 'submit' && c.payer !== 'private' && t23DaysLeft(c) <= T23_STALE_HOME; })
                .sort(function(a, b){ return t23DaysLeft(a) - t23DaysLeft(b); });
 }
-function t23RenderStale(){
-  var el = document.getElementById('t23-stale'); if(!el) return;
-  var L = t23StaleList();
-  if(!L.length){ el.innerHTML = ''; if(typeof syncAttnFold === 'function') syncAttnFold(); return; }
-  var c = L[0], left = t23DaysLeft(c), more = L.length - 1;
-  var words = left < 0 ? 'Past 90 days' : left + (left === 1 ? ' day left' : ' days left');
-  var test = more ? (L.length + ' MSP claims not submitted') : 'MSP claim not submitted';
-  el.innerHTML = '<div class="al-row t23-stale-row" role="button" tabindex="0" onclick="t23GoClaim(\'' + c.id + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();t23GoClaim(\'' + c.id + '\')}" aria-label="' + t23E(test + ', ' + c.who + ', ' + words + '. Open in Claims') + '">' +
-    '<span class="al-mark"></span>' +
-    '<span class="al-who"><span class="ic al-tone warn" role="img" aria-label="Billing deadline" data-pdic="clock"></span><b>' + t23E(c.who) + '</b><i>' + t23F(c.date) + ' visit</i></span>' +
-    '<span class="al-test">' + test + '</span>' +
-    '<span class="al-val flagtext">' + words + (more ? ' · fewest' : '') + '</span>' +
-    '<span class="al-acts"><sc-button variant="tertiary-main" size="medium" start-icon="file" onclick="event.stopPropagation();t23GoClaim(\'' + c.id + '\')">Open in Claims</sc-button></span>' +
-  '</div>';
-  paintPd(el);
-  if(typeof syncAttnFold === 'function') syncAttnFold();
-}
+function t23RenderStale(){ if(typeof renderCriticals === 'function') renderCriticals(); }
 /* every caller that used to refresh the digest now refreshes the Home item */
 function t23RenderDigest(){ t23RenderStale(); }
 /* demo switch for the question's overdue state (spec 8b) */
