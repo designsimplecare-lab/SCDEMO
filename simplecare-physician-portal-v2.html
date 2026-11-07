@@ -9374,6 +9374,9 @@ function statusClosed(s){ return STATUS_CLOSED.indexOf(s) > -1; }
 var STATUS_ICO2 = {calldropped:'hangup', declined:'close', pendingmoa:'taskmoa', needsreview:'eye', admincancel:'calendar'};
 /* Ani, 6 Nov ("use our statuses"): every status is the design system's StatusTag, which owns the wording, colour and icon; the page only maps
    its own state to a StatusTag key. One that opens a menu or the card sheet is a button with the dropdown arrow (the row's click handler opens it). */
+/* Ani, 6 Nov ("why do the patient names have no initials"): every patient cell is the design system's icon-text cell with a grey initials
+   avatar (AvatarCircle, medium, decorative: the name is the text) */
+function ptCell(name, secondary){ var p = {type:'icon-text', icon:['AvatarCircle', {size:'medium', name:name, decorative:true}], strong:true, label:name}; if(secondary) p.secondary = secondary; return ['TableCellContent', p]; }
 function stTag(status, act, more){
   var p = {status:status};
   if(act){ p.as = 'button'; p.endIcon = 'arrow-dropdown-down'; p['data-act'] = act; p['aria-haspopup'] = act === 'card' ? 'dialog' : 'menu'; p['aria-expanded'] = false; }
@@ -9792,7 +9795,7 @@ function renderQueue(){
     var ai = AI_SUMMARY[r.name];
     var props = {className:(r.redflag ? 'redflag' : '') + (isNext ? ' q-next' : ''), current:isNext, tabIndex:0, 'data-name':r.name, 'aria-label':'Open chart: ' + (r.legal || r.name)};
     if(hiddenWin){ props.hidden = true; props['data-win'] = hiddenWin; }
-    var patient = ['TableCellContent', {strong:true, label:r.legal || r.name, secondary:(r.pref && r.legal && r.legal.split(' ')[0] !== r.pref ? r.pref + ' · ' : '') + (r.age || '') + ', ' + (r.sex || '')}];   /* Ani, 6 Nov: no "Preferred:" word; the name they go by only when it differs */
+    var patient = ptCell(r.legal || r.name, (r.pref && r.legal && r.legal.split(' ')[0] !== r.pref ? r.pref + ' · ' : '') + (r.age || '') + ', ' + (r.sex || ''));   /* Ani, 6 Nov: no "Preferred:" word; the name they go by only when it differs */
     return SC.html('TableRow', props,
       ['TableCell', {}, ['TableCellContent', {type:'number', label:inQueue ? String(++qSeq) : '—'}]],
       ['TableCell', {}, patient],
@@ -9943,7 +9946,7 @@ function renderCriticals(){
     ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Patient'], ['TableHead', {}, 'What'], ['TableHead', {}, 'Result'], ['TableHead', {}, 'Severity'], ['TableHead', {type:'empty', 'aria-label':'Actions'}, '']]],
     ['TableBody', {}].concat(rows.map(function(r){
       return ['TableRow', {tabIndex:0, 'data-attn':r.act, 'data-idx':r.idx != null ? String(r.idx) : '', 'data-who':r.who, 'data-claim':r.claim || '', 'aria-label':BTN[r.act][1] + ': ' + r.who},
-        ['TableCell', {}, ['TableCellContent', {strong:true, label:r.who, secondary:r.sub}]],
+        ['TableCell', {}, ptCell(r.who, r.sub)],
         ['TableCell', {}, ['TableCellContent', {label:r.what, secondary:r.whatSub || undefined}]],
         ['TableCell', {}, r.val ? ['TableCellContent', {strong:true, label:r.val, secondary:r.ref || undefined}] : ['TableCellContent', {label:'—'}]],
         ['TableCell', {}, ['TableCellContent', {type:'tags'}, r.sev]],
@@ -11893,7 +11896,7 @@ function inboxRowHtml(item, i){
     /* sign-off shows what was decided, so it is never signed blind; a signed-off row carries the name and time (Daniel, 26 Sep) */
     (item.status === 'reviewed' && item.disposition ? '<div class="ix-disp">' + item.disposition + '</div>' : '') +
     (item.status === 'signed-off' ? '<div class="ix-disp">' + (item.disposition ? item.disposition + ' &middot; ' : '') + soStamp(item.signedAt || item.received) + '</div>' : '');
-  var patient = ['TableCellContent', {strong:true, label:item.patient, secondary:item.panel + (item.context ? ' · ' + item.context : '')}];
+  var patient = ptCell(item.patient, item.panel + (item.context ? ' · ' + item.context : ''));
   if(crit) patient.push(['Tag', {color:'error', startIcon:'urgent'}, 'Immediate assessment']);
   var act = item.status === 'reviewed'
     ? ['TableCellContent', {type:'actions'}, ['Button', {variant:'secondary-main', size:'medium', startIcon:'signature', 'data-act':'sign'}, 'Sign off']]
@@ -18145,7 +18148,7 @@ function t23Stats(){
 
 /* Claims on the design system's Table (Ani, 6 Nov). Every claim is a TableRow (id t23-c-…, data-c for the click handler); its status is the
    StatusTag (CLAIM_KEY), the days left keep the page's own chip, and actions are design-system Buttons named by data-act. */
-function t23Who(c, extra){ return ['TableCellContent', {strong:true, label:c.who, secondary:t23F(c.date) + ' · ' + winLabel(c.win) + (extra ? ' · ' + extra : '')}]; }
+function t23Who(c, extra){ return ptCell(c.who, t23F(c.date) + ' · ' + winLabel(c.win) + (extra ? ' · ' + extra : '')); }
 function t23FeeCell(c){
   if(c.payer === 'private') return ['TableCellContent', {label:c.item === 'form' ? 'Form' : 'Private visit fee', secondary:t23HowLine(c), wrap:true}];
   return ['TableCellContent', {label:c.fee ? t23FeeTxt(c.fee) : 'No fee code', secondary:(c.dx ? c.dx + ' · ' + t23DxName(c.dx) : 'Diagnosis not set') + (c.payer === 'recip' ? ' · Reciprocal · ' + c.prov : ''), wrap:true}];
@@ -18233,7 +18236,7 @@ function t23RejHtml(c){
   if(!t23OpenQ(c) && p){ acts.push(t23Btn(p[0], p[1], {v:'primary', icon:p[2]})); acts.push(t23Btn(s2[0], s2[1], {v:'secondary-main'})); }
   acts.push(t23Btn('note', 'Open visit', {icon:'file'})); acts.push(t23Btn('details', 'Details'));
   return [t23Tr(c, [
-    ['TableCell', {}, ['TableCellContent', {strong:true, label:c.who, secondary:t23F(c.date) + ' · ' + c.fee}]],
+    ['TableCell', {}, ptCell(c.who, t23F(c.date) + ' · ' + c.fee)],
     ['TableCell', {}, ['TableCellContent', {label:when + reason, wrap:true}]],
     ['TableCell', {}, ['TableCellContent', {type:'tags'}, SC.raw(t23DaysChip(c))]],
     ['TableCell', {}, ['TableCellContent', {type:'actions'}].concat(acts)]]), t23NoteRow(c, q)].filter(Boolean);
