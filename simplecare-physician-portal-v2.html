@@ -7082,11 +7082,10 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #v2-side{display:flex;flex-direction:column;gap:0;box-sizing:border-box;background:var(--panel);border:1px solid var(--cv2-line);border-radius:var(--radius-xs);overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-ctxbar{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:52px;padding:4px 4px 4px 16px;background:var(--panel);border-bottom:1px solid var(--cv2-line);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-ctxbar .cv2-ctx-h{margin:0;font-size:16px;line-height:22px;font-weight:700;color:var(--cv2-ink);}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 :is(.cv2-ctx-t,.cv2-rb){display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;padding:0;border:0;border-radius:var(--radius-xs);background:none;color:var(--cv2-soft);cursor:pointer;}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 :is(.cv2-ctx-t,.cv2-rb):hover{background:var(--cv2-wash);color:var(--cv2-ink);}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 :is(.cv2-ctx-t,.cv2-rb):focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 :is(.cv2-ctx-t,.cv2-rb) .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 :is(.cv2-ctx-t,.cv2-rb) svg{width:20px;height:20px;}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-ctx-t[aria-expanded="false"] .ic{transform:rotate(180deg);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-rb{display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;padding:0;border:0;border-radius:var(--radius-xs);background:none;color:var(--cv2-soft);cursor:pointer;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-rb:hover{background:var(--cv2-wash);color:var(--cv2-ink);}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-rb:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-rb .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-rb svg{width:20px;height:20px;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #cv2-ctxbar{justify-content:center;padding:4px;border-bottom:0;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #cv2-ctxbar .cv2-ctx-h{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-rail .cv2-rb{position:relative;}
@@ -7354,11 +7353,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2{grid-template-columns:300px minmax(0,1fr);grid-template-areas:"hd hd" "side nav" "side main";}
   #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2{grid-template-columns:56px minmax(0,1fr);}
 }
-#screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-ctx-t .ic{transform:rotate(180deg);}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-ctx-t[aria-expanded="false"] .ic{transform:none;}
 @media (max-width:1200px){
   #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-drawer-on #v2 > #v2-side{left:0;right:auto;border-width:0 1px 0 0;}
-  #screen-patientchart #pcv-c.cs-v2.chart-v2 .cv2-ctx-t .ic{transform:none;}
 }
   /* Ani, 4 Nov: the top-bar chart layout switch, only while a chart is open */
   /* Ani, 4 Nov: Version 2 Needs attention rows open the result in a side panel; the whole row is the target (the row's button stretched over it) */
@@ -7634,13 +7630,12 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-today #attn-clip{margin:-22px -24px;border-radius:var(--radius-md);overflow:hidden;}   /* Needs your attention: the table fills its card */
 #screen-today #q-tablewrap{margin:0 -24px -22px;border-radius:0 0 var(--radius-md) var(--radius-md);overflow:hidden;}
 #screen-today .qf-pop{position:absolute;top:calc(100% + 4px);z-index:30;min-width:260px;}
-/* Needs your attention: the design system's buttons show on hover or focus, over the row's own fade (as the old .al-btn did) */
 
    /* tabs sit on the page, above the list */
 #screen-claims .t23-quiet{margin:0 0 4px;}
 #screen-claims #t23-seg{margin:0 0 16px;}
 </style>
-<!-- SimpleCare design system: tokens + Inter, then the bridge that maps this page onto them (assets/design-system/). Keep these two links last in <head>. -->
+<!-- SimpleCare design system: tokens + Lato, then the bridge that maps this page onto them (assets/design-system/). Keep these two links last in <head>. -->
 <link rel="stylesheet" href="assets/design-system/simplecare-tokens.css">
 <link rel="stylesheet" href="assets/design-system/portal-bridge.css">
 <link rel="stylesheet" href="assets/design-system/simplecare-ui.css">
@@ -8089,7 +8084,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
           <aside class="v2-side" id="v2-side" aria-label="Patient and Patient summary">
             <!-- Chart Version 2: the panel's own bar (title and hide/show); collapsed, only the rail shows: the toggle and one button per section -->
             <div class="cv2-ctxbar" id="cv2-ctxbar" hidden><h2 class="cv2-ctx-h" id="cv2-ctx-h">Patient summary</h2>
-              <button type="button" class="cv2-ctx-t" id="cv2-ctx-t" aria-expanded="true" aria-controls="v2-sum" aria-label="Hide patient summary" onclick="cv2Ctx()"><span class="ic" data-pdic="collapse"></span></button></div>
+<sc-button id="cv2-ctx-t" variant="tertiary-main" size="small" start-icon="arrow-direction-left" label="Hide patient summary" aria-controls="v2-sum" onclick="cv2Ctx()"></sc-button></div>
             <nav class="cv2-rail" id="cv2-rail" aria-label="Patient summary sections" hidden></nav>
             <!-- Ani, 6 Oct: "too many separate big cards". One Patient summary card; its sections are accordion rows. -->
             <section class="v2-card v2-sum" id="v2-sum" aria-labelledby="v2-sum-h">
@@ -23913,9 +23908,10 @@ function cv2CtxPaint(){
   if(rail) rail.hidden = !(wide && !open);
   if(t){
     var dr = !wide;
+    /* the design system's quiet icon button: close in the drawer, hide or show on the wide layout (the panel is on the left) */
+    t.setAttribute('start-icon', dr ? 'x' : open ? 'arrow-direction-left' : 'arrow-direction-right');
+    t.setAttribute('label', dr ? 'Close patient summary' : (open ? 'Hide' : 'Show') + ' patient summary');
     t.setAttribute('aria-expanded', String(dr ? CV2.drawer : open));
-    t.setAttribute('aria-label', dr ? 'Close patient summary' : (open ? 'Hide' : 'Show') + ' patient summary');
-    t.innerHTML = csIc(dr ? 'close' : 'collapse'); paintPd(t);
   }
   if(wide && !open) cv2Rail();
 }
