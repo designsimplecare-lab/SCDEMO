@@ -1823,15 +1823,14 @@
   .sidebar .nav-icon{width:22px;height:22px;flex-shrink:0;display:inline-flex;
     align-items:center;justify-content:center;color:var(--ink-faint);font-size:16.5px;}
   .sidebar .nav-icon .ic{width:22px;height:22px;}
-  .sidebar .nav-btn:hover{background:var(--ink-dark);color:#fff;}
-  .sidebar .nav-btn:hover .nav-icon{color:#fff;}
+  .sidebar .nav-btn:hover{background:var(--color-surface-tertiary-main-hovered);color:var(--ink);}   /* hover is a light navy wash; only the selected item is solid navy */
+  .sidebar .nav-btn:hover .nav-icon{color:var(--ink);}
   .sidebar .nav-btn:focus-visible{outline:2px solid var(--ink-dark);outline-offset:2px;}
 
-  /* selected is black, the same black hovering gives — so the rail has one
-     idea of "this one", not a blue one and a black one */
+  /* selected is navy (Ani, 13 Nov: "dark blue, not black") */
   .sidebar .nav-btn.active,
   .sidebar .nav-btn.active:hover{
-    background:var(--ink-dark);color:#fff;font-weight:600;border:none;box-shadow:none;outline:none;
+    background:var(--ink-dark);   /* navy, via the bridge */color:#fff;font-weight:600;border:none;box-shadow:none;outline:none;
   }
   .sidebar .nav-btn.active .nav-icon{color:#fff;}
 
@@ -2928,6 +2927,7 @@
     font-family:inherit;font-size:13.5px;color:var(--ink-soft);cursor:pointer;white-space:nowrap;
   }
   .q-statusmenu button:hover{background:var(--wash);color:var(--ink);}
+  .q-statusmenu button:focus-visible{outline:var(--border-width-md) solid var(--color-border-default-darkest);outline-offset:-1px;}
   .q-statusmenu button.sel{background:var(--ink-dark);color:#fff;font-weight:600;}
   .q-statusmenu .q-tick{width:14px;flex-shrink:0;opacity:0;}
   .q-statusmenu button.sel .q-tick{opacity:1;}
@@ -4081,7 +4081,7 @@
   #chat-panel .cs-lbl .ic,#chat-panel .cs-lbl svg{width:16px;height:16px;color:var(--brand);}
   #chat-panel .cs-chip{min-height:40px;padding:8px 14px;border:0;border-radius:999px;background:var(--wash);
     font:inherit;font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;text-align:left;line-height:1.3;}
-  #chat-panel .cs-chip:is(:hover,:focus-visible){background:var(--ink);color:var(--panel);outline:none;}
+  #chat-panel .cs-chip:is(:hover,:focus-visible){background:var(--ink-dark);color:var(--panel);outline:none;}
   #chat-panel .chat-input-row{border-top:0;}
   /* the suggestions sit in one scrollable row, so the conversation keeps its height */
   #chat-panel .chat-suggest{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:10px 12px 2px;align-items:center;}
@@ -4351,7 +4351,7 @@
   #screen-patientchart #pcv-c.cs-narrow.cs-show-note .cs-note{display:block;}
   #screen-patientchart #pcv-c.cs-narrow.cs-show-note .cs-ctx,#screen-patientchart #pcv-c.cs-narrow.cs-show-note .cs-fc{display:none;}
   #screen-patientchart #pcv-c.cs-narrow .cs-snap{flex-wrap:wrap;}
-  #screen-patientchart #pcv-c .cs-viewtabs [role=tab][aria-selected="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink);}
+  #screen-patientchart #pcv-c .cs-viewtabs [role=tab][aria-selected="true"]{background:var(--ink-dark);color:var(--panel);border-color:var(--ink-dark);}
   #screen-patientchart #pcv-c .cs-viewtabs [role=tab][aria-selected="true"] .ic{color:var(--panel);}
 
   /* T-021 fixes after the first headless look: one-line strip at 1440, top-aligned tier icons, no phantom line
@@ -6554,7 +6554,7 @@ body:has(#callw:not([hidden])) #op-panel .op-sheet{height:calc(100% - 84px);}
 #op-panel .op-pbx{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:4px 16px;}
 #op-panel .op-pi{display:flex;align-items:flex-start;gap:8px;font-size:14px;line-height:20px;color:var(--ink);}
 #op-panel .op-box{flex:none;width:14px;height:14px;margin-top:3px;border:1.5px solid var(--ink);border-radius:2px;box-sizing:border-box;position:relative;}
-#op-panel .op-box.on{background:var(--ink);}
+#op-panel .op-box.on{background:var(--ink-dark);}
 #op-panel .op-box.on::after{content:"";position:absolute;left:3.5px;top:0.5px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);}
 #op-panel .op-pfv{display:block;font-size:14px;line-height:20px;color:var(--ink);padding:2px 0 2px 22px;}
 #op-panel .op-sig{margin-top:18px;padding-top:12px;border-top:1px solid var(--line-strong);}
@@ -7660,6 +7660,13 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   .v2-notecard #nd.nd{border:0 !important;border-radius:0 !important;box-shadow:none !important;}
   /* the day calendar pops over the page, under the date button */
   .day-cal-pop{position:absolute;z-index:300;}
+  #nd-copy{height:44px;}   /* the note toolbar's buttons are all 44px */
+  /* the hosts of a design-system AvatarCircle draw nothing of their own */
+  #pcv-c .cs-photo,.ds-av-host{background:none !important;border:0 !important;border-radius:0 !important;width:auto !important;height:auto !important;padding:0 !important;display:inline-flex;flex:none;}
+  /* pharmacy after the allergy: location icon, name in ink */
+  #screen-patientchart #pcv-c .cs-pharm{display:inline-flex;align-items:center;gap:4px;}
+  #screen-patientchart #pcv-c .cs-pharm .cs-pharm-ic{flex:none;color:var(--color-text-default-caption);}
+  #screen-patientchart #pcv-c .cs-pharm-none{color:var(--color-text-default-caption);}
 </style>
 <style>
 #screen-inbox .ix-tabs-row,#screen-claims .t23-tabsrow{margin:0 0 12px;}
@@ -7668,7 +7675,16 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-today .q-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;}
 #screen-today .q-toolbar .qwin{order:1;}
 #screen-today .q-toolbar .qf-row{order:2;display:flex;align-items:center;gap:8px;}
-#screen-today .q-toolbar .day-nav{order:3;margin:0 0 0 auto;display:flex;align-items:center;gap:4px;}
+#screen-today .q-toolbar .day-nav{order:0;margin:0;display:flex;align-items:center;gap:8px;flex:0 0 auto;}
+/* Ani, 13 Nov: the date as one grouped control (arrows either side of the date, one border, dividers between) */
+#screen-today .day-nav .dn-group{display:inline-flex;align-items:stretch;border:1px solid var(--line);border-radius:8px;background:var(--color-grey-50);overflow:hidden;}   /* Ani, 13 Nov: this grey */
+#screen-today .day-nav .dn-group > button{border:0 !important;border-radius:0 !important;height:34px;}   /* 34 + the 1px border = 36, like the call windows */
+#screen-today .day-nav .dn-group > button + button{border-left:1px solid var(--line) !important;}
+#screen-today .day-nav .dn-group > #day-label{min-width:212px;justify-content:center;font-weight:700;}
+#screen-today .day-nav .dn-group > button:hover{background:var(--hover,rgba(0,0,0,.04));}
+#screen-today .day-nav #day-today-btn{color:var(--brand);}
+#screen-today .q-toolbar .qwin{order:1;}
+#screen-today .q-toolbar .qf-row{order:2;}
 #screen-today .qf-wrap{position:relative;}
 /* Ani, 6 Nov ("do we need this gap between the table and where the table starts"): the table sits in the card unframed and runs to its edges; the card's padding stays around the toolbar only */
 #screen-today #attn-clip{margin:-22px -24px;border-radius:var(--radius-md);overflow:hidden;}   /* Needs your attention: the table fills its card */
@@ -7680,11 +7696,11 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-claims #t23-seg{margin:0 0 16px;}
 </style>
 <!-- SimpleCare design system: tokens + Lato, then the bridge that maps this page onto them (assets/design-system/). Keep these two links last in <head>. -->
-<link rel="stylesheet" href="assets/design-system/simplecare-tokens.css">
-<link rel="stylesheet" href="assets/design-system/portal-bridge.css">
-<link rel="stylesheet" href="assets/design-system/simplecare-ui.css">
-<script src="assets/design-system/simplecare-icons.js"></script>
-<script src="assets/design-system/simplecare-ui.js" defer></script>
+<link rel="stylesheet" href="assets/design-system/simplecare-tokens.css?v=2026-11-13">
+<link rel="stylesheet" href="assets/design-system/portal-bridge.css?v=2026-11-13">
+<link rel="stylesheet" href="assets/design-system/simplecare-ui.css?v=2026-11-13">
+<script src="assets/design-system/simplecare-icons.js?v=2026-11-13"></script>
+<script src="assets/design-system/simplecare-ui.js?v=2026-11-13" defer></script>
 </head>
 <body>
 
@@ -10024,13 +10040,15 @@ function renderDayNav(){
   var label = (dayOffset===0 ? 'Today · ' : (dayOffset===-1 ? 'Yesterday · ' : (dayOffset===1 ? 'Tomorrow · ' : ''))) + name;
   var src = (dayOffset===0) ? QUEUE_DATA : (OTHER_DAYS[String(dayOffset)] || []);
   var B = function(p, t){ p.variant = p.variant || 'tertiary-main'; p.size = 'medium'; return SC.html('Button', p, t || ''); };
-  /* Ani, 13 Nov: one row of design-system buttons, all medium (36): Today, previous, next, and the date, which opens the
-     design system's calendar (<sc-date-picker>). Today stays in place (no jump) and is quiet when today is shown.
-     The day's count is the Day sheet title's count, not a second number here. */
-  nav.innerHTML = B({variant:'secondary-main', 'data-today':'1', id:'day-today-btn', 'aria-current':dayOffset === 0 ? 'date' : undefined}, 'Today') +
+  /* Ani, 13 Nov ('not intuitive, redesign this date picker'): one grouped control, first in the toolbar because the call windows and
+     filters belong to the day it shows: previous day, the date (opens the design system's calendar), next day. "Back to today" shows only
+     when another day is on screen, so Today is never said twice. The date keeps a fixed width so the arrows don't move as days change. */
+  nav.innerHTML = '<div class="dn-group" role="group" aria-label="Day shown">' +
     B({startIcon:'arrow-dropdown-left', 'aria-label':'Previous day', 'data-day':'-1'}) +
+    B({startIcon:'calendar', endIcon:'arrow-dropdown-down', 'aria-haspopup':'dialog', 'aria-expanded':'false', 'data-daycal':'1', id:'day-label', 'aria-label':'Day shown: ' + label + '. Choose a day'}, label) +
     B({startIcon:'arrow-dropdown-right', 'aria-label':'Next day', 'data-day':'1'}) +
-    B({startIcon:'calendar', endIcon:'arrow-dropdown-down', 'aria-haspopup':'dialog', 'aria-expanded':'false', 'data-daycal':'1', id:'day-label'}, label);
+    '</div>' +
+    (dayOffset !== 0 ? B({variant:'tertiary-main', 'data-today':'1', id:'day-today-btn', startIcon:'arrow-dropdown-left'}, 'Back to today') : '');
   updateWorkCounts();
 }
 function dayNavClick(e){
@@ -13418,7 +13436,16 @@ function vcInsert(t){
 }
 function pcFill(map){
   Object.keys(map).forEach(function(k){
-    document.querySelectorAll('[data-f="'+k+'"]').forEach(function(el){ el.innerHTML = map[k]; });
+    document.querySelectorAll('[data-f="'+k+'"]').forEach(function(el){
+      /* initials draw as the design system's AvatarCircle (one source for every avatar) */
+      if(k === 'initials' && window.SC && SC.html){
+        var ini = String(map[k]).replace(/<[^>]+>/g, '').trim();
+        el.classList.add('ds-av-host');
+        el.innerHTML = SC.html('AvatarCircle', {size:el.classList.contains('mini-av') ? 'medium' : 'large', name:ini, initials:ini, decorative:true});
+        return;
+      }
+      el.innerHTML = map[k];
+    });
   });
 }
 function setChartVer(v){
@@ -16430,9 +16457,17 @@ function csRenderSnap(name){
     /* Daniel, 4 Nov call 00:22:56: "I want that pharmacy information right here. It's as important as no known drug allergies. It goes at the top."
        The patient's pharmacy on the allergy line, from the chart (ptChart) or the one chosen in Prescribe; none on file, nothing shown. In Version 2 the
        two take the card's second line together (cs-l2.cs-hasph); without a pharmacy the line is as it was. */
-    ((nk || ptPharm(name)) ? '<span class="cs-l2' + (ptPharm(name) ? ' cs-hasph' : '') + '">' +
+    /* Ani, 13 Nov: the pharmacy always follows the allergy status, with the design system's location icon; none on file says so */
+    '<span class="cs-l2 cs-hasph">' +
       (nk ? '<span class="cs-nksep"> &middot; </span><span class="cs-nkda">' + csIc('complete') + 'No known drug allergies</span>' : '') +
-      (ptPharm(name) ? '<span class="cs-phsep"> &middot; </span><span class="cs-pharm"><span class="cs-pharm-k">Pharmacy </span><b>' + csEsc(ptPharm(name)) + '</b></span>' : '') + '</span>' : '');
+      '<span class="cs-phsep"> &middot; </span><span class="cs-pharm">' + (window.SC && SC.icon ? SC.icon('location', {size:16, className:'cs-pharm-ic'}) : '') +
+      '<span class="sr-only">Pharmacy: </span>' + (ptPharm(name) ? '<b>' + csEsc(ptPharm(name)) + '</b>' : '<span class="cs-pharm-none">No pharmacy on file</span>') + '</span></span>';
+  /* Ani, 13 Nov ("one source of truth"): the patient's avatar is the design system's AvatarCircle with initials, like every patient row */
+  document.querySelectorAll('#pcv-c .cs-photo').forEach(function(ph){
+    if(!(window.SC && SC.html)) return;
+    ph.removeAttribute('role'); ph.removeAttribute('aria-label'); ph.setAttribute('aria-hidden', 'true');
+    ph.innerHTML = SC.html('AvatarCircle', {size:'large', name:r.legal || name.split(',')[0], decorative:true});
+  });
   /* v2.5 §3: allergies in three distinct states. Named is ink with a symbol (an allergy is not a critical
      result, so not red); "Not recorded" is amber with its word. The named example is v2.5 §8's, demo only. */
   var a = AL.state,
@@ -17287,6 +17322,28 @@ function ndFirstBracket(){
 function ndTools(){
   var host = document.getElementById('nd-tools'), acts = document.getElementById('v2-note-acts');
   if(host && acts && acts.parentNode !== host) host.appendChild(acts);
+  /* Ani, 13 Nov: Copy puts the whole note on the clipboard as plain text, headings included, to paste into another system */
+  if(acts && !document.getElementById('nd-copy') && window.SC && SC.html){
+    var w = document.createElement('span'); w.innerHTML = SC.html('Button', {variant:'tertiary-main', size:'medium', startIcon:'copy', id:'nd-copy', 'aria-label':'Copy the note'}, 'Copy');
+    var b = w.firstElementChild; b.addEventListener('click', ndCopy); acts.insertBefore(b, acts.firstChild);
+  }
+}
+function ndText(){
+  if(typeof nsSync === 'function') nsSync();
+  var i = document.getElementById('vc-note-input'), d = document.getElementById('nd');
+  var t = (i && i.value.trim()) ? i.value : (d ? (d.innerText || d.value || '') : '');
+  return String(t).replace(/\n{3,}/g, '\n\n').trim();
+}
+function ndCopy(){
+  var t = ndText();
+  if(!t){ toast('The note is empty. Nothing to copy.'); return; }
+  var done = function(){ toast('Note copied. Paste it where you need it.'); };
+  if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(t).then(done, function(){ ndCopyFallback(t); done(); }); }
+  else { ndCopyFallback(t); done(); }
+}
+function ndCopyFallback(t){
+  var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(e){} ta.remove();
 }
 (function(){ var go = function(){ try { ndInit(); ndTabs(); ndTools(); } catch(e){} };
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go(); })();
@@ -19570,8 +19627,16 @@ function v2RenderSide(name){
   /* Since you last saw: the chart's own section (renderSinceLast), moved here; hidden when it is */
   var slv = v2El('slv'), list = L ? (CS_SINCE[name] || csSinceGeneric(name)) : [];
   var SK = {New:'information', Changed:'warning', Pending:'warning', Resolved:'success'};
-  v2SetSec('since', list.length, null, list.map(function(x){ return ['ListItem', {label:smText(typeof x.t === 'function' ? x.t() : x.t), trailing:['Tag', {color:SK[x.k] || 'neutral'}, x.k]}]; })
-    .concat(L ? [['ListItem', {icon:'file', label:'Your visit, ' + csShort(L.date) + ' · ' + L.why, meta:'Read the note', href:'#', 'data-goi':smGo('csOpenFull(\'documents\',this)')}]] : []), !!(slv && !slv.hidden) && list.length > 0);
+  /* Ani, 13 Nov ("too close, no clear hierarchy, too much text"): each row is a short title and one grey detail line, the
+     status as its tag; the visit row reads the same way, its link named for screen readers instead of a third column */
+  var sinceRow = function(x){
+    var t = String(typeof x.t === 'function' ? x.t() : x.t), m = t.match(/^(.*?)\s*<span class="cs-cap">\s*(?:&middot;|·)\s*(.*?)<\/span>\s*$/);
+    var detail = m ? m[2].replace(/^received (Yesterday|Today)/, function(_, d){ return 'received ' + d.toLowerCase(); }) : '';
+    return ['ListItem', {label:smText(m ? m[1] : t), secondary:detail ? v2Cap(smText(detail)) : undefined, trailing:['Tag', {color:SK[x.k] || 'neutral'}, x.k]}];
+  };
+  v2SetSec('since', list.length, null, list.map(sinceRow)
+    .concat(L ? [['ListItem', {label:v2Cap(L.why), secondary:'Your visit · ' + csShort(L.date), href:'#', 'aria-label':'Read the note from your visit, ' + csShort(L.date) + ': ' + L.why,
+      'data-goi':smGo('csOpenFull(\'documents\',this)')}]] : []), !!(slv && !slv.hidden) && list.length > 0);
   var el = v2El('v2-key');
   if(el) v2RenderKey(el, name, by);
 }
