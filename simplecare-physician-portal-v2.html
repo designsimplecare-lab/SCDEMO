@@ -9879,8 +9879,8 @@ function renderQueue(){
     /* Spec 5.2: only the next patient can be called (the queue mirrors a walk-in line); Task MOA is on every row */
     var acts = [];
     /* Ani, 9 Nov ("i need it with text"): the design system's tertiary buttons with icon and text; the accessible name adds the patient */
-    if(!closed && isNext) acts.push(['Button', {variant:'tertiary-main', size:'medium', startIcon:'phone', 'data-act':'call', 'aria-label':'Call ' + (r.legal || r.name)}, 'Call']);
-    acts.push(['Button', {variant:'tertiary-main', size:'medium', startIcon:'user-assign', 'data-act':'task', 'aria-label':'Task MOA about ' + (r.legal || r.name)}, 'Task MOA']);
+    if(!closed && isNext) acts.push(['Button', {variant:'secondary-main', size:'medium', startIcon:'phone', 'data-act':'call', 'aria-label':'Call ' + (r.legal || r.name)}, 'Call']);
+    acts.push(['Button', {variant:'secondary-main', size:'medium', startIcon:'user-assign', 'data-act':'task', 'aria-label':'Task MOA about ' + (r.legal || r.name)}, 'Task MOA']);
     var ai = AI_SUMMARY[r.name];
     var props = {className:(r.redflag ? 'redflag' : '') + (isNext ? ' q-next' : ''), current:isNext, tabIndex:0, 'data-name':r.name, 'aria-label':'Open chart: ' + (r.legal || r.name)};
     if(hiddenWin){ props.hidden = true; props['data-win'] = hiddenWin; }
@@ -10039,7 +10039,7 @@ function renderCriticals(){
         ['TableCell', {}, ['TableCellContent', {label:r.what, secondary:r.whatSub || undefined}]],
         ['TableCell', {}, r.val ? ['TableCellContent', {strong:true, label:r.val, secondary:r.ref || undefined}] : ['TableCellContent', {label:'—'}]],
         ['TableCell', {}, ['TableCellContent', {type:'tags'}, r.sev]],
-        ['TableCell', {}, ['TableCellContent', {type:'actions'}, ['Button', {variant:'tertiary-main', size:'medium', startIcon:BTN[r.act][0], 'data-go':'1'}, BTN[r.act][1]]]]];
+        ['TableCell', {}, ['TableCellContent', {type:'actions'}, ['Button', {variant:'secondary-main', size:'medium', startIcon:BTN[r.act][0], 'data-go':'1'}, BTN[r.act][1]]]]];
     }))) : '';
   var bx = document.getElementById('alerts-box'); if(bx) bx.hidden = !rows.length;
   syncAttnFold();
@@ -11174,9 +11174,9 @@ function tkRow(t){
   /* SC.html is static markup: no handlers. Each button carries data-tkact and the task id; one listener on the list acts on them. */
   var B = function(v, ic, label, act, aria){ return ['Button', {variant:v, size:'medium', startIcon:ic, 'data-tkact':act, 'data-tkid':t.id, 'aria-label':aria}, label]; };
   /* the two secondary actions are icon buttons (named and titled), so the Task column keeps room for its note; Complete keeps its word */
-  var I = function(ic, label, act, aria){ return ['Button', {variant:'tertiary-main', size:'medium', startIcon:ic, 'data-tkact':act, 'data-tkid':t.id, 'aria-label':aria, title:label}]; };
+  var I = function(ic, label, act, aria){ return ['Button', {variant:'secondary-main', size:'medium', startIcon:ic, 'data-tkact':act, 'data-tkid':t.id, 'aria-label':aria, title:label}]; };
   var who = t.patient + ' (' + t.title + ')';
-  var acts = done ? [B('tertiary-main', 'refresh-undo', 'Reopen', 'reopen', 'Reopen: ' + who)]
+  var acts = done ? [B('secondary-main', 'refresh-undo', 'Reopen', 'reopen', 'Reopen: ' + who)]
     : [I('user-assign', 'Reassign', 'reassign', 'Reassign: ' + who),
        I('reload-reverse', 'Carry forward', 'carry', 'Carry forward: ' + who),
        B('secondary-main', 'check', 'Complete', 'complete', 'Complete: ' + who)];
@@ -16304,7 +16304,7 @@ function renderResults(name){
         sub:p[0] + ' · ' + (p[3] === 'patient' ? 'Uploaded by patient' : p[3]),
         status:it ? (it.status === 'signed-off' ? SC.html('Tag', {color:'success', startIcon:'check'}, 'Cleared')
           : SC.html('Tag', {color:'warning', as:'button', 'data-rsreview':INBOX_ITEMS.indexOf(it), 'aria-label':'Not cleared. Review ' + t.n}, 'Not cleared')) : '',
-        tail:SC.html('Button', {variant:'tertiary-main', size:'medium', startIcon:'file', 'data-rspdf':(p[3] === 'patient' ? 'uploaded' : p[3]) + '|' + t.n, 'aria-label':'Open the report for ' + t.n}, 'PDF')};
+        tail:SC.html('Button', {variant:'secondary-main', size:'medium', startIcon:'file', 'data-rspdf':(p[3] === 'patient' ? 'uploaded' : p[3]) + '|' + t.n, 'aria-label':'Open the report for ' + t.n}, 'PDF')};
     }), {label:'Lab results', tail:'Report', rowCls:'lr-row'}) : '<p class="pc-empty">No lab results on file.</p>';
     h += RS_ADD
       ? '<div class="rs-form"><p class="rs-k">Add an expected result</p>' +
@@ -17427,7 +17427,7 @@ function ndTools(){
   if(host && acts && acts.parentNode !== host) host.appendChild(acts);
   /* Ani, 13 Nov: Copy puts the whole note on the clipboard as plain text, headings included, to paste into another system */
   if(acts && !document.getElementById('nd-copy') && window.SC && SC.html){
-    var w = document.createElement('span'); w.innerHTML = SC.html('Button', {variant:'tertiary-main', size:'medium', startIcon:'copy', id:'nd-copy', 'aria-label':'Copy the note'}, 'Copy');
+    var w = document.createElement('span'); w.innerHTML = SC.html('Button', {variant:'secondary-main', size:'medium', startIcon:'copy', id:'nd-copy', 'aria-label':'Copy the note'}, 'Copy');
     var b = w.firstElementChild; b.addEventListener('click', ndCopy); acts.insertBefore(b, acts.firstChild);
   }
 }
@@ -18404,7 +18404,7 @@ function t23StatusTag(c){
   var L = t23Label(c), st = t23Blocker(c) ? 'claim-review' : CLAIM_KEY[c.st]; if(!st) return '';
   return SC.html('StatusTag', L.label !== (T23_ST[c.st] || {}).label || st === 'claim-review' ? {status:st, label:L.label} : {status:st});
 }
-function t23Btn(act, label, o){ o = o || {}; var p = {variant:o.v || 'tertiary-main', size:'medium', 'data-act':act}; if(o.icon) p.startIcon = o.icon; if(o.dis){ p.disabled = true; p.title = o.dis; } return ['Button', p, label]; }
+function t23Btn(act, label, o){ o = o || {}; var p = {variant:o.v || 'secondary-main', size:'medium', 'data-act':act}; if(o.icon) p.startIcon = o.icon; if(o.dis){ p.disabled = true; p.title = o.dis; } return ['Button', p, label]; }
 function t23Tr(c, cells, rowCls){ return ['TableRow', {id:'t23-c-' + c.id, 'data-c':c.id, className:rowCls || ''}].concat(cells); }
 function t23Row(c, opts){
   opts = opts || {};
