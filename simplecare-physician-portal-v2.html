@@ -9872,7 +9872,7 @@ function renderQueue(){
     }).join('');
   });
 
-  /* one row: # | patient | visit status | billing | health card | clinical concern | actions on hover (Ani, 6 Nov: the design system's Table) */
+  /* one row: # | patient | visit status | health card | billing (Daniel, 13 Nov video: "swap these two", health card first so he reads "verified" down the sheet) | clinical concern | actions on hover (Ani, 6 Nov: the design system's Table) */
   function rowHTML(r, hiddenWin){
     var closed = statusClosed(r.status), isNext = (r === QUEUE_NEXT);
     var inQueue = (r.status==='waiting' || r.status==='next' || r.status==='delayed' || r.status==='progress');
@@ -9889,14 +9889,14 @@ function renderQueue(){
       ['TableCell', {}, ['TableCellContent', {type:'number', label:inQueue ? String(++qSeq) : ''}]],
       ['TableCell', {}, patient],
       ['TableCell', {className:'q-visit'}, ['TableCellContent', {type:'tags'}, SC.raw(qStatusTag(r) + qNoteTag(r))]],
-      ['TableCell', {className:'q-bill'}, ['TableCellContent', {type:'tags'}, SC.raw(t23BillCell(r))]],
       ['TableCell', {className:'q-card'}, ['TableCellContent', {type:'tags'}, SC.raw(t23CardCell(r))]],
+      ['TableCell', {className:'q-bill'}, ['TableCellContent', {type:'tags'}, SC.raw(t23BillCell(r))]],
       ['TableCell', {className:'q-concern'}, ['TableCellContent', {label:r.concern, secondary:ai || undefined, wrap:true}]],
       ['TableCell', {}, ['TableCellContent', {type:'actions', revealOnHover:true}].concat(acts)]);
   }
 
   var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {'aria-label':'Queue position'}, '#'], ['TableHead', {}, 'Patient'], ['TableHead', {}, 'Visit status'],
-    ['TableHead', {}, 'Billing status'], ['TableHead', {}, 'Health card'], ['TableHead', {}, 'Clinical concern'], ['TableHead', {type:'empty', 'aria-label':'Actions'}, '']]];
+    ['TableHead', {}, 'Health card'], ['TableHead', {}, 'Billing status'], ['TableHead', {}, 'Clinical concern'], ['TableHead', {type:'empty', 'aria-label':'Actions'}, '']]];
   if(!rows.length){
     var msg = queueSearch ? ('No patients match “'+queueSearch+'”.')
                           : (dayOffset===0 ? 'No patients on the day sheet right now.' : 'Nothing booked for this day.');   /* Daniel, 4 Nov call 00:28:07: "It's just a day sheet" */
@@ -10207,9 +10207,9 @@ function qfBillOptions(){
 /* Daniel was not sold -- "I'm not a big filter guy" -- until Ani put the
    volume to him: ninety or a hundred in a window and you need them. "You
    got me on that one." Three, in the order the columns now read. */
+/* Daniel, 13 Nov video: the billing filter goes again. The day sheet is clinical; billing is worked in Claims. */
 var QF_DEFS = [
   {key:'visit', label:'Visit status',   opts:qfVisitOptions},
-  {key:'bill',  label:'Billing status', opts:qfBillOptions},
   {key:'card',  label:'Health card',    opts:qfCardOptions}
 ];
 
@@ -19068,16 +19068,24 @@ function t23BillCell(r){
   r.bill = k;
   if(k === 'msp-none') return '<span class="t23-none"><span class="sr-only">No claim yet. The visit isn’t finished.</span></span>';   /* Ani, 9 Nov: no dash; an empty cell says "nothing yet" */
   if(k === 'noshow') return '<span class="t23-ns">No-show</span>';
-  var act = b.open ? 'bill' : '', c0 = t23RowClaim(r);
+  /* Daniel, 13 Nov video: "the billing status, that's just a portal into the claims" -- every chip with a claim
+     goes straight to that claim in Claims (before, Payment paid fell through to the row and opened the chart) */
+  var c0 = t23RowClaim(r), act = c0 ? 'bill' : '';
+  var go = function(lbl){ return {endIcon:'arrow-dropdown-right', 'aria-haspopup':undefined, 'aria-expanded':undefined, 'aria-label':'Billing: ' + lbl + '. Open in Claims'}; };
   if(c0 && c0.payer !== 'private'){   /* Dev's 7 states (6 Oct); a blocker or a part payment keeps its own words */
-    var L0 = t23Label(c0), st = t23Blocker(c0) ? 'claim-review' : CLAIM_KEY[c0.st];
-    return stTag(st, act, L0.label !== (T23_ST[c0.st] || {}).label || st === 'claim-review' ? {label:L0.label} : {});
+    var L0 = t23Label(c0), st = t23Blocker(c0) ? 'claim-review' : CLAIM_KEY[c0.st], m = act ? go(L0.label) : {};
+    if(L0.label !== (T23_ST[c0.st] || {}).label || st === 'claim-review') m.label = L0.label;
+    return stTag(st, act, m);
   }
-  return stTag(BILL_KEY[k] || 'claim-submit', act, {label:b.label});
+  var m2 = act ? go(b.label) : {}; m2.label = b.label;
+  return stTag(BILL_KEY[k] || 'claim-submit', act, m2);
 }
 function t23SyncQueue(){ if(typeof renderQueue === 'function') renderQueue(); updateClaimCount(); }
 /* REQ-BIL-01: the next step first, Details second. No "Sign off & submit" here (CNF-10, TAIL-04). */
 openBillMenu = function(btn, name){
+  /* Daniel, 13 Nov video: no menu; the chip goes straight to the claim in Claims */
+  var rr = QUEUE_DATA.find(function(x){ return x.name === name; }), cc = t23RowClaim(rr);
+  if(cc){ t23GoClaim(cc.id); return; }
   var menu = document.getElementById('q-statusmenu');
   if(qsmName === 'bill:' + name && menu && menu.classList.contains('show')){ closeStatusMenu(); return; }
   var r = QUEUE_DATA.find(function(x){ return x.name === name; }); if(!r) return;
