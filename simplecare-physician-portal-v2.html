@@ -6276,9 +6276,13 @@ body:has(#callw:not([hidden])) #rx-panel .rx-sheet{height:calc(100% - 84px);}
 #rx-panel .rp-ab[aria-pressed=true]{background:var(--brand-navy);border-color:var(--brand-navy);color:#fff;}
 #rx-panel .rp-oth{height:32px !important;font-size:14px !important;width:220px;}
 /* the pad: a paper card */
-#rx-panel .rp-paper{position:relative;padding:20px 22px 16px;background:#fff;border:1px solid #dcdcdc;border-radius:2px;
-  box-shadow:3px 4px 0 -1px #fff,3px 4px 0 0 #e2e2e2,0 10px 24px rgba(0,0,0,.08);color:#222;font-family:Georgia,'Times New Roman',serif;}
-#rx-panel .rp-paper::before{content:"";position:absolute;inset:90px 0 70px;background:var(--rx-bird) no-repeat center/72% auto;pointer-events:none;}
+/* Ani, 14 Nov ("remove this bird, make the texture more like paper"): no watermark; a warm off-white sheet with a faint fibre
+   grain and a soft darkening toward the edges, on the same stacked-sheet shadow */
+#rx-panel .rp-paper{position:relative;padding:20px 22px 16px;background-color:#fdfbf6;border:1px solid #e3ded2;border-radius:2px;
+  box-shadow:3px 4px 0 -1px #fbf8f1,3px 4px 0 0 #e6e0d3,0 10px 24px rgba(60,48,20,.09);color:#222;font-family:Georgia,'Times New Roman',serif;}
+#rx-panel .rp-paper::before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:radial-gradient(120% 90% at 50% 40%, rgba(255,255,255,0) 60%, rgba(120,100,60,.035) 100%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .22 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:auto, 220px 220px;opacity:.28;mix-blend-mode:multiply;}
 #rx-panel .rp-paper > *{position:relative;}
 #rx-panel .rp-ph2{display:flex;align-items:flex-end;gap:12px;padding-bottom:10px;border-bottom:1.5px solid #222;}
 #rx-panel .rp-rx{flex:none;font-size:40px;line-height:38px;color:var(--brand-navy);letter-spacing:-5px;}
@@ -7673,7 +7677,10 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   /* the top bar's back arrow and the screen's own back control it stands for */
   .topbar .tb-left:has(> .tb-back:not([hidden])){flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;}
   .tb-back[hidden],.tb-info[hidden]{display:none;}
-  .topbar .tb-left:has(> .tb-info:not([hidden])){flex-direction:row;align-items:center;justify-content:flex-start;gap:4px;}
+  .topbar .tb-left:has(> .tb-info:not([hidden])){flex-direction:row;align-items:center;justify-content:flex-start;gap:2px;}
+  .tb-info .sc-info{width:28px;height:28px;margin-left:0;}
+  #screen-tasks #tk-filters{margin-bottom:12px;}   /* tabs to table: 12, as on Claims */
+  .tb-info .sc-info svg{width:20px;height:20px;}
   /* the info icon: 16px glyph in a 24px target, caption grey, navy on hover and focus */
   .sc-info{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;margin-left:4px;padding:0;border:0;border-radius:var(--radius-round);
     background:transparent;color:var(--color-ink-600);cursor:help;vertical-align:middle;}
@@ -7724,7 +7731,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   :root:not([data-theme="dark"]) #sidebar .sidebar-collapse-wrap{border-color:rgba(255,255,255,.14) !important;}
   :root:not([data-theme="dark"]) .build-stamp{color:rgba(255,255,255,.45) !important;}
   /* Ani, 14 Nov ("make this white stroke blue"): the unread counts' ring matches the navy sidebar, not the old grey page */
-  :root:not([data-theme="dark"]) #sidebar .nav-flag{box-shadow:0 0 0 2px var(--color-navy-900) !important;}
+  :root:not([data-theme="dark"]) #sidebar :is(.nav-flag,.nav-rb){box-shadow:0 0 0 2px var(--color-navy-900) !important;border-color:var(--color-navy-900) !important;}   /* expanded and collapsed (rail) counts */
   /* a claim and its note read as one: no line between them, the note in a soft panel under the claim's patient */
   #screen-claims .sv-table-body > .sv-table-row:has(+ .t23-qrow) > .sv-table-cell{box-shadow:none;}
   #screen-claims .t23-qrow > td{padding-top:0;}
@@ -7744,8 +7751,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #nd-copy{height:44px;}   /* the note toolbar's buttons are all 44px */
   /* Tasks (Ani, 13 Nov): New task at the right of the title; the Task column keeps room for its note */
   #screen-tasks .cpt-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
-  #tk-list th:nth-child(2){width:34%;min-width:230px;}
-  #tk-list{margin:0 -24px;}   /* the frameless table runs edge to edge in its card, like the day sheet */
+  #tk-list th:nth-child(2){width:30%;min-width:180px;}   /* room for the assignee avatars without a sideways scroll at 1440 */
   #tk-list td:last-child{white-space:nowrap;}
   /* lab panels (lrTable): value and unit, then the flag tag; previous values one per line, dates grey */
   .lr-dst .lr-res{margin-right:8px;white-space:nowrap;font-variant-numeric:tabular-nums;}
@@ -7813,11 +7819,11 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-claims #t23-seg{margin:0 0 16px;}
 </style>
 <!-- SimpleCare design system: tokens + Lato, then the bridge that maps this page onto them (assets/design-system/). Keep these two links last in <head>. -->
-<link rel="stylesheet" href="assets/design-system/simplecare-tokens.css?v=2026-11-14f">
-<link rel="stylesheet" href="assets/design-system/portal-bridge.css?v=2026-11-14f">
-<link rel="stylesheet" href="assets/design-system/simplecare-ui.css?v=2026-11-14f">
-<script src="assets/design-system/simplecare-icons.js?v=2026-11-14f"></script>
-<script src="assets/design-system/simplecare-ui.js?v=2026-11-14f" defer></script>
+<link rel="stylesheet" href="assets/design-system/simplecare-tokens.css?v=2026-11-14h">
+<link rel="stylesheet" href="assets/design-system/portal-bridge.css?v=2026-11-14h">
+<link rel="stylesheet" href="assets/design-system/simplecare-ui.css?v=2026-11-14h">
+<script src="assets/design-system/simplecare-icons.js?v=2026-11-14h"></script>
+<script src="assets/design-system/simplecare-ui.js?v=2026-11-14h" defer></script>
 </head>
 <body>
 
@@ -9015,10 +9021,9 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
       </div>
       <div class="ia-note">A task can go to anyone &mdash; an MOA, the practice team, or another physician. What it never does is originate below the doctor: it exists because a doctor pressed Task. The queue is banded by priority and then runs oldest first, because the work that needs attention should win over whether it is imaging, a referral or lab work. Type stays a badge.</div>
 
-      <div class="box">
-        <div class="cpt-filters" id="tk-filters"></div>
-        <div id="tk-list"></div>
-      </div>
+      <!-- Ani, 14 Nov ("tabs are out of the table in other places"): like Claims and Inbox, the tabs sit on the page and the table is its own framed card -->
+      <div class="cpt-filters" id="tk-filters"></div>
+      <div id="tk-list"></div>
     </div>
 
     <div class="screen" id="screen-support">
@@ -11433,7 +11438,8 @@ function tkRow(t){
     ['TableCell', {}, ptCell(t.patient, (t.preferred && t.preferred !== t.patient.split(' ')[0] ? t.preferred + ' · ' : '') + t.chart)],
     ['TableCell', {}, ['TableCellContent', {label:t.title, strong:true, secondary:t.note, wrap:true}]],
     ['TableCell', {}, ['TableCellContent', {type:'tags'}, SC.raw(tags)]],
-    ['TableCell', {}, ['TableCellContent', {label:t.to, secondary:t.role}]],
+    /* Ani, 14 Nov: the assignee carries their initials avatar too (the same AvatarCircle as patients; "Dr." is not an initial) */
+    ['TableCell', {}, ['TableCellContent', {type:'icon-text', icon:['AvatarCircle', {size:'medium', name:String(t.to).replace(/^Dr\.?\s+/, ''), decorative:true}], label:t.to, secondary:t.role}]],
     ['TableCell', {}, due],
     ['TableCell', {}, ['TableCellContent', {type:'actions'}].concat(acts)]);
 }
@@ -11477,7 +11483,7 @@ function renderTasks(){
   if(!body) body = SC.html('TableRow', {}, ['TableCell', {colSpan:6}, ['TableCellContent', {label:'Nothing in this view.'}]]);
   var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Patient'], ['TableHead', {}, 'Task'], ['TableHead', {}, 'Type'],
     ['TableHead', {}, 'Assigned to'], ['TableHead', {}, 'Due'], ['TableHead', {type:'empty', 'aria-label':'Actions'}, '']]];
-  lw.innerHTML = SC.html('Table', {'aria-label':'Tasks', framed:false}, head, ['TableBody', {}, SC.raw(body)]);
+  lw.innerHTML = SC.html('Table', {'aria-label':'Tasks'}, head, ['TableBody', {}, SC.raw(body)]);
   updateTaskFlag();
 }
 /* tabs and band toggles: one listener each (the markup is static) */
@@ -13228,7 +13234,7 @@ function rvAiHTML(it){
   var narrAbn = it.abnormalTrace || it.abnormal || (it.kind === 'screening' && !it.outcomeOk) ||
                 (it.kind === 'culture' && (it.sens||[]).some(function(x){ return x.r !== 'S'; }));
   var outN = (it.tests||[]).filter(function(t){ return t.f; }).length;
-  return '<span class="rv-aitag">'+(typeof AI_MARK !== 'undefined' ? AI_MARK : '')+'AI summary'+(typeof AI_SPARKLE_FILL !== 'undefined' ? '<span class="rv-aichip">'+AI_SPARKLE_FILL+'AI-generated</span>' : '')+'</span>'+
+  return '<span class="rv-aitag">'+(typeof AI_MARK !== 'undefined' ? AI_MARK : '')+'AI summary'+scInfoHtml('Assistive only: the source report remains authoritative.')+(typeof AI_SPARKLE_FILL !== 'undefined' ? '<span class="rv-aichip">'+AI_SPARKLE_FILL+'AI-generated</span>' : '')+'</span>'+
     '<p>'+(tier === 'critical'
       ? 'A critical value is present: '+leadTxt+'. Verify against the source report before acting.'
       : (tier === 'alert'
@@ -13236,7 +13242,7 @@ function rvAiHTML(it){
           : (narrAbn
               ? 'An abnormal finding is reported: '+((it.kind==='trace' ? traceFlag(it) : '')||it.impression||it.outcome||((it.organism||'')+', resistant to '+(it.sens||[]).filter(function(x){return x.r==='R';}).map(function(x){return x.ab;}).join(', ')))+'. Verify against the source report before acting.'
               : (outN ? 'No critical or alert values. '+outN+' outside the reference range.' : 'All values are within the reference range.'))))+
-    ' <em>Assistive only — the source report remains authoritative.</em></p>';
+    '</p>';
 
 }
 function rvResultsHTML(it){
@@ -19957,7 +19963,10 @@ function smGo(js){ if(!js) return null; if(!(js in SM.goIdx)){ SM.goIdx[js] = SM
 function smRow(o){
   var p = {label:smText(o.t)};
   if(o.s) p.secondary = smText(o.s);
-  if(o.aside) p.meta = /</.test(o.aside) ? SC.raw(o.aside) : o.aside;
+  /* Ani, 14 Nov (screenshot: "Exertional chest pressure" one letter per line): the right-hand slot doesn't shrink, so a long aside
+     ("First noted Jun 25, cause not yet established") squeezed the name to nothing. A long one goes on the line under the name instead. */
+  if(o.aside && !/</.test(o.aside) && smText(o.aside).length > 24){ p.secondary = [smText(o.aside), p.secondary].filter(Boolean).join(' · '); }
+  else if(o.aside) p.meta = /</.test(o.aside) ? SC.raw(o.aside) : o.aside;
   if(o.tag) p.trailing = o.tag;
   if(o.icon) p.icon = o.icon;
   if(o.go){ p.href = '#'; p['data-goi'] = smGo(o.go); }
@@ -20338,11 +20347,12 @@ function v2RenderKey(el, name, by){
   /* Ani, 5 Nov ("this is too much, make it simple, to the point, a sentence of summary, and show more opens a side drawer for more info"): one
      sentence, the sources it came from, and Show more for the detail in a side drawer (crDrwOpen) */
   var C = crToday(name);
-  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Clinical summary</h3><span class="v2-chip kf-ai">' + AI_SPARKLE_FILL + 'AI-generated</span></div>';
+  /* Ani, 14 Nov: where it came from is an info icon beside the title, not a line under the summary */
+  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Clinical summary</h3>' +
+    scInfoHtml('Drafted by Cedar AI from ' + crJoin(C.from) + '. Check it before you rely on it.') + '<span class="v2-chip kf-ai">' + AI_SPARKLE_FILL + 'AI-generated</span></div>';
   /* Ani, 9 Nov: make it obvious this is AI: the design system's AI colour (gradient band and chip), the sparkle, and a line that says Cedar drafted it */
   el.classList.add('cs-ai-card');
   h += '<p class="cr-sum">' + C.sum + '</p>' +
-    '<p class="cr-from">Drafted by Cedar AI from ' + crJoin(C.from) + '. Check it before you rely on it.</p>' +
     '<button type="button" class="cs-link cr-more" aria-haspopup="dialog" onclick="crDrwOpen(this)">Show more' + csIc('chevr') + '</button>';
   el.innerHTML = h; paintPd(el);
 }
@@ -24544,8 +24554,8 @@ function cv2Tip(btn){
   if(!btn){ t.hidden = true; return; }
   CV2_TIP.t = setTimeout(function(){
     if(!btn.isConnected) return;
-    var r = btn.getBoundingClientRect(), lbl = t.querySelector('span'), info = btn.classList.contains('sc-info');
-    if(lbl){ if(info) lbl.innerHTML = btn.getAttribute('data-tip') || ''; else lbl.textContent = btn.getAttribute('aria-label') || ''; }
+    var r = btn.getBoundingClientRect(), lbl = t.querySelector('span'), tt = btn.hasAttribute('data-tt'), info = btn.classList.contains('sc-info') || tt;
+    if(lbl){ if(tt) lbl.textContent = btn.getAttribute('data-tt'); else if(info) lbl.innerHTML = btn.getAttribute('data-tip') || ''; else lbl.textContent = btn.getAttribute('aria-label') || ''; }
     if(info){   /* info: under the icon, centred, kept inside the window */
       t.setAttribute('data-placement', 'bottom');
       var w = Math.min(240, t.offsetWidth || 240), x = Math.max(8 + w / 2, Math.min(window.innerWidth - 8 - w / 2, r.left + r.width / 2));
@@ -24558,8 +24568,17 @@ function cv2Tip(btn){
   }, 300);
 }
 (function(){
-  var TIPS = '#cv2-rail .cv2-rb, .sc-info';
-  var on = function(e){ var b = e.target.closest && e.target.closest(TIPS); cv2Tip(b || null); };
+  /* Ani, 14 Nov ("this tooltip is not the same as in the design system"): a control's title attribute no longer opens the browser's
+     own grey tooltip. On first hover or focus the title moves to data-tt (and names the control if it had no name), and the
+     design system's Tooltip shows it instead. */
+  var TIPS = '#cv2-rail .cv2-rb, .sc-info, [data-tt], button[title], a[title], [role="button"][title], .sv-tag[title]';
+  var adopt = function(b){
+    if(!b || !b.hasAttribute('title')) return b;
+    var t = b.getAttribute('title'); b.removeAttribute('title');
+    if(t){ b.setAttribute('data-tt', t); if(!b.getAttribute('aria-label') && !b.textContent.trim()) b.setAttribute('aria-label', t); }
+    return t ? b : null;
+  };
+  var on = function(e){ var b = e.target.closest && e.target.closest(TIPS); cv2Tip(adopt(b) || null); };
   document.addEventListener('mouseover', on); document.addEventListener('focusin', on);
   document.addEventListener('mouseout', function(e){ if(e.target.closest && e.target.closest(TIPS) && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest(TIPS))) cv2Tip(null); });
   document.addEventListener('focusout', function(e){ if(e.target.closest && e.target.closest(TIPS)) cv2Tip(null); });
