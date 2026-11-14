@@ -7669,6 +7669,14 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   /* Ani, 14 Nov ("what is going on here?"): a claim's note row (MSP name check, a question) spans the whole table, and when the table
      scrolls sideways its text ran off into the hidden part. The note stays pinned to the visible width and wraps there. */
   #screen-claims .sv-table-container:has(.t23-qrow){container-type:inline-size;}
+  #screen-claims tr.t23-open{cursor:pointer;}
+  /* a claim and its note read as one: no line between them, the note in a soft panel under the claim's patient */
+  #screen-claims .sv-table-body > .sv-table-row:has(+ .t23-qrow) > .sv-table-cell{box-shadow:none;}
+  #screen-claims .t23-qrow > td{padding-top:0;}
+  #screen-claims .t23-qrow > td > :is(.t23-flag,.t23-namechk){margin:0 0 4px 44px;padding:12px 16px;border:0;border-radius:var(--radius-sm);background:var(--color-yellow-25);
+    box-shadow:inset 0 0 0 var(--border-width-sm) var(--color-yellow-100);max-width:min(80ch, calc(100cqi - 76px));}
+  #screen-claims .t23-qrow .t23-acts{margin-top:12px;}
+  #screen-claims .t23-qrow .t23-kind{color:var(--color-ink-950);}
   #screen-claims .t23-qrow > td > *{position:sticky;left:16px;box-sizing:border-box;max-width:min(80ch, calc(100cqi - 32px));}
   /* every AI suggestion block (.cs-ai) wears the same AI colour: a soft blue-to-yellow wash */
   #pcv-c .cs-ai{background:linear-gradient(135deg, color-mix(in srgb, var(--color-brand-ai-start) 55%, var(--color-surface-card-white)), color-mix(in srgb, var(--color-brand-ai-end) 40%, var(--color-surface-card-white))) !important;}
@@ -7742,11 +7750,11 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-claims #t23-seg{margin:0 0 16px;}
 </style>
 <!-- SimpleCare design system: tokens + Lato, then the bridge that maps this page onto them (assets/design-system/). Keep these two links last in <head>. -->
-<link rel="stylesheet" href="assets/design-system/simplecare-tokens.css?v=2026-11-14d">
-<link rel="stylesheet" href="assets/design-system/portal-bridge.css?v=2026-11-14d">
-<link rel="stylesheet" href="assets/design-system/simplecare-ui.css?v=2026-11-14d">
-<script src="assets/design-system/simplecare-icons.js?v=2026-11-14d"></script>
-<script src="assets/design-system/simplecare-ui.js?v=2026-11-14d" defer></script>
+<link rel="stylesheet" href="assets/design-system/simplecare-tokens.css?v=2026-11-14e">
+<link rel="stylesheet" href="assets/design-system/portal-bridge.css?v=2026-11-14e">
+<link rel="stylesheet" href="assets/design-system/simplecare-ui.css?v=2026-11-14e">
+<script src="assets/design-system/simplecare-icons.js?v=2026-11-14e"></script>
+<script src="assets/design-system/simplecare-ui.js?v=2026-11-14e" defer></script>
 </head>
 <body>
 
@@ -9772,7 +9780,8 @@ function renderWinBar(){
   var host = document.getElementById('qwin'); if(!host) return;
   var live = shownWin();
   if(!host.firstElementChild){
-    host.innerHTML = '<sc-toggle variant="inverse" size="medium" label="Call window"></sc-toggle>';
+    /* Ani, 14 Nov ("make toggles like this"): the call windows use the same toggle as MSP | Private pay: white selected segment, not navy */
+    host.innerHTML = '<sc-toggle size="medium" label="Call window"></sc-toggle>';
     host.firstElementChild.addEventListener('change', function(e){ QWIN_PICK = e.currentTarget.value; winPick(QWIN_PICK); });
   }
   var t = host.firstElementChild;
@@ -18429,7 +18438,9 @@ function t23StatusTag(c){
   return SC.html('StatusTag', L.label !== (T23_ST[c.st] || {}).label || st === 'claim-review' ? {status:st, label:L.label} : {status:st});
 }
 function t23Btn(act, label, o){ o = o || {}; var p = {variant:o.v || 'secondary-main', size:'medium', 'data-act':act}; if(o.icon) p.startIcon = o.icon; if(o.dis){ p.disabled = true; p.title = o.dis; } return ['Button', p, label]; }
-function t23Tr(c, cells, rowCls){ return ['TableRow', {id:'t23-c-' + c.id, 'data-c':c.id, className:rowCls || ''}].concat(cells); }
+/* Ani, 14 Nov ("these rows all need to be clickable to see details"): like the Inbox, a claim's row opens its details (click, Enter or Space);
+   the row's own buttons (Submit claim, Open visit, Ask the MOA…) still do their one thing, and the separate Details button is gone */
+function t23Tr(c, cells, rowCls){ return ['TableRow', {id:'t23-c-' + c.id, 'data-c':c.id, 'data-open':'1', tabIndex:0, 'aria-label':'Claim for ' + (c.legal || c.who || '') + '. Show details', className:(rowCls || '') + ' t23-open'}].concat(cells); }
 function t23Row(c, opts){
   opts = opts || {};
   var sub = opts.pill ? t23SubLine(c) : '';
@@ -18438,12 +18449,16 @@ function t23Row(c, opts){
     ['TableCell', {}, t23FeeCell(c)],
     ['TableCell', {}, t23AmtCell(c)],
     ['TableCell', {}, ['TableCellContent', {type:'tags', wrap:true}, SC.raw((opts.pill ? t23StatusTag(c) + t23DaysChip(c) : '') + (sub ? '<span class="t23-sub">' + t23E(sub) + '</span>' : '') + (c.signed && opts.pill ? soStamp(c.signed) : ''))]],
-    ['TableCell', {}, ['TableCellContent', {type:'actions', revealOnHover:true}, t23Btn('details', 'Details')]]]);
+    ['TableCell', {}, ['TableCellContent', {type:'actions'}]]]);
 }
 /* Amount is a number column: its header right-aligns over the right-aligned figures (Ani, 14 Nov) */
 function t23Head(cols){ return ['TableHeader', {}, ['TableHeaderRow', {}].concat(cols.map(function(c){ return c ? ['TableHead', c === 'Amount' ? {type:'number'} : {}, c] : ['TableHead', {type:'empty', 'aria-label':'Actions'}, '']; }))]; }
 function t23Table(label, cols, rows){ return SC.html('Table', {'aria-label':label}, t23Head(cols), ['TableBody', {}].concat(rows)); }
 /* a question or a name check under its claim: a full-width row */
+/* a design-system Button as markup, with its handler (SC.html drops handlers, so the onclick is added to the markup) */
+function t23DsBtn(v, label, fn, icon){ var p = {variant:v, size:'medium'}; if(icon) p.startIcon = icon; return SC.html('Button', p, label).replace('<button ', '<button onclick="' + fn + '" '); }
+/* Ani, 14 Nov ("is this a separate notification? it feels like part of the table"): the note belongs to the claim above it. No line between
+   the two rows, and the note sits in a soft panel indented under the claim's patient, so it reads as that claim's question, not a new row. */
 function t23NoteRow(c, html){ return html ? ['TableRow', {className:'t23-qrow', 'data-c':c.id}, ['TableCell', {colSpan:5}, SC.raw(html)]] : null; }
 
 /* ----- Needs submission: one merged list, one "Submit claim" per claim (no batch, no checkboxes) ----- */
@@ -18457,7 +18472,7 @@ function t23NameChkHtml(c){
   return '<div class="t23-namechk">' + t23Ic(sent ? 'clock' : 'alert') + '<div><p class="t23-kind">' + (sent ? 'Sent to MSP · answer next business day' : 'Patient name not yet confirmed by MSP') + '</p>' +
     '<p class="t23-why">' + (sent ? 'Asked ' + n.at + ' whether “' + t23E(c.legal || c.who) + '” is the name MSP has on file. The claim can be sent once MSP answers.'
       : 'MSP must confirm how “' + t23E(c.legal || c.who) + '” splits into first and last name before this claim can go. SimpleCare asks every weekday morning.') + '</p>' +
-    (sent ? '' : '<div class="t23-acts"><button type="button" class="btn" onclick="t23NameCheck(\'' + c.id + '\')">' + t23Ic('arrowup') + 'Check with MSP now</button></div>') + '</div></div>';
+    (sent ? '' : '<div class="t23-acts">' + t23DsBtn('secondary-main', 'Check with MSP now', 't23NameCheck(\'' + c.id + '\')', 'upload') + '</div>') + '</div></div>';
 }
 function t23NameCheck(id){
   var c = t23C(id); if(!c || !c.nameChk || c.nameChk.st !== 'pending') return;
@@ -18474,14 +18489,15 @@ function t23SubRow(c){
     ['TableCell', {}, t23FeeCell(c)],
     ['TableCell', {}, t23AmtCell(c)],
     ['TableCell', {}, ['TableCellContent', {type:'tags', wrap:true}, SC.raw((b ? t23StatusTag(c) : '') + t23DaysChip(c))]],
-    ['TableCell', {}, ['TableCellContent', {type:'actions'}, t23Btn('submit', 'Submit claim', {v:'primary', icon:'send', dis:dis}), t23Btn('details', 'Details')]]]), t23NoteRow(c, q)].filter(Boolean);
+    ['TableCell', {}, ['TableCellContent', {type:'actions'}, t23Btn('submit', 'Submit claim', {v:'primary', icon:'send', dis:dis})]]]), t23NoteRow(c, q)].filter(Boolean);
 }
 
 /* ----- the billing agent's question on a claim (Daniel liked it; kept) ----- */
 function t23FlagHtml(c, f, i){
   if(f.k !== 'q') return '';
   var id = c.id;
-  var btn = function(label, fn, icon, dark){ return '<button type="button" class="btn ' + (dark ? 'dark' : '') + '" onclick="' + fn + '">' + (icon ? t23Ic(icon) : '') + label + '</button>'; };
+  /* design-system buttons, medium (Ani, 14 Nov): the answer is the primary, the other reply secondary */
+  var btn = function(label, fn, icon, dark){ return t23DsBtn(dark ? 'primary' : 'secondary-main', label, fn, icon === 'edit' ? 'edit' : icon); };
   var head = t23Ic('chat') + '<div><p class="t23-kind">Question from ' + t23E(f.from) + ' · ' + T23_AGENT_ROLE + '</p>';
   var body = (f.ex ? '<p class="t23-why">' + t23F(c.date) + ' visit · ' + c.fee + ' · ' + c.dx + ' MSP refused the claim: ' + t23ExCode(c) + ' · ' + t23ExMeaning(c) + '</p>' : '') +
          '<p class="t23-find">“' + t23E(f.ask) + '”</p>' +
@@ -18505,7 +18521,7 @@ function t23RejHtml(c){
   var q = c.flags.map(function(f, i){ return f.k === 'q' ? t23FlagHtml(c, f, i) : ''; }).join('');
   var acts = [];
   if(!t23OpenQ(c) && p){ acts.push(t23Btn(p[0], p[1], {v:'primary', icon:p[2]})); acts.push(t23Btn(s2[0], s2[1], {v:'secondary-main'})); }
-  acts.push(t23Btn('note', 'Open visit', {icon:'file'})); acts.push(t23Btn('details', 'Details'));
+  acts.push(t23Btn('note', 'Open visit', {icon:'file'}));
   return [t23Tr(c, [
     ['TableCell', {}, ptCell(c.who, t23F(c.date) + ' · ' + c.fee)],
     ['TableCell', {}, ['TableCellContent', {label:when + reason, wrap:true}]],
@@ -18523,7 +18539,6 @@ function t23HowLine(c){
 function t23PrivRow(c){
   var act = [];
   if(c.st === 'pri-due' && c.how === 'link') act = c.moaAsked ? [] : [t23Btn('askmoa', 'Ask the MOA to follow up', {v:'secondary-main', icon:'user-assign'})];
-  act.push(t23Btn('details', 'Details'));
   return t23Tr(c, [
     ['TableCell', {}, t23Who(c)],
     ['TableCell', {}, t23FeeCell(c)],
@@ -18577,11 +18592,16 @@ function t23TabClick(e){ var t = e.target.closest('[role=tab]'); if(t) clSet(t.i
 (function(){
   var lw = document.getElementById('cl-list'); if(!lw) return;
   lw.addEventListener('click', function(e){
-    var a = e.target.closest('[data-act]'), tr = e.target.closest('[data-c]'); if(!a || !tr) return;
+    var a = e.target.closest('[data-act]'), tr = e.target.closest('[data-c]'); if(!tr) return;
+    if(!a){ if(tr.hasAttribute('data-open') && !e.target.closest('button,a,input,select,textarea,label')) t23Open(tr.getAttribute('data-c')); return; }
     var id = tr.getAttribute('data-c'), k = a.getAttribute('data-act');
     if(k === 'details') t23Open(id); else if(k === 'submit') t23SubmitOne(id); else if(k === 'note') t23Note(id); else if(k === 'correct') t23Correct(id);
     else if(k === 'reassess') t23Reassess(id); else if(k === 'askmoa') t23AskMoa(id);
     else if(k === 'dispute') t23SetSt(id, 'dispute', 'Marked as a potential dispute'); else if(k === 'accept') t23SetSt(id, 'paid', 'Adjustment accepted');
+  });
+  lw.addEventListener('keydown', function(e){
+    var tr = e.target.closest && e.target.closest('tr[data-open]');
+    if(tr && e.target === tr && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); t23Open(tr.getAttribute('data-c')); }
   });
 })();
 function updateClaimCount(){
