@@ -7670,6 +7670,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
      scrolls sideways its text ran off into the hidden part. The note stays pinned to the visible width and wraps there. */
   #screen-claims .sv-table-container:has(.t23-qrow){container-type:inline-size;}
   #screen-claims tr.t23-open{cursor:pointer;}
+  .profile-trigger .pf-chev{display:inline-flex;width:20px;height:20px;color:var(--color-icon-tertiary-main-default);}
+  .profile-trigger .pf-chev svg{width:20px;height:20px;}
   /* Ani, 14 Nov: a navy sidebar (Light mode). Navy 900 ground, light text and icons, hover navy 800, the selected item navy 700 in white
      bold; the unread counts keep their own colours. White on navy 900 is 14:1; navy 200 labels on it 11:1. */
   :root:not([data-theme="dark"]) #sidebar.sidebar{background:var(--color-navy-900) !important;border-right:0 !important;}
@@ -7688,6 +7690,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   :root:not([data-theme="dark"]) #sidebar :is(.sidebar-collapse-btn,.dsw-fab) :is(.ic,svg,.nav-icon){color:inherit !important;}
   :root:not([data-theme="dark"]) #sidebar .sidebar-collapse-wrap{border-color:rgba(255,255,255,.14) !important;}
   :root:not([data-theme="dark"]) .build-stamp{color:rgba(255,255,255,.45) !important;}
+  /* Ani, 14 Nov ("make this white stroke blue"): the unread counts' ring matches the navy sidebar, not the old grey page */
+  :root:not([data-theme="dark"]) #sidebar .nav-flag{box-shadow:0 0 0 2px var(--color-navy-900) !important;}
   /* a claim and its note read as one: no line between them, the note in a soft panel under the claim's patient */
   #screen-claims .sv-table-body > .sv-table-row:has(+ .t23-qrow) > .sv-table-cell{box-shadow:none;}
   #screen-claims .t23-qrow > td{padding-top:0;}
@@ -7768,11 +7772,11 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-claims #t23-seg{margin:0 0 16px;}
 </style>
 <!-- SimpleCare design system: tokens + Lato, then the bridge that maps this page onto them (assets/design-system/). Keep these two links last in <head>. -->
-<link rel="stylesheet" href="assets/design-system/simplecare-tokens.css?v=2026-11-14e">
-<link rel="stylesheet" href="assets/design-system/portal-bridge.css?v=2026-11-14e">
-<link rel="stylesheet" href="assets/design-system/simplecare-ui.css?v=2026-11-14e">
-<script src="assets/design-system/simplecare-icons.js?v=2026-11-14e"></script>
-<script src="assets/design-system/simplecare-ui.js?v=2026-11-14e" defer></script>
+<link rel="stylesheet" href="assets/design-system/simplecare-tokens.css?v=2026-11-14f">
+<link rel="stylesheet" href="assets/design-system/portal-bridge.css?v=2026-11-14f">
+<link rel="stylesheet" href="assets/design-system/simplecare-ui.css?v=2026-11-14f">
+<script src="assets/design-system/simplecare-icons.js?v=2026-11-14f"></script>
+<script src="assets/design-system/simplecare-ui.js?v=2026-11-14f" defer></script>
 </head>
 <body>
 
@@ -7841,7 +7845,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
         <button class="profile-trigger" onclick="toggleProfileMenu()" aria-label="Your profile">
           <span class="pf-ph"><span class="pf-photo" id="pf-photo"><span class="pf-initials">DP</span></span>
           <span class="pf-status on" id="pf-status" title="Available"></span></span>
-          <span class="pf-chev" data-pdic="chevrondown"></span>
+          <span class="pf-chev" id="pf-chev"></span>
         </button>
         <div class="profile-dropdown" id="profile-dropdown">
           <div class="pd-head">
@@ -10303,6 +10307,14 @@ document.addEventListener('DOMContentLoaded', function(){
   var dark = document.documentElement.getAttribute('data-theme') === 'dark', surf = dark ? 'default' : 'inverse';
   var b = document.getElementById('brand-icon'); if(b) b.innerHTML = SC.html('Logo', {lockup:'mark', height:32, surface:surf});
   var l = document.querySelector('#sidebar .brand-logo'); if(l) l.innerHTML = SC.html('Logo', {lockup:'horizontal', height:52, surface:surf});
+  /* Ani, 14 Nov ("you use 2 different icons"): the profile menu's chevron is the design system's arrow-dropdown-down, as on the day picker */
+  var ch = document.getElementById('pf-chev'); if(ch && SC.icon) ch.innerHTML = SC.icon('arrow-dropdown-down', {size:20});
+  /* one chevron everywhere: the old set's chevrons (row arrows, disclosures, menus) become the design system's arrow-dropdown icons */
+  if(SC.icon && typeof ICONS !== 'undefined'){
+    var dsChev = {chevl:'arrow-dropdown-left', chevr:'arrow-dropdown-right', chevdown:'arrow-dropdown-down', chevrondown:'arrow-dropdown-down'};
+    for(var k in dsChev){ var svg = SC.icon(dsChev[k], {className:'ic'}); if(svg) ICONS[k] = svg; }
+    if(typeof paintPd === 'function') paintPd(document.body);
+  }
 });
 function qfClick(e){
   var it = e.target.closest('[data-qfv]'), fb = e.target.closest('[data-qf]');
