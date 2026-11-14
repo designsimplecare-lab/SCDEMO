@@ -4338,6 +4338,8 @@
   #screen-patientchart #pcv-c .cs-pane > #vcp-results,#screen-patientchart #pcv-c .cs-pane > .lab-orders-mount,#screen-patientchart #pcv-c .cs-pane > .care-tl-mount{
     background:var(--panel);border-radius:var(--radius-sm);box-shadow:var(--shadow-card);padding:16px 18px;}
   #screen-patientchart #pcv-c .cs-pane .vc-block{margin:0;}
+  /* cards stacked inside a pane's wrapper (Documents: Intake, then Visit note) keep the pane's 12px gap instead of touching (Ani, 14 Nov) */
+  #screen-patientchart #pcv-c .cs-pane .vc-block + .vc-block{margin-top:12px;}
   #screen-patientchart #pcv-c .cs-h4{margin:8px 0 0;font-size:17px;font-weight:700;color:var(--ink);}
   #screen-patientchart #pcv-c .cs-list{margin:0;padding:0;list-style:none;}
   #screen-patientchart #pcv-c .cs-list li{padding:10px 0;font-size:15px;line-height:22px;color:var(--ink);}
@@ -6024,8 +6026,8 @@
   #screen-patientchart #pcv-c #cs-allergy[hidden]{display:none !important;}
   /* Ani, 3 Nov: the Sign off card, clear: three labelled facts, then the buttons on the right */
   #screen-patientchart #pcv-c.cs-v2 #v2-sign-b .cs-foot{border-top:0;padding:4px;margin:0;background:none;}
-  #screen-patientchart #pcv-c.cs-v2 #t23-dxuse{min-height:32px;padding:0 14px;border:0;text-decoration:none;border-radius:var(--radius-round);background:var(--brand);color:var(--on-accent);font-weight:600;}
-  #screen-patientchart #pcv-c.cs-v2 #t23-dxuse:hover{background:var(--brand-ink);}
+  #screen-patientchart #pcv-c.cs-v2 #t23-dxuse:not(.sv-button){min-height:32px;padding:0 14px;border:0;text-decoration:none;border-radius:var(--radius-round);background:var(--brand);color:var(--on-accent);font-weight:600;}
+  #screen-patientchart #pcv-c.cs-v2 #t23-dxuse:not(.sv-button):hover{background:var(--brand-ink);}
   #screen-patientchart #pcv-c.cs-v2 #v2-sign-b .t23-billrow{display:block;padding:0;margin:0 0 16px;border:0;background:none;}
   #screen-patientchart #pcv-c.cs-v2 .t23-sum{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1.6fr);gap:12px 24px;margin:0;}
   #screen-patientchart #pcv-c.cs-v2 .t23-sum dt{font-size:13px;line-height:18px;color:var(--ink-soft);margin:0 0 2px;}
@@ -6037,6 +6039,10 @@
   #screen-patientchart #pcv-c.cs-v2 .t23-lk{border:0;background:none;padding:4px 2px;font:inherit;font-size:14px;font-weight:600;color:var(--brand);cursor:pointer;}
   #screen-patientchart #pcv-c.cs-v2 .t23-lk:hover{text-decoration:underline;}
   #screen-patientchart #pcv-c.cs-v2 #v2-sign-b .vc-finrow{display:flex;justify-content:flex-end;align-items:center;gap:12px;flex-wrap:wrap;}
+  /* Ani, 14 Nov: the billing facts, then a hairline, then the sign-off buttons on their own row */
+  #screen-patientchart #pcv-c.cs-v2 #v2-sign-b .vc-finrow{margin-top:20px;padding-top:20px;border-top:var(--border-width-sm) solid var(--color-border-table-cell-default);}
+  #screen-patientchart #pcv-c #vc-finrow > .sv-button[hidden]{display:none !important;}
+  #screen-patientchart #pcv-c.cs-v2 .t23-dx dd{row-gap:8px;}
   #screen-patientchart #pcv-c.cs-v2 #v2-sign-b #vc-finalize{flex:0 0 auto;width:auto;padding:0 24px;}
   #screen-patientchart #pcv-c.cs-v2 #v2-sign-b #t23-finlater{order:-1;}
   @media (max-width:700px){ #screen-patientchart #pcv-c.cs-v2 .t23-sum{grid-template-columns:minmax(0,1fr);} #screen-patientchart #pcv-c.cs-v2 #v2-sign-b #vc-finalize{flex:1 1 100%;} }
@@ -7165,7 +7171,7 @@ html body :is(#screen-inbox,#today-inbox-preview) .ix-find.lr-find{display:flex;
 #screen-patientchart #pcv-c.cs-v2 #v2-note-acts #cs-dict-btn.on{background:var(--brand-wash);color:var(--ink);}
 #screen-patientchart #pcv-c.cs-v2 #v2-note-acts #cs-dict-btn.on .ic,#screen-patientchart #pcv-c.cs-v2 #v2-note-acts #cs-dict-btn.on svg{color:var(--brand);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #ns-wrap #ns-note::placeholder{color:var(--ink-faint);opacity:1;}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-sign-b #t23-dxbtn{min-height:44px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-sign-b #t23-dxbtn:not(.sv-button){min-height:44px;}
 
 /* Patient summary rows (Ani, 5 Nov: compact, scannable clinical panel). One row component (smRow): primary fact, status tag, one quiet line;
    detail folds behind the row. Hairlines between rows, no cards; status is a word with an icon, colour only supports it. */
@@ -7652,6 +7658,18 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   .cs-ai-card .kf-ai{display:inline-flex;align-items:center;gap:4px;background:var(--gradient-ai) !important;color:var(--color-on-ai) !important;font-weight:700;border:0;}
   .cs-ai-card .kf-mark{color:var(--color-brand-ai-mark-start);}
   :root:not([data-theme="dark"]) #pcv-c .cs-ai-card .cr-from{color:var(--color-ink-600);}   /* AA on the AI tint */
+  /* Ani, 14 Nov ("ai background gradient should be same as everywhere"): the review's AI summary uses the chart's AI card:
+     the same tint, the gradient band along the top and the AI-generated chip, instead of its own blue-to-violet wash */
+  :is(#screen-review,#na-drw) .rv-ai{position:relative;overflow:hidden;padding-top:18px;background:color-mix(in srgb, var(--color-brand-ai-start) 22%, var(--color-surface-card-white)) !important;}
+  :is(#screen-review,#na-drw) .rv-ai::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--gradient-ai-mark);}
+  :is(#screen-review,#na-drw) .rv-aitag svg{color:var(--color-brand-ai-mark-start);}
+  :is(#screen-review,#na-drw) .rv-aichip{display:inline-flex;align-items:center;gap:4px;height:24px;margin-left:4px;padding:0 8px;border-radius:var(--radius-xs);background:var(--gradient-ai);color:var(--color-on-ai);font-size:13px;font-weight:700;line-height:16px;}
+  :is(#screen-review,#na-drw) .rv-aichip svg{width:14px;height:14px;color:currentColor;}
+  :root:not([data-theme="dark"]) :is(#screen-review,#na-drw) .rv-ai em{color:var(--color-ink-600);}   /* AA on the AI tint */
+  /* Ani, 14 Nov ("what is going on here?"): a claim's note row (MSP name check, a question) spans the whole table, and when the table
+     scrolls sideways its text ran off into the hidden part. The note stays pinned to the visible width and wraps there. */
+  #screen-claims .sv-table-container:has(.t23-qrow){container-type:inline-size;}
+  #screen-claims .t23-qrow > td > *{position:sticky;left:16px;box-sizing:border-box;max-width:min(80ch, calc(100cqi - 32px));}
   /* every AI suggestion block (.cs-ai) wears the same AI colour: a soft blue-to-yellow wash */
   #pcv-c .cs-ai{background:linear-gradient(135deg, color-mix(in srgb, var(--color-brand-ai-start) 55%, var(--color-surface-card-white)), color-mix(in srgb, var(--color-brand-ai-end) 40%, var(--color-surface-card-white))) !important;}
   :root[data-theme="dark"] #pcv-c .cs-ai{background:linear-gradient(135deg, color-mix(in srgb, var(--color-brand-ai-start) 18%, var(--color-surface-card-white)), color-mix(in srgb, var(--color-brand-ai-end) 12%, var(--color-surface-card-white))) !important;}
@@ -7724,11 +7742,11 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-claims #t23-seg{margin:0 0 16px;}
 </style>
 <!-- SimpleCare design system: tokens + Lato, then the bridge that maps this page onto them (assets/design-system/). Keep these two links last in <head>. -->
-<link rel="stylesheet" href="assets/design-system/simplecare-tokens.css?v=2026-11-14b">
-<link rel="stylesheet" href="assets/design-system/portal-bridge.css?v=2026-11-14b">
-<link rel="stylesheet" href="assets/design-system/simplecare-ui.css?v=2026-11-14b">
-<script src="assets/design-system/simplecare-icons.js?v=2026-11-14b"></script>
-<script src="assets/design-system/simplecare-ui.js?v=2026-11-14b" defer></script>
+<link rel="stylesheet" href="assets/design-system/simplecare-tokens.css?v=2026-11-14d">
+<link rel="stylesheet" href="assets/design-system/portal-bridge.css?v=2026-11-14d">
+<link rel="stylesheet" href="assets/design-system/simplecare-ui.css?v=2026-11-14d">
+<script src="assets/design-system/simplecare-icons.js?v=2026-11-14d"></script>
+<script src="assets/design-system/simplecare-ui.js?v=2026-11-14d" defer></script>
 </head>
 <body>
 
@@ -12960,7 +12978,7 @@ function rvAiHTML(it){
   var narrAbn = it.abnormalTrace || it.abnormal || (it.kind === 'screening' && !it.outcomeOk) ||
                 (it.kind === 'culture' && (it.sens||[]).some(function(x){ return x.r !== 'S'; }));
   var outN = (it.tests||[]).filter(function(t){ return t.f; }).length;
-  return '<span class="rv-aitag">'+(typeof AI_MARK !== 'undefined' ? AI_MARK : '')+'AI summary</span>'+
+  return '<span class="rv-aitag">'+(typeof AI_MARK !== 'undefined' ? AI_MARK : '')+'AI summary'+(typeof AI_SPARKLE_FILL !== 'undefined' ? '<span class="rv-aichip">'+AI_SPARKLE_FILL+'AI-generated</span>' : '')+'</span>'+
     '<p>'+(tier === 'critical'
       ? 'A critical value is present: '+leadTxt+'. Verify against the source report before acting.'
       : (tier === 'alert'
@@ -17427,7 +17445,7 @@ function ndTools(){
   if(host && acts && acts.parentNode !== host) host.appendChild(acts);
   /* Ani, 13 Nov: Copy puts the whole note on the clipboard as plain text, headings included, to paste into another system */
   if(acts && !document.getElementById('nd-copy') && window.SC && SC.html){
-    var w = document.createElement('span'); w.innerHTML = SC.html('Button', {variant:'secondary-main', size:'medium', startIcon:'copy', id:'nd-copy', 'aria-label':'Copy the note'}, 'Copy');
+    var w = document.createElement('span'); w.innerHTML = SC.html('Button', {variant:'tertiary-main', size:'medium', startIcon:'copy', id:'nd-copy', 'aria-label':'Copy the note'}, 'Copy');
     var b = w.firstElementChild; b.addEventListener('click', ndCopy); acts.insertBefore(b, acts.firstChild);
   }
 }
@@ -19182,10 +19200,16 @@ function t23RenderBillRow(){
     var cb = t23CounselBlock(v), cm = t23CallMins(v);
     if(cb){ btn = 'Add time'; focus = 'time'; }
     var dxv = v.dx ? v.dx + ' · ' + t23DxName(v.dx)
-      : dxs ? '<span id="t23-dxsug" title="Suggested from the booking reason">' + dxs + ' · ' + t23E(t23DxName(dxs)) + '</span> <span class="t23-sug">Suggested</span>'
+      : dxs ? '<span id="t23-dxsug" title="Suggested from the booking reason">' + dxs + ' · ' + t23E(t23DxName(dxs)) + '</span> ' + (typeof cv2On === 'function' && cv2On() ? SC.html('Tag', {color:'information', startIcon:'ai'}, 'Suggested') : '<span class="t23-sug">Suggested</span>')
       : '<span class="t23-miss">Not set</span>';
-    var dxa = (dxs ? '<button type="button" class="btn xs dark" id="t23-dxuse" onclick="nsDxUse(\'' + dxs + '\')" aria-describedby="t23-dxsug">Use</button>' : '') +
-      '<button type="button" class="t23-lk" id="t23-dxbtn" onclick="t23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})">' + btn + '</button>';
+    /* Ani, 14 Nov ("so much going on here"): in Version 2 the diagnosis actions are design-system buttons, Use secondary and Change tertiary,
+       so Sign and submit stays the one navy button in the section */
+    var dsB = function(v, id, on, label, more){ return SC.html('Button', Object.assign({variant:v, size:'medium', id:id}, more || {}), label).replace('<button ', '<button onclick="' + on + '" '); };
+    var dxa = (typeof cv2On === 'function' && cv2On())
+      ? (dxs ? dsB('secondary-main', 't23-dxuse', 'nsDxUse(\'' + dxs + '\')', 'Use this code', {startIcon:'check', 'aria-describedby':'t23-dxsug'}) : '') +
+        dsB('tertiary-main', 't23-dxbtn', 't23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})', btn)
+      : (dxs ? '<button type="button" class="btn xs dark" id="t23-dxuse" onclick="nsDxUse(\'' + dxs + '\')" aria-describedby="t23-dxsug">Use</button>' : '') +
+        '<button type="button" class="t23-lk" id="t23-dxbtn" onclick="t23OpenPick({visit:PC_CURRENT,focus:\'' + focus + '\'})">' + btn + '</button>';
     h = '<dl class="t23-sum">' +
       '<div><dt>Fee code</dt><dd>' + t23FeeTxt(v.fee) + '</dd></div>' +
       '<div><dt>Time</dt><dd>' + t23SpanTxt(v) + (cb ? '<span class="t23-berr">' + t23Ic('alert') + cb + '</span>' : '') + '</dd></div>' +
@@ -24225,6 +24249,37 @@ function cv2Rail(){
   var h = rows.map(function(x){ return '<button type="button" class="cv2-rb" data-k="' + x[0] + '" aria-label="' + csEsc(x[1]) + '" onclick="cv2RailGo(\'' + x[0] + '\')">' + csIc(x[2]) + (x[3] ? '<span class="cv2-rdot" aria-hidden="true"></span>' : '') + '</button>'; }).join('');
   if(rail.getAttribute('data-h') !== h){ rail.innerHTML = h; rail.setAttribute('data-h', h); paintPd(rail); }
 }
+/* Ani, 14 Nov ("on hover show what is this"): each rail icon names its section in the design system's Tooltip, to its right.
+   The side panel clips overflow, so one tooltip lives on <body> (position fixed) and moves to the icon under the pointer or focus. */
+var CV2_TIP = {t:0};
+function cv2Tip(btn){
+  var t = document.getElementById('cv2-tip');
+  if(!t){
+    var d = document.createElement('div');
+    d.innerHTML = SC.html('Tooltip', {content:'', placement:'right', open:true, id:'cv2-tip'}, ['Button', {}, '']);
+    t = d.querySelector('.sv-tooltip'); if(!t) return;
+    t.setAttribute('aria-hidden', 'true');   /* the button's aria-label already names it */
+    t.style.position = 'fixed'; t.style.right = 'auto'; t.style.bottom = 'auto'; t.hidden = true;
+    document.body.appendChild(t);
+  }
+  clearTimeout(CV2_TIP.t);
+  if(!btn){ t.hidden = true; return; }
+  CV2_TIP.t = setTimeout(function(){
+    if(!btn.isConnected) return;
+    var r = btn.getBoundingClientRect(), lbl = t.querySelector('span');
+    if(lbl) lbl.textContent = btn.getAttribute('aria-label') || '';
+    t.style.left = Math.round(r.right + 8) + 'px'; t.style.top = Math.round(r.top + r.height / 2) + 'px'; t.style.translate = '0 -50%';
+    t.hidden = false;
+  }, 300);
+}
+(function(){
+  var on = function(e){ var b = e.target.closest && e.target.closest('#cv2-rail .cv2-rb'); cv2Tip(b || null); };
+  document.addEventListener('mouseover', on); document.addEventListener('focusin', on);
+  document.addEventListener('mouseout', function(e){ if(e.target.closest && e.target.closest('#cv2-rail .cv2-rb') && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('#cv2-rail .cv2-rb'))) cv2Tip(null); });
+  document.addEventListener('focusout', function(e){ if(e.target.closest && e.target.closest('#cv2-rail .cv2-rb')) cv2Tip(null); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') cv2Tip(null); });
+  document.addEventListener('click', function(e){ if(e.target.closest && e.target.closest('#cv2-rail .cv2-rb')) cv2Tip(null); }, true);
+})();
 function cv2RailGo(k){
   cv2Ctx(true);
   if(k !== 'intake') v2Sec(k, true);
@@ -24345,6 +24400,8 @@ function cv2FinSync(){
   var mk = function(id, ic, txt, fn){ var e = v2El(id); if(!e){ e = document.createElement('button'); e.type = 'button'; e.id = id; e.className = 'btn';
       e.innerHTML = '<span class="ic" data-pdic="' + ic + '"></span>' + txt; e.onclick = fn; row.insertBefore(e, b); paintPd(e); } return e; };
   var claim = mk('cv2-claim', 'arrowup', 'Submit claim', cv2Claim), done = mk('cv2-done', 'usercheck', 'Sign and complete', function(){ cv2SignThen('complete'); }), add = mk('cv2-addm', 'plus', 'Add addendum', cv2AddOpen);
+  /* Ani, 14 Nov: the footer's buttons in the design system's look: Submit claim and Sign and complete secondary, Sign and submit the one primary */
+  if(on){ cv2DsBtn(claim, 'secondary-main', 'upload'); cv2DsBtn(done, 'secondary-main', 'user-assign'); cv2DsBtn(add, 'secondary-main', 'add'); cv2DsBtn(b, 'primary', 'check'); }
   claim.hidden = !cv2CanClaim(r);
   /* Daniel, 13 Nov video: Submit claim on its own; Sign and complete (sign, close the visit, no claim yet); Sign and submit (both, the main one).
      Once the note is signed the middle one only closes the visit. When there is no claim to send the main button already reads Sign and complete. */
@@ -24356,6 +24413,15 @@ function cv2FinSync(){
   if(b.getAttribute('data-t0') === null) b.setAttribute('data-t0', b.title || '');
   b.title = on ? '' : b.getAttribute('data-t0');
   cv2AddRender();
+}
+/* dress an existing footer button (it keeps its id, handler and label nodes) in the design system's Button classes, 44px, with its icon */
+function cv2DsBtn(el, v, ic){
+  if(!el || el.getAttribute('data-ds') === v) return;
+  var d = document.createElement('div'); d.innerHTML = SC.html('Button', {variant:v, size:'large'}, 'x');
+  var ref = d.firstElementChild; if(!ref) return;
+  el.className = ref.className; el.setAttribute('data-variant', v); el.setAttribute('data-ds', v);
+  var old = el.querySelector('.ic, svg'), t = document.createElement('span'); t.innerHTML = SC.icon(ic, {size:24});
+  var n = t.firstElementChild; if(n){ n.setAttribute('aria-hidden', 'true'); if(old) old.replaceWith(n); else el.insertBefore(n, el.firstChild); }
 }
 function cv2Claim(){
   var r = csRow(); if(!r || r.claimId) return;
