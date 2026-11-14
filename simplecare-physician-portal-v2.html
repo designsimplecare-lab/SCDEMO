@@ -7670,6 +7670,25 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
      scrolls sideways its text ran off into the hidden part. The note stays pinned to the visible width and wraps there. */
   #screen-claims .sv-table-container:has(.t23-qrow){container-type:inline-size;}
   #screen-claims tr.t23-open{cursor:pointer;}
+  /* Cedar scribe header (Ani, 14 Nov): the AI mark, the name, an AI scribe chip, then what it is doing now */
+  #pcv-c .sc-hd{align-items:center;gap:8px;}
+  #pcv-c .sc-mark{display:inline-flex;width:20px;height:20px;flex-shrink:0;color:var(--color-brand-ai-mark-start);}
+  #pcv-c .sc-mark svg{width:20px;height:20px;}
+  #pcv-c .sc-aichip{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:var(--radius-xs);background:var(--gradient-ai);color:var(--color-on-ai);font-size:13px;font-weight:700;line-height:16px;white-space:nowrap;}
+  #pcv-c .sc-aichip svg{width:14px;height:14px;color:currentColor;}
+  #pcv-c .sc-sub:has(.sc-live){margin:0 0 0 4px;}
+  #pcv-c .sc-live{display:inline-flex;align-items:center;gap:8px;height:28px;padding:0 10px;border-radius:var(--radius-round);background:var(--color-red-50, #fdecee);color:var(--color-text-error-primary-default);font-size:14px;font-weight:600;line-height:20px;white-space:nowrap;}
+  #pcv-c .sc-rec{width:8px;height:8px;border-radius:50%;background:currentColor;animation:scpulse 1.6s ease-in-out infinite;}
+  #pcv-c .sc-wave{display:inline-flex;align-items:center;gap:2px;height:14px;}
+  #pcv-c .sc-wave i{display:block;width:3px;height:14px;border-radius:2px;background:currentColor;transform-origin:center;animation:scwave 1s ease-in-out infinite;}
+  #pcv-c .sc-wave i:nth-child(2){animation-delay:-.75s;} #pcv-c .sc-wave i:nth-child(3){animation-delay:-.5s;} #pcv-c .sc-wave i:nth-child(4){animation-delay:-.25s;}
+  @keyframes scwave{0%,100%{transform:scaleY(.3);}50%{transform:scaleY(1);}}
+  #pcv-c .sc-txsaved{margin:8px 0 0;font-size:14px;line-height:20px;color:var(--color-ink-600);}
+  #pcv-c #cs-doc-tx .vc-h{display:flex;align-items:center;gap:8px;}
+  #pcv-c #cs-doc-tx .sc-txmeta{margin:8px 0 0;font-size:14px;line-height:20px;color:var(--color-ink-600);}
+  #pcv-c #cs-doc-tx .sc-txd{margin-top:8px;}
+  #pcv-c #cs-doc-tx .sc-txd summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--color-text-link-default);}
+  @media (prefers-reduced-motion: reduce){ #pcv-c .sc-wave i,#pcv-c .sc-rec{animation:none;} #pcv-c .sc-wave i{transform:scaleY(.6);} }
   .profile-trigger .pf-chev{display:inline-flex;width:20px;height:20px;color:var(--color-icon-tertiary-main-default);}
   .profile-trigger .pf-chev svg{width:20px;height:20px;}
   /* Ani, 14 Nov: a navy sidebar (Light mode). Navy 900 ground, light text and icons, hover navy 800, the selected item navy 700 in white
@@ -8429,8 +8448,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
             <div id="cs-ai"></div>
             <div class="sc-block" id="sc-block" hidden>
               <div class="sc-hd">
-                <span class="sc-dot"></span>
-                <h4>Cedar</h4>
+                <span class="sc-mark" id="sc-mark" aria-hidden="true"></span>
+                <h4>Cedar</h4><span class="sc-aichip" id="sc-aichip">AI scribe</span>
                 <p class="sc-sub" id="sc-sub">Drafts the note and proposes orders while you talk. It files nothing on its own.</p>
                 <span class="right" id="sc-actions"></span>
               </div>
@@ -11546,8 +11565,20 @@ function scSkip(){
   while(scIdx < SC_TURNS.length){ scIdx++; scStep(); }
   scStop();
 }
+/* Ani, 14 Nov ("when the call ends, where can the user get the transcript later?"): the call's transcript is filed on the chart,
+   Documents, as "Call transcript · today", for the patient the call was with */
+var SC_TX = {who:null};
+function scTxFile(){ if(scIdx > 0 && PC_CURRENT) SC_TX = {who:PC_CURRENT, n:scIdx, len:SC_TURNS[Math.min(scIdx, SC_TURNS.length) - 1].t}; }
+function scTxDoc(name){
+  if(SC_TX.who !== name || !SC_TX.n) return '';
+  var rows = SC_TURNS.slice(0, SC_TX.n).map(function(t){ return '<div class="sc-turn ' + t.w + '"><span class="w">' + (t.w === 'dr' ? 'DR' : 'PT') + '</span><span class="x">' + t.x + '</span></div>'; }).join('');
+  return '<div class="vc-block cs-doc" id="cs-doc-tx"><div class="vc-h"><span class="sc-mark" aria-hidden="true">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span><h4>Call transcript &middot; today</h4></div>' +
+    '<p class="sc-txmeta">Recorded by Cedar during the call &middot; ' + SC_TX.len + ' &middot; ' + SC_TX.n + ' lines. Kept with the chart; nothing in it is filed on its own.</p>' +
+    '<details class="sc-txd"><summary>Show the transcript</summary><div class="sc-tx">' + rows + '</div></details></div>';
+}
 function scStop(){
   clearInterval(scTimer); scAudioStop(); scTimer = null;
+  scTxFile();
   scState = 'review'; renderScribe();
   toast('Recording stopped. ' + scPending() + ' proposals waiting on you.');
 }
@@ -11624,7 +11655,7 @@ function renderScribe(){
     : '<button class="btn xs sc-again" onclick="scReset()">Start over</button>';
 
   /* Ani, 3 Nov: no explaining text. Live: the timer says it; review: just the count */
-  sub.innerHTML = scState==='live' ? 'Listening' : (scPending() ? '<b>'+scPending()+'</b> to review' : '');
+  sub.innerHTML = scState==='live' ? scLiveHtml() : (scPending() ? '<b>'+scPending()+'</b> to review' : '');
 
   var turns = SC_TURNS.slice(0, scIdx).map(function(t,i){
     var isTrigger = SC_PROPOSALS.some(function(p){ return p.after === i+1; });
@@ -11656,7 +11687,8 @@ function renderScribe(){
 
   /* the transcript is there when wanted, folded once the call is over */
   var tx = scState==='live' ? '<div class="sc-tx" id="sc-tx">'+turns+'</div>'
-    : (turns ? '<details class="sc-txd"><summary>Transcript</summary><div class="sc-tx" id="sc-tx">'+turns+'</div></details>' : '');
+    : (turns ? '<details class="sc-txd"><summary>Transcript</summary><div class="sc-tx" id="sc-tx">'+turns+'</div></details>' +
+        '<p class="sc-txsaved">Saved to the chart, under Documents</p>' : '');
   body.innerHTML = tx + props +
     (chartCritical(PC_CURRENT) ? '<p class="sc-rule sc-held"><b>Waiting on the critical result:</b> assessment, plan, coding and follow-up.</p>' : '');
 
@@ -17592,6 +17624,8 @@ scStep = function(){
   csRenderAI(); if(typeof v2SyncHead === 'function') v2SyncHead();
 };
 var csRenderScribe0 = renderScribe;
+/* live: a red "Listening" pill with a moving sound wave, so it is plain that Cedar is hearing the call right now */
+function scLiveHtml(){ return '<span class="sc-live" role="status"><span class="sc-rec" aria-hidden="true"></span>Listening to the call<span class="sc-wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span></span>'; }
 renderScribe = function(){
   csRenderScribe0();
   /* Ani, 5 Oct: off = a small "Scribe" toggle in the note header; the scribe panel shows only once it is in use */
@@ -17601,7 +17635,10 @@ renderScribe = function(){
   /* Dictate: not on a signed note or a no-show (no note to write) */
   var db = document.getElementById('cs-dict-btn'); if(db){ db.hidden = !!(rr && rr.signed) || !!(PC_CURRENT && csNoShow(PC_CURRENT)); if(db.hidden && typeof DICT !== 'undefined' && DICT.on) dictStop(); }
   var sub = document.getElementById('sc-sub');
-  if(sub && scState === 'live') sub.textContent = 'Listening';
+  if(sub && scState === 'live') sub.innerHTML = scLiveHtml();
+  /* Ani, 14 Nov ("add the AI icon here, present better what is happening"): Cedar's mark and an AI scribe chip name what this is */
+  var mk = document.getElementById('sc-mark'); if(mk && !mk.innerHTML && typeof CEDAR_MARK !== 'undefined') mk.innerHTML = CEDAR_MARK;
+  var ch = document.getElementById('sc-aichip'); if(ch && !ch.getAttribute('data-p') && typeof AI_SPARKLE_FILL !== 'undefined'){ ch.innerHTML = AI_SPARKLE_FILL + 'AI scribe'; ch.setAttribute('data-p', '1'); }
   csRenderAI();
 };
 
@@ -17768,6 +17805,7 @@ function csRenderDocs(name){
   /* T-026: prescriptions signed on this visit, named by what they are, then date, then transmission status */
   if(typeof rxDocsHtml === 'function') h += rxDocsHtml(name);
   if(typeof sdDocsHtml === 'function') h += sdDocsHtml(name);   /* 26 Oct: orders and referrals signed from their drawers */
+  h += scTxDoc(name);
   if(L) h += '<div class="vc-block cs-doc" id="cs-doc-last"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>Visit note &middot; ' + csShort(L.date) + '</h4></div>' +
     '<p class="slv-ro"><span class="ic" data-pdic="complete"></span>Signed</p><dl class="cs-kv">' +
     ['S','O','A','P'].map(function(k){ return '<dt>' + {S:'Subjective',O:'Objective',A:'Assessment',P:'Plan'}[k] + '</dt><dd>' + L.note[k] + '</dd>'; }).join('') + '</dl></div>';
