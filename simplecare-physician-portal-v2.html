@@ -1153,7 +1153,7 @@
   /* logo: no chip, solid black wordmark */
   .brand-logo{background:none;box-shadow:none;padding:0;border-radius:0;}
   .brand-logo svg{width:96px;}
-  .brand-logo svg path{fill:#17181C;}
+  .brand-logo svg:not(.sv-logo) path{fill:#17181C;}
 
   /* nav: more prominent icons + copy (darker, larger) */
   .nav-btn{color:var(--ink);font-size:15.5px;font-weight:500;}
@@ -2344,7 +2344,7 @@
   .pf-status.off{background:var(--ink-faint);}
 
   /* the wordmark is the brand navy, both expanded and collapsed */
-  .brand-logo svg path{fill:#162660;}
+  .brand-logo svg:not(.sv-logo) path{fill:#162660;}
   .ai-launcher{box-shadow:0 12px 30px rgba(22,38,96,.34);}
 
   /* MSP status is its own column now — same shape rule as billing: a
@@ -2570,7 +2570,7 @@
   :root[data-theme="dark"] .nav-btn.active .nav-icon,
   :root[data-theme="dark"] .sidebar.collapsed .nav-btn.active .nav-icon{color:#000;}
   
-  :root[data-theme="dark"] .brand-logo svg path{fill:#FFFFFF;}
+  :root[data-theme="dark"] .brand-logo svg:not(.sv-logo) path{fill:#FFFFFF;}
   /* row surfaces are hardcoded light greys in the base sheet */
   
   
@@ -7670,6 +7670,24 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
      scrolls sideways its text ran off into the hidden part. The note stays pinned to the visible width and wraps there. */
   #screen-claims .sv-table-container:has(.t23-qrow){container-type:inline-size;}
   #screen-claims tr.t23-open{cursor:pointer;}
+  /* Ani, 14 Nov: a navy sidebar (Light mode). Navy 900 ground, light text and icons, hover navy 800, the selected item navy 700 in white
+     bold; the unread counts keep their own colours. White on navy 900 is 14:1; navy 200 labels on it 11:1. */
+  :root:not([data-theme="dark"]) #sidebar.sidebar{background:var(--color-navy-900) !important;border-right:0 !important;}
+  :root:not([data-theme="dark"]) #sidebar .nav-btn{color:var(--color-navy-200) !important;background:transparent !important;border-color:transparent !important;box-shadow:none !important;}
+  :root:not([data-theme="dark"]) #sidebar .nav-btn .nav-label{color:inherit !important;}
+  :root:not([data-theme="dark"]) #sidebar .nav-btn :is(.nav-icon,.ic,svg){color:inherit !important;}
+  :root:not([data-theme="dark"]) #sidebar .nav-btn:hover{background:var(--color-navy-800) !important;color:var(--color-navy-50) !important;}
+  /* Ani, 14 Nov ("selected one make blue as care word is"): the selected item is filled in the logo's "care" blue
+     (surface/logo/teal-inverse, navy 200), with navy text and icon (12:1) */
+  :root:not([data-theme="dark"]) #sidebar .nav-btn.active{background:var(--color-surface-logo-teal-inverse) !important;color:var(--color-navy-900) !important;box-shadow:none !important;}
+  :root:not([data-theme="dark"]) #sidebar .nav-btn.active:hover{background:var(--color-navy-100) !important;}
+  :root:not([data-theme="dark"]) #sidebar .nav-btn:focus-visible{outline:2px solid #fff !important;outline-offset:2px;}
+  :root:not([data-theme="dark"]) #sidebar .nav-sep{background:rgba(255,255,255,.14) !important;border-color:rgba(255,255,255,.14) !important;}
+  :root:not([data-theme="dark"]) #sidebar :is(.sidebar-collapse-btn,.dsw-fab){color:var(--color-navy-200) !important;background:transparent !important;border-color:rgba(255,255,255,.14) !important;}
+  :root:not([data-theme="dark"]) #sidebar :is(.sidebar-collapse-btn,.dsw-fab):hover{background:var(--color-navy-800) !important;color:#fff !important;}
+  :root:not([data-theme="dark"]) #sidebar :is(.sidebar-collapse-btn,.dsw-fab) :is(.ic,svg,.nav-icon){color:inherit !important;}
+  :root:not([data-theme="dark"]) #sidebar .sidebar-collapse-wrap{border-color:rgba(255,255,255,.14) !important;}
+  :root:not([data-theme="dark"]) .build-stamp{color:rgba(255,255,255,.45) !important;}
   /* a claim and its note read as one: no line between them, the note in a soft panel under the claim's patient */
   #screen-claims .sv-table-body > .sv-table-row:has(+ .t23-qrow) > .sv-table-cell{box-shadow:none;}
   #screen-claims .t23-qrow > td{padding-top:0;}
@@ -10278,7 +10296,14 @@ document.addEventListener('DOMContentLoaded', function(){
   if(a && window.SC && SC.html) a.innerHTML = SC.html('Avatar', {name:'Dolly', src:'assets/moa-dolly.jpg', badge:'online', size:'large', subtitles:['Your MOA']});
   if(typeof updateChatBadge === 'function') updateChatBadge();
 });
-document.addEventListener('DOMContentLoaded', function(){ var b = document.getElementById('brand-icon'); if(b && window.SC && SC.html) b.innerHTML = SC.html('Logo', {lockup:'mark', height:32}); });
+/* Ani, 14 Nov ("make side bar menu background blue", navy): on the navy sidebar the logo is the design system's inverse Logo
+   (light ink), both the full lockup and the collapsed mark. Dark mode keeps the default Logo (the sidebar stays dark there anyway). */
+document.addEventListener('DOMContentLoaded', function(){
+  if(!(window.SC && SC.html)) return;
+  var dark = document.documentElement.getAttribute('data-theme') === 'dark', surf = dark ? 'default' : 'inverse';
+  var b = document.getElementById('brand-icon'); if(b) b.innerHTML = SC.html('Logo', {lockup:'mark', height:32, surface:surf});
+  var l = document.querySelector('#sidebar .brand-logo'); if(l) l.innerHTML = SC.html('Logo', {lockup:'horizontal', height:52, surface:surf});
+});
 function qfClick(e){
   var it = e.target.closest('[data-qfv]'), fb = e.target.closest('[data-qf]');
   if(e.target.closest('[data-qfclear]')){ QF_OPEN = null; qfClear(); return; }
