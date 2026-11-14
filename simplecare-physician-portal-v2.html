@@ -11805,6 +11805,12 @@ function lrFlag(f, v){
   var w = num ? (up ? 'high' : 'low') : 'abnormal';
   return {out:true, crit:crit, up:up, word:crit ? 'Critical ' + w : w.charAt(0).toUpperCase() + w.slice(1)};
 }
+/* Ani, 14 Nov: High and Low share the warning colour (colour says how serious, not which way); an up or down arrow says the direction.
+   Critical keeps its red tag and alert icon; a non-numeric "Abnormal" has no direction, so no arrow. */
+function lrFlagTag(fl){
+  var num = /high|low/i.test(fl.word);
+  return SC.html('Tag', {color:fl.crit ? 'error' : 'warning', startIcon:fl.crit ? 'warning' : num ? (fl.up ? 'arrow-direction-up' : 'arrow-direction-down') : undefined}, fl.word);
+}
 function lrWord(f, v){
   var fl = lrFlag(f, v); if(!fl.out) return '';
   return '<span class="lr-w">' + (fl.crit ? '<span class="ic lr-ci" data-pdic="crit"></span>' : '') + fl.word + '</span>';
@@ -11833,7 +11839,7 @@ function lrPrevList(pr){
 function lrResultCell(r){
   var fl = lrFlag(r.f, r.v);
   var val = '<b class="lr-v' + (fl.crit ? ' crit' : '') + '">' + r.v + '</b>' + (r.u ? ' <span class="lr-u">' + r.u + '</span>' : '');
-  var tag = fl.out ? SC.html('Tag', {color:fl.crit ? 'error' : 'warning', startIcon:fl.crit ? 'warning' : undefined}, fl.word) : '';
+  var tag = fl.out ? lrFlagTag(fl) : '';
   return ['TableCellContent', {type:'tags'}, SC.raw('<span class="lr-res">' + val + '</span>' + tag)];
 }
 function lrPrevCell(pv){
@@ -11845,7 +11851,7 @@ function lrItem(t, pr){
   var r = {n:t.n, v:t.v, u:t.u, f:t.f}, fl = lrFlag(t.f, t.v), p = pr && pr[0];
   var detail = [t.ref ? 'Reference ' + t.ref : '', p ? 'Previous ' + p.v + (p.d ? ' on ' + p.d : '') : 'No previous result'].filter(Boolean).join(' · ');
   return '<div class="lr-it"><div class="lr-it1"><span class="lr-itn">' + t.n + '</span><span class="lr-res"><b class="lr-v' + (fl.crit ? ' crit' : '') + '">' + t.v + '</b>' +
-    (t.u ? ' <span class="lr-u">' + t.u + '</span>' : '') + '</span>' + (fl.out ? SC.html('Tag', {color:fl.crit ? 'error' : 'warning', startIcon:fl.crit ? 'warning' : undefined}, fl.word) : '') + '</div>' +
+    (t.u ? ' <span class="lr-u">' + t.u + '</span>' : '') + '</span>' + (fl.out ? lrFlagTag(fl) : '') + '</div>' +
     '<div class="lr-it2">' + detail + '</div></div>';
 }
 /* result table actions (Chart > Results): PDF opens the report, Not cleared opens the result for review */
