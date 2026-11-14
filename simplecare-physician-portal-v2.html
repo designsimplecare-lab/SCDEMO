@@ -17347,10 +17347,8 @@ function ndInit(){
 function ndTabs(){
   var row = document.querySelector('#v2p-note .v2-notecard > .v2-ch'); if(!row || document.getElementById('nd-tabs')) return;
   var t = document.createElement('div'); t.className = 'nd-tabs'; t.id = 'nd-tabs'; t.setAttribute('role', 'group'); t.setAttribute('aria-label', 'Documents for this visit');
-  t.innerHTML = '<span class="nd-tab on" aria-current="page"><span class="ic" data-pdic="edit"></span>SOAP note</span>' +
-    '<button type="button" class="nd-tab" aria-haspopup="dialog" onclick="docOpen(\'work\')"><span class="ic" data-pdic="file"></span>Work or school note</button>' +
-    '<button type="button" class="nd-tab" aria-haspopup="dialog" onclick="docOpen(\'patient\')"><span class="ic" data-pdic="file"></span>Patient letter</button>' +
-    '<button type="button" class="nd-tab add" aria-haspopup="dialog" onclick="docOpen()"><span class="ic" data-pdic="plus"></span>Document</button>';
+  /* Daniel, 13 Nov video: "this is purely the note" -- work notes, letters and documents are all under Action, Document; they leave the note */
+  t.innerHTML = '<span class="nd-tab on" aria-current="page"><span class="ic" data-pdic="edit"></span>SOAP note</span>';
   row.insertBefore(t, row.firstChild);
   paintPd(t);
 }
@@ -19067,7 +19065,7 @@ function t23BillCell(r){
   var k = t23RowKey(r), b = BILL_STATUS[k];
   r.bill = k;
   if(k === 'msp-none') return '<span class="t23-none"><span class="sr-only">No claim yet. The visit isn’t finished.</span></span>';   /* Ani, 9 Nov: no dash; an empty cell says "nothing yet" */
-  if(k === 'noshow') return '<span class="t23-ns">No-show</span>';
+  if(k === 'noshow') return '<span class="t23-none"><span class="sr-only">No claim. The patient was a no-show.</span></span>';   /* Daniel, 13 Nov video: no-show is a visit status; the billing column doesn't repeat it */
   /* Daniel, 13 Nov video: "the billing status, that's just a portal into the claims" -- every chip with a claim
      goes straight to that claim in Claims (before, Payment paid fell through to the row and opened the chart) */
   var c0 = t23RowClaim(r), act = c0 ? 'bill' : '';
@@ -19187,7 +19185,9 @@ function t23SyncFin(){
   lbl.textContent = msp ? 'Sign off & submit claim' : 'Sign off & finalize visit';
   later.hidden = !r || !msp || !!r.signed || b.hidden;
   /* Ani, 5 Nov: sign-off button definitions: Version 2 says "Sign and finalize", and Submit claim is its own button, so no Submit later */
-  if(typeof cv2On === 'function' && cv2On()){ lbl.textContent = 'Sign and finalize'; later.hidden = true; }
+  /* Daniel, 13 Nov video: "it should be sign and submit": signing off and submitting the claim at once is what completes the encounter.
+     With no claim to send (private pay, a no-show, a claim already made) the same button reads Sign and complete. */
+  if(typeof cv2On === 'function' && cv2On()){ lbl.textContent = cv2CanClaim(r) ? 'Sign and submit' : 'Sign and complete'; later.hidden = true; }
   if(typeof cv2FinSync === 'function') cv2FinSync();
   if(b.getAttribute('aria-disabled') === 'true') later.setAttribute('aria-disabled', 'true'); else later.removeAttribute('aria-disabled');
 }
@@ -24322,10 +24322,13 @@ function cv2FinSync(){
   var on = cv2On(), r = on && PC_CURRENT ? csRow() : null;
   var mk = function(id, ic, txt, fn){ var e = v2El(id); if(!e){ e = document.createElement('button'); e.type = 'button'; e.id = id; e.className = 'btn';
       e.innerHTML = '<span class="ic" data-pdic="' + ic + '"></span>' + txt; e.onclick = fn; row.insertBefore(e, b); paintPd(e); } return e; };
-  var claim = mk('cv2-claim', 'arrowup', 'Submit claim', cv2Claim), done = mk('cv2-done', 'usercheck', 'Complete encounter', cv2Complete), add = mk('cv2-addm', 'plus', 'Add addendum', cv2AddOpen);
-  var ns = !!(r && csNoShow(PC_CURRENT));
-  claim.hidden = !r || !!r.claimId || ns || t23VisitCode(r.name).disp === 'private';
-  done.hidden = !r || r.status === 'done';
+  var claim = mk('cv2-claim', 'arrowup', 'Submit claim', cv2Claim), done = mk('cv2-done', 'usercheck', 'Sign and complete', function(){ cv2SignThen('complete'); }), add = mk('cv2-addm', 'plus', 'Add addendum', cv2AddOpen);
+  claim.hidden = !cv2CanClaim(r);
+  /* Daniel, 13 Nov video: Submit claim on its own; Sign and complete (sign, close the visit, no claim yet); Sign and submit (both, the main one).
+     Once the note is signed the middle one only closes the visit. When there is no claim to send the main button already reads Sign and complete. */
+  var dl = r && r.signed ? 'Complete encounter' : 'Sign and complete', dt = done.lastChild;
+  if(dt && dt.nodeType === 3 && dt.textContent !== dl) dt.textContent = dl;
+  done.hidden = !r || r.status === 'done' || (!r.signed && !cv2CanClaim(r));
   add.hidden = !r || !r.signed;
   var nx = v2El('vc-nextpt'); if(nx && r && r.status !== 'done') nx.hidden = true;
   if(b.getAttribute('data-t0') === null) b.setAttribute('data-t0', b.title || '');
@@ -24402,7 +24405,7 @@ function cv2ChkGo(k){
   var t0 = window.t23Fin;
   if(typeof t0 === 'function') window.t23Fin = function(mode){
     /* Ani, 5 Nov: sign-off button definitions: Sign and finalize signs the note, with no billing check; the diagnosis check moved to Submit claim (cv2Claim) */
-    if(cv2On()){ T23.finMode = 'later'; return finalizeVisit(); }
+    if(cv2On()){ T23.finMode = 'later'; var r0 = csRow(); CV2.then = r0 ? {who:PC_CURRENT, mode:cv2CanClaim(r0) ? 'submit' : 'complete'} : null; return finalizeVisit(); }
     return t0.apply(this, arguments);
   };
   var f0 = window.finalizeVisit;
@@ -24414,6 +24417,30 @@ function cv2ChkGo(k){
     var nm = PC_CURRENT, keep = COND_SUGGESTIONS[nm];
     if(keep) COND_SUGGESTIONS[nm] = [];   /* the suggestions stay suggestions; they are a checklist line, not a stop */
     try { return f0.call(this, true); } finally { if(keep && !(COND_SUGGESTIONS[nm] || []).length) COND_SUGGESTIONS[nm] = keep; }
+  };
+})();
+
+/* ---------- Daniel, 13 Nov video: Sign and submit / Sign and complete ----------
+   "What you're doing here is you're signing off and you're submitting the claim at the same time, which is to complete the encounter."
+   Sign and submit: sign the note, send the claim, close the visit. Sign and complete: sign the note and close the visit; the claim waits.
+   Submit claim stays on its own ("you could submit independently"). If signing stops on a warning, the rest follows "anyway". */
+function cv2CanClaim(r){ return !!(r && !r.claimId && !csNoShow(PC_CURRENT) && t23VisitCode(r.name).disp !== 'private'); }
+function cv2After(mode){
+  var r = csRow(); if(!r || !r.signed) return;
+  if(mode === 'submit' && cv2CanClaim(r)) cv2Claim();
+  if(r.status !== 'done') cv2Complete();
+}
+function cv2SignThen(mode){
+  var r = csRow(); if(!r) return;
+  if(r.signed){ CV2.then = null; cv2After(mode); return; }
+  CV2.then = {who:PC_CURRENT, mode:mode}; finalizeVisit();
+}
+(function(){
+  var f1 = window.finalizeVisit; if(typeof f1 !== 'function') return;
+  window.finalizeVisit = function(){
+    var out = f1.apply(this, arguments), t = CV2.then, r = cv2On() && PC_CURRENT ? csRow() : null;
+    if(t && r && r.signed && t.who === PC_CURRENT){ CV2.then = null; cv2After(t.mode); if(typeof t23SyncFin === 'function') t23SyncFin(); }
+    return out;
   };
 })();
 
