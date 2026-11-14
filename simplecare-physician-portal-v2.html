@@ -3769,10 +3769,10 @@
   /* ===== Doctor review, 25 Sep (asks 1-5), ux-designer pass ===== */
   #pcv-c :is(#vc-alerts,#slv,.slv-note,#rx-review,#rx-status,#rx-act,#rx-also,#vc-signed,#vc-finwarn,#pc-callsum,#vc-chips,#vc-finalize,#vc-savedraft,#vc-nextpt)[hidden],
   #screen-review :is(#rv-nextbtn,#rv-callnow)[hidden]{display:none !important;}
-  #pcv-c #rx-card .btn,#pcv-c #slv .btn,#pcv-c #vc-alerts .btn,#pcv-c #vc-finwarn .btn,#pcv-c #vc-finrow .btn,#screen-review #rv-nextbtn,#screen-review #rv-callnow{
+  #pcv-c #rx-card .btn,#pcv-c #slv .btn,#pcv-c #vc-alerts .btn,#pcv-c #vc-finwarn .btn,#pcv-c #vc-finrow .btn,#screen-review #rv-nextbtn:not(.sv-button),#screen-review #rv-callnow{
     height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 18px;font-size:15px;font-weight:600;white-space:nowrap;box-sizing:border-box;}
   #pcv-c #rx-card .btn .ic,#pcv-c #rx-card .btn svg,#pcv-c #slv .btn svg,#pcv-c #vc-alerts .btn svg,#pcv-c #vc-finwarn .btn svg,#pcv-c #vc-finrow .btn svg,
-  #screen-review #rv-nextbtn svg,#screen-review #rv-callnow svg{width:18px;height:18px;}
+  #screen-review #rv-nextbtn:not(.sv-button) svg,#screen-review #rv-callnow svg{width:18px;height:18px;}
   #pcv-c #rx-card .btn:disabled{opacity:.45;cursor:not-allowed;}
 
   /* ask 1: the unsigned critical / high result, above the fold. Grey surface, tone on the icon,
@@ -7670,6 +7670,13 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
      scrolls sideways its text ran off into the hidden part. The note stays pinned to the visible width and wraps there. */
   #screen-claims .sv-table-container:has(.t23-qrow){container-type:inline-size;}
   #screen-claims tr.t23-open{cursor:pointer;}
+  /* the top bar's back arrow and the screen's own back control it stands for */
+  .topbar .tb-left:has(> .tb-back:not([hidden])){flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;}
+  .tb-back[hidden]{display:none;}
+  .screen [data-tbback]{display:none !important;}
+  /* review: the result's actions in its card header, right-aligned beside the title */
+  #screen-review .box > .rv-acts{float:right;display:flex;gap:8px;margin:0 0 8px 16px;}
+  #screen-review .box > .rv-acts > .sv-button[hidden]{display:none !important;}
   /* Cedar scribe header (Ani, 14 Nov): the AI mark, the name, an AI scribe chip, then what it is doing now */
   #pcv-c .sc-hd{align-items:center;gap:8px;}
   #pcv-c .sc-mark{display:inline-flex;width:20px;height:20px;flex-shrink:0;color:var(--color-brand-ai-mark-start);}
@@ -7843,7 +7850,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 
   <div class="main">
     <div class="topbar">
-      <div class="tb-left"><span class="tb-title" id="tb-title">Today</span><span class="tb-date" id="tb-date"></span></div>
+      <div class="tb-left"><span class="tb-back" id="tb-back" hidden></span><span class="tb-title" id="tb-title">Today</span><span class="tb-date" id="tb-date"></span></div>
       <div class="topbar-right">
       <!-- 21 Oct (Daniel, 18 Oct video 5, on the pill "11:54 AM New York · 1h 6m left": "we could probably just eliminate that"): the pill is gone.
            The countdown lives where he looks, in the current call-window band of the queue and in the chart's top line (qClockUpdate). -->
@@ -7963,12 +7970,9 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 
     <!-- ===================== REVIEW ASSIGNMENT (spec v7 §5.6) ===================== -->
     <div class="screen" id="screen-review">
-      <div class="rv-top">
-        <button class="pc-back" id="rv-back" onclick="rvBack()"><span class="ic" data-pcic="back"></span> <span id="rv-backlbl">Back to inbox</span></button>
-        <button type="button" class="btn" id="rv-chart" hidden><span class="ic" data-pdic="chartnote"></span>Open chart</button>
-        <!-- Doctor review ask 5: "With 14 routine results that's 14 round trips." -->
-        <button type="button" class="btn" id="rv-nextbtn" hidden onclick="rvNextResult()"><span class="ic" data-pdic="chevr"></span>Next result</button>
-      </div>
+      <!-- Ani, 14 Nov ("these buttons are not from our design system; don't repeat the title on top and then on a button"):
+           Back is the top bar's arrow beside the page title (data-tbback), not a "Back to inbox" button under it -->
+      <button class="pc-back" id="rv-back" data-tbback onclick="rvBack()"><span class="ic" data-pcic="back"></span> <span id="rv-backlbl">Back to inbox</span></button>
       <h1 id="rv-title">Review</h1>
       <p class="sub" id="rv-sub">&nbsp;</p>
 
@@ -7978,6 +7982,12 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
                urgent and why, the values, a quiet AI caption, then the source
                document -- which stays open by default and is the authority. -->
           <div class="box">
+            <!-- the result's own actions sit in its header, design-system buttons (dressed on load) -->
+            <div class="rv-top rv-acts">
+              <button type="button" class="btn" id="rv-chart" hidden><span class="ic" data-pdic="chartnote"></span>Open chart</button>
+              <!-- Doctor review ask 5: "With 14 routine results that's 14 round trips." -->
+              <button type="button" class="btn" id="rv-nextbtn" hidden onclick="rvNextResult()"><span class="ic" data-pdic="chevr"></span>Next result</button>
+            </div>
             <h2 class="rv-paneltitle" id="rv-panel"></h2>
             <div class="rv-facts" id="rv-facts"></div>
             <div class="rv-results" id="rv-results"></div>
@@ -8983,8 +8993,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
     <div class="screen" id="screen-tasks">
       <div class="cpt-head">
         <div>
-          <h1>Assigned Tasks</h1>
-          <p class="sub">One queue, ordered by what needs attention &mdash; not by what kind of work it is.</p>
+          <!-- Ani, 14 Nov: the title shows once, in the top bar; the h1 stays for screen readers (and names the top bar) -->
+          <h1 class="sr-only">Assigned Tasks</h1>
         </div>
         <span id="tk-new"></span>
       </div>
@@ -9400,6 +9410,16 @@ function loadProfilePhoto(){
 
 
 
+/* one back control, in the top bar beside the page title: a design-system icon button that presses the screen's own back control */
+function tbBackSync(scr){
+  var slot = document.getElementById('tb-back'); if(!slot) return;
+  var src = scr && scr.id !== 'screen-today' ? scr.querySelector('[data-tbback]') : null;
+  if(!src || !(window.SC && SC.html)){ slot.hidden = true; slot.innerHTML = ''; return; }
+  var lbl = src.textContent.replace(/\s+/g, ' ').trim() || 'Back';
+  slot.innerHTML = SC.html('Button', {variant:'tertiary-main', size:'medium', startIcon:'arrow-direction-left', 'aria-label':lbl, title:lbl});
+  slot.firstElementChild.onclick = function(){ src.click(); };
+  slot.hidden = false;
+}
 function syncTopTitle(){
   var el = document.getElementById('tb-title'); if(!el) return;
   var scr = document.querySelector('.screen.active'); if(!scr) return;
@@ -9420,6 +9440,7 @@ function syncTopTitle(){
     el.textContent = scr.id === 'screen-patientchart' ? 'Patient chart' : (t ? t.textContent.trim() : '');
     if(dt){ dt.style.display = 'none'; }
   }
+  tbBackSync(scr);
   if(typeof qClockUpdate === 'function') qClockUpdate();
 }
 function showScreen(name){
@@ -10328,6 +10349,8 @@ document.addEventListener('DOMContentLoaded', function(){
   var l = document.querySelector('#sidebar .brand-logo'); if(l) l.innerHTML = SC.html('Logo', {lockup:'horizontal', height:52, surface:surf});
   /* Ani, 14 Nov ("you use 2 different icons"): the profile menu's chevron is the design system's arrow-dropdown-down, as on the day picker */
   var ch = document.getElementById('pf-chev'); if(ch && SC.icon) ch.innerHTML = SC.icon('arrow-dropdown-down', {size:20});
+  if(typeof cv2DsBtn === 'function'){ cv2DsBtn(document.getElementById('rv-chart'), 'secondary-main', 'file-heart'); cv2DsBtn(document.getElementById('rv-nextbtn'), 'secondary-main', 'arrow-direction-right'); }
+  if(typeof syncTopTitle === 'function') syncTopTitle();
   /* one chevron everywhere: the old set's chevrons (row arrows, disclosures, menus) become the design system's arrow-dropdown icons */
   if(SC.icon && typeof ICONS !== 'undefined'){
     var dsChev = {chevl:'arrow-dropdown-left', chevr:'arrow-dropdown-right', chevdown:'arrow-dropdown-down', chevrondown:'arrow-dropdown-down'};
