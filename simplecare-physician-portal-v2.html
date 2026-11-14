@@ -7411,8 +7411,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
    ink like the allergy line; the word Pharmacy is quiet. Current's left card puts each on its own line, as it does the allergy tick. */
 #screen-patientchart #pcv-c .cs-pharm b{color:var(--ink);font-weight:600;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-pharm b{color:var(--cv2-ink);}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-l2.cs-hasph{display:block;margin-top:2px;}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-l2.cs-hasph > span:first-child:is(.cs-nksep,.cs-phsep){display:none;}
+/* Ani, 13 Nov ("put all in 1 line after PHN"): the allergy status and the pharmacy follow the PHN on the same line, each after a dot */
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .vc-sub .cs-l2.cs-hasph{display:inline;margin-top:0;}
 #screen-patientchart #pcv-c.cs-v2 #v2-sum > #v2-pt .vc-sub .cs-phsep{display:none;}
 #screen-patientchart #pcv-c.cs-v2 #v2-sum > #v2-pt .vc-sub .cs-pharm{display:block;margin-top:2px;}
 /* Ani, 5 Nov: sign-off button definitions (Version 2): Submit claim, Complete encounter, Sign and finalize, Add addendum in one row; the addenda under the signed note */
@@ -16610,6 +16610,9 @@ function csNARowV2(x, related, also){
      note comes up front. The reference interval stays on that line (Daniel, 31 Oct: "show the reference range right there"); the concern, the
      earlier values, the rest of the panel and the source sit in .v2-nad, folded behind the card's Show all (naAll). Nothing is removed. */
   if(!x.abn) val += '<span class="v2-na-ref"><span class="cv2-refk">Reference </span>' + csEsc(lrRef(t)) + (x.label ? ', ' + x.label.toLowerCase() : '') + '</span>';
+  /* Ani, 13 Nov ("the text should go to a second line"): with no reference (an ECG, an abnormal report) the Reference column stays, empty,
+     so a long finding wraps inside its own column instead of running under Reference */
+  else val += '<span class="v2-na-ref" aria-hidden="true"></span>';
   /* Chart Version 2 (Ani, 4 Nov: chart Version 2 brief, "each with name, value, reference range, severity, date and time, a review action"): the date and
      time sit on the line too; shown only in Version 2 (#pcv-c.chart-v2), where Received leaves the folded details. */
   val += '<span class="cv2-na-dt"><span class="vh">Received </span>' + csEsc(it.received) + '</span>';
