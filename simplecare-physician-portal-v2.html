@@ -7670,11 +7670,20 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   .lr-dst .lr-res{margin-right:8px;white-space:nowrap;font-variant-numeric:tabular-nums;}
   .lr-dst .lr-res .lr-v{font-weight:700;}
   .lr-dst .lr-res .lr-u{color:var(--color-text-default-caption);}
-  .lr-dst .lr-pv{display:block;white-space:nowrap;font-variant-numeric:tabular-nums;}
+  .lr-dst .lr-pv{display:block;font-variant-numeric:tabular-nums;}
+  .lr-dst td .sv-table-cell-content{white-space:normal;}
+  .lr-dst .lr-st{margin-top:4px;}
   .lr-dst .lr-pv b{font-weight:400;}
   .lr-dst .lr-pv i{font-style:normal;color:var(--color-text-default-caption);margin-left:4px;}
   .lr-dst .lr-r,.lr-dst .lr-none{color:var(--color-text-default-caption);}
-  .lr-find .lr-wrap{margin:4px 0 0;}
+  /* Inbox: one out-of-range value = two lines, 8px between values */
+  .lr-find{display:flex;flex-direction:column;gap:8px;min-width:0;width:100%;}
+  .lr-find .lr-it1{display:flex;flex-wrap:wrap;align-items:center;column-gap:8px;row-gap:2px;font-size:var(--text-body-2);line-height:20px;}
+  .lr-find .lr-itn{font-weight:700;color:var(--color-text-default-heading);}
+  .lr-find .lr-res{white-space:nowrap;font-variant-numeric:tabular-nums;}
+  .lr-find .lr-res .lr-v{font-weight:700;}
+  .lr-find .lr-res .lr-u{color:var(--color-text-default-caption);}
+  .lr-find .lr-it2{font-size:var(--text-body-3);line-height:18px;color:var(--color-text-default-caption);font-variant-numeric:tabular-nums;}
   #tk-list th:nth-child(3){width:150px;}
   #tk-list td:nth-child(3) :is(div,span):has(> .sv-tag){flex-wrap:wrap;white-space:normal;row-gap:4px;}   /* Type and Carried forward stack instead of widening the table */
   /* the hosts of a design-system AvatarCircle draw nothing of their own */
@@ -10236,7 +10245,7 @@ function renderFilters(){
 var QF_OPEN = null;   /* the filter whose menu is open */
 /* the design system's script loads deferred: the toolbar is drawn again once it is there */
 document.addEventListener('DOMContentLoaded', function(){ renderDayNav(); renderFilters(); });
-document.addEventListener('DOMContentLoaded', function(){ var n = document.getElementById('tk-new'); if(n && window.SC && SC.html){ n.innerHTML = SC.html('Button', {variant:'primary', size:'medium', startIcon:'add', onclick:"openTaskMoa('')"}, 'New task'); } if(typeof renderTasks === 'function') renderTasks(); });
+document.addEventListener('DOMContentLoaded', function(){ var n = document.getElementById('tk-new'); if(n && window.SC && SC.html){ n.innerHTML = SC.html('Button', {variant:'primary', size:'medium', startIcon:'add'}, 'New task'); } if(typeof renderTasks === 'function') renderTasks(); });
 document.addEventListener('DOMContentLoaded', function(){
   var a = document.getElementById('cl-av');
   if(a && window.SC && SC.html) a.innerHTML = SC.html('Avatar', {name:'Dolly', src:'assets/moa-dolly.jpg', badge:'online', size:'large', subtitles:['Your MOA']});
@@ -11162,14 +11171,15 @@ function tkRow(t){
   var due = done ? ['TableCellContent', {label:'Completed ' + t.due}]
     : od ? ['TableCellContent', {type:'tags', secondary:taskTolerance(t) || undefined}, SC.raw(SC.html('Tag', {color:'error', startIcon:'clock-time'}, 'Overdue'))]
     : ['TableCellContent', {label:'Due ' + t.due, secondary:taskTolerance(t) || undefined}];
-  var B = function(v, ic, label, on, aria){ return ['Button', {variant:v, size:'medium', startIcon:ic, onclick:on, 'aria-label':aria}, label]; };
+  /* SC.html is static markup: no handlers. Each button carries data-tkact and the task id; one listener on the list acts on them. */
+  var B = function(v, ic, label, act, aria){ return ['Button', {variant:v, size:'medium', startIcon:ic, 'data-tkact':act, 'data-tkid':t.id, 'aria-label':aria}, label]; };
   /* the two secondary actions are icon buttons (named and titled), so the Task column keeps room for its note; Complete keeps its word */
-  var I = function(ic, label, on, aria){ return ['Button', {variant:'tertiary-main', size:'medium', startIcon:ic, onclick:on, 'aria-label':aria, title:label}]; };
+  var I = function(ic, label, act, aria){ return ['Button', {variant:'tertiary-main', size:'medium', startIcon:ic, 'data-tkact':act, 'data-tkid':t.id, 'aria-label':aria, title:label}]; };
   var who = t.patient + ' (' + t.title + ')';
-  var acts = done ? [B('tertiary-main', 'refresh-undo', 'Reopen', "taskReopen('" + t.id + "')", 'Reopen: ' + who)]
-    : [I('user-assign', 'Reassign', "openTaskMoa('" + pq + "')", 'Reassign: ' + who),
-       I('reload-reverse', 'Carry forward', "taskCarry('" + t.id + "')", 'Carry forward: ' + who),
-       B('secondary-main', 'check', 'Complete', "taskComplete('" + t.id + "')", 'Complete: ' + who)];
+  var acts = done ? [B('tertiary-main', 'refresh-undo', 'Reopen', 'reopen', 'Reopen: ' + who)]
+    : [I('user-assign', 'Reassign', 'reassign', 'Reassign: ' + who),
+       I('reload-reverse', 'Carry forward', 'carry', 'Carry forward: ' + who),
+       B('secondary-main', 'check', 'Complete', 'complete', 'Complete: ' + who)];
   return SC.html('TableRow', {'data-prio':t.prio, hidden:!TK_OPEN[t.prio] || undefined},
     ['TableCell', {}, ptCell(t.patient, (t.preferred && t.preferred !== t.patient.split(' ')[0] ? t.preferred + ' · ' : '') + t.chart)],
     ['TableCell', {}, ['TableCellContent', {label:t.title, strong:true, secondary:t.note, wrap:true}]],
@@ -11232,7 +11242,13 @@ function renderTasks(){
       i = e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : (i + (e.key === 'ArrowRight' ? 1 : n - 1)) % n;
       e.preventDefault(); tkSet(TK_FILTERS[i]); var nb = fw.querySelector('[role=tab][aria-selected="true"]'); if(nb) nb.focus();
     });
-    if(lw) lw.addEventListener('click', function(e){ var b = e.target.closest('tr[data-tkband] button[aria-expanded]'); if(b) tkToggle(b.closest('tr').getAttribute('data-tkband')); });
+    if(lw) lw.addEventListener('click', function(e){
+      var b = e.target.closest('tr[data-tkband] button[aria-expanded]'); if(b){ tkToggle(b.closest('tr').getAttribute('data-tkband')); return; }
+      var a = e.target.closest('[data-tkact]'); if(!a) return;
+      var id = a.getAttribute('data-tkid'), k = a.getAttribute('data-tkact'), t = DOC_TASKS.filter(function(x){ return x.id === id; })[0];
+      if(k === 'complete') taskComplete(id); else if(k === 'carry') taskCarry(id); else if(k === 'reopen') taskReopen(id); else if(k === 'reassign' && t) openTaskMoa(t.patient);
+    });
+    var nw = document.getElementById('tk-new'); if(nw) nw.addEventListener('click', function(e){ if(e.target.closest('button')) openTaskMoa(''); });
   };
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
 })();
@@ -11807,6 +11823,18 @@ function lrPrevCell(pv){
   var line = function(p){ return '<span class="lr-pv"><b>' + p.v + '</b> <i>' + (p.d || 'date not on file') + (p.pt ? ', uploaded by patient' : '') + '</i></span>'; };
   return ['TableCellContent', {label:SC.raw(pv.map(line).join(''))}];
 }
+function lrItem(t, pr){
+  var r = {n:t.n, v:t.v, u:t.u, f:t.f}, fl = lrFlag(t.f, t.v), p = pr && pr[0];
+  var detail = [t.ref ? 'Reference ' + t.ref : '', p ? 'Previous ' + p.v + (p.d ? ' on ' + p.d : '') : 'No previous result'].filter(Boolean).join(' · ');
+  return '<div class="lr-it"><div class="lr-it1"><span class="lr-itn">' + t.n + '</span><span class="lr-res"><b class="lr-v' + (fl.crit ? ' crit' : '') + '">' + t.v + '</b>' +
+    (t.u ? ' <span class="lr-u">' + t.u + '</span>' : '') + '</span>' + (fl.out ? SC.html('Tag', {color:fl.crit ? 'error' : 'warning', startIcon:fl.crit ? 'warning' : undefined}, fl.word) : '') + '</div>' +
+    '<div class="lr-it2">' + detail + '</div></div>';
+}
+/* result table actions (Chart > Results): PDF opens the report, Not cleared opens the result for review */
+document.addEventListener('click', function(e){
+  var pdf = e.target.closest('[data-rspdf]'); if(pdf){ var v = pdf.getAttribute('data-rspdf').split('|'); toast('Opening the ' + v[0] + ' report for ' + v[1]); return; }
+  var rv = e.target.closest('[data-rsreview]'); if(rv && typeof openReview === 'function') openReview(+rv.getAttribute('data-rsreview'));
+});
 function lrTable(rows, o){
   o = o || {};
   if(typeof SC === 'undefined' || !SC.html) return '';
@@ -11815,7 +11843,7 @@ function lrTable(rows, o){
   var body = rows.map(function(r){
     var fl = lrFlag(r.f, r.v);
     return SC.html('TableRow', {className:(o.rowCls || '') + (fl.out ? ' lr-out' : '')},
-      ['TableCell', {}, ['TableCellContent', {label:r.nameHtml ? SC.raw(r.nameHtml) : r.n, strong:true}]],
+      ['TableCell', {}, ['TableCellContent', {label:r.nameHtml ? SC.raw(r.nameHtml) : r.n, strong:true, secondary:r.sub || undefined}]].concat(r.status ? [SC.raw('<div class="lr-st">' + r.status + '</div>')] : []),
       ['TableCell', {}, lrResultCell(r)],
       ['TableCell', {}, ['TableCellContent', {label:lrRef(r) || '—', className:'lr-r'}]],
       ['TableCell', {}, lrPrevCell(r.prior)],
@@ -12027,11 +12055,12 @@ function inboxRowHtml(item, i){
     /* T-037 (Daniel, 31 Oct: results "the LifeLabs way", the reference range "right there, not on click", the arrow explained, the two prior values):
        each out-of-range value is one line: name, value and unit with the word (High, Low, Critical high), the reference interval, the two earlier
        values with their dates. Values within range still collapse to a count. The critical value keeps the only red. */
-    /* Ani, 13 Nov: the out-of-range values as the same design-system table as everywhere else (was one run-together line each) */
-    findings = '<div class="ix-find lr-find">' + lrTable(item.tests.filter(function(t){ return t.f; })
+    /* Ani, 13 Nov ("everything is merged together"): in the Inbox's narrow Result column each out-of-range value is two lines with a clear
+       hierarchy (the test, its value and the flag; then in grey the reference and the latest earlier value); the full table is in the result view */
+    findings = '<div class="ix-find lr-find">' + item.tests.filter(function(t){ return t.f; })
       .map(function(t,k){ return {t:t,k:k}; })
       .sort(function(a,b){ return (rank(a.t)-rank(b.t)) || (a.k-b.k); })
-      .map(function(x){ var t = x.t; return {n:t.n, v:t.v, u:t.u, ref:t.ref, f:t.f, prior:lrPriors(item.patient, t)}; }), {label:(item.panel || 'Results') + ': out of range'}) +
+      .map(function(x){ return lrItem(x.t, lrPriors(item.patient, x.t)); }).join('') +
     (okN ? '<span class="ix-okn">'+(okN===total ? 'All '+total+' within range' : '+'+okN+' within range')+'</span>' : '') +
     '</div>';
   } else if(item.kind==='culture'){
@@ -16268,9 +16297,14 @@ function renderResults(name){
        or Within range with the word; the reference interval; the two earlier values with dates (they replace the trend line and the arrow); the report */
     h += list.length ? lrTable(list.map(function(o){
       var t = o.t, p = rsLast(t), clr = rsClear(name, t, p);
+      /* Ani, 13 Nov: the test name, then one grey line (date · source); the review state as a tag that opens the review; the report as a
+         design-system button. Click targets carry data attributes (SC.html markup has no handlers); one listener below acts on them. */
+      var it = clr ? inboxFor(name).filter(function(x){ return (x.tests||[]).some(function(y){ return y.n === t.n; }); })[0] : null;
       return {n:t.n, v:p[1], u:t.u, ref:t.ref, f:p[2], prior:lrTwo(t.pts.slice(0, -1)),
-        nameHtml:'<b class="rs-n">' + t.n + '</b>' + rsSrc(p[3], p[0]) + (clr ? '<span class="rs-hist">' + clr.replace(/^ &middot; /, '') + '</span>' : ''),
-        tail:'<button type="button" class="vc-more rs-pdf" onclick="toast(\'Opening the ' + (p[3] === 'patient' ? 'uploaded' : p[3]) + ' report for ' + t.n + '\')"><span class="ic" data-pdic="file"></span>PDF</button>'};
+        sub:p[0] + ' · ' + (p[3] === 'patient' ? 'Uploaded by patient' : p[3]),
+        status:it ? (it.status === 'signed-off' ? SC.html('Tag', {color:'success', startIcon:'check'}, 'Cleared')
+          : SC.html('Tag', {color:'warning', as:'button', 'data-rsreview':INBOX_ITEMS.indexOf(it), 'aria-label':'Not cleared. Review ' + t.n}, 'Not cleared')) : '',
+        tail:SC.html('Button', {variant:'tertiary-main', size:'medium', startIcon:'file', 'data-rspdf':(p[3] === 'patient' ? 'uploaded' : p[3]) + '|' + t.n, 'aria-label':'Open the report for ' + t.n}, 'PDF')};
     }), {label:'Lab results', tail:'Report', rowCls:'lr-row'}) : '<p class="pc-empty">No lab results on file.</p>';
     h += RS_ADD
       ? '<div class="rs-form"><p class="rs-k">Add an expected result</p>' +
