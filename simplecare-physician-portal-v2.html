@@ -7661,6 +7661,13 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   /* the day calendar pops over the page, under the date button */
   .day-cal-pop{position:absolute;z-index:300;}
   #nd-copy{height:44px;}   /* the note toolbar's buttons are all 44px */
+  /* Tasks (Ani, 13 Nov): New task at the right of the title; the Task column keeps room for its note */
+  #screen-tasks .cpt-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+  #tk-list th:nth-child(2){width:34%;min-width:230px;}
+  #tk-list{margin:0 -24px;}   /* the frameless table runs edge to edge in its card, like the day sheet */
+  #tk-list td:last-child{white-space:nowrap;}
+  #tk-list th:nth-child(3){width:150px;}
+  #tk-list td:nth-child(3) :is(div,span):has(> .sv-tag){flex-wrap:wrap;white-space:normal;row-gap:4px;}   /* Type and Carried forward stack instead of widening the table */
   /* the hosts of a design-system AvatarCircle draw nothing of their own */
   #pcv-c .cs-photo,.ds-av-host{background:none !important;border:0 !important;border-radius:0 !important;width:auto !important;height:auto !important;padding:0 !important;display:inline-flex;flex:none;}
   /* pharmacy after the allergy: location icon, name in ink */
@@ -8893,7 +8900,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
           <h1>Assigned Tasks</h1>
           <p class="sub">One queue, ordered by what needs attention &mdash; not by what kind of work it is.</p>
         </div>
-        <button class="btn dark" onclick="openTaskMoa('')"><span class="ic" data-pcic="task"></span> New task</button>
+        <span id="tk-new"></span>
       </div>
       <div class="ia-note">A task can go to anyone &mdash; an MOA, the practice team, or another physician. What it never does is originate below the doctor: it exists because a doctor pressed Task. The queue is banded by priority and then runs oldest first, because the work that needs attention should win over whether it is imaging, a referral or lab work. Type stays a badge.</div>
 
@@ -10216,6 +10223,7 @@ function renderFilters(){
 var QF_OPEN = null;   /* the filter whose menu is open */
 /* the design system's script loads deferred: the toolbar is drawn again once it is there */
 document.addEventListener('DOMContentLoaded', function(){ renderDayNav(); renderFilters(); });
+document.addEventListener('DOMContentLoaded', function(){ var n = document.getElementById('tk-new'); if(n && window.SC && SC.html){ n.innerHTML = SC.html('Button', {variant:'primary', size:'medium', startIcon:'add', onclick:"openTaskMoa('')"}, 'New task'); } if(typeof renderTasks === 'function') renderTasks(); });
 document.addEventListener('DOMContentLoaded', function(){
   var a = document.getElementById('cl-av');
   if(a && window.SC && SC.html) a.innerHTML = SC.html('Avatar', {name:'Dolly', src:'assets/moa-dolly.jpg', badge:'online', size:'large', subtitles:['Your MOA']});
@@ -11125,64 +11133,96 @@ function taskCard(t){
   '</div>';
 }
 
-/* Daniel's labels, verbatim */
-var TK_FILTERS = ['All Active Tasks','Assigned to Team','Assigned to Dr. Pannozzo','Completed Tasks'];
-var TK_ON = 'All Active Tasks';
+/* Daniel's four views (labels in sentence case) */
+var TK_FILTERS = ['All active', 'Assigned to team', 'Assigned to Dr. Pannozzo', 'Completed'];
+var TK_KEY = {'All active':'all', 'Assigned to team':'team', 'Assigned to Dr. Pannozzo':'doc', 'Completed':'done'};
+var TK_ON = 'All active';
+var TK_OPEN = {urgent:true, high:true, routine:true};
 function tkSet(f){ TK_ON = f; renderTasks(); }
+
+/* Ani, 13 Nov ("not the right designs and components for this page"): the task queue is the design system's Tabs and Table, like the day
+   sheet and the Inbox. One row per task: Patient (initials avatar), Task (title, the note under it), Type (and Carried forward), Assigned to,
+   Due (Overdue as a tag; the time tolerance under it), and the actions. The priority bands are the Table's group rows. Nothing is removed. */
+function tkRow(t){
+  var done = t.status === 'complete', od = !done && t.due === 'Overdue', pq = t.patient.replace(/'/g, "\\'");
+  var tags = SC.html('Tag', {}, t.type) + (t.carried ? SC.html('Tag', {color:'warning'}, 'Carried forward ×' + t.carried) : '');
+  var due = done ? ['TableCellContent', {label:'Completed ' + t.due}]
+    : od ? ['TableCellContent', {type:'tags', secondary:taskTolerance(t) || undefined}, SC.raw(SC.html('Tag', {color:'error', startIcon:'clock-time'}, 'Overdue'))]
+    : ['TableCellContent', {label:'Due ' + t.due, secondary:taskTolerance(t) || undefined}];
+  var B = function(v, ic, label, on, aria){ return ['Button', {variant:v, size:'medium', startIcon:ic, onclick:on, 'aria-label':aria}, label]; };
+  /* the two secondary actions are icon buttons (named and titled), so the Task column keeps room for its note; Complete keeps its word */
+  var I = function(ic, label, on, aria){ return ['Button', {variant:'tertiary-main', size:'medium', startIcon:ic, onclick:on, 'aria-label':aria, title:label}]; };
+  var who = t.patient + ' (' + t.title + ')';
+  var acts = done ? [B('tertiary-main', 'refresh-undo', 'Reopen', "taskReopen('" + t.id + "')", 'Reopen: ' + who)]
+    : [I('user-assign', 'Reassign', "openTaskMoa('" + pq + "')", 'Reassign: ' + who),
+       I('reload-reverse', 'Carry forward', "taskCarry('" + t.id + "')", 'Carry forward: ' + who),
+       B('secondary-main', 'check', 'Complete', "taskComplete('" + t.id + "')", 'Complete: ' + who)];
+  return SC.html('TableRow', {'data-prio':t.prio, hidden:!TK_OPEN[t.prio] || undefined},
+    ['TableCell', {}, ptCell(t.patient, (t.preferred && t.preferred !== t.patient.split(' ')[0] ? t.preferred + ' · ' : '') + t.chart)],
+    ['TableCell', {}, ['TableCellContent', {label:t.title, strong:true, secondary:t.note, wrap:true}]],
+    ['TableCell', {}, ['TableCellContent', {type:'tags'}, SC.raw(tags)]],
+    ['TableCell', {}, ['TableCellContent', {label:t.to, secondary:t.role}]],
+    ['TableCell', {}, due],
+    ['TableCell', {}, ['TableCellContent', {type:'actions'}].concat(acts)]);
+}
+function tkToggle(pr){ TK_OPEN[pr] = !TK_OPEN[pr]; renderTasks(); }
 
 function renderTasks(){
   var fw = document.getElementById('tk-filters');
   var lw = document.getElementById('tk-list');
-  if(!fw || !lw) return;
+  if(!fw || !lw || typeof SC === 'undefined' || !SC.html) return;
   var open = DOC_TASKS.filter(function(t){ return t.status!=='complete'; });
   var counts = {
-    'All Active Tasks': open.length,
-    'Assigned to Team': open.filter(function(t){ return !taskIsDoc(t); }).length,
+    'All active': open.length,
+    'Assigned to team': open.filter(function(t){ return !taskIsDoc(t); }).length,
     'Assigned to Dr. Pannozzo': open.filter(function(t){ return t.to.indexOf('Pannozzo')>-1; }).length,
-    'Completed Tasks': DOC_TASKS.filter(function(t){ return t.status==='complete'; }).length
+    'Completed': DOC_TASKS.filter(function(t){ return t.status==='complete'; }).length
   };
-  fw.innerHTML = TK_FILTERS.map(function(f){
-    return '<button class="'+(f===TK_ON?'on':'')+'" onclick="tkSet(&#39;'+f+'&#39;)">'+f+' &middot; '+counts[f]+'</button>';
-  }).join('');
+  fw.innerHTML = SC.html('Tabs', {defaultValue:TK_KEY[TK_ON]}, ['TabList', {'aria-label':'Tasks'}].concat(TK_FILTERS.map(function(f){
+    return ['Tab', {value:TK_KEY[f], 'data-tk':f}, f + ' ' + counts[f]]; })));
 
   var rows;
-  if(TK_ON==='Completed Tasks') rows = DOC_TASKS.filter(function(t){ return t.status==='complete'; });
+  if(TK_ON==='Completed') rows = DOC_TASKS.filter(function(t){ return t.status==='complete'; });
   else rows = open.filter(function(t){
-    if(TK_ON==='Assigned to Team') return !taskIsDoc(t);
+    if(TK_ON==='Assigned to team') return !taskIsDoc(t);
     if(TK_ON==='Assigned to Dr. Pannozzo') return t.to.indexOf('Pannozzo')>-1;
     return true;
   });
 
-  /* One queue, banded by priority. Inside a band, oldest first, with a date
-     heading when the day changes. Type never splits the list. */
-  var html = '';
+  /* One queue, banded by priority; inside a band the earliest due first, and where two share a date the one sitting longest on top.
+     Type never splits the list. */
+  var body = '';
   PRIO_ORDER.forEach(function(pr){
     var g = rows.filter(function(t){ return t.prio===pr; });
     if(!g.length) return;
-    /* earliest due first; where two share a date, the one that has been
-       sitting longest goes on top */
     g.sort(function(a,b){
       var da = (a.dueIn===undefined ? 99 : a.dueIn), db = (b.dueIn===undefined ? 99 : b.dueIn);
       return da !== db ? da - db : b.age - a.age;
     });
-    html += '<div class="tk-band"><span class="tk-bdot '+pr+'"></span><b>'+TASK_PRIO[pr].label+'</b>'+
-      '<span class="hint">'+TASK_PRIO[pr].hint+'</span><span class="n">'+g.length+'</span></div>';
-    var lastDay = null;
-    g.forEach(function(t){
-      var d = taskDateLabel(t.age);
-      if(d !== lastDay){ html += '<p class="tk-day">'+d+'</p>'; lastDay = d; }
-      html += taskCard(t);
-    });
+    body += SC.html('TableGroupRow', {colSpan:6, label:TASK_PRIO[pr].label + ' · ' + TASK_PRIO[pr].hint, count:g.length, expanded:!!TK_OPEN[pr], 'data-tkband':pr});
+    g.forEach(function(t){ body += tkRow(t); });
   });
-  lw.innerHTML = html || '<p class="pc-empty">Nothing in this view.</p>';
-  /* ICONS is defined further down the file than the first render, so the
-     glyphs are painted in after the markup rather than inlined into it. */
-  lw.querySelectorAll('[data-pdic]').forEach(function(el){
-    var k = el.getAttribute('data-pdic');
-    if(typeof ICONS !== 'undefined' && ICONS[k]) el.innerHTML = ICONS[k];
-  });
+  if(!body) body = SC.html('TableRow', {}, ['TableCell', {colSpan:6}, ['TableCellContent', {label:'Nothing in this view.'}]]);
+  var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Patient'], ['TableHead', {}, 'Task'], ['TableHead', {}, 'Type'],
+    ['TableHead', {}, 'Assigned to'], ['TableHead', {}, 'Due'], ['TableHead', {type:'empty', 'aria-label':'Actions'}, '']]];
+  lw.innerHTML = SC.html('Table', {'aria-label':'Tasks', framed:false}, head, ['TableBody', {}, SC.raw(body)]);
   updateTaskFlag();
 }
+/* tabs and band toggles: one listener each (the markup is static) */
+(function(){
+  var go = function(){
+    var fw = document.getElementById('tk-filters'), lw = document.getElementById('tk-list');
+    if(fw) fw.addEventListener('click', function(e){ var t = e.target.closest('[role=tab][data-tk]'); if(t){ tkSet(t.getAttribute('data-tk')); var nb = fw.querySelector('[role=tab][aria-selected="true"]'); if(nb) nb.focus(); } });
+    if(fw) fw.addEventListener('keydown', function(e){
+      if(!/^(ArrowLeft|ArrowRight|Home|End)$/.test(e.key)) return;
+      var i = TK_FILTERS.indexOf(TK_ON), n = TK_FILTERS.length;
+      i = e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : (i + (e.key === 'ArrowRight' ? 1 : n - 1)) % n;
+      e.preventDefault(); tkSet(TK_FILTERS[i]); var nb = fw.querySelector('[role=tab][aria-selected="true"]'); if(nb) nb.focus();
+    });
+    if(lw) lw.addEventListener('click', function(e){ var b = e.target.closest('tr[data-tkband] button[aria-expanded]'); if(b) tkToggle(b.closest('tr').getAttribute('data-tkband')); });
+  };
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
+})();
 
 function updateTaskFlag(){
   var n = DOC_TASKS.filter(function(t){ return t.status!=='complete' && t.prio==='urgent'; }).length;
