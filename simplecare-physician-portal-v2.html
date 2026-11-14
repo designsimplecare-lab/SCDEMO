@@ -1875,9 +1875,9 @@
   .cpt-grp .n{margin-left:auto;font-size:12px;font-weight:700;color:var(--ink-faint);
     background:var(--wash);border-radius:20px;padding:2px 8px;}
   .cpt-filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;}
-  .cpt-filters button{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 13px;
+  .cpt-filters button:not(.sv-tab){border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 13px;
     font-family:inherit;font-size:13.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;}
-  .cpt-filters button.on{background:var(--ink-dark);border-color:var(--ink-dark);color:#fff;}
+  .cpt-filters button:not(.sv-tab).on{background:var(--ink-dark);border-color:var(--ink-dark);color:#fff;}
   .cpt-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--wash);}
   .cpt-row:last-child{border-bottom:none;}
   .cpt-pt{width:170px;flex-shrink:0;}
@@ -4400,7 +4400,7 @@
   #screen-claims .t23-demoline .ic,#screen-claims .t23-demoline svg{width:18px;height:18px;color:var(--ink-faint);}
   #screen-claims .t23-viewer{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 16px;font-size:14px;color:var(--ink-soft);}
   #screen-claims .t23-viewer .cpt-filters{margin:0;}
-  #screen-claims .cpt-filters button,#t23-pick .cpt-filters button{font-size:14px;min-height:36px;}
+  #screen-claims .cpt-filters button:not(.sv-tab),#t23-pick .cpt-filters button:not(.sv-tab){font-size:14px;min-height:36px;}
   #screen-claims .t23-grp{font-size:14px;font-weight:700;color:var(--ink-soft);margin:0 0 8px;}
   #screen-claims .cl-stats{margin-bottom:14px;}
   #screen-claims .cl-stat .k{text-transform:none;letter-spacing:0;font-size:14px;font-weight:600;}
@@ -7672,7 +7672,14 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #screen-claims tr.t23-open{cursor:pointer;}
   /* the top bar's back arrow and the screen's own back control it stands for */
   .topbar .tb-left:has(> .tb-back:not([hidden])){flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;}
-  .tb-back[hidden]{display:none;}
+  .tb-back[hidden],.tb-info[hidden]{display:none;}
+  .topbar .tb-left:has(> .tb-info:not([hidden])){flex-direction:row;align-items:center;justify-content:flex-start;gap:4px;}
+  /* the info icon: 16px glyph in a 24px target, caption grey, navy on hover and focus */
+  .sc-info{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;margin-left:4px;padding:0;border:0;border-radius:var(--radius-round);
+    background:transparent;color:var(--color-ink-600);cursor:help;vertical-align:middle;}
+  .sc-info:hover,.sc-info:focus-visible{color:var(--color-navy-900);background:var(--color-surface-tertiary-main-hovered);}
+  .sc-info:focus-visible{outline:var(--border-width-md) solid var(--color-border-default-darkest);outline-offset:2px;}
+  .sc-info svg{width:16px;height:16px;}
   .screen [data-tbback]{display:none !important;}
   /* review: the result's actions in its card header, right-aligned beside the title */
   #screen-review .box > .rv-acts{float:right;display:flex;gap:8px;margin:0 0 8px 16px;}
@@ -7766,6 +7773,14 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #screen-patientchart #pcv-c .cs-pharm{display:inline-flex;align-items:center;gap:4px;}
   #screen-patientchart #pcv-c .cs-pharm .cs-pharm-ic{flex:none;color:var(--color-text-default-caption);}
   #screen-patientchart #pcv-c .cs-pharm-none{color:var(--color-text-default-caption);}
+/* New patient drawer (Ani, 14 Nov) */
+#np-drawer .np-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-lg)}
+#np-drawer .np-h{margin:var(--spacing-sm) 0 0;font:inherit;font-weight:600;color:var(--ink)}
+#np-drawer .np-h:first-child{margin-top:0}
+#np-drawer .sv-drawer__content{padding-bottom:calc(84px + var(--spacing-lg))}
+@media (max-width: 640px){ #np-drawer .np-grid{grid-template-columns:1fr} }
+#queue-mount tr.np-added > td{animation:np-flash 2.4s var(--ease-standard, ease)}
+@keyframes np-flash{0%,40%{background:var(--color-surface-information-light, var(--accent-soft))}100%{background:transparent}}
 </style>
 <style>
 #screen-inbox .ix-tabs-row,#screen-claims .t23-tabsrow{margin:0 0 12px;}
@@ -7850,7 +7865,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 
   <div class="main">
     <div class="topbar">
-      <div class="tb-left"><span class="tb-back" id="tb-back" hidden></span><span class="tb-title" id="tb-title">Today</span><span class="tb-date" id="tb-date"></span></div>
+      <div class="tb-left"><span class="tb-back" id="tb-back" hidden></span><span class="tb-title" id="tb-title">Today</span><span class="tb-info" id="tb-info" hidden></span><span class="tb-date" id="tb-date"></span></div>
       <div class="topbar-right">
       <!-- 21 Oct (Daniel, 18 Oct video 5, on the pill "11:54 AM New York · 1h 6m left": "we could probably just eliminate that"): the pill is gone.
            The countdown lives where he looks, in the current call-window band of the queue and in the chart's top line (qClockUpdate). -->
@@ -7937,7 +7952,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
             <span class="sect-title">Day sheet <span class="wt-count" id="wt-queue-count">0</span></span>
           </div>
           <!-- Ani, 6 Nov ("why are there so many different buttons"): one primary per area -->
-          <sc-button variant="secondary-main" size="medium" start-icon="user-add" onclick="showScreen('registerpatient')">New patient</sc-button>
+          <sc-button variant="secondary-main" size="medium" start-icon="user-add" onclick="npOpen()">New patient</sc-button>
           <sc-button variant="primary" size="medium" start-icon="user-assign" onclick="openTaskMoa()">Task MOA</sc-button>
       </div>
 
@@ -8008,7 +8023,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
                Critical and High open with the drafted follow-up already showing,
                and Accept & assign sits directly under the draft it acts on. -->
           <div class="box rv-decide" id="rv-decidebox">
-            <h2 class="box-title" id="rv-q">Does this delivery require follow-up?</h2>
+            <h2 class="box-title" id="rv-q" data-info="Choose whether this delivery requires follow-up.">Does this delivery require follow-up?</h2>
             <div class="rv-choice" role="group" aria-labelledby="rv-q">
               <button type="button" class="rv-opt" id="rv-no" onclick="rvNo()"><span class="ic" data-pdic="complete"></span>No follow-up required</button>
               <button type="button" class="rv-opt" id="rv-yes" aria-pressed="false" onclick="rvSetFollow(true)"><span class="ic" data-pdic="flag"></span>Follow-up required</button>
@@ -8994,7 +9009,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
       <div class="cpt-head">
         <div>
           <!-- Ani, 14 Nov: the title shows once, in the top bar; the h1 stays for screen readers (and names the top bar) -->
-          <h1 class="sr-only">Assigned Tasks</h1>
+          <h1 class="sr-only" data-info="Tasks stay present until they&rsquo;re completed. Carrying one forward keeps it on the list and marks how long it has been sitting; it never disappears to a future date.">Assigned Tasks</h1>
         </div>
         <span id="tk-new"></span>
       </div>
@@ -9003,13 +9018,11 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
       <div class="box">
         <div class="cpt-filters" id="tk-filters"></div>
         <div id="tk-list"></div>
-        <p class="tk-rule">Tasks stay present until they're completed. Carrying one forward keeps it on the list and marks how long it has been sitting &mdash; it never disappears to a future date.</p>
       </div>
     </div>
 
     <div class="screen" id="screen-support">
-      <h1>Technical Support</h1>
-      <p class="sub">Something not working? Reach a person, not a form.</p>
+      <h1 data-info="Something not working? Reach a person, not a form.">Technical Support</h1>
 
       <div class="box">
         <p class="box-title">Get help now</p>
@@ -9028,8 +9041,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
       </div>
 
       <div class="box">
-        <p class="box-title">Report a problem with this visit</p>
-        <p class="sched-note">Attaches the patient, the call and the last few actions automatically, so you don't have to describe what happened.</p>
+        <p class="box-title" data-info="Attaches the patient, the call and the last few actions automatically, so you don&rsquo;t have to describe what happened.">Report a problem with this visit</p>
         <button class="btn" onclick="toast('Report started with this session attached')">Report a problem</button>
       </div>
 
@@ -9441,6 +9453,8 @@ function syncTopTitle(){
     if(dt){ dt.style.display = 'none'; }
   }
   tbBackSync(scr);
+  var ti = document.getElementById('tb-info'), h1 = scr.id !== 'screen-today' ? scr.querySelector('h1[data-info]') : null;
+  if(ti){ ti.innerHTML = h1 ? scInfoHtml(h1.getAttribute('data-info')) : ''; ti.hidden = !h1; }
   if(typeof qClockUpdate === 'function') qClockUpdate();
 }
 function showScreen(name){
@@ -10128,7 +10142,7 @@ function renderCriticals(){
         ['TableCell', {}, ['TableCellContent', {label:r.what, secondary:r.whatSub || undefined}]],
         ['TableCell', {}, r.val ? ['TableCellContent', {strong:true, label:r.val, secondary:r.ref || undefined}] : ['TableCellContent', {label:'—'}]],
         ['TableCell', {}, ['TableCellContent', {type:'tags'}, r.sev]],
-        ['TableCell', {}, ['TableCellContent', {type:'actions'}, ['Button', {variant:'secondary-main', size:'medium', startIcon:BTN[r.act][0], 'data-go':'1'}, BTN[r.act][1]]]]];
+        ['TableCell', {}, ['TableCellContent', {type:'actions', revealOnHover:true}, ['Button', {variant:'secondary-main', size:'medium', startIcon:BTN[r.act][0], 'data-go':'1'}, BTN[r.act][1]]]]];   /* Ani, 14 Nov: shows on hover and keyboard focus, like the day sheet's row actions */
     }))) : '';
   var bx = document.getElementById('alerts-box'); if(bx) bx.hidden = !rows.length;
   syncAttnFold();
@@ -10350,6 +10364,14 @@ document.addEventListener('DOMContentLoaded', function(){
   /* Ani, 14 Nov ("you use 2 different icons"): the profile menu's chevron is the design system's arrow-dropdown-down, as on the day picker */
   var ch = document.getElementById('pf-chev'); if(ch && SC.icon) ch.innerHTML = SC.icon('arrow-dropdown-down', {size:20});
   if(typeof cv2DsBtn === 'function'){ cv2DsBtn(document.getElementById('rv-chart'), 'secondary-main', 'file-heart'); cv2DsBtn(document.getElementById('rv-nextbtn'), 'secondary-main', 'arrow-direction-right'); }
+  scInfoDress(document);
+  /* the review's "what Accept & assign does" line becomes the follow-up question's info tip; the line stays for screen readers */
+  var rc = document.getElementById('rv-commit'), rq = document.getElementById('rv-q');
+  if(rc && rq){
+    rc.classList.add('sr-only');
+    var syncTip = function(){ var b = rq.querySelector('.sc-info'); var t = rc.textContent.trim(); if(b && t){ b.setAttribute('data-tip', t.replace(/&/g, '&amp;').replace(/</g, '&lt;')); b.setAttribute('aria-label', 'About this: ' + t); } };
+    new MutationObserver(syncTip).observe(rc, {childList:true, characterData:true, subtree:true}); syncTip();
+  }
   if(typeof syncTopTitle === 'function') syncTopTitle();
   /* one chevron everywhere: the old set's chevrons (row arrows, disclosures, menus) become the design system's arrow-dropdown icons */
   if(SC.icon && typeof ICONS !== 'undefined'){
@@ -10644,6 +10666,127 @@ initSidebarCollapse();
 renderQueue();
 updateClaimCount();
 renderClaims();
+
+/* ===== New patient: a side drawer (Ani, 14 Nov: "add new patient flow should open side drawer and allow user to add patient info and save
+   and see it in a table"). Everything is the design system's: Drawer, Input, DateInput, RadioGroup, Button. Save puts the patient on today's
+   day sheet, in the call window chosen, In queue, and shows the row. Demo only: nothing leaves the page. ===== */
+var NP = {v:{}, err:{}};
+var NP_WIN_LABEL = {'8-10':'8:00–10:00', '10-2':'10:00–2:00', '2-5':'2:00–5:00', '5-7':'5:00–7:00'};
+function npField(id, label, extra){
+  var p = {label:label, id:'np-' + id, name:id, value:(id !== 'dob' && NP.v[id]) || undefined};   /* DateInput wants a Date; npDecorate puts the typed date back */
+  for(var k in (extra || {})) p[k] = extra[k];
+  if(NP.err[id]) p.error = NP.err[id];
+  return [id === 'dob' ? 'DateInput' : 'Input', p];
+}
+function npRadios(name, label, opts){
+  var cur = NP.v[name];
+  return ['RadioGroup', {label:label, name:'np-' + name, orientation:'horizontal', defaultValue:cur || undefined}].concat(opts.map(function(o){ return ['Radio', {value:o[0], label:o[1]}]; }));
+}
+/* the design system's RadioGroup has no error state; borrow the Input's error line so it looks the same */
+function npErrLine(msg){ var m = SC.html('Input', {label:'x', error:msg}).match(/<p[^>]*>[\s\S]*?<\/p>/); return m ? m[0].replace('<p', '<p role="alert"') : ''; }
+function npSec(title){ return SC.raw('<h3 class="np-h">' + title + '</h3>'); }
+function npRow(){ return SC.raw('<div class="np-grid">' + [].slice.call(arguments).map(function(c){ return c ? SC.html(c[0], c[1]) : '<span></span>'; }).join('') + '</div>'); }
+function npHTML(){
+  var msp = NP.v.payer !== 'private';
+  return SC.html('Drawer', {id:'np-drawer', 'aria-describedby':'np-desc', title:'New patient', description:'They join today’s day sheet when you save.',
+      primaryAction:{label:'Save patient', id:'np-save'}, secondaryAction:{label:'Cancel', id:'np-cancel'}},
+    npSec('Patient'),
+    npRow(npField('first', 'Legal first name', {required:true, autoComplete:'off'}), npField('last', 'Legal last name', {required:true, autoComplete:'off'})),
+    npRow(npField('pref', 'Preferred name (optional)', {autoComplete:'off'}), npField('dob', 'Date of birth', {required:true})),
+    npRadios('sex', 'Sex', [['Female','Female'], ['Male','Male'], ['X','X']]),
+    NP.err.sex ? SC.raw(npErrLine(NP.err.sex)) : '',
+    npSec('Coverage'),
+    npRadios('payer', 'Who pays', [['msp','MSP (BC health card)'], ['private','Private pay']]),
+    msp ? npRow(npField('phn', 'Personal Health Number (PHN)', {required:true, inputMode:'numeric', autoComplete:'off'}), '') : '',
+    npSec('Contact'),
+    npRow(npField('phone', 'Mobile number', {type:'tel', autoComplete:'off'}), npField('email', 'Email (optional)', {type:'email', autoComplete:'off'})),
+    npSec('Visit'),
+    npRadios('win', 'Call window', WIN_ORDER.map(function(w){ return [w, NP_WIN_LABEL[w]]; })),
+    npField('concern', 'Reason for visit', {required:true, autoComplete:'off'}));
+}
+function npRead(){
+  var d = document.getElementById('np-drawer'); if(!d) return;
+  ['first','last','pref','dob','phn','phone','email','concern'].forEach(function(k){ var i = d.querySelector('#np-' + k); if(i) NP.v[k] = i.value.trim(); });
+  ['sex','payer','win'].forEach(function(k){ var c = d.querySelector('input[name="np-' + k + '"]:checked'); if(c) NP.v[k] = c.value; });
+}
+function npRender(focusId){
+  var host = document.getElementById('np-host');
+  if(!host){ host = document.createElement('div'); host.id = 'np-host'; document.body.appendChild(host); }
+  var old = document.getElementById('np-drawer'), wasOpen = old && old.open;
+  if(wasOpen){
+    /* already open (errors, or the payer changed): redraw only the form, so the drawer doesn't slide in again */
+    var tmp = document.createElement('div'); tmp.innerHTML = npHTML();
+    var oc = old.querySelector('.sv-drawer__content'), top = oc.scrollTop;
+    oc.innerHTML = tmp.querySelector('.sv-drawer__content').innerHTML; oc.scrollTop = top;
+    npDecorate(old);
+    var f0 = focusId && (old.querySelector('#' + focusId) || old.querySelector('input[name="' + focusId + '"]:checked'));
+    if(f0) f0.focus();
+    return;
+  }
+  host.innerHTML = npHTML();
+  var d = document.getElementById('np-drawer');
+  d.addEventListener('cancel', function(){ npClose(); });
+  d.addEventListener('click', function(e){
+    if(e.target === d) return npClose();   /* the backdrop */
+    var b = e.target.closest('button'); if(!b) return;
+    if(b.id === 'np-save') npSave(); else if(b.id === 'np-cancel' || b.getAttribute('aria-label') === 'Close') npClose();
+  });
+  d.addEventListener('change', function(e){ if(e.target.name === 'np-payer'){ npRead(); npRender('np-payer'); } });
+  npDecorate(d);
+  d.showModal();
+  var fi = d.querySelector('#np-first'); if(fi) fi.focus();
+}
+function npDecorate(d){
+  var dob = d.querySelector('#np-dob'); if(dob && NP.v.dob) dob.value = NP.v.dob;
+  /* the radio error line belongs to its group for screen readers */
+  var sx = d.querySelector('input[name="np-sex"]'), ln = sx && sx.closest('fieldset').nextElementSibling;
+  if(ln && ln.matches('p[role="alert"]')){ ln.id = 'np-sex-err'; sx.closest('fieldset').setAttribute('aria-describedby', 'np-sex-err'); }
+}
+function npOpen(){
+  if(dayOffset !== 0) goToday();
+  NP = {v:{payer:'msp', win:(typeof shownWin === 'function' ? shownWin() : '8-10')}, err:{}};
+  npRender();
+}
+function npClose(){ var d = document.getElementById('np-drawer'); if(d && d.open) d.close(); var b = document.querySelector('sc-button[onclick="npOpen()"]'); if(b) b.focus(); }
+function npAge(dob){
+  var m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(dob || ''); if(!m) return null;
+  var mo = +m[1], da = +m[2], yr = +m[3], dt = new Date(yr, mo - 1, da), now = new Date();
+  if(dt.getMonth() !== mo - 1 || dt.getDate() !== da || dt > now || yr < now.getFullYear() - 120) return null;
+  var a = now.getFullYear() - yr; if(now.getMonth() < mo - 1 || (now.getMonth() === mo - 1 && now.getDate() < da)) a--;
+  return a;
+}
+function npSave(){
+  npRead();
+  var v = NP.v, e = {};
+  if(!v.first) e.first = 'Enter their legal first name';
+  if(!v.last) e.last = 'Enter their legal last name';
+  var age = npAge(v.dob);
+  if(!v.dob) e.dob = 'Enter their date of birth'; else if(age === null) e.dob = 'Use MM/DD/YYYY, a real date in the past';
+  if(!v.sex) e.sex = 'Choose one';
+  if(v.payer !== 'private'){ var phn = (v.phn || '').replace(/\s/g, ''); if(!phn) e.phn = 'Enter the 10-digit PHN from their BC health card'; else if(!/^9\d{9}$/.test(phn)) e.phn = 'A BC PHN is 10 digits and starts with 9'; }
+  if(v.phone && v.phone.replace(/\D/g, '').length < 10) e.phone = 'Enter a 10-digit number';
+  if(v.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v.email)) e.email = 'Check the email address';
+  if(!v.concern) e.concern = 'Say why they’re booking';
+  NP.err = e;
+  var bad = ['first','last','dob','sex','phn','phone','email','concern'].filter(function(k){ return e[k]; });
+  if(bad.length){ npRender(bad[0] === 'sex' ? 'np-sex' : 'np-' + bad[0]); if(bad[0] === 'sex'){ var r = document.querySelector('input[name="np-sex"]'); if(r) r.focus(); } return; }
+  var sx = v.sex === 'Female' ? 'F' : (v.sex === 'Male' ? 'M' : 'X');
+  var name = v.first + ' ' + v.last + ', ' + age + sx, n = 2;
+  while(QUEUE_DATA.some(function(r){ return r.name === name; })) name = v.first + ' ' + v.last + ' (' + (n++) + '), ' + age + sx;
+  var priv = v.payer === 'private';
+  QUEUE_DATA.push({pos:QUEUE_DATA.length + 1, name:name, legal:v.first + ' ' + v.last, pref:v.pref || v.first, age:age + 'Y', sex:v.sex === 'X' ? 'X' : v.sex,
+    plan:priv ? 'Private' : 'MSP', card:priv ? 'private' : 'verified',   /* demo: a well-formed PHN reads as verified; the real check asks MSP */
+    phn:priv ? '' : v.phn.replace(/\s/g, ''), dob:v.dob, phone:v.phone || '', email:v.email || '',
+    concern:v.concern, win:v.win || '8-10', status:'waiting', wait:'0 min', redflag:false, isNew:true});
+  var pd = priv ? '' : v.phn.replace(/\D/g, '');
+  PT_CHART[name] = {phn:priv ? '—' : pd.slice(0, 4) + ' ' + pd.slice(4, 7) + ' ' + pd.slice(7), pharm:''};   /* the chart's PHN line */
+  var d = document.getElementById('np-drawer'); if(d && d.open) d.close();
+  QWIN_OPEN[v.win] = true;
+  renderQueue();
+  var row = document.querySelector('#queue-mount tr[data-name="' + name.replace(/"/g, '\\"') + '"]');
+  if(row){ row.classList.add('np-added'); row.scrollIntoView({block:'center', behavior:'smooth'}); row.focus({preventScroll:true}); setTimeout(function(){ row.classList.remove('np-added'); }, 2400); }
+  toast(v.first + ' ' + v.last + ' added to today · ' + NP_WIN_LABEL[v.win]);
+}
 
 /* ===== cross-portal demo link: patient portal tells us when someone joins the queue ===== */
 function addPatientToQueue(payload){
@@ -13231,9 +13374,7 @@ function rvRenderDraft(it){
   if(!d.tier){ host.innerHTML = ''; host.style.display='none'; return; }
   host.style.display = 'block';
   host.innerHTML =
-    '<p class="box-title">Suggested disposition <span class="rv-aimark">'+(typeof AI_MARK!=='undefined'?AI_MARK:'')+' drafted for you</span></p>'+
-    /* Accept & assign files the task at once; sign-off is a later inbox step */
-    '<p class="rv-hint">Everything here is editable. Nothing is sent until you press Accept &amp; assign.</p>'+
+    '<p class="box-title">Suggested disposition'+scInfoHtml('Everything here is editable. Nothing is sent until you press Accept &amp; assign.')+' <span class="rv-aimark">'+(typeof AI_MARK!=='undefined'?AI_MARK:'')+' drafted for you</span></p>'+
     /* sized to their text: a one-line input cut the action off before the
        value it was about ("...for Potassium"), and the plan lost its last line */
     '<div class="rv-field"><label>Suggested action</label>'+
@@ -24375,6 +24516,19 @@ function cv2Rail(){
 }
 /* Ani, 14 Nov ("on hover show what is this"): each rail icon names its section in the design system's Tooltip, to its right.
    The side panel clips overflow, so one tooltip lives on <body> (position fixed) and moves to the icon under the pointer or focus. */
+/* Ani, 14 Nov ("this type of explaining message: just an i icon next to the title, shown on hover"): an explanation is an info
+   icon beside its title; hovering or focusing it shows the text in the design system's Tooltip (the same one the rail uses).
+   scInfoHtml(text) writes the icon; [data-info] on a heading gets one on load; a screen's h1 with data-info puts it in the top bar. */
+function scInfoHtml(text){
+  var ic = window.SC && SC.icon ? SC.icon('information', {size:16}) : 'i';
+  return '<button type="button" class="sc-info" data-tip="' + String(text).replace(/"/g, '&quot;') + '" aria-label="About this: ' + String(text).replace(/<[^>]+>/g, '').replace(/"/g, '&quot;') + '">' + ic + '</button>';
+}
+function scInfoDress(root){
+  (root || document).querySelectorAll('[data-info]:not(h1)').forEach(function(el){
+    if(el.querySelector(':scope > .sc-info')) return;
+    el.insertAdjacentHTML('beforeend', scInfoHtml(el.getAttribute('data-info')));
+  });
+}
 var CV2_TIP = {t:0};
 function cv2Tip(btn){
   var t = document.getElementById('cv2-tip');
@@ -24383,24 +24537,32 @@ function cv2Tip(btn){
     d.innerHTML = SC.html('Tooltip', {content:'', placement:'right', open:true, id:'cv2-tip'}, ['Button', {}, '']);
     t = d.querySelector('.sv-tooltip'); if(!t) return;
     t.setAttribute('aria-hidden', 'true');   /* the button's aria-label already names it */
-    t.style.position = 'fixed'; t.style.right = 'auto'; t.style.bottom = 'auto'; t.hidden = true;
+    t.style.position = 'fixed'; t.style.right = 'auto'; t.style.bottom = 'auto'; t.style.zIndex = '2000'; t.hidden = true;   /* above the sticky top bar (60) */
     document.body.appendChild(t);
   }
   clearTimeout(CV2_TIP.t);
   if(!btn){ t.hidden = true; return; }
   CV2_TIP.t = setTimeout(function(){
     if(!btn.isConnected) return;
-    var r = btn.getBoundingClientRect(), lbl = t.querySelector('span');
-    if(lbl) lbl.textContent = btn.getAttribute('aria-label') || '';
-    t.style.left = Math.round(r.right + 8) + 'px'; t.style.top = Math.round(r.top + r.height / 2) + 'px'; t.style.translate = '0 -50%';
+    var r = btn.getBoundingClientRect(), lbl = t.querySelector('span'), info = btn.classList.contains('sc-info');
+    if(lbl){ if(info) lbl.innerHTML = btn.getAttribute('data-tip') || ''; else lbl.textContent = btn.getAttribute('aria-label') || ''; }
+    if(info){   /* info: under the icon, centred, kept inside the window */
+      t.setAttribute('data-placement', 'bottom');
+      var w = Math.min(240, t.offsetWidth || 240), x = Math.max(8 + w / 2, Math.min(window.innerWidth - 8 - w / 2, r.left + r.width / 2));
+      t.style.left = Math.round(x) + 'px'; t.style.top = Math.round(r.bottom + 8) + 'px'; t.style.translate = '-50% 0';
+    } else {
+      t.setAttribute('data-placement', 'right');
+      t.style.left = Math.round(r.right + 8) + 'px'; t.style.top = Math.round(r.top + r.height / 2) + 'px'; t.style.translate = '0 -50%';
+    }
     t.hidden = false;
   }, 300);
 }
 (function(){
-  var on = function(e){ var b = e.target.closest && e.target.closest('#cv2-rail .cv2-rb'); cv2Tip(b || null); };
+  var TIPS = '#cv2-rail .cv2-rb, .sc-info';
+  var on = function(e){ var b = e.target.closest && e.target.closest(TIPS); cv2Tip(b || null); };
   document.addEventListener('mouseover', on); document.addEventListener('focusin', on);
-  document.addEventListener('mouseout', function(e){ if(e.target.closest && e.target.closest('#cv2-rail .cv2-rb') && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('#cv2-rail .cv2-rb'))) cv2Tip(null); });
-  document.addEventListener('focusout', function(e){ if(e.target.closest && e.target.closest('#cv2-rail .cv2-rb')) cv2Tip(null); });
+  document.addEventListener('mouseout', function(e){ if(e.target.closest && e.target.closest(TIPS) && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest(TIPS))) cv2Tip(null); });
+  document.addEventListener('focusout', function(e){ if(e.target.closest && e.target.closest(TIPS)) cv2Tip(null); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') cv2Tip(null); });
   document.addEventListener('click', function(e){ if(e.target.closest && e.target.closest('#cv2-rail .cv2-rb')) cv2Tip(null); }, true);
 })();
