@@ -7652,7 +7652,9 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   :root[data-theme="dark"] #pcv-c .cs-ai{background:linear-gradient(135deg, color-mix(in srgb, var(--color-brand-ai-start) 18%, var(--color-surface-card-white)), color-mix(in srgb, var(--color-brand-ai-end) 12%, var(--color-surface-card-white))) !important;}
   /* Ani, 9 Nov ("why are there 2 lines close to each other"): the Note card is the only box; the note editor inside it draws no border of its own */
   .v2-notecard #ns-wrap.ns{border:0 !important;border-radius:0 !important;background:none !important;box-shadow:none !important;}
-  .v2-notecard #nd.nd{border:0 !important;border-radius:0 !important;box-shadow:none !important;}  /* card to the next section title: 32px (the title sits 12px down its 36px toolbar row) */
+  .v2-notecard #nd.nd{border:0 !important;border-radius:0 !important;box-shadow:none !important;}
+  /* the day calendar pops over the page, under the date button */
+  .day-cal-pop{position:absolute;z-index:300;}  /* card to the next section title: 32px (the title sits 12px down its 36px toolbar row) */
 </style>
 <style>
 #screen-inbox .ix-tabs-row,#screen-claims .t23-tabsrow{margin:0 0 12px;}
@@ -7823,7 +7825,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
                  calendar button), the call windows (an inverse toggle) and the filters (FilterButtons with menus) are the design system's. Daniel, 4 Nov
                  call 00:28:07: the date opens a calendar; the chosen day's sheet shows below, by call window. -->
             <div class="day-nav" id="day-nav" onclick="dayNavClick(event)"></div>
-            <input type="date" id="day-cal-in" class="day-cal-in" tabindex="-1" aria-hidden="true" onchange="dayCalPick(this.value)">
+
             <div class="q-tools">
               <!-- Ani, 5 Nov: one search. The top bar's search (Ctrl+K) is the only one; it lists today's day sheet first. -->
             </div>
@@ -10015,11 +10017,14 @@ function renderDayNav(){
   var label = (dayOffset===0 ? 'Today · ' : (dayOffset===-1 ? 'Yesterday · ' : (dayOffset===1 ? 'Tomorrow · ' : ''))) + name;
   var src = (dayOffset===0) ? QUEUE_DATA : (OTHER_DAYS[String(dayOffset)] || []);
   var B = function(p, t){ p.variant = p.variant || 'tertiary-main'; p.size = 'medium'; return SC.html('Button', p, t || ''); };
-  nav.innerHTML = B({startIcon:'arrow-dropdown-left', 'aria-label':'Previous day', 'data-day':'-1'}) +
-    B({startIcon:'calendar', 'aria-haspopup':'dialog', 'data-daycal':'1', id:'day-label'}, label) +
+  /* Ani, 13 Nov: one row of design-system buttons, all medium (36): Today, previous, next, and the date, which opens the
+     design system's calendar (<sc-date-picker>). Today stays in place (no jump) and is quiet when today is shown.
+     The day's count is the Day sheet title's count, not a second number here. */
+  nav.innerHTML = B({variant:'secondary-main', 'data-today':'1', id:'day-today-btn', 'aria-current':dayOffset === 0 ? 'date' : undefined}, 'Today') +
+    B({startIcon:'arrow-dropdown-left', 'aria-label':'Previous day', 'data-day':'-1'}) +
     B({startIcon:'arrow-dropdown-right', 'aria-label':'Next day', 'data-day':'1'}) +
-    (dayOffset !== 0 ? B({variant:'secondary-main', 'data-today':'1', id:'day-today-btn'}, 'Today') : '') +
-    (dayOffset !== 0 ? '<span class="day-count" id="day-count">' + (src.length ? src.length + ' booked' : 'nothing booked') + '</span>' : '');
+    B({startIcon:'calendar', endIcon:'arrow-dropdown-down', 'aria-haspopup':'dialog', 'aria-expanded':'false', 'data-daycal':'1', id:'day-label'}, label);
+  updateWorkCounts();
 }
 function dayNavClick(e){
   var b = e.target.closest('button'); if(!b) return;
@@ -10036,11 +10041,32 @@ function goToday(){ dayOffset = 0; renderDayNav(); renderQueue(); }
 /* the calendar: the browser's own date picker, so it is keyboard and screen-reader ready; the chosen day's sheet replaces today's */
 function dayIso(off){ var d = new Date(); d.setDate(d.getDate() + off); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 function dayCalOpen(){
-  var i = document.getElementById('day-cal-in'); if(!i) return;
-  i.value = dayIso(dayOffset);
-  try { if(i.showPicker){ i.showPicker(); return; } } catch(e){}
-  i.focus(); i.click();
+  var btn = document.getElementById('day-label'); if(!btn) return;
+  if(document.getElementById('day-cal-pop')){ dayCalClose(); return; }
+  var pop = document.createElement('div');
+  pop.id = 'day-cal-pop'; pop.className = 'day-cal-pop'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', 'Choose a day');
+  var dp = document.createElement('sc-date-picker');
+  dp.setAttribute('value', dayIso(dayOffset)); dp.setAttribute('min', dayIso(-365)); dp.setAttribute('max', dayIso(365));
+  dp.setAttribute('elevated', ''); dp.setAttribute('label', 'Choose a day');
+  dp.addEventListener('change', function(){ var v = dp.value; dayCalClose(); dayCalPick(v); var nb = document.getElementById('day-label'); if(nb) nb.focus(); });
+  dp.addEventListener('cancel', dayCalClose);
+  pop.appendChild(dp);
+  var r = btn.getBoundingClientRect();
+  pop.style.top = (r.bottom + window.scrollY + 8) + 'px';
+  document.body.appendChild(pop);
+  pop.style.left = Math.max(16, r.right + window.scrollX - pop.offsetWidth) + 'px';   /* right edge under the date button's */
+  if(r.bottom + 8 + pop.offsetHeight > window.innerHeight && r.top - 8 - pop.offsetHeight > 0)
+    pop.style.top = (r.top + window.scrollY - 8 - pop.offsetHeight) + 'px';   /* no room below: open above */
+  btn.setAttribute('aria-expanded', 'true');
+  setTimeout(function(){ document.addEventListener('mousedown', dayCalOutside); document.addEventListener('keydown', dayCalKey); }, 0);
 }
+function dayCalClose(){
+  var pop = document.getElementById('day-cal-pop'); if(pop) pop.remove();
+  document.removeEventListener('mousedown', dayCalOutside); document.removeEventListener('keydown', dayCalKey);
+  var btn = document.getElementById('day-label'); if(btn){ btn.setAttribute('aria-expanded', 'false'); btn.focus(); }
+}
+function dayCalOutside(e){ if(!e.target.closest('#day-cal-pop, #day-label')) dayCalClose(); }
+function dayCalKey(e){ if(e.key === 'Escape'){ e.preventDefault(); dayCalClose(); } }
 function dayCalPick(v){
   if(!v) return;
   var p = v.split('-'), pick = new Date(+p[0], +p[1] - 1, +p[2]), now = new Date(); now.setHours(0, 0, 0, 0);
@@ -12538,7 +12564,10 @@ var ICONS = {
 function updateWorkCounts(){
   var q=document.getElementById('wt-queue-count');
   if(q && typeof QUEUE_DATA !== 'undefined'){
-    q.textContent = QUEUE_DATA.filter(function(r){ return !statusClosed(r.status); }).length;
+    /* the chosen day's count: today counts who is still open; another day counts who is booked */
+    var off = typeof dayOffset !== 'undefined' ? dayOffset : 0;
+    q.textContent = off === 0 ? QUEUE_DATA.filter(function(r){ return !statusClosed(r.status); }).length
+                              : ((typeof OTHER_DAYS !== 'undefined' && OTHER_DAYS[String(off)]) || []).length;
   }
 }
 
