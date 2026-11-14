@@ -7666,6 +7666,15 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #tk-list th:nth-child(2){width:34%;min-width:230px;}
   #tk-list{margin:0 -24px;}   /* the frameless table runs edge to edge in its card, like the day sheet */
   #tk-list td:last-child{white-space:nowrap;}
+  /* lab panels (lrTable): value and unit, then the flag tag; previous values one per line, dates grey */
+  .lr-dst .lr-res{margin-right:8px;white-space:nowrap;font-variant-numeric:tabular-nums;}
+  .lr-dst .lr-res .lr-v{font-weight:700;}
+  .lr-dst .lr-res .lr-u{color:var(--color-text-default-caption);}
+  .lr-dst .lr-pv{display:block;white-space:nowrap;font-variant-numeric:tabular-nums;}
+  .lr-dst .lr-pv b{font-weight:400;}
+  .lr-dst .lr-pv i{font-style:normal;color:var(--color-text-default-caption);margin-left:4px;}
+  .lr-dst .lr-r,.lr-dst .lr-none{color:var(--color-text-default-caption);}
+  .lr-find .lr-wrap{margin:4px 0 0;}
   #tk-list th:nth-child(3){width:150px;}
   #tk-list td:nth-child(3) :is(div,span):has(> .sv-tag){flex-wrap:wrap;white-space:normal;row-gap:4px;}   /* Type and Carried forward stack instead of widening the table */
   /* the hosts of a design-system AvatarCircle draw nothing of their own */
@@ -7682,18 +7691,19 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-today .q-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;}
 #screen-today .q-toolbar .qwin{order:1;}
 #screen-today .q-toolbar .qf-row{order:2;display:flex;align-items:center;gap:8px;}
-#screen-today .q-toolbar .day-nav{order:0;margin:0;display:flex;align-items:center;gap:8px;flex:0 0 auto;}
+#screen-today .q-toolbar .day-nav{order:9;margin:0 0 0 auto;display:flex;align-items:center;gap:8px;flex:0 0 auto;}   /* Ani, 13 Nov: the date at the right end, in line with the table's edge */
 /* Ani, 13 Nov: the date as one grouped control (arrows either side of the date, one border, dividers between) */
 #screen-today .day-nav .dn-group{display:inline-flex;align-items:stretch;border:1px solid var(--line);border-radius:8px;background:var(--color-grey-50);overflow:hidden;}   /* Ani, 13 Nov: this grey */
 #screen-today .day-nav .dn-group > button{border:0 !important;border-radius:0 !important;height:34px;}   /* 34 + the 1px border = 36, like the call windows */
 #screen-today .day-nav .dn-group > button + button{border-left:1px solid var(--line) !important;}
-#screen-today .day-nav .dn-group > #day-label{min-width:212px;justify-content:center;font-weight:700;}
+#screen-today .day-nav .dn-group > #day-label{justify-content:center;font-weight:700;}
 #screen-today .day-nav .dn-group > button:hover{background:var(--hover,rgba(0,0,0,.04));}
 #screen-today .day-nav #day-today-btn{color:var(--brand);}
 #screen-today .q-toolbar .qwin{order:1;}
 #screen-today .q-toolbar .qf-row{order:2;}
 #screen-today .box:has(> #work-queue){padding-top:16px;}   /* Ani, 13 Nov ('too much gap here'): less air above the day sheet's toolbar */
-#screen-today .q-toolbar{margin-bottom:8px;}   /* and under it, so the table header follows the call windows closely */
+#screen-today .q-toolbar{margin-bottom:8px;column-gap:10px;}   /* 10px so the widest date ("Wed, Nov 18") still fits on the row */
+#screen-today .q-toolbar .q-tools:empty,#screen-today .q-toolbar .q-tools:not(:has(*)){display:none;}   /* the empty search slot took a gap and pushed the date to a second row */   /* and under it, so the table header follows the call windows closely */
 #screen-today .qf-wrap{position:relative;}
 /* Ani, 6 Nov ("do we need this gap between the table and where the table starts"): the table sits in the card unframed and runs to its edges; the card's padding stays around the toolbar only */
 #screen-today #attn-clip{margin:-22px -24px;border-radius:var(--radius-md);overflow:hidden;}   /* Needs your attention: the table fills its card */
@@ -10052,12 +10062,15 @@ function renderDayNav(){
   /* Ani, 13 Nov ('not intuitive, redesign this date picker'): one grouped control, first in the toolbar because the call windows and
      filters belong to the day it shows: previous day, the date (opens the design system's calendar), next day. "Back to today" shows only
      when another day is on screen, so Today is never said twice. The date keeps a fixed width so the arrows don't move as days change. */
+  /* Ani, 13 Nov ('move date end of the table'): at the right end, on the same row as the call windows and filters on every day, so the
+     table never jumps. Today reads "Today · Fri, Nov 13"; another day reads just its date, with a Today button joined to the group's left. */
+  var short = dayOffset === 0 ? label : name;
   nav.innerHTML = '<div class="dn-group" role="group" aria-label="Day shown">' +
+    (dayOffset !== 0 ? B({variant:'tertiary-main', 'data-today':'1', id:'day-today-btn', 'aria-label':'Back to today'}, 'Today') : '') +
     B({startIcon:'arrow-dropdown-left', 'aria-label':'Previous day', 'data-day':'-1'}) +
-    B({startIcon:'calendar', endIcon:'arrow-dropdown-down', 'aria-haspopup':'dialog', 'aria-expanded':'false', 'data-daycal':'1', id:'day-label', 'aria-label':'Day shown: ' + label + '. Choose a day'}, label) +
+    B({endIcon:'arrow-dropdown-down', 'aria-haspopup':'dialog', 'aria-expanded':'false', 'data-daycal':'1', id:'day-label', 'aria-label':'Day shown: ' + label + '. Choose a day'}, short) +
     B({startIcon:'arrow-dropdown-right', 'aria-label':'Next day', 'data-day':'1'}) +
-    '</div>' +
-    (dayOffset !== 0 ? B({variant:'tertiary-main', 'data-today':'1', id:'day-today-btn', startIcon:'arrow-dropdown-left'}, 'Back to today') : '');
+    '</div>';
   updateWorkCounts();
 }
 function dayNavClick(e){
@@ -11780,23 +11793,35 @@ function lrPriors(patient, t){
 function lrPrevList(pr){
   return pr.map(function(p){ return '<span class="lr-pv">' + p.v + ' <i>' + (p.d || 'date not on file') + (p.pt ? ', uploaded by patient' : '') + '</i></span>'; }).join('');
 }
-/* the LifeLabs table: Test | Out of range | Within range | Reference interval | Previous (two, with dates) */
+/* Ani, 13 Nov ("everything is merged together"): every lab panel is one design-system Table, one row per test, four clear columns:
+   Test | Result (the value in bold with its unit, the flag as a tag: Critical in red, High or Low in amber) | Reference | Previous (the two
+   earlier values, one per line, each with its date in grey). Same content as the LifeLabs layout (T-037), laid out so nothing runs together. */
+function lrResultCell(r){
+  var fl = lrFlag(r.f, r.v);
+  var val = '<b class="lr-v' + (fl.crit ? ' crit' : '') + '">' + r.v + '</b>' + (r.u ? ' <span class="lr-u">' + r.u + '</span>' : '');
+  var tag = fl.out ? SC.html('Tag', {color:fl.crit ? 'error' : 'warning', startIcon:fl.crit ? 'warning' : undefined}, fl.word) : '';
+  return ['TableCellContent', {type:'tags'}, SC.raw('<span class="lr-res">' + val + '</span>' + tag)];
+}
+function lrPrevCell(pv){
+  if(!pv || !pv.length) return ['TableCellContent', {label:'None on file', className:'lr-none'}];
+  var line = function(p){ return '<span class="lr-pv"><b>' + p.v + '</b> <i>' + (p.d || 'date not on file') + (p.pt ? ', uploaded by patient' : '') + '</i></span>'; };
+  return ['TableCellContent', {label:SC.raw(pv.map(line).join(''))}];
+}
 function lrTable(rows, o){
   o = o || {};
-  var h = '<div class="lr-wrap"><table class="lr-t"' + (o.label ? ' aria-label="' + o.label + '"' : '') + '><thead><tr>' +
-    '<th scope="col">Test</th><th scope="col">Out of range</th><th scope="col">Within range</th><th scope="col">Reference interval</th><th scope="col">Previous</th>' +
-    (o.tail ? '<th scope="col"><span class="vh">' + o.tail + '</span></th>' : '') + '</tr></thead><tbody>';
-  rows.forEach(function(r){
-    var fl = lrFlag(r.f, r.v), val = '<span class="lr-v' + (fl.crit ? ' crit' : '') + '">' + r.v + '</span>';
-    var pv = r.prior || [];
-    h += '<tr class="' + (o.rowCls || '') + (fl.out ? ' lr-out' : '') + '"><th scope="row" class="lr-n">' + (r.nameHtml || r.n) + '</th>' +
-      '<td class="lr-o" data-l="Out of range">' + (fl.out ? val + ' ' + lrWord(r.f, r.v) : '') + '</td>' +
-      '<td class="lr-i" data-l="Within range">' + (fl.out ? '' : val) + '</td>' +
-      '<td class="lr-r" data-l="Reference interval">' + lrRef(r) + '</td>' +
-      '<td class="lr-p" data-l="Previous">' + (pv.length ? lrPrevList(pv) : '<span class="lr-none">None on file</span>') + '</td>' +
-      (o.tail ? '<td class="lr-x">' + (r.tail || '') + '</td>' : '') + '</tr>';
-  });
-  return h + '</tbody></table></div>';
+  if(typeof SC === 'undefined' || !SC.html) return '';
+  var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Test'], ['TableHead', {}, 'Result'], ['TableHead', {}, 'Reference'], ['TableHead', {}, 'Previous']]
+    .concat(o.tail ? [['TableHead', {type:'empty', 'aria-label':o.tail}, '']] : [])];
+  var body = rows.map(function(r){
+    var fl = lrFlag(r.f, r.v);
+    return SC.html('TableRow', {className:(o.rowCls || '') + (fl.out ? ' lr-out' : '')},
+      ['TableCell', {}, ['TableCellContent', {label:r.nameHtml ? SC.raw(r.nameHtml) : r.n, strong:true}]],
+      ['TableCell', {}, lrResultCell(r)],
+      ['TableCell', {}, ['TableCellContent', {label:lrRef(r) || '—', className:'lr-r'}]],
+      ['TableCell', {}, lrPrevCell(r.prior)],
+      o.tail ? ['TableCell', {}, ['TableCellContent', {type:'actions'}, SC.raw(r.tail || '')]] : null);
+  }).join('');
+  return '<div class="lr-wrap">' + SC.html('Table', {'aria-label':o.label || 'Results', framed:false, className:'lr-dst'}, head, ['TableBody', {}, SC.raw(body)]) + '</div>';
 }
 /* one line per value where a table does not fit (Inbox rows): name, value and unit with the word, the reference, the two earlier values */
 function lrInline(t, pr){
@@ -12002,10 +12027,11 @@ function inboxRowHtml(item, i){
     /* T-037 (Daniel, 31 Oct: results "the LifeLabs way", the reference range "right there, not on click", the arrow explained, the two prior values):
        each out-of-range value is one line: name, value and unit with the word (High, Low, Critical high), the reference interval, the two earlier
        values with their dates. Values within range still collapse to a count. The critical value keeps the only red. */
-    findings = '<div class="ix-find lr-find">' + item.tests.filter(function(t){ return t.f; })
+    /* Ani, 13 Nov: the out-of-range values as the same design-system table as everywhere else (was one run-together line each) */
+    findings = '<div class="ix-find lr-find">' + lrTable(item.tests.filter(function(t){ return t.f; })
       .map(function(t,k){ return {t:t,k:k}; })
       .sort(function(a,b){ return (rank(a.t)-rank(b.t)) || (a.k-b.k); })
-      .map(function(x){ return lrInline(x.t, lrPriors(item.patient, x.t)); }).join('') +
+      .map(function(x){ var t = x.t; return {n:t.n, v:t.v, u:t.u, ref:t.ref, f:t.f, prior:lrPriors(item.patient, t)}; }), {label:(item.panel || 'Results') + ': out of range'}) +
     (okN ? '<span class="ix-okn">'+(okN===total ? 'All '+total+' within range' : '+'+okN+' within range')+'</span>' : '') +
     '</div>';
   } else if(item.kind==='culture'){
