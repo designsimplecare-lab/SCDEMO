@@ -4442,6 +4442,7 @@
   .t23-days.warn{background:var(--tag-warn);} .t23-days.warn .ic{color:var(--tag-warn-ic);}
   .t23-days.late{font-weight:700;}
   .t23-sub{display:block;font-size:14px;color:var(--ink-soft);margin-top:2px;}
+  .t23-sub.t23-done{margin:0 0 0 auto;text-align:right;}   /* Ani, 14 Nov: at the row's right edge, where the button was */
   /* Needs your decision: one card per claim, a flag row per issue */
   
   
@@ -18783,12 +18784,13 @@ function t23HowLine(c){
 }
 function t23PrivRow(c){
   var act = [];
-  if(c.st === 'pri-due' && c.how === 'link') act = c.moaAsked ? [] : [t23Btn('askmoa', 'Ask the MOA to follow up', {v:'secondary-main', icon:'user-assign'})];
+  /* Ani, 14 Nov ("show MOA asked etc on the edge of the row"): once asked, the note takes the button's place at the row's right edge */
+  if(c.st === 'pri-due' && c.how === 'link') act = c.moaAsked ? [SC.raw('<span class="t23-sub t23-done">MOA asked to follow up · ' + c.moaAsked + '</span>')] : [t23Btn('askmoa', 'Ask the MOA to follow up', {v:'secondary-main', icon:'user-assign'})];
   return t23Tr(c, [
     ['TableCell', {}, t23Who(c)],
     ['TableCell', {}, t23FeeCell(c)],
     ['TableCell', {}, t23AmtCell(c)],
-    ['TableCell', {}, ['TableCellContent', {type:'tags', wrap:true}, SC.raw(t23StatusTag(c) + (c.moaAsked && c.st === 'pri-due' ? '<span class="t23-sub">MOA asked to follow up · ' + c.moaAsked + '</span>' : ''))]],
+    ['TableCell', {}, ['TableCellContent', {type:'tags', wrap:true}, SC.raw(t23StatusTag(c))]],
     ['TableCell', {}, ['TableCellContent', {type:'actions'}].concat(act)]]);
 }
 function t23AskMoa(id){
