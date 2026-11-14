@@ -7724,11 +7724,11 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-claims #t23-seg{margin:0 0 16px;}
 </style>
 <!-- SimpleCare design system: tokens + Lato, then the bridge that maps this page onto them (assets/design-system/). Keep these two links last in <head>. -->
-<link rel="stylesheet" href="assets/design-system/simplecare-tokens.css?v=2026-11-14">
-<link rel="stylesheet" href="assets/design-system/portal-bridge.css?v=2026-11-14">
-<link rel="stylesheet" href="assets/design-system/simplecare-ui.css?v=2026-11-14">
-<script src="assets/design-system/simplecare-icons.js?v=2026-11-14"></script>
-<script src="assets/design-system/simplecare-ui.js?v=2026-11-14" defer></script>
+<link rel="stylesheet" href="assets/design-system/simplecare-tokens.css?v=2026-11-14b">
+<link rel="stylesheet" href="assets/design-system/portal-bridge.css?v=2026-11-14b">
+<link rel="stylesheet" href="assets/design-system/simplecare-ui.css?v=2026-11-14b">
+<script src="assets/design-system/simplecare-icons.js?v=2026-11-14b"></script>
+<script src="assets/design-system/simplecare-ui.js?v=2026-11-14b" defer></script>
 </head>
 <body>
 
@@ -18416,7 +18416,8 @@ function t23Row(c, opts){
     ['TableCell', {}, ['TableCellContent', {type:'tags', wrap:true}, SC.raw((opts.pill ? t23StatusTag(c) + t23DaysChip(c) : '') + (sub ? '<span class="t23-sub">' + t23E(sub) + '</span>' : '') + (c.signed && opts.pill ? soStamp(c.signed) : ''))]],
     ['TableCell', {}, ['TableCellContent', {type:'actions', revealOnHover:true}, t23Btn('details', 'Details')]]]);
 }
-function t23Head(cols){ return ['TableHeader', {}, ['TableHeaderRow', {}].concat(cols.map(function(c){ return c ? ['TableHead', {}, c] : ['TableHead', {type:'empty', 'aria-label':'Actions'}, '']; }))]; }
+/* Amount is a number column: its header right-aligns over the right-aligned figures (Ani, 14 Nov) */
+function t23Head(cols){ return ['TableHeader', {}, ['TableHeaderRow', {}].concat(cols.map(function(c){ return c ? ['TableHead', c === 'Amount' ? {type:'number'} : {}, c] : ['TableHead', {type:'empty', 'aria-label':'Actions'}, '']; }))]; }
 function t23Table(label, cols, rows){ return SC.html('Table', {'aria-label':label}, t23Head(cols), ['TableBody', {}].concat(rows)); }
 /* a question or a name check under its claim: a full-width row */
 function t23NoteRow(c, html){ return html ? ['TableRow', {className:'t23-qrow', 'data-c':c.id}, ['TableCell', {colSpan:5}, SC.raw(html)]] : null; }
