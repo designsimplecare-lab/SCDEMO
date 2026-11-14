@@ -19055,6 +19055,24 @@ BILL_STATUS = {
 };
 BILL_OPEN = ['msp-submit','pri-due'];
 QUEUE_DATA.forEach(function(r){ if(r.name === 'Manjit') r.claimId = 'c20'; });
+/* Ani, 14 Nov ("add all other options possible for billing"): finished visits carry their claim, so the day sheet shows every billing state.
+   Today has the same-day ones (Submit claim, Payment paid); what MSP says later (held, refused, paid, closed) shows on earlier days. */
+(function(){
+  var msp = {plan:'MSP', card:'verified'}, pri = {plan:'Private', card:'private'};
+  function row(o, base){ for(var k in base) if(!(k in o)) o[k] = base[k]; o.status = o.status || 'done'; o.wait = '—'; o.redflag = false; return o; }
+  QUEUE_DATA.push(row({name:'Frank D., 71M', legal:'Frank Dimitrov', pref:'Frank', age:'71Y', sex:'Male', concern:'Blood pressure check', win:'8-10', claimId:'c18'}, msp));
+  QUEUE_DATA[QUEUE_DATA.length - 1].pos = QUEUE_DATA.length;
+  OTHER_DAYS['-1'] = [
+    row({name:'Owen Brady, 38M', age:'38Y', sex:'Male', concern:'Back pain follow up', win:'8-10', claimId:'c13'}, msp),
+    row({name:'Andrey Abushakhmanov, 24M', age:'24Y', sex:'Male', concern:'Follow up appointment', win:'8-10', claimId:'c12'}, msp),
+    row({name:'Grace Lin, 52F', age:'52Y', sex:'Female', concern:'Lab review', win:'10-2', claimId:'c11'}, msp),
+    row({name:'Greg', legal:'Gregory Paul Nakashima', pref:'Greg', age:'58Y', sex:'Male', concern:'Rx renewal', win:'2-5', claimId:'c19'}, pri)];
+  OTHER_DAYS['-2'] = [
+    row({name:'Behdis Maleki, 35F', age:'35Y', sex:'Female', concern:'Follow up appointment', win:'8-10', claimId:'c16'}, msp),
+    row({name:'Carol-Anne Feldman, 44F', age:'44Y', sex:'Female', concern:'Yeast infection', win:'10-2', claimId:'c14'}, msp),
+    row({name:'Owen Brady, 38M', age:'38Y', sex:'Male', concern:'Back pain', win:'10-2', claimId:'c27'}, msp),
+    row({name:'Nadia Hassan, 28F', age:'28Y', sex:'Female', concern:'Prescription renewal', win:'2-5', status:'noshow'}, msp)];
+})();
 function t23RowClaim(r){ return r && r.claimId ? t23C(r.claimId) : null; }
 function t23RowKey(r){
   if(r.status === 'noshow') return 'noshow';
@@ -19064,8 +19082,10 @@ function t23RowKey(r){
 function t23BillCell(r){
   var k = t23RowKey(r), b = BILL_STATUS[k];
   r.bill = k;
-  if(k === 'msp-none') return '<span class="t23-none"><span class="sr-only">No claim yet. The visit isn’t finished.</span></span>';   /* Ani, 9 Nov: no dash; an empty cell says "nothing yet" */
-  if(k === 'noshow') return '<span class="t23-none"><span class="sr-only">No claim. The patient was a no-show.</span></span>';   /* Daniel, 13 Nov video: no-show is a visit status; the billing column doesn't repeat it */
+  /* Ani, 14 Nov ("say something, it is awkward"): the empty cells say what's true, in a quiet neutral tag. Before sign-off there's no claim yet;
+     a no-show has no claim (Daniel, 13 Nov video: the no-show itself belongs in Visit status, so this doesn't repeat it) */
+  if(k === 'msp-none') return stTag('collection-expected', '', {label: statusClosed(r.status) ? 'No claim' : 'Not billed yet', 'aria-label':'Billing: ' + (statusClosed(r.status) ? 'No claim' : 'Not billed yet. The claim is made when the note is signed')});
+  if(k === 'noshow') return stTag('claim-closed', '', {label:'No claim', 'aria-label':'Billing: No claim. The patient was a no-show'});
   /* Daniel, 13 Nov video: "the billing status, that's just a portal into the claims" -- every chip with a claim
      goes straight to that claim in Claims (before, Payment paid fell through to the row and opened the chart) */
   var c0 = t23RowClaim(r), act = c0 ? 'bill' : '';
@@ -19082,7 +19102,8 @@ function t23SyncQueue(){ if(typeof renderQueue === 'function') renderQueue(); up
 /* REQ-BIL-01: the next step first, Details second. No "Sign off & submit" here (CNF-10, TAIL-04). */
 openBillMenu = function(btn, name){
   /* Daniel, 13 Nov video: no menu; the chip goes straight to the claim in Claims */
-  var rr = QUEUE_DATA.find(function(x){ return x.name === name; }), cc = t23RowClaim(rr);
+  var src0 = (typeof dayOffset !== 'undefined' && dayOffset !== 0) ? (OTHER_DAYS[String(dayOffset)] || []) : QUEUE_DATA;
+  var rr = src0.find(function(x){ return x.name === name; }), cc = t23RowClaim(rr);
   if(cc){ t23GoClaim(cc.id); return; }
   var menu = document.getElementById('q-statusmenu');
   if(qsmName === 'bill:' + name && menu && menu.classList.contains('show')){ closeStatusMenu(); return; }
