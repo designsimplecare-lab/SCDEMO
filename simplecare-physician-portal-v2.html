@@ -7736,8 +7736,11 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   /* a claim and its note read as one: no line between them, the note in a soft panel under the claim's patient */
   #screen-claims .sv-table-body > .sv-table-row:has(+ .t23-qrow) > .sv-table-cell{box-shadow:none;}
   #screen-claims .t23-qrow > td{padding-top:0;}
-  #screen-claims .t23-qrow > td > :is(.t23-flag,.t23-namechk){margin:0 0 4px 44px;padding:12px 16px;border:0;border-radius:var(--radius-sm);background:var(--color-yellow-25);
-    box-shadow:inset 0 0 0 var(--border-width-sm) var(--color-yellow-100);max-width:min(80ch, calc(100cqi - 76px));}
+  /* Ani, 14 Nov ("make this note wider and align with Nadia's profile name"): the card starts where the patient's name starts (avatar 32 + gap 8
+     past the cell's 16) and runs to the table's right edge; its text lines keep a readable measure */
+  #screen-claims .t23-qrow > td > :is(.t23-flag,.t23-namechk){margin:0 0 4px 40px;padding:12px 16px;border:0;border-radius:var(--radius-sm);background:var(--color-yellow-25);
+    box-shadow:inset 0 0 0 var(--border-width-sm) var(--color-yellow-100);width:calc(100cqi - 72px);max-width:none;}
+  #screen-claims .t23-qrow :is(.t23-flag,.t23-namechk) p{max-width:80ch;}
   #screen-claims .t23-qrow .t23-acts{margin-top:12px;}
   #screen-claims .t23-qrow .t23-kind{color:var(--color-ink-950);}
   #screen-claims .t23-qrow > td > *{position:sticky;left:16px;box-sizing:border-box;max-width:min(80ch, calc(100cqi - 32px));}
