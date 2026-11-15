@@ -5542,6 +5542,15 @@
   /* ===== Batch C (1), lead brief 6 Oct: Earnings follow-ups. Light only; text 14 px and up. ===== */
   /* (1a) the strip's third section: a small Today | This week | This month switch, a little wider than the others */
   html body #screen-earnings .cl-stats .cl-stat.ern-span{flex:1.3 1 0;}
+  /* Ani, 14 Nov: in a narrow window the Today / This week / This month switch (about 234px, its buttons can't wrap) ran into the next box.
+     Below 900px of strip the four boxes go two by two, so each has room. */
+  #ern-stats{container-type:inline-size;}
+  @container (max-width: 900px){
+    html body #screen-earnings .cl-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));}
+    html body #screen-earnings .cl-stats .cl-stat + .cl-stat{border-left:0;}
+    html body #screen-earnings .cl-stats .cl-stat:nth-child(even){border-left:1px solid var(--line);}
+    html body #screen-earnings .cl-stats .cl-stat:nth-child(n+3){border-top:1px solid var(--line);}
+  }
   #screen-earnings .ern-mseg{display:inline-flex;gap:2px;padding:2px;margin:-2px 0 4px -2px;border-radius:10px;background:var(--wash);max-width:100%;}
   #screen-earnings .ern-mseg button{height:30px;padding:0 10px;border:0;border-radius:8px;background:none;font:inherit;font-size:14px;font-weight:500;color:var(--ink-soft);cursor:pointer;white-space:nowrap;}
   #screen-earnings .ern-mseg button:hover{color:var(--ink);}
@@ -7754,6 +7763,10 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #screen-claims .t23-qrow :is(.t23-flag,.t23-namechk) p{max-width:80ch;}
   #screen-claims .t23-qrow .t23-acts{margin-top:12px;}
   #screen-claims .t23-qrow .t23-kind{color:var(--color-ink-950);}
+  /* Ani, 14 Nov ("this is how you should align this"): inside the card the text runs on the left and its buttons sit on the right */
+  #screen-claims .t23-qrow :is(.t23-flag,.t23-namechk) > div{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:24px;align-items:center;}
+  #screen-claims .t23-qrow :is(.t23-flag,.t23-namechk) > div > *{grid-column:1;}
+  #screen-claims .t23-qrow :is(.t23-flag,.t23-namechk) > div > .t23-acts{grid-column:2;grid-row:1 / span 6;margin:0;flex-wrap:nowrap;justify-content:flex-end;}
   #screen-claims .t23-qrow > td > *{position:sticky;left:16px;box-sizing:border-box;max-width:min(80ch, calc(100cqi - 32px));}
   /* every AI suggestion block (.cs-ai) wears the same AI colour: a soft blue-to-yellow wash */
   #pcv-c .cs-ai{background:linear-gradient(135deg, color-mix(in srgb, var(--color-brand-ai-start) 55%, var(--color-surface-card-white)), color-mix(in srgb, var(--color-brand-ai-end) 40%, var(--color-surface-card-white))) !important;}
