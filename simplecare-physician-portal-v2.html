@@ -10004,12 +10004,12 @@ function renderQueue(){
     if(!g.length) return;
     var open = qWinOpen(w, today, cw, narrowed);
     html += qWinBand(w, g.length, open, today && w === cw) + g.map(function(r){
-      return rowHTML(r, open ? null : w);
+      return rowHTML(r, open ? null : w, w);   /* Ani, 14 Nov ("why can't I close the last section"): rows always carry their window, so an open one can close */
     }).join('');
   });
 
   /* one row: # | patient | visit status | health card | billing (Daniel, 13 Nov video: "swap these two", health card first so he reads "verified" down the sheet) | clinical concern | actions on hover (Ani, 6 Nov: the design system's Table) */
-  function rowHTML(r, hiddenWin){
+  function rowHTML(r, hiddenWin, inWin){
     var closed = statusClosed(r.status), isNext = (r === QUEUE_NEXT);
     var inQueue = (r.status==='waiting' || r.status==='next' || r.status==='delayed' || r.status==='progress');
     /* Spec 5.2: only the next patient can be called (the queue mirrors a walk-in line); Task MOA is on every row */
@@ -10019,7 +10019,8 @@ function renderQueue(){
     acts.push(['Button', {variant:'secondary-main', size:'medium', startIcon:'user-assign', 'data-act':'task', 'aria-label':'Task MOA about ' + (r.legal || r.name)}, 'Task MOA']);
     var ai = AI_SUMMARY[r.name];
     var props = {className:(r.redflag ? 'redflag' : '') + (isNext ? ' q-next' : ''), current:isNext, tabIndex:0, 'data-name':r.name, 'aria-label':'Open chart: ' + (r.legal || r.name)};
-    if(hiddenWin){ props.hidden = true; props['data-win'] = hiddenWin; }
+    if(inWin || hiddenWin) props['data-win'] = inWin || hiddenWin;
+    if(hiddenWin) props.hidden = true;
     var patient = ptCell(r.legal || r.name, (r.pref && r.legal && r.legal.split(' ')[0] !== r.pref ? r.pref + ' · ' : '') + (r.age || '') + ', ' + (r.sex || ''));   /* Ani, 6 Nov: no "Preferred:" word; the name they go by only when it differs */
     return SC.html('TableRow', props,
       ['TableCell', {}, ['TableCellContent', {type:'number', label:inQueue ? String(++qSeq) : ''}]],
