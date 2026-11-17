@@ -4336,6 +4336,7 @@
   #screen-patientchart #pcv-c .cs-search input{width:200px;border:0;background:none;font:inherit;font-size:15px;color:var(--ink);outline:none;}
   #screen-patientchart #pcv-c .cs-search:focus-within{outline:2px solid var(--accent);outline-offset:2px;}
   #screen-patientchart #pcv-c .cs-tabs{display:flex;flex-wrap:wrap;gap:2px;border-bottom:1px solid var(--line);}
+  #screen-patientchart #pcv-c .cs-dstabs .sv-tablist{flex-wrap:wrap;}
   #screen-patientchart #pcv-c .cs-tabs [role=tab]{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin-bottom:-1px;padding:0 10px;border:0;border-bottom:3px solid transparent;
     border-radius:var(--radius-xs) var(--radius-xs) 0 0;background:none;font:inherit;font-size:15px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
   #screen-patientchart #pcv-c .cs-tabs [role=tab]:hover{background:var(--wash);color:var(--ink);}
@@ -7696,6 +7697,86 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   /* one AI chip wherever the AI suggests something: gradient, filled sparkle, bold (as the AI-generated chip) */
   .ai-chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border-radius:var(--radius-xs);background:var(--gradient-ai);color:var(--color-on-ai);font-size:14px;font-weight:500;line-height:18px;vertical-align:middle;white-space:nowrap;}
   .ai-chip svg{width:16px;height:16px;color:currentColor;flex:none;}
+  /* Care plan as a design system table (Ani, 16 Nov) */
+  .care-plan-mount .cp-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px;}
+  .care-plan-mount .cp-title{margin:0;font-size:18px;font-weight:600;color:var(--ink);}
+  .care-plan-mount .cp-line{margin:4px 0 0;font-size:14px;color:var(--ink-soft);}
+  .care-plan-mount .cp-line .od{color:var(--color-text-error-default, var(--bad));font-weight:600;}
+  .care-plan-mount .cp-triage{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;padding:12px 16px;border-radius:var(--radius-sm);background:var(--color-yellow-25);box-shadow:inset 0 0 0 var(--border-width-sm) var(--color-yellow-100);}
+  .care-plan-mount .cp-triage b{font-size:15px;color:var(--ink);}
+  .care-plan-mount .cp-triage p{margin:2px 0 0;font-size:14px;color:var(--ink-soft);}
+  .care-plan-mount .cp-what{padding:4px 0;min-width:300px;max-width:60ch;}
+  .care-plan-mount .cp-acts{min-width:0;}
+  .care-plan-mount .cp-what b{font-size:15px;font-weight:600;color:var(--ink);}
+  .care-plan-mount .cp-what .sc-info{vertical-align:middle;margin-left:4px;}
+  .care-plan-mount .cp-what p{margin:2px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  .care-plan-mount .cp-what p.cp-src{font-size:13px;}
+  .care-plan-mount .cp-od{color:var(--color-text-error-default, var(--bad));font-weight:600;}
+  .care-plan-mount .cp-acts{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;}
+  .care-plan-mount .cp-done-row .cp-what b{color:var(--ink-soft);}
+  .ctl-dst .sv-table-cell:first-child{white-space:nowrap;width:1%;}
+  .ctl-dst .sv-table-cell:last-child{width:1%;}
+  .ctl-dst .sv-table-cell-content{max-width:70ch;}
+  /* History (Daniel's brief, 16 Nov): design system tables, our tokens */
+  .hx-page .hx-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px;}
+  .hx-page .hx-title,.hx-compact .hx-ctitle{margin:0;font-size:18px;font-weight:600;color:var(--ink);}
+  .hx-meta{margin:2px 0 0;font-size:14px;color:var(--ink-soft);}
+  .hx-page .hx-tabs{margin:8px 0 4px;}
+  .hx-page .hx-tabs .sv-tablist{flex-wrap:wrap;}
+  .hx-page .hx-sec{margin-top:24px;}
+  .hx-page .hx-sh{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px;}
+  .hx-page .hx-sh h4{margin:0;font-size:16px;font-weight:600;color:var(--ink);}
+  .hx-page .hx-n{font-weight:500;color:var(--ink-soft);}
+  .hx-page .hx-line{margin:0 0 8px;font-size:14px;color:var(--ink-soft);}
+  .hx-page .hx-line .sc-info{vertical-align:middle;}
+  .hx-code{font-family:var(--font-mono, ui-monospace, monospace);font-size:14px;color:var(--ink);}
+  .hx-codename{display:block;font-size:14px;color:var(--ink-soft);}
+  .hx-page .hx-codecell{display:flex;flex-direction:column;align-items:flex-start;gap:6px;}
+  .hx-page .hx-sug{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;}
+  .hx-page .hx-sug .hx-codename{display:inline;}
+  .hx-page .hx-acts{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;}
+  .hx-page .hx-edit{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+  .hx-page .hx-in{height:36px;width:120px;padding:0 10px;border:1px solid var(--line);border-radius:var(--radius-xs);font:inherit;font-size:14px;}
+  .hx-page .hx-err{flex-basis:100%;margin:0;font-size:14px;color:var(--color-text-error-default, var(--bad));}
+  .hx-page .hx-err:empty{display:none;}
+  .hx-page .hx-pn,.hx-page .hx-chart>div{display:flex;flex-direction:column;gap:2px;font-size:14px;color:var(--ink);}
+  .hx-page .hx-sub{font-size:14px;color:var(--ink-soft);}
+  .hx-page .hx-none{font-size:14px;color:var(--ink-soft);font-style:italic;}
+  .hx-page mark.hx-diff{background:var(--color-yellow-100);color:var(--ink);padding:0 2px;border-radius:var(--radius-xs);font-weight:600;}
+  .hx-page .hx-nka{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 0;font-size:15px;}
+  .hx-page .hx-hidm{font-size:14px;color:var(--ink-soft);}
+  .hx-compact .hx-ctop{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .hx-compact .sv-list{margin-top:8px;}
+  /* Daniel, Chart Screen brief Part 2 (17 Nov): History is the chart's right column when there is room (the page sets .hx3 at 1150px and up) */
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2.hx3{grid-template-columns:300px minmax(0,1fr) 300px !important;grid-template-areas:"hd hd hd" "side nav hx" "side main hx" !important;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #hx-compact{display:none;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2.hx3 > #hx-compact{grid-area:hx;display:block;box-sizing:border-box;min-height:0;padding:16px;background:var(--panel);border:1px solid var(--cv2-line, var(--line));border-radius:var(--radius-xs);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;}
+  #v2-key .vp-list{margin:4px -8px 4px;}
+  #v2-key .vp-list .sv-list{max-width:80ch;}
+  /* Chart > Medications, Problems, Consults, Documents, Messages as design system tables (Ani, 16 Nov): the care plan's header and review
+     strip (same rules, same weight, so they look the same), a row's "what" cell, and the actions column as narrow as its buttons */
+  .cs-dst .cp-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px;}
+  .cs-dst .cp-title{margin:0;font-size:18px;font-weight:600;color:var(--ink);}
+  .cs-dst .cp-triage{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;padding:12px 16px;border-radius:var(--radius-sm);background:var(--color-yellow-25);box-shadow:inset 0 0 0 var(--border-width-sm) var(--color-yellow-100);}
+  .cs-dst .cp-triage b{font-size:15px;color:var(--ink);}
+  .cs-dst .cp-triage p{margin:2px 0 0;font-size:14px;color:var(--ink-soft);}
+  #pcv-c #cs-fc .cs-dst .cs-hd-acts{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;flex:none;}
+  #pcv-c #cs-fc .cs-dst .cs-sub{margin:20px 0 8px;font-size:16px;line-height:22px;font-weight:600;color:var(--ink);}
+  #pcv-c #cs-fc .cs-dst .cs-sub-n{font-weight:400;color:var(--ink-soft);}
+  #pcv-c #cs-fc .cs-dst .cs-what{padding:4px 0;min-width:280px;max-width:66ch;}
+  #pcv-c #cs-fc .cs-dst .cs-what > b{font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
+  #pcv-c #cs-fc .cs-dst .cs-what .sc-info{vertical-align:middle;margin-left:4px;}
+  #pcv-c #cs-fc .cs-dst .cs-what .ai-chip{margin-left:8px;}
+  #pcv-c #cs-fc .cs-dst .cs-what .cs-what-sub{margin:2px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #pcv-c #cs-fc .cs-dst .cs-what :is(.cs-kv,.cs-list,.sd-msg,.vs-body,.dl-txt,.sc-txmeta){margin-top:6px;}
+  #pcv-c #cs-fc .cs-dst .cs-what .cs-list li{padding:2px 0;}
+  #pcv-c #cs-fc .cs-dst .cs-what .cs-list li + li{border-top:0;}
+  #pcv-c #cs-fc .cs-dst .cs-row-acts{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;}
+  #pcv-c #cs-fc .cs-dst .cs-dtab .sv-table-cell:has(.cs-row-acts){width:1%;white-space:nowrap;}
+  #pcv-c #cs-fc .cs-dst .cs-dtab .sv-table-cell-content{max-width:70ch;}
+  #pcv-c #cs-fc .cs-dst .mx-add{margin-top:12px;}
+  /* a field Cedar drafted wears the AI wash until the doctor accepts or edits it (the marker beside its label is the AI chip) */
+  .ai-field,:is(.op-card,.op-f):has(.op-lrow .ai-chip) :is(textarea,input[type="text"]){background:linear-gradient(135deg, color-mix(in srgb, var(--color-brand-ai-start) 35%, var(--color-surface-card-white)), color-mix(in srgb, var(--color-brand-ai-end) 25%, var(--color-surface-card-white))) !important;}
   :root:not([data-theme="dark"]) :is(#screen-review,#na-drw) .rv-ai em{color:var(--color-ink-600);}   /* AA on the AI tint */
   /* Ani, 14 Nov ("what is going on here?"): a claim's note row (MSP name check, a question) spans the whole table, and when the table
      scrolls sideways its text ran off into the hidden part. The note stays pinned to the visible width and wraps there. */
@@ -7952,7 +8033,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
           <p class="pd-k" id="pd-cd-h">Cedar helps with</p>
           <div role="group" aria-labelledby="pd-cd-h" id="pd-cd">
           <button class="pd-item pd-sw" id="pd-cd-note" role="switch" aria-checked="true" onclick="cdToggle('note')"><span class="pd-ic" data-pdic="edit"></span> Listening and the note <span class="pd-swv">On</span></button>
-          <button class="pd-item pd-sw" id="pd-cd-review" role="switch" aria-checked="true" onclick="cdToggle('review')"><span class="pd-ic" data-pdic="eye"></span> Clinical summary <span class="pd-swv">On</span></button>
+          <button class="pd-item pd-sw" id="pd-cd-review" role="switch" aria-checked="true" onclick="cdToggle('review')"><span class="pd-ic" data-pdic="eye"></span> Visit preview <span class="pd-swv">On</span></button>
           <button class="pd-item pd-sw" id="pd-cd-rx" role="switch" aria-checked="true" onclick="cdToggle('rx')"><span class="pd-ic" data-pdic="chartnote"></span> Prescribing <span class="pd-swv">On</span></button>
           <button class="pd-item pd-sw" id="pd-cd-orders" role="switch" aria-checked="true" onclick="cdToggle('orders')"><span class="pd-ic" data-pdic="addon"></span> Lab and imaging orders <span class="pd-swv">On</span></button>
           <button class="pd-item pd-sw" id="pd-cd-ref" role="switch" aria-checked="true" onclick="cdToggle('ref')"><span class="pd-ic" data-pdic="practice"></span> Referrals <span class="pd-swv">On</span></button>
@@ -8475,7 +8556,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
               <label class="cs-search"><span class="ic" data-pdic="search"></span><span class="vh">Search the chart</span>
                 <input type="search" id="cs-q" placeholder="Search the chart" autocomplete="off" aria-controls="cs-sres" oninput="csSearch()" onkeydown="csSearchKey(event)"></label>
             </div>
-            <div class="cs-tabs" role="tablist" aria-label="Chart sections" id="cs-tabs"></div>
+            <div class="cs-dstabs" id="cs-tabs" onclick="var t=event.target.closest('[role=tab][data-cst]'); if(t) csTab(t.getAttribute('data-cst'));"></div>
+            <div class="cs-pane" id="csp-history" role="tabpanel" aria-labelledby="cst-history" tabindex="-1" hidden><div id="hx-page" class="hx-page"></div></div>
             <div class="cs-pane" id="csp-timeline" role="tabpanel" aria-labelledby="cst-timeline" tabindex="-1" hidden><div class="care-tl-mount"></div></div>
             <div class="cs-pane" id="csp-results" role="tabpanel" aria-labelledby="cst-results" tabindex="-1" hidden>
               <!-- Daniel, 26 Sep: "it is madness that I am opening up raw pdf's". Tests with values and a trend. -->
@@ -8487,21 +8569,20 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
               <div class="vc-block" id="vc-pr" hidden></div>
             </div>
             <div class="cs-pane" id="csp-medications" role="tabpanel" aria-labelledby="cst-medications" tabindex="-1" hidden>
-              <div class="vc-block" id="vc-medrail"></div>
+              <div class="vc-block cs-dst" id="vc-medrail"></div>
             </div>
             <div class="cs-pane" id="csp-problems" role="tabpanel" aria-labelledby="cst-problems" tabindex="-1" hidden>
-              <div class="vc-block vc-condcard">
-                <div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Problems</h4>
-                  <span class="right"><button class="vc-more" onclick="openConditions()">Open</button></span></div>
+              <!-- Ani, 16 Nov ("not using proper UI components"): the header, the Open button and the rows are drawn by renderConditions with the design system -->
+              <div class="vc-block vc-condcard cs-dst">
                 <div id="cond-rail"></div>
               </div>
             </div>
             <div class="cs-pane" id="csp-careplan" role="tabpanel" aria-labelledby="cst-careplan" tabindex="-1" hidden>
               <div class="vc-block cp-block care-plan-mount"></div>
             </div>
-            <div class="cs-pane" id="csp-consults" role="tabpanel" aria-labelledby="cst-consults" tabindex="-1" hidden><div id="cs-consults"></div></div>
-            <div class="cs-pane" id="csp-documents" role="tabpanel" aria-labelledby="cst-documents" tabindex="-1" hidden><div id="cs-docs"></div></div>
-            <div class="cs-pane" id="csp-messages" role="tabpanel" aria-labelledby="cst-messages" tabindex="-1" hidden><div id="cs-msgs"></div></div>
+            <div class="cs-pane" id="csp-consults" role="tabpanel" aria-labelledby="cst-consults" tabindex="-1" hidden><div class="vc-block cs-dst" id="cs-consults"></div></div>
+            <div class="cs-pane" id="csp-documents" role="tabpanel" aria-labelledby="cst-documents" tabindex="-1" hidden><div class="vc-block cs-dst" id="cs-docs"></div></div>
+            <div class="cs-pane" id="csp-messages" role="tabpanel" aria-labelledby="cst-messages" tabindex="-1" hidden><div class="vc-block cs-dst" id="cs-msgs"></div></div>
             <div class="cs-pane cs-sres-p" id="csp-search" role="region" aria-label="Search results" tabindex="-1" hidden><div id="cs-sres"></div></div>
             <p class="vh" id="cs-sres-live" aria-live="polite"></p>
           </section>
@@ -9595,16 +9676,33 @@ var BILL_OPEN = ['msp-submit','msp-review','msp-rejected','pri-due','pri-review'
 /* 21 Oct (Daniel, 18 Oct video 5: "Doctor to call back, completed, no show. We'll have a few more. There should be an administrative cancellation,
    so that means ... the admin is cancelling, not your MOA per se"). The list is the one in the lead's brief; no others are invented.
    "Doctor to call back" is sentence case now (it was "Doctor to Callback"). The order here is the order of the menu and of the Visit status filter. */
+/* Daniel, Physician Portal Changes Part 1 (16 Nov), section 2: the twelve visit statuses, in his order, each with the line the patient
+   sees in their portal. Older keys in the demo data read as the nearest new status. */
 var STATUS_LABEL = {
-  waiting:'In queue', next:'In queue', delayed:'In queue', progress:'In queue', scheduled:'In queue',
-  missed:'Doctor to call back', dropped:'Doctor to call back',
-  calldropped:'Call dropped',
+  waiting:'In queue', next:'In queue', delayed:'In queue', scheduled:'In queue', pendingmoa:'In queue', needsreview:'In queue',
+  calling:'Calling', progress:'In consultation',
+  missed:'Doctor to call back', dropped:'Doctor to call back', calldropped:'Doctor to call back',
   done:'Completed', noshow:'No-show',
-  declined:'Patient declined virtual visit', pendingmoa:'Pending MOA', needsreview:'Needs review',
-  admincancel:'Administrative cancellation'
+  cancelled:'Cancelled', declined:'Cancelled', admincancel:'Cancelled',
+  rescheduled:'Rescheduled', late:'Doctor running late',
+  inperson:'In-person assessment', ed:'Directed to emergency department', transferred:'Patient transferred'
+};
+var STATUS_PT_MSG = {
+  'In queue':'You’re in the queue. Keep your phone nearby.',
+  'Calling':'Your doctor is calling you now.',
+  'In consultation':'Your appointment is underway.',
+  'Doctor to call back':'Your doctor will call you back.',
+  'Completed':'Your appointment is complete.',
+  'No-show':'We couldn’t reach you for your appointment.',
+  'Cancelled':'Your appointment has been cancelled.',
+  'Rescheduled':'Your appointment has been rescheduled.',
+  'Doctor running late':'Your doctor is running approximately [X minutes] behind schedule. You’re still in the queue.',
+  'In-person assessment':'Your doctor has advised you to attend an in-person assessment.',
+  'Directed to emergency department':'Your doctor has advised you to attend the Emergency Department.',
+  'Patient transferred':'Your appointment has been transferred to Dr. [Name], who will contact you during your appointment window.'
 };
 /* statuses that close the visit: not in the queue, no Call, not counted as open */
-var STATUS_CLOSED = ['done','noshow','declined','admincancel'];
+var STATUS_CLOSED = ['done','noshow','declined','admincancel','cancelled','rescheduled','inperson','ed','transferred'];
 function statusClosed(s){ return STATUS_CLOSED.indexOf(s) > -1; }
 /* icons for the five newer statuses come from the Mage map (ICONS is declared further down, so it is read when a row is drawn) */
 var STATUS_ICO2 = {calldropped:'hangup', declined:'close', pendingmoa:'taskmoa', needsreview:'eye', admincancel:'calendar'};
@@ -9625,8 +9723,17 @@ var CARD_KEY = {verified:'card-verified', check:'card-check', invalid:'card-inva
 var CLAIM_KEY = {submit:'claim-submit', submitted:'claim-submitted', appeal:'claim-submitted', held:'claim-held', rejmoa:'claim-rejected', rejected:'claim-rejected', dispute:'claim-rejected',
   adjusted:'claim-review', paid:'claim-paid', closed:'claim-closed', 'pri-due':'payment-due', 'pri-paid':'payment-paid'};
 var BILL_KEY = {'msp-submit':'claim-submit', 'msp-submitted':'claim-submitted', 'pri-due':'payment-due', 'pri-paid':'payment-paid'};
+var STATUS_TAG2 = {calling:['information','phone'], progress:['information','phone'], cancelled:['neutral','calendar'], rescheduled:['neutral','calendar'],
+  late:['warning','clock-time'], inperson:['purple','user-assign'], ed:['error','warning'], transferred:['neutral','user-assign']};
 function qStatusTag(r){
-  return stTag(STATUS_KEY[r.status] || 'in-queue', 'status', {'aria-label':'Visit status: ' + STATUS_LABEL[r.status] + '. Change', label:STATUS_LABEL[r.status]});
+  var lbl = STATUS_LABEL[r.status] || 'In queue', t2 = STATUS_TAG2[r.status];
+  var more = {'aria-label':'Visit status: ' + lbl + '. Change', label:lbl, title:'Patient sees: ' + (STATUS_PT_MSG[lbl] || '') + ' Click to change the status.'};
+  if(t2){
+    var p = {color:t2[0], startIcon:t2[1], as:'button', endIcon:'arrow-dropdown-down', 'data-act':'status', 'aria-haspopup':'menu', 'aria-expanded':false};
+    for(var k in more) if(k !== 'label') p[k] = more[k];
+    return SC.html('Tag', p, lbl);
+  }
+  return stTag(STATUS_KEY[r.status] || 'in-queue', 'status', more);
 }
 function statusIcon(k){
   if(STATUS_ICON[k]) return STATUS_ICON[k];
@@ -9645,26 +9752,29 @@ var AI_SUMMARY = {
 /* Daniel, 16 Nov video (03:19–04:26): no label in the Clinical concern column ("Follow up appointment", "Yeast infection"): "I'm not a big
    fan of just having a label because it biases me ... just give me the line". One synthesized line of 10 to 20 words, e.g. "46-year-old
    female with ..."; the detail is in the chart. DEMO lines written from each patient's intake summary; Daniel will send real examples. */
+/* Daniel, Part 1 (16 Nov), section 6: the Clinical Concern standard. At most 10 words including age and sex, in the form
+   "Age/Sex — presenting concern + reason for visit (if available)", e.g. "46F — Curd-like vaginal discharge; requesting treatment."
+   DEMO lines written from each patient's intake to that standard. */
 var CONCERN_LINE = {
-  'Gloria Mcdonald, 74F':'74-year-old woman with 3 days of chest pressure on exertion, eased by rest; known hypertension, no cardiac workup yet.',
-  'Andrey Abushakhmanov, 24M':'24-year-old man following up a sinus infection; says his symptoms have fully resolved.',
-  'Carol-Anne Feldman, 44F':'44-year-old woman with 5 days of vaginal itching and discharge; her third episode this year.',
-  'Behdis Maleki, 35F':'35-year-old woman with iron deficiency, still tired despite taking iron.',
-  'K Arli Eyre, 41':'41-year-old woman, new patient; no reason or intake given before the call.',
-  'Greg':'58-year-old man asking to renew his blood pressure medication; last filled 90 days ago.',
-  'Manjit':'66-year-old woman going over lab results from her last visit; no symptoms.',
-  'Korynn':'29-year-old woman; no reason given at booking.',
-  'Frank D., 71M':'71-year-old man here for a blood pressure check.'
+  'Gloria Mcdonald, 74F':'74F — Exertional chest pressure × 3 days; cardiology follow-up.',
+  'Andrey Abushakhmanov, 24M':'24M — Sinusitis follow-up; symptoms resolved.',
+  'Carol-Anne Feldman, 44F':'44F — Recurrent vaginal itching and discharge; third episode.',
+  'Behdis Maleki, 35F':'35F — Iron deficiency follow-up; fatigue despite supplements.',
+  'K Arli Eyre, 41':'41F — New patient; no reason given before call.',
+  'Greg':'58M — Blood pressure medication renewal; last filled 90 days ago.',
+  'Manjit':'66F — Lab results review; asymptomatic.',
+  'Korynn':'29F — Reason not given at booking.',
+  'Frank D., 71M':'71M — Blood pressure check.'
 };
-/* anyone without a written line (another day, a new patient): age and sex, then what they wrote */
+/* anyone without a written line (another day, a new patient): age and sex, then what they wrote, cut to 10 words */
 function concernLine(r){
   if(CONCERN_LINE[r.name]) return CONCERN_LINE[r.name];
   var a = parseInt(r.age || (String(r.name).match(/,\s*(\d+)/) || [])[1], 10);
   var sx = r.sex || ({F:'Female', M:'Male'})[(String(r.name).match(/,\s*\d+([FMX])/) || [])[1]] || '';
-  var who = (a ? a + '-year-old ' : '') + (sx === 'Female' ? 'woman' : sx === 'Male' ? 'man' : (a ? 'patient' : ''));
-  var what = AI_SUMMARY[r.name] || r.concern || '';
-  if(!who) return what;
-  return who + (what ? ': ' + what.charAt(0).toLowerCase() + what.slice(1) : '');
+  var who = (a || '') + (sx === 'Female' ? 'F' : sx === 'Male' ? 'M' : sx === 'X' ? 'X' : '');
+  var what = smText(r.concern || AI_SUMMARY[r.name] || '').replace(/[.]\s*$/, '');
+  var words = what.split(/\s+/).filter(Boolean).slice(0, who ? 9 : 10).join(' ');
+  return (who ? who + ' — ' : '') + (words ? words.charAt(0).toUpperCase() + words.slice(1) + '.' : '');
 }
 var currentWindow = 'all';
 var queueSearch = '';
@@ -10005,7 +10115,7 @@ function renderQueue(){
     var winOk   = (!qfAny('win')   || qfHas('win', r.win));
     var visitOk = (!qfAny('visit') || qfHas('visit', STATUS_LABEL[r.status]) || (qfHas('visit', '@draft') && qNoteDraft(r)));
     var billOk  = (!qfAny('bill')  || qfHas('bill', r.bill));
-    var cardOk  = (!qfAny('card')  || qfHas('card', r.card));
+    var cardOk  = (!qfAny('card')  || qfHas('card', cardGroup(r.card)));
     if(!visitOk || !billOk || !cardOk) return false;
     if(!winOk) return false;
     if(!q) return true;
@@ -10049,7 +10159,7 @@ function renderQueue(){
   /* one row: # | patient | visit status | health card | billing (Daniel, 13 Nov video: "swap these two", health card first so he reads "verified" down the sheet) | clinical concern | actions on hover (Ani, 6 Nov: the design system's Table) */
   function rowHTML(r, hiddenWin, inWin){
     var closed = statusClosed(r.status), isNext = (r === QUEUE_NEXT);
-    var inQueue = (r.status==='waiting' || r.status==='next' || r.status==='delayed' || r.status==='progress');
+    var inQueue = ['waiting','next','delayed','progress','calling','late'].indexOf(r.status) > -1;   /* Daniel 16 Nov: Calling and Doctor running late are still in the queue */
     /* Spec 5.2: only the next patient can be called (the queue mirrors a walk-in line); Task MOA is on every row */
     var acts = [];
     /* Ani, 9 Nov ("i need it with text"): the design system's tertiary buttons with icon and text; the accessible name adds the patient */
@@ -10389,12 +10499,9 @@ var QF_DEFS = [
   {key:'card',  label:'Health card',    opts:qfCardOptions}
 ];
 
+/* Daniel, Part 1 (16 Nov), section 4: All · Verified · Not yet checked · Review required · Private claims */
 function qfCardOptions(){
-  var out = [{v:'all', l:'All'}];
-  Object.keys(CARD_STATUS).forEach(function(k){
-    out.push({v:k, l:CARD_STATUS[k].label});
-  });
-  return out;
+  return [{v:'all', l:'All'}, {v:'verified', l:'Verified'}, {v:'pending', l:'Not yet checked'}, {v:'review', l:'Review required'}, {v:'private', l:'Private claims'}];
 }
 
 function qfCurrentLabel(def){
@@ -10652,15 +10759,9 @@ function advance(name, newStatus){
    for each -- so a row sitting on 'dropped' and a row sitting on 'missed'
    both read, and both save, as Doctor to Callback. */
 var STATUS_CHOICES = [
-  ['waiting','In queue'],
-  ['missed', 'Doctor to call back'],
-  ['calldropped','Call dropped'],
-  ['done',   'Completed'],
-  ['noshow', 'No-show'],
-  ['declined','Patient declined virtual visit'],
-  ['pendingmoa','Pending MOA'],
-  ['needsreview','Needs review'],
-  ['admincancel','Administrative cancellation']
+  ['waiting','In queue'], ['calling','Calling'], ['progress','In consultation'], ['missed','Doctor to call back'], ['done','Completed'],
+  ['noshow','No-show'], ['cancelled','Cancelled'], ['rescheduled','Rescheduled'], ['late','Doctor running late'],
+  ['inperson','In-person assessment'], ['ed','Directed to emergency department'], ['transferred','Patient transferred']
 ];
 /* single quotes inside an inline handler would end the attribute early */
 function esc1(t){ return String(t).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
@@ -10678,6 +10779,7 @@ function openStatusMenu(btn, name){
   var now = row ? STATUS_LABEL[row.status] : '';
   menu.innerHTML = STATUS_CHOICES.map(function(c){
     return '<button type="button" class="'+(c[1]===now?'sel':'')+'"'+
+           ' title="Set to '+c[1]+'. The patient\'s portal will say: '+(STATUS_PT_MSG[c[1]]||'').replace(/"/g,'&quot;')+'"'+
            ' onclick="event.stopPropagation();setVisitStatus(\''+esc1(name)+'\',\''+c[0]+'\')">'+
            '<span class="q-tick">&#10003;</span>'+c[1]+'</button>';
   }).join('');
@@ -10724,7 +10826,7 @@ function setVisitStatus(name, key){
   row.status = key;
   if(key !== 'waiting') row.wait = '—';
   renderQueue();
-  toast(firstLast(name)+' → '+STATUS_LABEL[key]);
+  toast(firstLast(name)+' → '+STATUS_LABEL[key] + (STATUS_PT_MSG[STATUS_LABEL[key]] ? '. Their portal now says: “' + STATUS_PT_MSG[STATUS_LABEL[key]] + '”' : ''));
 }
 
 /* a menu floated over the rows has to close when the rows move */
@@ -10858,7 +10960,7 @@ function npSave(){
   while(QUEUE_DATA.some(function(r){ return r.name === name; })) name = v.first + ' ' + v.last + ' (' + (n++) + '), ' + age + sx;
   var priv = v.payer === 'private';
   QUEUE_DATA.push({pos:QUEUE_DATA.length + 1, name:name, legal:v.first + ' ' + v.last, pref:v.pref || v.first, age:age + 'Y', sex:v.sex === 'X' ? 'X' : v.sex,
-    plan:priv ? 'Private' : 'MSP', card:priv ? 'private' : 'verified',   /* demo: a well-formed PHN reads as verified; the real check asks MSP */
+    plan:priv ? 'Private' : 'MSP', card:priv ? 'private' : 'pending',   /* Daniel 16 Nov: a new card is Not yet checked until MSP answers */
     phn:priv ? '' : v.phn.replace(/\s/g, ''), dob:v.dob, phone:v.phone || '', email:v.email || '',
     concern:v.concern, win:v.win || '8-10', status:'waiting', wait:'0 min', redflag:false, isNew:true});
   var pd = priv ? '' : v.phn.replace(/\D/g, '');
@@ -11235,19 +11337,25 @@ function renderConditions(){
     }
   }
 
+  /* Chart > Problems (Ani, 16 Nov: "not using proper UI components"): the care plan's header with Open problem list, the suggested updates
+     as the care plan's review strip, then a design system table: the problem, Under workup as a tag (show by exception), its next care item.
+     The card stays visible with an empty line when nothing is on the list (it used to hide, leaving the tab blank). */
   var cc = document.querySelector('#pcv-c .vc-condcard');
-  if(cc) cc.hidden = !act.length && !condFor(name).some(function(c){ return c.status==='investigating'; }) && !sugg.length;
-  if(rail){
-    rail.innerHTML = act.concat(condFor(name).filter(function(c){ return c.status==='investigating'; }))
-      .map(function(c){
-        var g = condOpenGaps(c)[0];
-        return '<div class="cd-rail-row">'+
-          '<div class="nm">'+c.name+(c.status==='investigating'?'<span class="st">under workup</span>':'')+'</div>'+
-          (g ? '<div class="gp">'+g.label+'</div>' : '<div class="gp ok">Nothing due</div>')+
-        '</div>';
-      }).join('') +
-      (sugg.length ? '<button class="cd-sugg-cue" onclick="openConditions()">'+
-        sugg.length+' suggested update'+(sugg.length>1?'s':'')+' waiting on you</button>' : '');
+  if(cc) cc.hidden = false;
+  if(rail && window.SC && SC.html){
+    var rows = act.concat(condFor(name).filter(function(c){ return c.status==='investigating'; }));
+    var nWk = rows.filter(function(c){ return c.status==='investigating'; }).length, nDue = rows.filter(function(c){ return condOpenGaps(c).length; }).length;
+    var h = csHd('Problems', [rows.length ? rows.length + ' on the list' : 'Nothing on the list', nWk ? nWk + ' under workup' : '', nDue ? nDue + ' with a care item due' : ''].filter(Boolean).join(' &middot; '),
+      cpBtn('secondary-main', 'Open problem list', 'openConditions()', 'Open the full problem list: each problem’s care items, past problems and the decision record'));
+    if(sugg.length) h += '<div class="cp-triage"><div><b>' + sugg.length + ' suggested update' + (sugg.length > 1 ? 's' : '') + ' waiting on you</b>' +
+      '<p>Found in what has arrived since the last visit. Nothing joins the list until you approve it.</p></div>' +
+      cpBtn('primary', 'Review suggestions', 'openConditions()', 'Open the problem list to approve, edit or dismiss each suggested update') + '</div>';
+    h += rows.length ? csTable('Problems', ['Problem', 'Status', 'Next care item'], rows.map(function(c){
+      var g = condOpenGaps(c)[0];
+      return csTRow([csTextCell(smText(c.name), undefined, true), csTagCell([c.status === 'investigating' ? ['information', 'clock-time', 'Under workup'] : null]),
+        g ? csTagCell([['warning', 'warning', smText(g.label)]]) : csTextCell('Nothing due')]);
+    }).join('')) : '<p class="pc-empty">No problems on file.</p>';
+    rail.innerHTML = h;
   }
 }
 
@@ -11617,7 +11725,7 @@ function renderService(){
    flags; they are rules and data, not Cedar drafts. Visit summaries keep T-036's key (VS_KEY), so nothing breaks. ---------- */
 var CD_AREAS = [
   {k:'note', key:'sc-cedar-note', area:'listening and the note', tail:'You will type the note yourself.'},
-  {k:'review', key:'sc-cedar-review', area:'the clinical summary',   /* Daniel, 4 Nov call 01:16:43: "Clinical summary" (was chart review) */ tail:'The Patient summary still shows the chart.'},
+  {k:'review', key:'sc-cedar-review', area:'the visit preview',   /* Daniel, Part 1 (16 Nov): Cedar's Visit Preview replaces the clinical summary */   /* Daniel, 4 Nov call 01:16:43: "Clinical summary" (was chart review) */ tail:'The Patient summary still shows the chart.'},
   {k:'rx', key:'sc-cedar-rx', area:'prescribing', tail:'You will write these yourself.'},
   {k:'orders', key:'sc-cedar-orders', area:'lab and imaging orders', tail:'You will write these yourself.'},
   {k:'ref', key:'sc-cedar-ref', area:'referrals', tail:'You will write these yourself.'},
@@ -11822,9 +11930,11 @@ function scTxFile(){ if(scIdx > 0 && PC_CURRENT) SC_TX = {who:PC_CURRENT, n:scId
 function scTxDoc(name){
   if(SC_TX.who !== name || !SC_TX.n) return '';
   var rows = SC_TURNS.slice(0, SC_TX.n).map(function(t){ return '<div class="sc-turn ' + t.w + '"><span class="w">' + (t.w === 'dr' ? 'DR' : 'PT') + '</span><span class="x">' + t.x + '</span></div>'; }).join('');
-  return '<div class="vc-block cs-doc" id="cs-doc-tx"><div class="vc-h"><span class="sc-mark" aria-hidden="true">' + (typeof CEDAR_MARK !== 'undefined' ? CEDAR_MARK : '') + '</span><h4>Call transcript &middot; today</h4></div>' +
-    '<p class="sc-txmeta">Recorded by Cedar during the call &middot; ' + SC_TX.len + ' &middot; ' + SC_TX.n + ' lines. Kept with the chart; nothing in it is filed on its own.</p>' +
-    '<details class="sc-txd"><summary>Show the transcript</summary><div class="sc-tx">' + rows + '</div></details></div>';
+  /* 16 Nov: a row of Chart > Documents' design system table (csDocRow); Cedar made it, so it wears the AI chip */
+  if(typeof csDocRow !== 'function') return '';
+  return csDocRow({id:'cs-doc-tx', title:'Call transcript', date:'Today', chip:'<span class="ai-chip">' + AI_SPARKLE_FILL + 'AI-generated</span>',
+    body:'<p class="sc-txmeta">Recorded by Cedar during the call &middot; ' + SC_TX.len + ' &middot; ' + SC_TX.n + ' lines. Kept with the chart; nothing in it is filed on its own.</p>' +
+      '<details class="sc-txd"><summary>Show the transcript</summary><div class="sc-tx">' + rows + '</div></details>'});
 }
 function scStop(){
   clearInterval(scTimer); scAudioStop(); scTimer = null;
@@ -12944,7 +13054,7 @@ function aiReply(text){
       aiAppend('<b>' + t23n[0] + '</b> claims were rejected by MSP and <b>' + t23n[1] + '</b> need submission. You submit each one in Claims.','bot');
       /* each answer lands on its own Claims tab (Ani, 6 Oct); "unsubmitted" asks lead with Needs submission */
       var aiTab = function(k){ return function(){ aiDo(function(){ T23.view = 'msp'; CL_ON = k; showScreen('claims'); }); }; };
-      var aiTabs = [['rej', 'Open Refused by MSP', t23n[0] + ' refused', t23n[0]], ['ns', 'Open Needs submission', t23n[1] + ' to submit', t23n[1]]];
+      var aiTabs = [['rej', 'Open Refused or rejected', t23n[0] + ' refused or rejected', t23n[0]], ['ns', 'Open Unsubmitted', t23n[1] + ' unsubmitted', t23n[1]]];
       if(/(unsubmit|not submitted|submission|submit)/.test(t)) aiTabs.reverse();
       aiTabs.forEach(function(b){ if(b[3]) aiActionBtn('&#36;', b[1], b[2], aiTab(b[0])); });
       if(!t23n[0] && !t23n[1]) aiActionBtn('&#36;','Open Claims',null,aiTab('all'));
@@ -13458,15 +13568,15 @@ function rvRenderDraft(it){
   if(!d.tier){ host.innerHTML = ''; host.style.display='none'; return; }
   host.style.display = 'block';
   host.innerHTML =
-    '<p class="box-title">Suggested disposition'+scInfoHtml('Everything here is editable. Nothing is sent until you press Accept &amp; assign.')+' <span class="rv-aimark">'+(typeof AI_MARK!=='undefined'?AI_MARK:'')+' drafted for you</span></p>'+
+    '<p class="box-title">Suggested disposition'+scInfoHtml('Everything here is editable. Nothing is sent until you press Accept &amp; assign.')+' <span class="ai-chip">'+AI_SPARKLE_FILL+'AI draft</span></p>'+   /* Ani, 16 Nov ("these are suggestions, not using our AI"): our AI chip; each field wears the AI wash until you change it */
     /* sized to their text: a one-line input cut the action off before the
        value it was about ("...for Potassium"), and the plan lost its last line */
     '<div class="rv-field"><label>Suggested action</label>'+
-      '<textarea id="rv-d-action" rows="2">'+esc(d.action)+'</textarea></div>'+
+      '<textarea id="rv-d-action" class="ai-field" oninput="this.classList.remove(\'ai-field\')" rows="2">'+esc(d.action)+'</textarea></div>'+
     '<div class="rv-field"><label>Suggested plan</label>'+
-      '<textarea id="rv-d-plan" rows="3">'+esc(d.plan)+'</textarea></div>'+
+      '<textarea id="rv-d-plan" class="ai-field" oninput="this.classList.remove(\'ai-field\')" rows="3">'+esc(d.plan)+'</textarea></div>'+
     '<div class="rv-field"><label>Patient contact instructions</label>'+
-      '<textarea id="rv-d-contact" rows="'+(d.tier === 'critical' ? 5 : 4)+'">'+esc(d.contact)+'</textarea></div>';
+      '<textarea id="rv-d-contact" class="ai-field" oninput="this.classList.remove(\'ai-field\')" rows="'+(d.tier === 'critical' ? 5 : 4)+'">'+esc(d.contact)+'</textarea></div>';
   /* the recipient is named once, on the line above Accept & assign */
 }
 
@@ -13707,17 +13817,233 @@ function buildCareEvents(r){
   ev.push({when:'Ongoing', kind:'med', title:'Amlodipine 5 mg', desc:'Once daily', pill:'Ongoing', pcls:'ongoing'});
   return ev;
 }
+/* Ani, 16 Nov ("all tabs here are not using proper UI components"): the timeline is the design system's Table, newest first:
+   when, what happened (and the detail under it), and its tag */
+var CTL_TAG = {urgent:['error','warning'], low:['warning','warning'], normal:['success','check-circle'], note:['neutral','file'], ongoing:['information','calendar'], visit:['neutral','calendar']};
 function renderCareTimeline(){
-  var html = CARE_EVENTS.map(function(e){
-    return '<div class="ctl-row">'+
-      '<div class="ctl-when">'+String(e.when).replace(/, 2026$/,'')+'</div>'+
-      '<div class="ctl-spine"><span class="ctl-dot '+e.kind+'"></span></div>'+
-      '<div class="ctl-card"><div class="body"><p class="t">'+e.title+'</p>'+(e.desc?'<p class="d">'+e.desc+'</p>':'')+'</div>'+
-      '<span class="ctl-pill '+e.pcls+'">'+e.pill+'</span></div>'+
-    '</div>';
+  var body = CARE_EVENTS.map(function(e){
+    var t = CTL_TAG[e.pcls] || ['neutral'], tp = {color:t[0]}; if(t[1]) tp.startIcon = t[1];
+    return SC.html('TableRow', {className:'cs-row'},   /* one chart-search result per row (csHitUnit) */
+      ['TableCell', {}, ['TableCellContent', {label:smText(String(e.when).replace(/, 2026$/,''))}]],
+      ['TableCell', {}, ['TableCellContent', {label:smText(e.title), secondary:e.desc ? smText(e.desc) : undefined, strong:true, wrap:true}]],
+      ['TableCell', {}, ['TableCellContent', {type:'tags'}, ['Tag', tp, smText(e.pill)]]]);
   }).join('');
-  document.querySelectorAll('.care-tl-mount').forEach(function(m){ m.innerHTML = '<div class="ctl">'+html+'</div>'; });
+  var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'When'], ['TableHead', {}, 'What happened'], ['TableHead', {}, '']]];
+  var html = SC.html('Table', {'aria-label':'Timeline', framed:false, className:'ctl-dst'}, head, ['TableBody', {}, SC.raw(body)]);
+  document.querySelectorAll('.care-tl-mount').forEach(function(m){ m.innerHTML = html; });
 }
+/* ================= HISTORY =================
+   Daniel, "History Page — Design Brief for Ani" (16 Nov): the patient's standing record (allergies, medical conditions, medications,
+   surgical, family and social history) that the College asks family doctors to keep. Purely history: no tasks, alerts, counters or billing.
+   Under the Longitudinal Family Physician model it matters three ways: every condition and surgery shows its diagnostic code (Cedar may
+   suggest one; nothing is saved without the doctor; a missing code shows plainly as "No code"), the codes feed panel complexity, and the
+   record must let another doctor find the pertinent history (so: who last reviewed it, and when). Medications are two columns, Simple
+   Care's chart and PharmaNet; only the part that differs is highlighted; order is prescribed by you, other prescribers, non-prescription;
+   facts only. Reconciling can happen here or in the prescription pad; both share one record (HX_REC).
+   Writing: plain language, no abbreviations, dates as "17 September 2026". Design: our design system, not the brief's rough mockup. */
+var HX_MON = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function hxDate(d){ d = d || new Date(); return d.getDate() + ' ' + HX_MON[d.getMonth()] + ' ' + d.getFullYear(); }
+/* example data from the brief (test data) */
+var HX_DATA = {
+  'Gloria Mcdonald, 74F': {
+    reviewed:{on:'25 June 2026', by:'Dr. Pannozzo'},
+    allergies:[], allergyNote:'Patient and PharmaNet agree',
+    conditions:[
+      {id:'c1', name:'Type 2 diabetes', since:'2014', code:'250.00', codeName:'Diabetes mellitus, type 2, without complication'},
+      {id:'c2', name:'Hypertension', since:'2011', code:'401.9', codeName:'Essential hypertension, unspecified'},
+      {id:'c3', name:'Osteoporosis', since:'2023', code:'733.00', codeName:'Osteoporosis, unspecified'},
+      {id:'c4', name:'Thyroid nodule, right lobe', since:'2025', code:'', suggest:{code:'241.0', name:'Nontoxic uninodular goitre', why:'Ultrasound report, 2025: a single nodule in the right lobe'}},
+      {id:'c5', name:'Osteoarthritis, left knee', since:'', note:'treated by knee replacement, 2019', code:'715.96', codeName:'Osteoarthrosis, lower leg'}
+    ],
+    meds:[
+      {id:'m1', grp:'you', name:'Amlodipine', chart:'5 mg daily', pn:{dose:'10 mg daily', diff:'10 mg', by:'Dr. M. Ferreira', spec:'Cardiology', filled:'17 September 2026'}},
+      {id:'m2', grp:'you', name:'Denosumab', chart:'60 mg every 6 months', pn:{dose:'60 mg every 6 months', by:'Dr. Pannozzo', spec:'Family Medicine', filled:'19 May 2026'}},
+      {id:'m3', grp:'you', name:'Metformin', chart:'500 mg twice daily', pn:{dose:'500 mg twice daily', by:'Dr. Pannozzo', spec:'Family Medicine', filled:'6 July 2026'}},
+      {id:'m4', grp:'other', name:'Zopiclone', chart:'', pn:{dose:'5 mg at bedtime', by:'Dr. S. Gill', spec:'Family Medicine', filled:'17 October 2026'}},
+      {id:'m5', grp:'other', name:'Ibuprofen', chart:'', pn:{dose:'400 mg as needed', by:'Dr. S. Gill', spec:'Family Medicine', filled:'1 October 2026'}},
+      {id:'m6', grp:'other', name:'Amoxicillin', chart:'', pn:{dose:'500 mg three times daily for 7 days', by:'Dr. S. Gill', spec:'Family Medicine', filled:'3 September 2026', course:true}},
+      {id:'m7', grp:'otc', name:'Acetylsalicylic acid', chart:'81 mg daily', pn:null}
+    ],
+    surgeries:[
+      {name:'Left total knee replacement', code:'V43.65', codeName:'Knee joint replaced', year:'2019'},
+      {name:'Laparoscopic cholecystectomy', code:'V45.79', codeName:'Acquired absence of organ', year:'2009'},
+      {name:'Right cataract surgery', code:'', year:'2021'}
+    ],
+    family:[
+      {who:'Father', what:'Heart attack at 62', flag:'Premature coronary disease'},
+      {who:'Mother', what:'Type 2 diabetes; stroke at 80'},
+      {who:'Brother', what:'Atrial fibrillation'}
+    ],
+    social:[['Smoking','Former smoker, quit 2005 · 20 pack-years'],['Alcohol','2 drinks a week'],['Living situation','Lives with her husband; independent'],['Occupation','Retired teacher'],['Activity','Walks daily']]
+  }
+};
+/* anyone else: what the chart already has */
+function hxFor(name){
+  if(HX_DATA[name]) return HX_DATA[name];
+  var meds = (typeof rxMeds === 'function' ? rxMeds(name) : []).map(function(m, i){ return {id:'m' + i, grp:m.otc ? 'otc' : 'you', name:m.drug, chart:m.dose + ' ' + m.freq, pn:null, unchecked:true}; });
+  return HX_DATA[name] = {reviewed:null, allergies:[], allergyNote:'', conditions:[], meds:meds,
+    surgeries:(PT_SURG[name] || []).map(function(x){ return {name:x[0], code:'', year:x[1]}; }), family:[], social:[]};
+}
+/* ONE reconciliation record, shared with the prescription pad: HX_REC[name][medId] = {to, label, by, at} */
+var HX_REC = {};
+function hxRec(name, id){ return (HX_REC[name] || {})[id] || null; }
+function hxMedState(m){ return !m.pn ? (m.unchecked ? 'unchecked' : 'nodisp') : !m.chart ? 'notchart' : m.pn.dose === m.chart ? 'match' : 'differs'; }
+var HX_UI = {sec:'all', showMatch:{}, edit:null, add:null};
+var HX_SECS = [['all','All'],['allergies','Allergies'],['conditions','Conditions'],['medications','Medications'],['surgical','Surgical'],['family','Family'],['social','Social and risk factors']];
+function hxB(v, label, js, tip, icon){ return cpBtn(v, label, js.replace(/'/g, '&#39;'), tip, icon); }
+function hxHd(title, count, btn){ return '<div class="hx-sh"><h4>' + title + (count ? ' <span class="hx-n">' + count + '</span>' : '') + '</h4>' + (btn || '') + '</div>'; }
+function hxCode(code, codeName){ return '<span class="hx-code">' + csEsc(code) + '</span>' + (codeName ? '<span class="hx-codename">' + csEsc(codeName) + '</span>' : ''); }
+function hxRow(cells, cls){ return SC.html('TableRow', cls ? {className:cls} : {}, ...cells); }
+function hxRaw(h){ return ['TableCell', {}, SC.raw(h)]; }
+function hxTxt(l, s){ return ['TableCell', {}, ['TableCellContent', {label:l, secondary:s || undefined, wrap:true}]]; }
+function hxTable(label, cols, body){
+  return SC.html('Table', {'aria-label':label, framed:false, className:'hx-t'}, ['TableHeader', {}, ['TableHeaderRow', {}].concat(cols.map(function(c){ return c ? ['TableHead', {}, c] : ['TableHead', {type:'empty', 'aria-label':'Actions'}, '']; }))], ['TableBody', {}, SC.raw(body)]);
+}
+/* --- the sections --- */
+function hxAllergies(name, H){
+  var body = H.allergies.length ? H.allergies.map(function(a){ return hxRow([hxTxt(a.what, a.reaction), hxTxt(a.source || '')]); }).join('')
+    : hxRow([['TableCell', {colSpan:2}, SC.raw('<div class="hx-nka"><b>No known allergies</b>' + (H.allergyNote ? SC.html('Tag', {color:'success', startIcon:'check-circle'}, H.allergyNote) : '') + '</div>')]]);
+  return '<section class="hx-sec" id="hx-allergies">' + hxHd('Allergies and intolerances', '', hxB('tertiary-main', 'Add allergy', 'toast("Add an allergy: what, the reaction, and the source")', 'Record an allergy or intolerance, with the reaction and where it came from', 'add')) +
+    hxTable('Allergies', ['Allergy', 'Source'], body) + '</section>';
+}
+function hxCondCode(name, c){
+  if(HX_UI.edit === c.id) return '<div class="hx-edit"><label class="vh" for="hx-code-in">Diagnostic code for ' + csEsc(c.name) + '</label><input id="hx-code-in" class="hx-in" value="' + csEsc(c.code || (c.suggest ? c.suggest.code : '')) + '" placeholder="e.g. 250.00" autocomplete="off" onkeydown="if(event.key===\'Enter\')hxCodeSave(\'' + c.id + '\');if(event.key===\'Escape\')hxCodeEdit(null)">' +
+    hxB('secondary-main', 'Save', 'hxCodeSave(\'' + c.id + '\')', 'Save this diagnostic code on the condition') + hxB('tertiary-main', 'Cancel', 'hxCodeEdit(null)', 'Leave the code as it was') + '<p class="hx-err" id="hx-code-err" role="alert"></p></div>';
+  if(c.code) return hxCode(c.code, c.codeName);
+  var h = SC.html('Tag', {color:'warning', startIcon:'warning', title:'Without a code this condition doesn’t count toward the patient’s complexity'}, 'No code');
+  if(c.suggest && !c.suggestNo) h += '<div class="hx-sug"><span class="ai-chip">' + AI_SPARKLE_FILL + 'Suggested</span> ' + hxCode(c.suggest.code, c.suggest.name) + scInfoHtml('Cedar suggests this from: ' + c.suggest.why + '. Nothing is saved until you choose it.') + '</div>';
+  return h;
+}
+function hxConditions(name, H){
+  var body = H.conditions.map(function(c){
+    var acts = c.code ? hxB('tertiary-main', 'Edit code', 'hxCodeEdit(\'' + c.id + '\')', 'Change the diagnostic code for ' + c.name, 'edit')
+      : (c.suggest && !c.suggestNo ? hxB('secondary-main', 'Use ' + c.suggest.code, 'hxCodeUse(\'' + c.id + '\')', 'Save Cedar’s suggested code ' + c.suggest.code + ' (' + c.suggest.name + ') on ' + c.name, 'check-circle') : '') +
+        hxB('tertiary-main', c.suggest && !c.suggestNo ? 'Choose another' : 'Add code', 'hxCodeEdit(\'' + c.id + '\')', 'Type the diagnostic code yourself', 'edit');
+    if(HX_UI.edit === c.id) acts = '';
+    return hxRow([hxTxt(c.name, [c.since ? 'Since ' + c.since : '', c.note || ''].filter(Boolean).join(' · ')), hxRaw('<div class="hx-codecell">' + hxCondCode(name, c) + '</div>'), hxRaw('<div class="hx-acts">' + acts + '</div>')]);
+  }).join('') || hxRow([['TableCell', {colSpan:3}, ['TableCellContent', {label:'No medical conditions recorded.'}]]]);
+  var nocode = H.conditions.filter(function(c){ return !c.code; }).length;
+  return '<section class="hx-sec" id="hx-conditions">' + hxHd('Medical conditions', H.conditions.length, hxB('tertiary-main', 'Add condition', 'toast("Add a condition: name, since when, and its diagnostic code")', 'Add a medical condition with its diagnostic code', 'add')) +
+    (nocode ? '<p class="hx-line">' + nocode + (nocode === 1 ? ' condition has' : ' conditions have') + ' no diagnostic code. ' + scInfoHtml('Under the Longitudinal Family Physician model the panel payment weighs each patient’s complexity from the diagnostic codes on claims. A missing or vague code makes the patient look simpler than they are.') + '</p>' : '') +
+    hxTable('Medical conditions', ['Condition', 'Diagnostic code', ''], body) + '</section>';
+}
+function hxMedRow(name, m){
+  var st = hxMedState(m), rec = hxRec(name, m.id);
+  var pnCell = !m.pn ? '<span class="hx-none">' + (m.unchecked ? 'Not checked against PharmaNet' : 'Not dispensed') + '</span>'
+    : '<div class="hx-pn"><span>' + (m.pn.diff && st === 'differs' && !rec ? csEsc(m.pn.dose).replace(csEsc(m.pn.diff), '<mark class="hx-diff">' + csEsc(m.pn.diff) + '</mark>') : csEsc(m.pn.dose)) + '</span><span class="hx-sub">' + csEsc(m.pn.by) + ' (' + csEsc(m.pn.spec) + ') · filled ' + csEsc(m.pn.filled) + '</span></div>';
+  var chartCell = m.chart ? csEsc(m.chart) : '<span class="hx-none">Not on chart</span>';
+  var tag, acts = '';
+  if(rec){
+    tag = SC.html('Tag', {color:'success', startIcon:'check-circle', title:rec.label + ' · ' + rec.by + ', ' + rec.at}, 'Reconciled');
+    chartCell = '<div>' + (rec.chart != null ? (rec.chart ? csEsc(rec.chart) : '<span class="hx-none">Not on chart</span>') : chartCell) + '<span class="hx-sub">' + csEsc(rec.label) + ' · ' + csEsc(rec.by) + ', ' + csEsc(rec.at) + '</span></div>';
+    acts = hxB('tertiary-main', 'Undo', 'hxUndo(\'' + m.id + '\')', 'Undo this reconciliation; the row goes back to how it was');
+  } else if(st === 'match'){ tag = SC.html('Tag', {color:'success', startIcon:'check-circle'}, 'Matches');
+  } else if(st === 'unchecked'){ tag = SC.html('Tag', {color:'neutral', startIcon:'clock-time'}, 'Not checked');
+  } else {
+    tag = SC.html('Tag', {color:'warning', startIcon:'warning'}, st === 'differs' ? 'Differs' : st === 'notchart' ? 'Not on chart' : 'Not dispensed');
+    if(st === 'differs') acts = hxB('secondary-main', 'Use ' + m.pn.diff, 'hxRecon(\'' + m.id + '\',\'pn\')', 'Change the chart to ' + m.pn.dose + ', as PharmaNet shows') + hxB('tertiary-main', 'Keep ' + m.chart.split(' ').slice(0, 2).join(' '), 'hxRecon(\'' + m.id + '\',\'keep\')', 'The chart is right: keep ' + m.chart);
+    if(st === 'notchart') acts = m.pn.course ? hxB('secondary-main', 'Course finished', 'hxRecon(\'' + m.id + '\',\'done\')', 'A short course that has ended: note it, don’t add it to the chart') + hxB('tertiary-main', 'Add to chart', 'hxRecon(\'' + m.id + '\',\'add\')', 'Add ' + m.name + ' ' + m.pn.dose + ' to the chart')
+      : hxB('secondary-main', 'Add to chart', 'hxRecon(\'' + m.id + '\',\'add\')', 'Add ' + m.name + ' ' + m.pn.dose + ' to the chart, prescribed by ' + m.pn.by) + hxB('tertiary-main', 'Not taking', 'hxRecon(\'' + m.id + '\',\'not\')', 'The patient isn’t taking it: note that, don’t add it');
+    if(st === 'nodisp') acts = hxB('secondary-main', 'Confirmed with patient', 'hxRecon(\'' + m.id + '\',\'otc\')', 'The patient takes it, bought without a prescription; it stays on the chart') + hxB('tertiary-main', 'Remove from chart', 'hxRecon(\'' + m.id + '\',\'remove\')', 'The patient no longer takes it: take it off the chart');
+  }
+  return hxRow([hxTxt(m.name), hxRaw('<div class="hx-chart">' + chartCell + '</div>'), hxRaw(pnCell), hxRaw(tag), hxRaw('<div class="hx-acts">' + acts + '</div>')], 'hx-m-' + st + (rec ? ' hx-m-rec' : ''));
+}
+function hxMeds(name, H){
+  var G = [['you','Prescribed by you'],['other','Other prescribers'],['otc','Non-prescription']], open = 0, match = 0, body = '';
+  H.meds.forEach(function(m){ var s = hxMedState(m); if(hxRec(name, m.id) || s === 'match') match++; else if(s !== 'unchecked') open++; });
+  /* 15 or more medications: the rows that match collapse into one line per group, so the differences are what you see */
+  var many = H.meds.length >= 10, showM = HX_UI.showMatch[name] != null ? HX_UI.showMatch[name] : !many;
+  G.forEach(function(g){
+    var L = H.meds.filter(function(m){ return m.grp === g[0]; }); if(!L.length) return;
+    var hid = L.filter(function(m){ return !showM && (hxMedState(m) === 'match' || hxRec(name, m.id)); });
+    body += SC.html('TableGroupRow', {colSpan:5, label:g[1], count:L.length});
+    body += L.filter(function(m){ return hid.indexOf(m) < 0; }).map(function(m){ return hxMedRow(name, m); }).join('');
+    if(hid.length) body += hxRow([['TableCell', {colSpan:5}, SC.raw('<span class="hx-hidm">' + hid.length + ' more that match PharmaNet: ' + hid.map(function(m){ return csEsc(m.name); }).join(', ') + '</span>')]]);
+  });
+  var pnAt = H.meds.some(function(m){ return m.pn; }) ? 'PharmaNet · checked today, ' + new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}) : 'PharmaNet';
+  return '<section class="hx-sec" id="hx-medications">' + hxHd('Medications', H.meds.length,
+      hxB('tertiary-main', showM ? 'Hide matches' : 'Show matches', 'HX_UI.showMatch[PC_CURRENT]=' + !showM + ';hxRender()', showM ? 'Show only the medications that differ from PharmaNet' : 'Show every medication, including the ones that match PharmaNet')) +
+    '<p class="hx-line">' + (open ? open + ' to reconcile · ' : 'All reconciled · ') + match + ' match or reconciled. ' + scInfoHtml('PharmaNet is the provincial record of every prescription filled in BC over the last 14 months. Reconciling here or in the prescription pad updates the same record.') + '</p>' +
+    hxTable('Medications', ['Medication', 'Simple Care chart', pnAt, 'Status', ''], body) + '</section>';
+}
+function hxSurg(name, H){
+  var body = H.surgeries.map(function(s){ return hxRow([hxTxt(s.name), hxRaw(s.code ? hxCode(s.code, s.codeName) : SC.html('Tag', {color:'warning', startIcon:'warning'}, 'No code')), hxTxt(s.year)]); }).join('')
+    || hxRow([['TableCell', {colSpan:3}, ['TableCellContent', {label:'No surgical history recorded.'}]]]);
+  return '<section class="hx-sec" id="hx-surgical">' + hxHd('Surgical history', H.surgeries.length, hxB('tertiary-main', 'Add surgery', 'toast("Add a surgery: what, the year, and its diagnostic code")', 'Add a past operation with its year and diagnostic code', 'add')) +
+    hxTable('Surgical history', ['Procedure', 'Diagnostic code', 'Year'], body) + '</section>';
+}
+function hxFamily(name, H){
+  var body = H.family.map(function(x){ return hxRow([hxTxt(x.who), hxTxt(x.what), hxRaw(x.flag ? SC.html('Tag', {color:'error', startIcon:'warning'}, x.flag) : '')]); }).join('')
+    || hxRow([['TableCell', {colSpan:3}, ['TableCellContent', {label:'No family history recorded.'}]]]);
+  return '<section class="hx-sec" id="hx-family">' + hxHd('Family history', H.family.length, hxB('tertiary-main', 'Add relative', 'toast("Add a relative: who, and their condition")', 'Add a relative’s condition to the family history', 'add')) +
+    hxTable('Family history', ['Relative', 'Condition', ''], body) + '</section>';
+}
+function hxSocial(name, H){
+  var body = H.social.map(function(x){ return hxRow([hxTxt(x[0]), hxTxt(x[1])]); }).join('') || hxRow([['TableCell', {colSpan:2}, ['TableCellContent', {label:'No social history recorded.'}]]]);
+  return '<section class="hx-sec" id="hx-social">' + hxHd('Social history and risk factors', '', hxB('tertiary-main', 'Edit', 'toast("Edit social history and risk factors")', 'Change smoking, alcohol, living situation, occupation or activity', 'edit')) +
+    hxTable('Social history and risk factors', ['Topic', 'Detail'], body) + '</section>';
+}
+function hxRender(){
+  var el = document.getElementById('hx-page'); if(!el || !PC_CURRENT || !(window.SC && SC.html)) return;
+  var name = PC_CURRENT, H = hxFor(name), r = (typeof rxRow === 'function' ? rxRow(name) : null) || {}, ch = typeof ptChart === 'function' ? ptChart(name) : {};
+  var counts = {allergies:H.allergies.length || '', conditions:H.conditions.length, medications:H.meds.length, surgical:H.surgeries.length, family:H.family.length, social:''};
+  var who = [r.age ? parseInt(r.age, 10) : '', r.sex || '', ch.phn && ch.phn !== '—' ? 'Personal Health Number ' + ch.phn : ''].filter(Boolean).join(' · ');
+  var h = '<div class="hx-top"><div><h3 class="hx-title">History</h3><p class="hx-meta">' + csEsc(r.legal || name.split(',')[0]) + (who ? ' · ' + csEsc(who) : '') + '</p>' +
+    '<p class="hx-meta">' + (H.reviewed ? 'Last reviewed ' + H.reviewed.on + ' by ' + H.reviewed.by : 'Not reviewed yet') + '</p></div>' +
+    hxB('secondary-main', 'Mark as reviewed', 'hxReviewed()', 'Record that you reviewed this history today; another doctor will see who reviewed it and when', 'check-circle') + '</div>' +
+    '<div class="hx-tabs">' + SC.html('Tabs', {defaultValue:HX_UI.sec}, ['TabList', {'aria-label':'History sections'}].concat(HX_SECS.map(function(s){
+      return ['Tab', {value:s[0], 'data-hx':s[0], title:s[0] === 'all' ? 'Show every section' : 'Show only ' + s[1].toLowerCase()}, s[1] + (counts[s[0]] ? ' ' + counts[s[0]] : '')]; }))) + '</div>';
+  var S = {allergies:hxAllergies, conditions:hxConditions, medications:hxMeds, surgical:hxSurg, family:hxFamily, social:hxSocial};
+  Object.keys(S).forEach(function(k){ if(HX_UI.sec === 'all' || HX_UI.sec === k) h += S[k](name, H); });
+  el.innerHTML = h;
+  if(!el.getAttribute('data-wired')){ el.setAttribute('data-wired', '1'); el.addEventListener('click', function(e){ var t = e.target.closest('[role=tab][data-hx]'); if(t){ HX_UI.sec = t.getAttribute('data-hx'); hxRender(); var n = el.querySelector('[role=tab][data-hx="' + HX_UI.sec + '"]'); if(n) n.focus(); } }); }
+  paintPd(el);
+  hxRenderCompact();
+}
+/* --- actions --- */
+function hxCodeEdit(id){ HX_UI.edit = id; hxRender(); var i = document.getElementById('hx-code-in'); if(i){ i.focus(); i.select(); } }
+function hxCodeSave(id){
+  var c = hxFor(PC_CURRENT).conditions.filter(function(x){ return x.id === id; })[0], i = document.getElementById('hx-code-in'); if(!c || !i) return;
+  var v = i.value.trim().toUpperCase();
+  if(!/^(\d{3}(\.\d{1,2})?|V\d{2}(\.\d{1,2})?|E\d{3}(\.\d)?)$/.test(v)){ document.getElementById('hx-code-err').textContent = 'That isn’t a diagnostic code. Use the form 250.00, V43.65 or E880.9.'; i.focus(); return; }
+  var was = c.code; c.code = v; c.codeName = c.suggest && c.suggest.code === v ? c.suggest.name : (was === v ? c.codeName : '');   /* a new code drops the old code's description */
+  HX_UI.edit = null; hxRender(); toast(c.name + ': diagnostic code ' + v + ' saved');
+}
+function hxCodeUse(id){ var c = hxFor(PC_CURRENT).conditions.filter(function(x){ return x.id === id; })[0]; if(!c || !c.suggest) return; c.code = c.suggest.code; c.codeName = c.suggest.name; hxRender(); toast(c.name + ': diagnostic code ' + c.code + ' saved'); }
+function hxReviewed(){ hxFor(PC_CURRENT).reviewed = {on:hxDate(), by:'Dr. Pannozzo'}; hxRender(); toast('History marked as reviewed today, ' + hxDate()); }
+var HX_LBL = {pn:function(m){ return 'Chart changed to ' + m.pn.dose; }, keep:function(m){ return 'Kept ' + m.chart + ' on the chart'; }, add:function(m){ return 'Added to the chart'; },
+  not:function(){ return 'Not taking, not added'; }, done:function(){ return 'Course finished, not added'; }, otc:function(){ return 'Confirmed with the patient, non-prescription'; }, remove:function(){ return 'Removed from the chart'; }};
+function hxRecon(id, to){
+  var name = PC_CURRENT, m = hxFor(name).meds.filter(function(x){ return x.id === id; })[0]; if(!m) return;
+  var chart = to === 'pn' || to === 'add' ? m.pn.dose : to === 'remove' ? '' : null;
+  (HX_REC[name] = HX_REC[name] || {})[id] = {to:to, label:HX_LBL[to](m), chart:chart, by:'Dr. Pannozzo', at:hxDate(), from:'History'};
+  hxRender(); toast(m.name + ': ' + HX_LBL[to](m).toLowerCase());
+}
+function hxUndo(id){ var n = PC_CURRENT; if(HX_REC[n]) delete HX_REC[n][id]; hxRender(); }
+/* --- the compact panel beside the note: the same record, read at a glance; Open full history goes to the page --- */
+function hxRenderCompact(){
+  var el = document.getElementById('hx-compact'); if(!el || !PC_CURRENT || !(window.SC && SC.html)) return;
+  var name = PC_CURRENT, H = hxFor(name), list = [];
+  list.push(['ListLabel', {}, 'Allergies'], ['ListItem', {label:H.allergies.length ? H.allergies.map(function(a){ return a.what; }).join(', ') : 'No known allergies'}]);
+  list.push(['ListLabel', {count:H.conditions.length}, 'Medical conditions']);
+  H.conditions.forEach(function(c){ list.push(['ListItem', c.code ? {label:c.name, meta:c.code} : {label:c.name, trailing:['Tag', {color:'warning'}, 'No code']}]); });
+  var open = H.meds.filter(function(m){ var s = hxMedState(m); return !hxRec(name, m.id) && (s === 'differs' || s === 'notchart' || s === 'nodisp'); });
+  list.push(['ListLabel', {count:H.meds.length}, 'Medications']);
+  H.meds.forEach(function(m){ var o = open.indexOf(m) > -1, rec = hxRec(name, m.id);
+    list.push(['ListItem', o ? {label:m.name, secondary:m.chart || 'Not on chart', trailing:['Tag', {color:'warning'}, 'To reconcile']} : {label:m.name, secondary:(rec && rec.chart != null ? rec.chart : m.chart) || ''}]); });
+  if(H.surgeries.length){ list.push(['ListLabel', {count:H.surgeries.length}, 'Surgical history']); H.surgeries.forEach(function(s){ list.push(['ListItem', {label:s.name, meta:s.year}]); }); }
+  if(H.family.length){ list.push(['ListLabel', {count:H.family.length}, 'Family history']); H.family.forEach(function(x){ list.push(['ListItem', {label:x.who + ': ' + x.what}]); }); }
+  el.innerHTML = '<div class="hx-ctop"><h3 class="hx-ctitle">History</h3>' + hxB('tertiary-main', 'Open full history', 'csOpenFull(\'history\',this)', 'Open the full History page: codes, reconciliation and every section', 'arrow-dropdown-right') + '</div>' +
+    '<p class="hx-meta">' + (H.reviewed ? 'Last reviewed ' + H.reviewed.on + ' by ' + H.reviewed.by : 'Not reviewed yet') + (open.length ? ' · ' + open.length + ' medications to reconcile' : '') + '</p>' +
+    SC.html.apply(SC, ['List', {'aria-label':'History at a glance'}].concat(list));
+}
+
+(function(){
+  var v = document.getElementById('v2'); if(!v) return;
+  var a = document.createElement('aside'); a.id = 'hx-compact'; a.className = 'hx-compact'; a.setAttribute('aria-label', 'History'); v.appendChild(a);
+  var fit = function(){ v.classList.toggle('hx3', v.getBoundingClientRect().width >= 1150); };
+  if(window.ResizeObserver) new ResizeObserver(fit).observe(v); else window.addEventListener('resize', fit);
+})();
 var vdInt=null, vdSecs=0, vdMuted=false;
 function vdCall(mode){
   var w=document.getElementById('vd-call'); if(!w) return;
@@ -14244,33 +14570,35 @@ function cpFind(id){
   return hit;
 }
 
-function cpItemHTML(it){
-  var own = it.owner==='GP' ? 'gp' : 'spec';
-  var lbl = it.owner==='GP' ? 'Ours' : 'Specialist';
-  var od  = it.status==='Overdue';
-  var h = '<div class="cp-item'+(it.status==='Completed'?' done':'')+'">'+
-    '<span class="cp-own '+own+'">'+lbl+'</span>'+
-    '<div class="cp-body">'+
-      '<div class="cp-top"><span class="cp-act">'+it.action+'</span>'+
-        '<span class="cp-st '+cpCls(it.status)+'">'+it.status+'</span></div>'+
-      (it.detail ? '<p class="cp-det">'+it.detail+'</p>' : '')+
-      '<p class="cp-meta">'+it.src+
-        (it.due ? ' &middot; <span class="due'+(od?' od':'')+'">'+(it.status==='Completed'?'Done ':'Due ')+it.due+'</span>' : '')+
-        (it.quote ? ' · <button class="cp-why" onclick="cpWhy(this)">Source</button>' : '')+
-      '</p>'+
-      (it.quote ? '<p class="cp-quote">'+it.quote+'</p>' : '');
-
-  if(it.owner==='GP' && it.status!=='Completed'){
-    var acts = CP_DO[it.kind] || CP_DO.followup;
-    h += '<div class="cp-do">' + acts.map(function(a){
-      return '<button class="'+(a.go?'go':'')+'" onclick="cpAct(&#39;'+it.id+'&#39;,&#39;'+a.to+'&#39;,&#39;'+a.t+'&#39;)">'+a.l+'</button>';
-    }).join('') + '<button onclick="openTaskMoa(PC_CURRENT)">Task MOA</button></div>';
+/* Ani, 16 Nov ("this section is unorganized, very messy, not using our components"): the care plan is the design system's Table.
+   One band per specialty and service; each row: the plan item (what, why, where it came from), who does it, when, its status, and
+   the actions, each saying on hover what it will do. */
+var CP_TAG = {'To Do':['warning','clock-time'], 'Ordered':['information','send'], 'Awaiting':['neutral','clock-time'], 'Ongoing':['information','calendar'],
+  'Overdue':['error','warning'], 'Completed':['success','check-circle']};
+function cpTag(st){ var t = CP_TAG[st] || ['neutral']; var p = {color:t[0]}; if(t[1]) p.startIcon = t[1]; return SC.html('Tag', p, st); }
+function cpBtn(v, label, fn, tip, icon){ var p = {variant:v, size:'medium', title:tip}; if(icon) p.startIcon = icon; return SC.html('Button', p, label).replace('<button ', '<button onclick="' + fn + '" '); }
+function cpItemHTML(it, band){
+  var done = it.status === 'Completed', od = it.status === 'Overdue';
+  var what = '<div class="cp-what"><b>' + it.action + '</b>' + (it.quote ? scInfoHtml('From the source: ' + it.quote) : '') +
+    (it.detail ? '<p>' + it.detail + '</p>' : '') + '<p class="cp-src">' + it.src + '</p></div>';
+  var acts = '';
+  if(!done && it.owner === 'GP'){
+    acts = (CP_DO[it.kind] || CP_DO.followup).map(function(a){
+      var tip = a.to === 'Completed' ? 'Mark “' + it.action + '” as done. It moves to Completed.' : a.l + ': ' + a.t.charAt(0).toLowerCase() + a.t.slice(1) + '.';
+      return cpBtn(a.go ? 'secondary-main' : 'tertiary-main', a.l, 'cpAct(&#39;' + it.id + '&#39;,&#39;' + a.to + '&#39;,&#39;' + a.t + '&#39;)', tip);
+    }).join('') + cpBtn('tertiary-main', 'Task MOA', 'openTaskMoa(PC_CURRENT)', 'Ask your MOA to handle this item', 'user-assign');
+  } else if(!done){
+    acts = cpBtn('tertiary-main', 'Chase their office', 'cpChase(&#39;' + it.id + '&#39;)', 'Ask your MOA to call ' + it.service.split('·')[0].trim() + '. It stays their item.', 'phone');
   }
-  if(it.owner==='Specialist' && it.status!=='Completed'){
-    h += '<div class="cp-do"><button onclick="cpChase(&#39;'+it.id+'&#39;)">Chase their office</button></div>';
-  }
-  return h + '</div></div>';
+  return SC.html('TableRow', {'data-cpband':band, className:done ? 'cp-done-row' : ''},
+    ['TableCell', {}, SC.raw(what)],
+    ['TableCell', {}, ['TableCellContent', {type:'tags'}, ['Tag', {color:it.owner === 'GP' ? 'purple' : 'neutral'}, it.owner === 'GP' ? 'Ours' : 'Specialist']]],
+    ['TableCell', {}, ['TableCellContent', {label:it.due ? (done ? 'Done ' : '') + it.due : '—', className:od ? 'cp-od' : ''}]],
+    ['TableCell', {}, ['TableCellContent', {type:'tags'}, SC.raw(cpTag(it.status))]],
+    ['TableCell', {}, SC.raw('<div class="cp-acts">' + acts + '</div>')]);
 }
+var CP_BAND_OPEN = {};
+function cpBand(k, open){ CP_BAND_OPEN[k] = open; renderCarePlan(PC_CURRENT); }
 
 function renderCarePlan(name){
   var items = cpFor(name || PC_CURRENT);
@@ -14280,25 +14608,18 @@ function renderCarePlan(name){
   var sp   = open.filter(function(x){ return x.owner==='Specialist'; }).length;
   var od   = open.filter(function(x){ return x.status==='Overdue'; }).length;
 
-  var h = '<div class="vc-h"><span class="ic" data-pcic="review"></span><h4>Care plan</h4>'+
-    '<span class="right"><button class="vc-more" onclick="cpAddItem()">+ Add plan item</button></span></div>'+
-    /* one line of the counts that are not zero; four tiles of mostly 0 were
-       decoration on the normal case */
-    '<p class="cp-line">'+[
-      open.length ? open.length+' outstanding' : 'Nothing outstanding',
-      gp ? gp+' ours to do' : '',
-      sp ? sp+' with a specialist' : '',
-      od ? '<b class="od">'+od+' overdue</b>' : ''
-    ].filter(Boolean).join(' &middot; ')+'</p>';
+  var h = '<div class="cp-hd"><div><h4 class="cp-title">Care plan</h4><p class="cp-line">' + [
+      open.length ? open.length + ' outstanding' : 'Nothing outstanding',
+      gp ? gp + ' ours to do' : '', sp ? sp + ' with a specialist' : '', od ? '<b class="od">' + od + ' overdue</b>' : ''
+    ].filter(Boolean).join(' &middot; ') + '</p></div>' +
+    cpBtn('secondary-main', 'Add plan item', 'cpAddItem()', 'Add an item to this patient’s care plan: what, who does it, and when', 'add') + '</div>';
 
   var pend = CP_PENDING[name || PC_CURRENT];
   if(pend){
-    h += '<div class="cp-triage"><div class="t"><b>'+pend.recs.length+' recommendations from a new consult</b>'+
-      '<span>'+pend.src+' &middot; not yet in the plan</span></div>'+
-      '<button class="btn dark xs" onclick="openCpTriage()">Review &amp; assign</button></div>';
+    h += '<div class="cp-triage"><div><b>' + pend.recs.length + ' recommendations from a new consult</b><p>' + pend.src + ' &middot; not yet in the plan</p></div>' +
+      cpBtn('primary', 'Review & assign', 'openCpTriage()', 'Go through each recommendation and decide who does it before it joins the plan') + '</div>';
   }
 
-  /* group by specialty, then by responsible service */
   var groups = [];
   open.forEach(function(it){
     var key = it.specialty + '||' + it.service;
@@ -14306,21 +14627,22 @@ function renderCarePlan(name){
     if(!g){ g = {key:key, specialty:it.specialty, service:it.service, items:[]}; groups.push(g); }
     g.items.push(it);
   });
-
-  if(!groups.length){
-    h += '<p class="pc-empty">Nothing outstanding. Everything on this plan is complete.</p>';
-  }
-  h += groups.map(function(g){
-    return '<div class="cp-grp"><div class="cp-grp-h"><b>'+g.specialty+'</b><span>'+g.service+'</span>'+
-      '<span class="n">'+g.items.length+'</span></div>'+
-      g.items.map(cpItemHTML).join('')+'</div>';
-  }).join('');
-
+  var body = '';
+  groups.forEach(function(g, i){
+    var k = 'g' + i, isOpen = CP_BAND_OPEN[k] !== false;
+    body += SC.html('TableGroupRow', {colSpan:5, label:smText(g.specialty + ' · ' + g.service), count:g.items.length, expanded:isOpen, 'data-cpb':k});
+    if(isOpen) body += g.items.map(function(it){ return cpItemHTML(it, k); }).join('');
+  });
   if(done.length){
-    h += '<button class="vc-more" style="margin-top:12px;" onclick="cpToggleDone(this)">Show '+done.length+' completed</button>'+
-      '<div class="cp-done vc-hidden" id="cp-done">'+done.map(cpItemHTML).join('')+'</div>';
+    var dOpen = !!CP_BAND_OPEN.done;
+    body += SC.html('TableGroupRow', {colSpan:5, label:'Completed', count:done.length, expanded:dOpen, 'data-cpb':'done'});
+    if(dOpen) body += done.map(function(it){ return cpItemHTML(it, 'done'); }).join('');
   }
-
+  if(!body) body = SC.html('TableRow', {}, ['TableCell', {colSpan:5}, ['TableCellContent', {label:'Nothing on this plan yet.'}]]);
+  var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Plan item'], ['TableHead', {}, 'Who'], ['TableHead', {}, 'Due'],
+    ['TableHead', {}, 'Status'], ['TableHead', {type:'empty', 'aria-label':'Actions'}, '']]];
+  h += '<div class="cp-table" onclick="var b=event.target.closest(\'tr[data-cpb] button[aria-expanded]\'); if(b) cpBand(b.closest(\'tr\').getAttribute(\'data-cpb\'), b.getAttribute(\'aria-expanded\')!==\'true\');">' +
+    SC.html('Table', {'aria-label':'Care plan', framed:false}, head, ['TableBody', {}, SC.raw(body)]) + '</div>';
 
   document.querySelectorAll('.care-plan-mount').forEach(function(m){ m.innerHTML = h; });
   applyIcons();
@@ -15516,10 +15838,11 @@ function rxSign(route){
 /* the Documents list names what it is, the date, then the transmission status (the chart's own rule) */
 function rxDocsHtml(name){
   var st = RX_STATE[name]; if(!st || !st.status || !st.status.length) return '';
+  /* 16 Nov: a row of Chart > Documents' design system table (csDocRow); the transmission status is its tag */
   return st.status.map(function(e){
     var stat = e.route === 'moa' ? (e.state === 'done' ? 'picked up by ' + MOA_ON_SERVICE : 'sent to ' + MOA_ON_SERVICE + ', waiting') : (e.state === 'done' ? 'delivered, ' + e.doneAt : 'sending');
-    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>Prescription &middot; ' + rxIso(new Date()) + ' &middot; ' + csEsc(stat) + '</h4></div><p class="slv-ro"><span class="ic" data-pdic="complete"></span>Signed by ' + RX_DR + ', ' + e.signedAt + '</p>' +
-      '<ul class="cs-list">' + e.orders.map(function(o){ return '<li>' + csEsc(o.drug + ' ' + o.strength + ', quantity ' + o.qty + ', ' + rxRepText(o.repeats)) + '</li>'; }).join('') + '</ul><p class="cs-cap">To ' + csEsc(e.pharm) + '</p></div>';
+    return csDocRow({title:'Prescription', date:rxIso(new Date()), tags:[csSendTag(stat)], sub:'Signed by ' + RX_DR + ', ' + e.signedAt + ' · to ' + e.pharm,
+      body:'<ul class="cs-list">' + e.orders.map(function(o){ return '<li>' + csEsc(o.drug + ' ' + o.strength + ', quantity ' + o.qty + ', ' + rxRepText(o.repeats)) + '</li>'; }).join('') + '</ul>'});
   }).join('');
 }
 /* bottom bar: Back and the one next action (step 1 and 2 here; step 3 has its own two equal buttons) */
@@ -16400,10 +16723,18 @@ function renderMedRail(name){
       (pane ? '<span class="r">Ongoing</span>' : '') + '</div>';
   };
   var rail = document.getElementById('vc-medrail');
-  if(rail){
+  /* Chart > Medications (Ani, 16 Nov: "not using proper UI components"): the care plan's header, then a design system table, one row per
+     medicine (drug and dose; directions, last plan and where it came from under it), a tag only when it came from outside (show by exception) */
+  if(rail && window.SC && SC.html){
     if(MX_FOR !== name){ MX_FORM = false; MX_FOR = name; }
-    rail.innerHTML = '<div class="vc-h"><span class="ic" data-pdic="encounterlog"></span><h4>Medications <span class="vc-n">' + meds.length + '</span></h4><span class="right"><button type="button" class="btn" onclick="rxOpen()"><span class="ic" data-pdic="plus"></span>New prescription</button></span></div>' +
-      (meds.length ? meds.map(function(m){ return row(m, false); }).join('') : '<p class="pc-empty">No active medications on file.</p>') +
+    var nPn = meds.filter(function(m){ return m.pn; }).length, nEl = meds.filter(function(m){ return m.src; }).length;
+    rail.innerHTML = csHd('Medications', [meds.length ? meds.length + ' active' : 'None active', nPn ? nPn + ' added from PharmaNet' : '', nEl ? nEl + ' started elsewhere' : ''].filter(Boolean).join(' &middot; '),
+        cpBtn('secondary-main', 'New prescription', 'rxOpen()', 'Open the prescription pad to renew, change or start a medication', 'add')) +
+      (meds.length ? csTable('Medications', ['Medication', 'Source'], meds.map(function(m){
+        var sub = [smText(m.freq.charAt(0).toUpperCase() + m.freq.slice(1)), m.plan && m.plan.dose !== m.dose ? 'last plan: ' + smText(m.plan.dose) : '',
+          m.pn ? 'added from PharmaNet, ' + smText(m.pn) : '', m.src ? 'started ' + smText(m.src.where) + (m.src.when ? ', ' + smText(m.src.when) : '') + ', patient-reported' : ''].filter(Boolean).join(' · ');
+        return csTRow([csTextCell(smText(m.drug + ' ' + m.dose), sub, true), csTagCell([m.pn ? ['information', null, 'PharmaNet'] : null, m.src ? ['neutral', null, 'Started elsewhere'] : null, !m.pn && !m.src ? ['neutral', null, m.otc ? 'Over the counter' : 'Simple Care'] : null])]);
+      }).join('')) : '<p class="pc-empty">No active medications on file.</p>') +
       (MX_FORM
         ? '<div class="mx-form"><p class="mx-k">A medication started elsewhere</p>' +
             '<label class="mx-f"><span>Medication</span><input id="mx-drug" type="text" autocomplete="off" placeholder="e.g. Aspirin"></label>' +
@@ -16411,9 +16742,9 @@ function renderMedRail(name){
             '<label class="mx-f"><span>Directions</span><select id="mx-freq">' + RX_FREQ.map(function(f){ return '<option>' + f[0] + '</option>'; }).join('') + '</select></label>' +
             '<label class="mx-f"><span>Started</span><select id="mx-where"><option>in hospital</option><option>by a specialist</option><option>by another doctor or clinic</option></select></label>' +
             '<label class="mx-f"><span>When</span><input id="mx-when" type="text" autocomplete="off" placeholder="e.g. Aug 2026"></label>' +
-            '<div class="mx-acts"><button type="button" class="btn dark" onclick="mxSave()"><span class="ic" data-pdic="complete"></span>Add</button>' +
-            '<button type="button" class="btn" onclick="MX_FORM=false;renderMedRail(PC_CURRENT)"><span class="ic" data-pdic="chevl"></span>Cancel</button></div></div>'
-        : '<button type="button" class="btn mx-add" onclick="mxOpen()"><span class="ic" data-pdic="plus"></span>Add one started elsewhere</button>');
+            '<div class="mx-acts">' + cpBtn('primary', 'Add', 'mxSave()', 'Add this medication to the list, marked as started elsewhere and patient-reported', 'check-circle') +
+            cpBtn('tertiary-main', 'Cancel', 'MX_FORM=false;renderMedRail(PC_CURRENT)', 'Close this form without adding anything') + '</div></div>'
+        : '<div class="mx-add">' + cpBtn('tertiary-main', 'Add one started elsewhere', 'mxOpen()', 'Record a medication a hospital, a specialist or another doctor started, as the patient tells you', 'add') + '</div>');
     paintPd(rail);
   }
   var pane = document.getElementById('vcp-meds');
@@ -16512,7 +16843,7 @@ function renderPtReadings(name){
       '<button type="button" class="btn" onclick="prCancel()"><span class="ic" data-pdic="chevl"></span>Cancel</button></div></div>';
   el.innerHTML = '<div class="vc-h"><span class="ic" data-pdic="heart"></span><h4>Weight and BP</h4></div>' +
     '<p class="pr-by">Reported by patient</p>' + rows +
-    (PR_FORM ? form : '<button type="button" class="btn pr-add" onclick="prOpenForm()"><span class="ic" data-pdic="plus"></span>Record a reading</button>');
+    (PR_FORM ? form : cpBtn('secondary-main', 'Record a reading', 'prOpenForm()', 'Add a reading the patient reported, like a home blood pressure', 'add'));
   el.hidden = false;
   paintPd(el);
 }
@@ -16653,8 +16984,8 @@ function renderResults(name){
       return {n:t.n, v:p[1], u:t.u, ref:t.ref, f:p[2], prior:lrTwo(t.pts.slice(0, -1)),
         sub:p[0] + ' · ' + (p[3] === 'patient' ? 'Uploaded by patient' : p[3]),
         status:it ? (it.status === 'signed-off' ? SC.html('Tag', {color:'success', startIcon:'check'}, 'Cleared')
-          : SC.html('Tag', {color:'warning', as:'button', 'data-rsreview':INBOX_ITEMS.indexOf(it), 'aria-label':'Not cleared. Review ' + t.n}, 'Not cleared')) : '',
-        tail:SC.html('Button', {variant:'secondary-main', size:'medium', startIcon:'file', 'data-rspdf':(p[3] === 'patient' ? 'uploaded' : p[3]) + '|' + t.n, 'aria-label':'Open the report for ' + t.n}, 'PDF')};
+          : SC.html('Tag', {color:'warning', as:'button', 'data-rsreview':INBOX_ITEMS.indexOf(it), 'aria-label':'Not cleared. Review ' + t.n, title:'Open the ' + t.n + ' result to review and clear it'}, 'Not cleared')) : '',
+        tail:SC.html('Button', {variant:'secondary-main', size:'medium', startIcon:'file', 'data-rspdf':(p[3] === 'patient' ? 'uploaded' : p[3]) + '|' + t.n, 'aria-label':'Open the report for ' + t.n, title:'Open the original report for ' + t.n + ' as received'}, 'PDF')};
     }), {label:'Lab results', tail:'Report', rowCls:'lr-row'}) : '<p class="pc-empty">No lab results on file.</p>';
     h += RS_ADD
       ? '<div class="rs-form"><p class="rs-k">Add an expected result</p>' +
@@ -16663,7 +16994,7 @@ function renderResults(name){
           '<label class="rs-f"><span>Ordered by</span><input id="rs-by" type="text" placeholder="e.g. the hospital"></label>' +
           '<div class="rs-acts"><button type="button" class="btn dark" onclick="rsSaveExp()"><span class="ic" data-pdic="complete"></span>Add</button>' +
           '<button type="button" class="btn" onclick="RS_ADD=false;renderResults(PC_CURRENT)"><span class="ic" data-pdic="chevl"></span>Cancel</button></div></div>'
-      : '<button type="button" class="btn rs-addexp" onclick="RS_ADD=true;renderResults(PC_CURRENT);var i=document.getElementById(\'rs-what\');if(i)i.focus()"><span class="ic" data-pdic="plus"></span>Add an expected result</button>';
+      : cpBtn('secondary-main', 'Add an expected result', 'RS_ADD=true;renderResults(PC_CURRENT);var i=document.getElementById(&#39;rs-what&#39;);if(i)i.focus()', 'Track a result you are waiting for, so you are told if it does not arrive', 'add');
     pane.innerHTML = h;
     paintPd(pane);
   }
@@ -17963,7 +18294,7 @@ pcStartCall = function(){
 };
 
 /* ================= full chart, one step away ================= */
-var CS_TABS = [['timeline','Timeline','calendar'],['results','Results','chartup'],['medications','Medications','encounterlog'],['problems','Problems','tasks'],
+var CS_TABS = [['history','History','tasks'],['timeline','Timeline','calendar'],['results','Results','chartup'],['medications','Medications','encounterlog'],['problems','Problems','tasks'],
   ['careplan','Care plan','today'],['consults','Consults','registerpatient'],['documents','Documents','file'],['messages','Messages','chat']];
 /* Chart tab (Ani, 7 Oct): the Search sub-tab merged into "Search the chart" at the top; each chart remembers its last section */
 CS.fcTabBy = {};
@@ -17999,12 +18330,13 @@ function csTab(tab, noFocus, keepQ){
   if(!keepQ){ var q = document.getElementById('cs-q'); if(q) q.value = ''; }
   var srch = !!keepQ;
   var tabs = document.getElementById('cs-tabs');
-  tabs.innerHTML = CS_TABS.map(function(t){
-    var on = t[0] === tab && !srch;
-    return '<button type="button" role="tab" id="cst-' + t[0] + '" aria-controls="csp-' + t[0] + '" aria-selected="' + on + '" tabindex="' + (t[0] === tab ? 0 : -1) + '" onclick="csTab(\'' + t[0] + '\')">' + t[1] + '</button>';
-  }).join('');
+  /* Ani, 16 Nov ("even the tab component is not accurate"): the design system's Tabs; each tab still controls its own panel */
+  tabs.innerHTML = SC.html('Tabs', {defaultValue:srch ? '' : tab}, ['TabList', {'aria-label':'Chart sections'}].concat(CS_TABS.map(function(t){
+    return ['Tab', {value:t[0], id:'cst-' + t[0], 'data-cst':t[0], title:'Show ' + t[1].toLowerCase() + ' for this patient'}, t[1]]; })));
+  tabs.querySelectorAll('[role=tab][data-cst]').forEach(function(b){ var k = b.getAttribute('data-cst'); b.setAttribute('aria-controls', 'csp-' + k); b.tabIndex = k === tab ? 0 : -1; });
   CS_TABS.forEach(function(t){ var p = document.getElementById('csp-' + t[0]); if(p) p.hidden = srch || t[0] !== tab; });
   var sp = document.getElementById('csp-search'); if(sp) sp.hidden = !srch;
+  if(tab === 'history') hxRender();
   if(tab === 'consults') csRenderConsults(PC_CURRENT);
   if(tab === 'documents') csRenderDocs(PC_CURRENT);
   if(tab === 'messages') csRenderMsgs(PC_CURRENT);
@@ -18023,52 +18355,111 @@ document.addEventListener('keydown', function(e){
     if(fc && !fc.hidden && !document.querySelector('.cd-panel.show, .tm-overlay.show')) csCloseFull();
   }
 });
+/* ---------- Chart drawer sections as design system pieces (Ani, 16 Nov: the Chart tabs are "not using proper UI components") ----------
+   Medications, Problems, Consults, Documents and Messages are built like the care plan: its header (title, one summary line, the actions), then
+   a design system Table (rows of TableCellContent, Tags for state, Buttons that say on hover what they do; bands are static TableGroupRows).
+   A row's "what" cell holds the title, an info icon for the source, and any lines the record has (a list, a note). */
+function csHd(title, line, acts){
+  return '<div class="cp-hd"><div><h4 class="cp-title">' + csEsc(title) + '</h4>' + (line ? '<p class="cp-line">' + line + '</p>' : '') + '</div>' +
+    (acts ? '<div class="cs-hd-acts">' + acts + '</div>' : '') + '</div>';
+}
+function csSub(title, n){ return '<h5 class="cs-sub">' + csEsc(title) + (n ? ' <span class="cs-sub-n">' + n + '</span>' : '') + '</h5>'; }
+/* heads: column names; '' is the actions column (no visible name) */
+function csTable(label, heads, rows){
+  return SC.html('Table', {'aria-label':label, framed:false, className:'cs-dtab'},
+    ['TableHeader', {}, ['TableHeaderRow', {}].concat(heads.map(function(t){ return t ? ['TableHead', {}, t] : ['TableHead', {type:'empty', 'aria-label':'Actions'}, '']; }))],
+    ['TableBody', {}, SC.raw(rows)]);
+}
+/* .cs-row: one search result per row (csHitUnit), unless the row holds a list or a note; then each of its lines is one */
+function csTRow(cells, p){ return SC.html.apply(SC, ['TableRow', Object.assign({}, p || {}, {className:'cs-row' + (p && p.className ? ' ' + p.className : '')})].concat(cells)); }
+function csTextCell(label, secondary, strong){ var p = {label:label || '—', wrap:true}; if(secondary) p.secondary = secondary; if(strong) p.strong = true; return ['TableCell', {}, ['TableCellContent', p]]; }
+/* tags: [colour, icon or null, text]; an empty list leaves the cell empty (show by exception) */
+function csTagCell(tags){
+  tags = (tags || []).filter(Boolean);
+  if(!tags.length) return ['TableCell', {}, ['TableCellContent', {label:''}]];
+  return ['TableCell', {}, ['TableCellContent', {type:'tags'}].concat(tags.map(function(t){ var p = {color:t[0]}; if(t[1]) p.startIcon = t[1]; return ['Tag', p, t[2]]; }))];
+}
+function csRawCell(html){ return ['TableCell', {}, SC.raw(html)]; }
+/* title (text), extra HTML after it (an AI chip), the source in an info icon, then the record's own lines (HTML) */
+function csWhat(o){
+  return '<div class="cs-what"' + (o.id ? ' id="' + o.id + '"' : '') + '><b>' + csEsc(o.title) + '</b>' + (o.chip || '') + (o.info ? scInfoHtml(o.info) : '') +
+    (o.sub ? '<p class="cs-what-sub">' + csEsc(o.sub) + '</p>' : '') + (o.body || '') + '</div>';
+}
+/* where a signed thing stands: still with the MOA or going out ("with Dolly to fax", "sending", "waiting") is warning (clock); done is success (tick) */
+function csSendTag(text){
+  var t = String(text || ''); if(!t) return null; t = t.charAt(0).toUpperCase() + t.slice(1);
+  return /^with |to send|waiting|sending/i.test(t) ? ['warning', 'clock-time', t] : ['success', 'check-circle', t];
+}
+/* Documents: the record, its date, where it stands, its action */
+function csDocRow(o){
+  return csTRow([csRawCell(csWhat(o)), csTextCell(o.date), csTagCell(o.tags), csRawCell('<div class="cs-row-acts">' + (o.acts || '') + '</div>')]);
+}
 function csRenderConsults(name){
-  var el = document.getElementById('cs-consults'); if(!el) return;
-  var by = {};
+  var el = document.getElementById('cs-consults'); if(!el || !(window.SC && SC.html)) return;
+  var by = {}, groups = [];
   (CARE_PLAN[name] || []).filter(function(x){ return x.specialty !== 'Family practice'; }).forEach(function(x){
-    var k = x.service + '|' + x.src; (by[k] = by[k] || {service:x.service, src:x.src, items:[]}).items.push(x);
+    var k = x.service + '|' + x.src; if(!by[k]){ by[k] = {service:x.service, src:x.src, items:[]}; groups.push(by[k]); } by[k].items.push(x);
   });
-  var h = Object.keys(by).map(function(k){ var g = by[k];
-    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pcic="consult"></span><h4>' + g.src + '</h4></div><p class="cs-cap">' + g.service + '</p>' +
-      '<ul class="cs-list">' + g.items.map(function(x){ return '<li><b>' + x.action + '</b> <span class="cs-cap">&middot; ' + x.status + ' &middot; ' + (x.owner === 'GP' ? 'you' : 'specialist') + '</span>' +
-        (x.quote ? '<p class="cs-quote">' + x.quote + '</p>' : '') + '</li>'; }).join('') + '</ul></div>';
+  var P2 = CP_PENDING[name], nRef = typeof SD !== 'undefined' && SD.out[name] ? SD.out[name].refs.length : 0, nRep = groups.length + (P2 ? 1 : 0);
+  var h = csHd('Consults', [nRep ? nRep + ' consult report' + (nRep === 1 ? '' : 's') : 'No consult reports', nRef ? nRef + ' referral' + (nRef === 1 ? '' : 's') + ' sent' : ''].filter(Boolean).join(' &middot; '));
+  if(P2) h += '<div class="cp-triage"><div><b>' + P2.recs.length + ' recommendation' + (P2.recs.length === 1 ? '' : 's') + ' not yet in your plan</b><p>' + csEsc(smText(P2.src)) + '</p></div>' +
+    cpBtn('primary', 'Review in the care plan', 'csTab(&#39;careplan&#39;)', 'Open the care plan, where you decide who does each recommendation before it joins the plan') + '</div>';
+  h += typeof sdRefsHtml === 'function' ? sdRefsHtml(name) : '';   /* 26 Oct: referrals signed from the Refer drawer */
+  /* one static band per letter; each row: the recommendation (the letter's words in its info icon), whose it is, where it stands */
+  var body = groups.map(function(g){
+    return SC.html('TableGroupRow', {colSpan:3, label:smText(g.src + ' · ' + g.service), count:g.items.length}) + g.items.map(function(x){
+      return csTRow([csRawCell(csWhat({title:smText(x.action), info:x.quote ? 'From the letter: ' + smText(x.quote) : ''})),
+        csTagCell([[x.owner === 'GP' ? 'purple' : 'neutral', null, x.owner === 'GP' ? 'Ours' : 'Specialist']]),
+        ['TableCell', {}, ['TableCellContent', {type:'tags'}, SC.raw(cpTag(x.status))]]]);
+    }).join('');
   }).join('');
-  var P2 = CP_PENDING[name];
-  if(P2) h += '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pcic="consult"></span><h4>' + P2.src + '</h4></div>' +
-    '<p class="cs-cap">' + P2.recs.length + ' recommendations not yet in your plan &middot; <button type="button" class="vc-more" onclick="csTab(\'careplan\')">Review them in the care plan</button></p>' +
-    '<ul class="cs-list">' + P2.recs.map(function(x){ return '<li><b>' + x.action + '</b><p class="cs-quote">' + x.quote + '</p></li>'; }).join('') + '</ul></div>';
-  h = (typeof sdRefsHtml === 'function' ? sdRefsHtml(name) : '') + h;   /* 26 Oct: referrals signed from the Refer drawer */
-  el.innerHTML = h || '<p class="pc-empty">No consults on file.</p>';
+  if(P2) body += SC.html('TableGroupRow', {colSpan:3, label:smText(P2.src), count:P2.recs.length}) + P2.recs.map(function(x){
+    return csTRow([csRawCell(csWhat({title:smText(x.action), info:x.quote ? 'From the letter: ' + smText(x.quote) : ''})), csTextCell('Not decided'),
+      csTagCell([['warning', 'clock-time', 'Not in your plan']])]);
+  }).join('');
+  if(body) h += (nRef ? csSub('Consult reports', nRep) : '') + csTable('Consult reports', ['Recommendation', 'Who', 'Status'], body);
+  if(!body && !nRef) h += '<p class="pc-empty">No consults on file.</p>';
+  el.innerHTML = h;
   paintPd(el);
 }
+/* Chart > Documents (Ani, 16 Nov): the header with Create a document and Upload (opDocsHead), then one design system table, newest kinds first as
+   before: what was created or uploaded (opDocsRows), today's intake, prescriptions (rxDocsHtml), drafts, orders and referrals (sdDocsHtml), the call
+   transcript (scTxDoc), the last signed visit note. Every row: the record and its lines, its date, where it stands as a tag, its action. */
 function csRenderDocs(name){
-  var el = document.getElementById('cs-docs'); if(!el) return;
-  var r = csRow(), L = PT_LAST[name], f = csIntakeFlag(r), h = '';
-  if(typeof opDocsHead === 'function') h += opDocsHead(name);   /* T-030: Documents and letters, Create a document and Upload, then what was created or uploaded */
-  h += '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>Intake &middot; today</h4></div><dl class="cs-kv">' +
+  var el = document.getElementById('cs-docs'); if(!el || !(window.SC && SC.html)) return;
+  var r = csRow(), L = PT_LAST[name], f = csIntakeFlag(r), rows = '';
+  var h = typeof opDocsHead === 'function' ? opDocsHead(name) : csHd('Documents and letters', '');   /* T-030: Create a document and Upload */
+  if(typeof opDocsRows === 'function') rows += opDocsRows(name);   /* T-030: what was created or uploaded */
+  rows += csDocRow({title:'Intake', date:'Today', tags:[f && f.words ? ['warning', 'warning', 'Flagged'] : null], body:'<dl class="cs-kv">' +
     '<dt>Clinical concern</dt><dd>' + csEsc(r ? r.concern : '') + '</dd>' +
     (AI_SUMMARY[name] ? '<dt>Summary</dt><dd>' + csEsc(csIntakeSummary(name)) + '</dd>' : '') +
-    (f && f.words ? '<dt>Flagged</dt><dd>&ldquo;' + csEsc(f.words) + '&rdquo;' + (f.when ? ' &middot; ' + csEsc(f.when) : '') + '</dd>' : '') + '</dl></div>';
+    (f && f.words ? '<dt>Flagged</dt><dd>&ldquo;' + csEsc(f.words) + '&rdquo;' + (f.when ? ' &middot; ' + csEsc(f.when) : '') + '</dd>' : '') + '</dl>'});
   /* T-026: prescriptions signed on this visit, named by what they are, then date, then transmission status */
-  if(typeof rxDocsHtml === 'function') h += rxDocsHtml(name);
-  if(typeof sdDocsHtml === 'function') h += sdDocsHtml(name);   /* 26 Oct: orders and referrals signed from their drawers */
-  h += scTxDoc(name);
-  if(L) h += '<div class="vc-block cs-doc" id="cs-doc-last"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>Visit note &middot; ' + csShort(L.date) + '</h4></div>' +
-    '<p class="slv-ro"><span class="ic" data-pdic="complete"></span>Signed</p><dl class="cs-kv">' +
-    ['S','O','A','P'].map(function(k){ return '<dt>' + {S:'Subjective',O:'Objective',A:'Assessment',P:'Plan'}[k] + '</dt><dd>' + L.note[k] + '</dd>'; }).join('') + '</dl></div>';
-  else h += '<p class="pc-empty">No earlier notes on file.</p>';
+  if(typeof rxDocsHtml === 'function') rows += rxDocsHtml(name);
+  if(typeof sdDocsHtml === 'function') rows += sdDocsHtml(name);   /* 26 Oct: orders and referrals signed from their drawers */
+  rows += scTxDoc(name);
+  if(L) rows += csDocRow({id:'cs-doc-last', title:'Visit note', date:csShort(L.date), tags:[['success', 'check-circle', 'Signed']], body:'<dl class="cs-kv">' +
+    ['S','O','A','P'].map(function(k){ return '<dt>' + {S:'Subjective',O:'Objective',A:'Assessment',P:'Plan'}[k] + '</dt><dd>' + L.note[k] + '</dd>'; }).join('') + '</dl>'});
+  h += csTable('Documents', ['Document', 'Date', 'Status', ''], rows);
+  if(!L) h += '<p class="pc-empty">No earlier notes on file.</p>';
   el.innerHTML = h; paintPd(el);
 }
+/* Chart > Messages (Ani, 16 Nov): what was sent to the patient (sdMsgsHtml), then the lines of the chat with the MOA that mention them, as
+   two static bands of one design system table */
 function csRenderMsgs(name){
-  var el = document.getElementById('cs-msgs'); if(!el) return;
+  var el = document.getElementById('cs-msgs'); if(!el || !(window.SC && SC.html)) return;
   var base = csBase(name).toLowerCase();
   var hits = [];
   (typeof MOA_THREADS !== 'undefined' ? MOA_THREADS : []).forEach(function(th){ th.messages.forEach(function(m){ if(m.text.toLowerCase().indexOf(base) > -1) hits.push({who:th.name, m:m}); }); });
   var sentMsgs = typeof sdMsgsHtml === 'function' ? sdMsgsHtml(name) : '';   /* 26 Oct: messages signed and sent from the Message drawer */
-  el.innerHTML = sentMsgs + (hits.length ? '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="chat"></span><h4>Dolly</h4></div><ul class="cs-list">' +
-    hits.map(function(x){ return '<li>&ldquo;' + csEsc(x.m.text) + '&rdquo; <span class="cs-cap">&middot; ' + csEsc(x.who) + ', ' + x.m.time + '</span></li>'; }).join('') + '</ul></div>'
-    : (sentMsgs ? '' : '<p class="pc-empty">No messages about this patient.</p>'));
+  var nSent = typeof SD !== 'undefined' && SD.out[name] ? SD.out[name].msgs.length : 0, moa = hits.map(function(x){ return smText(x.who); }).filter(function(v, i, a){ return a.indexOf(v) === i; }).join(' and ') || 'your MOA';   /* the people in the chat these lines came from (was the MOA on service, who isn't always in that chat) */
+  var h = csHd('Messages', [nSent ? nSent + ' sent to the patient' : '', hits.length ? hits.length + ' in your chat with ' + csEsc(moa) : ''].filter(Boolean).join(' &middot; '));
+  var body = (sentMsgs ? SC.html('TableGroupRow', {colSpan:3, label:'Sent to the patient', count:nSent}) + sentMsgs : '') +
+    (hits.length ? SC.html('TableGroupRow', {colSpan:3, label:'Chat with ' + moa, count:hits.length}) + hits.map(function(x){
+      return csTRow([csTextCell('“' + smText(x.m.text) + '”', smText(x.who)), csTextCell(smText(x.m.time)), csTagCell([])]);
+    }).join('') : '');
+  h += body ? csTable('Messages', ['Message', 'When', 'Status'], body) : '<p class="pc-empty">No messages about this patient.</p>';
+  el.innerHTML = h;
   paintPd(el);
 }
 /* v2.5 §7 search everything. Chart tab (Ani, 7 Oct): "Search the chart" sits at the top of the Chart tab; typing searches
@@ -18084,14 +18475,28 @@ function csSearchClear(){
   var l = document.getElementById('cs-sres-live'); if(l) l.textContent = '';
   if(q) q.focus();
 }
+/* what search reads (16 Nov): a design system row (.cs-row) is one result, its cells' words joined with spaces and its buttons left out;
+   a row that holds a list or a note (li, dd), or is too long to list, gives one result per line (p, li, dd) instead, as the cards did */
+var CS_HIT_SEL = 'p, li, dd, .vc-line, .rs-row, .cp-what, .ctl-item, .cd-rail-row, .cs-row';
+function csHitUnit(n){
+  if(n.querySelector('li, dd, .vc-line, .rs-row, .cp-what') || (n.tagName === 'P' && n.closest('.cp-what'))) return false;
+  var r = n.closest('.cs-row');
+  return !r || r === n || !!r.querySelector('li, dd') || csHitText(r).length >= 320;
+}
+function csHitText(n){
+  if(!n.classList.contains('cs-row')) return n.textContent.replace(/\s+/g,' ').trim();
+  var out = [], w = document.createTreeWalker(n, NodeFilter.SHOW_TEXT, {acceptNode:function(t){ return t.parentElement && t.parentElement.closest('button, .sc-info') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT; }});
+  while(w.nextNode()) out.push(w.currentNode.nodeValue);
+  return out.join(' ').replace(/\s+/g,' ').trim();
+}
 function csSearchHits(q){
   csRenderConsults(PC_CURRENT); csRenderDocs(PC_CURRENT); csRenderMsgs(PC_CURRENT);
   var hits = [];
   CS_TABS.forEach(function(t){
     var p = document.getElementById('csp-' + t[0]); if(!p) return;
-    p.querySelectorAll('p, li, dd, .vc-line, .rs-row, .cp-item, .ctl-item, .cd-rail-row').forEach(function(n){
-      if(n.querySelector('p, li, dd, .vc-line, .rs-row, .cp-item')) return;
-      var tx = n.textContent.replace(/\s+/g,' ').trim();
+    p.querySelectorAll(CS_HIT_SEL).forEach(function(n){
+      if(!csHitUnit(n)) return;
+      var tx = csHitText(n);
       if(tx && tx.length < 320 && tx.toLowerCase().indexOf(q) > -1) hits.push([t[0], t[1], tx]);
     });
   });
@@ -18129,9 +18534,9 @@ function csSearchGo(i){
   var x = (CS.sHits || [])[i]; if(!x) return;
   csTab(x[0], true);
   var p = document.getElementById('csp-' + x[0]), hit = null;
-  if(p) [].slice.call(p.querySelectorAll('p, li, dd, .vc-line, .rs-row, .cp-item, .ctl-item, .cd-rail-row')).some(function(n){
-    if(n.querySelector('p, li, dd, .vc-line, .rs-row, .cp-item')) return false;
-    if(n.textContent.replace(/\s+/g,' ').trim() === x[2]){ hit = n; return true; } return false;
+  if(p) [].slice.call(p.querySelectorAll(CS_HIT_SEL)).some(function(n){
+    if(!csHitUnit(n)) return false;
+    if(csHitText(n) === x[2]){ hit = n; return true; } return false;
   });
   var t = document.getElementById('cst-' + x[0]);
   if(hit){
@@ -18471,19 +18876,22 @@ var T23_PRIVATE_FEE = 100;  /* the private visit fee (V2 Fee Settings); unsource
    rejmoa (the billing agent fixes it) → "Refused — fix & resend"; paid and adjusted → "Paid" ("Paid $x of $y" when
    they differ); closed → "Closed — not paid". Colour rule kept: amber for the needs-attention states (Dev suggests red
    for Refused; red stays only on the 2-days-left chip and tab count badges). t23Label(c) is the one source. */
+/* Daniel, Part 1 (16 Nov), section 5: seven claim statuses. Unsubmitted (not yet sent to MSP) · Submitted (sent through Teleplan) ·
+   Processing (received, awaiting MSP's decision) · Paid · Adjusted (MSP reduced or changed the amount) · Refused (MSP decided and
+   refused payment) · Rejected (failed MSP validation or pre-submission checks). Internal states map onto them. */
 var T23_ST = {
-  submit:     {label:'Ready to send',             tone:'info', icon:'arrowup'},
-  submitted:  {label:'Sent — waiting for MSP',    tone:'info', icon:'clock'},
-  held:       {label:'Held by MSP',               tone:'warn', icon:'clock'},
-  rejmoa:     {label:'Refused — fix & resend',    tone:'warn', icon:'alert'},      /* the billing agent fixes it */
-  rejected:   {label:'Refused — fix & resend',    tone:'warn', icon:'alert'},
-  dispute:    {label:'Refused — fix & resend',    tone:'warn', icon:'alert'},      /* looks correctly billed: ask MSP to reassess */
-  appeal:     {label:'Sent — waiting for MSP',    tone:'info', icon:'clock'},      /* resent with a note, asking MSP to reassess */
-  adjusted:   {label:'Paid',                      tone:'warn', icon:'alert'},      /* paid less than billed: Accept or Dispute */
-  paid:       {label:'Paid',                      tone:'ok',   icon:'complete'},
-  closed:     {label:'Closed — not paid',         tone:'',     icon:'complete'},
-  'pri-due':  {label:'Outstanding',       tone:'warn', icon:'clock'},
-  'pri-paid': {label:'Paid',              tone:'ok',   icon:'complete'}
+  submit:     {label:'Unsubmitted', tone:'info', icon:'arrowup', why:'Not yet sent to MSP.'},
+  submitted:  {label:'Submitted',   tone:'info', icon:'clock',   why:'Sent through Teleplan.'},
+  appeal:     {label:'Submitted',   tone:'info', icon:'clock',   why:'Resent through Teleplan with a note, asking MSP to reassess.'},
+  held:       {label:'Processing',  tone:'warn', icon:'clock',   why:'Received; awaiting MSP’s decision.'},
+  paid:       {label:'Paid',        tone:'ok',   icon:'complete', why:'MSP decided on the claim and paid it.'},
+  adjusted:   {label:'Adjusted',    tone:'warn', icon:'alert',   why:'MSP reduced or otherwise changed the billed amount.'},
+  rejected:   {label:'Refused',     tone:'warn', icon:'alert',   why:'MSP decided on the claim and refused payment.'},
+  dispute:    {label:'Refused',     tone:'warn', icon:'alert',   why:'MSP refused it; it looks correctly billed, so you can ask MSP to reassess.'},
+  closed:     {label:'Refused',     tone:'',     icon:'complete', why:'MSP refused payment and the claim is closed.'},
+  rejmoa:     {label:'Rejected',    tone:'warn', icon:'alert',   why:'Failed MSP validation; the billing agent fixes it and resends.'},
+  'pri-due':  {label:'Outstanding', tone:'warn', icon:'clock'},
+  'pri-paid': {label:'Paid',        tone:'ok',   icon:'complete'}
 };
 /* Daniel 5 Oct: the person who works on rejections and asks billing questions is the BILLING AGENT, a separate role
    from the MOA ("can be the same person"). Daniel doesn't want the MOA in his billing. Demo person: Japneet. */
@@ -18658,7 +19066,7 @@ function t23Label(c){
   var s = T23_ST[c.st] || {label:c.st, tone:''}, b = t23Blocker(c);
   if(b) return {label:'Needs info · ' + b.who, tone:'warn', icon:'alert', why:b.why};
   if((c.st === 'paid' || c.st === 'adjusted') && c.paid != null && Math.abs(c.paid - t23Amt(c)) > 0.004)
-    return {label:'Paid ' + t23Money(c.paid) + ' of ' + t23Money(t23Amt(c)), tone:s.tone, icon:s.icon};
+    return {label:c.st === 'adjusted' ? 'Adjusted' : 'Paid ' + t23Money(c.paid) + ' of ' + t23Money(t23Amt(c)), tone:s.tone, icon:s.icon, why:'Paid ' + t23Money(c.paid) + ' of ' + t23Money(t23Amt(c)) + '.'};
   return s;
 }
 function t23Pill(c, btn){
@@ -18689,7 +19097,7 @@ function t23OpenQ(c){ return c.flags.filter(function(f){ return f.k === 'q' && !
 /* ================= Claims screen ================= */
 /* Ani, 6 Oct: one row of tabs instead of pills over tabs. Rejected by MSP is the default (Daniel's top priority).
    CL_ON is the open tab: rej, ns, sub, paid or all. Red count badges only where the doctor has work to do. */
-var CL_TABS = [['rej','Refused by MSP',true],['ns','Needs submission',true],['sub','Submitted'],['paid','Paid'],['all','All']];
+var CL_TABS = [['rej','Refused or rejected',true],['ns','Unsubmitted',true],['sub','Submitted'],['paid','Paid'],['all','All']];   /* tab names in Daniel's claim words (16 Nov) */
 var CL_ON = 'rej';
 var CL_OLD = {'Needs attention':'rej', 'Submitted':'sub', 'Paid':'paid', 'All':'all'};
 function clSet(f){ CL_ON = CL_OLD[f] || f; renderClaims(); var b = document.querySelector('#cl-list [id$="-tab-' + CL_ON + '"]'); if(b) b.focus(); }
@@ -18743,8 +19151,8 @@ function t23Stats(){
   var rejSum = rej.reduce(function(t, c){ return t + (c.st === 'adjusted' ? t23Amt(c) - c.paid : t23Amt(c)); }, 0);
   var paidSum = paid.reduce(function(t, c){ return t + (c.paid || 0); }, 0);
   sw.innerHTML = SC.html('StatGroup', {'aria-label':'Claims summary'},
-    st('Needs submission', ns.length, t23Money(sum(ns)) + ' expected', 'warning'),
-    st('Refused by MSP', rej.length, t23Money(rejSum) + ' not paid', 'error'),
+    st('Unsubmitted', ns.length, t23Money(sum(ns)) + ' expected', 'warning'),
+    st('Refused or rejected', rej.length, t23Money(rejSum) + ' not paid', 'error'),
     st('Paid this cycle', paid.length, t23Money(paidSum) + (lastPay ? ' · Paid ' + t23F(lastPay) : ' paid')));
 }
 
@@ -18758,7 +19166,8 @@ function t23FeeCell(c){
 function t23AmtCell(c){ var b = t23Basis(c); return b ? ['TableCellContent', {type:'number', label:t23Money(b[0]), secondary:b[1]}] : ['TableCellContent', {type:'number', label:'No amount'}]; }
 function t23StatusTag(c){
   var L = t23Label(c), st = t23Blocker(c) ? 'claim-review' : CLAIM_KEY[c.st]; if(!st) return '';
-  return SC.html('StatusTag', L.label !== (T23_ST[c.st] || {}).label || st === 'claim-review' ? {status:st, label:L.label} : {status:st});
+  var bk = t23Blocker(c);   /* a claim held up by a missing detail is still Unsubmitted; the reason is on hover */
+  return SC.html('StatusTag', {status:st, label:bk ? 'Unsubmitted' : L.label, title:bk ? 'Not yet sent to MSP. Waiting on ' + bk.who.toLowerCase() + ': ' + bk.why + '.' : (L.why || (T23_ST[c.st] || {}).why || '')});   /* Daniel's claim words (16 Nov), and what each means on hover */
 }
 function t23Btn(act, label, o){ o = o || {}; var p = {variant:o.v || 'secondary-main', size:'medium', 'data-act':act}; if(o.icon) p.startIcon = o.icon; if(o.dis){ p.disabled = true; p.title = o.dis; } return ['Button', p, label]; }
 /* Ani, 14 Nov ("these rows all need to be clickable to see details"): like the Inbox, a claim's row opens its details (click, Enter or Space);
@@ -18897,11 +19306,11 @@ function renderClaims(){
       var n = clRows(t[0]).length; return ['Tab', {value:t[0]}, t[1] + ' ' + n]; })))
       .replace(/aria-controls="[^"]*-panel-(\w+)"/g, 'aria-controls="t23-panel-$1"') + '</div>';
     var rows = clRows(at), list = '';
-    if(at === 'rej') list = rows.length ? t23Table('Refused by MSP', ['Patient', 'Reason', 'Deadline', ''], [].concat.apply([], rows.map(t23RejHtml))) : '<p class="pc-empty">Nothing rejected that needs you.</p>';
+    if(at === 'rej') list = rows.length ? t23Table('Refused or rejected', ['Patient', 'Reason', 'Deadline', ''], [].concat.apply([], rows.map(t23RejHtml))) : '<p class="pc-empty">Nothing rejected that needs you.</p>';
     else if(at === 'ns') list =
            '<p class="t23-quiet">Claims go to MSP as soon as you submit. MSP processes them at 7 PM each business day.</p>' +   /* Dev answers, 6 Oct (answer 08): no end-of-day batch */
            (t23NextCut() ? '<p class="t23-quiet t23-cut">Next close-off ' + t23FDW(t23NextCut()[0]) + ' · paid ' + t23FDW(t23NextCut()[1]) + '</p>' : '') +   /* real data (Ani, 6 Oct) */
-           (rows.length ? t23Table('Needs submission', cols, [].concat.apply([], rows.map(t23SubRow))) : '<p class="pc-empty">Nothing to submit. Claims from finalized visits land here.</p>');
+           (rows.length ? t23Table('Unsubmitted', cols, [].concat.apply([], rows.map(t23SubRow))) : '<p class="pc-empty">Nothing to submit. Claims from finalized visits land here.</p>');
     else list = (rows.length ? t23Table(CL_TABS.filter(function(t){ return t[0] === at; })[0][1], cols, rows.map(function(c){ return t23Row(c, {pill:true}); })) : '<p class="pc-empty">Nothing in this view.</p>') +
            (at === 'all' ? '<div class="t23-nsdash">' + 'Korynn, no-show today.</div>' : '');
     h += '<div id="t23-panel-' + at + '" role="tabpanel">' + list + '</div>';
@@ -19385,7 +19794,7 @@ function t23PickSave(){
       c.st = 'submit'; c.msp = null; c.sub = 'Corrected by you · submit it when you’re ready';
     }
     t23PickClose(); t23Refresh();
-    toast(c.st === 'submit' && (o.correct || fixed) ? 'Saved · it’s in Needs submission. Submit it when you’re ready.' : 'Saved · the change is logged');
+    toast(c.st === 'submit' && (o.correct || fixed) ? 'Saved · it’s in Unsubmitted. Submit it when you’re ready.' : 'Saved · the change is logged');
     if(c.st === 'submit' && (o.correct || fixed)) t23Focus(c.id);
   } else {
     var old = T23.visit[o.visit], vch = old ? t23ChangeList(old, v) : [];
@@ -19416,8 +19825,8 @@ renderClaims();
 /* Daniel 5 Oct: the queue's billing status stays as the shortcut into Claims; it never submits. */
 BILL_STATUS = {
   'msp-none':      {label:'No claim yet', tone:'', open:false},
-  'msp-submit':    {label:'Ready to send', tone:'warn', open:true},
-  'msp-submitted': {label:'Sent — waiting for MSP', tone:'info', open:false},
+  'msp-submit':    {label:'Unsubmitted', tone:'warn', open:true},
+  'msp-submitted': {label:'Submitted', tone:'info', open:false},
   'noshow':        {label:'No-show billing: not decided', tone:'', open:false},
   'pri-due':       {label:'Payment outstanding', tone:'warn', open:true},
   'pri-paid':      {label:'Payment paid', tone:'ok', open:false}
@@ -19461,7 +19870,8 @@ function t23BillCell(r){
   var go = function(lbl){ return {endIcon:'arrow-dropdown-right', 'aria-haspopup':undefined, 'aria-expanded':undefined, 'aria-label':'Billing: ' + lbl + '. Open in Claims'}; };
   if(c0 && c0.payer !== 'private'){   /* Dev's 7 states (6 Oct); a blocker or a part payment keeps its own words */
     var L0 = t23Label(c0), st = t23Blocker(c0) ? 'claim-review' : CLAIM_KEY[c0.st], m = act ? go(L0.label) : {};
-    if(L0.label !== (T23_ST[c0.st] || {}).label || st === 'claim-review') m.label = L0.label;
+    var bk0 = t23Blocker(c0); m.label = bk0 ? 'Unsubmitted' : L0.label;
+    m.title = (bk0 ? 'Not yet sent to MSP. Waiting on ' + bk0.who.toLowerCase() + ': ' + bk0.why + '.' : (L0.why || (T23_ST[c0.st] || {}).why || '')) + ' Click to open it in Claims.';   /* Daniel's words on every claim chip */
     return stTag(st, act, m);
   }
   var m2 = act ? go(b.label) : {}; m2.label = b.label;
@@ -19511,7 +19921,7 @@ function t23OnFinalize(r){
           t23Log(cc, 'Dr. Pannozzo', own ? 'Sent to MSP (his sign-off)' : 'Sent to MSP at sign-off (his sign-off)');
           toast(own ? 'Claim sent to MSP · MSP processes it at 7 PM' : 'Signed off · claim sent to MSP · MSP processes it at 7 PM');
           if(own) t23RenderBillRow();
-        }, function(){ toast(own ? 'The claim is in Claims, Needs submission' : 'Visit signed off · the claim is in Claims, Needs submission'); t23RenderBillRow(); });
+        }, function(){ toast(own ? 'The claim is in Claims, Unsubmitted' : 'Visit signed off · the claim is in Claims, Unsubmitted'); t23RenderBillRow(); });
       }, 0);
       suffix = ' · submitting the claim';
     } else suffix = ' · claim in Claims, Needs submission';
@@ -19608,6 +20018,7 @@ if(typeof csFinState === 'function'){ var t23CsFin0 = csFinState; csFinState = f
 /* Premiums ended 1 Jan 2020 (gov.bc.ca, checked 3 Oct 2026), so "coverage lapsed on a premium" is gone. No red (rule 21; N15). */
 CARD_STATUS = {
   verified: {label:'Verified', tone:'ok', icon:'cardok'},
+  pending:  {label:'Not yet checked', tone:'', plain:true, why:'Verification pending. MSP hasn’t confirmed this card yet.'},
   check:    {label:'Check required', tone:'warn', icon:'cardwarn'},
   invalid:  {label:'Invalid card', tone:'warn', icon:'carderr',
              why:'MSP says this card isn’t valid for 3 Oct.',
@@ -19631,7 +20042,7 @@ var T23_CHECK_WHY = {
   down:{why:'MSP’s eligibility check isn’t responding. It retries automatically and checks again before the claim is sent.', next:''}
 };
 /* demo data (spec "Today's queue") */
-var T23_CARD_SET = {'Andrey Abushakhmanov, 24M':'oop', 'K Arli Eyre, 41':'ended', 'Manjit':'invalid', 'Korynn':'oop-qc'};
+var T23_CARD_SET = {'Andrey Abushakhmanov, 24M':'oop', 'K Arli Eyre, 41':'ended', 'Manjit':'invalid', 'Korynn':'oop-qc', 'Behdis Maleki, 35F':'pending'};
 QUEUE_DATA.forEach(function(r){
   if(T23_CARD_SET[r.name]) r.card = T23_CARD_SET[r.name];
   if(r.card === 'check') r.cardWhy = r.cardWhy || 'name';
@@ -19641,7 +20052,14 @@ function t23CardWords(r){
   if(r.card === 'check') return T23_CHECK_WHY[r.cardWhy || 'name'];
   return CARD_STATUS[r.card] || {};
 }
+/* Daniel, Part 1 (16 Nov), section 3: three health card statuses. Verified; Not yet checked (verification pending); Review required
+   (assigned to the billing agent, "Billing agent is reviewing"). The specific reason stays on hover and in the card sheet. */
+function cardGroup(k){ return k === 'verified' ? 'verified' : k === 'pending' ? 'pending' : k === 'private' ? 'private' : k ? 'review' : ''; }
 function t23CardCell(r){
+  var g = cardGroup(r.card), cs0 = CARD_STATUS[r.card];
+  if(g === 'pending') return SC.html('Tag', {color:'neutral', startIcon:'clock-time', title:'Verification pending. MSP hasn’t confirmed this card yet.'}, 'Not yet checked');
+  if(g === 'review') return stTag('card-invalid', 'card', {label:'Review required', title:'Billing agent is reviewing: ' + smText(cs0 ? cs0.label : 'card') + '. Click for details.',
+    'aria-label':'Health card: Review required. Billing agent is reviewing (' + smText(cs0 ? cs0.label : '') + '). Show details'});
   var cs = CARD_STATUS[r.card];
   if(!cs) return '<span class="t23-none"><span class="sr-only">No health card on file</span></span>';
   var key = CARD_KEY[r.card] || 'card-check', more = {label:cs.label};
@@ -20418,21 +20836,34 @@ function v2RenderKey(el, name, by){
   CS.keyOpen = CS.keyOpen || {};
   /* T-038: Cedar off for chart review: no synthesized picture; the left Patient summary keeps every chart fact */
   /* Daniel, 4 Nov call 01:16:43: "Clinical summary. Clinical summary." — the heading (was Chart review); Ani 01:19:10: "first phase, just a regular clinical summary" */
-  if(!cdOn('review')){ el.innerHTML = '<div class="v2-ch"><h3 id="v2-key-h">Clinical summary</h3></div>' + cdOffLine('review'); return; }
+  if(!cdOn('review')){ el.innerHTML = '<div class="v2-ch"><h3 id="v2-key-h">Visit preview</h3></div>' + cdOffLine('review'); return; }
   /* Daniel, 4 Nov call 01:10:17–01:19:10, Ani 5 Nov: the clinical summary is about why the patient is here today, "not reviewing their chart ...
      reviewing this person in the context of everything that has ever happened". Cedar reads the booking, the clinical intake, PharmaNet, the lab
      results and the earlier notes, and shows only what bears on today's problem: past history, medicines, results and open work, each with its
      source ("We have to show where the AI is pulling the data from"). Anything else on the chart sits behind one quiet disclosure. */
   /* Ani, 5 Nov ("this is too much, make it simple, to the point, a sentence of summary, and show more opens a side drawer for more info"): one
      sentence, the sources it came from, and Show more for the detail in a side drawer (crDrwOpen) */
-  var C = crToday(name);
-  /* Ani, 14 Nov: where it came from is an info icon beside the title, not a line under the summary */
-  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Clinical summary</h3>' +
-    scInfoHtml('Drafted by Cedar AI from ' + crJoin(C.from) + '. Check it before you rely on it.') + '<span class="v2-chip kf-ai">' + AI_SPARKLE_FILL + 'AI-generated</span></div>';
-  /* Ani, 9 Nov: make it obvious this is AI: the design system's AI colour (gradient band and chip), the sparkle, and a line that says Cedar drafted it */
+  /* Daniel, Physician Portal Changes Part 1 (16 Nov), sections 7 and 8: the "Clinical summary" card is replaced by Cedar's Visit Preview:
+     today's concern with the relevant history, previous visits, investigations and outstanding issues. Concise by default (today, then the
+     first three relevant lines), expandable (Show all). Each line names its source and opens it in the chart. Design system List. */
+  var C = crToday(name), REL_N = 3;
+  var item = function(x, kind){
+    var sub = [x.sub ? v2Cap(smText(x.sub)) : '', x.src ? 'Source: ' + smText(x.src) : ''].filter(Boolean).join(' · ');
+    var p = {label:smText(x.main), secondary:sub || undefined, meta:x.top ? smText(x.top) : undefined, href:'#', 'data-goi':smGo('csOpenFull(\'' + (x.tab || 'timeline') + '\',this)'),
+      title:'Open ' + (x.src ? smText(x.src) : 'the record') + ' in the chart'};
+    return ['ListItem', p];
+  };
+  var rel = C.rel || [], other = C.other || [], more = rel.length - REL_N + other.length, all = !!((CS.vpAll || {})[name]);
+  var list = [['ListLabel', {}, 'Here today for'], item(C.why)]
+    .concat(rel.length ? [['ListLabel', {count:rel.length}, 'Relevant to today']].concat(rel.slice(0, all ? rel.length : REL_N).map(function(x){ return item(x); })) : [])
+    .concat(all && other.length ? [['ListLabel', {count:other.length}, 'Not related to today']].concat(other.map(function(x){ return item(x); })) : []);
+  var h = '<div class="v2-ch kf-hd"><span class="cs-ai-ic kf-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="v2-key-h">Visit preview</h3>' +
+    scInfoHtml('Cedar, Simple Care’s clinical assistant, drafted this from ' + crJoin(C.from) + '. Check the source before acting.') + '<span class="v2-chip kf-ai">' + AI_SPARKLE_FILL + 'AI-generated</span></div>';
   el.classList.add('cs-ai-card');
-  h += '<p class="cr-sum">' + C.sum + '</p>' +
-    '<button type="button" class="cs-link cr-more" aria-haspopup="dialog" onclick="crDrwOpen(this)">Show more' + csIc('chevr') + '</button>';
+  h += '<div class="vp-list">' + SC.html.apply(SC, ['List', {'aria-label':'Visit preview'}].concat(list)) + '</div>' +
+    (more > 0 ? cpBtn('tertiary-main', all ? 'Show less' : 'Show all (' + more + ' more)', 'CS.vpAll=CS.vpAll||{};CS.vpAll[PC_CURRENT]=' + !all + ';v2RenderKey(document.getElementById(&#39;v2-key&#39;),PC_CURRENT,v2Rows(PC_CURRENT));var b=document.getElementById(&#39;vp-more&#39;);if(b)b.focus()',
+      all ? 'Show only today’s concern and the first three relevant lines' : 'Show every relevant line, and what Cedar found that isn’t related to today', all ? '' : 'arrow-dropdown-down').replace('<button ', '<button id="vp-more" ') : '');
+  if(!el.getAttribute('data-vp')){ el.setAttribute('data-vp', '1'); el.addEventListener('click', function(e){ var a = e.target.closest('[data-goi]'); if(!a || !el.contains(a)) return; e.preventDefault(); var js = SM.go[+a.getAttribute('data-goi')]; if(js) (new Function(js)).call(a); }); }
   el.innerHTML = h; paintPd(el);
 }
 /* today's reason, the chart facts that bear on it, and the rest (Daniel, 4 Nov call 01:17:44: "why are you here? ... I am nauseated. Then the AI
@@ -22659,10 +23090,10 @@ function rmPendLine(x){
 /* the care plan: a reminder can be dismissed there too */
 (function(){
   var c0 = cpItemHTML;
-  cpItemHTML = function(it){
-    var h = c0(it);
+  cpItemHTML = function(it, band){
+    var h = c0(it, band);
     if(it.reminder && it.status !== 'Completed' && it.status !== 'Ordered'){
-      h = h.replace(/<\/div><\/div><\/div>$/, '<button type="button" onclick="rmDismissPlan(\'' + it.id + '\')">Dismiss reminder</button></div></div></div>');
+      h = h.replace('<div class="cp-acts">', '<div class="cp-acts">' + cpBtn('tertiary-main', 'Dismiss reminder', 'rmDismissPlan(&#39;' + it.id + '&#39;)', 'Take this reminder off the plan. The item itself stays.'));
     }
     return h;
   };
@@ -22674,6 +23105,7 @@ baWrap('openReview', function(r, i){
   rmRenderBlock(it && it.cedar ? it : null);
 });
 baWrap('openChart', function(){ rmRenderDrafts(); rmSignLine(); });
+baWrap('openChart', function(){ if(typeof hxRenderCompact === 'function') hxRenderCompact(); });   /* the History column follows the open chart */
 </script>
 <script>
 /* 21 Oct: the top block can change height (the critical bar hangs under it off the Review step), so the two columns measure themselves again */
@@ -22774,9 +23206,8 @@ function sdDocsHtml(name){
       list = '<li>Reason: ' + csEsc(e.reason) + '</li>' + (e.att.length ? '<li>Attached: ' + csEsc(e.att.join(', ')) + '</li>' : '');
       cap = e.urgent ? 'Urgent' : 'Routine';
     }
-    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>' + csEsc(kind + ' \u00b7 ' + e.iso + ' \u00b7 ' + sdStat(e)) + '</h4></div>' +
-      '<ul class="cs-list">' + list + '</ul><p class="cs-cap">' + csEsc(cap) + '</p>' +
-      '<p class="slv-ro"><span class="ic" data-pdic="complete"></span>Signed by ' + RX_DR + ', ' + csEsc(e.at) + '</p></div>';
+    /* 16 Nov: a row of Chart > Documents' design system table (csDocRow); who sent it is its tag */
+    return csDocRow({title:kind, date:e.iso, tags:[csSendTag(sdStat(e))], sub:cap + ' \u00b7 signed by ' + RX_DR + ', ' + e.at, body:'<ul class="cs-list">' + list + '</ul>'});
   }).join('');
 }
 
@@ -22812,12 +23243,13 @@ openChart = function(name){ sdOpenChart0.apply(this, arguments); sdPaintOld(PC_C
 /* ---------- REFER: replaced (T-029, 26 Oct) by the referral (refOpen in the OP script below). sdRefsHtml and sdPaintOld stay: they show what was signed. ---------- */
 /* Chart > Consults: referrals sent, above the consult reports (the chart has no Referrals section of its own in the v2 layout) */
 function sdRefsHtml(name){
-  var o = SD.out[name]; if(!o || !o.refs.length) return '';
-  return o.refs.map(function(e){
-    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="practice"></span><h4>' + csEsc('Referral · ' + e.spec + (e.to ? ' · ' + e.to : '')) + '</h4></div>' +
-      '<p class="cs-cap">' + csEsc(e.iso + ' · ' + sdStat(e) + (e.urgent ? ' · Urgent' : '')) + '</p>' +
-      '<ul class="cs-list"><li>Reason: ' + csEsc(e.reason) + '</li>' + (e.att.length ? '<li>Attached: ' + csEsc(e.att.join(', ')) + '</li>' : '') + '</ul></div>';
-  }).join('');
+  /* 16 Nov (Ani, "not using proper UI components"): a design system table under Chart > Consults' header: the specialist, the reason and
+     attachments under it, the date sent, who sent it and Urgent as tags */
+  var o = SD.out[name]; if(!o || !o.refs.length || typeof csTable !== 'function') return '';
+  return csSub('Referrals sent', o.refs.length) + csTable('Referrals sent', ['Referral', 'Sent', 'Status'], o.refs.map(function(e){
+    return csTRow([csTextCell(e.spec + (e.to ? ' · ' + e.to : ''), 'Reason: ' + e.reason + (e.att.length ? ' · Attached: ' + e.att.join(', ') : ''), true),
+      csTextCell(e.iso), csTagCell([csSendTag(sdStat(e)), e.urgent ? ['warning', 'warning', 'Urgent'] : null])]);
+  }).join(''));
 }
 
 /* ---------- NOTE TO PATIENT (was "Message"; renamed by Daniel, 31 Oct: "note sounds more professional"). Placeholder, see the note at the top ----------
@@ -22892,12 +23324,15 @@ function msSend(){
 }
 /* Chart > Messages: what was sent to the patient, above the chat lines that mention them */
 function sdMsgsHtml(name){
-  var o = SD.out[name]; if(!o || !o.msgs.length) return '';
+  /* 16 Nov: rows of Chart > Messages' design system table (csRenderMsgs): the message and who sent it, when, a Sent tag; how the patient
+     was told (and a visit summary's subject and footer) in the info icon */
+  var o = SD.out[name]; if(!o || !o.msgs.length || typeof csTRow !== 'function') return '';
+  var sent = csTagCell([['success', 'send', 'Sent to the portal']]);
   return o.msgs.map(function(e){
-    if(e.kind === 'vs') return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>' + csEsc('Visit summary · ' + e.iso + ' · ' + e.at) + '</h4></div>' +
-      '<div class="sd-msg vs-body">' + vsHtml(e.text) + '</div><p class="cs-cap">Signed and sent by ' + RX_DR + '. Subject: ' + csEsc(e.subject) + '. ' + csEsc(VS_FOOT) + '</p></div>';
-    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="chat"></span><h4>' + csEsc('Note to patient · ' + e.iso + ' · ' + e.at) + '</h4></div>' +
-      '<p class="sd-msg">' + csEsc(e.text) + '</p><p class="cs-cap">Sent by ' + RX_DR + '. The patient was told by email and text that there is a new message, with no details.</p></div>';
+    if(e.kind === 'vs') return csTRow([csRawCell(csWhat({title:'Visit summary', sub:'Signed and sent by ' + RX_DR, info:'Subject: ' + e.subject + '. ' + VS_FOOT,
+      body:'<div class="sd-msg vs-body">' + vsHtml(e.text) + '</div>'})), csTextCell(e.iso + ' · ' + e.at), sent]);
+    return csTRow([csRawCell(csWhat({title:'Note to patient', sub:'Sent by ' + RX_DR, info:'The patient was told by email and text that there is a new message, with no details.',
+      body:'<p class="sd-msg">' + csEsc(e.text) + '</p>'})), csTextCell(e.iso + ' · ' + e.at), sent]);
   }).join('');
 }
 
@@ -23053,7 +23488,8 @@ function opMk(kind, text){ return '<span class="op-mk' + (kind === 'ai' ? '' : '
 function opAiMk(state, fk, acceptFn){
   if(state === 'man') return '';   /* T-038: Cedar off, the doctor writes the field; no AI mark */
   /* "AI draft" until the doctor accepts or edits it (spec 2, common) */
-  if(state === 'draft') return opMk('ai', 'AI draft') + '<button type="button" class="btn op-q" data-fk="' + fk + '" onclick="' + acceptFn + '">' + rxIc('complete') + 'Accept</button>';
+  /* Ani, 16 Nov ("if this is made by AI, again not the AI style we have"): our AI chip, and the field wears the AI wash while it's a draft */
+  if(state === 'draft') return '<span class="ai-chip">' + AI_SPARKLE_FILL + 'AI draft</span><button type="button" class="btn op-q" data-fk="' + fk + '" title="Accept Cedar\'s draft as it is. You can still edit it after." onclick="' + acceptFn + '">' + rxIc('complete') + 'Accept</button>';
   if(state === 'ok') return opMk('ok', 'Accepted');
   return opMk('ok', 'Edited by you');
 }
@@ -23666,9 +24102,10 @@ function lrSign(route, name, at){
 /* Chart > Documents: forms saved for later, not signed yet (Save for later replaces Daniel's "Carry Forward") */
 function opDraftsHtml(name){
   var sv = OP.saved[name]; if(!sv) return '';
+  /* 16 Nov: a row of Chart > Documents' design system table (csDocRow), its button saying what it does */
   return Object.keys(sv).filter(function(k){ return sv[k] && OP_K[k]; }).map(function(k){
-    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="carryforward"></span><h4>' + csEsc((OP_K[k].draftName ? OP_K[k].draftName(sv[k].st) : OP_K[k].title()) + ' · draft saved ' + sv[k].at + ', not signed') + '</h4></div>' +
-      '<button type="button" class="btn dl-open" onclick="opOpen(\'' + k + '\')"><span class="ic" data-pdic="edit"></span>Open the draft</button></div>';
+    return csDocRow({title:OP_K[k].draftName ? OP_K[k].draftName(sv[k].st) : OP_K[k].title(), date:'Saved ' + sv[k].at, tags:[['warning', 'clock-time', 'Draft, not signed']],
+      acts:cpBtn('secondary-main', 'Open the draft', 'opOpen(&#39;' + k + '&#39;)', 'Open this saved draft to finish it and sign it', 'edit')});
   }).join('');
 }
 function labOpen(){ opOpen('lab'); }
@@ -24414,27 +24851,32 @@ OP_K.doc = {
 };
 function docOpen(type){ opOpen('doc', type); }
 /* Chart > Documents: the "Documents and letters" heading with Create a document and Upload, then what was created or uploaded */
+/* 16 Nov (Ani, "not using proper UI components"): the header is the chart's design system header (csHd) with design system Buttons; Upload opens
+   a hidden file field. The rows (opDocsRows) are rows of Chart > Documents' table (csDocRow). */
 function opDocsHead(name){
+  var o = SD.out[name] || {}, n = (o.docs || []).length;
+  return csHd('Documents and letters', n ? n + ' created or uploaded here' : '',
+    cpBtn('primary', 'Create a document', 'docOpen()', 'Write a letter or form for this patient. You check and sign it before it goes anywhere.', 'add').replace('<button ', '<button id="dl-create" ') +
+    cpBtn('secondary-main', 'Upload', 'document.getElementById(&#39;dl-file&#39;).click()', 'Add a PDF or an image from your computer to this chart', 'upload').replace('<button ', '<button id="dl-upbtn" ') +
+    '<input type="file" id="dl-file" hidden aria-label="Upload a document" accept=".pdf,image/*" onchange="opUpload(this)">');
+}
+function opDocsRows(name){
   var o = SD.out[name] || {}, L = o.docs || [];
-  var h = '<div class="dl-hd"><h3 id="dl-h">Documents and letters</h3>' +
-    '<button type="button" class="btn dark" id="dl-create" onclick="docOpen()"><span class="ic" data-pdic="plus"></span>Create a document</button>' +
-    '<span class="btn dl-up"><span class="ic" data-pdic="upload"></span>Upload<input type="file" id="dl-file" aria-label="Upload a document" accept=".pdf,image/*" onchange="opUpload(this)"></span></div>';
-  h += L.map(function(e){
-    if(e.kind === 'upload') return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="upload"></span><h4>' + csEsc('Uploaded · ' + e.n + ' · ' + e.iso) + '</h4></div><p class="cs-cap">Added by ' + RX_DR + ', ' + csEsc(e.at) + '. Not signed.</p></div>';
+  return L.map(function(e){
+    if(e.kind === 'upload') return csDocRow({title:e.n, sub:'Added by ' + RX_DR + ', ' + e.at + '. Not signed.', date:e.iso, tags:[['neutral', 'upload', 'Uploaded']]});
     var tk = e.task && typeof taskFind === 'function' ? taskFind(e.task) : null, how = e.how;
     if(e.route === 'moa' && tk && tk.status === 'complete') how = 'sent by ' + sdMoa();
-    return '<div class="vc-block cs-doc"><div class="vc-h"><span class="ic" data-pdic="file"></span><h4>' + csEsc(e.title + ' · ' + e.iso + ' · ' + how) + '</h4></div>' +
-      '<p class="dl-txt">' + csEsc(e.text.length > 220 ? e.text.slice(0, 220).replace(/\s+\S*$/, '') + '…' : e.text) + '</p>' +
-      '<p class="slv-ro"><span class="ic" data-pdic="complete"></span>Signed by ' + RX_DR + ', ' + csEsc(e.at) + '</p></div>';
+    return csDocRow({title:e.title, date:e.iso, tags:[csSendTag(how)],
+      body:'<p class="dl-txt">' + csEsc(e.text.length > 220 ? e.text.slice(0, 220).replace(/\s+\S*$/, '') + '…' : e.text) + '</p>' +
+        '<p class="cs-what-sub">' + csEsc('Signed by ' + RX_DR + ', ' + e.at) + '</p>'});
   }).join('');
-  return h;
 }
 function opUpload(inp){
   var name = PC_CURRENT; if(!name || !inp.files || !inp.files.length) return;
   var o = sdOut(name), n = [];
   [].forEach.call(inp.files, function(f, i){ (o.docs = o.docs || []).unshift({id:'up' + Date.now() + i, kind:'upload', n:f.name, iso:rxIso(new Date()), at:rxNow(), ts:Date.now()}); n.push(f.name); });
   if(typeof csRenderDocs === 'function') csRenderDocs(name);
-  var b = document.getElementById('dl-file'); if(b) b.focus({preventScroll:true});
+  var b = document.getElementById('dl-upbtn') || document.getElementById('dl-file'); if(b) b.focus({preventScroll:true});   /* the field is hidden; focus goes back to Upload */
   toast('Uploaded · ' + n.join(', '));
 }
 
@@ -25808,6 +26250,6 @@ function psGateClose(g){ var isRx = g.parentNode.id === 'rx-sheet'; g.removeAttr
   if(scr) new MutationObserver(function(){ if(raf) return; raf = requestAnimationFrame(function(){ raf = 0; if(scr.classList.contains('active')) psMarkTiles(); }); }).observe(scr, {childList:true, subtree:true});
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-05 13:30</div>
+  <div class="build-stamp">v2 · build 2026-11-16 21:50</div>
 </body>
 </html>
