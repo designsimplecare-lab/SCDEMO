@@ -7693,6 +7693,9 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   :is(#screen-review,#na-drw) .rv-aitag svg{color:var(--color-brand-ai-mark-start);}
   :is(#screen-review,#na-drw) .rv-aichip{display:inline-flex;align-items:center;gap:4px;height:24px;margin-left:4px;padding:0 8px;border-radius:var(--radius-xs);background:var(--gradient-ai);color:var(--color-on-ai);font-size:13px;font-weight:700;line-height:16px;}
   :is(#screen-review,#na-drw) .rv-aichip svg{width:14px;height:14px;color:currentColor;}
+  /* one AI chip wherever the AI suggests something: gradient, filled sparkle, bold (as the AI-generated chip) */
+  .ai-chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border-radius:var(--radius-xs);background:var(--gradient-ai);color:var(--color-on-ai);font-size:14px;font-weight:500;line-height:18px;vertical-align:middle;white-space:nowrap;}
+  .ai-chip svg{width:16px;height:16px;color:currentColor;flex:none;}
   :root:not([data-theme="dark"]) :is(#screen-review,#na-drw) .rv-ai em{color:var(--color-ink-600);}   /* AA on the AI tint */
   /* Ani, 14 Nov ("what is going on here?"): a claim's note row (MSP name check, a question) spans the whole table, and when the table
      scrolls sideways its text ran off into the hidden part. The note stays pinned to the visible width and wraps there. */
@@ -10249,7 +10252,8 @@ function renderDayNav(){
   nav.innerHTML = '<div class="dn-group" role="group" aria-label="Day shown">' +
     (dayOffset !== 0 ? B({variant:'tertiary-main', 'data-today':'1', id:'day-today-btn', 'aria-label':'Back to today'}, 'Today') : '') +
     B({startIcon:'arrow-dropdown-left', 'aria-label':'Previous day', 'data-day':'-1'}) +
-    B({endIcon:'arrow-dropdown-down', 'aria-haspopup':'dialog', 'aria-expanded':'false', 'data-daycal':'1', id:'day-label', 'aria-label':'Day shown: ' + label + '. Choose a day'}, short) +
+    /* Ani, 16 Nov ("should be calendar icon rather than drop down"): a calendar icon before the date says it opens a calendar */
+    B({startIcon:'calendar', 'aria-haspopup':'dialog', 'aria-expanded':'false', 'data-daycal':'1', id:'day-label', 'aria-label':'Day shown: ' + label + '. Choose a day'}, short) +
     B({startIcon:'arrow-dropdown-right', 'aria-label':'Next day', 'data-day':'1'}) +
     '</div>';
   updateWorkCounts();
@@ -19546,7 +19550,7 @@ function t23RenderBillRow(){
     var cb = t23CounselBlock(v), cm = t23CallMins(v);
     if(cb){ btn = 'Add time'; focus = 'time'; }
     var dxv = v.dx ? v.dx + ' · ' + t23DxName(v.dx)
-      : dxs ? '<span id="t23-dxsug" title="Suggested from the booking reason">' + dxs + ' · ' + t23E(t23DxName(dxs)) + '</span> ' + (typeof cv2On === 'function' && cv2On() ? SC.html('Tag', {color:'information', startIcon:'ai'}, 'Suggested') : '<span class="t23-sug">Suggested</span>')
+      : dxs ? '<span id="t23-dxsug" title="Suggested from the booking reason">' + dxs + ' · ' + t23E(t23DxName(dxs)) + '</span> ' + '<span class="ai-chip">' + AI_SPARKLE_FILL + 'Suggested</span>'   /* Ani, 16 Nov ("our AI does not look like this"): the same chip as AI-generated */
       : '<span class="t23-miss">Not set</span>';
     /* Ani, 14 Nov ("so much going on here"): in Version 2 the diagnosis actions are design-system buttons, Use secondary and Change tertiary,
        so Sign and submit stays the one navy button in the section */
