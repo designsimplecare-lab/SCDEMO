@@ -7747,6 +7747,12 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   .hx-page .hx-hidm{font-size:14px;color:var(--ink-soft);}
   .hx-compact .hx-ctop{display:flex;align-items:center;justify-content:space-between;gap:8px;}
   .hx-compact .sv-list{margin-top:8px;}
+  /* Still open before you sign (Daniel, 17 Nov) */
+  #cv2-chk .cv2-so-l{list-style:none;margin:8px 0 0;padding:0;}
+  #cv2-chk .cv2-so{display:flex;align-items:center;gap:8px;min-height:44px;border-top:1px solid var(--line);}
+  #cv2-chk .cv2-so-t{flex:1;min-width:0;font-size:15px;color:var(--ink);}
+  #cv2-chk .cv2-so > .sv-tag,#cv2-chk .cv2-so > .sv-button{flex:none;max-width:none;}
+  #cv2-chk .cv2-so-note{margin:8px 0 0;font-size:14px;color:var(--ink-soft);}
   /* Daniel, Chart Screen brief Part 2 (17 Nov): History is the chart's right column when there is room (the page sets .hx3 at 1150px and up) */
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2.hx3{grid-template-columns:300px minmax(0,1fr) 300px !important;grid-template-areas:"hd hd hd" "side nav hx" "side main hx" !important;}
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #hx-compact{display:none;}
@@ -19993,7 +19999,10 @@ function t23SyncFin(){
   /* Ani, 5 Nov: sign-off button definitions: Version 2 says "Sign and finalize", and Submit claim is its own button, so no Submit later */
   /* Daniel, 13 Nov video: "it should be sign and submit": signing off and submitting the claim at once is what completes the encounter.
      With no claim to send (private pay, a no-show, a claim already made) the same button reads Sign and complete. */
-  if(typeof cv2On === 'function' && cv2On()){ lbl.textContent = cv2CanClaim(r) ? 'Sign and submit' : 'Sign and complete'; later.hidden = true; }
+  /* Daniel, Chart brief Part 2 (17 Nov): two buttons, Sign note only and Sign note and send claim; no separate Submit claim. With no claim
+     to send (private pay, a no-show, a claim already made) the main button just signs the note. */
+  if(typeof cv2On === 'function' && cv2On()){ lbl.textContent = cv2CanClaim(r) ? 'Sign note and send claim' : 'Sign note'; later.hidden = true;
+    b.title = cv2CanClaim(r) ? 'Sign the note, send the claim to MSP and close the visit' : 'Sign the note and close the visit'; }
   if(typeof cv2FinSync === 'function') cv2FinSync();
   if(b.getAttribute('aria-disabled') === 'true') later.setAttribute('aria-disabled', 'true'); else later.removeAttribute('aria-disabled');
 }
@@ -25204,19 +25213,28 @@ function cv2Chk(){
   if(el.nextSibling !== row) row.parentNode.insertBefore(el, row);
   var r = csRow(), off = !r || !!r.signed || csNoShow(PC_CURRENT);
   var st = v2El('v2t-sign'), tm = st && st.querySelector('.v2-tm');
-  /* Ani, 5 Nov ("we discussed we do not need this"); Daniel, 4 Nov call 01:21:27 ("get rid of this ... that's going to upset me"): no "Before you
-     sign off" list in Version 2, and so no count on the Sign off step */
-  off = true;
+  /* Daniel, Chart brief Part 2 (17 Nov), back after 4 Nov's removal in a new form: "Still open before you sign". Only the note blocks signing;
+     everything else can be left for later and stays open in the patient summary. Only open items are listed, each with the one thing to do. */
   el.hidden = off;
   if(tm){ tm.textContent = ''; st.setAttribute('aria-label', 'Sign off'); }
   if(off) return;
-  var L = cv2ChkLines(), n = L.filter(function(x){ return !x.ok; }).length;
-  var h = '<h4 class="cv2-chk-h" id="cv2-chk-h">Before you sign off</h4><ul>' + L.map(function(x){
-    return '<li class="' + (x.ok ? 'ok' : 'todo') + '">' + csIc(x.ok ? 'complete' : 'alert') + '<span>' + csEsc(x.t) + '</span>' +
-      (x.b ? '<button type="button" class="btn cv2-chk-b" onclick="cv2ChkGo(\'' + x.k + '\')">' + x.b + '</button>' : '') + '</li>'; }).join('') + '</ul>';
+  var name = PC_CURRENT, L = [], nb = cv2NoteBlock();
+  if(nb) L.push({t:nb.replace(/ to sign$/, ''), need:true, b:/Cedar/.test(nb) ? 'Go to it' : 'Write', k:/Cedar/.test(nb) ? 'ai' : 'asmt', tip:'The one thing that blocks signing'});
+  var crit = CS.empty ? [] : csNAItems(name).filter(function(x){ return x.tier === 'crit' && /^Not /.test(x.stage); });
+  crit.forEach(function(x){ L.push({t:x.test.n + ' result not reviewed', b:'Review', k:'crit', tip:'Open the result to review it'}); });
+  var sugg = typeof condSuggFor === 'function' ? condSuggFor(name).length : 0;
+  if(sugg) L.push({t:'Problem list: ' + sugg + ' suggested update' + (sugg > 1 ? 's' : ''), b:'Open', k:'prob', tip:'Review the suggested problem list updates'});
+  if(typeof hxFor === 'function'){
+    var H = hxFor(name), md = H.meds.filter(function(m){ var s2 = hxMedState(m); return !hxRec(name, m.id) && (s2 === 'differs' || s2 === 'notchart' || s2 === 'nodisp'); }).length;
+    if(md) L.push({t:md + (md === 1 ? ' medication differs' : ' medications differ') + ' from PharmaNet', b:'Reconcile', k:'hxmed', tip:'Open History at Medications to reconcile with PharmaNet'});
+    H.conditions.filter(function(c){ return !c.code; }).forEach(function(c){ L.push({t:c.name + ' has no diagnostic code', b:'Add code', k:'hxcode', tip:'Open History at Medical conditions to add the code'}); });
+  }
+  var row2 = function(x){ return '<li class="cv2-so">' + '<span class="cv2-so-t">' + csEsc(x.t) + '</span>' + (x.need ? SC.html('Tag', {color:'error', startIcon:'warning'}, 'Needed to sign') : '') +
+    cpBtn('tertiary-main', x.b, 'cv2ChkGo(&#39;' + x.k + '&#39;)', x.tip, 'arrow-dropdown-right') + '</li>'; };
+  var h = L.length ? '<h4 class="cv2-chk-h" id="cv2-chk-h">Still open before you sign</h4><ul class="cv2-so-l">' + L.map(row2).join('') + '</ul>' +
+    '<p class="cv2-so-note">Only the note blocks signing. Everything else can be left for later and stays open in the patient summary.</p>' : '';
+  el.hidden = !L.length;
   if(el.getAttribute('data-h') !== h){ el.innerHTML = h; el.setAttribute('data-h', h); paintPd(el); }
-  /* the Sign off step counts the open lines (a warning, never a block) */
-  if(tm){ tm.textContent = n ? String(n) : ''; st.setAttribute('aria-label', 'Sign off' + (n ? ', ' + n + (n === 1 ? ' item' : ' items') + ' to check' : '')); }
 }
 /* ---------- Ani, 5 Nov: sign-off button definitions (Version 2) ----------
    Save draft: unfinished, editable, unsigned (the step bar's, unchanged). Sign and finalize: authenticates and finalizes the note (#vc-finalize; it locks).
@@ -25230,16 +25248,17 @@ function cv2FinSync(){
   var claim = mk('cv2-claim', 'arrowup', 'Submit claim', cv2Claim), done = mk('cv2-done', 'usercheck', 'Sign and complete', function(){ cv2SignThen('complete'); }), add = mk('cv2-addm', 'plus', 'Add addendum', cv2AddOpen);
   /* Ani, 14 Nov: the footer's buttons in the design system's look: Submit claim and Sign and complete secondary, Sign and submit the one primary */
   if(on){ cv2DsBtn(claim, 'secondary-main', 'upload'); cv2DsBtn(done, 'secondary-main', 'user-assign'); cv2DsBtn(add, 'secondary-main', 'add'); cv2DsBtn(b, 'primary', 'check'); }
-  claim.hidden = !cv2CanClaim(r);
+  claim.hidden = true;   /* Daniel 17 Nov: no separate Submit claim; a claim not sent waits in Claims, Unsubmitted */
   /* Daniel, 13 Nov video: Submit claim on its own; Sign and complete (sign, close the visit, no claim yet); Sign and submit (both, the main one).
      Once the note is signed the middle one only closes the visit. When there is no claim to send the main button already reads Sign and complete. */
-  var dl = r && r.signed ? 'Complete encounter' : 'Sign and complete', dt = done.lastChild;
+  var dl = r && r.signed ? 'Complete encounter' : 'Sign note only', dt = done.lastChild;
+  done.title = r && r.signed ? 'Close the visit' : 'Sign the note and close the visit; the claim waits in Claims, Unsubmitted';
   if(dt && dt.nodeType === 3 && dt.textContent !== dl) dt.textContent = dl;
   done.hidden = !r || r.status === 'done' || (!r.signed && !cv2CanClaim(r));
   add.hidden = !r || !r.signed;
   var nx = v2El('vc-nextpt'); if(nx && r && r.status !== 'done') nx.hidden = true;
   if(b.getAttribute('data-t0') === null) b.setAttribute('data-t0', b.title || '');
-  b.title = on ? '' : b.getAttribute('data-t0');
+  b.title = on ? (cv2CanClaim(r) ? 'Sign the note, send the claim to MSP and close the visit' : 'Sign the note and close the visit') : b.getAttribute('data-t0');
   cv2AddRender();
 }
 /* dress an existing footer button (it keeps its id, handler and label nodes) in the design system's Button classes, 44px, with its icon */
@@ -25302,6 +25321,7 @@ function cv2AddSave(){
   toast('Addendum added \u00b7 Dr. Pannozzo \u00b7 today ' + at);
 }
 function cv2ChkGo(k){
+  if(k === 'hxmed' || k === 'hxcode'){ HX_UI.sec = k === 'hxmed' ? 'medications' : 'conditions'; csOpenFull('history'); return; }
   if(k === 'crit'){
     var x = csNAItems(PC_CURRENT).filter(function(y){ return y.tier === 'crit' && /^Not /.test(y.stage); })[0];
     v2Tab('review', false);
@@ -25321,7 +25341,7 @@ function cv2ChkGo(k){
   var t0 = window.t23Fin;
   if(typeof t0 === 'function') window.t23Fin = function(mode){
     /* Ani, 5 Nov: sign-off button definitions: Sign and finalize signs the note, with no billing check; the diagnosis check moved to Submit claim (cv2Claim) */
-    if(cv2On()){ T23.finMode = 'later'; var r0 = csRow(); CV2.then = r0 ? {who:PC_CURRENT, mode:cv2CanClaim(r0) ? 'submit' : 'complete'} : null; return finalizeVisit(); }
+    if(cv2On()){ if(!(csRow() || {}).signed && cv2Blocked()) return; T23.finMode = 'later'; var r0 = csRow(); CV2.then = r0 ? {who:PC_CURRENT, mode:cv2CanClaim(r0) ? 'submit' : 'complete'} : null; return finalizeVisit(); }
     return t0.apply(this, arguments);
   };
   var f0 = window.finalizeVisit;
@@ -25343,11 +25363,27 @@ function cv2ChkGo(k){
 function cv2CanClaim(r){ return !!(r && !r.claimId && !csNoShow(PC_CURRENT) && t23VisitCode(r.name).disp !== 'private'); }
 function cv2After(mode){
   var r = csRow(); if(!r || !r.signed) return;
-  if(mode === 'submit' && cv2CanClaim(r)) cv2Claim();
+  if(mode === 'submit' && cv2CanClaim(r)){
+    var v0 = t23VisitCode(r.name), d0 = !v0.dx && typeof nsDxSuggest === 'function' ? nsDxSuggest(r) : null;
+    if(v0.dx || d0) cv2Claim();
+    /* no diagnosis to send it with: the claim is still made, and waits in Claims, Unsubmitted, instead of being dropped */
+    else { T23.finMode = 'later'; t23OnFinalize(r); if(typeof t23RenderBillRow === 'function') t23RenderBillRow(); if(r.status !== 'done') cv2Complete();
+      toast('Note signed · the claim needs a diagnosis code, so it waits in Claims, Unsubmitted'); return; }
+  }
+  /* Sign note only (Daniel, 17 Nov): the claim is made but not sent; it waits in Claims, Unsubmitted */
+  else if(mode === 'complete' && cv2CanClaim(r)){ T23.finMode = 'later'; t23OnFinalize(r); if(typeof t23RenderBillRow === 'function') t23RenderBillRow(); }
   if(r.status !== 'done') cv2Complete();
 }
+/* Daniel, Part 2 (17 Nov): only the note blocks signing: it must have text, and no Cedar draft can be left waiting (accept or edit it) */
+function cv2NoteBlock(){
+  if(typeof nsAIList === 'function'){ var ai = nsAIList(); if(ai.length) return 'Accept or edit Cedar’s draft in ' + ai.map(function(k){ return NS_LBL[k]; }).join(', ') + ' to sign'; }
+  var v = typeof nsGet === 'function' ? nsGet() : {}, any = Object.keys(v).some(function(k){ return String(v[k] || '').trim(); }) || ((v2El('vc-note-input') || {}).value || '').trim();
+  return any ? '' : 'Write the note to sign';
+}
+function cv2Blocked(){ var w = cv2NoteBlock(); if(!w) return false; toast(w); if(typeof cv2ChkGo === 'function') cv2ChkGo(/Cedar/.test(w) ? 'ai' : 'asmt'); return true; }
 function cv2SignThen(mode){
   var r = csRow(); if(!r) return;
+  if(!r.signed && cv2Blocked()) return;
   if(r.signed){ CV2.then = null; cv2After(mode); return; }
   CV2.then = {who:PC_CURRENT, mode:mode}; finalizeVisit();
 }
