@@ -809,6 +809,14 @@
   
   
   .q-concern{max-width:none;}
+  /* Daniel, 16 Nov video: the Clinical concern is one sentence now, so it needs the width. The Call / Task MOA buttons only show on hover,
+     so they stop reserving a 227px column and float over the row's right end, on a fade in the row's own colour */
+  #queue-mount td.q-concern{min-width:260px;}
+  #queue-mount td.q-concern .sv-table-cell-content{max-width:60ch;}
+  #queue-mount .sv-table-body > tr[data-name] > td:last-child{position:relative;width:0;padding:0 !important;}
+  #queue-mount .sv-table-body > tr[data-name] > td:last-child > *{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:auto;
+    padding-left:32px;background:linear-gradient(90deg, transparent, var(--tr-bg) 28px);}
+  #queue-mount .sv-table-header th:last-child{width:0;padding:0 !important;}
   .q-concern .cc{display:block;font-size:14px;color:var(--ink);line-height:1.4;}
   .q-aicell{max-width:none;}
   /* the summary is a glance, not a read — three lines, then it stops */
@@ -9631,6 +9639,30 @@ var AI_SUMMARY = {
   'Manjit':'Reviewing lab results ordered at last visit; asymptomatic.',
   'Korynn':'Standard visit, reason not specified at booking.'
 };
+/* Daniel, 16 Nov video (03:19–04:26): no label in the Clinical concern column ("Follow up appointment", "Yeast infection"): "I'm not a big
+   fan of just having a label because it biases me ... just give me the line". One synthesized line of 10 to 20 words, e.g. "46-year-old
+   female with ..."; the detail is in the chart. DEMO lines written from each patient's intake summary; Daniel will send real examples. */
+var CONCERN_LINE = {
+  'Gloria Mcdonald, 74F':'74-year-old woman with 3 days of chest pressure on exertion, eased by rest; known hypertension, no cardiac workup yet.',
+  'Andrey Abushakhmanov, 24M':'24-year-old man following up a sinus infection; says his symptoms have fully resolved.',
+  'Carol-Anne Feldman, 44F':'44-year-old woman with 5 days of vaginal itching and discharge; her third episode this year.',
+  'Behdis Maleki, 35F':'35-year-old woman with iron deficiency, still tired despite taking iron.',
+  'K Arli Eyre, 41':'41-year-old woman, new patient; no reason or intake given before the call.',
+  'Greg':'58-year-old man asking to renew his blood pressure medication; last filled 90 days ago.',
+  'Manjit':'66-year-old woman going over lab results from her last visit; no symptoms.',
+  'Korynn':'29-year-old woman; no reason given at booking.',
+  'Frank D., 71M':'71-year-old man here for a blood pressure check.'
+};
+/* anyone without a written line (another day, a new patient): age and sex, then what they wrote */
+function concernLine(r){
+  if(CONCERN_LINE[r.name]) return CONCERN_LINE[r.name];
+  var a = parseInt(r.age || (String(r.name).match(/,\s*(\d+)/) || [])[1], 10);
+  var sx = r.sex || ({F:'Female', M:'Male'})[(String(r.name).match(/,\s*\d+([FMX])/) || [])[1]] || '';
+  var who = (a ? a + '-year-old ' : '') + (sx === 'Female' ? 'woman' : sx === 'Male' ? 'man' : (a ? 'patient' : ''));
+  var what = AI_SUMMARY[r.name] || r.concern || '';
+  if(!who) return what;
+  return who + (what ? ': ' + what.charAt(0).toLowerCase() + what.slice(1) : '');
+}
 var currentWindow = 'all';
 var queueSearch = '';
 var dayOffset = 0;
@@ -9974,7 +10006,7 @@ function renderQueue(){
     if(!visitOk || !billOk || !cardOk) return false;
     if(!winOk) return false;
     if(!q) return true;
-    return (r.name+' '+r.concern+' '+(r.phn||'')+' '+(r.dob||'')).toLowerCase().indexOf(q) !== -1;
+    return (r.name+' '+r.concern+' '+concernLine(r)+' '+(r.phn||'')+' '+(r.dob||'')).toLowerCase().indexOf(q) !== -1;
   });
   var WIN_LABEL = {'8-10':'8:00–10:00','10-2':'10:00–2:00','2-5':'2:00–5:00','5-7':'5:00–7:00'};
   /* "Anything red is at the top." */
@@ -10031,7 +10063,7 @@ function renderQueue(){
       ['TableCell', {className:'q-visit'}, ['TableCellContent', {type:'tags'}, SC.raw(qStatusTag(r) + qNoteTag(r))]],
       ['TableCell', {className:'q-card'}, ['TableCellContent', {type:'tags'}, SC.raw(t23CardCell(r))]],
       ['TableCell', {className:'q-bill'}, ['TableCellContent', {type:'tags'}, SC.raw(t23BillCell(r))]],
-      ['TableCell', {className:'q-concern'}, ['TableCellContent', {label:r.concern, secondary:ai || undefined, wrap:true}]],
+      ['TableCell', {className:'q-concern'}, ['TableCellContent', {label:concernLine(r), wrap:true}]],   /* one line, no label (Daniel, 16 Nov) */
       ['TableCell', {}, ['TableCellContent', {type:'actions', revealOnHover:true}].concat(acts)]);
   }
 
