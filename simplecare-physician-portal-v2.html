@@ -7753,6 +7753,25 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #cv2-chk .cv2-so-t{flex:1;min-width:0;font-size:15px;color:var(--ink);}
   #cv2-chk .cv2-so > .sv-tag,#cv2-chk .cv2-so > .sv-button{flex:none;max-width:none;}
   #cv2-chk .cv2-so-note{margin:8px 0 0;font-size:14px;color:var(--ink-soft);}
+  /* Emergency pathway (Daniel, 17 Nov): red = needs you; done reads as done */
+  #v2-er{border:1px solid var(--color-red-200, var(--line)) !important;background:var(--color-red-25, var(--panel)) !important;}
+  #v2-er.done{border-color:var(--line) !important;background:var(--panel) !important;}
+  #v2-er .er-hd{display:flex;align-items:center;gap:12px;}
+  #v2-er .er-hd h3{margin:0;}
+  #v2-er .er-lead{margin:8px 0 0;font-size:15px;color:var(--ink);}
+  #v2-er .er-steps{list-style:none;margin:8px 0 0;padding:0;}
+  #v2-er .er-steps li{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-top:1px solid var(--line);}
+  #v2-er .er-steps li > div{flex:1;min-width:0;}
+  #v2-er .er-steps b{font-size:15px;font-weight:600;color:var(--ink);}
+  #v2-er .er-steps p{margin:2px 0 0;font-size:14px;color:var(--ink-soft);max-width:66ch;}
+  #v2-er .er-n{flex:none;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--color-red-600, var(--bad));color:var(--color-surface-card-white);font-size:14px;font-weight:600;}
+  #v2-er .er-ok{flex:none;color:var(--color-icon-success-default, var(--ok));display:inline-flex;}
+  #v2-er .er-go{display:flex;justify-content:flex-end;margin-top:12px;}
+  #er-drw .er-ai{display:flex;align-items:center;gap:8px;margin:0;font-size:14px;color:var(--ink-soft);}
+  #er-drw .er-ns h4{margin:0 0 4px;font-size:15px;font-weight:600;color:var(--ink);}
+  #er-drw .er-ns p,#er-drw .er-ns li{margin:0;font-size:15px;line-height:22px;color:var(--ink);}
+  #er-drw .er-ns ul{margin:0;padding-left:20px;}
+  #er-drw .sv-drawer__content{padding-bottom:calc(84px + var(--spacing-lg));}
   /* Daniel, Chart Screen brief Part 2 (17 Nov): History is the chart's right column when there is room (the page sets .hx3 at 1150px and up) */
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2.hx3{grid-template-columns:300px minmax(0,1fr) 300px !important;grid-template-areas:"hd hd hd" "side nav hx" "side main hx" !important;}
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #hx-compact{display:none;}
@@ -8450,6 +8469,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
                   <button type="button" class="cs-link v2-all" id="v2-na-all" aria-expanded="false" aria-controls="v2-na-b" onclick="naAll()" hidden>Show all<span class="ic" data-pdic="chevdown"></span></button></div>
                 <div id="v2-na-b"></div>
               </section>
+              <!-- Daniel, Chart brief Part 2 (17 Nov): the Emergency pathway, only when there is a critical finding -->
+              <section class="v2-card v2-er" id="v2-er" aria-labelledby="v2-er-h" hidden></section>
               <!-- 21 Oct (Daniel, 18 Oct video 3: "I don't think I would like it split like that. I like it more sequential."): one column, in order: Needs attention,
                    Intake summary (what the patient said), Chart review (Cedar, from the data feeds; today's concern first). Not side by side. -->
               <div class="v2-rv2 v2-one" id="v2-rv2">
@@ -14050,6 +14071,100 @@ function hxRenderCompact(){
   var fit = function(){ v.classList.toggle('hx3', v.getBoundingClientRect().width >= 1150); };
   if(window.ResizeObserver) new ResizeObserver(fit).observe(v); else window.addEventListener('resize', fit);
 })();
+
+/* ================= EMERGENCY PATHWAY =================
+   Daniel, Chart Screen brief Part 2 (17 Nov): with a critical finding, one step directs the patient to the Emergency Department and does all
+   of it: (1) the patient portal status "Your doctor has advised you to attend the Emergency Department."; (2) the advice, read out and sent:
+   call 9-1-1, don't drive yourself, bring your medications; (3) a transfer note Cedar drafts for the nearest Emergency Department (concern,
+   critical results, PharmaNet medications, allergies); (4) a plan line in today's note and a follow-up task to check they attended.
+   Red = needs you; once done it reads as done. The doctor presses the button; nothing happens on its own. */
+var ER = {};
+var ER_ADVICE = 'Call 9-1-1 now. Do not drive yourself. Bring your medications with you.';
+function erCrit(name){ return CS.empty ? [] : csNAItems(name).filter(function(x){ return x.tier === 'crit'; }); }
+function erNote(name){
+  var r = rxRow(name) || {}, ch = ptChart(name) || {}, H = typeof hxFor === 'function' ? hxFor(name) : null, C = typeof crToday === 'function' ? crToday(name) : null;
+  var meds = H ? H.meds.filter(function(m){ return !(m.pn && m.pn.course); }).map(function(m){   /* a finished course isn't a current medication */
+ var rec = hxRec(name, m.id); return m.name + ' ' + ((rec && rec.chart) || (m.pn ? m.pn.dose : m.chart)) + (m.pn ? ' (PharmaNet, filled ' + m.pn.filled + ')' : m.grp === 'otc' ? ' (non-prescription)' : ''); }) : [];
+  var crit0 = erCrit(name), plain = function(t){ return String(t).replace(/\bECGs?\b/g, 'electrocardiogram'); };   /* no abbreviations (Daniel) */
+  /* other findings from today, without repeating a critical result already listed */
+  var today = C && C.rel ? C.rel.filter(function(x){ return x.top === 'Today'; }).map(function(x){ return smText(x.main); }) : [];
+  today = today.map(function(t){ crit0.forEach(function(x){ t = t.replace(new RegExp('^critical\\s+' + x.test.n + '\\s+[\\d.]+\\s*\\S*\\s+and\\s+(an?\\s+)?', 'i'), ''); }); t = plain(t); return t.charAt(0).toUpperCase() + t.slice(1); })
+    .filter(function(t){ return !crit0.some(function(x){ return t.toLowerCase().indexOf(x.test.n.toLowerCase()) === 0; }); });
+  return {
+    to:'Emergency Department, nearest to the patient',
+    who:(r.legal || name.split(',')[0]) + ' · ' + (r.age ? parseInt(r.age, 10) : '') + ' · ' + (r.sex || '') + (ch.phn && ch.phn !== '—' ? ' · Personal Health Number ' + ch.phn : ''),
+    concern:smText((C && C.why && C.why.main) || r.concern || ''),
+    crit:crit0.map(function(x){ return x.test.n + ' ' + x.test.v + ' ' + (x.test.u || '') + ' (critical)'; }).concat(today),
+    meds:meds, allergies:H && H.allergies.length ? H.allergies.map(function(a){ return a.what; }).join(', ') : 'No known allergies',
+    from:'Dr. D. Pannozzo, family physician, Simple Care', when:hxDate() };
+}
+function erRender(){
+  var el = document.getElementById('v2-er'); if(!el) return;
+  var name = PC_CURRENT, crit = name ? erCrit(name) : [], done = name ? ER[name] : null;
+  if(!name || (!crit.length && !done)){ el.hidden = true; el.innerHTML = ''; return; }
+  el.hidden = false; el.classList.toggle('done', !!done);
+  var r = rxRow(name) || {}, who = r.pref || (r.legal || name).split(/[ ,]/)[0];
+  var steps = [
+    ['Patient portal status', '“' + STATUS_PT_MSG['Directed to emergency department'] + '”'],
+    ['Advice to ' + who + ', read out and sent', ER_ADVICE],
+    ['Transfer note for the nearest Emergency Department', 'Drafted by Cedar: concern, critical results, PharmaNet medications, allergies.'],
+    ['Plan line in today’s note, and a follow-up task', 'A task to check ' + who + ' attended.']];
+  var h = '<div class="v2-ch er-hd"><h3 id="v2-er-h">Direct to the Emergency Department</h3>' +
+    (done ? SC.html('Tag', {color:'information', startIcon:'check-circle'}, 'Done at ' + done.at) : SC.html('Tag', {color:'error', startIcon:'warning'}, 'Critical finding')) + '</div>' +
+    '<p class="er-lead">' + (done ? 'Directed by ' + done.by + ' at ' + done.at + '. Each step below is done.' : 'One step does all of this:') + '</p>' +
+    '<ol class="er-steps">' + steps.map(function(x, i){ return '<li>' + (done ? '<span class="er-ok">' + SC.icon('check-circle', {size:20}) + '</span>' : '<span class="er-n">' + (i + 1) + '</span>') +
+      '<div><b>' + x[0] + '</b><p>' + csEsc(x[1]) + '</p></div>' + (i === 2 ? cpBtn('tertiary-main', 'Preview', 'erPreview()', 'Read the transfer note Cedar drafted, before or after sending the patient') : '') + '</li>'; }).join('') + '</ol>';
+  if(!done){
+    var b = SC.html('Button', {variant:'primary', intent:'destructive', size:'large', startIcon:'warning', title:'Do all four steps now: portal status, advice, transfer note, plan line and follow-up task'}, 'Direct to Emergency now');
+    h += '<div class="er-go">' + b.replace('<button ', '<button id="er-go" onclick="erGo()" ') + '</div>';
+  }
+  el.innerHTML = h;
+}
+function erGo(){
+  var name = PC_CURRENT, r = csRow(); if(!name || !r) return;
+  var who = r.pref || (r.legal || name).split(/[ ,]/)[0], at = new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+  /* 1. portal status */
+  r.status = 'ed'; r.wait = '—'; if(typeof renderQueue === 'function') renderQueue();
+  /* 2. advice sent (to the patient portal) */
+  /* 3. transfer note drafted */
+  var note = erNote(name);
+  /* 4. plan line and follow-up task */
+  var line = 'Directed to the Emergency Department now; advised to call 9-1-1, not to drive, and to bring medications. Transfer note prepared.';
+  var ta = typeof nsTa === 'function' ? nsTa('plan') : null;
+  if(ta && ta.value.indexOf(line) < 0){ ta.value = (ta.value.trim() ? ta.value.replace(/\s+$/, '') + '\n' : '') + line; ta.dispatchEvent(new Event('input', {bubbles:true})); if(typeof nsSync === 'function') nsSync(); }
+  DOC_TASKS.unshift({id:'er' + Date.now(), title:'Check ' + who + ' attended the Emergency Department', type:'Patient Notes', prio:'urgent', age:0,
+    to:MOA_ON_SERVICE, role:'MOA', patient:(r.legal || name.split(',')[0]), preferred:who, chart:'#6448', verified:true, status:'open', carried:0, due:'Today',
+    note:'Directed to the Emergency Department by Dr. Pannozzo at ' + at + ' for ' + note.crit.join('; ') + '. Call to confirm they attended.'});
+  if(typeof renderTasks === 'function') renderTasks();
+  ER[name] = {at:at, by:'Dr. Pannozzo', note:note};
+  erRender();
+  if(typeof cv2Chk === 'function') cv2Chk();
+  toast(who + ' directed to the Emergency Department · portal updated, advice sent, transfer note ready, task sent to ' + MOA_ON_SERVICE);
+  var p = document.getElementById('v2-er'); if(p){ var t = p.querySelector('h3'); if(t){ t.tabIndex = -1; t.focus(); } }
+}
+/* the transfer note, in the design system's Drawer; Cedar's draft, so the AI chip; how it is sent is not decided yet */
+function erPreview(){
+  var name = PC_CURRENT; if(!name) return;
+  var n = (ER[name] && ER[name].note) || erNote(name), host = document.getElementById('er-host');
+  if(!host){ host = document.createElement('div'); host.id = 'er-host'; document.body.appendChild(host); }
+  var sec = function(t, body){ return '<section class="er-ns"><h4>' + t + '</h4>' + body + '</section>'; };
+  var ul = function(L){ return L.length ? '<ul>' + L.map(function(x){ return '<li>' + csEsc(x) + '</li>'; }).join('') + '</ul>' : '<p>None on file.</p>'; };
+  host.innerHTML = SC.html('Drawer', {id:'er-drw', title:'Transfer note', description:'For the ' + n.to.toLowerCase() + ' · ' + n.when,
+      primaryAction:{label:'Copy the note', id:'er-copy'}, secondaryAction:{label:'Close', id:'er-close'}},
+    SC.raw('<p class="er-ai"><span class="ai-chip">' + AI_SPARKLE_FILL + 'AI draft</span> Cedar drafted this from the chart. Check it before it goes.</p>' +
+      sec('Patient', '<p>' + csEsc(n.who) + '</p>') + sec('Reason for transfer', '<p>' + csEsc(n.concern) + '</p>') +
+      sec('Critical results', ul(n.crit)) + sec('Medications', ul(n.meds)) + sec('Allergies', '<p>' + csEsc(n.allergies) + '</p>') +
+      sec('Advice given', '<p>' + csEsc(ER_ADVICE) + '</p>') + sec('From', '<p>' + csEsc(n.from) + '</p>')));
+  var d = document.getElementById('er-drw');
+  d.addEventListener('click', function(e){
+    if(e.target === d) return d.close();
+    var b = e.target.closest('button'); if(!b) return;
+    if(b.id === 'er-close' || b.getAttribute('aria-label') === 'Close') d.close();
+    if(b.id === 'er-copy'){ var t = d.querySelector('.sv-drawer__content').innerText; if(navigator.clipboard) navigator.clipboard.writeText(t).catch(function(){}); toast('Transfer note copied'); }
+  });
+  d.querySelector('#er-copy').title = 'Copy the note as text, to paste where it is sent';
+  d.showModal();
+}
 var vdInt=null, vdSecs=0, vdMuted=false;
 function vdCall(mode){
   var w=document.getElementById('vd-call'); if(!w) return;
@@ -23114,7 +23229,7 @@ baWrap('openReview', function(r, i){
   rmRenderBlock(it && it.cedar ? it : null);
 });
 baWrap('openChart', function(){ rmRenderDrafts(); rmSignLine(); });
-baWrap('openChart', function(){ if(typeof hxRenderCompact === 'function') hxRenderCompact(); });   /* the History column follows the open chart */
+baWrap('openChart', function(){ if(typeof hxRenderCompact === 'function') hxRenderCompact(); if(typeof erRender === 'function') erRender(); });   /* the History column follows the open chart */
 </script>
 <script>
 /* 21 Oct: the top block can change height (the critical bar hangs under it off the Review step), so the two columns measure themselves again */
