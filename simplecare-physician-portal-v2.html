@@ -7989,7 +7989,13 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-today .q-toolbar .qf-row{order:2;}
 #screen-today .box:has(> #work-queue){padding-top:16px;}   /* Ani, 13 Nov ('too much gap here'): less air above the day sheet's toolbar */
 #screen-today .q-toolbar{margin-bottom:8px;column-gap:10px;}   /* 10px so the widest date ("Wed, Nov 18") still fits on the row */
-#screen-today .q-toolbar .q-tools:empty,#screen-today .q-toolbar .q-tools:not(:has(*)){display:none;}   /* the empty search slot took a gap and pushed the date to a second row */   /* and under it, so the table header follows the call windows closely */
+#screen-today .q-toolbar .q-tools:empty,#screen-today .q-toolbar .q-tools:not(:has(*)){display:none;}
+#screen-today .q-toolbar.q-toolbar-top{margin:4px 0 12px;justify-content:space-between;}
+#screen-today .q-toolbar-top .day-nav{margin-left:auto;}
+/* Ani, 17 Nov ("add white background on these components"): on the grey page the call windows and the filters sit on white, like the date */
+#screen-today .q-toolbar-top #qwin sc-toggle{--color-surface-toggle-bg-default:var(--color-surface-card-white);}
+#screen-today .q-toolbar-top .qf-wrap .sv-filter__bar{background-color:var(--color-surface-card-white);}
+#screen-today .q-toolbar-top .q-tbacts{order:10;display:flex;align-items:center;gap:8px;flex:0 0 auto;}   /* the empty search slot took a gap and pushed the date to a second row */   /* and under it, so the table header follows the call windows closely */
 #screen-today .qf-wrap{position:relative;}
 /* Ani, 6 Nov ("do we need this gap between the table and where the table starts"): the table sits in the card unframed and runs to its edges; the card's padding stays around the toolbar only */
 #screen-today #attn-clip{margin:-22px -24px;border-radius:var(--radius-md);overflow:hidden;}   /* Needs your attention: the table fills its card */
@@ -8137,13 +8143,11 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
             <span class="sect-title">Day sheet <span class="wt-count" id="wt-queue-count">0</span></span>
           </div>
           <!-- Ani, 6 Nov ("why are there so many different buttons"): one primary per area -->
-          <sc-button variant="secondary-main" size="medium" start-icon="user-add" onclick="npOpen()">New patient</sc-button>
-          <sc-button variant="primary" size="medium" start-icon="user-assign" onclick="openTaskMoa()">Task MOA</sc-button>
       </div>
 
-      <div class="box">
-        <div class="work-pane active" id="work-queue">
-          <div class="q-toolbar">
+          <!-- Ani, 17 Nov ("get this out of the table and make one line, all at the top, apart"): the call windows, filters, date and the two
+               buttons are one line above the table card, spread apart -->
+          <div class="q-toolbar q-toolbar-top">
             <!-- Ani, 6 Nov ("components feel like out of our system"): Storybook › Filter › Slack-style day sheet toolbar. The date (arrows around a
                  calendar button), the call windows (an inverse toggle) and the filters (FilterButtons with menus) are the design system's. Daniel, 4 Nov
                  call 00:28:07: the date opens a calendar; the chosen day's sheet shows below, by call window. -->
@@ -8154,8 +8158,12 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
             </div>
             <div class="qwin" id="qwin"></div>
             <div class="qf-row" id="qf-row" onclick="qfClick(event)"></div>
+            <div class="q-tbacts"><sc-button id="np-btn" variant="secondary-main" size="medium" start-icon="user-add" onclick="npOpen()" title="Register a new patient and add them to today’s day sheet">New patient</sc-button>
+              <sc-button variant="primary" size="medium" start-icon="user-assign" onclick="openTaskMoa()" title="Send a task to your MOA">Task MOA</sc-button></div>
           </div>
 
+      <div class="box">
+        <div class="work-pane active" id="work-queue">
           <div class="q-tablewrap" id="q-tablewrap">
             <!-- Ani, 6 Nov ("this look and feel, why don't I see it in the portal?"): the design system's Table (SC.html), built by renderQueue -->
             <div id="queue-mount"></div>
@@ -14270,6 +14278,18 @@ function cdrFull(){
   });
   d.showModal();
 }
+
+/* the day sheet's one toolbar line (Ani, 17 Nov): when it would wrap, New patient shows its icon only (name on hover and for screen readers) */
+(function(){
+  var tb = document.querySelector('.q-toolbar-top'), nb = document.getElementById('np-btn'); if(!tb || !nb || !window.ResizeObserver) return;
+  var fit = function(){
+    nb.textContent = 'New patient'; nb.removeAttribute('label');
+    var kids = [].filter.call(tb.children, function(c){ return c.offsetParent; }), t0 = kids.length ? kids[0].getBoundingClientRect().top : 0;
+    var wraps = kids.some(function(c){ return Math.abs(c.getBoundingClientRect().top - t0) > 6; });
+    if(wraps){ nb.textContent = ''; nb.setAttribute('label', 'New patient'); }
+  };
+  new ResizeObserver(function(){ requestAnimationFrame(fit); }).observe(tb);
+})();
 var vdInt=null, vdSecs=0, vdMuted=false;
 function vdCall(mode){
   var w=document.getElementById('vd-call'); if(!w) return;
