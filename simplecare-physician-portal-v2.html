@@ -7879,6 +7879,10 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > #cdr-mini:hover{border-color:var(--cv2-soft, var(--ink-soft));}
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > #cdr-mini:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   #cdr-mini .cs-ai-ic,#cdr-mini svg{display:inline-flex;width:22px;height:22px;}
+  /* Ani, 17 Nov ("have search in one line as close"): Search the chart and Close share the drawer's top line, both 44px tall */
+  #screen-patientchart #pcv-c.cs-v2.v2-chart-open #v2p-chart{padding-top:16px !important;}
+  #screen-patientchart #pcv-c.cs-v2 .v2-chartx{top:16px !important;min-height:44px !important;box-sizing:border-box;}
+  #screen-patientchart #pcv-c.cs-v2.v2-chart-open #v2p-chart .cs-search{margin-right:112px !important;}
   /* Ani, 17 Nov ("you made the menus 2 rows, open this drawer bigger"): the Chart drawer is wider and its tabs stay on one row */
   #screen-patientchart #pcv-c.cs-v2.v2-chart-open #v2p-chart{width:min(1120px,94vw) !important;}
   #screen-patientchart #pcv-c.cs-v2 #v2p-chart .sv-tablist{flex-wrap:nowrap !important;overflow-x:auto;scrollbar-width:none;}
@@ -8650,7 +8654,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
             <!-- the full chart: a wide drawer over the workspace (reference while you work) -->
             <div class="v2-chartbd" id="v2-chartbd" hidden onclick="v2Tab(V2.flowTab || 'review')"></div>
             <div class="v2-panel" id="v2p-chart" role="dialog" aria-modal="true" aria-label="Chart" tabindex="-1" hidden></div>
-            <button type="button" class="v2-chartx" id="v2-chartx" hidden onclick="v2Tab(V2.flowTab || 'review')" aria-label="Close chart"><span class="ic" data-pdic="close"></span>Close</button>
+            <button type="button" class="v2-chartx" id="v2-chartx" hidden onclick="v2Tab(V2.flowTab || 'review')" aria-label="Close chart" title="Close the chart and go back to the visit"><span class="ic" data-pdic="close"></span>Close</button>
           </div>
         </div>
         <!-- v2.5 §3 Patient snapshot (persistent): name, age, gender as recorded, masked PHN, photo,
