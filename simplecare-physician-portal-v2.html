@@ -10428,7 +10428,7 @@ function renderDayNav(){
      when another day is on screen, so Today is never said twice. The date keeps a fixed width so the arrows don't move as days change. */
   /* Ani, 13 Nov ('move date end of the table'): at the right end, on the same row as the call windows and filters on every day, so the
      table never jumps. Today reads "Today · Fri, Nov 13"; another day reads just its date, with a Today button joined to the group's left. */
-  var short = dayOffset === 0 ? label : name;
+  var short = name;   /* Ani, 17 Nov ("no need to say today"): just the date; screen readers still hear "Today" in the label */
   nav.innerHTML = '<div class="dn-group" role="group" aria-label="Day shown">' +
     (dayOffset !== 0 ? B({variant:'tertiary-main', 'data-today':'1', id:'day-today-btn', 'aria-label':'Back to today'}, 'Today') : '') +
     B({startIcon:'arrow-dropdown-left', 'aria-label':'Previous day', 'data-day':'-1'}) +
