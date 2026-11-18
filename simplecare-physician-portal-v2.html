@@ -5045,7 +5045,7 @@
   #screen-earnings .ern-quiet{font-size:14px;color:var(--ink-soft);margin:0 0 4px;max-width:66ch;}
   #screen-earnings .ern-lead{font-size:15px;color:var(--ink);margin:0 0 4px;max-width:66ch;}
   #screen-earnings .ern-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
-  #screen-earnings .ern-seg{display:inline-flex;gap:2px;padding:3px;border-radius:12px;background:var(--wash);}
+  #screen-earnings .ern-seg{display:inline-flex;}
   #screen-earnings .ern-seg button{height:40px;min-width:96px;padding:0 14px;border:0;border-radius:9px;background:none;font:inherit;font-size:15px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
   #screen-earnings .ern-seg button:hover{color:var(--ink);}
   #screen-earnings .ern-seg button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(23,24,28,.08);}
@@ -5560,7 +5560,7 @@
     html body #screen-earnings .cl-stats .cl-stat:nth-child(even){border-left:1px solid var(--line);}
     html body #screen-earnings .cl-stats .cl-stat:nth-child(n+3){border-top:1px solid var(--line);}
   }
-  #screen-earnings .ern-mseg{display:inline-flex;gap:2px;padding:2px;margin:-2px 0 4px -2px;border-radius:10px;background:var(--wash);max-width:100%;}
+  #screen-earnings .ern-mseg{display:inline-flex;margin:0 0 4px;max-width:100%;}
   #screen-earnings .ern-mseg button{height:30px;padding:0 10px;border:0;border-radius:8px;background:none;font:inherit;font-size:14px;font-weight:500;color:var(--ink-soft);cursor:pointer;white-space:nowrap;}
   #screen-earnings .ern-mseg button:hover{color:var(--ink);}
   #screen-earnings .ern-mseg button[aria-pressed="true"]{background:var(--panel);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(23,24,28,.08);}
@@ -7993,7 +7993,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-today .q-toolbar.q-toolbar-top{margin:4px 0 12px;justify-content:space-between;}
 #screen-today .q-toolbar-top .day-nav{margin-left:auto;}
 /* Ani, 17 Nov ("add white background on these components"): on the grey page the call windows and the filters sit on white, like the date */
-#screen-today .q-toolbar-top #qwin sc-toggle{--color-surface-toggle-bg-default:var(--color-surface-card-white);}
+#screen-today .q-toolbar-top #qwin sc-toggle,sc-toggle{--color-surface-toggle-bg-default:var(--color-surface-card-white);}   /* every toggle on white (Ani, 17 Nov) */
 #screen-today .q-toolbar-top .qf-wrap .sv-filter__bar{background-color:var(--color-surface-card-white);}
 #screen-today .q-toolbar-top .q-tbacts{order:10;display:flex;align-items:center;gap:8px;flex:0 0 auto;}   /* the empty search slot took a gap and pushed the date to a second row */   /* and under it, so the table header follows the call windows closely */
 #screen-today .qf-wrap{position:relative;}
@@ -19383,7 +19383,7 @@ function t23Seg(){
   var w = document.getElementById('t23-seg'); if(!w) return;
   /* Daniel 5 Oct: MSP and private pay, never mixed. The design system's toggle (sc-toggle fires change) */
   if(!w.firstElementChild){
-    w.innerHTML = '<sc-toggle label="Claims: MSP or private pay" items=\'[{"value":"msp","label":"MSP"},{"value":"private","label":"Private pay"}]\'></sc-toggle>';
+    w.innerHTML = '<sc-toggle variant="inverse" label="Claims: MSP or private pay" items=\'[{"value":"msp","label":"MSP"},{"value":"private","label":"Private pay"}]\'></sc-toggle>';
     w.firstElementChild.addEventListener('change', function(e){ t23View(e.currentTarget.value); });
   }
   w.firstElementChild.setAttribute('value', T23.view);
@@ -22120,7 +22120,7 @@ function ernRange(a, b){
 }
 function ernSpanSet(k){
   ERN_SPAN = k; ernStats();
-  var b = document.querySelector('#ern-mseg button[data-span="' + k + '"]'); if(b) b.focus();
+  var b = document.querySelector('#ern-mseg sc-toggle'); if(b && b.focus) b.focus();
 }
 function ernStats(){
   var sw = document.getElementById('ern-stats'); if(!sw) return;
@@ -22132,9 +22132,8 @@ function ernStats(){
   /* every figure is a button that opens the claims or visits behind it (Batch C 1d) */
   var num = function(v, kind, label){ return '<button type="button" class="v ern-num" onclick="ernDrill(\'' + kind + '\')" aria-label="' + t23E(label) + '">' + v + '</button>'; };
   var st = function(k, v, s){ return '<div class="cl-stat"><p class="k">' + k + '</p><p class="vs">' + v + '<span class="s">' + s + '</span></p></div>'; };
-  var seg = '<div class="ern-mseg" id="ern-mseg" role="group" aria-label="Billed so far, by visit date">' +
-    [['today','Today'],['week','This week'],['month','This month']].map(function(o){
-      return '<button type="button" data-span="' + o[0] + '" aria-pressed="' + (ERN_SPAN === o[0]) + '" onclick="ernSpanSet(\'' + o[0] + '\')">' + o[1] + '</button>'; }).join('') + '</div>';
+  var seg = '<div class="ern-mseg" id="ern-mseg"><sc-toggle size="small" variant="inverse" label="Billed so far, by visit date" onchange="ernSpanSet(this.value)" items=\'' +
+    JSON.stringify([{value:'today', label:'Today'}, {value:'week', label:'This week'}, {value:'month', label:'This month'}]) + '\' value="' + ERN_SPAN + '"></sc-toggle></div>';
   var cmp = pct == null
     ? 'no visits on ' + sp.word.replace('the ', 'the ')
     : '<span class="ern-delta">' + t23Ic(pct >= 0 ? 'arrowup' : 'arrowdown') + '<span class="ern-vh">' + (pct >= 0 ? 'up ' : 'down ') + '</span>' + Math.abs(pct) + '%</span> vs ' + sp.word;
@@ -22284,14 +22283,15 @@ function ernDrwClaim(id){ ernDrwClose(); setTimeout(function(){ t23GoClaim(id); 
 
 function renderEarnings(){
   var seg = document.getElementById('ern-seg');
+  /* Ani, 17 Nov ("the toggle component's colour changed, why not here"): every switch is the design system toggle, navy selection on white */
   if(seg && !seg.childNodes.length){
-    seg.innerHTML = [['period','Pay period'],['month','Month'],['quarter','Quarter'],['year','Year']].map(function(o){
-      return '<button type="button" data-agg="' + o[0] + '" aria-pressed="' + (ERN.agg === o[0]) + '" onclick="ernAgg(\'' + o[0] + '\')">' + o[1] + '</button>'; }).join('');
+    seg.innerHTML = '<sc-toggle size="medium" variant="inverse" label="Group payments by" items=\'' + JSON.stringify([['period','Pay period'],['month','Month'],['quarter','Quarter'],['year','Year']].map(function(o){ return {value:o[0], label:o[1]}; })) + '\' value="' + ERN.agg + '"></sc-toggle>';
+    seg.firstElementChild.addEventListener('change', function(e){ ernAgg(e.currentTarget.value); });
   }
   var ws = document.getElementById('ern-wseg');
   if(ws && !ws.childNodes.length){
-    ws.innerHTML = [['visits','Visits'],['earnings','Earnings']].map(function(o){
-      return '<button type="button" data-wm="' + o[0] + '" aria-pressed="' + (ERN_WM === o[0]) + '" onclick="ernWm(\'' + o[0] + '\')">' + o[1] + '</button>'; }).join('');
+    ws.innerHTML = '<sc-toggle size="medium" variant="inverse" label="Show by weekday" items=\'' + JSON.stringify([{value:'visits', label:'Visits'}, {value:'earnings', label:'Earnings'}]) + '\' value="' + ERN_WM + '"></sc-toggle>';
+    ws.firstElementChild.addEventListener('change', function(e){ ernWm(e.currentTarget.value); });
   }
   ernStats(); ernChart(); ernWeekChart(); ernRisk(); ernPriv();
 }
