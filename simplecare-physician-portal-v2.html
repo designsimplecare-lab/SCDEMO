@@ -7790,9 +7790,17 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #cdr-card .cdr-ask{display:flex;gap:8px;margin-top:12px;}
   #cdr-card .cdr-in{flex:1;min-width:0;height:44px;padding:0 12px;border:1px solid var(--line);border-radius:var(--radius-xs);font:inherit;font-size:15px;background:var(--panel);color:var(--ink);}
   #cdr-card[hidden]{display:none;}
+  /* Ani, 17 Nov ("in this section make profile pic background white"): the chart header's initials sit on white, not the grey page */
+  #cv2-hd .vc-av .sv-avatar-circle > span{background:var(--color-surface-card-white) !important;}
+  /* Ani, 17 Nov ("WTF?", grey label on a navy button): an older rule greyed every span in these panels; a design system button's label keeps
+     the button's own colour */
+  :is(#cs-fc,#v2,#cdr-card,.care-plan-mount,#hx-page) .sv-button span{color:inherit !important;}
   /* Daniel, Chart Screen brief Part 2 (17 Nov): History is the chart's right column when there is room (the page sets .hx3 at 1150px and up) */
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2.hx3{grid-template-columns:300px minmax(0,1fr) 300px !important;grid-template-areas:"hd hd hd" "side nav hx" "side main hx" !important;}
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #hx-compact{display:none;}
+  /* Ani, 17 Nov (the summary folded to its icon rail left a wide empty column): folded, the left column is the 56px rail and Cedar folds with it */
+  #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2.hx3{grid-template-columns:56px minmax(0,1fr) 300px !important;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #cdr-card{display:none !important;}
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2.hx3 > #hx-compact{grid-area:hx;display:block;box-sizing:border-box;min-height:0;padding:16px;background:var(--panel);border:1px solid var(--cv2-line, var(--line));border-radius:var(--radius-xs);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;}
   #v2-key .vp-list{margin:4px -8px 4px;}
   #v2-key .vp-list .sv-list{max-width:80ch;}
