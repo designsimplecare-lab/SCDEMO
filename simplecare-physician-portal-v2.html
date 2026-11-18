@@ -1820,6 +1820,7 @@
     height:100vh;align-self:flex-start;overflow-y:auto;}
   .sidebar .brand{flex-shrink:0;}
   .sidebar .nav-group{display:flex;flex-direction:column;gap:2px;margin:auto 0;}
+  .sidebar.collapsed .nav-group{margin-top:auto !important;margin-bottom:auto !important;}   /* Ani, 17 Nov ("why is the menu not in the centre"): centred when collapsed too */
   .sidebar .nav-btn{
     display:flex;align-items:center;gap:11px;width:100%;margin:0;
     padding:9px 12px;border-radius:9px;border:none;background:none;
@@ -6766,6 +6767,8 @@ body:has(#op-panel.show) #callw{z-index:360;}
 #rx-panel .rp-dym .op-lk,#rx-panel .rp-free{min-height:44px;}
 #rx-panel .rp-padd input{height:44px;font-size:15px;}
 #rx-panel .rp-paper .rp-chip{min-height:44px;padding:0 14px;font-size:14px;}
+#rx-panel .rp-paper .rp-chip[aria-pressed="true"]{background:var(--brand);color:var(--color-surface-card-white);}   /* Ani, 17 Nov ("these white texts are not visible"): a chosen option is navy with white text, on the paper too */
+#rx-panel .rp-paper .rp-chip[aria-pressed="true"] :is(.ic,svg){color:inherit;}
 #rx-panel .rp-paper .rp-part{min-height:44px;font-size:15px;}
 #rx-panel .rp-sigl{font-size:14px;}
 #rx-panel .rp-blank{font-size:15px;color:#5f636b;}
@@ -7788,6 +7791,15 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #sm-list .sv-list__head > .ml-auto,#sm-list .sv-list__head .sv-button{font-size:14px;}
   #sm-list .sv-list__sublabel{font-size:14px;color:var(--ink-soft);padding-top:12px;}
   #sm-list .sv-list__item .sv-list__label{font-size:15px;line-height:22px;color:var(--ink);}
+  /* section icons, like Claude's panel: 20px, grey, before the title */
+  .smh-ic{display:inline-flex;flex:none;width:20px;height:20px;margin-right:10px;color:var(--ink-soft);vertical-align:middle;}
+  .smh-ic svg{width:20px;height:20px;}
+  #sm-list .sv-list__head > span:first-child{display:inline-flex;align-items:center;}
+  .hx-compact .hxc-t .smh-ic{margin-right:6px;}
+  .hx-compact .hxc-t{white-space:nowrap;flex:none;}
+  .hx-compact .hxc-r{min-width:0;overflow:hidden;text-overflow:ellipsis;text-align:right;}
+  /* Ani, 17 Nov ("this input field is wrong"): a design system field shows one focus ring, on its box; the input inside draws none of its own */
+  .sv-field__input:focus,.sv-field__input:focus-visible{outline:none !important;box-shadow:none !important;}
   .hx-compact .hx-ctop .sv-button{flex:none;}
   .hx-compact .sv-list{margin-left:-8px;margin-right:-8px;}
   /* Ani, 17 Nov ("all statuses on right"): in every design system list the status tag sits on the right of its row, top-aligned with the name,
@@ -7850,6 +7862,26 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #cdr-card .cdr-ask{align-items:flex-start;}
   #cdr-card .cdr-in{flex:1;min-width:0;height:40px;padding:0 12px;border:1px solid var(--line);border-radius:var(--radius-xs);font:inherit;font-size:15px;background:var(--panel);color:var(--ink);}
   #cdr-card[hidden]{display:none;}
+  /* Ani, 17 Nov ("pull out Cedar, a separate line from the Patient summary"): the left column is two cards with a gap: Cedar, then the
+     Patient summary (its title bar and list read as one card). The column itself draws nothing and still scrolls. */
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #v2-side{background:none !important;border:0 !important;border-radius:0 !important;box-shadow:none !important;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > #cdr-card{flex:none;margin:0 0 12px;border:1px solid var(--cv2-line, var(--line));border-radius:var(--radius-xs);}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > #cv2-ctxbar{flex:none;background:var(--panel);border:1px solid var(--cv2-line, var(--line));border-bottom:0;border-radius:var(--radius-xs) var(--radius-xs) 0 0;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > #v2-sum{background:var(--panel);border:1px solid var(--cv2-line, var(--line));border-top:0;border-radius:0 0 var(--radius-xs) var(--radius-xs);}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > #cv2-rail{background:var(--panel);border-radius:var(--radius-xs);}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2-side > #cv2-ctxbar{border-radius:var(--radius-xs) var(--radius-xs) 0 0;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2-side > #cv2-rail{margin:0;padding:4px 6px 8px;border:1px solid var(--cv2-line, var(--line));border-top:0;border-radius:0 0 var(--radius-xs) var(--radius-xs);}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2.cv2-ctx-closed #v2-side > #cv2-rail::before{content:"";align-self:stretch;height:1px;margin:0 0 4px;background:var(--cv2-line, var(--line));}
+  #cdr-mini[hidden]{display:none !important;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > #cdr-mini{flex:none;display:flex;align-items:center;justify-content:center;width:100%;height:52px;margin:0 0 12px;padding:0;box-sizing:border-box;
+    border:1px solid var(--cv2-line, var(--line));border-radius:var(--radius-xs);cursor:pointer;color:var(--ink);
+    background:linear-gradient(180deg, color-mix(in srgb, var(--color-brand-ai-start) 22%, var(--panel)), var(--panel));}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > #cdr-mini:hover{border-color:var(--cv2-soft, var(--ink-soft));}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > #cdr-mini:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #cdr-mini .cs-ai-ic,#cdr-mini svg{display:inline-flex;width:22px;height:22px;}
+  /* Ani, 17 Nov ("you made the menus 2 rows, open this drawer bigger"): the Chart drawer is wider and its tabs stay on one row */
+  #screen-patientchart #pcv-c.cs-v2.v2-chart-open #v2p-chart{width:min(1120px,94vw) !important;}
+  #screen-patientchart #pcv-c.cs-v2 #v2p-chart .sv-tablist{flex-wrap:nowrap !important;overflow-x:auto;scrollbar-width:none;}
   /* Ani, 17 Nov ("in this section make profile pic background white"): the chart header's initials sit on white, not the grey page */
   #cv2-hd .vc-av .sv-avatar-circle > span{background:var(--color-surface-card-white) !important;}
   /* Ani, 17 Nov ("WTF?", grey label on a navy button): an older rule greyed every span in these panels; a design system button's label keeps
@@ -8516,6 +8548,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
           <aside class="v2-side" id="v2-side" aria-label="Patient and Patient summary">
             <!-- Daniel, Chart brief Part 2 (17 Nov): Cedar on top of the left column: short Visit Preview, the live listening line, Ask Cedar -->
             <section class="cdr-card" id="cdr-card" aria-labelledby="cdr-h"></section>
+            <!-- Ani, 17 Nov ("have Cedar icon separate on top of home"): with the summary folded, Cedar is its own small card above the menu -->
+            <button type="button" class="cdr-mini" id="cdr-mini" hidden onclick="cdrMiniGo()" title="Open the side panel on Cedar: the visit preview, listening and Ask Cedar" aria-label="Open Cedar"></button>
             <!-- Chart Version 2: the panel's own bar (title and hide/show); collapsed, only the rail shows: the toggle and one button per section -->
             <div class="cv2-ctxbar" id="cv2-ctxbar" hidden><h2 class="cv2-ctx-h" id="cv2-ctx-h">Patient summary</h2>
 <sc-button id="cv2-ctx-t" variant="tertiary-main" size="small" start-icon="arrow-dropdown-left" label="Hide patient summary" aria-controls="v2-sum" onclick="cv2Ctx()"></sc-button></div>
@@ -14174,9 +14208,10 @@ function hxRenderCompact(){
   var el = document.getElementById('hx-compact'); if(!el || !PC_CURRENT || !(window.SC && SC.html)) return;
   var name = PC_CURRENT, H = hxFor(name), e = csEsc;
   var chev = SC.icon('arrow-dropdown-right', {size:16});
+  var HXC_IC = {allergies:'allergy', conditions:'medical', medications:'medication', surgical:'file-heart', family:'user-group'};
   var sec = function(key, title, right, rows){
     return '<section class="hxc-sec"><button type="button" class="hxc-h" onclick="HX_UI.sec=&#39;' + key + '&#39;;csOpenFull(&#39;history&#39;,this)" title="Open ' + title.toLowerCase() + ' in the full History">' +
-      '<span class="hxc-t">' + title + chev + '</span>' + (right ? '<span class="hxc-r">' + right + '</span>' : '') + '</button>' +
+      '<span class="hxc-t"><span class="smh-ic" aria-hidden="true">' + SC.icon(HXC_IC[key] || 'file', {size:20}) + '</span>' + title + chev + '</span>' + (right ? '<span class="hxc-r">' + right + '</span>' : '') + '</button>' +
       rows.map(function(r){ return '<div class="hxc-row"><span class="hxc-l">' + e(r[0]) + '</span>' + (r[1] ? '<span class="hxc-v">' + e(r[1]) + '</span>' : '') + '</div>'; }).join('') + '</section>';
   };
   var stTxt = {differs:'Differs', notchart:'Not on chart', nodisp:'Not dispensed'};
@@ -14186,7 +14221,7 @@ function hxRenderCompact(){
     SC.html('Button', {variant:'tertiary-main', size:'small', startIcon:'arrow-dropdown-right', 'aria-label':'Open full history', title:'Open the full History page'}).replace('<button ', '<button onclick="HX_UI.sec=&#39;all&#39;;csOpenFull(&#39;history&#39;,this)" ') + '</div>' +
     '<p class="hxc-meta">' + (H.reviewed ? 'Reviewed ' + H.reviewed.on + ' · ' + H.reviewed.by : 'Not reviewed yet') + '</p>';
   h += sec('allergies', 'Allergies', '', [[H.allergies.length ? H.allergies.map(function(a){ return a.what; }).join(', ') : 'No known allergies', '']]);
-  h += sec('conditions', 'Medical conditions', nocode ? nocode + ' without a code' : '', H.conditions.map(function(c){ return [c.name, c.code || 'No code']; }));
+  h += sec('conditions', 'Medical conditions', nocode ? nocode + ' no code' : '', H.conditions.map(function(c){ return [c.name, c.code || 'No code']; }));
   h += sec('medications', 'Medications', open ? open + ' to reconcile' : '', H.meds.map(function(m){
     var rec = hxRec(name, m.id), st = hxMedState(m), dose = (rec && rec.chart != null ? rec.chart : m.chart) || (m.pn ? m.pn.dose : '');
     return [m.name + (dose ? ' ' + dose : ''), !rec ? (stTxt[st] || '') : 'Reconciled']; }));
@@ -20797,6 +20832,7 @@ var SM = {sec:{}, go:[], goIdx:{}, t:0};
 var SM_ORDER = ['intake', 'meds', 'alg', 'hist', 'cons', 'inv', 'pend', 'enc', 'since'];
 var SM_TITLE = {intake:'Intake', meds:'Medications', alg:'Allergies', hist:'Past medical history', cons:'Consultation reports', inv:'Investigations', pend:'Pending', enc:'Previous encounters', since:'Since you last saw'};
 var SM_ICON = {intake:'today', meds:'encounterlog', alg:'cardinfo', hist:'tasks', cons:'file', inv:'chartup', pend:'clock', enc:'calendar', since:'reassign'};
+var SM_DSIC2 = {intake:'clipboard', meds:'medication', alg:'allergy', hist:'medical', cons:'file-record', inv:'chart-1', pend:'clock-time', enc:'calendar', since:'refresh-undo'};
 var SM_TONE = {att:'warning', crit:'error', ok:'success', ai:'purple', '':'neutral'};
 var SM_DSIC = {alert:'warning', clock:'clock-time', crit:'error', cardwarn:'warning', eye:'eye-on', complete:'check-circle', urgent:'urgent'};
 function smText(h){ var d = document.createElement('div'); d.innerHTML = String(h == null ? '' : h); return d.textContent.replace(/\s+/g, ' ').trim(); }
@@ -20831,7 +20867,8 @@ function v2SetSec(k, count, chip, body, show){
 function smPaint(){
   var m = document.getElementById('sm-list'); if(!m || typeof SC === 'undefined' || !SC.html) return;
   var secs = SM_ORDER.filter(function(k){ return SM.sec[k] && SM.sec[k].show; }).map(function(k){
-    var o = SM.sec[k], p = {title:SM_TITLE[k], 'data-k':k, id:'sms-' + k};
+    /* Ani, 17 Nov ("not clear which is the title and which the content; add small icons for titles like Claude does"): a design system icon before each title */
+    var o = SM.sec[k], ic = SM_DSIC2[k], p = {title:ic && SC.icon ? SC.raw('<span class="smh-ic" aria-hidden="true">' + SC.icon(ic, {size:20}) + '</span>' + csEsc(SM_TITLE[k])) : SM_TITLE[k], 'data-k':k, id:'sms-' + k};
     if(k === 'intake') p.aside = ['Button', {variant:'link', size:'small', href:'#', 'data-goi':smGo('openBrief(PC_CURRENT)')}, 'Open intake'];
     else { p.collapsible = true; p.defaultOpen = !!V2.open[k]; p.name = 'sm-sec'; if(o.count) p.count = o.count; if(o.chip) p.aside = o.chip; }
     return ['ListSection', p].concat(o.body || []);
@@ -25370,6 +25407,8 @@ function cv2CtxPaint(){
   var sum = v2El('v2-sum'), rail = v2El('cv2-rail'), t = v2El('cv2-ctx-t');
   if(sum) sum.hidden = !open;
   if(rail) rail.hidden = !(wide && !open);
+  var mini = v2El('cdr-mini');
+  if(mini){ mini.hidden = !(wide && !open); if(!mini.firstChild) mini.innerHTML = '<span class="cs-ai-ic" aria-hidden="true">' + CEDAR_MARK + '</span>'; }
   if(t){
     var dr = !wide;
     /* the design system's quiet icon button: close in the drawer, hide or show on the wide layout (the panel is on the left) */
@@ -25386,6 +25425,12 @@ function cv2Ctx(open){
   cv2CtxPaint();
   if(typeof v2Fit === 'function') v2Fit();
   var t = v2El('cv2-ctx-t'); if(t && open === undefined) t.focus({preventScroll:true});
+}
+/* the folded Cedar card: opens the side panel and goes to Cedar's question box */
+function cdrMiniGo(){
+  cv2Ctx(true);
+  var c = v2El('cdr-card'); if(c) c.scrollIntoView({block:'start', behavior:'smooth'});
+  setTimeout(function(){ var q = document.querySelector('#cdr-q input, input#cdr-q'); if(q) q.focus({preventScroll:true}); }, 250);
 }
 /* collapsed: one button per section; pressing one opens the panel on that section */
 function cv2Rail(){
