@@ -7845,6 +7845,17 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   .ai-chip.ai-chip-sm svg{width:14px;height:14px;}
   #cdr-card .cdr-lbl{margin:12px 0 0;font-size:14px;font-weight:600;color:var(--ink-soft);}
   :is(#cdr-card,#cdr-drw,#sm-list,#v2-key) :is(.sv-list__secondary,.sv-list__meta){font-size:14px;line-height:20px;}   /* text at least 14px */
+  /* the full Visit preview (Ani, 17 Nov, "organise this better"): the Patient summary's sections, sources as tags on the right */
+  #cdr-drw .cdr-full-ai{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #cdr-drw .sv-list__section{border-top:1px solid var(--line);}
+  #cdr-drw .sv-list__section:first-child{border-top:0;}
+  #cdr-drw .sv-list__head{min-height:48px;font-size:15px;line-height:22px;font-weight:500;color:var(--ink);}
+  #cdr-drw .sv-list__head > span:first-child{display:inline-flex;align-items:center;}
+  #cdr-drw .sv-list__head .sv-list__count{font-size:14px;color:var(--ink-soft);}
+  #cdr-drw .sv-list__item .sv-list__label{font-size:15px;line-height:22px;color:var(--ink);}
+  #cdr-drw .sv-list__item .sv-tag{flex:none;white-space:nowrap;}
+  #cdr-drw .sv-list__item .sv-tag,#cdr-drw .sv-list__item .sv-tag .truncate{font-size:14px;line-height:20px;}
+  #cdr-drw .text-body-3{font-size:14px;line-height:20px;}   /* the drawer's description, at least 14px */
   #cdr-card .cdr-foot{margin-top:8px;padding-top:12px;border-top:1px solid var(--cv2-line, var(--line));}
   #cdr-card .cdr-foot .cdr-listen{margin:0;}
   #cdr-card .cdr-foot .cdr-ask{margin-top:8px;}
@@ -14352,9 +14363,17 @@ function cdrLines(name, all){
   var srcTxt = function(x){ return 'Source: ' + cdrSrcTag(x.src)[2]; };
   var item = function(x){ return ['ListItem', {label:pl(x.main), secondary:(all && x.sub ? v2Cap(pl(x.sub)) + ' · ' : '') + srcTxt(x), href:'#',
     'data-goi':smGo('csOpenFull(\'' + (x.tab || 'timeline') + '\',this)'), title:'Open ' + (x.src ? smText(x.src) : 'the record') + ' in the chart'}]; };
-  if(all){ L.push(['ListLabel', {}, 'Here today for'], item(C.why)); if(C.rel.length) L.push(['ListLabel', {count:C.rel.length}, 'Relevant to today']); }
   /* the age-and-sex line repeats the header; it isn't a finding */
   var rel = C.rel.filter(function(x){ return !/^\d+-year-old (man|woman|patient)\.?$/i.test(smText(x.main).trim()); });
+  /* Ani, 17 Nov ("organise this better"): the full preview reads like the Patient summary: three sections with an icon title, a count and a
+     hairline; each line is the finding, its detail in grey under it, and its source as a quiet tag on the right */
+  if(all){
+    var full = function(x){ return ['ListItem', {label:pl(x.main), secondary:x.sub ? v2Cap(pl(x.sub)) : '', trailing:cdrSrcTag(x.src), href:'#',
+      'data-goi':smGo('csOpenFull(\'' + (x.tab || 'timeline') + '\',this)'), title:'Open ' + (x.src ? smText(x.src) : 'the record') + ' in the chart'}]; };
+    var sec = function(ic, t, xs){ return xs.length ? [['ListSection', {title:SC.raw('<span class="smh-ic" aria-hidden="true">' + SC.icon(ic, {size:20}) + '</span>' + csEsc(t)), count:xs.length > 1 ? xs.length : undefined}].concat(xs.map(full))] : []; };
+    var S = [].concat(sec('clipboard', 'Here today for', C.why ? [C.why] : []), sec('flag', 'Relevant to today', rel), sec('file', 'Not related to today', C.other || []));
+    return {C:C, list:SC.html.apply(SC, ['List', {'aria-label':'Full visit preview'}].concat(S)), more:0};
+  }
   L = L.concat((all ? rel : rel.slice(0, 3)).map(item));
   if(all && C.other.length) L = L.concat([['ListLabel', {count:C.other.length}, 'Not related to today']], C.other.map(item));
   return {C:C, list:SC.html.apply(SC, ['List', {'aria-label':all ? 'Full visit preview' : 'Visit preview'}].concat(L)), more:rel.length + C.other.length - 3};
@@ -14398,7 +14417,7 @@ function cdrFull(){
   var host = document.getElementById('cdr-host'); if(!host){ host = document.createElement('div'); host.id = 'cdr-host'; document.body.appendChild(host); }
   var V = cdrLines(PC_CURRENT, true);
   host.innerHTML = SC.html('Drawer', {id:'cdr-drw', title:'Visit preview', description:'Cedar, from ' + crJoin(V.C.from) + '. Check the source before acting.', secondaryAction:{label:'Close', id:'cdr-close'}},
-    SC.raw('<p class="er-ai"><span class="ai-chip">' + AI_SPARKLE_FILL + 'AI-generated</span> Each line names its source; open it to see the record.</p>' + V.list));
+    SC.raw('<p class="cdr-full-ai"><span class="ai-chip">' + AI_SPARKLE_FILL + 'AI-generated</span><span>Open a line to see its record.</span></p>' + V.list));
   var d = document.getElementById('cdr-drw');
   d.addEventListener('click', function(e){
     if(e.target === d) return d.close();
