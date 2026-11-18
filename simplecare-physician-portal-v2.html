@@ -7764,6 +7764,30 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   .hx-compact .sv-list{margin-top:0;}
   .hx-compact .sv-list > .sv-list__sublabel{margin-top:8px;padding-top:12px;border-top:1px solid var(--line);}
   .hx-compact .sv-list > .sv-list__sublabel:first-child{margin-top:0;border-top:0;}
+  /* the Claude-panel pattern (Ani, 17 Nov) */
+  .hx-compact .hxc-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .hx-compact .hxc-meta{margin:2px 0 0;padding-bottom:16px;border-bottom:1px solid var(--line);font-size:14px;line-height:20px;color:var(--ink-soft);}
+  .hx-compact .hxc-sec{padding:12px 0;border-bottom:1px solid var(--line);}
+  .hx-compact .hxc-sec:last-child{border-bottom:0;}
+  .hx-compact .hxc-h{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:32px;margin:0 0 4px;padding:0;border:0;background:none;font:inherit;text-align:left;cursor:pointer;}
+  .hx-compact .hxc-t{display:inline-flex;align-items:center;gap:4px;font-size:15px;line-height:22px;font-weight:500;color:var(--ink);}
+  .hx-compact .hxc-t svg{color:var(--ink-soft);}
+  .hx-compact .hxc-h:hover .hxc-t svg{color:var(--ink);}
+  .hx-compact .hxc-h:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:var(--radius-xs);}
+  .hx-compact .hxc-r{font-size:14px;line-height:20px;color:var(--ink-soft);white-space:nowrap;}
+  .hx-compact .hxc-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;min-height:32px;padding:5px 0;}
+  .hx-compact .hxc-l{min-width:0;font-size:15px;line-height:22px;color:var(--ink);}
+  .hx-compact .hxc-v{flex:none;font-size:14px;line-height:20px;color:var(--ink-soft);font-variant-numeric:tabular-nums;}
+  /* the Patient summary in the same Claude-panel pattern (Ani, 17 Nov): dark section titles, the summary as grey text on the right (its icon keeps
+     its colour), plain rows with grey values, statuses as grey text with a coloured icon, a hairline between sections */
+  #sm-list .sv-list__section{border-top:1px solid var(--line);}
+  #sm-list .sv-list__section:first-child{border-top:0;}
+  #sm-list .sv-list__head{min-height:48px;font-size:15px;line-height:22px;font-weight:500;color:var(--ink);}
+  #sm-list .sv-list__head .sv-list__count{font-size:14px;color:var(--ink-soft);}
+  #sm-list .sv-tag{--tag-bg:transparent;--tag-bg-hover:transparent;--tag-fg:var(--ink-soft);--tag-fg-hover:var(--ink-soft);height:auto;padding:0;gap:4px;font-size:14px;line-height:20px;box-shadow:none;}
+  #sm-list .sv-list__head > .ml-auto,#sm-list .sv-list__head .sv-button{font-size:14px;}
+  #sm-list .sv-list__sublabel{font-size:14px;color:var(--ink-soft);padding-top:12px;}
+  #sm-list .sv-list__item .sv-list__label{font-size:15px;line-height:22px;color:var(--ink);}
   .hx-compact .hx-ctop .sv-button{flex:none;}
   .hx-compact .sv-list{margin-left:-8px;margin-right:-8px;}
   /* Ani, 17 Nov ("all statuses on right"): in every design system list the status tag sits on the right of its row, top-aligned with the name,
@@ -14144,27 +14168,31 @@ function hxRecon(id, to){
 function hxUndo(id){ var n = PC_CURRENT; if(HX_REC[n]) delete HX_REC[n][id]; hxRender(); }
 /* --- the compact panel beside the note: the same record, read at a glance; Open full history goes to the page --- */
 function hxRenderCompact(){
-  /* Ani, 17 Nov ("History section as well"): one header line (title and a chevron to the full page); one line per item with any status as quiet
-     text under it, no tags wedged between a medicine's name and its dose; the only tag is the medications' "to reconcile" count; text 14px */
+  /* Ani, 17 Nov ("exactly the same way as Claude does: section titles, sub categories, lines"): plain dark section titles, a › after a title that
+     opens something, the section's summary in soft grey on the right of its title (no coloured tag), plain rows with the value on the right,
+     and a hairline between sections */
   var el = document.getElementById('hx-compact'); if(!el || !PC_CURRENT || !(window.SC && SC.html)) return;
-  var name = PC_CURRENT, H = hxFor(name), list = [];
-  var stTxt = {differs:'Differs from PharmaNet', notchart:'On PharmaNet, not on the chart', nodisp:'Not dispensed · non-prescription'};
-  list.push(['ListLabel', {}, 'Allergies'], ['ListItem', {label:H.allergies.length ? H.allergies.map(function(a){ return a.what; }).join(', ') : 'No known allergies'}]);
-  list.push(['ListLabel', {count:H.conditions.length}, 'Medical conditions']);
-  H.conditions.forEach(function(c){ list.push(['ListItem', c.code ? {label:c.name, meta:c.code} : {label:c.name, meta:'No code'}]); });
-  var open = H.meds.filter(function(m){ var st = hxMedState(m); return !hxRec(name, m.id) && stTxt[st]; });
-  list.push(['ListLabel', {count:H.meds.length}, 'Medications']);
-  H.meds.forEach(function(m){
+  var name = PC_CURRENT, H = hxFor(name), e = csEsc;
+  var chev = SC.icon('arrow-dropdown-right', {size:16});
+  var sec = function(key, title, right, rows){
+    return '<section class="hxc-sec"><button type="button" class="hxc-h" onclick="HX_UI.sec=&#39;' + key + '&#39;;csOpenFull(&#39;history&#39;,this)" title="Open ' + title.toLowerCase() + ' in the full History">' +
+      '<span class="hxc-t">' + title + chev + '</span>' + (right ? '<span class="hxc-r">' + right + '</span>' : '') + '</button>' +
+      rows.map(function(r){ return '<div class="hxc-row"><span class="hxc-l">' + e(r[0]) + '</span>' + (r[1] ? '<span class="hxc-v">' + e(r[1]) + '</span>' : '') + '</div>'; }).join('') + '</section>';
+  };
+  var stTxt = {differs:'Differs', notchart:'Not on chart', nodisp:'Not dispensed'};
+  var open = H.meds.filter(function(m){ return !hxRec(name, m.id) && stTxt[hxMedState(m)]; }).length;
+  var nocode = H.conditions.filter(function(c){ return !c.code; }).length;
+  var h = '<div class="hxc-top"><h3 class="hx-ctitle">History</h3>' +
+    SC.html('Button', {variant:'tertiary-main', size:'small', startIcon:'arrow-dropdown-right', 'aria-label':'Open full history', title:'Open the full History page'}).replace('<button ', '<button onclick="HX_UI.sec=&#39;all&#39;;csOpenFull(&#39;history&#39;,this)" ') + '</div>' +
+    '<p class="hxc-meta">' + (H.reviewed ? 'Reviewed ' + H.reviewed.on + ' · ' + H.reviewed.by : 'Not reviewed yet') + '</p>';
+  h += sec('allergies', 'Allergies', '', [[H.allergies.length ? H.allergies.map(function(a){ return a.what; }).join(', ') : 'No known allergies', '']]);
+  h += sec('conditions', 'Medical conditions', nocode ? nocode + ' without a code' : '', H.conditions.map(function(c){ return [c.name, c.code || 'No code']; }));
+  h += sec('medications', 'Medications', open ? open + ' to reconcile' : '', H.meds.map(function(m){
     var rec = hxRec(name, m.id), st = hxMedState(m), dose = (rec && rec.chart != null ? rec.chart : m.chart) || (m.pn ? m.pn.dose : '');
-    list.push(['ListItem', {label:m.name + (dose ? ' ' + dose : ''), secondary:!rec && stTxt[st] ? stTxt[st] : rec ? 'Reconciled' : undefined}]);
-  });
-  if(H.surgeries.length){ list.push(['ListLabel', {count:H.surgeries.length}, 'Surgical history']); H.surgeries.forEach(function(s2){ list.push(['ListItem', {label:s2.name, meta:s2.year}]); }); }
-  if(H.family.length){ list.push(['ListLabel', {count:H.family.length}, 'Family history']); H.family.forEach(function(x){ list.push(['ListItem', {label:x.who + ': ' + x.what}]); }); }
-  var go = SC.html('Button', {variant:'tertiary-main', size:'small', startIcon:'arrow-dropdown-right', 'aria-label':'Open full history', title:'Open the full History page: codes, reconciliation and every section'})
-    .replace('<button ', '<button onclick="csOpenFull(&#39;history&#39;,this)" ');
-  el.innerHTML = '<div class="hx-ctop"><h3 class="hx-ctitle">History</h3>' + (open.length ? SC.html('Tag', {color:'warning', startIcon:'warning', title:'Medications that differ from PharmaNet; reconcile them in the full History'}, open.length + ' to reconcile') : '') + go + '</div>' +
-    '<p class="hx-meta">' + (H.reviewed ? 'Reviewed ' + H.reviewed.on + ' · ' + H.reviewed.by : 'Not reviewed yet') + '</p>' +
-    SC.html.apply(SC, ['List', {'aria-label':'History at a glance'}].concat(list));
+    return [m.name + (dose ? ' ' + dose : ''), !rec ? (stTxt[st] || '') : 'Reconciled']; }));
+  if(H.surgeries.length) h += sec('surgical', 'Surgical history', '', H.surgeries.map(function(s2){ return [s2.name, s2.year]; }));
+  if(H.family.length) h += sec('family', 'Family history', '', H.family.map(function(x){ return [x.who + ': ' + x.what, '']; }));
+  el.innerHTML = h;
 }
 
 (function(){
