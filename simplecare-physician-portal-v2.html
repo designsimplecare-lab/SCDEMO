@@ -2442,7 +2442,7 @@
   .sidebar.collapsed .sidebar-collapse-btn:hover .nav-icon{color:var(--ink);}
   .sidebar.collapsed .nav-btn.active .nav-icon,
   .sidebar.collapsed .nav-btn.active:hover .nav-icon{color:#fff;}
-  .sidebar.collapsed #collapse-icon{transform:rotate(180deg);}
+  .sidebar.collapsed #collapse-icon{transform:rotate(180deg);}   /* › when collapsed: expand */
 
   /* the two bar actions sit at a 44px touch target */
   
@@ -10846,18 +10846,21 @@ function openStatusMenu(btn, name){
            '<span class="q-tick">&#10003;</span>'+c[1]+'</button>';
   }).join('');
 
-  /* placed from measured rects, the same way the hover bar is */
+  /* Ani, 17 Nov ("WTF happening here": twelve statuses flipped above the tag and slid under the sticky toolbar): placed against the window,
+     above everything, on the side with more room; if it still doesn't fit it scrolls */
   menu.classList.add('show');
-  var wr = wrap.getBoundingClientRect(), br = btn.getBoundingClientRect();
-  var top = br.bottom - wr.top + 5, left = br.left - wr.left;
-  var over = (left + menu.offsetWidth) - wrap.clientWidth;
-  if(over > 0) left = Math.max(0, left - over - 2);
-  /* no room below inside the viewport: flip above the pill */
-  if(br.bottom + menu.offsetHeight + 12 > window.innerHeight){
-    top = br.top - wr.top - menu.offsetHeight - 5;
-  }
-  menu.style.top = top + 'px';
-  menu.style.left = left + 'px';
+  if(typeof cv2Tip === 'function') cv2Tip(null);
+  btn.setAttribute('aria-expanded', 'true');
+  var br = btn.getBoundingClientRect(), pad = 8, gap = 5;
+  var top0 = (typeof csTopbarH === 'function' ? csTopbarH() : 64) + pad;
+  menu.style.position = 'fixed'; menu.style.zIndex = '1500'; menu.style.maxHeight = 'none'; menu.style.overflowY = 'auto';
+  var h = menu.scrollHeight, below = window.innerHeight - br.bottom - gap - pad, above = br.top - gap - top0;
+  var down = below >= h || below >= above;
+  menu.style.maxHeight = Math.max(160, Math.min(h, down ? below : above)) + 'px';
+  var mh = menu.offsetHeight;
+  menu.style.top = Math.round(down ? br.bottom + gap : br.top - gap - mh) + 'px';
+  menu.style.left = Math.round(Math.max(pad, Math.min(br.left, window.innerWidth - menu.offsetWidth - pad))) + 'px';
+  var sel = menu.querySelector('button.sel'); if(sel && sel.scrollIntoView) sel.scrollIntoView({block:'nearest'});
 }
 
 /* Ani, 25 Sep: billing is a dropdown like visit status -- the next step first, the explanation behind it */
@@ -10877,6 +10880,7 @@ function openBillMenu(btn, name){
 function closeStatusMenu(){
   var menu = document.getElementById('q-statusmenu');
   if(menu) menu.classList.remove('show');
+  if(qsmBtn && qsmBtn.setAttribute) qsmBtn.setAttribute('aria-expanded', 'false');
   qsmName = null; qsmBtn = null;
 }
 
@@ -14981,7 +14985,9 @@ function applyIcons(){
     var span = b.querySelector('.nav-icon'); if(span) span.innerHTML = ic;
   });
   var pp = document.getElementById('practice-parent-btn'); if(pp){ var s=pp.querySelector('.nav-icon'); if(s) s.innerHTML = ICONS.practice; }
-  var ci = document.getElementById('collapse-icon'); if(ci) ci.innerHTML = ICONS.collapse;
+  /* Ani, 17 Nov ("I don't like this arrow", then "it's not logical that this is collapse"): the design system's chevron ‹, pointing the way the
+     sidebar moves; collapsed it turns to › (expand). Not the ← that reads as Back, not the panel icon */
+  var ci = document.getElementById('collapse-icon'); if(ci) ci.innerHTML = (window.SC && SC.icon && SC.hasIcon('arrow-dropdown-left')) ? SC.icon('arrow-dropdown-left', {size:24}) : ICONS.collapse;
   var tm = document.querySelector('.tb-taskmoa span'); if(tm) tm.innerHTML = ICONS.taskmoa;
   var ao = document.querySelector('.tb-addon span'); if(ao) ao.innerHTML = ICONS.addon;
   var pv = document.querySelector('.tb-switch span'); if(pv) pv.innerHTML = ICONS.patientview;
@@ -20289,7 +20295,7 @@ function cardGroup(k){ return k === 'verified' ? 'verified' : k === 'pending' ? 
 function t23CardCell(r){
   var g = cardGroup(r.card), cs0 = CARD_STATUS[r.card];
   if(g === 'pending') return SC.html('Tag', {color:'neutral', startIcon:'clock-time', title:'Verification pending. MSP hasn’t confirmed this card yet.'}, 'Not yet checked');
-  if(g === 'review') return stTag('card-invalid', 'card', {label:'Review required', title:'Billing agent is reviewing: ' + smText(cs0 ? cs0.label : 'card') + '. Click for details.',
+  if(g === 'review') return stTag('card-invalid', 'card', {endIcon:'arrow-dropdown-right', label:'Review required',   /* it opens the card's details, not a list: a right arrow (Ani, 17 Nov) */ title:'Billing agent is reviewing: ' + smText(cs0 ? cs0.label : 'card') + '. Click for details.',
     'aria-label':'Health card: Review required. Billing agent is reviewing (' + smText(cs0 ? cs0.label : '') + '). Show details'});
   var cs = CARD_STATUS[r.card];
   if(!cs) return '<span class="t23-none"><span class="sr-only">No health card on file</span></span>';
@@ -25336,7 +25342,7 @@ function cv2Tip(btn){
     if(t){ b.setAttribute('data-tt', t); if(!b.getAttribute('aria-label') && !b.textContent.trim()) b.setAttribute('aria-label', t); }
     return t ? b : null;
   };
-  var on = function(e){ var b = e.target.closest && e.target.closest(TIPS); cv2Tip(adopt(b) || null); };
+  var on = function(e){ var b = e.target.closest && e.target.closest(TIPS); if(b && b.getAttribute('aria-expanded') === 'true'){ cv2Tip(null); return; } cv2Tip(adopt(b) || null); };   /* no tooltip over an open menu */
   document.addEventListener('mouseover', on); document.addEventListener('focusin', on);
   document.addEventListener('mouseout', function(e){ if(e.target.closest && e.target.closest(TIPS) && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest(TIPS))) cv2Tip(null); });
   document.addEventListener('focusout', function(e){ if(e.target.closest && e.target.closest(TIPS)) cv2Tip(null); });
