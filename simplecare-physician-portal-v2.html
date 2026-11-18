@@ -14170,13 +14170,13 @@ function hxRender(){
   var who = [r.age ? parseInt(r.age, 10) : '', r.sex || '', ch.phn && ch.phn !== '—' ? 'Personal Health Number ' + ch.phn : ''].filter(Boolean).join(' · ');
   var h = '<div class="hx-top"><div><h3 class="hx-title">History</h3><p class="hx-meta">' + csEsc(r.legal || name.split(',')[0]) + (who ? ' · ' + csEsc(who) : '') + '</p>' +
     '<p class="hx-meta">' + (H.reviewed ? 'Last reviewed ' + H.reviewed.on + ' by ' + H.reviewed.by : 'Not reviewed yet') + '</p></div>' +
-    hxB('secondary-main', 'Mark as reviewed', 'hxReviewed()', 'Record that you reviewed this history today; another doctor will see who reviewed it and when', 'check-circle') + '</div>' +
-    '<div class="hx-tabs">' + SC.html('Tabs', {defaultValue:HX_UI.sec}, ['TabList', {'aria-label':'History sections'}].concat(HX_SECS.map(function(s){
-      return ['Tab', {value:s[0], 'data-hx':s[0], title:s[0] === 'all' ? 'Show every section' : 'Show only ' + s[1].toLowerCase()}, s[1] + (counts[s[0]] ? ' ' + counts[s[0]] : '')]; }))) + '</div>';
+    hxB('secondary-main', 'Mark as reviewed', 'hxReviewed()', 'Record that you reviewed this history today; another doctor will see who reviewed it and when', 'check-circle') + '</div>';
+  /* Ani, 17 Nov ("remove this tab"): no section tabs inside History (it is already a tab of the Chart drawer); every section shows,
+     one under the other. Opening a section from the compact panel scrolls to it. */
   var S = {allergies:hxAllergies, conditions:hxConditions, medications:hxMeds, surgical:hxSurg, family:hxFamily, social:hxSocial};
-  Object.keys(S).forEach(function(k){ if(HX_UI.sec === 'all' || HX_UI.sec === k) h += S[k](name, H); });
+  Object.keys(S).forEach(function(k){ h += S[k](name, H); });
   el.innerHTML = h;
-  if(!el.getAttribute('data-wired')){ el.setAttribute('data-wired', '1'); el.addEventListener('click', function(e){ var t = e.target.closest('[role=tab][data-hx]'); if(t){ HX_UI.sec = t.getAttribute('data-hx'); hxRender(); var n = el.querySelector('[role=tab][data-hx="' + HX_UI.sec + '"]'); if(n) n.focus(); } }); }
+  if(HX_UI.sec !== 'all'){ var go = document.getElementById('hx-' + HX_UI.sec); HX_UI.sec = 'all'; if(go) setTimeout(function(){ go.scrollIntoView({block:'start', behavior:'smooth'}); }, 60); }
   paintPd(el);
   hxRenderCompact();
 }
