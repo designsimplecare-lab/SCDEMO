@@ -6778,6 +6778,14 @@ body:has(#op-panel.show) #callw{z-index:360;}
 #rx-panel .rp-strip .rp-src{font-size:14px;}
 #rx-panel .rp-strip b.al{color:var(--ink);}
 #rx-panel .rp-strip > span > .ic,#rx-panel .rp-strip > span > .ic svg{display:inline-block;width:16px;height:16px;margin:0 4px -2px 0;color:var(--crit);}
+#rx-panel .rp-strip.rp-facts{display:grid;grid-template-columns:minmax(140px,max-content) minmax(160px,max-content) minmax(0,1fr);gap:4px 40px;align-items:start;}
+#rx-panel .rp-fact{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;}
+#rx-panel .rp-fk{font-size:14px;line-height:20px;color:var(--ink-soft);}
+#rx-panel .rp-fv{font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
+#rx-panel .rp-fv .ic,#rx-panel .rp-fv .ic svg{display:inline-block;width:16px;height:16px;margin:0 4px -2px 0;color:var(--crit);}
+#rx-panel .rp-fs{font-size:14px;color:var(--ink-soft);}
+#rx-panel .rp-fact .sv-button{margin-left:-12px;}
+@media (max-width: 720px){ #rx-panel .rp-strip.rp-facts{grid-template-columns:minmax(0,1fr);} }
 #rx-panel .rp-t3 .rp-same{display:inline-flex !important;align-items:center;gap:4px;font-size:15px !important;color:var(--ink) !important;}
 #rx-panel .rp-t3 .rp-same .ic,#rx-panel .rp-t3 .rp-same svg{width:15px;height:15px;color:var(--good);}
 @media (max-width:1180px){
@@ -10090,7 +10098,9 @@ function renderWinBar(){
   var live = shownWin();
   if(!host.firstElementChild){
     /* Ani, 14 Nov ("make toggles like this"): the call windows use the same toggle as MSP | Private pay: white selected segment, not navy */
-    host.innerHTML = '<sc-toggle size="medium" label="Call window"></sc-toggle>';
+    /* Ani and Daniel (Part 1, 16 Nov; Ani, 17 Nov "let's make selections in this component blue"): the design system toggle's inverse variant,
+       the selected window solid navy blue with white text */
+    host.innerHTML = '<sc-toggle size="medium" variant="inverse" label="Call window"></sc-toggle>';
     host.firstElementChild.addEventListener('change', function(e){ QWIN_PICK = e.currentTarget.value; winPick(QWIN_PICK); });
   }
   var t = host.firstElementChild;
@@ -16363,8 +16373,8 @@ function rxRecHtml(st){
     return ['Tab', {value:s[0]}, s[1] + (s[0] === 'pharmanet' && src === s[0] ? ' · live ' + (st.pnAt || (st.pnAt = rxNow())) : '')]; })))
     .replace(/ aria-controls="[^"]*"/g, '').replace(/id="([^"]*)-tab-(\w+)"/g, 'id="$1-tab-$2" data-fk="src$2"');
   var h = '<div class="rp-rh"><h3>Medications</h3><span class="rp-grow"></span>' +
-    /* kept as a secondary action (see the spec, 31 Oct changes): the MOA asks the pharmacy when the doctor cannot settle the list on the call */
-    (src === 'patient' ? '' : st.askPharm ? '<span class="rp-src">Pharmacy asked to verify · ' + st.askPharm + '</span>' : '<button type="button" class="op-lk" data-fk="askph" onclick="rxAct(\'askph\')">Ask the pharmacy to verify</button>') + '</div>' +
+    /* Ani, 17 Nov ("remove this"): no "Ask the pharmacy to verify" in the Medications header */
+    '</div>' +
     '<div class="rp-srctabs" onclick="rxSrcTab(event)" onkeydown="rxSrcKey(event)">' + tabs + '</div><section class="rp-card rp-rec3">';
   if(src === 'upload') h += rxUpHtml(st);
   if(src === 'upload' && !st.upDone && !simple.length){ h += '</section>' + rxNewListHtml(st, M); return h; }
@@ -16393,15 +16403,21 @@ function rxRecHtml(st){
 }
 /* the patient line above everything: allergies and kidney function as a constant reminder, a short today line; no medications here
    (Daniel, 31 Oct: "I know the drugs that a diabetic should be on"). Kidney function not on file: a quick order, without leaving. */
+/* Ani, 17 Nov ("I do not like this organization in the header"): three labelled facts side by side, label above value, any action a design
+   system button under its value (the Sign off row's pattern); Today is the clinical concern line (Daniel's 10-word standard) */
 function rxStrip(st){
   var al = rxAllergens(st), kid = rxKidney(PC_CURRENT), r = rxRow(PC_CURRENT), a0 = CS.allergy[PC_CURRENT] || 'nkda';
+  var fk = function(html, k){ return html.replace('<button ', '<button data-fk="' + k + '" '); };
+  var fact = function(k, v, extra){ return '<div class="rp-fact"><span class="rp-fk">' + k + '</span><span class="rp-fv">' + v + '</span>' + (extra || '') + '</div>'; };
   /* words are ink, colour on the icon (rule: red text only for a critical value) */
-  return '<p class="rp-strip"><span>Allergies: ' + (al.length ? rxIc('crit') + '<b class="al">' + al.map(function(a){ return csEsc(a.label.toLowerCase() + ' (' + a.rx + ')'); }).join(', ') + '</b>' +
-      al.filter(function(a){ return !a.inChart; }).map(function(a){ return ' <button type="button" class="op-lk" data-fk="addal' + a.idx + '" onclick="rxAct(\'addal\',' + a.idx + ')">Add to chart</button>'; }).join('')
-    : '<b>' + (a0 === 'none' ? 'not recorded' : 'none known') + '</b>') + '</span>' +
-    '<span>Kidney function: <b>' + csEsc(kid.t.split(' · ')[0]) + '</b>' + (kid.ok ? ' <span class="rp-src">' + csEsc(kid.t.split(' · ')[1] || '') + '</span>' :
-      (rxLocked() ? '' : ' <button type="button" class="op-lk" data-fk="ordkid" onclick="rxAct(\'orderkid\')">' + rxIc('plus') + 'Order kidney function</button>')) + '</span>' +
-    '<span>Today: <b>' + csEsc(r ? r.concern || '' : '') + '</b></span></p>';
+  var alV = al.length ? rxIc('crit') + '<b class="al">' + al.map(function(a){ return csEsc(a.label.charAt(0).toUpperCase() + a.label.slice(1).toLowerCase() + ' (' + a.rx + ')'); }).join(', ') + '</b>'
+    : (a0 === 'none' ? 'Not recorded' : 'None known');
+  var alX = al.filter(function(a){ return !a.inChart; }).map(function(a){ return fk(cpBtn('tertiary-main', 'Add to chart', 'rxAct(&#39;addal&#39;,' + a.idx + ')', 'Add this allergy to the chart, so every screen shows it', 'add'), 'addal' + a.idx); }).join('');
+  var kp = kid.t.split(' · ');
+  /* Ani, 17 Nov ("remove this"): no Order kidney function action in the header; the fact alone */
+  var kidX = kid.ok ? '<span class="rp-fs">' + csEsc(kp[1] || '') + '</span>' : '';
+  var today = r ? (typeof concernLine === 'function' ? concernLine(r) : r.concern || '') : '';
+  return '<div class="rp-strip rp-facts">' + fact('Allergies', alV, alX) + fact('Kidney function', csEsc(kp[0]), kidX) + fact('Today', csEsc(today)) + '</div>';
 }
 /* ---- the pad, a paper card beside the list ---- */
 function rxPadLine(st, o, i, sf){
