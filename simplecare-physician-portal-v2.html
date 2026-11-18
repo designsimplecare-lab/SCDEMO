@@ -7772,6 +7772,24 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #er-drw .er-ns p,#er-drw .er-ns li{margin:0;font-size:15px;line-height:22px;color:var(--ink);}
   #er-drw .er-ns ul{margin:0;padding-left:20px;}
   #er-drw .sv-drawer__content{padding-bottom:calc(84px + var(--spacing-lg));}
+  /* Cedar on top of the left column (Daniel, 17 Nov) */
+  #cdr-card{padding:12px 16px 16px;border-bottom:1px solid var(--cv2-line, var(--line));background:linear-gradient(180deg, color-mix(in srgb, var(--color-brand-ai-start) 22%, var(--panel)), var(--panel) 120px);}
+  #cdr-card .cdr-hd{display:flex;align-items:center;gap:8px;}
+  #cdr-card .cdr-hd h3{margin:0;font-size:16px;font-weight:600;color:var(--ink);flex:1;}
+  #cdr-card .cdr-mark{display:inline-flex;width:20px;height:20px;color:var(--ink);}
+  #cdr-card .cdr-mark svg{width:20px;height:20px;}
+  #cdr-card .cdr-sh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px 0 0;}
+  #cdr-card .cdr-sh h4{margin:0;font-size:15px;font-weight:600;color:var(--ink);}
+  #cdr-card .sv-list{margin:4px -8px 0;}
+  #cdr-card .cdr-listen{display:flex;align-items:flex-start;gap:8px;margin:8px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #cdr-card .cdr-listen.on{color:var(--ink);}
+  #cdr-card .cdr-listen b{color:var(--color-text-error-default, var(--bad));font-weight:600;}
+  #cdr-card .cdr-dot{flex:none;width:8px;height:8px;margin-top:6px;border-radius:50%;background:var(--color-text-error-default, var(--bad));}
+  #cdr-card .cdr-dot.off{background:var(--line);}
+  #cdr-card .cdr-t{margin-left:auto;font-variant-numeric:tabular-nums;}
+  #cdr-card .cdr-ask{display:flex;gap:8px;margin-top:12px;}
+  #cdr-card .cdr-in{flex:1;min-width:0;height:44px;padding:0 12px;border:1px solid var(--line);border-radius:var(--radius-xs);font:inherit;font-size:15px;background:var(--panel);color:var(--ink);}
+  #cdr-card[hidden]{display:none;}
   /* Daniel, Chart Screen brief Part 2 (17 Nov): History is the chart's right column when there is room (the page sets .hx3 at 1150px and up) */
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2.hx3{grid-template-columns:300px minmax(0,1fr) 300px !important;grid-template-areas:"hd hd hd" "side nav hx" "side main hx" !important;}
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #hx-compact{display:none;}
@@ -8413,6 +8431,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
           <header class="cv2-hd" id="cv2-hd" aria-label="Patient" hidden></header>
           <div class="cv2-nav" id="cv2-nav" hidden><div class="cv2-save" id="cv2-save"></div></div>
           <aside class="v2-side" id="v2-side" aria-label="Patient and Patient summary">
+            <!-- Daniel, Chart brief Part 2 (17 Nov): Cedar on top of the left column: short Visit Preview, the live listening line, Ask Cedar -->
+            <section class="cdr-card" id="cdr-card" aria-labelledby="cdr-h"></section>
             <!-- Chart Version 2: the panel's own bar (title and hide/show); collapsed, only the rail shows: the toggle and one button per section -->
             <div class="cv2-ctxbar" id="cv2-ctxbar" hidden><h2 class="cv2-ctx-h" id="cv2-ctx-h">Patient summary</h2>
 <sc-button id="cv2-ctx-t" variant="tertiary-main" size="small" start-icon="arrow-direction-left" label="Hide patient summary" aria-controls="v2-sum" onclick="cv2Ctx()"></sc-button></div>
@@ -14160,6 +14180,72 @@ function erPreview(){
     if(b.id === 'er-copy'){ var t = d.querySelector('.sv-drawer__content').innerText; if(navigator.clipboard) navigator.clipboard.writeText(t).catch(function(){}); toast('Transfer note copied'); }
   });
   d.querySelector('#er-copy').title = 'Copy the note as text, to paste where it is sent';
+  d.showModal();
+}
+
+/* ================= CEDAR, LEFT COLUMN =================
+   Daniel, Chart Screen brief Part 2 (17 Nov): "Left: Cedar and patient summary. Cedar on top (short Visit Preview, live listening line, Ask
+   Cedar)." Cedar is an assistant with its own chat panel (the top bar's Cedar); every Visit Preview line names its source; it listens during
+   the call (consent at onboarding) and drafts the note live. Collapsible, concise by default, expandable (Show full preview). The Visit
+   preview leaves the middle column: the middle is today's visit. Design system List, Tag, Button, Drawer. */
+var CDR = {min:false};
+function cdrSrcTag(src){
+  var t = smText(src || ''), t0 = t.split('·')[0], k = /PharmaNet/i.test(t0) ? 'PharmaNet' : /problem/i.test(t0) ? 'Problem list' : /LifeLabs|lab|ECG|electrocardio|result/i.test(t0) ? 'Lab' : /consult|cardiology/i.test(t0) ? 'Consult' : /intake|booking/i.test(t0) ? 'Intake' : /note|visit/i.test(t0) ? 'Visit note' : /medication/i.test(t0) ? 'Medications' : 'Chart';
+  return ['Tag', {color:'neutral', title:'Source: ' + t}, k];
+}
+function cdrLines(name, all){
+  var C = crToday(name), L = [];
+  var pl = function(t){ return smText(t).replace(/\bECGs?\b/g, 'electrocardiogram'); };   /* no abbreviations on screen (Daniel) */
+  var item = function(x){ return ['ListItem', {label:pl(x.main), secondary:all && x.sub ? v2Cap(pl(x.sub)) : undefined, trailing:cdrSrcTag(x.src), href:'#',
+    'data-goi':smGo('csOpenFull(\'' + (x.tab || 'timeline') + '\',this)'), title:'Open ' + (x.src ? smText(x.src) : 'the record') + ' in the chart'}]; };
+  if(all){ L.push(['ListLabel', {}, 'Here today for'], item(C.why)); if(C.rel.length) L.push(['ListLabel', {count:C.rel.length}, 'Relevant to today']); }
+  L = L.concat((all ? C.rel : C.rel.slice(0, 3)).map(item));
+  if(all && C.other.length) L = L.concat([['ListLabel', {count:C.other.length}, 'Not related to today']], C.other.map(item));
+  return {C:C, list:SC.html.apply(SC, ['List', {'aria-label':all ? 'Full visit preview' : 'Visit preview'}].concat(L)), more:C.rel.length + C.other.length - 3};
+}
+function cdrListen(){
+  var live = typeof scState !== 'undefined' && scState === 'live' && PC_ON_CALL && PC_CALL_WHO === PC_CURRENT;
+  if(!live) return '<p class="cdr-listen" id="cdr-listen"><span class="cdr-dot off" aria-hidden="true"></span>Not listening · Cedar listens once the call starts (consent on file)</p>';
+  var last = null; for(var i = Math.min(scIdx, SC_TURNS.length) - 1; i >= 0; i--){ if(SC_TURNS[i].w === 'pt'){ last = SC_TURNS[i]; break; } }
+  var c = PC_CALL[PC_CALL_WHO], t = c ? pcFmt(c.secs) : '';
+  return '<p class="cdr-listen on" id="cdr-listen" aria-live="polite"><span class="cdr-dot" aria-hidden="true"></span><b>Listening</b> · consent on file' + (last ? ' · latest: ' + smText(last.x) : '') +
+    (t ? '<span class="cdr-t">' + t + '</span>' : '') + '</p>';
+}
+function cdrRender(){
+  var el = document.getElementById('cdr-card'); if(!el) return;
+  if(!PC_CURRENT || !(window.SC && SC.html) || (typeof cdOn === 'function' && !cdOn('review'))){ el.hidden = true; return; }
+  el.hidden = false;
+  var V = cdrLines(PC_CURRENT, false);
+  var h = '<div class="cdr-hd"><span class="cs-ai-ic cdr-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="cdr-h">Cedar</h3>' +
+    scInfoHtml('Cedar, Simple Care’s clinical assistant, works only from data in Simple Care. Check the source before acting.') +
+    cpBtn('tertiary-main', CDR.min ? 'Show' : 'Hide', 'CDR.min=' + !CDR.min + ';cdrRender()', CDR.min ? 'Show Cedar’s visit preview and Ask Cedar' : 'Fold Cedar to this line; the patient summary moves up', CDR.min ? 'arrow-dropdown-down' : 'arrow-dropdown-up').replace('<button ', '<button aria-expanded="' + !CDR.min + '" aria-controls="cdr-b" ') + '</div>';
+  if(!CDR.min){
+    h += '<div id="cdr-b"><div class="cdr-sh"><h4>Visit preview</h4><span class="ai-chip">' + AI_SPARKLE_FILL + 'AI-generated</span></div>' + V.list +
+      (V.more > 0 ? cpBtn('tertiary-main', 'Show full preview', 'cdrFull()', 'Open the full preview: why they are here, everything relevant to today, and what isn’t', 'arrow-dropdown-right') : '') +
+      cdrListen() +
+      '<form class="cdr-ask" onsubmit="event.preventDefault();cdrAsk()"><label class="vh" for="cdr-q">Ask Cedar</label><input id="cdr-q" class="cdr-in" type="text" placeholder="Ask Cedar about ' + csEsc((rxRow(PC_CURRENT) || {}).pref || 'this patient') + '…" autocomplete="off">' +
+      SC.html('Button', {variant:'primary', size:'medium', startIcon:'send', type:'submit', 'aria-label':'Ask', title:'Ask Cedar; the answer opens in Cedar’s chat panel'}) + '</form></div>';
+  }
+  el.innerHTML = h;
+  if(!el.getAttribute('data-w')){ el.setAttribute('data-w', '1'); el.addEventListener('click', function(e){ var a = e.target.closest('[data-goi]'); if(!a || !el.contains(a)) return; e.preventDefault(); var js = SM.go[+a.getAttribute('data-goi')]; if(js) (new Function(js)).call(a); }); }
+  /* the middle column no longer repeats the preview */
+  var mid = document.getElementById('v2-key'); if(mid) mid.hidden = true;
+}
+function cdrAsk(){
+  var i = document.getElementById('cdr-q'), q = i ? i.value.trim() : ''; if(!q){ if(i) i.focus(); return; }
+  i.value = ''; openAI(); aiSend(q);
+}
+function cdrFull(){
+  var host = document.getElementById('cdr-host'); if(!host){ host = document.createElement('div'); host.id = 'cdr-host'; document.body.appendChild(host); }
+  var V = cdrLines(PC_CURRENT, true);
+  host.innerHTML = SC.html('Drawer', {id:'cdr-drw', title:'Visit preview', description:'Cedar, from ' + crJoin(V.C.from) + '. Check the source before acting.', secondaryAction:{label:'Close', id:'cdr-close'}},
+    SC.raw('<p class="er-ai"><span class="ai-chip">' + AI_SPARKLE_FILL + 'AI-generated</span> Each line names its source; open it to see the record.</p>' + V.list));
+  var d = document.getElementById('cdr-drw');
+  d.addEventListener('click', function(e){
+    if(e.target === d) return d.close();
+    var a = e.target.closest('[data-goi]'); if(a){ e.preventDefault(); d.close(); var js = SM.go[+a.getAttribute('data-goi')]; if(js) (new Function(js)).call(a); return; }
+    var b = e.target.closest('button'); if(b && (b.id === 'cdr-close' || b.getAttribute('aria-label') === 'Close')) d.close();
+  });
   d.showModal();
 }
 var vdInt=null, vdSecs=0, vdMuted=false;
@@ -20954,6 +21040,8 @@ function kfVisitLine(x, i){
 function v2RenderKey(el, name, by){
   var pend = by['Pending'];
   el.hidden = false;
+  /* Daniel, 17 Nov: the Visit preview lives in Cedar's card on the left; the middle column doesn't repeat it */
+  var cdrc = document.getElementById('cdr-card'); if(cdrc && !cdrc.hidden && cdrc.innerHTML){ el.hidden = true; }
   CS.keyOpen = CS.keyOpen || {};
   /* T-038: Cedar off for chart review: no synthesized picture; the left Patient summary keeps every chart fact */
   /* Daniel, 4 Nov call 01:16:43: "Clinical summary. Clinical summary." — the heading (was Chart review); Ani 01:19:10: "first phase, just a regular clinical summary" */
@@ -23226,7 +23314,9 @@ baWrap('openReview', function(r, i){
   rmRenderBlock(it && it.cedar ? it : null);
 });
 baWrap('openChart', function(){ rmRenderDrafts(); rmSignLine(); });
-baWrap('openChart', function(){ if(typeof hxRenderCompact === 'function') hxRenderCompact(); if(typeof erRender === 'function') erRender(); });   /* the History column follows the open chart */
+baWrap('openChart', function(){ if(typeof hxRenderCompact === 'function') hxRenderCompact(); if(typeof erRender === 'function') erRender(); if(typeof cdrRender === 'function') cdrRender(); });
+/* the listening line follows the call */
+baWrap('renderScribe', function(){ var l = document.getElementById('cdr-listen'); if(l && typeof cdrListen === 'function') l.outerHTML = cdrListen(); });   /* the History column follows the open chart */
 </script>
 <script>
 /* 21 Oct: the top block can change height (the critical bar hangs under it off the Review step), so the two columns measure themselves again */
