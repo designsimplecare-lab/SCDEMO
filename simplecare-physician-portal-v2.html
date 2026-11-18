@@ -7343,12 +7343,14 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd > .pc-back{display:inline-flex;align-items:center;justify-content:center;gap:0;flex:none;width:44px;height:44px;min-height:44px;margin:0;padding:0;font-size:0 !important;border:0;border-radius:var(--radius-xs);background:none;font:inherit;font-size:15px;font-weight:600;color:var(--cv2-ink);cursor:pointer;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd > .pc-back:hover{background:var(--cv2-wash);}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd > .pc-back .ic,#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd > .pc-back svg{width:18px;height:18px;}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #cs-winclock{display:block;flex:0 0 172px;min-width:0;margin:0;font-size:14px;line-height:18px;font-weight:500;color:var(--cv2-soft);white-space:normal;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #cs-winclock{display:flex;flex-direction:column;align-items:flex-start;gap:2px;flex:0 0 auto;min-width:0;margin:0;white-space:nowrap;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #cs-winclock .wc-k{font-size:14px;line-height:18px;font-weight:500;color:var(--cv2-soft, var(--ink-soft));}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #cs-winclock .wc-v{display:inline-flex;align-items:center;gap:8px;font-size:15px;line-height:22px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #cs-winclock:empty{display:none;}
 /* the patient line never hides the allergy state: on a narrow window it wraps, so the no-allergies tick goes to its own line */
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-who > .vc-sub{white-space:normal;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #v2-pt .cs-who{flex:1 1 220px;}
-#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #cs-winclock{flex-basis:150px;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd #cs-winclock{flex-basis:auto;}
 #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cv2-meta{margin-left:auto;}
 /* at 1200 px and under: stacked; the steps are the horizontal bar, sticky under the top bar; the patient context is a drawer */
 @media (max-width:1200px){
@@ -7440,6 +7442,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #pcv-c .v2-nar:hover .cv2-na-go{color:var(--ink);}
   #pcv-c .cv2-na-go:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   #pcv-c .cv2-na-go svg{width:20px;height:20px;}
+  #pcv-c .cv2-na-go :is(svg,.ic){color:inherit !important;}   /* Ani, 17 Nov ("I do not like red arrows"): the chevron is grey; red stays on the critical icon only */
   #pcv-c .cs-iflag{display:flex;align-items:flex-start;gap:8px;margin:8px 0 0;font-size:15px;line-height:22px;color:var(--ink);}
   #pcv-c .cs-iflag .ic,#pcv-c .cs-iflag svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--ink-soft);}
   #pcv-c .cr-otherb{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin:4px 0 0;font-size:15px;color:var(--ink-soft);}
@@ -7755,6 +7758,20 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   .hx-page .hx-hidm{font-size:14px;color:var(--ink-soft);}
   .hx-compact .hx-ctop{display:flex;align-items:center;justify-content:space-between;gap:8px;}
   .hx-compact .sv-list{margin-top:8px;}
+  .hx-compact .hx-ctop .sv-tag{margin-left:auto;}
+  /* Ani, 17 Nov ("clean lines for these sections, like Claude does"): a hairline under the header and between sections, full width of the card */
+  .hx-compact .hx-meta{margin:2px 0 0;padding-bottom:12px;border-bottom:1px solid var(--line);}
+  .hx-compact .sv-list{margin-top:0;}
+  .hx-compact .sv-list > .sv-list__sublabel{margin-top:8px;padding-top:12px;border-top:1px solid var(--line);}
+  .hx-compact .sv-list > .sv-list__sublabel:first-child{margin-top:0;border-top:0;}
+  .hx-compact .hx-ctop .sv-button{flex:none;}
+  .hx-compact .sv-list{margin-left:-8px;margin-right:-8px;}
+  /* Ani, 17 Nov ("all statuses on right"): in every design system list the status tag sits on the right of its row, top-aligned with the name,
+     instead of on its own line under it; the text keeps the rest of the width */
+  .sv-list__item > span:has(> .sv-list__trailing){display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:8px;align-items:start;}
+  .sv-list__item > span:has(> .sv-list__trailing) > *{grid-column:1;}
+  .sv-list__item > span > .sv-list__trailing{grid-column:2;grid-row:1 / span 3;justify-content:flex-end;flex-wrap:nowrap;}
+  .hx-compact :is(.sv-list__secondary,.sv-list__meta,[class*="sv-list__label"],.text-body-3){font-size:14px;line-height:20px;}   /* text at least 14px */
   /* Still open before you sign (Daniel, 17 Nov) */
   #cv2-chk .cv2-so-l{list-style:none;margin:8px 0 0;padding:0;}
   #cv2-chk .cv2-so{display:flex;align-items:center;gap:8px;min-height:44px;border-top:1px solid var(--line);}
@@ -7787,6 +7804,14 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #cdr-card .cdr-mark{display:inline-flex;width:20px;height:20px;color:var(--ink);}
   #cdr-card .cdr-mark svg{width:20px;height:20px;}
   #cdr-card .cdr-sh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px 0 0;}
+  #cdr-card .cdr-hd .ai-chip{margin-left:auto;}
+  .ai-chip.ai-chip-sm{height:28px;padding:0 8px;gap:4px;font-size:14px;}
+  .ai-chip.ai-chip-sm svg{width:14px;height:14px;}
+  #cdr-card .cdr-lbl{margin:12px 0 0;font-size:14px;font-weight:600;color:var(--ink-soft);}
+  :is(#cdr-card,#cdr-drw,#sm-list,#v2-key) :is(.sv-list__secondary,.sv-list__meta){font-size:14px;line-height:20px;}   /* text at least 14px */
+  #cdr-card .cdr-foot{margin-top:8px;padding-top:12px;border-top:1px solid var(--cv2-line, var(--line));}
+  #cdr-card .cdr-foot .cdr-listen{margin:0;}
+  #cdr-card .cdr-foot .cdr-ask{margin-top:8px;}
   #cdr-card .cdr-sh h4{margin:0;font-size:15px;font-weight:600;color:var(--ink);}
   #cdr-card .sv-list{margin:4px -8px 0;}
   #cdr-card .cdr-listen{display:flex;align-items:flex-start;gap:8px;margin:8px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
@@ -7796,7 +7821,10 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #cdr-card .cdr-dot.off{background:var(--line);}
   #cdr-card .cdr-t{margin-left:auto;font-variant-numeric:tabular-nums;}
   #cdr-card .cdr-ask{display:flex;gap:8px;margin-top:12px;}
-  #cdr-card .cdr-in{flex:1;min-width:0;height:44px;padding:0 12px;border:1px solid var(--line);border-radius:var(--radius-xs);font:inherit;font-size:15px;background:var(--panel);color:var(--ink);}
+  #cdr-card .cdr-ask .sv-field{flex:1;min-width:0;}
+  #cdr-card .cdr-ask .sv-field__label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}   /* named for screen readers; the placeholder says it on screen */
+  #cdr-card .cdr-ask{align-items:flex-start;}
+  #cdr-card .cdr-in{flex:1;min-width:0;height:40px;padding:0 12px;border:1px solid var(--line);border-radius:var(--radius-xs);font:inherit;font-size:15px;background:var(--panel);color:var(--ink);}
   #cdr-card[hidden]{display:none;}
   /* Ani, 17 Nov ("in this section make profile pic background white"): the chart header's initials sit on white, not the grey page */
   #cv2-hd .vc-av .sv-avatar-circle > span{background:var(--color-surface-card-white) !important;}
@@ -7995,6 +8023,13 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 /* Ani, 17 Nov ("add white background on these components"): on the grey page the call windows and the filters sit on white, like the date */
 #screen-today .q-toolbar-top #qwin sc-toggle,sc-toggle{--color-surface-toggle-bg-default:var(--color-surface-card-white);}   /* every toggle on white (Ani, 17 Nov) */
 #screen-today .q-toolbar-top .qf-wrap .sv-filter__bar{background-color:var(--color-surface-card-white);}
+/* Ani, 17 Nov ("do not have stroke for these components"): the toolbar's controls are white with no outline: call windows, filters, the date
+   (its inner dividers stay, they separate the arrows from the date) and New patient */
+#screen-today .q-toolbar-top #qwin sc-toggle{--color-border-table-cell-default:transparent;}
+#screen-today .q-toolbar-top .qf-wrap .sv-filter__bar{border-color:transparent !important;}
+#screen-today .q-toolbar-top .day-nav .dn-group{border:0;background:var(--color-surface-card-white);}
+#screen-today .q-toolbar-top .day-nav .dn-group > button{height:36px;}
+#screen-today .q-toolbar-top #np-btn{--color-border-secondary-main-default:transparent;--color-border-secondary-main-hovered:transparent;--color-border-secondary-main-pressed:transparent;}
 #screen-today .q-toolbar-top .q-tbacts{order:10;display:flex;align-items:center;gap:8px;flex:0 0 auto;}   /* the empty search slot took a gap and pushed the date to a second row */   /* and under it, so the table header follows the call windows closely */
 #screen-today .qf-wrap{position:relative;}
 /* Ani, 6 Nov ("do we need this gap between the table and where the table starts"): the table sits in the card unframed and runs to its edges; the card's padding stays around the toolbar only */
@@ -8459,7 +8494,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
             <section class="cdr-card" id="cdr-card" aria-labelledby="cdr-h"></section>
             <!-- Chart Version 2: the panel's own bar (title and hide/show); collapsed, only the rail shows: the toggle and one button per section -->
             <div class="cv2-ctxbar" id="cv2-ctxbar" hidden><h2 class="cv2-ctx-h" id="cv2-ctx-h">Patient summary</h2>
-<sc-button id="cv2-ctx-t" variant="tertiary-main" size="small" start-icon="arrow-direction-left" label="Hide patient summary" aria-controls="v2-sum" onclick="cv2Ctx()"></sc-button></div>
+<sc-button id="cv2-ctx-t" variant="tertiary-main" size="small" start-icon="arrow-dropdown-left" label="Hide patient summary" aria-controls="v2-sum" onclick="cv2Ctx()"></sc-button></div>
             <nav class="cv2-rail" id="cv2-rail" aria-label="Patient summary sections" hidden></nav>
             <!-- Ani, 6 Oct: "too many separate big cards". One Patient summary card; its sections are accordion rows. -->
             <section class="v2-card v2-sum" id="v2-sum" aria-labelledby="v2-sum-h">
@@ -10036,7 +10071,7 @@ function nowPill(now){
   for(var i = 0; i < BC_WINDOWS.length; i++){
     var w = BC_WINDOWS[i], st = w.start*60, en = w.end*60;
     if(mins < st) return {head:head, tail:shortGap(st - mins) + (i ? ' until next window' : ' until window'), live:false};
-    if(mins < en) return {head:head, tail:shortGap(en - mins) + ' left', live:true};
+    if(mins < en) return {head:head, tail:shortGap(en - mins) + ' left', live:true, left:en - mins};
   }
   return {head:head, tail:'next window tomorrow ' + hLabel(BC_WINDOWS[0].start), live:false};
 }
@@ -10054,7 +10089,20 @@ function qClockText(kind, now){
 function qClockUpdate(now){
   now = now || new Date();
   document.querySelectorAll('[data-qclock]').forEach(function(el){
-    var k = el.getAttribute('data-qclock'), t = k === 'bandtime' ? qClockText('band', now) + ' · ' + qClockText('time', now) : qClockText(k, now);
+    var k = el.getAttribute('data-qclock');
+    /* Ani, 17 Nov ("make this timer prettier"): in the chart header, a quiet label, the window, and the time left as the design system's tag with a
+       clock (amber in the last 15 minutes); the plain text stays for everywhere else */
+    if(k === 'chart' && window.SC && SC.html){
+      var s0 = nowPill(now), key = (s0.live ? winLabel(currentWin()) : '') + '|' + s0.tail;
+      if(el.getAttribute('data-k') === key) return;
+      el.setAttribute('data-k', key);
+      el.setAttribute('aria-label', qClockText('chart', now));
+      el.innerHTML = s0.live
+        ? '<span class="wc-k">Call window</span><span class="wc-v">' + winLabel(currentWin()) + SC.html('Tag', {color:s0.left <= 15 ? 'warning' : 'neutral', startIcon:'clock-time'}, s0.tail) + '</span>'
+        : '<span class="wc-k">Next call window</span><span class="wc-v">' + qClockCap(s0.tail) + '</span>';
+      return;
+    }
+    var t = k === 'bandtime' ? qClockText('band', now) + ' · ' + qClockText('time', now) : qClockText(k, now);
     if(el.textContent !== t) el.textContent = t;
   });
 }
@@ -14096,19 +14144,26 @@ function hxRecon(id, to){
 function hxUndo(id){ var n = PC_CURRENT; if(HX_REC[n]) delete HX_REC[n][id]; hxRender(); }
 /* --- the compact panel beside the note: the same record, read at a glance; Open full history goes to the page --- */
 function hxRenderCompact(){
+  /* Ani, 17 Nov ("History section as well"): one header line (title and a chevron to the full page); one line per item with any status as quiet
+     text under it, no tags wedged between a medicine's name and its dose; the only tag is the medications' "to reconcile" count; text 14px */
   var el = document.getElementById('hx-compact'); if(!el || !PC_CURRENT || !(window.SC && SC.html)) return;
   var name = PC_CURRENT, H = hxFor(name), list = [];
+  var stTxt = {differs:'Differs from PharmaNet', notchart:'On PharmaNet, not on the chart', nodisp:'Not dispensed · non-prescription'};
   list.push(['ListLabel', {}, 'Allergies'], ['ListItem', {label:H.allergies.length ? H.allergies.map(function(a){ return a.what; }).join(', ') : 'No known allergies'}]);
   list.push(['ListLabel', {count:H.conditions.length}, 'Medical conditions']);
-  H.conditions.forEach(function(c){ list.push(['ListItem', c.code ? {label:c.name, meta:c.code} : {label:c.name, trailing:['Tag', {color:'warning'}, 'No code']}]); });
-  var open = H.meds.filter(function(m){ var s = hxMedState(m); return !hxRec(name, m.id) && (s === 'differs' || s === 'notchart' || s === 'nodisp'); });
+  H.conditions.forEach(function(c){ list.push(['ListItem', c.code ? {label:c.name, meta:c.code} : {label:c.name, meta:'No code'}]); });
+  var open = H.meds.filter(function(m){ var st = hxMedState(m); return !hxRec(name, m.id) && stTxt[st]; });
   list.push(['ListLabel', {count:H.meds.length}, 'Medications']);
-  H.meds.forEach(function(m){ var o = open.indexOf(m) > -1, rec = hxRec(name, m.id);
-    list.push(['ListItem', o ? {label:m.name, secondary:m.chart || 'Not on chart', trailing:['Tag', {color:'warning'}, 'To reconcile']} : {label:m.name, secondary:(rec && rec.chart != null ? rec.chart : m.chart) || ''}]); });
-  if(H.surgeries.length){ list.push(['ListLabel', {count:H.surgeries.length}, 'Surgical history']); H.surgeries.forEach(function(s){ list.push(['ListItem', {label:s.name, meta:s.year}]); }); }
+  H.meds.forEach(function(m){
+    var rec = hxRec(name, m.id), st = hxMedState(m), dose = (rec && rec.chart != null ? rec.chart : m.chart) || (m.pn ? m.pn.dose : '');
+    list.push(['ListItem', {label:m.name + (dose ? ' ' + dose : ''), secondary:!rec && stTxt[st] ? stTxt[st] : rec ? 'Reconciled' : undefined}]);
+  });
+  if(H.surgeries.length){ list.push(['ListLabel', {count:H.surgeries.length}, 'Surgical history']); H.surgeries.forEach(function(s2){ list.push(['ListItem', {label:s2.name, meta:s2.year}]); }); }
   if(H.family.length){ list.push(['ListLabel', {count:H.family.length}, 'Family history']); H.family.forEach(function(x){ list.push(['ListItem', {label:x.who + ': ' + x.what}]); }); }
-  el.innerHTML = '<div class="hx-ctop"><h3 class="hx-ctitle">History</h3>' + hxB('tertiary-main', 'Open full history', 'csOpenFull(\'history\',this)', 'Open the full History page: codes, reconciliation and every section', 'arrow-dropdown-right') + '</div>' +
-    '<p class="hx-meta">' + (H.reviewed ? 'Last reviewed ' + H.reviewed.on + ' by ' + H.reviewed.by : 'Not reviewed yet') + (open.length ? ' · ' + open.length + ' medications to reconcile' : '') + '</p>' +
+  var go = SC.html('Button', {variant:'tertiary-main', size:'small', startIcon:'arrow-dropdown-right', 'aria-label':'Open full history', title:'Open the full History page: codes, reconciliation and every section'})
+    .replace('<button ', '<button onclick="csOpenFull(&#39;history&#39;,this)" ');
+  el.innerHTML = '<div class="hx-ctop"><h3 class="hx-ctitle">History</h3>' + (open.length ? SC.html('Tag', {color:'warning', startIcon:'warning', title:'Medications that differ from PharmaNet; reconcile them in the full History'}, open.length + ' to reconcile') : '') + go + '</div>' +
+    '<p class="hx-meta">' + (H.reviewed ? 'Reviewed ' + H.reviewed.on + ' · ' + H.reviewed.by : 'Not reviewed yet') + '</p>' +
     SC.html.apply(SC, ['List', {'aria-label':'History at a glance'}].concat(list));
 }
 
@@ -14226,16 +14281,20 @@ function cdrSrcTag(src){
 function cdrLines(name, all){
   var C = crToday(name), L = [];
   var pl = function(t){ return smText(t).replace(/\bECGs?\b/g, 'electrocardiogram'); };   /* no abbreviations on screen (Daniel) */
-  var item = function(x){ return ['ListItem', {label:pl(x.main), secondary:all && x.sub ? v2Cap(pl(x.sub)) : undefined, trailing:cdrSrcTag(x.src), href:'#',
+  /* Ani, 17 Nov ("organise this much cleaner"): the source is a quiet line under the text, not a pill; in the full preview it follows the detail */
+  var srcTxt = function(x){ return 'Source: ' + cdrSrcTag(x.src)[2]; };
+  var item = function(x){ return ['ListItem', {label:pl(x.main), secondary:(all && x.sub ? v2Cap(pl(x.sub)) + ' · ' : '') + srcTxt(x), href:'#',
     'data-goi':smGo('csOpenFull(\'' + (x.tab || 'timeline') + '\',this)'), title:'Open ' + (x.src ? smText(x.src) : 'the record') + ' in the chart'}]; };
   if(all){ L.push(['ListLabel', {}, 'Here today for'], item(C.why)); if(C.rel.length) L.push(['ListLabel', {count:C.rel.length}, 'Relevant to today']); }
-  L = L.concat((all ? C.rel : C.rel.slice(0, 3)).map(item));
+  /* the age-and-sex line repeats the header; it isn't a finding */
+  var rel = C.rel.filter(function(x){ return !/^\d+-year-old (man|woman|patient)\.?$/i.test(smText(x.main).trim()); });
+  L = L.concat((all ? rel : rel.slice(0, 3)).map(item));
   if(all && C.other.length) L = L.concat([['ListLabel', {count:C.other.length}, 'Not related to today']], C.other.map(item));
-  return {C:C, list:SC.html.apply(SC, ['List', {'aria-label':all ? 'Full visit preview' : 'Visit preview'}].concat(L)), more:C.rel.length + C.other.length - 3};
+  return {C:C, list:SC.html.apply(SC, ['List', {'aria-label':all ? 'Full visit preview' : 'Visit preview'}].concat(L)), more:rel.length + C.other.length - 3};
 }
 function cdrListen(){
   var live = typeof scState !== 'undefined' && scState === 'live' && PC_ON_CALL && PC_CALL_WHO === PC_CURRENT;
-  if(!live) return '<p class="cdr-listen" id="cdr-listen"><span class="cdr-dot off" aria-hidden="true"></span>Not listening · Cedar listens once the call starts (consent on file)</p>';
+  if(!live) return '<p class="cdr-listen" id="cdr-listen" title="Cedar listens once the call starts; consent is on file"><span class="cdr-dot off" aria-hidden="true"></span>Not listening</p>';
   var last = null; for(var i = Math.min(scIdx, SC_TURNS.length) - 1; i >= 0; i--){ if(SC_TURNS[i].w === 'pt'){ last = SC_TURNS[i]; break; } }
   var c = PC_CALL[PC_CALL_WHO], t = c ? pcFmt(c.secs) : '';
   return '<p class="cdr-listen on" id="cdr-listen" aria-live="polite"><span class="cdr-dot" aria-hidden="true"></span><b>Listening</b> · consent on file' + (last ? ' · latest: ' + smText(last.x) : '') +
@@ -14245,16 +14304,19 @@ function cdrRender(){
   var el = document.getElementById('cdr-card'); if(!el) return;
   if(!PC_CURRENT || !(window.SC && SC.html) || (typeof cdOn === 'function' && !cdOn('review'))){ el.hidden = true; return; }
   el.hidden = false;
-  var V = cdrLines(PC_CURRENT, false);
+  var V = cdrLines(PC_CURRENT, false), nm = (rxRow(PC_CURRENT) || {}).pref || 'this patient';
+  /* one header line: Cedar, what it is (the AI chip, its sources on hover) and a chevron to fold it */
+  var fold = SC.html('Button', {variant:'tertiary-main', size:'small', startIcon:CDR.min ? 'arrow-dropdown-down' : 'arrow-dropdown-up', 'aria-label':CDR.min ? 'Show Cedar' : 'Hide Cedar',
+    title:CDR.min ? 'Show Cedar’s visit preview and Ask Cedar' : 'Fold Cedar to this line'}).replace('<button ', '<button onclick="CDR.min=' + !CDR.min + ';cdrRender()" aria-expanded="' + !CDR.min + '" aria-controls="cdr-b" ');
   var h = '<div class="cdr-hd"><span class="cs-ai-ic cdr-mark" aria-hidden="true">' + CEDAR_MARK + '</span><h3 id="cdr-h">Cedar</h3>' +
-    scInfoHtml('Cedar, Simple Care’s clinical assistant, works only from data in Simple Care. Check the source before acting.') +
-    cpBtn('tertiary-main', CDR.min ? 'Show' : 'Hide', 'CDR.min=' + !CDR.min + ';cdrRender()', CDR.min ? 'Show Cedar’s visit preview and Ask Cedar' : 'Fold Cedar to this line; the patient summary moves up', CDR.min ? 'arrow-dropdown-down' : 'arrow-dropdown-up').replace('<button ', '<button aria-expanded="' + !CDR.min + '" aria-controls="cdr-b" ') + '</div>';
+    '<span class="ai-chip ai-chip-sm" title="Drafted by Cedar from data in Simple Care. Check the source before acting.">' + AI_SPARKLE_FILL + 'AI-generated</span>' + fold + '</div>';
   if(!CDR.min){
-    h += '<div id="cdr-b"><div class="cdr-sh"><h4>Visit preview</h4><span class="ai-chip">' + AI_SPARKLE_FILL + 'AI-generated</span></div>' + V.list +
+    h += '<div id="cdr-b"><p class="cdr-lbl">Visit preview</p>' + V.list +
       (V.more > 0 ? cpBtn('tertiary-main', 'Show full preview', 'cdrFull()', 'Open the full preview: why they are here, everything relevant to today, and what isn’t', 'arrow-dropdown-right') : '') +
-      cdrListen() +
-      '<form class="cdr-ask" onsubmit="event.preventDefault();cdrAsk()"><label class="vh" for="cdr-q">Ask Cedar</label><input id="cdr-q" class="cdr-in" type="text" placeholder="Ask Cedar about ' + csEsc((rxRow(PC_CURRENT) || {}).pref || 'this patient') + '…" autocomplete="off">' +
-      SC.html('Button', {variant:'primary', size:'medium', startIcon:'send', type:'submit', 'aria-label':'Ask', title:'Ask Cedar; the answer opens in Cedar’s chat panel'}) + '</form></div>';
+      '<div class="cdr-foot">' + cdrListen() +
+      /* Ani, 17 Nov ("this is not the selected state"): the design system's Input, with its own focus state; the send button the same 44px */
+      '<form class="cdr-ask" onsubmit="event.preventDefault();cdrAsk()">' + SC.html('Input', {label:'Ask Cedar', id:'cdr-q', autoComplete:'off', placeholder:'Ask Cedar about ' + nm + '…'}) +
+      SC.html('Button', {variant:'primary', size:'large', startIcon:'send', type:'submit', 'aria-label':'Ask', title:'Ask Cedar; the answer opens in Cedar’s chat panel'}) + '</form></div></div>';
   }
   el.innerHTML = h;
   if(!el.getAttribute('data-w')){ el.setAttribute('data-w', '1'); el.addEventListener('click', function(e){ var a = e.target.closest('[data-goi]'); if(!a || !el.contains(a)) return; e.preventDefault(); var js = SM.go[+a.getAttribute('data-goi')]; if(js) (new Function(js)).call(a); }); }
@@ -25283,7 +25345,7 @@ function cv2CtxPaint(){
   if(t){
     var dr = !wide;
     /* the design system's quiet icon button: close in the drawer, hide or show on the wide layout (the panel is on the left) */
-    t.setAttribute('start-icon', dr ? 'x' : open ? 'arrow-direction-left' : 'arrow-direction-right');
+    t.setAttribute('start-icon', dr ? 'x' : open ? 'arrow-dropdown-left' : 'arrow-dropdown-right');   /* Ani, 17 Nov: the chevron, as on Collapse */
     t.setAttribute('label', dr ? 'Close patient summary' : (open ? 'Hide' : 'Show') + ' patient summary');
     t.setAttribute('aria-expanded', String(dr ? CV2.drawer : open));
   }
