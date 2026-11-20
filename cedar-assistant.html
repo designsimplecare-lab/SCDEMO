@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cedar assistant</title>
+<meta name="description" content="Cedar, Simple's clinical assistant: ask questions of one patient's record, with every answer sourced and every action left to the physician.">
+<!--
+  Cedar, standalone (Ani, 20 Nov 2026). Plans changed: Cedar is shown as a standalone assistant with one patient open, not a
+  walkthrough of the portal (cedar-demo.html stays as it was). Redesigned from Daniel's reference (green header, source pills,
+  a pile of suggestion chips) in the SimpleCare design system, with every suggestion built out as a working flow:
+  pre-visit summary, cardiovascular risk, medication reconciliation with PharmaNet, drug interactions, unreviewed abnormal results,
+  what's overdue, preventive care, the A1c graph, adding A1c to a requisition, the visit note, sick-day guidance, follow-up
+  recalls, explaining results to the patient and the billing code. Each answer shows what Cedar read (Sources panel), and each
+  action waits for the physician. A question about anyone else is refused. Nothing is saved or sent.
+  Words: "Cedar, Simple's clinical assistant", never a chatbot. Jordan Reyes is fictional.
+-->
+<style>
+  :root{
+    --ink:var(--color-text-default-heading); --body:var(--color-text-default-body); --soft:var(--color-text-default-caption);
+    --paper:var(--color-grey-200); --panel:var(--color-grey-0); --wash:var(--color-grey-50); --line:var(--color-grey-300);
+    --brand:var(--color-navy-900); --brand-wash:var(--color-navy-100);
+    --ai-soft:color-mix(in srgb, var(--color-brand-ai-start) 55%, var(--panel));
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;}
+  body{font-family:var(--font-sans);background:var(--paper);color:var(--body);font-size:15px;line-height:22px;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;}
+  h1,h2,h3,h4,p{margin:0;}
+  button{font:inherit;}
+  .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  .ic20{display:inline-flex;flex:none;width:20px;height:20px;color:var(--soft);}
+  .ic20 svg{width:20px;height:20px;}
+  .mark{display:inline-flex;align-items:center;justify-content:center;flex:none;width:32px;height:32px;border-radius:var(--radius-xs);background:var(--gradient-ai);color:var(--color-navy-900);}
+  .mark svg{width:18px;height:18px;}
+  .sv-tag,.sv-tag .truncate{font-size:14px;}
+  .sv-table :is(.text-body-3,.text-caption){font-size:14px !important;}
+
+  /* ---- top bar ---- */
+  .top{flex:none;display:flex;align-items:center;gap:14px;min-height:64px;padding:8px 20px;background:var(--panel);border-bottom:1px solid var(--line);}
+  .top .lg svg{height:30px;width:auto;}
+  .top .nm{display:flex;align-items:center;gap:8px;padding-left:14px;border-left:1px solid var(--line);font-size:16px;font-weight:700;color:var(--ink);white-space:nowrap;}
+  .top .nm small{font-size:15px;font-weight:400;color:var(--soft);}
+  .top .sp{flex:1;}
+
+  /* ---- shell: patient | conversation | sources ---- */
+  .shell{flex:1;min-height:0;display:grid;grid-template-columns:300px minmax(0,1fr) 360px;}
+  body.no-src .shell{grid-template-columns:300px minmax(0,1fr) 0;}
+  .side,.src{min-height:0;overflow-y:auto;background:var(--panel);}
+  .side{border-right:1px solid var(--line);padding:20px;}
+  .src{border-left:1px solid var(--line);}
+  body.no-src .src{display:none;}
+
+  /* patient side */
+  .pt{display:flex;gap:12px;align-items:center;}
+  .pt .pn b{display:block;font-size:17px;line-height:24px;color:var(--ink);}
+  .pt .pn span{display:block;font-size:14px;color:var(--soft);}
+  .side h3{margin:22px 0 8px;font-size:14px;font-weight:700;color:var(--soft);}
+  .facts{display:grid;gap:6px;margin-top:14px;font-size:14px;line-height:20px;}
+  .facts div{display:flex;gap:8px;}
+  .facts .ic20{width:18px;height:18px;}
+  .facts .ic20 svg{width:18px;height:18px;}
+  .conn{display:grid;}
+  .conn li{list-style:none;display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);}
+  .conn li:first-child{border-top:0;}
+  .conn .ok{display:inline-flex;width:20px;height:20px;color:var(--color-green-700);}
+  .conn .ok svg{width:20px;height:20px;}
+  .conn .m{flex:1;min-width:0;}
+  .conn .m b{display:block;font-weight:500;font-size:15px;line-height:20px;color:var(--ink);}
+  .conn .m span{display:block;font-size:14px;line-height:20px;color:var(--soft);}
+  .scope{display:flex;gap:10px;margin-top:18px;padding:12px;border-radius:var(--radius-xs);background:var(--wash);font-size:14px;line-height:20px;}
+  .hist{display:grid;gap:2px;padding:0;margin:0;}
+  .hist li{list-style:none;}
+  .hist button{display:block;width:100%;padding:8px 10px;border:0;border-radius:var(--radius-xs);background:none;text-align:left;font-size:14px;line-height:20px;color:var(--body);cursor:pointer;}
+  .hist button:hover{background:var(--wash);color:var(--ink);}
+
+  /* ---- conversation ---- */
+  .conv{min-width:0;min-height:0;display:flex;flex-direction:column;}
+  .thread-wrap{flex:1;min-height:0;overflow-y:auto;scroll-behavior:smooth;}
+  .thread{max-width:860px;margin:0 auto;padding:28px 28px 12px;display:grid;gap:22px;grid-template-columns:minmax(0,1fr);}
+  .composer{flex:none;border-top:1px solid var(--line);background:color-mix(in srgb, var(--paper) 70%, var(--panel));}
+  .composer .in{max-width:860px;margin:0 auto;padding:12px 28px 10px;}
+  .composer .foot{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;font-size:14px;line-height:20px;color:var(--soft);text-align:center;}
+  .composer .foot .ic20{width:16px;height:16px;}
+  .composer .foot .ic20 svg{width:16px;height:16px;}
+  .follow{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+
+  /* empty state */
+  .hello{padding:28px 0 4px;}
+  .hello .big-mark{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:var(--radius-md);background:var(--gradient-ai);color:var(--color-navy-900);}
+  .hello .big-mark svg{width:30px;height:30px;}
+  .hello h1{margin-top:18px;font-size:30px;line-height:38px;font-weight:700;color:var(--ink);}
+  .hello p{margin-top:6px;max-width:64ch;font-size:16px;line-height:24px;}
+  .groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:22px;}
+  .grp{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-xs);padding:14px 16px 10px;}
+  .grp h2{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:15px;font-weight:700;color:var(--ink);}
+  .grp h2 .ic20{color:var(--brand);}
+  .sugg{display:flex;align-items:center;gap:10px;width:100%;padding:9px 6px;margin:0 -6px;border:0;border-radius:var(--radius-xs);background:none;text-align:left;font-size:15px;line-height:22px;color:var(--body);cursor:pointer;}
+  .sugg:hover{background:var(--wash);color:var(--ink);}
+  .sugg:focus-visible{outline:2px solid var(--brand);outline-offset:-2px;}
+  .sugg .ic20{width:16px;height:16px;margin-left:auto;}
+  .sugg .ic20 svg{width:16px;height:16px;}
+
+  /* turns */
+  .q{justify-self:end;max-width:78%;}
+  .q p.qt{padding:10px 14px;border-radius:var(--radius-sm);background:var(--brand);color:var(--color-grey-0);font-size:15px;line-height:22px;}
+  .q .meta{display:flex;justify-content:flex-end;align-items:center;gap:4px;margin-top:4px;font-size:14px;color:var(--soft);}
+  .q .meta .ic20{width:14px;height:14px;}
+  .q .meta .ic20 svg{width:14px;height:14px;}
+  .a{display:flex;gap:12px;align-items:flex-start;}
+  .a .bd{flex:1;min-width:0;}
+  .a .who{display:flex;align-items:center;gap:8px;min-height:32px;font-size:14px;color:var(--soft);}
+  .a .who b{color:var(--ink);font-size:15px;}
+  .a .who .read{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border:0;border-radius:var(--radius-xs);background:none;color:var(--soft);font-size:14px;cursor:pointer;}
+  .a .who .read:hover{background:var(--wash);color:var(--ink);}
+  .a.sel .who .read{background:var(--brand-wash);color:var(--brand);}
+  .lead{font-size:16px;line-height:25px;color:var(--ink);margin:4px 0 12px;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-xs);}
+  .card + .card{margin-top:12px;}
+  .card-hd{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);}
+  .card-hd h3{font-size:15px;font-weight:700;color:var(--ink);}
+  .card-hd .sp{flex:1;}
+  .card-bd{padding:12px 16px 14px;}
+  .rows{display:grid;}
+  .row{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line);}
+  .row:first-child{border-top:0;}
+  .row .m{flex:1;min-width:0;}
+  .row .l{display:block;font-size:15px;line-height:22px;color:var(--ink);}
+  .row .s{display:block;font-size:14px;line-height:20px;color:var(--soft);}
+  .row .r{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:6px;flex:none;max-width:55%;}
+  .row .sv-tag{flex:none;}
+  .sec-t{display:flex;align-items:center;gap:8px;margin:14px 0 2px;font-size:14px;font-weight:700;color:var(--soft);}
+  .sec-t:first-child{margin-top:0;}
+  .cite{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;margin-left:4px;border:0;border-radius:var(--radius-2xs);background:var(--brand-wash);color:var(--brand);font-size:14px;font-weight:700;line-height:1;vertical-align:1px;cursor:pointer;}
+  .cite:hover{background:var(--brand);color:var(--color-grey-0);}
+  .acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px;}
+  .done{display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 12px;border-radius:var(--radius-xs);background:var(--color-green-25);font-size:14px;line-height:20px;color:var(--ink);}
+  .done .ic20{color:var(--color-green-700);}
+  .fine{margin-top:10px;font-size:14px;line-height:20px;color:var(--soft);}
+  .a-foot{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px;font-size:14px;color:var(--soft);}
+  .a-foot .sp{flex:1;}
+  .fb{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border:0;border-radius:var(--radius-xs);background:none;color:var(--soft);font-size:14px;cursor:pointer;}
+  .fb:hover{background:var(--wash);color:var(--ink);}
+  .fb[aria-pressed="true"]{background:var(--brand-wash);color:var(--brand);}
+  .fb .ic20{width:16px;height:16px;color:inherit;}
+  .fb .ic20 svg{width:16px;height:16px;}
+  .why-wrong{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+
+  /* thinking */
+  .think{display:grid;gap:6px;padding:10px 0 4px;}
+  .think li{list-style:none;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--soft);}
+  .think .dot{width:16px;height:16px;border-radius:var(--radius-round);border:2px solid var(--line);border-top-color:var(--brand);animation:spin .8s linear infinite;}
+  .think .ok{display:inline-flex;width:16px;height:16px;color:var(--color-green-700);}
+  .think .ok svg{width:16px;height:16px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  .fade{animation:fadeUp .35s cubic-bezier(.2,.7,.2,1) both;}
+
+  /* flow pieces */
+  .bigval{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px;font-size:28px;line-height:36px;font-weight:700;color:var(--ink);}
+  .risk{padding:16px;border-radius:var(--radius-xs);background:linear-gradient(180deg, var(--ai-soft), var(--panel) 95%);border:1px solid var(--line);}
+  .tbl-wrap{overflow-x:auto;max-width:100%;}
+  .recon .chg{background:var(--color-yellow-50);border-radius:var(--radius-2xs);padding:0 4px;}
+  .pickrow{display:flex;flex-wrap:wrap;gap:6px;}
+  .handout{padding:18px 20px;border-radius:var(--radius-xs);background:var(--wash);border:1px solid var(--line);}
+  .handout h4{font-size:17px;line-height:24px;color:var(--ink);margin-bottom:8px;}
+  .handout p,.handout li{font-size:15px;line-height:23px;color:var(--ink);}
+  .handout ul{margin:6px 0 10px;padding-left:20px;}
+  .msg{padding:14px 16px;border:1px solid var(--line);border-radius:var(--radius-xs);background:var(--panel);font-size:15px;line-height:23px;color:var(--ink);outline:none;}
+  .msg[contenteditable="true"]:focus{box-shadow:inset 0 0 0 2px var(--brand);}
+  .notedraft .sec{padding:10px 0;border-top:1px solid var(--line);}
+  .notedraft .sec:first-child{border-top:0;}
+  .notedraft .h{font-size:14px;font-weight:700;color:var(--soft);margin-bottom:4px;}
+  .notedraft .yours{padding:10px 12px;border:1px dashed var(--line);border-radius:var(--radius-xs);color:var(--soft);font-size:14px;}
+  .chartbox{overflow-x:auto;}
+  .chartbox svg text{font-size:14px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chips .sv-chip{max-width:100%;white-space:normal;height:auto;text-align:left;}
+  .chips .sv-chip .truncate{white-space:normal;overflow:visible;}
+
+  /* ---- sources panel ---- */
+  .src-hd{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:10px;min-height:56px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);}
+  .src-hd h2{font-size:16px;font-weight:700;color:var(--ink);}
+  .src-hd .sp{flex:1;}
+  .src-for{padding:12px 16px 0;font-size:14px;line-height:20px;color:var(--soft);}
+  .src-for b{color:var(--ink);font-weight:500;}
+  .src-list{display:grid;gap:10px;padding:12px 16px 20px;}
+  .s-item{padding:12px;border:1px solid var(--line);border-radius:var(--radius-xs);background:var(--panel);transition:box-shadow .2s, border-color .2s;}
+  .s-item.hl{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-wash);}
+  .s-item .t{display:flex;align-items:center;gap:8px;}
+  .s-item .n{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;border-radius:var(--radius-2xs);background:var(--brand-wash);color:var(--brand);font-size:14px;font-weight:700;}
+  .s-item b{display:block;margin-top:8px;font-weight:500;color:var(--ink);}
+  .s-item .d{font-size:14px;color:var(--soft);}
+  .s-item blockquote{margin:8px 0 0;padding:8px 10px;border-left:3px solid var(--line);background:var(--wash);font-size:14px;line-height:20px;color:var(--body);}
+  .src-empty{padding:24px 16px;}
+  .src-not{margin:0 16px 20px;font-size:14px;line-height:20px;color:var(--soft);}
+
+  @media (max-width:1280px){
+    .shell{grid-template-columns:260px minmax(0,1fr) 320px;}
+    body.no-src .shell{grid-template-columns:260px minmax(0,1fr) 0;}
+  }
+  @media (max-width:1080px){
+    .shell,body.no-src .shell{grid-template-columns:minmax(0,1fr);}
+    .side{display:none;}
+    body.side-open .side{display:block;position:fixed;inset:64px auto 0 0;width:min(320px,90vw);z-index:30;box-shadow:var(--shadow-elevation-3);}
+    .src{position:fixed;inset:64px 0 0 auto;width:min(380px,92vw);z-index:30;box-shadow:var(--shadow-elevation-3);}
+    .groups{grid-template-columns:minmax(0,1fr);}
+  }
+  @media (min-width:1081px){ [data-act="side"]{display:none !important;} }
+  @media (max-width:640px){
+    .top{padding:8px 12px;gap:8px;}
+    .top .nm small,.top .demo,.top .lg{display:none;}
+    .top .nm{border-left:0;padding-left:0;}
+    .thread{padding:18px 14px 8px;}
+    .composer .in{padding:10px 14px 8px;}
+    .q{max-width:92%;}
+    .row{flex-wrap:wrap;}
+    .row .r{max-width:100%;justify-content:flex-start;}
+    .a{gap:8px;}
+  }
+  @media (prefers-reduced-motion: reduce){ .fade{animation:none;} .think .dot{animation:none;} .thread-wrap{scroll-behavior:auto;} }
+</style>
+<link rel="stylesheet" href="assets/design-system/simplecare-tokens.css?v=2026-11-14j">
+<link rel="stylesheet" href="assets/design-system/simplecare-ui.css?v=2026-11-14j">
+<script src="assets/design-system/simplecare-icons.js?v=2026-11-14j"></script>
+<script src="assets/design-system/simplecare-ui.js?v=2026-11-14j" defer></script>
+</head>
+<body class="no-src">
+<header class="top">
+  <span id="t-side"></span>
+  <span class="lg" id="t-logo" aria-label="Simple Care"></span>
+  <span class="nm"><span class="mark" id="t-mark" aria-hidden="true"></span>Cedar <small>Simple's clinical assistant</small></span>
+  <span class="sp"></span>
+  <span class="demo" id="t-demo"></span>
+  <span id="t-new"></span>
+</header>
+<div class="shell">
+  <aside class="side" id="side" aria-label="Patient and sources"></aside>
+  <main class="conv" aria-label="Conversation with Cedar">
+    <div class="thread-wrap" id="tw"><div class="thread" id="thread" aria-live="polite"></div></div>
+    <div class="composer"><div class="in" id="composer"></div></div>
+  </main>
+  <aside class="src" id="src" aria-label="Sources"></aside>
+</div>
+<script>
+/* ============================================================================
+   The fictional record Cedar answers from
+   ========================================================================= */
+var PT = {name:'Jordan Reyes', first:'Jordan', age:58, sex:'Male', his:'his'};
+var DOC = 'Dr. Pannozzo', DAY = '20 November 2026';
+var SYS = {
+  chart:['Simple chart', 'Live'],
+  pn:['PharmaNet', 'Updated 9:12 a.m. today'],
+  plis:['Provincial Laboratory Information Solution', 'Updated 8:40 a.m. today'],
+  cdx:['Clinical Data Exchange', 'Updated yesterday'],
+  fax:['Faxed and uploaded reports', '3 reports, newest 14 November']
+};
+var SYS_SHORT = {chart:'Simple chart', pn:'PharmaNet', plis:'Lab results', cdx:'Clinical Data Exchange', fax:'Faxed report', ref:'Reference'};
+/* each source: system, title, date, quote */
+var SRC = {
+  booking:['chart', 'Booking for today', '20 November 2026, 2:30 p.m., video', 'Reason: diabetes follow-up and results.'],
+  lastnote:['chart', 'Visit note, Dr. Pannozzo', '28 October 2026, signed', 'Blood pressure 142/86 on losartan 50 mg. A1c due. Recheck kidney function and potassium.'],
+  problems:['chart', 'Problem list', 'Reviewed 28 October 2026', 'Type 2 diabetes (2019) · High blood pressure (2017) · High cholesterol (2020). Never smoked.'],
+  chartmeds:['chart', 'Medication list in Simple', 'Last changed 28 October 2026', 'Metformin 1000 mg twice daily · Losartan 50 mg once daily · Atorvastatin 20 mg once daily · Empagliflozin 10 mg once daily.'],
+  pnLos:['pn', 'Losartan 100 mg once daily', 'Filled 3 November 2026', 'Prescriber: Dr. A. Chen, internal medicine. 90 tablets.'],
+  pnClar:['pn', 'Clarithromycin 500 mg twice daily, 7 days', 'Filled 12 November 2026', 'Prescriber: Dr. M. Singh, walk-in clinic. 14 tablets.'],
+  pnIbu:['pn', 'Ibuprofen 400 mg as needed', 'Filled 2 October 2026', 'Prescriber: Dr. M. Singh, walk-in clinic. 30 tablets.'],
+  pnRest:['pn', 'Metformin, atorvastatin, empagliflozin', 'Filled 28 October 2026', 'Prescriber: Dr. Pannozzo. Doses match the Simple chart.'],
+  a1c:['plis', 'Hemoglobin A1c 8.4%', 'Collected 18 November 2026, LifeLabs', 'Reference: target 7.0% or lower for most adults with diabetes. Previous: 8.1% (July 2026).'],
+  a1cAll:['plis', 'Hemoglobin A1c, 6 results', 'March 2025 to November 2026', '7.1, 7.4, 7.6, 7.9, 8.1, 8.4 (%).'],
+  egfr:['plis', 'eGFR 58 mL/min/1.73 m²', 'Collected 18 November 2026', 'Reference: over 60. Previous: 72 (July 2026). Not yet reviewed.'],
+  acr:['plis', 'Urine albumin-to-creatinine ratio 6.2 mg/mmol', 'Collected 18 November 2026', 'Reference: under 2.0. First result over 2.0. Not yet reviewed.'],
+  k:['plis', 'Potassium 5.3 mmol/L', 'Collected 18 November 2026', 'Reference: 3.5 to 5.0. Not yet reviewed.'],
+  lipids:['plis', 'Lipid panel', 'Collected 18 November 2026', 'Total cholesterol 5.4 · HDL 1.0 · LDL 2.9 mmol/L. Reviewed 19 November.'],
+  echo:['cdx', 'Echocardiogram report', '2 October 2026', 'Normal size and function of both ventricles. No significant valve disease.'],
+  eye:['fax', 'Ophthalmology letter', '11 March 2025', 'Mild background diabetic retinopathy, both eyes. Recommend repeat retinal exam in 12 months.'],
+  fit:['chart', 'Colorectal screening', 'FIT negative, 14 June 2023', 'Repeat every 2 years. No result since.'],
+  vax:['chart', 'Immunizations', 'Pneumococcal 2024 · influenza 2025', 'No influenza vaccine recorded this season. No shingles vaccine recorded.'],
+  foot:['chart', 'Diabetic foot exam', '6 November 2025', 'Normal sensation and pulses. Repeat yearly.'],
+  ddi:['ref', 'Drug interaction reference', 'Checked today', 'Atorvastatin with clarithromycin: major. Losartan with ibuprofen: moderate. Losartan and raised potassium: monitor.'],
+  sick:['ref', 'Diabetes Canada, sick-day medicine list', 'Clinical practice guidelines', 'When unable to keep fluids down, hold: sulfonylureas, ACE inhibitors and ARBs, diuretics, metformin, anti-inflammatories, SGLT2 inhibitors.'],
+  icd:['ref', 'Medical Services Plan diagnostic codes (ICD-9)', 'BC', '250 Diabetes mellitus · 401 Essential hypertension · 272 Disorders of lipoid metabolism.']
+};
+
+/* ============================================================================
+   The flows. Each: question, what Cedar reads (thinking steps), sources, the answer, follow-ups.
+   ========================================================================= */
+var GROUPS = [
+  ['Before the visit', 'calendar', ['summary', 'overdue', 'preventive']],
+  ['Medications', 'medication', ['recon', 'ddi', 'sick']],
+  ['Results', 'chart-1', ['abnormal', 'graph', 'risk']],
+  ['Orders and follow-up', 'checklist', ['req', 'recalls']],
+  ['Notes and billing', 'note', ['note', 'billing']],
+  ['For Jordan', 'user', ['explain']]
+];
+var F = {
+  summary:{q:'Give me a pre-visit summary', read:['Simple chart', 'PharmaNet', 'lab results', 'Clinical Data Exchange'], src:['booking', 'lastnote', 'pnLos', 'pnClar', 'a1c', 'egfr', 'acr', 'k', 'echo', 'eye', 'fit'], next:['abnormal', 'recon', 'note']},
+  risk:{q:'Calculate cardiovascular risk', read:['the problem list', 'lab results', 'the last visit note'], src:['problems', 'lipids', 'lastnote'], next:['explain', 'note']},
+  recon:{q:'Reconcile medications with PharmaNet', read:['the Simple medication list', 'PharmaNet'], src:['chartmeds', 'pnLos', 'pnClar', 'pnIbu', 'pnRest'], next:['ddi', 'sick']},
+  ddi:{q:'Any drug interactions?', read:['the Simple medication list', 'PharmaNet', 'lab results', 'the interaction reference'], src:['chartmeds', 'pnClar', 'pnIbu', 'k', 'egfr', 'ddi'], next:['recon', 'abnormal']},
+  abnormal:{q:'Any abnormal results I haven\'t reviewed?', read:['lab results', 'your review history'], src:['egfr', 'acr', 'k'], next:['req', 'explain']},
+  overdue:{q:'What\'s overdue?', read:['the Simple chart', 'faxed reports', 'lab results'], src:['eye', 'fit', 'foot', 'vax'], next:['recalls', 'preventive']},
+  preventive:{q:'Preventive care status', read:['the Simple chart', 'immunizations', 'faxed reports', 'lab results'], src:['fit', 'eye', 'vax', 'lipids', 'egfr', 'lastnote'], next:['overdue', 'recalls']},
+  graph:{q:'Graph the A1c over time', read:['lab results'], src:['a1cAll', 'a1c'], next:['req', 'explain']},
+  req:{q:'Add A1c to the requisition', read:['lab results', 'your recalls'], src:['a1c', 'egfr', 'k', 'acr'], next:['recalls']},
+  note:{q:'Draft today\'s visit note', read:['the booking', 'the last visit note', 'PharmaNet', 'lab results'], src:['booking', 'lastnote', 'pnLos', 'pnClar', 'a1c', 'egfr', 'acr', 'k'], next:['billing']},
+  sick:{q:'Sick-day guidance for losartan', read:['the medication list', 'the sick-day medicine list'], src:['chartmeds', 'pnLos', 'sick'], next:['explain']},
+  recalls:{q:'Set up follow-up recalls', read:['lab results', 'faxed reports', 'the last visit note'], src:['a1c', 'egfr', 'k', 'eye', 'lastnote'], next:['req']},
+  explain:{q:'Explain today\'s results to the patient', read:['lab results', 'the last visit note'], src:['a1c', 'egfr', 'acr', 'k', 'lipids'], next:['sick']},
+  billing:{q:'Suggest the billing code', read:['the booking', 'the problem list', 'the code list'], src:['booking', 'problems', 'icd'], next:['note']}
+};
+/* free text → a flow */
+var KEYS = [['summary', /summar|pre-?visit|overview|catch me up/], ['risk', /risk|framingham|cardiovascular|heart attack/], ['recon', /reconcil|pharmanet|med(ication)? list/], ['ddi', /interact/],
+  ['abnormal', /abnormal|unreviewed|haven.?t reviewed|not reviewed/], ['overdue', /overdue|late|missed/], ['preventive', /prevent|screen|vaccin|immuni/], ['graph', /graph|chart the|trend|over time/],
+  ['req', /requisition|order|lab form/], ['note', /note|soap|document/], ['sick', /sick|vomit|diarrh/], ['recalls', /recall|follow.?up|remind/], ['explain', /explain|plain|patient.?friendly|tell (him|jordan)/],
+  ['billing', /bill|code|claim|icd/]];
+
+var ST = {turns:[], sel:null, flows:{}, busy:false};
+function fs(k){ return ST.flows[k] = ST.flows[k] || {}; }
+
+/* ---- helpers ---- */
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function ic(n, s){ return SC.hasIcon(n) ? SC.icon(n, {size:s || 20}) : ''; }
+function I(n, s){ return '<span class="ic20">' + ic(n, s || 20) + '</span>'; }
+function btn(variant, label, act, title, icon, extra){
+  var p = {variant:variant, size:'medium', 'data-act':act, title:title}; if(icon) p.startIcon = icon;
+  for(var k in (extra || {})) p[k] = extra[k];
+  return SC.html('Button', p, label);
+}
+function sbtn(variant, label, act, title, icon, extra){ return btn(variant, label, act, title, icon, extra); }   /* small buttons drop to 13px text; rows use medium */
+function tag(color, text, title, icon){ var p = {color:color}; if(title) p.title = title; if(icon) p.startIcon = icon; return SC.html('Tag', p, text); }
+function mark(s){ return '<span class="mark" aria-hidden="true">' + ic('ai', s || 18) + '</span>'; }
+function now(){ return '2:3' + (4 + Math.min(5, ST.turns.length)) + ' p.m.'; }
+/* a citation number for source key k within flow f */
+function c(f, k){ var i = F[f].src.indexOf(k); return i < 0 ? '' : '<button type="button" class="cite" data-act="cite" data-f="' + f + '" data-v="' + k + '" title="Show source ' + (i + 1) + ': ' + esc(SRC[k][1]) + '">' + (i + 1) + '</button>'; }
+function done(text){ return '<div class="done fade">' + I('check-circle') + '<span>' + text + '</span></div>'; }
+function row(l, s, r){ return '<div class="row"><span class="m"><span class="l">' + l + '</span>' + (s ? '<span class="s">' + s + '</span>' : '') + '</span>' + (r ? '<span class="r">' + r + '</span>' : '') + '</div>'; }
+
+/* ============================================================================
+   Answers
+   ========================================================================= */
+var A = {};
+A.summary = function(){
+  return '<p class="lead">' + PT.first + ' is here at 2:30 p.m. for a diabetes follow-up and the results from 18 November' + c('summary', 'booking') + '. Four things have changed since your last visit.</p>' +
+    '<div class="card"><div class="card-bd">' +
+    '<p class="sec-t">' + I('medication', 18) + 'Since your last visit, 28 October' + c('summary', 'lastnote') + '</p><div class="rows">' +
+    row('Losartan increased to 100 mg daily' + c('summary', 'pnLos'), 'By Dr. A. Chen, internal medicine, on 3 November. Your chart still says 50 mg.', tag('warning', 'Differs from chart')) +
+    row('Clarithromycin for 7 days' + c('summary', 'pnClar'), 'From a walk-in clinic on 12 November; the course ended yesterday.', tag('warning', 'Interaction')) +
+    row('Echocardiogram: normal' + c('summary', 'echo'), '2 October, Clinical Data Exchange.') + '</div>' +
+    '<p class="sec-t">' + I('chart-1', 18) + 'Results, 18 November</p><div class="rows">' +
+    row('Hemoglobin A1c 8.4%' + c('summary', 'a1c'), 'Up from 8.1% in July; target 7.0% or lower.', tag('warning', 'Above target')) +
+    row('eGFR 58, urine albumin 6.2, potassium 5.3' + c('summary', 'egfr') + c('summary', 'acr') + c('summary', 'k'), 'Kidney function lower than July (72). Not yet reviewed.', tag('warning', '3 to review')) + '</div>' +
+    '<p class="sec-t">' + I('clock-time', 18) + 'Open items</p><div class="rows">' +
+    row('Retinal eye exam overdue since March 2026' + c('summary', 'eye'), 'Last letter: mild background retinopathy, repeat in 12 months.') +
+    row('Colorectal screening overdue' + c('summary', 'fit'), 'Last FIT June 2023, every 2 years.') + '</div></div></div>';
+};
+A.risk = function(){
+  var inputs = [['Age', '58', 'problems'], ['Sex', 'Male', 'problems'], ['Total cholesterol', '5.4 mmol/L', 'lipids'], ['HDL cholesterol', '1.0 mmol/L', 'lipids'], ['Systolic blood pressure', '142, on treatment', 'lastnote'], ['Smoking', 'Never', 'problems'], ['Diabetes', 'Yes', 'problems']];
+  var t = SC.html.apply(SC, ['Table', {'aria-label':'Risk inputs'}, ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Input'], ['TableHead', {}, 'Value from the record']]], ['TableBody', {}].concat(inputs.map(function(x){
+    return ['TableRow', {}, ['TableCell', {}, ['TableCellContent', {label:x[0]}]], ['TableCell', {}, SC.raw('<span style="color:var(--ink)">' + esc(x[1]) + '</span>' + c('risk', x[2]))]]; }))]);
+  var s = fs('risk');
+  return '<div class="risk"><p class="note" style="font-size:14px;color:var(--soft)">Framingham Risk Score, 10-year cardiovascular risk</p><p class="bigval">Over 30% ' + tag('warning', 'High risk') + '</p>' +
+    '<p style="margin-top:6px;color:var(--ink)">Calculated from the 7 values below. Canadian guidelines treat most people with diabetes over 40 as high risk regardless of the score.</p></div>' +
+    '<div class="card" style="margin-top:12px"><div class="tbl-wrap">' + t + '</div></div>' +
+    (s.added ? done('Added to today\'s draft note by you, ' + s.added + '.') : '<div class="acts">' + btn('primary', 'Add to today\'s note', 'riskAdd', 'Add the score and its inputs to today\'s draft note', 'note-add') + btn('secondary-main', 'Explain to Jordan', 'ask', 'Draft a plain-language explanation of the results for Jordan', 'user', {'data-v':'explain'}) + '</div>') +
+    '<p class="fine">A calculation, not a recommendation: check the inputs. Treatment is your decision.</p>';
+};
+A.recon = function(){
+  var s = fs('recon'); s.pick = s.pick || {};
+  var R = [
+    ['met', 'Metformin', '1000 mg twice daily', '1000 mg twice daily', null, 'pnRest'],
+    ['los', 'Losartan', '50 mg once daily', '<span class="chg">100 mg</span> once daily · Dr. A. Chen, internal medicine, 3 November', [['pn', 'Use 100 mg'], ['keep', 'Keep 50 mg']], 'pnLos'],
+    ['ato', 'Atorvastatin', '20 mg once daily', '20 mg once daily', null, 'pnRest'],
+    ['emp', 'Empagliflozin', '10 mg once daily', '10 mg once daily', null, 'pnRest'],
+    ['cla', 'Clarithromycin', '<span style="color:var(--soft)">Not on chart</span>', '<span class="chg">500 mg twice daily, 7 days</span> · walk-in clinic, 12 November', [['course', 'Add as finished course'], ['no', 'Not taking']], 'pnClar'],
+    ['ibu', 'Ibuprofen', '<span style="color:var(--soft)">Not on chart</span>', '<span class="chg">400 mg as needed</span> · walk-in clinic, 2 October', [['add', 'Add to chart'], ['no', 'Not taking']], 'pnIbu']
+  ];
+  var diff = R.filter(function(r){ return r[4]; }), same = R.filter(function(r){ return !r[4]; }), chosen = diff.filter(function(r){ return s.pick[r[0]]; }).length;
+  /* differences first, one row each: what the chart says, what PharmaNet says, and the two choices; the matches fold into one line */
+  var rows = diff.map(function(r){
+    var right = s.applied ? tag('neutral', r[4].filter(function(o){ return o[0] === s.pick[r[0]]; })[0][1], 'Chosen by you', 'check')
+      : '<span class="pickrow">' + r[4].map(function(o){ return SC.html('Chip', {'data-act':'reconPick', 'data-v':r[0] + ':' + o[0], selected:s.pick[r[0]] === o[0], title:o[1] + ' for ' + r[1]}, o[1]); }).join('') + '</span>';
+    return row('<b style="font-weight:700">' + r[1] + '</b>' + c('recon', r[5]), '<span style="display:block">Simple chart: ' + r[2] + '</span><span style="display:block">PharmaNet: ' + r[3] + '</span>', right);
+  }).join('') + row('<span style="color:var(--soft)">' + same.map(function(r){ return r[1]; }).join(', ') + '</span>' + c('recon', 'pnRest'), 'Same dose in both', tag('success', same.length + ' match', 'The chart and PharmaNet agree', 'check'));
+  return '<p class="lead">3 of 6 medications differ' + c('recon', 'chartmeds') + '. Only the part that differs is highlighted; nothing changes until you choose.</p>' +
+    '<div class="card recon"><div class="card-bd"><div class="rows">' + rows + '</div></div></div>' +
+    (s.applied ? done('Chart updated by you, ' + s.applied + '. Losartan, clarithromycin and ibuprofen reconciled.') :
+      '<div class="acts">' + btn('primary', chosen === diff.length ? 'Apply 3 choices' : 'Choose for each difference (' + chosen + ' of 3)', 'reconApply', 'Update the Simple chart with your choices', 'check', chosen === diff.length ? {} : {disabled:true}) + '</div>');
+};
+A.ddi = function(){
+  var s = fs('ddi'); s.x = s.x || {};
+  var L = [
+    ['a', 'Atorvastatin with clarithromycin', 'Major', 'Clarithromycin raises atorvastatin levels, with a risk of muscle damage. The course ended 19 November; ask about muscle pain.', ['pnClar', 'ddi']],
+    ['b', 'Losartan with ibuprofen', 'Moderate', 'Anti-inflammatories can raise blood pressure and, with losartan, strain the kidneys. eGFR fell to 58.', ['pnIbu', 'egfr', 'ddi']],
+    ['c', 'Losartan and potassium 5.3', 'Monitor', 'Losartan can raise potassium. Today\'s value is just above the reference range.', ['k', 'ddi']]
+  ];
+  return '<p class="lead">3 to look at, from all 6 medications in the chart and PharmaNet' + c('ddi', 'chartmeds') + '.</p><div class="card"><div class="card-bd"><div class="rows">' +
+    L.map(function(x){ var st = s.x[x[0]];
+      return row(esc(x[1]) + x[4].map(function(k){ return c('ddi', k); }).join(''), esc(x[3]) + (st ? '<br><b style="color:var(--ink);font-weight:500">' + (st === 'note' ? 'Added to today\'s note by you' : 'Dismissed by you') + '</b>' : ''),
+        tag(x[2] === 'Major' ? 'error' : 'warning', x[2]) + (st ? '' : sbtn('secondary-main', 'Add to note', 'ddiAct', 'Add this interaction to today\'s draft note', null, {'data-v':x[0] + ':note'}) + sbtn('tertiary-main', 'Dismiss', 'ddiAct', 'Dismiss this interaction for this visit', null, {'data-v':x[0] + ':dis'}))); }).join('') +
+    '</div></div></div><p class="fine">Cedar flags; it doesn\'t change a medication.</p>';
+};
+A.abnormal = function(){
+  var s = fs('abnormal'); s.r = s.r || {};
+  var L = [['egfr', 'eGFR 58 mL/min/1.73 m²', 'Normal: over 60. Was 72 in July.', 'Low'], ['acr', 'Urine albumin-to-creatinine ratio 6.2 mg/mmol', 'Normal: under 2.0. First high result.', 'High'], ['k', 'Potassium 5.3 mmol/L', 'Normal: 3.5 to 5.0.', 'High']];
+  var left = L.filter(function(x){ return !s.r[x[0]]; }).length;
+  return '<p class="lead">' + (left ? left + ' abnormal result' + (left > 1 ? 's' : '') + ' from 18 November ' + (left > 1 ? 'are' : 'is') + ' waiting for your review.' : 'All reviewed. Nothing abnormal is waiting.') + '</p><div class="card"><div class="card-bd"><div class="rows">' +
+    L.map(function(x){ return row(esc(x[1]) + c('abnormal', x[0]), esc(x[2]) + ' Collected 18 November.', tag('warning', x[3]) + (s.r[x[0]] ? tag('success', 'Reviewed by you', '', 'check') : sbtn('secondary-main', 'Mark reviewed', 'abnRev', 'Record that you reviewed this result', null, {'data-v':x[0]}))); }).join('') +
+    '</div></div></div>' + (left ? '<div class="acts">' + btn('primary', 'Mark all ' + left + ' reviewed', 'abnAll', 'Record that you reviewed all ' + left + ' results', 'check') + btn('secondary-main', 'Repeat on a requisition', 'ask', 'Add repeat kidney tests to a requisition', 'checklist', {'data-v':'req'}) + '</div>' : '');
+};
+A.overdue = function(){
+  var s = fs('overdue'); s.x = s.x || {};
+  var L = [
+    ['eye', 'Retinal eye exam', 'Due March 2026, 8 months overdue. Last: mild background retinopathy.', [['ref', 'Refer to ophthalmology'], ['else', 'Done elsewhere']]],
+    ['fit', 'Colorectal screening (FIT)', 'Due June 2025. Last FIT negative, June 2023.', [['order', 'Order FIT'], ['else', 'Done elsewhere']]],
+    ['foot', 'Diabetic foot exam', 'Due 6 November 2026, 2 weeks overdue.', [['visit', 'Do it in today\'s visit']]],
+    ['vax', 'Influenza vaccine', 'None recorded this season.', [['remind', 'Remind Jordan'], ['else', 'Done elsewhere']]]
+  ];
+  var W = {ref:'Referral drafted for you to sign', else:'Marked done elsewhere', order:'FIT added to the requisition', visit:'Added to today\'s visit', remind:'Reminder drafted for Jordan\'s portal'};
+  return '<p class="lead">4 things are overdue.</p><div class="card"><div class="card-bd"><div class="rows">' +
+    L.map(function(x){ return row(esc(x[1]) + c('overdue', x[0]), esc(x[2]) + (s.x[x[0]] ? '<br><b style="color:var(--ink);font-weight:500">' + W[s.x[x[0]]] + ' by you</b>' : ''),
+      s.x[x[0]] ? tag('success', 'Done', '', 'check') : x[3].map(function(o, j){ return sbtn(j ? 'tertiary-main' : 'secondary-main', o[1], 'odAct', o[1] + ': ' + x[1], null, {'data-v':x[0] + ':' + o[0]}); }).join('')); }).join('') +
+    '</div></div></div><p class="fine">"Done elsewhere" asks for the date and place, so the record stays complete.</p>';
+};
+A.preventive = function(){
+  var L = [['Colorectal screening', 'Overdue', 'warning', 'Last FIT June 2023', 'fit'], ['Retinal eye exam', 'Overdue', 'warning', 'Last March 2025', 'eye'], ['Influenza vaccine', 'Not recorded', 'neutral', 'This season', 'vax'], ['Shingles vaccine', 'Not recorded', 'neutral', 'Recommended from age 50', 'vax'],
+    ['Pneumococcal vaccine', 'Up to date', 'success', 'Given 2024', 'vax'], ['Cholesterol', 'Up to date', 'success', 'Checked 18 November 2026', 'lipids'], ['Kidney function', 'Up to date', 'success', 'Checked 18 November 2026', 'egfr'], ['Blood pressure', 'Up to date', 'success', 'Checked 28 October 2026', 'lastnote']];
+  var t = SC.html.apply(SC, ['Table', {'aria-label':'Preventive care'}, ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Care'], ['TableHead', {}, 'Last'], ['TableHead', {}, 'Status']]], ['TableBody', {}].concat(L.map(function(x){
+    return ['TableRow', {}, ['TableCell', {}, SC.raw('<span style="color:var(--ink)">' + esc(x[0]) + '</span>' + c('preventive', x[4]))], ['TableCell', {}, ['TableCellContent', {label:x[3]}]], ['TableCell', {}, ['Tag', {color:x[2]}, x[1]]]]; }))]);
+  return '<p class="lead">2 overdue, 2 not recorded, 4 up to date.</p><div class="card"><div class="tbl-wrap">' + t + '</div></div>' +
+    '<div class="acts">' + btn('secondary-main', 'Set up recalls for these', 'ask', 'Set up recalls for what is overdue', 'clock-time-add', {'data-v':'recalls'}) + '</div>';
+};
+A.graph = function(){
+  var ch = SC.html('LineChart', {label:'Hemoglobin A1c, March 2025 to November 2026', categories:['Mar 2025', 'Jul 2025', 'Nov 2025', 'Mar 2026', 'Jul 2026', 'Nov 2026'], series:[{label:'A1c (%)', data:[7.1, 7.4, 7.6, 7.9, 8.1, 8.4]}], height:220, max:10, references:[{value:7, label:'Target 7.0%'}], formatValue:function(v){ return v.toFixed(1) + '%'; }});
+  return '<p class="lead">A1c has risen at every result: from 7.1% in March 2025 to 8.4% on 18 November' + c('graph', 'a1cAll') + c('graph', 'a1c') + ', 1.4 points above target.</p>' +
+    '<div class="card"><div class="card-hd"><h3>Hemoglobin A1c</h3><span class="sp"></span>' + tag('neutral', '6 results · LifeLabs') + '</div><div class="card-bd chartbox">' + ch + '</div></div>' +
+    '<div class="acts">' + btn('primary', 'Add A1c to the requisition', 'ask', 'Add the next A1c to a lab requisition', 'checklist', {'data-v':'req'}) + btn('secondary-main', 'Explain to Jordan', 'ask', 'Draft a plain-language explanation for Jordan', 'user', {'data-v':'explain'}) + '</div>';
+};
+A.req = function(){
+  var s = fs('req'); if(!s.t) s.t = {a1c:true, kidney:true, acr:false};
+  var T = [['a1c', 'Hemoglobin A1c', 'Due February 2027, 3 months from the last', 'a1c'], ['kidney', 'Creatinine, eGFR and potassium', 'Repeat in 1 to 2 weeks: lower kidney function and potassium 5.3', 'egfr'], ['acr', 'Urine albumin-to-creatinine ratio', 'Repeat in 3 months to confirm', 'acr']];
+  var n = T.filter(function(x){ return s.t[x[0]]; }).length;
+  return '<p class="lead">A1c is on a new outpatient lab requisition. Cedar suggests two more from the 18 November results; choose what goes on it.</p>' +
+    '<div class="card"><div class="card-hd">' + I('checklist') + '<h3>Outpatient laboratory requisition</h3><span class="sp"></span>' + tag(s.sent ? 'success' : 'warning', s.sent ? 'Signed' : 'Draft · not sent', '', s.sent ? 'check' : 'clock-time') + '</div><div class="card-bd"><div class="rows">' +
+    T.map(function(x){ return row(esc(x[1]) + c('req', x[3]), esc(x[2]), s.sent ? (s.t[x[0]] ? tag('success', 'On the requisition') : tag('neutral', 'Not added')) : SC.html('Chip', {'data-act':'reqT', 'data-v':x[0], selected:!!s.t[x[0]], title:(s.t[x[0]] ? 'Take ' : 'Put ') + x[1] + (s.t[x[0]] ? ' off' : ' on') + ' the requisition'}, s.t[x[0]] ? 'On' : 'Add')); }).join('') +
+    '</div><p class="fine">' + PT.name + ' · LifeLabs, any location · Copy to Dr. Pannozzo</p></div></div>' +
+    (s.sent ? done('Signed by you, ' + s.sent + '. Test mode: nothing is sent to the lab.') : '<div class="acts">' + btn('primary', 'Sign the requisition (' + n + ' test' + (n === 1 ? '' : 's') + ')', 'reqSign', 'Sign the requisition and send it to Jordan and the lab', 'signature', n ? {} : {disabled:true}) + '</div>');
+};
+A.note = function(){
+  var s = fs('note');
+  return '<p class="lead">A draft from the record, in your template' + c('note', 'lastnote') + '. Assessment and plan stay yours to write after the visit.</p>' +
+    '<div class="card notedraft"><div class="card-hd">' + I('note') + '<h3>Visit note · ' + DAY + '</h3><span class="sp"></span>' + tag(s.open ? 'neutral' : 'warning', s.open ? 'In the note editor' : 'Draft · not in the chart', '', s.open ? 'note' : 'clock-time') + '</div><div class="card-bd">' +
+    '<div class="sec"><p class="h">Reason for visit</p><p style="color:var(--ink)">Diabetes follow-up and review of results from 18 November.' + c('note', 'booking') + '</p></div>' +
+    '<div class="sec"><p class="h">Since last visit</p><p style="color:var(--ink)">Losartan increased to 100 mg daily by Dr. A. Chen, internal medicine, 3 November' + c('note', 'pnLos') + '. Clarithromycin 500 mg twice daily for 7 days from a walk-in clinic, 12 November' + c('note', 'pnClar') + '.</p></div>' +
+    '<div class="sec"><p class="h">Results</p><p style="color:var(--ink)">A1c 8.4% (8.1% in July)' + c('note', 'a1c') + '. eGFR 58 (72 in July)' + c('note', 'egfr') + '. Urine albumin-to-creatinine ratio 6.2 mg/mmol' + c('note', 'acr') + '. Potassium 5.3 mmol/L' + c('note', 'k') + '.</p></div>' +
+    '<div class="sec"><p class="h">Subjective and examination</p><p class="yours">Filled in from the visit recording once the call starts.</p></div>' +
+    '<div class="sec"><p class="h">Assessment and plan</p><p class="yours">Yours to write. Cedar doesn\'t suggest a diagnosis or treatment.</p></div></div></div>' +
+    (s.open ? done('Opened in the note editor by you. Nothing reaches the chart until you sign.') : '<div class="acts">' + btn('primary', 'Open in the note editor', 'noteOpen', 'Open this draft in the note editor to finish and sign', 'edit') + btn('secondary-main', 'Copy', 'copy', 'Copy the draft text', 'file') + '</div>');
+};
+A.sick = function(){
+  var s = fs('sick');
+  return '<p class="lead">Losartan is on the sick-day list, and so are two of ' + PT.first + '\'s other medicines' + c('sick', 'chartmeds') + c('sick', 'pnLos') + '. A handout in plain language' + c('sick', 'sick') + ':</p>' +
+    '<div class="handout"><h4>If you are sick and can\'t keep fluids down</h4><p>If you are vomiting, have diarrhea, or can\'t eat or drink normally, <b>stop these medicines</b> until you have been eating and drinking normally for 24 to 48 hours:</p>' +
+    '<ul><li>Losartan (blood pressure)</li><li>Metformin (diabetes)</li><li>Empagliflozin (diabetes)</li></ul>' +
+    '<p>Keep taking atorvastatin. Drink small sips of fluid often. Check your blood sugar more often if you can.</p><p style="margin-top:8px">Call the clinic if you are sick for more than 2 days. Call 9-1-1 if you are confused, very drowsy or can\'t keep any fluids down.</p></div>' +
+    (s.sent ? done('Sent to ' + PT.first + '\'s patient portal by you, ' + s.sent + '. Test mode: nothing is sent.') : '<div class="acts">' + btn('primary', 'Review and send to Jordan', 'sickSend', 'Send this handout to Jordan\'s patient portal after you review it', 'send') + btn('secondary-main', 'Print', 'noop', 'Print the handout; not part of this demo', 'file') + '</div>') +
+    '<p class="fine">Grade 6 reading level. Based on Diabetes Canada\'s sick-day medicine list.</p>';
+};
+A.recalls = function(){
+  var s = fs('recalls'); if(!s.r) s.r = {k:true, a1c:true, bp:true, eye:true};
+  var L = [['k', 'Kidney function and potassium', 'In 2 weeks · 4 December 2026', 'egfr'], ['bp', 'Blood pressure check', 'In 4 weeks · 18 December 2026', 'lastnote'], ['a1c', 'Hemoglobin A1c', 'In 3 months · 18 February 2027', 'a1c'], ['eye', 'Eye exam referral follow-up', 'In 3 months · 20 February 2027', 'eye']];
+  var n = L.filter(function(x){ return s.r[x[0]]; }).length;
+  return '<p class="lead">' + n + ' recall' + (n === 1 ? '' : 's') + ' proposed. ' + PT.first + ' gets a reminder in his portal, and they show on your recall list.</p><div class="card"><div class="card-bd"><div class="rows">' +
+    L.map(function(x){ return row(esc(x[1]) + c('recalls', x[3]), esc(x[2]), s.made ? (s.r[x[0]] ? tag('success', 'Recall set', '', 'check') : tag('neutral', 'Skipped')) : SC.html('Chip', {'data-act':'recT', 'data-v':x[0], selected:!!s.r[x[0]], title:(s.r[x[0]] ? 'Skip' : 'Keep') + ' this recall'}, s.r[x[0]] ? 'On' : 'Off')); }).join('') +
+    '</div></div></div>' + (s.made ? done(n + ' recall' + (n === 1 ? '' : 's') + ' created by you, ' + s.made + '.') : '<div class="acts">' + btn('primary', 'Create ' + n + ' recall' + (n === 1 ? '' : 's'), 'recMake', 'Create these recalls and reminders', 'clock-time-add', n ? {} : {disabled:true}) + '</div>');
+};
+A.explain = function(){
+  var s = fs('explain');
+  var txt = s.txt || ('Hi Jordan, here are your test results from 18 November.\n\nYour average blood sugar (A1c) is 8.4%. It has gone up a little at each test this past year, from 7.1%. We aim for 7.0% or lower.\n\nYour kidney test is lower than in July, and there is a small amount of protein in your urine. Your potassium is slightly high. We will repeat these tests in 1 to 2 weeks to check them.\n\nYour cholesterol is a bit above where we want it.\n\nWe will talk about all of this at your visit today. — Dr. Pannozzo');
+  return '<p class="lead">A message for ' + PT.first + ' in plain words' + c('explain', 'a1c') + c('explain', 'egfr') + c('explain', 'acr') + c('explain', 'k') + c('explain', 'lipids') + '. Edit it before it goes.</p>' +
+    '<div class="msg" id="msg" contenteditable="' + (s.sent ? 'false' : 'true') + '" role="textbox" aria-multiline="true" aria-label="Message to Jordan" style="white-space:pre-wrap">' + esc(txt) + '</div>' +
+    (s.sent ? done('Sent to ' + PT.first + '\'s patient portal by you, ' + s.sent + '. Test mode: nothing is sent.') : '<div class="acts">' + btn('primary', 'Send after the visit', 'expSend', 'Send this message to Jordan\'s portal once you have signed today\'s note', 'send') + tag('neutral', 'Grade 6 reading level') + '</div>') +
+    '<p class="fine">Cedar explains the results; it doesn\'t add new advice.</p>';
+};
+A.billing = function(){
+  var s = fs('billing'), C = [['250', 'Diabetes mellitus', 'Today\'s booking is a diabetes follow-up, and the results reviewed are for diabetes.'], ['401', 'Essential hypertension', 'If the visit is mainly about the losartan change.'], ['272', 'Disorders of lipoid metabolism', 'If the visit is mainly about cholesterol.']];
+  var pick = s.pick ? C.filter(function(x){ return x[0] === s.pick; })[0] : null;
+  return '<p class="lead">One code, from the booking and problem list' + c('billing', 'booking') + c('billing', 'problems') + '. Confirm it after the visit; the note can change it.</p>' +
+    '<div class="risk"><p style="font-size:14px;color:var(--soft)">Suggested diagnostic code' + c('billing', 'icd') + '</p><p class="bigval">' + (pick || C[0])[0] + ' <span style="font-weight:400">' + (pick || C[0])[1] + '</span></p><p style="margin-top:4px;color:var(--ink)">' + (pick || C[0])[2] + '</p>' +
+    (pick ? done('On the claim, chosen by you, ' + s.at + '. Test mode: no claim is sent to the Medical Services Plan.') :
+      '<div class="acts">' + btn('primary', 'Use 250', 'billPick', 'Put 250 Diabetes mellitus on the claim', 'check', {'data-v':'250'}) + '</div>') + '</div>' +
+    (pick ? '' : '<p class="sec-t" style="margin-top:14px">Other codes that fit</p><div class="card"><div class="card-bd"><div class="rows">' + C.slice(1).map(function(x){ return row('<b style="font-variant-numeric:tabular-nums">' + x[0] + '</b> ' + esc(x[1]), esc(x[2]), sbtn('secondary-main', 'Use ' + x[0], 'billPick', 'Put ' + x[0] + ' ' + x[1] + ' on the claim instead', null, {'data-v':x[0]})); }).join('') + '</div></div></div>');
+};
+A.refuse = function(t){ return '<p class="lead">This conversation is about ' + PT.name + ' only, so Cedar won\'t look at anyone else\'s record here. Open the other patient\'s chart to ask about them.</p>'; };
+A.free = function(){ return '<p class="lead">In this demo, Cedar answers the questions below. In Simple it answers any question about the open record the same way: from the record, with its sources, leaving every decision to you.</p>' +
+  '<div class="chips">' + Object.keys(F).slice(0, 6).map(function(k){ return SC.html('Chip', {'data-act':'ask', 'data-v':k, title:'Ask: ' + F[k].q}, F[k].q); }).join('') + '</div>'; };
+
+/* ============================================================================
+   Rendering
+   ========================================================================= */
+function paintSide(){
+  var conn = Object.keys(SYS).map(function(k){ return '<li title="Connected · ' + esc(SYS[k][1]) + '"><span class="ok">' + ic('check-circle', 20) + '</span><span class="m"><b>' + esc(SYS[k][0]) + '</b><span>' + esc(SYS[k][1]) + '</span></span></li>'; }).join('');
+  var asked = ST.turns.filter(function(t){ return t.k !== 'refuse' && t.k !== 'free'; });
+  document.getElementById('side').innerHTML =
+    '<div class="pt">' + SC.html('AvatarCircle', {name:PT.name, size:'large', decorative:true}) + '<span class="pn"><b>' + PT.name + '</b><span>' + PT.age + ' · ' + PT.sex + '</span></span></div>' +
+    '<div style="margin-top:10px">' + tag('purple', 'Fictional patient', 'Made up for this demo') + '</div>' +
+    '<div class="facts"><div>' + I('calendar', 18) + '<span>Video visit today, 2:30 p.m.</span></div><div>' + I('medical', 18) + '<span>Type 2 diabetes · high blood pressure · high cholesterol</span></div><div>' + I('medication', 18) + '<span>6 medications across the chart and PharmaNet</span></div></div>' +
+    '<h3>Cedar can read</h3><ul class="conn" style="padding:0;margin:0">' + conn + '</ul>' +
+    '<div class="scope">' + I('shield-check') + '<span>Cedar answers from ' + PT.first + '\'s record only. It drafts and suggests; you decide. Every question shows in ' + PT.first + '\'s access log.</span></div>' +
+    (asked.length ? '<h3>In this conversation</h3><ul class="hist">' + asked.map(function(t){ return '<li><button type="button" data-act="jump" data-v="' + t.id + '" title="Go back to this answer">' + esc(t.q) + '</button></li>'; }).join('') + '</ul>' : '');
+}
+function hello(){
+  return '<div class="hello fade"><span class="big-mark">' + ic('ai', 30) + '</span><h1>Good afternoon, Dr. Pannozzo</h1>' +
+    '<p>' + PT.name + '\'s record is open. Ask anything about it: the Simple chart, PharmaNet, lab results, the Clinical Data Exchange and faxed reports. Cedar shows where every answer comes from and never decides for you.</p></div>' +
+    '<div class="groups fade" style="animation-delay:.08s">' + GROUPS.map(function(g){
+      return '<section class="grp"><h2>' + I(g[1]) + esc(g[0]) + '</h2>' + g[2].map(function(k){ return '<button type="button" class="sugg" data-act="ask" data-v="' + k + '" title="Ask Cedar: ' + esc(F[k].q) + '">' + esc(F[k].q) + I('arrow-direction-right', 16) + '</button>'; }).join('') + '</section>'; }).join('') + '</div>';
+}
+function turnHtml(t){
+  var fd = t.anim ? ' fade' : '';
+  var q = '<div class="q' + fd + '"><p class="qt">' + esc(t.q) + '</p><p class="meta">' + I('eye-on', 14) + 'Logged in ' + PT.first + '\'s access log · ' + t.at + '</p></div>';
+  if(t.pending){
+    var steps = ['Checking you are in ' + PT.first + '\'s circle of care'].concat((F[t.k] ? F[t.k].read : []).length ? ['Reading ' + F[t.k].read.join(', ')] : []).concat(['Writing the answer, with sources']);
+    return q + '<div class="a' + fd + '" id="' + t.id + '">' + mark() + '<div class="bd"><p class="who"><b>Cedar</b></p><ul class="think" style="margin:0;padding:0">' + steps.map(function(s, i){
+      return '<li>' + (i < t.step ? '<span class="ok">' + ic('check-circle', 16) + '</span>' : i === t.step ? '<span class="dot"></span>' : '<span class="dot" style="animation:none;border-top-color:var(--line)"></span>') + esc(s) + '</li>'; }).join('') + '</ul></div></div>';
+  }
+  var f = F[t.k], n = f ? f.src.length : 0, fb = t.fb;
+  var foot = '<div class="a-foot">' + (n ? '<span>' + n + ' source' + (n > 1 ? 's' : '') + '</span>' : '') + '<span class="sp"></span>' +
+    '<button type="button" class="fb" data-act="fb" data-v="' + t.id + ':up" aria-pressed="' + (fb === 'up') + '" title="Tell Cedar this answer was helpful">' + I('check', 16) + 'Helpful</button>' +
+    '<button type="button" class="fb" data-act="fb" data-v="' + t.id + ':down" aria-pressed="' + (fb && fb !== 'up') + '" title="Tell Cedar what was wrong; it helps train your own model">' + I('warning', 16) + 'Not right</button></div>' +
+    (fb === 'down' ? '<div class="why-wrong fade">' + ['Wrong facts', 'Missed something', 'Not useful'].map(function(r){ return SC.html('Chip', {'data-act':'fbWhy', 'data-v':t.id + ':' + r, title:'Report: ' + r}, r); }).join('') + '</div>' : '') +
+    (fb && fb !== 'up' && fb !== 'down' ? '<p class="fine fade">Thanks. "' + esc(fb) + '" is saved with this answer to improve your own Cedar model.</p>' : '') +
+    (fb === 'up' ? '<p class="fine fade">Thanks. Saved as a good example for your own Cedar model.</p>' : '');
+  return q + '<div class="a' + (ST.sel === t.id ? ' sel' : '') + '" id="' + t.id + '">' + mark() + '<div class="bd"><p class="who"><b>Cedar</b>' +
+    (n ? '<button type="button" class="read" data-act="srcOpen" data-v="' + t.id + '" title="Show the ' + n + ' entries Cedar read for this answer">' + ic('eye-on', 16) + 'Read ' + n + ' entr' + (n > 1 ? 'ies' : 'y') + '</button>' : '') + '</p>' +
+    '<div class="' + fd.trim() + '">' + (t.k === 'refuse' ? A.refuse() : t.k === 'free' ? A.free() : A[t.k]()) + '</div>' + (t.k === 'refuse' || t.k === 'free' ? '' : foot) + '</div></div>';
+}
+function paintThread(scrollId){
+  var th = document.getElementById('thread');
+  th.innerHTML = ST.turns.length ? ST.turns.map(turnHtml).join('') : hello();
+  ST.turns.forEach(function(t){ t.anim = false; });
+  if(scrollId){ var el = document.getElementById(scrollId); if(el){ var tw = document.getElementById('tw'); tw.scrollTop = Math.max(0, el.offsetTop - 120); } }
+}
+function paintComposer(){
+  var last = ST.turns[ST.turns.length - 1], nx = last && F[last.k] && !last.pending ? F[last.k].next.filter(function(k){ return !ST.turns.some(function(t){ return t.k === k; }); }) : [];
+  if(!nx.length && ST.turns.length) nx = Object.keys(F).filter(function(k){ return !ST.turns.some(function(t){ return t.k === k; }); }).slice(0, 3);
+  document.getElementById('composer').innerHTML = (nx.length ? '<div class="follow">' + nx.map(function(k){ return SC.html('Chip', {'data-act':'ask', 'data-v':k, title:'Ask Cedar: ' + F[k].q}, F[k].q); }).join('') + '</div>' : '') +
+    SC.html('MessageInput', {placeholder:'Ask Cedar about ' + PT.first + '…', label:'Ask Cedar', id:'ask'}) +
+    '<p class="foot">' + I('eye-on', 16) + 'Each question is one call to Cedar\'s free open interface, logged where ' + PT.first + ' can see it.</p>';
+  wireComposer();
+}
+function paintSrc(hl){
+  var el = document.getElementById('src'), t = ST.turns.filter(function(x){ return x.id === ST.sel; })[0];
+  if(!t || !F[t.k]){ el.innerHTML = ''; return; }
+  var f = F[t.k];
+  el.innerHTML = '<div class="src-hd">' + I('eye-on') + '<h2>Sources</h2><span class="sp"></span>' + btn('tertiary-main', '', 'srcClose', 'Close the sources panel', 'x', {'aria-label':'Close sources'}) + '</div>' +
+    '<p class="src-for">What Cedar read for <b>' + esc(t.q) + '</b></p><div class="src-list">' +
+    f.src.map(function(k, i){ var s = SRC[k]; return '<div class="s-item' + (hl === k ? ' hl' : '') + '" id="s-' + k + '"><div class="t"><span class="n">' + (i + 1) + '</span>' + tag('neutral', SYS_SHORT[s[0]]) + '</div><b>' + esc(s[1]) + '</b><span class="d">' + esc(s[2]) + '</span><blockquote>' + esc(s[3]) + '</blockquote></div>'; }).join('') +
+    '</div><p class="src-not">Cedar read only these ' + f.src.length + ' entries, not the rest of ' + PT.first + '\'s record.</p>';
+  if(hl){ var h = document.getElementById('s-' + hl); if(h) h.scrollIntoView({block:'center', behavior:'smooth'}); }
+}
+function paintAll(scrollId){ paintSide(); paintThread(scrollId); paintComposer(); paintSrc(); }
+
+/* ============================================================================
+   Asking
+   ========================================================================= */
+var TID = 0;
+function ask(k, text){
+  if(ST.busy) return;
+  var t = {id:'t' + (++TID), k:k, q:text || (F[k] ? F[k].q : text), at:now(), pending:!!F[k], step:0, anim:true};
+  ST.turns.push(t); ST.busy = true;
+  if(!F[k]){ ST.busy = false; paintAll(t.id); return; }
+  var steps = 2 + (F[k].read.length ? 1 : 0);
+  paintAll(t.id);
+  var i = 0, tick = function(){
+    i++; t.step = i;
+    if(i >= steps){ t.pending = false; t.anim = true; ST.busy = false; ST.sel = t.id; if(window.innerWidth > 1080) document.body.classList.remove('no-src'); paintAll(t.id); return; }   /* on narrow screens Sources opens only when asked */
+    paintThread(t.id); setTimeout(tick, 520);
+  };
+  setTimeout(tick, 420);
+}
+function askText(text){
+  var tl = text.toLowerCase(), k = null;
+  if(/\b(other patient|someone else|my wife|his wife|her husband|another patient|mary|smith|neighbou?r)\b/.test(tl) || (/\b[A-Z][a-z]+ [A-Z][a-z]+\b/.test(text) && !/Jordan|Reyes|Pannozzo|Chen|Singh/.test(text))) k = 'refuse';
+  else KEYS.some(function(p){ if(p[1].test(tl)){ k = p[0]; return true; } });
+  if(k === 'refuse' || !k){ ST.turns.push({id:'t' + (++TID), k:k || 'free', q:text, at:now(), anim:true}); paintAll('t' + TID); return; }
+  ask(k, text);
+}
+function wireComposer(){
+  var box = document.getElementById('ask'); if(!box) return;
+  var root = box.closest('.sv-message-input') || box.parentElement;
+  var send = function(){ var v = (box.value || '').trim(); if(!v || ST.busy) return; askText(v); };
+  box.addEventListener('keydown', function(e){ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); } });
+  root.querySelectorAll('button').forEach(function(b){
+    var lab = b.getAttribute('aria-label') || '';
+    if(/attach/i.test(lab)){ b.remove(); return; }
+    if(/send/i.test(lab)){ b.title = 'Ask Cedar'; b.addEventListener('click', function(e){ e.preventDefault(); send(); }); box.addEventListener('input', function(){ b.disabled = !box.value.trim(); }); }
+  });
+}
+function rerender(k){ var t = ST.turns.filter(function(x){ return x.k === k; }).pop(); paintThread(); paintSide(); return t; }
+
+document.addEventListener('click', function(e){
+  var a = e.target.closest('[data-act]'); if(!a || a.disabled) return;
+  var act = a.getAttribute('data-act'), v = a.getAttribute('data-v') || '';
+  var keep = document.getElementById('tw').scrollTop, stay = function(){ document.getElementById('tw').scrollTop = keep; };
+  switch(act){
+    case 'ask': ask(v); break;
+    case 'new': ST = {turns:[], sel:null, flows:{}, busy:false}; document.body.classList.add('no-src'); paintAll(); break;
+    case 'jump': var j = document.getElementById(v); if(j) document.getElementById('tw').scrollTop = Math.max(0, j.offsetTop - 120); document.body.classList.remove('side-open'); break;
+    case 'side': document.body.classList.toggle('side-open'); break;
+    case 'srcOpen': ST.sel = v; document.body.classList.remove('no-src'); paintThread(); stay(); paintSrc(); break;
+    case 'srcClose': document.body.classList.add('no-src'); break;
+    case 'cite': var tt = ST.turns.filter(function(x){ return x.k === a.getAttribute('data-f'); }).pop(); if(tt){ ST.sel = tt.id; document.body.classList.remove('no-src'); paintThread(); stay(); paintSrc(v); } break;
+    case 'fb': var p = v.split(':'), ft = ST.turns.filter(function(x){ return x.id === p[0]; })[0]; if(ft){ ft.fb = ft.fb === p[1] ? null : p[1]; paintThread(); stay(); } break;
+    case 'fbWhy': var q = v.split(':'), wt = ST.turns.filter(function(x){ return x.id === q[0]; })[0]; if(wt){ wt.fb = q[1]; paintThread(); stay(); } break;
+    case 'riskAdd': fs('risk').added = now(); paintThread(); stay(); break;
+    case 'reconPick': var rp = v.split(':'); fs('recon').pick[rp[0]] = rp[1]; paintThread(); stay(); break;
+    case 'reconApply': fs('recon').applied = now(); paintThread(); stay(); break;
+    case 'ddiAct': var dp = v.split(':'); fs('ddi').x[dp[0]] = dp[1]; paintThread(); stay(); break;
+    case 'abnRev': fs('abnormal').r[v] = 1; paintThread(); stay(); break;
+    case 'abnAll': ['egfr', 'acr', 'k'].forEach(function(k){ fs('abnormal').r[k] = 1; }); paintThread(); stay(); break;
+    case 'odAct': var op = v.split(':'); fs('overdue').x[op[0]] = op[1]; paintThread(); stay(); break;
+    case 'reqT': fs('req').t[v] = !fs('req').t[v]; paintThread(); stay(); break;
+    case 'reqSign': fs('req').sent = now(); paintThread(); stay(); break;
+    case 'noteOpen': fs('note').open = 1; paintThread(); stay(); break;
+    case 'copy': a.querySelector('span:last-child') && (a.lastChild.textContent = 'Copied'); break;
+    case 'sickSend': fs('sick').sent = now(); paintThread(); stay(); break;
+    case 'recT': fs('recalls').r[v] = !fs('recalls').r[v]; paintThread(); stay(); break;
+    case 'recMake': fs('recalls').made = now(); paintThread(); stay(); break;
+    case 'expSend': var m = document.getElementById('msg'); if(m) fs('explain').txt = m.innerText; fs('explain').sent = now(); paintThread(); stay(); break;
+    case 'billPick': fs('billing').pick = v; fs('billing').at = now(); paintThread(); stay(); break;
+  }
+});
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('t-logo').innerHTML = SC.html('Logo', {lockup:'horizontal', height:30});
+  document.getElementById('t-mark').innerHTML = ic('ai', 18);
+  document.getElementById('t-side').innerHTML = btn('tertiary-main', '', 'side', 'Show the patient and the connected sources', 'user', {'aria-label':'Patient and sources'});
+  document.getElementById('t-demo').innerHTML = tag('information', 'Demo · fictional patient · nothing is saved', 'Nothing here creates a record, an order, a message or a claim', 'shield-check');
+  document.getElementById('t-new').innerHTML = btn('secondary-main', 'New conversation', 'new', 'Clear this conversation and start again', 'note-add');
+  paintAll();
+});
+</script>
+</body>
+</html>
