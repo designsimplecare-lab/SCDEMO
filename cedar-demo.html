@@ -11,6 +11,9 @@
   One test patient, seven steps: triage intake, note drafting, diagnostic code, Ask Cedar (physician), Ask Cedar (patient),
   access log, and how Cedar runs. Nothing here is saved or sent. Built from the SimpleCare design system (assets/design-system).
   Words: "Cedar, Simple's clinical assistant", never a chatbot.
+  Presentation (Ani, 19 Nov, "make this presentation more amazing"): a cover, product screens floating on Cedar's brand gradient
+  inside a portal window or a phone, numbered "What to notice" markers, Cedar's answers typing out, the note drafting itself,
+  Play this step / Play the tour for recording, and a full-screen Present mode.
 -->
 <style>
   :root{
@@ -18,6 +21,7 @@
     --paper:var(--color-grey-200); --panel:var(--color-grey-0); --wash:var(--color-grey-50); --line:var(--color-grey-300);
     --brand:var(--color-navy-900); --brand-wash:var(--color-navy-100);
     --crit:var(--color-red-700); --crit-wash:var(--color-red-50); --crit-line:var(--color-red-200);
+    --canvas:linear-gradient(135deg, color-mix(in srgb, var(--color-brand-ai-start) 85%, var(--panel)) 0%, color-mix(in srgb, var(--color-brand-ai-start) 35%, var(--panel)) 45%, color-mix(in srgb, var(--color-brand-ai-end) 70%, var(--panel)) 100%);
   }
   *{box-sizing:border-box;}
   html,body{margin:0;}
@@ -27,89 +31,112 @@
   .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
 
   /* ---- top bar ---- */
-  .cd-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;min-height:64px;padding:8px 24px;background:var(--panel);border-bottom:1px solid var(--line);}
+  .cd-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;min-height:64px;padding:8px 24px;background:color-mix(in srgb, var(--panel) 88%, transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
   .cd-top .cd-logo{display:inline-flex;align-items:center;}
   .cd-top .cd-logo svg{height:32px;width:auto;}
   .cd-top .cd-name{display:flex;align-items:center;gap:8px;padding-left:16px;border-left:1px solid var(--line);font-size:16px;font-weight:700;color:var(--ink);white-space:nowrap;}
-  .cd-top .cd-name .cd-mark{display:inline-flex;width:24px;height:24px;color:var(--brand);}
-  .cd-top .cd-name .cd-mark svg{width:24px;height:24px;}
   .cd-top .cd-name small{font-size:15px;font-weight:400;color:var(--soft);}
   .cd-top .cd-sp{flex:1;}
+  .mark{display:inline-flex;align-items:center;justify-content:center;flex:none;width:32px;height:32px;border-radius:var(--radius-xs);background:var(--gradient-ai);color:var(--color-navy-900);}
+  .mark svg{width:18px;height:18px;}
 
   /* ---- shell ---- */
-  .cd-shell{display:grid;grid-template-columns:288px minmax(0,1fr);gap:24px;max-width:1440px;margin:0 auto;padding:24px;}
-  .cd-steps{position:sticky;top:88px;align-self:start;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px;}
-  .cd-steps ol{list-style:none;margin:0;padding:0;}
-  .cd-step{display:flex;gap:12px;width:100%;padding:10px 12px;border:0;border-radius:var(--radius-xs);background:none;text-align:left;cursor:pointer;color:var(--body);}
-  .cd-step:hover{background:var(--wash);}
+  .cd-shell{display:grid;grid-template-columns:272px minmax(0,1fr);gap:28px;max-width:1480px;margin:0 auto;padding:24px;}
+  body.present .cd-shell{grid-template-columns:minmax(0,1fr);max-width:1600px;}
+  body.present .cd-steps{display:none;}
+
+  /* step timeline */
+  .cd-steps{position:sticky;top:88px;align-self:start;padding:8px 0;}
+  .cd-steps ol{list-style:none;margin:0;padding:0;position:relative;}
+  .cd-steps ol::before{content:"";position:absolute;left:25px;top:24px;bottom:24px;width:2px;background:var(--line);}
+  .cd-step{position:relative;display:flex;gap:12px;width:100%;padding:10px 12px;border:0;border-radius:var(--radius-xs);background:none;text-align:left;cursor:pointer;color:var(--body);}
+  .cd-step:hover{background:color-mix(in srgb, var(--panel) 70%, transparent);}
   .cd-step:focus-visible{outline:2px solid var(--brand);outline-offset:-2px;}
-  .cd-step[aria-current="step"]{background:var(--brand-wash);}
-  .cd-step .n{display:inline-flex;align-items:center;justify-content:center;flex:none;width:28px;height:28px;border-radius:var(--radius-round);background:var(--wash);border:1px solid var(--line);font-size:14px;font-weight:700;color:var(--ink);}
-  .cd-step[aria-current="step"] .n{background:var(--brand);border-color:var(--brand);color:var(--color-grey-0);}
+  .cd-step[aria-current="step"]{background:var(--panel);box-shadow:var(--shadow-elevation-1);}
+  .cd-step .n{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;flex:none;width:28px;height:28px;border-radius:var(--radius-round);background:var(--panel);border:2px solid var(--line);font-size:14px;font-weight:700;color:var(--soft);}
+  .cd-step .n svg{width:16px;height:16px;}
+  .cd-step.seen .n{border-color:var(--brand);color:var(--brand);}
+  .cd-step[aria-current="step"] .n{background:var(--brand);border-color:var(--brand);color:var(--color-grey-0);box-shadow:0 0 0 4px var(--brand-wash);}
   .cd-step .t{display:block;font-size:15px;font-weight:700;line-height:20px;color:var(--ink);}
   .cd-step .w{display:block;font-size:14px;line-height:20px;color:var(--soft);}
-  .cd-steps .cd-safe{margin:8px 4px 4px;padding:12px;border-top:1px solid var(--line);font-size:14px;line-height:20px;color:var(--soft);}
+  .cd-steps .cd-safe{display:flex;gap:8px;margin:16px 12px 0;padding-top:16px;border-top:1px solid var(--line);font-size:14px;line-height:20px;color:var(--soft);}
 
-  .cd-main{min-width:0;}
+  .cd-main{min-width:0;outline:none;}
   .cd-head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 24px;margin:4px 0 20px;}
   .cd-head .txt{flex:1 1 520px;min-width:0;}
-  .cd-eyebrow{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--soft);margin-bottom:6px;}
-  .cd-head h1{font-size:28px;line-height:36px;font-weight:700;color:var(--ink);}
-  .cd-head .lead{margin-top:6px;max-width:72ch;font-size:16px;line-height:24px;color:var(--body);}
-  .cd-tags{display:flex;flex-wrap:wrap;gap:8px;}
-  .cd-foot{display:flex;align-items:center;gap:12px;margin-top:24px;padding-top:16px;border-top:1px solid var(--line);}
+  .cd-eyebrow{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--soft);margin-bottom:6px;}
+  .cd-head h1{font-size:32px;line-height:40px;font-weight:700;letter-spacing:-.01em;color:var(--ink);}
+  .cd-head .lead{margin-top:8px;max-width:72ch;font-size:17px;line-height:26px;color:var(--body);}
+  .cd-head .acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  .cd-foot{display:flex;align-items:center;gap:12px;margin-top:28px;padding-top:16px;border-top:1px solid var(--line);}
   .cd-foot .sp{flex:1;}
   .cd-foot .pos{font-size:14px;color:var(--soft);}
 
+  /* ---- the canvas: product screens float on Cedar's gradient ---- */
+  .canvas{position:relative;padding:40px;border-radius:var(--radius-lg);background:var(--canvas);overflow:hidden;}
+  .canvas::after{content:"";position:absolute;inset:auto -120px -160px auto;width:420px;height:420px;border-radius:var(--radius-round);background:radial-gradient(closest-side, color-mix(in srgb, var(--panel) 55%, transparent), transparent);pointer-events:none;}
+  .canvas > *{position:relative;z-index:1;}
+  .canvas-cap{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:14px;font-weight:500;color:var(--color-navy-800);}
+  .canvas-cap .ic20{color:var(--color-navy-800);}
+
+  /* app window (physician screens) */
+  .win{background:var(--paper);border-radius:var(--radius-sm);box-shadow:var(--shadow-elevation-3);overflow:hidden;border:1px solid color-mix(in srgb, var(--color-grey-900) 10%, transparent);}
+  .win-bar{display:flex;align-items:center;gap:12px;min-height:52px;padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--line);}
+  .win-bar .dots{display:inline-flex;gap:6px;}
+  .win-bar .dots i{width:10px;height:10px;border-radius:var(--radius-round);background:var(--line);}
+  .win-bar .lg svg{height:22px;width:auto;}
+  .win-bar .win-t{font-size:14px;font-weight:500;color:var(--soft);padding-left:12px;border-left:1px solid var(--line);}
+  .win-bar .sp{flex:1;}
+  .pt-chip{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);}
+  .pt-chip span{color:var(--soft);}
+  .win-bd{padding:20px;}
+
+  /* phone (patient screens) */
+  .phone{position:relative;width:380px;max-width:100%;margin:0 auto;border:10px solid var(--color-grey-900);border-radius:var(--radius-3xl);background:var(--panel);overflow:hidden;box-shadow:var(--shadow-elevation-3);}
+  .phone::before{content:"";position:absolute;top:6px;left:50%;width:84px;height:6px;margin-left:-42px;border-radius:var(--radius-round);background:var(--color-grey-900);z-index:2;}
+  .phone-bar{display:flex;align-items:center;gap:8px;min-height:56px;padding:16px 16px 8px;border-bottom:1px solid var(--line);}
+  .phone-bar .lg svg{height:22px;width:auto;}
+  .phone-bar .who{margin-left:auto;font-size:14px;color:var(--soft);}
+  .phone-bd{min-height:560px;padding:20px 18px 22px;display:flex;flex-direction:column;gap:16px;}
+  .phone-bd > *{min-width:0;}
+  .phone-bd .q{font-size:20px;line-height:28px;font-weight:700;color:var(--ink);}
+  .phone-bd .hint{font-size:14px;line-height:20px;color:var(--soft);}
+  .split{display:grid;grid-template-columns:400px minmax(0,1fr);gap:32px;align-items:start;}
+  .split .side{display:grid;gap:16px;}
+
+  /* ---- what to notice ---- */
+  .mk{display:inline-flex;align-items:center;justify-content:center;flex:none;width:24px;height:24px;border-radius:var(--radius-round);background:var(--brand);color:var(--color-grey-0);font-size:14px;font-weight:700;line-height:1;box-shadow:0 0 0 3px color-mix(in srgb, var(--brand) 18%, transparent);vertical-align:middle;}
+  .mk.pulse{animation:mkpulse 1.6s ease-out 2;}
+  @keyframes mkpulse{0%{box-shadow:0 0 0 0 color-mix(in srgb, var(--brand) 45%, transparent);}100%{box-shadow:0 0 0 12px transparent;}}
+  .notice{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px;}
+  .notice li{list-style:none;display:flex;gap:12px;align-items:flex-start;padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-xs);}
+  .notice li b{display:block;font-size:15px;line-height:22px;color:var(--ink);}
+  .notice li span.s{display:block;margin-top:2px;font-size:14px;line-height:20px;color:var(--soft);}
+  .notice-h{display:flex;align-items:center;gap:8px;margin:24px 0 0;font-size:14px;font-weight:700;color:var(--soft);}
+
   /* ---- shared pieces ---- */
   .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-xs);}
-  .card-hd{display:flex;align-items:center;gap:10px;min-height:56px;padding:12px 20px;border-bottom:1px solid var(--line);}
-  .card-hd h2,.card-hd h3{font-size:16px;line-height:22px;font-weight:700;color:var(--ink);}
+  .card-hd{display:flex;flex-wrap:wrap;align-items:center;gap:10px;min-height:56px;padding:12px 20px;border-bottom:1px solid var(--line);}
+  .card-hd h2,.card-hd h3{font-size:16px;line-height:22px;font-weight:700;color:var(--ink);white-space:nowrap;}
   .card-hd .sub{font-size:14px;color:var(--soft);}
   .card-hd > span > .sub{display:block;}
-  .card-hd h2,.card-hd h3{white-space:nowrap;}
-  .card-hd{flex-wrap:wrap;}
   .card-hd .sp{flex:1;}
   .card-bd{padding:16px 20px 20px;}
   .ic20{display:inline-flex;flex:none;width:20px;height:20px;color:var(--soft);}
   .ic20 svg{width:20px;height:20px;}
   .ai-chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:var(--radius-xs);background:var(--gradient-ai);color:var(--color-navy-900);font-size:14px;font-weight:500;white-space:nowrap;}
   .ai-chip svg{width:16px;height:16px;}
-  .cedar-av{display:inline-flex;align-items:center;justify-content:center;flex:none;width:32px;height:32px;border-radius:var(--radius-xs);background:var(--gradient-ai);color:var(--color-navy-900);}
-  .cedar-av svg{width:18px;height:18px;}
   .note-quiet{font-size:14px;line-height:20px;color:var(--soft);}
-  .two{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;align-items:start;}
-  .two.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+  .two{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start;}
   .stack{display:grid;gap:16px;}
-
-  /* ---- phone frame (patient screens) ---- */
-  .phone{width:380px;max-width:100%;margin:0 auto;border:10px solid var(--color-grey-900);border-radius:var(--radius-3xl);background:var(--panel);overflow:hidden;box-shadow:var(--shadow-elevation-2);}
-  .phone-bar{display:flex;align-items:center;gap:8px;min-height:52px;padding:8px 16px;border-bottom:1px solid var(--line);}
-  .phone-bar svg.sv-logo,.phone-bar .lg svg{height:22px;width:auto;}
-  .phone-bar .who{margin-left:auto;font-size:14px;color:var(--soft);}
-  .phone-bd{min-height:540px;padding:20px 18px 22px;display:flex;flex-direction:column;gap:16px;}
-  .phone-bd .q{font-size:20px;line-height:28px;font-weight:700;color:var(--ink);}
-  .phone-bd .hint{font-size:14px;line-height:20px;color:var(--soft);}
   .opts{display:flex;flex-direction:column;gap:8px;}
   .opts .sv-chip{justify-content:flex-start;width:100%;}
   .prog{display:flex;gap:4px;}
-  .prog i{flex:1;height:4px;border-radius:var(--radius-round);background:var(--line);}
+  .prog i{flex:1;height:4px;border-radius:var(--radius-round);background:var(--line);transition:background .3s;}
   .prog i.on{background:var(--brand);}
   .answered{display:flex;flex-wrap:wrap;gap:6px;}
   .ta{width:100%;min-height:96px;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius-xs);font:inherit;font-size:15px;line-height:22px;color:var(--ink);resize:vertical;}
   .ta:focus{outline:2px solid var(--brand);outline-offset:0;border-color:transparent;}
-
-  /* emergency screen */
-  .er{display:flex;flex-direction:column;gap:14px;padding:18px;border-radius:var(--radius-sm);background:var(--crit-wash);border:1px solid var(--crit-line);}
-  .er .er-ic{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border-radius:var(--radius-round);background:var(--crit);color:var(--color-grey-0);}
-  .er .er-ic svg{width:22px;height:22px;}
-  .er h2{font-size:24px;line-height:30px;font-weight:700;color:var(--crit);}
-  .er p{font-size:16px;line-height:24px;color:var(--ink);}
-  .er-call{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border:0;border-radius:var(--radius-control);background:var(--crit);color:var(--color-grey-0);font-size:17px;font-weight:700;cursor:pointer;}
-  .er-call svg{width:20px;height:20px;}
-
-  /* physician side panel during intake */
-  .alert-doc{border:1px solid var(--crit-line);border-left:4px solid var(--crit);border-radius:var(--radius-xs);background:var(--panel);}
   .rows{display:grid;}
   .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line);}
   .row:first-child{border-top:0;}
@@ -118,32 +145,46 @@
   .row .s{display:block;font-size:14px;line-height:20px;color:var(--soft);}
   .row .sv-tag{flex:none;}
 
-  /* note editor */
+  /* emergency */
+  .er{display:flex;flex-direction:column;gap:14px;padding:18px;border-radius:var(--radius-sm);background:var(--crit-wash);border:1px solid var(--crit-line);}
+  .er .er-ic{display:inline-flex;width:44px;height:44px;align-items:center;justify-content:center;border-radius:var(--radius-round);background:var(--crit);color:var(--color-grey-0);animation:erpulse 1.4s ease-out 3;}
+  @keyframes erpulse{0%{box-shadow:0 0 0 0 color-mix(in srgb, var(--crit) 45%, transparent);}100%{box-shadow:0 0 0 16px transparent;}}
+  .er .er-ic svg{width:22px;height:22px;}
+  .er h2{font-size:26px;line-height:32px;font-weight:700;color:var(--crit);}
+  .er p{font-size:16px;line-height:24px;color:var(--ink);}
+  .er-call{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border:0;border-radius:var(--radius-control);background:var(--crit);color:var(--color-grey-0);font-size:17px;font-weight:700;cursor:pointer;}
+  .er-call svg{width:20px;height:20px;}
+  .alert-doc{background:var(--panel);border:1px solid var(--crit-line);border-left:4px solid var(--crit);border-radius:var(--radius-xs);box-shadow:var(--shadow-elevation-2);}
+  .float{box-shadow:var(--shadow-elevation-2);}
+
+  /* note */
   .note-sec{padding:14px 0;border-top:1px solid var(--line);}
   .note-sec:first-child{border-top:0;padding-top:4px;}
   .note-sec .h{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:14px;font-weight:700;color:var(--soft);}
-  .note-sec .h .sp{flex:1;}
   .note-sec .ed{padding:8px 10px;margin:0 -10px;border-radius:var(--radius-xs);font-size:15px;line-height:23px;color:var(--ink);outline:none;}
   .note-sec .ed:hover{background:var(--wash);}
   .note-sec .ed:focus{background:var(--wash);box-shadow:inset 0 0 0 2px var(--brand);}
   .note-sec .ed[contenteditable="false"]{background:none;box-shadow:none;}
   .note-sec.edited .ed{background:var(--color-yellow-25);}
-  .note-sec.edited .h::after{content:"Edited by you";font-weight:400;color:var(--color-yellow-800);}
-  .signed-bar{display:flex;align-items:center;gap:10px;padding:12px 20px;border-top:1px solid var(--line);font-size:14px;color:var(--soft);}
+  .note-sec.edited .h::after{content:"Edited by you";margin-left:auto;font-weight:400;color:var(--color-yellow-800);}
+  .drafting{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:12px;border-radius:var(--radius-xs);background:var(--gradient-ai);font-size:14px;color:var(--color-navy-900);}
+  .drafting .dot{width:8px;height:8px;border-radius:var(--radius-round);background:var(--color-navy-900);animation:blink 1s infinite;}
+  @keyframes blink{50%{opacity:.25;}}
+  .signed-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 20px;border-top:1px solid var(--line);font-size:14px;color:var(--soft);}
+  .reveal{animation:fadeUp .45s cubic-bezier(.2,.7,.2,1) both;}
 
-  /* codes */
-  .code{font-family:inherit;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);}
-  .sugg{padding:16px;border-radius:var(--radius-xs);background:linear-gradient(180deg, color-mix(in srgb, var(--color-brand-ai-start) 40%, var(--panel)), var(--panel) 90%);border:1px solid var(--line);}
-  .sugg .big{display:flex;align-items:baseline;gap:10px;margin:8px 0 4px;font-size:22px;line-height:30px;color:var(--ink);}
+  /* code */
+  .code{font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);}
+  .sugg{padding:18px;border-radius:var(--radius-xs);background:linear-gradient(180deg, color-mix(in srgb, var(--color-brand-ai-start) 55%, var(--panel)), var(--panel) 90%);border:1px solid var(--line);}
+  .sugg .big{display:flex;align-items:baseline;gap:12px;margin:10px 0 4px;font-size:26px;line-height:34px;color:var(--ink);}
   .sugg .why{font-size:15px;line-height:22px;color:var(--body);}
   .alt{display:flex;align-items:center;gap:12px;width:100%;padding:12px 4px;border:0;border-top:1px solid var(--line);background:none;text-align:left;cursor:pointer;}
   .alt:hover{background:var(--wash);}
-  .alt[aria-pressed="true"]{background:var(--brand-wash);}
   .alt .k{width:64px;flex:none;}
   .alt .m{flex:1;min-width:0;}
   .alt .m b{display:block;font-weight:500;color:var(--ink);}
   .alt .m span{display:block;font-size:14px;line-height:20px;color:var(--soft);}
-  .claimline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;}
+  .claimline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:0;}
   .claimline dt{font-size:14px;color:var(--soft);}
   .claimline dd{margin:2px 0 0;font-size:15px;color:var(--ink);}
 
@@ -152,62 +193,104 @@
   .chips{display:flex;flex-wrap:wrap;gap:8px;}
   .chips .sv-chip,.opts .sv-chip{max-width:100%;flex-shrink:1;white-space:normal;text-align:left;height:auto;}
   .chips .sv-chip .truncate,.opts .sv-chip .truncate{white-space:normal;overflow:visible;}
-  .signed-bar{flex-wrap:wrap;}
-  .thread{display:grid;gap:14px;}
-  .qa-q{justify-self:end;max-width:85%;padding:10px 14px;border-radius:var(--radius-sm);background:var(--brand-wash);color:var(--ink);font-size:15px;line-height:22px;}
+  .thread{display:grid;gap:14px;grid-template-columns:minmax(0,1fr);}
+  .qa-q{justify-self:end;max-width:85%;padding:10px 14px;border-radius:var(--radius-sm);background:var(--brand);color:var(--color-grey-0);font-size:15px;line-height:22px;}
   .qa-a{display:flex;gap:10px;align-items:flex-start;}
   .qa-a .body{flex:1;min-width:0;padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--panel);}
   .qa-a .body p{font-size:15px;line-height:23px;color:var(--ink);}
   .qa-a .src{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:14px;color:var(--soft);}
-  .qa-a.refuse .body{background:var(--wash);}
-  .thread{grid-template-columns:minmax(0,1fr);}
-  .phone-bd > *{min-width:0;}
   .qa-a .src .sv-tag{height:auto;min-height:28px;max-width:100%;white-space:normal;}
   .qa-a .src .sv-tag .truncate{white-space:normal;overflow:visible;text-overflow:clip;}
+  .qa-a.refuse .body{background:var(--wash);}
+  .qa-a .reading{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--soft);}
+  .qa-a .reading .dot{width:8px;height:8px;border-radius:var(--radius-round);background:var(--color-navy-700);animation:blink 1s infinite;}
+  .typing .src{opacity:0;}
+  .src{transition:opacity .3s;}
   .phone .qa-q{max-width:90%;}
-  .phone .thread{flex:1;align-content:start;}
-  .phone .sv-message-input{margin-top:auto;}
 
   /* access log */
   .who-cell{display:flex;align-items:center;gap:10px;}
   .who-cell .wt b{display:block;font-weight:500;color:var(--ink);}
   .who-cell .wt span{display:block;font-size:14px;color:var(--soft);}
-
-  /* how it runs */
-  .flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;counter-reset:f;}
-  .flow li{list-style:none;position:relative;padding:14px 14px 14px 0;}
-  .flow li::before{counter-increment:f;content:counter(f);display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin-bottom:8px;border-radius:var(--radius-round);background:var(--brand-wash);color:var(--brand);font-size:14px;font-weight:700;}
-  .flow li b{display:block;font-size:15px;color:var(--ink);}
-  .flow li span{display:block;font-size:14px;line-height:20px;color:var(--soft);}
-  .princ{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
-  .princ .card-bd p{margin-top:6px;font-size:15px;line-height:23px;}
-  .journey{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
-  .jstep{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:var(--radius-xs);background:var(--panel);cursor:pointer;text-align:left;width:100%;}
-  .jstep:hover{border-color:var(--color-grey-450);}
-  .jstep .n{display:inline-flex;align-items:center;justify-content:center;flex:none;width:28px;height:28px;border-radius:var(--radius-round);background:var(--brand-wash);color:var(--brand);font-size:14px;font-weight:700;}
-  .jstep b{display:block;color:var(--ink);}
-  .jstep span{display:block;font-size:14px;line-height:20px;color:var(--soft);}
-
-  /* the design system's table text at least 14px */
-  .sv-table :is(.text-body-3,.text-caption){font-size:14px !important;}
-  .sv-tag,.sv-tag .truncate{font-size:14px;}
   .tbl-wrap{overflow-x:auto;max-width:100%;}
 
+  /* how it runs */
+  .flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:0;padding:0;counter-reset:f;}
+  .flow li{list-style:none;position:relative;padding:16px;border-radius:var(--radius-xs);background:var(--wash);}
+  .flow li::before{counter-increment:f;content:counter(f);display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin-bottom:10px;border-radius:var(--radius-round);background:var(--brand);color:var(--color-grey-0);font-size:14px;font-weight:700;}
+  .flow li b{display:block;font-size:15px;color:var(--ink);}
+  .flow li span{display:block;font-size:14px;line-height:20px;color:var(--soft);}
+
+  /* ---- cover ---- */
+  .hero{position:relative;padding:56px 56px 48px;border-radius:var(--radius-lg);background:var(--canvas);overflow:hidden;}
+  .hero::after{content:"";position:absolute;right:-140px;top:-140px;width:520px;height:520px;border-radius:var(--radius-round);background:radial-gradient(closest-side, color-mix(in srgb, var(--panel) 60%, transparent), transparent);pointer-events:none;}
+  .hero > *{position:relative;z-index:1;}
+  .hero .big-mark{display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:var(--radius-md);background:var(--panel);color:var(--color-navy-900);box-shadow:var(--shadow-elevation-2);}
+  .hero .big-mark svg{width:40px;height:40px;}
+  .hero h1{margin-top:24px;font-size:56px;line-height:60px;font-weight:700;letter-spacing:-.02em;color:var(--ink);}
+  .hero .tagline{margin-top:6px;font-size:24px;line-height:32px;color:var(--color-navy-800);}
+  .hero .lead{margin-top:18px;max-width:62ch;font-size:18px;line-height:28px;color:var(--ink);}
+  .hero .acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;}
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:40px;}
+  .stat{padding:16px 18px;border-radius:var(--radius-sm);background:color-mix(in srgb, var(--panel) 80%, transparent);backdrop-filter:blur(8px);}
+  .stat b{display:block;font-size:28px;line-height:36px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
+  .stat span{display:block;font-size:14px;line-height:20px;color:var(--body);}
+  .princ{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px;}
+  .princ .card-bd{padding:22px;}
+  .princ .tile{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--radius-xs);background:var(--brand-wash);color:var(--brand);}
+  .princ .tile svg{width:22px;height:22px;}
+  .princ h3{margin-top:14px;font-size:18px;line-height:24px;color:var(--ink);}
+  .princ p{margin-top:6px;font-size:15px;line-height:23px;}
+  .journey{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0;margin-top:20px;padding:20px;}
+  .jstep{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:4px 12px 4px 0;border:0;background:none;text-align:left;cursor:pointer;}
+  .jstep::before{content:"";position:absolute;left:28px;right:0;top:18px;height:2px;background:var(--line);}
+  .jstep:last-child::before{display:none;}
+  .jstep .n{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:var(--radius-round);background:var(--brand-wash);color:var(--brand);}
+  .jstep .n svg{width:18px;height:18px;}
+  .jstep:hover .n{background:var(--brand);color:var(--color-grey-0);}
+  .jstep b{display:block;font-size:15px;line-height:20px;color:var(--ink);}
+  .jstep span.w{display:block;font-size:14px;line-height:20px;color:var(--soft);}
+  .jstep:focus-visible{outline:2px solid var(--brand);outline-offset:4px;border-radius:var(--radius-xs);}
+
+  /* motion */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  .enter{animation:fadeUp .4s cubic-bezier(.2,.7,.2,1) both;}
+  .playing #cd-main [data-act],.playing [data-go]{pointer-events:none;}   /* Present and Restart in the top bar still work: Restart stops a tour */
+  @media (prefers-reduced-motion: reduce){ .enter,.reveal,.mk.pulse,.er .er-ic,.drafting .dot,.qa-a .reading .dot{animation:none;} }
+
+  /* the design system's text at least 14px */
+  .sv-table :is(.text-body-3,.text-caption){font-size:14px !important;}
+  .sv-tag,.sv-tag .truncate{font-size:14px;}
+
+  @media (max-width:1200px){
+    .split{grid-template-columns:minmax(0,1fr);}
+    .journey{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:20px;}
+    .jstep::before{display:none;}
+  }
   @media (max-width:1100px){
     .cd-shell{grid-template-columns:minmax(0,1fr);}
     .cd-steps{position:static;overflow:hidden;min-width:0;}
     .cd-steps ol{display:flex;overflow-x:auto;gap:4px;scrollbar-width:none;}
+    .cd-steps ol::before{display:none;}
     .cd-step{width:auto;flex:none;}
-    .cd-step .w{display:none;}
-    .cd-steps .cd-safe{display:none;}
-    .two,.two.even,.princ,.journey{grid-template-columns:minmax(0,1fr);}
+    .cd-step .w,.cd-steps .cd-safe{display:none;}
+    .two,.princ,.notice{grid-template-columns:minmax(0,1fr);}
+    .stats{grid-template-columns:repeat(2,minmax(0,1fr));}
     .flow{grid-template-columns:minmax(0,1fr);}
     .claimline{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .canvas{padding:20px;}
   }
   @media (max-width:640px){
-    .cd-top{padding:8px 16px;flex-wrap:wrap;}
+    .cd-top{position:static;padding:8px 16px;flex-wrap:wrap;}
+    [data-act="present"]{display:none !important;}
     .cd-top .cd-name{border-left:0;padding-left:0;}
     .cd-shell{padding:16px;}
+    .canvas{padding:12px;}
+    .win-bd{padding:12px;}
+    .win-bar .win-t,.win-bar .dots{display:none;}
+    .hero{padding:28px 20px;}
+    .hero h1{font-size:40px;line-height:44px;}
+    .journey{grid-template-columns:repeat(2,minmax(0,1fr));}
     .card-hd h2,.card-hd h3{white-space:normal;}
   }
 </style>
@@ -219,14 +302,14 @@
 <body>
 <header class="cd-top">
   <span class="cd-logo" id="cd-logo" aria-label="Simple Care"></span>
-  <span class="cd-name"><span class="cd-mark" id="cd-mark" aria-hidden="true"></span>Cedar <small>Simple's clinical assistant</small></span>
+  <span class="cd-name"><span class="mark" id="cd-mark" aria-hidden="true"></span>Cedar <small>Simple's clinical assistant</small></span>
   <span class="cd-sp"></span>
   <span id="cd-safe-tag"></span>
-  <span id="cd-restart"></span>
+  <span id="cd-tools"></span>
 </header>
 <div class="cd-shell">
   <nav class="cd-steps" aria-label="Demo steps"><ol id="cd-steps"></ol>
-    <p class="cd-safe">Test patient only. Nothing in this demo creates a patient record, a booking or a Medical Services Plan claim, and nothing is sent.</p>
+    <p class="cd-safe"><span class="ic20" id="cd-safe-ic"></span><span>Test patient only. Nothing in this demo creates a patient record, a booking or a Medical Services Plan claim, and nothing is sent.</span></p>
   </nav>
   <main class="cd-main" id="cd-main" tabindex="-1">
     <div class="cd-head" id="cd-head"></div>
@@ -238,27 +321,27 @@
 /* ============================================================================
    Cedar demo. State lives here; every screen is re-drawn from it.
    ========================================================================= */
-var PT = {name:'Rosa Martin', first:'Rosa', age:58, sex:'Female', label:'Test patient'};
+var PT = {name:'Rosa Martin', first:'Rosa', age:58, label:'Test patient'};
 var DOC = 'Dr. Daniel Pannozzo';
 var DAY = '19 November 2026';
-
-var ST = {
-  step: 0,
-  intake: {path:null, i:0, answers:[], done:false, er:false},
-  note: {signed:false, edits:{}},
-  code: {pick:'786.2', confirmed:false, open:false},
-  askDoc: [], askPt: []
-};
+function fresh(){ return {
+  step:0, seen:{0:1}, playing:false, logF:'all',
+  intake:{path:null, i:0, answers:[], done:false, er:false},
+  note:{signed:false, edits:{}, drafted:false},
+  code:{pick:'786.2', confirmed:false, open:false},
+  askDoc:[], askPt:[], typed:{}
+}; }
+var ST = fresh();
 
 var STEPS = [
-  {k:'intro', t:'Meet Cedar', w:'What it is and what it does', who:'Overview'},
-  {k:'intake', t:'Triage intake', w:'Danger signs go to emergency care', who:'Patient · simplecare.ca'},
-  {k:'note', t:'Note drafting', w:'Drafted in your template, signed by you', who:'Physician'},
-  {k:'code', t:'Diagnostic code', w:'One suggestion, a reason, alternatives', who:'Physician'},
-  {k:'askdoc', t:'Ask Cedar: physician', w:'Questions about your patients', who:'Physician'},
-  {k:'askpt', t:'Ask Cedar: patient', w:'Questions about your own record', who:'Patient portal'},
-  {k:'log', t:'Access log', w:'Who opened the record, Cedar too', who:'Patient portal'},
-  {k:'runs', t:'How Cedar runs', w:'Small models, in Canada, physician in control', who:'The plan'}
+  {k:'intro', t:'Meet Cedar', w:'What it is and what it does', who:'Overview', icon:'ai'},
+  {k:'intake', t:'Triage intake', w:'Danger signs go to emergency care', who:'Patient · simplecare.ca', icon:'checklist'},
+  {k:'note', t:'Note drafting', w:'Drafted in your template, signed by you', who:'Physician portal', icon:'note'},
+  {k:'code', t:'Diagnostic code', w:'One suggestion, a reason, alternatives', who:'Physician portal', icon:'nav-claims'},
+  {k:'askdoc', t:'Ask Cedar: physician', w:'Questions about your patients', who:'Physician portal', icon:'doctor'},
+  {k:'askpt', t:'Ask Cedar: patient', w:'Questions about your own record', who:'Patient portal', icon:'chat-message'},
+  {k:'log', t:'Access log', w:'Who opened the record, Cedar too', who:'Patient portal', icon:'eye-on'},
+  {k:'runs', t:'How Cedar runs', w:'Small models, in Canada, physician in control', who:'The plan', icon:'technology'}
 ];
 
 /* ---- helpers ---- */
@@ -273,27 +356,46 @@ function btn(variant, label, act, title, icon, extra){
 function tag(color, text, title, icon){ var p = {color:color}; if(title) p.title = title; if(icon) p.startIcon = icon; return SC.html('Tag', p, text); }
 function srcTag(text, title){ return tag('neutral', text, title || ('Source: ' + text)); }
 function aiChip(t){ return '<span class="ai-chip">' + ic('ai', 16) + esc(t || 'Drafted by Cedar') + '</span>'; }
-function cedarAv(){ return '<span class="cedar-av" aria-hidden="true">' + ic('ai', 18) + '</span>'; }
+function cedarAv(){ return '<span class="mark" aria-hidden="true">' + ic('ai', 18) + '</span>'; }
 function logo(h){ return SC.html('Logo', {lockup:'horizontal', height:h || 32}); }
-function phone(inner, who){ return '<div class="phone"><div class="phone-bar"><span class="lg">' + logo(22) + '</span><span class="who">' + esc(who || PT.name) + '</span></div><div class="phone-bd">' + inner + '</div></div>'; }
+function mk(n){ return '<span class="mk pulse" aria-hidden="true">' + n + '</span>'; }
+function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
 function snack(variant, title, body){ return SC.html('Snack', {variant:variant, title:title}, body ? SC.raw('<span>' + body + '</span>') : ''); }
+/* product frames */
+function phone(inner, who){ return '<div class="phone"><div class="phone-bar"><span class="lg">' + logo(22) + '</span><span class="who">' + esc(who || PT.name) + '</span></div><div class="phone-bd">' + inner + '</div></div>'; }
+function win(title, inner){
+  return '<div class="win"><div class="win-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="lg">' + logo(22) + '</span><span class="win-t">' + esc(title) + '</span><span class="sp"></span>' +
+    '<span class="pt-chip">' + SC.html('AvatarCircle', {name:PT.name, size:'medium', decorative:true}) + PT.name + ' <span>· ' + PT.age + ' · ' + PT.label + '</span></span></div><div class="win-bd">' + inner + '</div></div>';
+}
+function canvas(cap, capIcon, inner){ return '<div class="canvas">' + (cap ? '<p class="canvas-cap"><span class="ic20">' + ic(capIcon, 20) + '</span>' + esc(cap) + '</p>' : '') + inner + '</div>'; }
 
 /* ============================================================================
-   0. Meet Cedar
+   0. Cover
    ========================================================================= */
 function vIntro(){
+  var stats = [
+    ['~1,800', 'patients cared for with Simple since June 2026'],
+    ['~1,800', 'AI-drafted notes edited and signed by the physician'],
+    ['≤ 10B', 'parameters per model: the goal, not a frontier model'],
+    ['1 card', 'of graphics hardware per practice, in Canada: the goal']
+  ].map(function(s){ return '<div class="stat"><b>' + s[0] + '</b><span>' + s[1] + '</span></div>'; }).join('');
   var pr = [
-    ['Small', 'technology', 'Each task goes to the smallest open model that does it well, given only the chart entries it needs. The aim: one graphics card in Canada, not a data centre.'],
-    ['Intentional', 'shield-check', 'The physician is custodian of the record. Cedar never diagnoses or decides treatment: everything waits for the physician\'s approval, and every access is logged.'],
-    ['Tailored', 'doctor', 'Built inside a family practice in British Columbia, around each physician\'s own templates and rules, and BC\'s provincial systems and billing.']
-  ].map(function(p){ return '<section class="card"><div class="card-bd"><span class="ic20" style="color:var(--brand)">' + ic(p[1], 20) + '</span><h3 style="margin-top:10px;font-size:17px;color:var(--ink)">' + p[0] + '</h3><p>' + p[2] + '</p></div></section>'; }).join('');
+    ['Small', 'technology', 'Each task goes to the smallest open model that does it well, given only the chart entries it needs.'],
+    ['Intentional', 'shield-check', 'The physician is custodian of the record. Cedar never diagnoses or decides treatment, and every access is logged.'],
+    ['Tailored', 'doctor', 'Built inside a family practice in British Columbia, around each physician\'s templates and BC\'s systems and billing.']
+  ].map(function(p){ return '<section class="card"><div class="card-bd"><span class="tile">' + ic(p[1], 22) + '</span><h3>' + p[0] + '</h3><p>' + p[2] + '</p></div></section>'; }).join('');
   var js = STEPS.slice(1).map(function(s, i){
-    return '<button type="button" class="jstep" data-go="' + (i + 1) + '" title="Go to step ' + (i + 1) + ': ' + esc(s.t) + '"><span class="n">' + (i + 1) + '</span><span><b>' + esc(s.t) + '</b><span>' + esc(s.w) + '</span><span>' + esc(s.who) + '</span></span></button>'; }).join('');
-  return '<div class="stack">' +
-    '<section class="card"><div class="card-hd"><h2>One visit, start to finish</h2><span class="sp"></span>' + tag('information', PT.label + ': ' + PT.name + ', ' + PT.age, 'A made-up patient for this demo') + '</div>' +
-    '<div class="card-bd"><p style="max-width:80ch;margin-bottom:16px">' + PT.first + ', 58, books a video visit for a cough. Follow her visit through Cedar: her intake, the note her physician signs, the claim\'s diagnostic code, the questions her physician and she can ask of the record, and the log that shows her who opened it.</p>' +
-    '<div class="journey">' + js + '</div></div></section>' +
-    '<div class="princ">' + pr + '</div></div>';
+    return '<button type="button" class="jstep" data-go="' + (i + 1) + '" title="Go to step ' + (i + 1) + ': ' + esc(s.t) + '"><span class="n">' + ic(s.icon, 18) + '</span><span><b>' + (i + 1) + '. ' + esc(s.t) + '</b><span class="w">' + esc(s.who) + '</span></span></button>'; }).join('');
+  return '<section class="hero"><span class="big-mark">' + ic('ai', 40) + '</span>' +
+    '<h1>Cedar</h1><p class="tagline">Simple\'s clinical assistant</p>' +
+    '<p class="lead">Cedar does the paperwork around a visit (triage intake, the visit note, the claim\'s diagnostic code and questions about the record), and the physician approves everything it produces. Open, free and self-hostable, built to run on small models in Canada.</p>' +
+    '<div class="acts">' + btn('primary', 'Start the walkthrough', 'next', 'Go to step 1: Triage intake', null, {endIcon:'arrow-direction-right'}) +
+    btn('secondary-main', 'Play the tour', 'tour', 'Play every step by itself, for presenting or recording', 'play') + '</div>' +
+    '<div class="stats">' + stats + '</div></section>' +
+    '<section class="card" style="margin-top:20px"><div class="card-hd"><h2>One visit, start to finish</h2><span class="sp"></span>' + tag('information', PT.label + ': ' + PT.name + ', ' + PT.age, 'A made-up patient for this demo', 'user') + '</div>' +
+    '<p class="note-quiet" style="padding:16px 20px 0;font-size:15px;line-height:22px;color:var(--body)">' + PT.first + ', 58, books a video visit for a cough that started after a new blood pressure medicine. Follow her visit through Cedar.</p>' +
+    '<div class="journey">' + js + '</div></section>' +
+    '<div class="princ">' + pr + '</div>';
 }
 
 /* ============================================================================
@@ -313,12 +415,11 @@ var IQ = {
     {q:'Anything else Dr. Pannozzo should know?', text:''}
   ]
 };
-function intakeRoute(){ return ST.intake.path ? IQ[ST.intake.path] : null; }
 function vIntake(){
   var I = ST.intake, scr;
   if(I.er){
     scr = '<div class="er" role="alert"><span class="er-ic">' + ic('warning', 22) + '</span>' +
-      '<h2>Call 9-1-1 now</h2><p>You told us you have <b>' + esc(I.danger.toLowerCase()) + '</b>. This can be serious. Call 9-1-1 or go to the nearest emergency department now. Don\'t drive yourself.</p>' +
+      '<h2>Call 9-1-1 now ' + mk(2) + '</h2><p>You told us you have <b>' + esc(I.danger.toLowerCase()) + '</b>. This can be serious. Call 9-1-1 or go to the nearest emergency department now. Don\'t drive yourself.</p>' +
       '<button type="button" class="er-call" data-act="call911" title="In this demo, nothing is dialled">' + ic('phone-call', 20) + 'Call 9-1-1</button>' +
       '<p class="note-quiet">Dr. Pannozzo has been told, 10:42 a.m. Your booking stays in case you are sent home.</p></div>' +
       '<p class="hint">Test mode: nothing is dialled and no one is notified.</p>' +
@@ -331,13 +432,13 @@ function vIntake(){
       btn('tertiary-main', 'Start the intake again', 'intakeReset', 'Clear the answers and start the intake again', 'refresh-undo');
   } else if(!I.path){
     scr = '<div class="prog"><i class="on"></i><i></i><i></i><i></i><i></i></div>' +
-      '<p class="q">What would you like to see the doctor about?</p><p class="hint">Cedar asks a few questions so Dr. Pannozzo is ready for your visit.</p>' +
+      '<p class="q">What would you like to see the doctor about? ' + mk(1) + '</p><p class="hint">Cedar asks a few questions so Dr. Pannozzo is ready for your visit.</p>' +
       '<div class="opts">' + [['cough', 'A cough'], ['chest', 'Chest pain or pressure'], ['other', 'Something else']].map(function(o){
         return SC.html('Chip', {'data-act':'intakePath', 'data-v':o[0], title:'Answer: ' + o[1]}, o[1]); }).join('') + '</div>' +
       '<p class="hint">Try "Chest pain or pressure" to see a danger sign.</p>';
   } else {
-    var Q = intakeRoute()[I.i], n = intakeRoute().length + 1;
-    var bars = ''; for(var b = 0; b < n; b++) bars += '<i class="' + (b <= I.i + 1 ? 'on' : '') + '"></i>';
+    var R = IQ[I.path], Q = R[I.i], n = R.length + 1, bars = '';
+    for(var b = 0; b < n; b++) bars += '<i class="' + (b <= I.i + 1 ? 'on' : '') + '"></i>';
     scr = '<div class="prog">' + bars + '</div><p class="q">' + esc(Q.q) + '</p>' + (Q.hint ? '<p class="hint">' + esc(Q.hint) + '</p>' : '');
     if(Q.o) scr += '<div class="opts">' + Q.o.map(function(o){ return SC.html('Chip', {'data-act':'intakeAns', 'data-v':o, title:'Answer: ' + o}, o); }).join('') + '</div>';
     else scr += '<label class="vh" for="in-more">' + esc(Q.q) + '</label><textarea class="ta" id="in-more" placeholder="Optional">' + esc(Q.text) + '</textarea>' +
@@ -345,25 +446,24 @@ function vIntake(){
   }
   var side;
   if(I.er){
-    side = '<section class="alert-doc"><div class="card-hd" style="border-bottom-color:var(--crit-line)"><span class="ic20" style="color:var(--crit)">' + ic('warning', 20) + '</span><h3>Danger sign reported</h3><span class="sp"></span><span class="note-quiet">10:42 a.m.</span></div>' +
+    side = '<section class="alert-doc reveal"><div class="card-hd" style="border-bottom-color:var(--crit-line)"><span class="ic20" style="color:var(--crit)">' + ic('warning', 20) + '</span><h3>Danger sign reported</h3>' + mk(3) + '<span class="sp"></span><span class="note-quiet">10:42 a.m.</span></div>' +
       '<div class="card-bd"><p style="color:var(--ink)"><b>' + PT.name + ', 58</b> reported <b>' + esc(I.danger.toLowerCase()) + '</b> in her intake. Cedar told her to call 9-1-1 or go to an emergency department, and sent you this.</p>' +
       '<div class="rows" style="margin-top:12px">' +
       '<div class="row"><span class="m"><span class="l">Told to call 9-1-1</span><span class="s">Shown on her screen at 10:42 a.m.</span></span>' + tag('error', 'Emergency', 'A danger sign was reported') + '</div>' +
       '<div class="row"><span class="m"><span class="l">Her answers</span><span class="s">' + esc(I.answers.join(' · ')) + '</span></span>' + srcTag('Intake') + '</div></div>' +
-      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">' + btn('primary', 'Call Rosa', 'noop', 'Call the patient now; in this demo nothing is dialled', 'phone') + btn('secondary-main', 'Open her chart', 'noop', 'Open the patient\'s chart; not part of this demo', 'file') + '</div></div></section>' +
-      '<p class="note-quiet">Cedar doesn\'t diagnose. It recognises danger signs the physician has listed, sends the patient to emergency care at once and tells the physician.</p>';
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">' + btn('primary', 'Call Rosa', 'noop', 'Call the patient now; in this demo nothing is dialled', 'phone') + btn('secondary-main', 'Open her chart', 'noop', 'Open the patient\'s chart; not part of this demo', 'file') + '</div></div></section>';
   } else if(I.done){
-    side = '<section class="card"><div class="card-hd"><h3>Intake summary</h3><span class="sp"></span>' + aiChip('Written by Cedar') + '</div><div class="card-bd">' +
-      '<p style="color:var(--ink);font-size:16px;line-height:24px"><b>58F</b> — dry cough for 3 weeks; started a new blood pressure medication in September.</p>' +
+    side = '<section class="card float reveal"><div class="card-hd"><h3>Intake summary</h3>' + mk(3) + '<span class="sp"></span>' + aiChip('Written by Cedar') + '</div><div class="card-bd">' +
+      '<p style="color:var(--ink);font-size:17px;line-height:26px"><b>58F</b> — dry cough for 3 weeks; started a new blood pressure medication in September.</p>' +
       '<div class="rows" style="margin-top:8px">' +
       '<div class="row"><span class="m"><span class="l">No danger signs reported</span><span class="s">No trouble breathing at rest, no chest pain</span></span>' + srcTag('Intake') + '</div>' +
       '<div class="row"><span class="m"><span class="l">Ramipril 5 mg daily since 2 September 2026</span><span class="s">Matches "a new blood pressure pill in September"</span></span>' + srcTag('PharmaNet') + '</div></div>' +
-      '<p class="note-quiet" style="margin-top:12px">Waiting for you. Cedar summarises and points to sources; it doesn\'t suggest a diagnosis.</p></div></section>';
+      '<p class="note-quiet" style="margin-top:12px">Waiting for Dr. Pannozzo. Cedar summarises and points to sources; it doesn\'t suggest a diagnosis.</p></div></section>';
   } else {
-    side = '<section class="card"><div class="card-bd">' + SC.html('Empty', {title:'Nothing yet', description:'The summary reaches Dr. Pannozzo when Rosa finishes. A danger sign reaches him at once.'}) + '</div></section>';
+    side = '<section class="card float"><div class="card-bd">' + SC.html('Empty', {title:'Nothing yet', description:'The summary reaches Dr. Pannozzo when Rosa finishes. A danger sign reaches him at once.'}) + '</div></section>';
   }
-  return '<div class="two even"><div><p class="note-quiet" style="text-align:center;margin-bottom:10px">What ' + PT.first + ' sees on simplecare.ca</p>' + phone('<div style="display:flex;flex-direction:column;gap:16px">' + scr + '</div>', 'Intake') + '</div>' +
-    '<div class="stack"><p class="note-quiet">What Dr. Pannozzo sees</p>' + side + '</div></div>';
+  return canvas('', '', '<div class="split"><div><p class="canvas-cap" style="justify-content:center"><span class="ic20">' + ic('mobile-phone', 20) + '</span>What ' + PT.first + ' sees on simplecare.ca</p>' + phone('<div style="display:flex;flex-direction:column;gap:16px">' + scr + '</div>', 'Intake') + '</div>' +
+    '<div class="side"><p class="canvas-cap"><span class="ic20">' + ic('doctor', 20) + '</span>What Dr. Pannozzo sees</p>' + side + '</div></div>');
 }
 
 /* ============================================================================
@@ -380,18 +480,18 @@ var NOTE = [
 ];
 var EXAMPLE_EDIT = 'Stop ramipril. Start amlodipine 5 mg once daily. The cough should settle within 1 to 4 weeks. Home blood pressure readings twice a week until follow-up.';
 function vNote(){
-  var N = ST.note, signed = N.signed, nEd = Object.keys(N.edits).length;
-  var secs = NOTE.map(function(s){
+  var N = ST.note, signed = N.signed, nEd = Object.keys(N.edits).length, anim = !N.drafted;
+  var secs = NOTE.map(function(s, i){
     var txt = N.edits[s[0]] != null ? N.edits[s[0]] : s[2];
-    return '<div class="note-sec' + (N.edits[s[0]] != null ? ' edited' : '') + '" data-sec="' + s[0] + '"><div class="h">' + esc(s[1]) + (s[3] ? ' · <span style="font-weight:400">' + esc(s[3]) + '</span>' : '') + '<span class="sp"></span></div>' +
+    return '<div class="note-sec' + (N.edits[s[0]] != null ? ' edited' : '') + (anim ? ' reveal' : '') + '" data-sec="' + s[0] + '"' + (anim ? ' style="animation-delay:' + (700 + i * 160) + 'ms"' : '') + '><div class="h">' + esc(s[1]) + (s[3] ? ' · <span style="font-weight:400">' + esc(s[3]) + '</span>' : '') + (s[0] === 'reason' ? mk(1) : '') + '</div>' +
       '<div class="ed" contenteditable="' + (signed ? 'false' : 'true') + '" role="textbox" aria-multiline="true" aria-label="' + esc(s[1]) + '" spellcheck="false">' + esc(txt) + '</div></div>';
   }).join('');
   var status = signed ? tag('success', 'Signed · in the chart', 'Signed by ' + DOC, 'check-circle') : tag('warning', 'Draft · not in the chart', 'Nothing reaches the chart until you sign', 'clock-time');
   var foot = signed
-    ? '<div class="signed-bar"><span class="ic20" style="color:var(--color-green-700)">' + ic('check-circle', 20) + '</span><span>Signed by ' + DOC + ', ' + DAY + ', 11:12 a.m. ' + (nEd ? 'Your ' + nEd + ' edit' + (nEd > 1 ? 's are' : ' is') + ' saved with Cedar\'s draft as a training example for your own Cedar model (the patient consented at intake).' : 'Signed as drafted; the pair is saved as a training example (the patient consented at intake).') + '</span></div>'
-    : '<div class="signed-bar">' + btn('primary', 'Sign note', 'sign', 'Sign the note; only then does it go into Rosa\'s chart', 'signature') +
+    ? '<div class="signed-bar reveal"><span class="ic20" style="color:var(--color-green-700)">' + ic('check-circle', 20) + '</span><span style="flex:1;min-width:0">Signed by ' + DOC + ', ' + DAY + ', 11:12 a.m. ' + (nEd ? 'Your ' + nEd + ' edit' + (nEd > 1 ? 's are' : ' is') + ' saved with Cedar\'s draft as a training example for your own Cedar model (the patient consented at intake).' : 'Signed as drafted; the pair is saved as a training example (the patient consented at intake).') + '</span></div>'
+    : '<div class="signed-bar">' + btn('primary', 'Sign note', 'sign', 'Sign the note; only then does it go into Rosa\'s chart', 'signature') + mk(3) +
       btn('secondary-main', 'Make an example edit', 'exampleEdit', 'Add a line to the Plan, as a physician would before signing', 'edit') +
-      '<span class="sp" style="flex:1"></span><span>' + (nEd ? nEd + ' edit' + (nEd > 1 ? 's' : '') : 'Click any section to edit') + '</span></div>';
+      '<span style="flex:1"></span><span id="edit-count">' + (nEd ? nEd + ' edit' + (nEd > 1 ? 's' : '') : 'Click any section to edit') + '</span></div>';
   var given = [
     ['Visit recording', 'Transcribed during the video call, 8 minutes', 'Transcript', 'microphone'],
     ['Intake answers', 'Today, 10:32 a.m.', 'Intake', 'checklist'],
@@ -399,11 +499,11 @@ function vNote(){
     ['Problem list: high blood pressure', 'Since 2 September 2026', 'Problem list', 'note'],
     ['Last visit note', '2 September 2026, signed', 'Visit note', 'file']
   ].map(function(g){ return '<div class="row"><span class="ic20">' + ic(g[3], 20) + '</span><span class="m"><span class="l">' + esc(g[0]) + '</span><span class="s">' + esc(g[1]) + '</span></span>' + srcTag(g[2]) + '</div>'; }).join('');
-  return '<div class="two"><section class="card"><div class="card-hd"><span><h2>Visit note</h2><span class="sub">' + PT.name + ' · in Dr. Pannozzo\'s template</span></span><span class="sp"></span>' + (signed ? '' : aiChip()) + status + '</div>' +
-    '<div class="card-bd" id="note-bd">' + secs + '</div>' + foot + '</section>' +
-    '<div class="stack"><section class="card"><div class="card-hd"><span class="ic20">' + ic('eye-on', 20) + '</span><h3>What Cedar was given</h3></div><div class="card-bd" style="padding-top:4px"><div class="rows">' + given + '</div>' +
-    '<p class="note-quiet" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">Not given: the other 31 entries in her chart. Cedar gets only what this note needs.</p></div></section>' +
-    '<section class="card"><div class="card-bd"><p class="note-quiet"><b style="color:var(--ink)">Nothing reaches the chart unsigned.</b> Cedar drafts from the visit recording, in your own template. You edit and sign; the assessment and plan come from your words in the call, not Cedar\'s.</p></div></section></div></div>';
+  var drafting = anim ? '<div class="drafting" id="drafting"><span class="dot"></span>Cedar is drafting from the visit recording and 5 chart entries…</div>' : '';
+  return canvas('', '', win('Physician portal · Visit note', '<div class="two"><section class="card"><div class="card-hd"><span><h2>Visit note</h2><span class="sub">' + PT.name + ' · in Dr. Pannozzo\'s template</span></span><span class="sp"></span>' + (signed ? '' : aiChip()) + status + '</div>' +
+    '<div class="card-bd" id="note-bd">' + drafting + secs + '</div>' + foot + '</section>' +
+    '<section class="card"><div class="card-hd"><span class="ic20">' + ic('eye-on', 20) + '</span><h3>What Cedar was given</h3>' + mk(2) + '</div><div class="card-bd" style="padding-top:4px"><div class="rows">' + given + '</div>' +
+    '<p class="note-quiet" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">Not given: the other 31 entries in her chart.</p></div></section></div>'));
 }
 
 /* ============================================================================
@@ -419,57 +519,73 @@ function vCode(){
   var claim = '<dl class="claimline"><div><dt>Patient</dt><dd>' + PT.name + '</dd></div><div><dt>Date of service</dt><dd>' + DAY + '</dd></div><div><dt>Visit</dt><dd>Video visit</dd></div><div><dt>Note</dt><dd>Signed 11:12 a.m.</dd></div></dl>';
   var body;
   if(C.confirmed){
-    body = '<div class="sugg" style="background:var(--panel)"><div style="display:flex;align-items:center;gap:8px">' + tag('success', 'Confirmed by you', 'Confirmed by ' + DOC, 'check-circle') + '<span class="sp" style="flex:1"></span>' + btn('tertiary-main', 'Change', 'codeChange', 'Choose a different diagnostic code', 'edit') + '</div>' +
+    body = '<div class="sugg reveal" style="background:var(--panel)"><div style="display:flex;align-items:center;gap:8px">' + tag('success', 'Confirmed by you', 'Confirmed by ' + DOC, 'check-circle') + mk(3) + '<span style="flex:1"></span>' + btn('tertiary-main', 'Change', 'codeChange', 'Choose a different diagnostic code', 'edit') + '</div>' +
       '<p class="big"><span class="code">' + pick.c + '</span>' + esc(pick.n) + '</p><p class="why">On the claim. ' + (pick.main ? 'You used Cedar\'s suggestion.' : 'You chose it over Cedar\'s suggestion (786.2); that choice teaches your own Cedar model.') + '</p></div>' +
       '<div style="margin-top:16px">' + snack('information', 'Test mode', 'No claim is sent to the Medical Services Plan from this demo.') + '</div>';
   } else {
     var main = CODES[0];
-    body = '<div class="sugg"><div style="display:flex;align-items:center;gap:8px">' + aiChip('Suggested by Cedar') + '<span class="note-quiet">from the signed note</span></div>' +
+    body = '<div class="sugg"><div style="display:flex;align-items:center;gap:8px">' + aiChip('Suggested by Cedar') + '<span class="note-quiet">from the signed note</span>' + mk(1) + '</div>' +
       '<p class="big"><span class="code">' + main.c + '</span>' + esc(main.n) + '</p><p class="why">' + esc(main.why) + '</p>' +
-      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">' + btn('primary', 'Use ' + main.c, 'codeUse', 'Put ' + main.c + ' ' + main.n + ' on the claim', 'check') +
-      btn('secondary-main', C.open ? 'Hide other codes' : 'Choose another', 'codeOpen', C.open ? 'Hide the other codes' : 'See the other codes Cedar considered, or search for one', 'arrow-dropdown-down') + '</div>' +
-      (C.open ? '<div style="margin-top:16px"><p class="note-quiet" style="margin-bottom:4px">Other codes that fit the note</p>' + CODES.slice(1).map(function(x){
-        return '<button type="button" class="alt" data-act="codePick" data-v="' + x.c + '" aria-pressed="' + (C.pick === x.c) + '" title="Use ' + x.c + ' ' + esc(x.n) + ' instead"><span class="k code">' + x.c + '</span><span class="m"><b>' + esc(x.n) + '</b><span>' + esc(x.why) + '</span></span>' + ic('arrow-dropdown-right', 20) + '</button>'; }).join('') +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px">' + btn('primary', 'Use ' + main.c, 'codeUse', 'Put ' + main.c + ' ' + main.n + ' on the claim', 'check') +
+      btn('secondary-main', C.open ? 'Hide other codes' : 'Choose another', 'codeOpen', C.open ? 'Hide the other codes' : 'See the other codes Cedar considered, or search for one', 'arrow-dropdown-down') + mk(2) + '</div>' +
+      (C.open ? '<div class="reveal" style="margin-top:16px"><p class="note-quiet" style="margin-bottom:4px">Other codes that fit the note</p>' + CODES.slice(1).map(function(x){
+        return '<button type="button" class="alt" data-act="codePick" data-v="' + x.c + '" title="Use ' + x.c + ' ' + esc(x.n) + ' instead"><span class="k code">' + x.c + '</span><span class="m"><b>' + esc(x.n) + '</b><span>' + esc(x.why) + '</span></span>' + ic('arrow-dropdown-right', 20) + '</button>'; }).join('') +
         '<div style="margin-top:12px">' + SC.html('Input', {label:'Search all codes', id:'code-q', placeholder:'Code or words, e.g. 786 or wheeze', autoComplete:'off'}) + '</div></div>' : '') + '</div>';
   }
-  return '<div class="two"><section class="card"><div class="card-hd"><span class="ic20">' + ic('nav-claims', 20) + '</span><h2>Claim · diagnostic code</h2><span class="sp"></span>' + tag('neutral', 'Medical Services Plan · BC', 'British Columbia uses ICD-9 diagnostic codes') + '</div>' +
-    '<div class="card-bd stack">' + claim + body + '</div></section>' +
-    '<section class="card"><div class="card-bd"><p class="note-quiet"><b style="color:var(--ink)">One suggestion, with its reason.</b> Cedar reads only the signed note and offers one code it can explain, plus the others it considered. You confirm or change it; nothing goes on the claim without you.</p></div></section></div>';
+  return canvas('', '', win('Physician portal · Claims', '<section class="card" style="max-width:860px;margin:0 auto"><div class="card-hd"><span class="ic20">' + ic('nav-claims', 20) + '</span><h2>Claim · diagnostic code</h2><span class="sp"></span>' + tag('neutral', 'Medical Services Plan · BC', 'British Columbia uses ICD-9 diagnostic codes') + '</div>' +
+    '<div class="card-bd stack">' + claim + body + '</div></section>'));
 }
 
 /* ============================================================================
    4 and 5. Ask Cedar
    ========================================================================= */
 var ASK_DOC = [
-  {q:'When did Rosa start ramipril, and who prescribed it?',
+  {q:'When did Rosa start ramipril, and who prescribed it?', read:'Reading 2 entries in Rosa\'s chart…',
    a:'Rosa started ramipril 5 mg once daily on 2 September 2026. You prescribed it at her visit that day for high blood pressure, and it was filled the same day.',
    s:[['Visit note', '2 September 2026'], ['PharmaNet', 'Filled 2 September 2026']]},
-  {q:'What were her last three blood pressures?',
+  {q:'What were her last three blood pressures?', read:'Reading 3 entries in Rosa\'s chart…',
    a:'132/84 on 19 November 2026 (home reading, today\'s visit), 148/92 on 2 September 2026 (in clinic) and 151/94 on 12 August 2026 (home reading, intake).',
    s:[['Visit note', '19 November 2026'], ['Visit note', '2 September 2026'], ['Intake', '12 August 2026']]},
-  {q:'Which of my patients on ramipril have reported a cough?',
+  {q:'Which of my patients on ramipril have reported a cough?', read:'Searching your 41 patients on ramipril…',
    a:'Two of your 41 patients on ramipril have reported a cough since September: Rosa Martin (today) and Ken Ito, a test patient (14 October 2026, still on ramipril).',
    s:[['Intake', 'Rosa Martin, 19 November 2026'], ['Visit note', 'Ken Ito, 14 October 2026']]}
 ];
 var ASK_PT = [
-  {q:'What did my doctor change today?',
+  {q:'What did my doctor change today?', read:'Reading your signed visit note…',
    a:'Dr. Pannozzo stopped your ramipril and started amlodipine 5 mg, one tablet a day. Your next video visit is in about 4 weeks.',
    s:[['Visit note', 'Signed by Dr. Pannozzo, 19 November 2026']]},
-  {q:'Why was my ramipril stopped?',
+  {q:'Why was my ramipril stopped?', read:'Reading your signed visit note…',
    a:'Your doctor\'s note says your dry cough is likely a side effect of ramipril. A cough is a common side effect of this kind of blood pressure medicine, and it usually settles within 1 to 4 weeks of stopping. For questions about your treatment, ask Dr. Pannozzo.',
    s:[['Visit note', 'Signed by Dr. Pannozzo, 19 November 2026']]},
-  {q:'What is my husband taking for his blood pressure?', refuse:true,
+  {q:'What is my husband taking for his blood pressure?', refuse:true, read:'',
    a:'I can only answer questions about your own record. I can\'t share anyone else\'s health information.'}
 ];
-function thread(list, items){
+function thread(key, list, items, marks){
   if(!list.length) return '';
-  return '<div class="thread" aria-live="polite">' + list.map(function(i){
-    var x = i === 'free' ? items[items.length - 1] : items[i];
+  return '<div class="thread" aria-live="polite">' + list.map(function(i, n){
+    var x = i === 'free' ? items[items.length - 1] : items[i], id = key + '-' + i, fresh = !ST.typed[id];
     if(x.free) return '<p class="qa-q">' + esc(x.q) + '</p><div class="qa-a">' + cedarAv() + '<div class="body"><p>In this demo, Cedar answers the suggested questions. In Simple it answers any question the same way: from the record, with its sources.</p></div></div>';
-    return '<p class="qa-q">' + esc(x.q) + '</p><div class="qa-a' + (x.refuse ? ' refuse' : '') + '">' + cedarAv() + '<div class="body"><p>' + esc(x.a) + '</p>' +
-      (x.refuse ? '<div class="src">' + tag('neutral', 'Not your record', 'Patients can only ask about their own record') + '</div>' :
-        '<div class="src"><span>Sources</span>' + x.s.map(function(s){ return srcTag(s[0] + ' · ' + s[1], 'Opens the ' + s[0].toLowerCase() + ' in the chart'); }).join('') + '</div>') + '</div></div>';
+    var m = marks && n === 0 ? marks : '';
+    return '<p class="qa-q">' + esc(x.q) + '</p><div class="qa-a' + (x.refuse ? ' refuse' : '') + (fresh ? ' typing' : '') + '" data-id="' + id + '">' + cedarAv() + '<div class="body">' +
+      (fresh && x.read ? '<p class="reading"><span class="dot"></span>' + esc(x.read) + '</p>' : '') +
+      '<p class="ans" data-full="' + esc(x.a) + '">' + (fresh ? '' : esc(x.a)) + '</p>' +
+      (x.refuse ? '<div class="src">' + tag('neutral', 'Not your record', 'Patients can only ask about their own record') + (marks ? mk(3) : '') + '</div>' :
+        '<div class="src"><span>Sources</span>' + x.s.map(function(s){ return srcTag(s[0] + ' · ' + s[1], 'Opens the ' + s[0].toLowerCase() + ' in the chart'); }).join('') + m + '</div>') + '</div></div>';
   }).join('') + '</div>';
+}
+/* Cedar's newest answer: a short "reading…" line, then the words appear, then the sources */
+function typeAnswers(){
+  document.querySelectorAll('.qa-a.typing').forEach(function(a){
+    var id = a.getAttribute('data-id'), p = a.querySelector('.ans'), full = p.getAttribute('data-full'), rd = a.querySelector('.reading');
+    ST.typed[id] = 1;
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce){ if(rd) rd.remove(); p.textContent = full; a.classList.remove('typing'); return; }
+    var words = full.split(' '), k = 0;
+    setTimeout(function(){
+      if(rd) rd.remove();
+      var t = setInterval(function(){ k++; p.textContent = words.slice(0, k).join(' '); if(k >= words.length){ clearInterval(t); a.classList.remove('typing'); } }, 34);
+    }, rd ? 900 : 200);
+  });
 }
 function askBox(id, ph){ return SC.html('MessageInput', {placeholder:ph, label:'Ask Cedar', id:id}); }
 function chipsFor(items, done, act){
@@ -479,18 +595,20 @@ function chipsFor(items, done, act){
 }
 function vAskDoc(){
   var done = ST.askDoc.filter(function(i){ return typeof i === 'number'; });
-  return '<div class="two"><section class="card"><div class="card-hd">' + cedarAv() + '<h2>Ask Cedar</h2><span class="sub">Your patients</span><span class="sp"></span>' + tag('neutral', 'Physician view', 'Answers come only from charts of patients you care for') + '</div>' +
-    '<div class="card-bd stack"><div class="ask-scope"><span class="ic20">' + ic('shield-check', 20) + '</span><span>Cedar answers only from the charts of patients you care for, and every answer names its sources. Each question is recorded in the patient\'s access log.</span></div>' +
-    thread(ST.askDoc, ASK_DOC.concat([{free:true, q:ST.freeDoc || ''}])) + chipsFor(ASK_DOC, done, 'askDoc') + askBox('ask-doc', 'Ask about Rosa or your other patients…') + '</div></section>' +
-    '<section class="card"><div class="card-bd"><p class="note-quiet"><b style="color:var(--ink)">One record, two permission views.</b> The same chart-grounded assistant answers physicians and patients, each limited to what they may see. Answers point to the entries they come from, so they can be checked.</p></div></section></div>';
+  return canvas('', '', win('Physician portal · Ask Cedar', '<section class="card" style="max-width:860px;margin:0 auto"><div class="card-hd">' + cedarAv() + '<h2>Ask Cedar</h2><span class="sub">Your patients</span><span class="sp"></span>' + tag('neutral', 'Physician view', 'Answers come only from charts of patients you care for') + '</div>' +
+    '<div class="card-bd stack"><div class="ask-scope"><span class="ic20">' + ic('shield-check', 20) + '</span><span>Cedar answers only from the charts of patients you care for, and every answer names its sources. Each question is recorded in the patient\'s access log.</span>' + mk(1) + '</div>' +
+    thread('d', ST.askDoc, ASK_DOC.concat([{free:true, q:ST.freeDoc || ''}]), mk(2)) + chipsFor(ASK_DOC, done, 'askDoc') + '<div style="display:flex;gap:10px;align-items:flex-start"><div style="flex:1;min-width:0">' + askBox('ask-doc', 'Ask about Rosa or your other patients…') + '</div>' + mk(3) + '</div></div></section>'));
 }
 function vAskPt(){
   var done = ST.askPt.filter(function(i){ return typeof i === 'number'; });
-  var inner = '<p class="q" style="font-size:18px;line-height:26px">Ask about your record</p><p class="hint">Cedar answers from your own record only, in plain language, and shows where each answer comes from. It only uses notes your doctor has signed.</p>' +
-    thread(ST.askPt, ASK_PT.concat([{free:true, q:ST.freePt || ''}])) + chipsFor(ASK_PT, done, 'askPt') + askBox('ask-pt', 'Ask about your record…');
-  return '<div class="two even"><div><p class="note-quiet" style="text-align:center;margin-bottom:10px">What ' + PT.first + ' sees in her patient portal</p>' + phone(inner, PT.name) + '</div>' +
-    '<div class="stack"><section class="card"><div class="card-bd"><p class="note-quiet"><b style="color:var(--ink)">Her own record, nobody else\'s.</b> Ask about anyone else and Cedar says no, plainly. Try the third question.</p></div></section>' +
-    '<section class="card"><div class="card-bd"><p class="note-quiet"><b style="color:var(--ink)">Plain language, with sources.</b> Each answer names the signed note it comes from. Cedar explains what the doctor wrote; treatment questions go back to the doctor.</p></div></section></div></div>';
+  var inner = '<p class="q" style="font-size:18px;line-height:26px">Ask about your record ' + mk(1) + '</p><p class="hint">Cedar answers from your own record only, in plain language, and shows where each answer comes from. It only uses notes your doctor has signed.</p>' +
+    thread('p', ST.askPt, ASK_PT.concat([{free:true, q:ST.freePt || ''}]), mk(2)) + chipsFor(ASK_PT, done, 'askPt') + askBox('ask-pt', 'Ask about your record…');
+  return canvas('', '', '<div class="split"><div><p class="canvas-cap" style="justify-content:center"><span class="ic20">' + ic('mobile-phone', 20) + '</span>What ' + PT.first + ' sees in her patient portal</p>' + phone(inner, PT.name) + '</div>' +
+    '<div class="side"><p class="canvas-cap"><span class="ic20">' + ic('shield-check', 20) + '</span>One record, two permission views</p>' +
+    '<section class="card float"><div class="card-bd"><div class="rows">' +
+    '<div class="row"><span class="ic20">' + ic('doctor', 20) + '</span><span class="m"><span class="l">The physician</span><span class="s">Asks about the patients they care for</span></span>' + tag('neutral', 'Their patients') + '</div>' +
+    '<div class="row"><span class="ic20">' + ic('user', 20) + '</span><span class="m"><span class="l">The patient</span><span class="s">Asks about their own record, signed notes only</span></span>' + tag('neutral', 'Own record') + '</div>' +
+    '<div class="row"><span class="ic20">' + ic('user-cross', 20) + '</span><span class="m"><span class="l">Anyone else\'s record</span><span class="s">A plain refusal. Try the third question.</span></span>' + tag('neutral', 'Refused') + '</div></div></div></section></div></div>');
 }
 
 /* ============================================================================
@@ -507,18 +625,19 @@ var LOG = [
   ['10:32 a.m.', 'cedar', 'Cedar', 'For Dr. Pannozzo', 'Read your intake answers to write a summary']
 ];
 function vLog(){
-  var f = ST.logF || 'all';
+  var f = ST.logF || 'all', first = {};
   var rows = LOG.filter(function(r){ return f === 'all' || (f === 'cedar' ? r[1] === 'cedar' : r[1] !== 'cedar'); }).map(function(r){
     var av = r[1] === 'cedar' ? cedarAv() : SC.html('AvatarCircle', {name:r[2] === 'You' ? PT.name : r[2].replace(/^Dr\.\s*/, ''), size:'medium', decorative:true});
+    var m = r[1] === 'cedar' && !first.c ? (first.c = 1, mk(2)) : r[1] === 'doc' && !first.d ? (first.d = 1, mk(1)) : '';
     return ['TableRow', {}, ['TableCell', {}, ['TableCellContent', {label:r[0], secondary:DAY}]],
-      ['TableCell', {}, SC.raw('<span class="who-cell">' + av + '<span class="wt"><b>' + esc(r[2]) + '</b>' + (r[3] ? '<span>' + esc(r[3]) + '</span>' : '') + '</span></span>')],
+      ['TableCell', {}, SC.raw('<span class="who-cell">' + av + '<span class="wt"><b>' + esc(r[2]) + '</b>' + (r[3] ? '<span>' + esc(r[3]) + '</span>' : '') + '</span>' + m + '</span>')],
       ['TableCell', {}, ['TableCellContent', {label:r[4]}]]];
   });
   var tabs = SC.html('Tabs', {defaultValue:f}, ['TabList', {'aria-label':'Show'}, ['Tab', {value:'all', 'data-act':'logF', 'data-v':'all', title:'Show every access'}, 'Everyone'], ['Tab', {value:'people', 'data-act':'logF', 'data-v':'people', title:'Show only people'}, 'People'], ['Tab', {value:'cedar', 'data-act':'logF', 'data-v':'cedar', title:'Show only Cedar'}, 'Cedar']]);
   var table = SC.html.apply(SC, ['Table', {'aria-label':'Who opened your record'}, ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'When'], ['TableHead', {}, 'Who'], ['TableHead', {}, 'What they did']]], ['TableBody', {}].concat(rows)]);
-  return '<section class="card"><div class="card-hd"><span class="ic20">' + ic('eye-on', 20) + '</span><h2>Who opened your record</h2><span class="sub">' + PT.name + '</span><span class="sp"></span>' +
+  return canvas('', '', win('Patient portal · Your record', '<section class="card" style="max-width:980px;margin:0 auto"><div class="card-hd"><span class="ic20">' + ic('eye-on', 20) + '</span><h2>Who opened your record</h2><span class="sub">' + PT.name + '</span><span class="sp"></span>' +
     btn('tertiary-main', 'Something look wrong?', 'noop', 'Tell the clinic about an access you don\'t recognise; not part of this demo', 'chat-message') + '</div>' +
-    '<div class="card-bd stack"><p style="max-width:80ch">Everyone who opened your record, and when, including Cedar. Cedar only reads your record when you or your care team ask it to do something.</p>' + tabs + '<div class="tbl-wrap">' + table + '</div>' + '</div></section>';
+    '<div class="card-bd stack"><p style="max-width:80ch">Everyone who opened your record, and when, including Cedar. Cedar only reads your record when you or your care team ask it to do something.</p><div style="display:flex;align-items:center;gap:10px">' + tabs + mk(3) + '</div><div class="tbl-wrap">' + table + '</div></div></section>'));
 }
 
 /* ============================================================================
@@ -533,48 +652,65 @@ function vRuns(){
     ['Questions about the record', 'Only what the person asking may see', 'Small open model, with permission checks and an access log']
   ].map(function(r){ return ['TableRow', {}, ['TableCell', {}, ['TableCellContent', {strong:true, label:r[0]}]], ['TableCell', {}, ['TableCellContent', {label:r[1]}]], ['TableCell', {}, ['TableCellContent', {label:r[2]}]]]; });
   var table = SC.html.apply(SC, ['Table', {'aria-label':'Each task and its model'}, ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Task'], ['TableHead', {}, 'What the model is given'], ['TableHead', {}, 'Model']]], ['TableBody', {}].concat(rows)]);
-  var flow = [['Cedar drafts', 'In the physician\'s own template'], ['The physician edits', 'As part of normal work'], ['The physician signs', 'Only signed notes reach the chart'], ['A training example', 'Draft and signed note, with the physician\'s authorization and the patient\'s consent'], ['That physician\'s model improves', 'No separate labelling']]
+  var flow = [['Cedar drafts', 'In the physician\'s own template'], ['The physician edits', 'As part of normal work'], ['The physician signs', 'Only signed notes reach the chart'], ['A training example', 'With the physician\'s authorization and the patient\'s consent'], ['That physician\'s model improves', 'No separate labelling']]
     .map(function(x){ return '<li><b>' + x[0] + '</b><span>' + x[1] + '</span></li>'; }).join('');
-  return '<div class="stack">' +
-    '<section class="card"><div class="card-hd"><span class="ic20">' + ic('technology', 20) + '</span><h2>Each task goes to the smallest model that does it well</h2><span class="sp"></span>' + tag('information', 'Goal of the 12-month grant', 'This is the plan, not what runs today') + '</div>' +
+  return canvas('', '', '<div class="stack">' +
+    '<section class="card float"><div class="card-hd"><span class="ic20">' + ic('technology', 20) + '</span><h2>Each task goes to the smallest model that does it well</h2>' + mk(1) + '<span class="sp"></span>' + tag('information', 'Goal of the 12-month grant', 'This is the plan, not what runs today') + '</div>' +
     '<div class="card-bd stack"><div class="tbl-wrap">' + table + '</div><p class="note-quiet">All open models of 10 billion parameters or fewer, on graphics hardware in Canada that Simple owns or controls. The aim: one practice needs one card. The cost of each task is recorded, so a practice can see what each AI task costs.</p>' +
     '<p class="note-quiet"><b style="color:var(--ink)">Today:</b> notes are drafted by Claude through Amazon Bedrock, then edited and signed by the physician; transcription already uses Whisper. Moving off the large model is what this project sets out to do.</p></div></section>' +
-    '<section class="card"><div class="card-hd"><span class="ic20">' + ic('signature', 20) + '</span><h2>The physician\'s approval is the training signal</h2></div><div class="card-bd"><ol class="flow" style="margin:0;padding:0">' + flow + '</ol>' +
-    '<p class="note-quiet" style="margin-top:8px">About 1,800 draft-and-signed pairs so far, from one family practice in British Columbia.</p></div></section>' +
-    '<section class="card"><div class="card-hd"><span class="ic20">' + ic('user-group', 20) + '</span><h2>Open</h2></div><div class="card-bd"><p>Cedar will be free and self-hostable, with an open interface any electronic medical record can connect to, including OSCAR. The framework, a physician-written synthetic test set, the evaluation tools and the results will be published, failures included. Patient information and models trained on patient records are never published.</p></div></section></div>';
+    '<section class="card float"><div class="card-hd"><span class="ic20">' + ic('signature', 20) + '</span><h2>The physician\'s approval is the training signal</h2>' + mk(2) + '</div><div class="card-bd"><ol class="flow">' + flow + '</ol>' +
+    '<p class="note-quiet" style="margin-top:12px">About 1,800 draft-and-signed pairs so far, from one family practice in British Columbia.</p></div></section>' +
+    '<section class="card float"><div class="card-hd"><span class="ic20">' + ic('user-group', 20) + '</span><h2>Open</h2>' + mk(3) + '</div><div class="card-bd"><p>Cedar will be free and self-hostable, with an open interface any electronic medical record can connect to, including OSCAR. The framework, a physician-written synthetic test set, the evaluation tools and the results will be published, failures included. Patient information and models trained on patient records are never published.</p></div></section></div>');
 }
 
 /* ============================================================================
-   Frame: steps, header, footer, events
+   Frame: steps, header, notices, footer, events
    ========================================================================= */
 var VIEWS = {intro:vIntro, intake:vIntake, note:vNote, code:vCode, askdoc:vAskDoc, askpt:vAskPt, log:vLog, runs:vRuns};
 var LEADS = {
-  intro:'Cedar, Simple\'s clinical assistant, does the paperwork around a visit: triage intake, the visit note, the claim\'s diagnostic code and questions about the record. The physician approves everything it produces.',
-  intake:'Before the visit, Cedar asks the patient a few questions. If they report a danger sign, they are told at once to call 9-1-1 or go to an emergency department, and the physician is told. Anything else becomes a summary that waits for the physician.',
-  note:'Cedar drafts the visit note in the physician\'s own template, from the visit recording and the chart entries shown on the right. The physician edits and signs; nothing reaches the chart unsigned.',
+  intake:'Before the visit, Cedar asks the patient a few questions. A danger sign sends them to emergency care at once and tells the physician; anything else becomes a summary that waits for the physician.',
+  note:'Cedar drafts the visit note in the physician\'s own template, from the visit recording and only the chart entries it needs. The physician edits and signs; nothing reaches the chart unsigned.',
   code:'From the signed note, Cedar suggests one diagnostic code with a short reason, and the alternatives it considered. The physician confirms or changes it.',
   askdoc:'Physicians ask questions of their own patients\' charts. Every answer names its sources.',
   askpt:'Patients ask about their own record, in plain language, with sources. A question about anyone else gets a plain refusal.',
   log:'Patients can see everyone who opened their record and when, including Cedar and what it read.',
   runs:'What makes Cedar small, local and governed by the physician and patient it serves. This is the plan for the 12-month grant.'
 };
+var NOTICE = {
+  intake:[['One question at a time', 'Plain words, answers the patient taps.'], ['A danger sign stops the intake', 'The patient is told to call 9-1-1 or go to emergency, at once.'], ['The physician is told', 'Immediately for a danger sign; otherwise a summary with sources waits.']],
+  note:[['The physician\'s own template', 'Assessment and plan come from the physician\'s words in the call.'], ['Only what it needs', 'Cedar was given 5 chart entries, not all 36.'], ['Nothing reaches the chart unsigned', 'Each edit becomes a training example for that physician\'s model.']],
+  code:[['One code, with its reason', 'Read from the signed note only.'], ['The alternatives it considered', 'One click away, with a search for any other code.'], ['The physician decides', 'Nothing goes on the claim without them.']],
+  askdoc:[['The physician\'s own patients only', 'Permission is checked before Cedar reads anything.'], ['Every answer names its sources', 'Each one opens the entry it came from.'], ['Every question is logged', 'It appears in the patient\'s access log.']],
+  askpt:[['Plain language, signed notes only', 'Cedar explains what the doctor wrote.'], ['Sources on every answer', 'So the patient can check them.'], ['Anyone else: a plain refusal', 'One record, two permission views.']],
+  log:[['Every person, and when', 'The physician, the office assistant, the patient.'], ['Cedar is listed too', 'With what it read and for whom.'], ['Filter to people or to Cedar', 'Something wrong can be reported to the clinic.']],
+  runs:[['The smallest model per task', 'Open models of 10 billion parameters or fewer, in Canada.'], ['Approval is the training signal', 'Normal clinical work improves each physician\'s model.'], ['Open', 'Free, self-hostable, with an open interface.']]
+};
 var PRINC = {intake:['Intentional'], note:['Small', 'Tailored'], code:['Tailored'], askdoc:['Intentional'], askpt:['Intentional'], log:['Intentional'], runs:['Small', 'Intentional', 'Tailored']};
 
 function paint(focus){
   var i = ST.step, s = STEPS[i];
+  ST.seen[i] = 1;
+  document.body.classList.toggle('playing', ST.playing);
   document.getElementById('cd-steps').innerHTML = STEPS.map(function(x, j){
-    return '<li><button type="button" class="cd-step" data-go="' + j + '"' + (j === i ? ' aria-current="step"' : '') + ' title="Go to ' + (j ? 'step ' + j + ': ' : '') + esc(x.t) + '"><span class="n">' + (j || ic('ai', 16)) + '</span><span><span class="t">' + esc(x.t) + '</span><span class="w">' + esc(x.w) + '</span></span></button></li>'; }).join('');
-  document.getElementById('cd-head').innerHTML = '<div class="txt"><p class="cd-eyebrow">' + (i ? 'Step ' + i + ' of ' + (STEPS.length - 1) + ' · ' : '') + esc(s.who) + '</p><h1>' + esc(i ? s.t : 'Cedar, Simple\'s clinical assistant') + '</h1><p class="lead">' + LEADS[s.k] + '</p></div>' +
-    (PRINC[s.k] ? '<div class="cd-tags">' + PRINC[s.k].map(function(p){ return tag('purple', p, 'Mozilla\'s principle: ' + p); }).join('') + '</div>' : '');
-  document.getElementById('cd-stage').innerHTML = VIEWS[s.k]();
+    return '<li><button type="button" class="cd-step' + (ST.seen[j] ? ' seen' : '') + '" data-go="' + j + '"' + (j === i ? ' aria-current="step"' : '') + ' title="Go to ' + (j ? 'step ' + j + ': ' : '') + esc(x.t) + '"><span class="n">' + (j ? (ST.seen[j] && j !== i ? ic('check', 16) : j) : ic('ai', 16)) + '</span><span><span class="t">' + esc(x.t) + '</span><span class="w">' + esc(x.w) + '</span></span></button></li>'; }).join('');
+  var head = document.getElementById('cd-head');
+  if(i === 0) head.innerHTML = '';
+  else head.innerHTML = '<div class="txt"><p class="cd-eyebrow">Step ' + i + ' of ' + (STEPS.length - 1) + ' · ' + esc(s.who) + '</p><h1>' + esc(s.t) + '</h1><p class="lead">' + LEADS[s.k] + '</p></div>' +
+    '<div class="acts">' + (PRINC[s.k] || []).map(function(p){ return tag('purple', p, 'Mozilla\'s principle: ' + p); }).join('') +
+    (PLAY[s.k] ? btn('secondary-main', ST.playing ? 'Playing…' : 'Play this step', 'play', 'Watch this step play by itself', 'play', ST.playing ? {disabled:true} : {}) : '') + '</div>';
+  var stage = document.getElementById('cd-stage');
+  stage.innerHTML = VIEWS[s.k]() + (NOTICE[s.k] ? '<p class="notice-h">What to notice</p><ol class="notice" style="padding:0">' + NOTICE[s.k].map(function(n, j){ return '<li><span class="mk">' + (j + 1) + '</span><span><b>' + esc(n[0]) + '</b><span class="s">' + esc(n[1]) + '</span></span></li>'; }).join('') + '</ol>' : '');
+  if(focus){ stage.classList.remove('enter'); void stage.offsetWidth; stage.classList.add('enter'); }
   var prev = i ? STEPS[i - 1].t : '', next = i < STEPS.length - 1 ? STEPS[i + 1].t : '';
   document.getElementById('cd-foot').innerHTML = (i ? btn('secondary-main', 'Back', 'prev', 'Go back to ' + prev, 'arrow-direction-left') : '') + '<span class="sp"></span>' +
     (next ? '<span class="pos">Next: ' + esc(next) + '</span>' + btn('primary', i ? 'Next' : 'Start the walkthrough', 'next', 'Go to ' + next, null, {endIcon:'arrow-direction-right'}) : btn('primary', 'Start again', 'restart', 'Clear everything and go back to the start', 'refresh-undo'));
   wireInputs();
+  typeAnswers();
+  if(s.k === 'note' && !ST.note.drafted){ ST.note.drafted = true; setTimeout(function(){ var d = document.getElementById('drafting'); if(d){ d.style.transition = 'opacity .3s'; d.style.opacity = '0'; setTimeout(function(){ if(d.parentNode) d.remove(); }, 320); } }, 700 + NOTE.length * 160 + 300); }
   var cur = document.querySelector('.cd-step[aria-current="step"]'), ol = document.getElementById('cd-steps');
   if(cur && ol.scrollWidth > ol.clientWidth) ol.scrollLeft = cur.parentElement.offsetLeft - 8;
   try { history.replaceState(null, '', '#' + s.k); } catch(e){}
-  if(focus){ var m = document.getElementById('cd-main'); m.focus({preventScroll:true}); window.scrollTo({top:0, behavior:'smooth'}); }
+  if(focus){ document.getElementById('cd-main').focus({preventScroll:true}); window.scrollTo({top:0, behavior:'smooth'}); }
 }
 function go(i){ ST.step = Math.max(0, Math.min(STEPS.length - 1, i)); paint(true); }
 function wireInputs(){
@@ -583,7 +719,7 @@ function wireInputs(){
       var k = ed.closest('.note-sec').getAttribute('data-sec'), orig = NOTE.filter(function(s){ return s[0] === k; })[0][2], v = ed.textContent;
       if(v.trim() === orig) delete ST.note.edits[k]; else ST.note.edits[k] = v;
       ed.closest('.note-sec').classList.toggle('edited', v.trim() !== orig);
-      var n = Object.keys(ST.note.edits).length, lab = document.querySelector('.signed-bar > span:last-child');
+      var n = Object.keys(ST.note.edits).length, lab = document.getElementById('edit-count');
       if(lab) lab.textContent = n ? n + ' edit' + (n > 1 ? 's' : '') : 'Click any section to edit';
     });
   });
@@ -613,6 +749,34 @@ function ask(list, text, freeKey){
   var b = document.getElementById(list === 'askDoc' ? 'ask-doc' : 'ask-pt'); if(b) b.focus();
 }
 
+/* ---- Play: each step acts itself out (for presenting and recording) ---- */
+function clickAct(act, v){ var el = document.querySelector('[data-act="' + act + '"]' + (v != null ? '[data-v="' + v + '"]' : '')); if(el){ ST.playing = false; el.click(); ST.playing = true; document.body.classList.add('playing'); } }
+var PLAY = {
+  intake: async function(){ ST.intake = fresh().intake; paint(); await wait(900); clickAct('intakePath', 'chest'); await wait(1300); clickAct('intakeAns', 'Yes, right now'); await wait(2600); },
+  note: async function(){ ST.note = {signed:false, edits:{}, drafted:false}; paint(); await wait(2600); clickAct('exampleEdit'); await wait(1800); clickAct('sign'); await wait(2200); },
+  code: async function(){ ST.code = fresh().code; paint(); await wait(1200); clickAct('codeOpen'); await wait(1800); clickAct('codeOpen'); await wait(600); clickAct('codeUse'); await wait(2000); },
+  askdoc: async function(){ ST.askDoc = []; paint(); await wait(800); clickAct('askDoc', 0); await wait(3800); clickAct('askDoc', 2); await wait(4200); },
+  askpt: async function(){ ST.askPt = []; paint(); await wait(800); clickAct('askPt', 0); await wait(3400); clickAct('askPt', 2); await wait(2800); },
+  log: async function(){ ST.logF = 'all'; paint(); await wait(1400); ST.logF = 'cedar'; paint(); await wait(2200); ST.logF = 'all'; paint(); await wait(800); },
+  runs: async function(){ await wait(1500); window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'}); await wait(2500); window.scrollTo({top:0, behavior:'smooth'}); await wait(800); }
+};
+async function playStep(){
+  var k = STEPS[ST.step].k; if(!PLAY[k] || ST.playing) return;
+  ST.playing = true; paint(); try { await PLAY[k](); } finally { ST.playing = false; paint(); }
+}
+var TOUR = 0;
+async function playTour(){
+  if(ST.playing) return;
+  var id = ++TOUR;
+  for(var i = 1; i < STEPS.length; i++){
+    if(id !== TOUR) break;
+    go(i); await wait(1400); ST.playing = true; paint();
+    try { await PLAY[STEPS[i].k](); } finally { ST.playing = false; }
+    if(id !== TOUR) break;
+    paint(); await wait(900);
+  }
+}
+
 document.addEventListener('click', function(e){
   var g = e.target.closest('[data-go]'); if(g){ go(+g.getAttribute('data-go')); return; }
   var a = e.target.closest('[data-act]'); if(!a) return;
@@ -620,7 +784,10 @@ document.addEventListener('click', function(e){
   switch(act){
     case 'next': go(ST.step + 1); break;
     case 'prev': go(ST.step - 1); break;
-    case 'restart': location.hash = ''; location.reload(); break;
+    case 'restart': TOUR++; ST = fresh(); location.hash = ''; paint(true); break;
+    case 'play': playStep(); break;
+    case 'tour': playTour(); break;
+    case 'present': present(); break;
     case 'intakePath':
       if(v === 'other'){ I.path = 'cough'; I.answers = ['Something else']; } else { I.path = v; I.answers = [v === 'cough' ? 'A cough' : 'Chest pain or pressure']; }
       I.i = 0; paint(); break;
@@ -630,7 +797,7 @@ document.addEventListener('click', function(e){
       else I.i++;
       paint(); break;
     case 'intakeSend': var t = document.getElementById('in-more'); if(t && t.value.trim()) I.answers.push(t.value.trim()); I.done = true; paint(); break;
-    case 'intakeReset': ST.intake = {path:null, i:0, answers:[], done:false, er:false}; paint(); break;
+    case 'intakeReset': ST.intake = fresh().intake; paint(); break;
     case 'call911': a.textContent = 'Test mode: nothing is dialled'; break;
     case 'exampleEdit': ST.note.edits.plan = EXAMPLE_EDIT; paint(); var p = document.querySelector('.note-sec[data-sec="plan"]'); if(p) p.scrollIntoView({block:'center', behavior:'smooth'}); break;
     case 'sign': ST.note.signed = true; paint(); break;
@@ -638,20 +805,36 @@ document.addEventListener('click', function(e){
     case 'codeOpen': ST.code.open = !ST.code.open; paint(); break;
     case 'codePick': ST.code.pick = v; ST.code.confirmed = true; ST.code.open = false; paint(); break;
     case 'codeChange': ST.code.confirmed = false; ST.code.open = true; paint(); break;
-    case 'askDoc': case 'askPt': if(ST[act].indexOf(+v) < 0) ST[act].push(+v); paint(); break;
+    case 'askDoc': case 'askPt': if(ST[act].indexOf(+v) < 0) ST[act].push(+v); paint(); var q = document.querySelector('.qa-a.typing'); if(q) q.scrollIntoView({block:'center', behavior:'smooth'}); break;
     case 'logF': ST.logF = v; paint(); break;
   }
 });
+/* Present: full screen, no step list; arrow keys move between steps */
+function present(){
+  var on = !document.body.classList.contains('present');
+  document.body.classList.toggle('present', on);
+  try { if(on && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); else if(!on && document.fullscreenElement) document.exitFullscreen(); } catch(e){}
+  paintTools();
+}
+document.addEventListener('fullscreenchange', function(){ if(!document.fullscreenElement && document.body.classList.contains('present')){ document.body.classList.remove('present'); paintTools(); } });
+function paintTools(){
+  var on = document.body.classList.contains('present');
+  document.getElementById('cd-tools').innerHTML = '<span style="display:inline-flex;gap:8px">' +
+    btn('tertiary-main', on ? 'Exit presenting' : 'Present', 'present', on ? 'Leave full screen and show the step list again' : 'Full screen without the step list; arrow keys move between steps', on ? 'arrow-expand-down' : 'arrow-expand-up') +
+    btn('tertiary-main', 'Restart', 'restart', 'Clear everything and start the demo again', 'refresh-undo') + '</span>';
+}
 document.addEventListener('keydown', function(e){
   if(e.target.closest && e.target.closest('input,textarea,[contenteditable="true"]')) return;
+  if(ST.playing) return;
   if(e.key === 'ArrowRight') go(ST.step + 1);
   if(e.key === 'ArrowLeft') go(ST.step - 1);
 });
 document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('cd-logo').innerHTML = logo(32);
-  document.getElementById('cd-mark').innerHTML = ic('ai', 24);
+  document.getElementById('cd-mark').innerHTML = ic('ai', 18);
+  document.getElementById('cd-safe-ic').innerHTML = ic('shield-check', 20);
   document.getElementById('cd-safe-tag').innerHTML = tag('information', 'Demo · test patient · nothing is saved', 'Nothing here creates a record, booking or claim, and nothing is sent', 'shield-check');
-  document.getElementById('cd-restart').innerHTML = btn('tertiary-main', 'Restart', 'restart', 'Clear everything and start the demo again', 'refresh-undo');
+  paintTools();
   var h = (location.hash || '').slice(1), i = STEPS.map(function(s){ return s.k; }).indexOf(h);
   ST.step = i > 0 ? i : 0;
   paint();
