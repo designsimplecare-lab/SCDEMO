@@ -7784,6 +7784,41 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   /* the Patient summary in the same Claude-panel pattern (Ani, 17 Nov): dark section titles, the summary as grey text on the right (its icon keeps
      its colour), plain rows with grey values, statuses as grey text with a coloured icon, a hairline between sections */
   #sm-list .sv-list__section{border-top:1px solid var(--line);}
+  /* the closed loop (Daniel, 20 Nov: "ordered to date arranged to report"; sent with delivery, booking acknowledged, report, reviewed) */
+  #sm-list .lp{display:block;width:100%;padding:12px 0;border:0;border-top:1px solid var(--line);background:none;text-align:left;cursor:pointer;font:inherit;}
+  #sm-list .lp:first-child{border-top:0;}
+  #sm-list .lp:hover .lp-t{text-decoration:underline;text-underline-offset:3px;}
+  #sm-list .lp:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:var(--radius-xs);}
+  .lp-h{display:flex;align-items:flex-start;gap:8px;}
+  .lp-t{flex:1;min-width:0;font-size:15px;line-height:22px;font-weight:500;color:var(--ink);}
+  .lp-why{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  .lp-q{display:block;margin-top:2px;font-size:14px;line-height:20px;font-style:italic;color:var(--ink-soft);}
+  .lp-track{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);margin:10px 0 6px;}
+  .lp-st{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;font-size:14px;line-height:18px;color:var(--ink-soft);}
+  .lp-st::before{content:"";position:absolute;left:12px;right:0;top:5px;height:2px;background:var(--line);}
+  .lp-st:last-child::before{display:none;}
+  .lp-st i{position:relative;z-index:1;width:12px;height:12px;border-radius:var(--radius-round);border:2px solid var(--line-strong);background:var(--panel);}
+  .lp-st.done i{background:var(--color-navy-700);border-color:var(--color-navy-700);}
+  .lp-st.done::before{background:var(--color-navy-300);}
+  .lp-st.wait i{background:var(--color-yellow-400);border-color:var(--color-yellow-600);}
+  .lp-st.you i{background:var(--color-red-600);border-color:var(--color-red-600);box-shadow:0 0 0 3px var(--color-red-100);}
+  .lp-st.done,.lp-st.wait,.lp-st.you{color:var(--ink);}
+  .lp-now{display:block;font-size:14px;line-height:20px;color:var(--ink);}
+  .lp-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  /* the drill-down */
+  #lp-drw .lp-v{list-style:none;margin:16px 0 0;padding:0;}
+  #lp-drw .lp-v li{position:relative;display:flex;gap:12px;padding:0 0 18px;}
+  #lp-drw .lp-v li::before{content:"";position:absolute;left:7px;top:18px;bottom:0;width:2px;background:var(--line);}
+  #lp-drw .lp-v li:last-child::before{display:none;}
+  #lp-drw .lp-v i{position:relative;z-index:1;flex:none;width:16px;height:16px;margin-top:3px;border-radius:var(--radius-round);border:2px solid var(--line-strong);background:var(--panel);}
+  #lp-drw .lp-v li.done i{background:var(--color-navy-700);border-color:var(--color-navy-700);}
+  #lp-drw .lp-v li.wait i{background:var(--color-yellow-400);border-color:var(--color-yellow-600);}
+  #lp-drw .lp-v li.you i{background:var(--color-red-600);border-color:var(--color-red-600);}
+  #lp-drw .lp-v b{display:block;font-size:15px;line-height:22px;color:var(--ink);}
+  #lp-drw .lp-v span{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #lp-drw .lp-meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;margin:0;font-size:14px;line-height:20px;}
+  #lp-drw .lp-meta dt{color:var(--ink-soft);}
+  #lp-drw .lp-meta dd{margin:0;color:var(--ink);}
   #sm-list .sv-list__section:first-child{border-top:0;}
   #sm-list .sv-list__head{min-height:48px;font-size:15px;line-height:22px;font-weight:500;color:var(--ink);}
   #sm-list .sv-list__head .sv-list__count{font-size:14px;color:var(--ink-soft);}
@@ -20852,10 +20887,10 @@ function v2SetSec(k, count, chip, body, show){
 /* Patient summary (Ani, 6 Nov): the design system's List. Builders return List nodes; v2SetSec keeps each section and smPaint draws them all. One rule
    between sections, the section title the only bold text, at most one Tag per row or section. A row that opens something carries href and data-goi. */
 var SM = {sec:{}, go:[], goIdx:{}, t:0};
-var SM_ORDER = ['intake', 'meds', 'alg', 'hist', 'cons', 'inv', 'pend', 'enc', 'since'];
-var SM_TITLE = {intake:'Intake', meds:'Medications', alg:'Allergies', hist:'Past medical history', cons:'Consultation reports', inv:'Investigations', pend:'Pending', enc:'Previous encounters', since:'Since you last saw'};
-var SM_ICON = {intake:'today', meds:'encounterlog', alg:'cardinfo', hist:'tasks', cons:'file', inv:'chartup', pend:'clock', enc:'calendar', since:'reassign'};
-var SM_DSIC2 = {intake:'clipboard', meds:'medication', alg:'allergy', hist:'medical', cons:'file-record', inv:'chart-1', pend:'clock-time', enc:'calendar', since:'refresh-undo'};
+var SM_ORDER = ['intake', 'lpPrev', 'lpLab', 'lpImg', 'lpProc', 'lpRef'];   /* Daniel, 20 Nov: history (medications, allergies, past medical history) is on the right; the left is the closed loop, paired by type */
+var SM_TITLE = {lpPrev:'Prevention', lpLab:'Labs', lpImg:'Imaging', lpProc:'Procedures', lpRef:'Referrals', intake:'Intake', meds:'Medications', alg:'Allergies', hist:'Past medical history', cons:'Consultation reports', inv:'Investigations', pend:'Pending', enc:'Previous encounters', since:'Since you last saw'};
+var SM_ICON = {lpPrev:'calendar', lpLab:'chartup', lpImg:'file', lpProc:'clock', lpRef:'reassign', intake:'today', meds:'encounterlog', alg:'cardinfo', hist:'tasks', cons:'file', inv:'chartup', pend:'clock', enc:'calendar', since:'reassign'};
+var SM_DSIC2 = {lpPrev:'shield-check', lpLab:'chart-1', lpImg:'radiology', lpProc:'vital-signs', lpRef:'user-assign', intake:'clipboard', meds:'medication', alg:'allergy', hist:'medical', cons:'file-record', inv:'chart-1', pend:'clock-time', enc:'calendar', since:'refresh-undo'};
 var SM_TONE = {att:'warning', crit:'error', ok:'success', ai:'purple', '':'neutral'};
 var SM_DSIC = {alert:'warning', clock:'clock-time', crit:'error', cardwarn:'warning', eye:'eye-on', complete:'check-circle', urgent:'urgent'};
 function smText(h){ var d = document.createElement('div'); d.innerHTML = String(h == null ? '' : h); return d.textContent.replace(/\s+/g, ' ').trim(); }
@@ -20908,6 +20943,129 @@ function smPaint(){
   /* the open section is remembered through redraws; the list opens one section at a time (native details name) */
   m.addEventListener('toggle', function(e){ var d = e.target; if(d && d.matches && d.matches('details[data-k]')) V2.open[d.getAttribute('data-k')] = d.open; }, true);
 })();
+/* ============================================================================
+   Closed loop (Daniel, 17 Nov brief: the left is the patient summary paired by type, "ordered -> result"; 20 Nov: "ordered to
+   date arranged to report"; "1) we know the fax or facility it was sent to and whether it was delivered, 2) the facility's
+   acknowledgement of the booking, 3) the report, 4) the doctor reviews and clears it"). Each order is one record with up to four
+   steps; a step is done (navy), waiting on others (amber), needs you (red) or not reached yet (grey). Needs you first, closed
+   loops last. Click an order to drill down: every step with its date, who and the source.
+   ========================================================================= */
+var LP_STEPS = {lab:['Ordered', 'Collected', 'Result', 'Reviewed'], img:['Ordered', 'Arranged', 'Report', 'Reviewed'], proc:['Ordered', 'Arranged', 'Report', 'Reviewed'], ref:['Referred', 'Arranged', 'Report', 'Reviewed'], prev:['Due', 'Done']};
+var LP_SEC = {prev:'lpPrev', lab:'lpLab', img:'lpImg', proc:'lpProc', ref:'lpRef'};
+/* a step: [state, short date, detail for the drill-down, source] */
+var LOOPS = {
+  'Gloria Mcdonald, 74F': [
+    {id:'fit', t:'prev', n:'Colon cancer screening (FIT)', why:'Every 2 years, age 50 to 74', st:[['you', 'Due now', 'Last FIT November 2024, normal; next due November 2026.', 'Simple chart'], ['todo', '', '', '']], acts:['order', 'elsewhere']},
+    {id:'eye', t:'prev', n:'Diabetes eye examination', why:'Every 1 to 2 years', st:[['you', 'Overdue', 'Last examination 2024; no retinopathy recorded.', 'Faxed ophthalmology letter'], ['todo', '', '', '']], acts:['refer', 'elsewhere']},
+    {id:'flu', t:'prev', n:'Influenza vaccine, 2026 season', why:'Yearly', st:[['you', 'Due now', 'None recorded this season.', 'Immunizations'], ['todo', '', '', '']], acts:['elsewhere']},
+    {id:'lung', t:'prev', n:'Lung cancer screening', why:'Age 55 to 74 with 20 or more pack-years', st:[['you', 'Eligible', 'Former smoker, 20 pack-years; confirm eligibility.', 'Social history'], ['todo', '', '', '']], acts:['confirm', 'dismiss']},
+    {id:'mammo', t:'prev', n:'Mammogram', why:'Every 2 years, age 50 to 74', st:[['done', 'Oct 2025', 'Done October 2025, normal; next due November 2027.', 'BC Cancer screening report'], ['done', 'Normal', 'Reviewed by Dr. Pannozzo, 3 November 2025.', 'Inbox']]},
+    {id:'card', t:'lab', n:'Cardiac markers · 3 tests', why:'Chest pressure today · rule out acute coronary syndrome · 786.5', inbox:16,
+      st:[['done', 'Today', 'Requisition sent to LifeLabs 7:05 a.m., delivered.', 'Requisition'], ['done', '7:20', 'Collected at LifeLabs, Yates Street, 7:20 a.m.', 'LifeLabs'], ['done', '7:50', 'Troponin I 0.42 µg/L, critical; creatine kinase 165 units/L; electrolytes normal. Received 7:50 a.m.', 'Provincial Laboratory Information Solution'], ['you', 'Not yet', 'Waiting for your review.', '']], acts:['review']},
+    {id:'lipid', t:'lab', n:'Lipid panel and hemoglobin A1c', why:'Type 2 diabetes · monitoring · 250.00', cedar:'Last A1c 12 March 2026; Diabetes Canada: about every 3 months. Based on results in Simple.',
+      st:[['you', 'Not yet', 'Not ordered; due 20 August 2026.', 'Cedar, from the chart'], ['todo', '', '', ''], ['todo', '', '', ''], ['todo', '', '', '']], acts:['order', 'elsewhere', 'dismiss']},
+    {id:'tsh', t:'lab', n:'Thyroid-stimulating hormone', why:'Thyroid nodule · follow-up', quote:'"Kindly check a TSH before follow-up." Endocrine surgery report, 8 January 2026, page 2',
+      st:[['you', 'Not yet', 'Specialist request, not ordered.', 'Endocrine surgery report'], ['todo', '', '', ''], ['todo', '', '', ''], ['todo', '', '', '']], acts:['order', 'dismiss']},
+    {id:'us', t:'img', n:'Thyroid ultrasound, repeat in 6 months', why:'Thyroid nodule · interval check', quote:'"Please arrange a repeat ultrasound in six months." Endocrine surgery report, 8 January 2026, page 2',
+      st:[['you', 'Not yet', 'Specialist request, not ordered; due July 2026.', 'Endocrine surgery report'], ['todo', '', '', ''], ['todo', '', '', ''], ['todo', '', '', '']], acts:['order', 'dismiss']},
+    {id:'stress', t:'proc', n:'Exercise stress test', why:'Exertional chest pressure · assess for ischemia · 786.5', fac:'Island Heart Diagnostics',
+      st:[['done', '25 Jun', 'Faxed 25 June 2026, 3:12 p.m., to Island Heart Diagnostics (250-555-0142); delivered 3:13 p.m.', 'Fax confirmation'], ['done', '12 Sep', 'Booking acknowledged by fax 2 July: 12 September 2026. Done that day.', 'Facility acknowledgement'], ['wait', 'Not back', 'Report not back, 69 days after the test.', ''], ['todo', '', '', '']], acts:['remind']},
+    {id:'holter', t:'proc', n:'48-hour Holter', why:'Exertional chest pressure · rule out arrhythmia · 786.5', fac:'Island Heart Diagnostics',
+      st:[['done', '25 Jun', 'Faxed 25 June 2026, 3:14 p.m., to Island Heart Diagnostics (250-555-0142); delivered 3:15 p.m.', 'Fax confirmation'], ['you', 'Never', 'No booking acknowledged in 148 days.', ''], ['todo', '', '', ''], ['todo', '', '', '']], acts:['remind', 'reorder', 'cancel']},
+    {id:'cardio', t:'ref', n:'Cardiology', why:'Exertional chest pressure · possible stable angina · 786.5', fac:'Dr. M. Ferreira, cardiology',
+      st:[['done', '25 Jun', 'Referral faxed 25 June 2026 to Dr. M. Ferreira, cardiology (250-555-0187); delivered.', 'Fax confirmation'], ['wait', 'Not yet', 'Receipt acknowledged 27 June; cardiology books the appointment, none booked yet.', 'Office acknowledgement'], ['todo', '', '', ''], ['todo', '', '', '']], acts:['remind']}
+  ]
+};
+var LP_ACT = {
+  review:['primary', 'Review', 'Open the result to review and clear it'],
+  order:['primary', 'Order', 'Order it now; the requisition goes out and the loop starts'],
+  refer:['primary', 'Refer', 'Send the referral; the loop starts'],
+  confirm:['secondary-main', 'Confirm eligibility', 'Record that she is eligible and offer screening'],
+  remind:['secondary-main', 'Ask the facility', 'Fax the facility asking for the booking or the report'],
+  reorder:['secondary-main', 'Re-send', 'Send the order again to the same facility'],
+  elsewhere:['tertiary-main', 'Done elsewhere', 'Record that it was done at another clinic; you add the date and place'],
+  dismiss:['tertiary-main', 'Dismiss', 'Dismiss it, with a reason'],
+  cancel:['tertiary-main', 'Cancel', 'Cancel the order, with a reason']
+};
+/* a patient without hand-written loops: one loop per pending item and unreviewed result, from the same records */
+function lpGeneric(name){
+  var pend = (v2Rows(name) || {})['Pending'], out = [];
+  (pend ? pend[1] : []).forEach(function(x, i){
+    if(x[0] === '@na' || x[0] === '@bp') return;
+    if(x[0] === '@rm'){ var it = INBOX_ITEMS[x[1]]; if(it) out.push({id:'g' + i, t:'lab', n:smText(it.panel), why:'Result received', inbox:x[1], st:[['done', '', 'Ordered.', ''], ['done', '', 'Collected.', ''], ['done', 'In', 'Result received.', 'Provincial Laboratory Information Solution'], ['you', 'Not yet', 'Waiting for your review.', '']], acts:['review']}); return; }
+    var t = smText(x[0]), sub = smText(x[1] || ''), ty = /referr|review|cardiolog|dermatolog|surgery|consult|psychiatr|neurolog/i.test(t) ? 'ref' : /ultrasound|x-?ray|\bct\b|mri|mammo|imaging|scan/i.test(t) ? 'img' : /holter|test|endoscop|colonoscop|ecg|biopsy|spirometr/i.test(t) && !/panel|blood/i.test(t) ? 'proc' : 'lab';
+    var over = x[4] === 'Overdue' || /overdue|^due /i.test(sub), back = /not back|awaiting|waiting/i.test(sub);
+    var st = over ? [['you', 'Not yet', v2Cap(sub) + '.', ''], ['todo', '', '', ''], ['todo', '', '', ''], ['todo', '', '', '']]
+      : back ? [['done', '', 'Ordered.', ''], ['done', '', 'Arranged.', ''], ['wait', 'Not back', v2Cap(sub) + '.', ''], ['todo', '', '', '']]
+      : [['done', '', 'Ordered.', ''], ['wait', 'Not yet', v2Cap(sub) + '.', ''], ['todo', '', '', ''], ['todo', '', '', '']];
+    out.push({id:'g' + i, t:ty, n:t, why:'', st:st, acts:over ? ['order', 'elsewhere'] : ['remind']});
+  });
+  return out;
+}
+function lpList(name){ if(!LOOPS[name]) LOOPS[name] = lpGeneric(name); return LOOPS[name]; }
+function lpState(L){ var s = L.st.filter(function(x){ return x[0] !== 'done'; })[0]; return s ? s[0] : 'done'; }
+function lpTag(L){
+  var s = lpState(L), w = L.st.filter(function(x){ return x[0] === 'wait'; })[0];
+  return s === 'you' ? ['Tag', {color:'error', title:'Needs you'}, 'Needs you'] : s === 'wait' ? ['Tag', {color:'warning', title:'Waiting on ' + (L.fac || 'others')}, 'Waiting'] : s === 'done' ? ['Tag', {color:'information', startIcon:'check', title:'Closed loop'}, 'Closed'] : ['Tag', {color:'neutral'}, 'Open'];
+}
+function lpNow(L){ var s = L.st.filter(function(x){ return x[0] !== 'done'; })[0] || L.st[L.st.length - 1]; return s[2]; }
+function lpBtn(L, a){ var d = LP_ACT[a]; return SC.html('Button', {variant:d[0], size:'medium', title:d[2], 'data-goi':smGo('lpAct(\'' + L.id + '\',\'' + a + '\')')}, d[1]); }
+function lpItem(L){
+  var labels = LP_STEPS[L.t], track = L.st.map(function(x, i){ return '<span class="lp-st ' + x[0] + '" title="' + csEsc(labels[i] + (x[1] ? ': ' + x[1] : '') + (x[2] ? ' · ' + x[2] : '')) + '"><i></i>' + csEsc(labels[i]) + '</span>'; }).join('');
+  var st = lpState(L);
+  return '<div class="lp" role="button" tabindex="0" data-goi="' + smGo('lpOpen(\'' + L.id + '\')') + '" title="See every step of ' + csEsc(L.n) + '">' +
+    '<span class="lp-h"><span class="lp-t">' + csEsc(L.n) + '</span>' + SC.html.apply(SC, lpTag(L)) + '</span>' +
+    (L.why ? '<span class="lp-why">' + csEsc(L.why) + '</span>' : '') + (L.quote ? '<span class="lp-q">' + csEsc(L.quote) + '</span>' : '') +
+    '<span class="lp-track">' + track + '</span><span class="lp-now">' + csEsc(lpNow(L)) + '</span>' +
+    (st !== 'done' && L.acts ? '<span class="lp-acts">' + L.acts.map(function(a){ return lpBtn(L, a); }).join('') + '</span>' : '') + '</div>';
+}
+function lpRender(name){
+  if(!name) return;
+  var all = lpList(name), rank = {you:0, wait:1, todo:1, done:2};
+  ['prev', 'lab', 'img', 'proc', 'ref'].forEach(function(t){
+    var L = all.filter(function(x){ return x.t === t; }).sort(function(a, b){ return rank[lpState(a)] - rank[lpState(b)]; });
+    var you = L.filter(function(x){ return lpState(x) === 'you'; }).length, k = LP_SEC[t];
+    if(V2.open[k] === undefined && you && !Object.keys(V2.open).some(function(o){ return V2.open[o]; })) V2.open[k] = true;
+    v2SetSec(k, L.length, you ? smChip(you, 'need you', 'crit', 'alert') : null, L.length ? SC.raw(L.map(lpItem).join('')) : null, L.length > 0);
+  });
+}
+function lpFind(id){ var all = lpList(PC_CURRENT); return all.filter(function(x){ return x.id === id; })[0]; }
+var LP_DONE = {order:'Ordered by you today; the requisition is faxed and the loop has started', refer:'Referral sent by you today', confirm:'Eligibility confirmed by you', remind:'Request faxed to the facility', reorder:'Order re-sent to the facility',
+  elsewhere:'Marked done elsewhere by you; add the date and place', dismiss:'Dismissed by you, with a reason', cancel:'Cancelled by you, with a reason', review:'Reviewed and cleared by you'};
+function lpAct(id, a){
+  var L = lpFind(id); if(!L) return;
+  if(a === 'review' && L.inbox != null && typeof openReview === 'function'){ openReview(L.inbox); }
+  var hm = new Date().toLocaleTimeString('en-CA', {hour:'numeric', minute:'2-digit'}).toLowerCase().replace(/\.$/, '');   /* "6:12 p.m", the sentence adds the full stop */
+  if(a === 'order' || a === 'refer'){ L.st[0] = ['done', 'Today', (a === 'refer' ? 'Referral' : 'Requisition') + ' sent by you today, ' + hm + '; delivery confirmed.', 'Fax confirmation']; if(L.st[1]) L.st[1] = ['wait', 'Not yet', 'Waiting for the facility to arrange it.', '']; if(L.t === 'prev') L.st[1] = ['wait', 'Ordered', 'Ordered today; waiting for the result.', '']; }
+  else if(a === 'review'){ L.st[L.st.length - 1] = ['done', 'Today', 'Reviewed and cleared by you, ' + hm + '.', 'Inbox']; }
+  else if(a === 'elsewhere' || a === 'dismiss' || a === 'cancel' || a === 'confirm'){ L.st = L.st.map(function(x, i){ return i === 0 ? ['done', a === 'confirm' ? 'Eligible' : 'Closed', LP_DONE[a] + ', ' + hm + '.', ''] : x[0] === 'todo' || x[0] === 'you' || x[0] === 'wait' ? (a === 'confirm' && i === 1 ? ['wait', 'Offered', 'Screening offered; waiting for her decision.', ''] : ['done', '—', 'Closed.', '']) : x; }); }
+  else if(a === 'remind' || a === 'reorder'){ var w = L.st.filter(function(x){ return x[0] !== 'done'; })[0]; if(w){ w[0] = 'wait'; w[2] = w[2].replace(/\s*Asked again.*$/, '') + ' Asked again by fax today, ' + hm + '.'; } }
+  toast(L.n + ': ' + LP_DONE[a].charAt(0).toLowerCase() + LP_DONE[a].slice(1) + '.');
+  lpRender(PC_CURRENT);
+  var d = document.getElementById('lp-drw'); if(d && d.open){ d.close(); lpOpen(id); }
+}
+function lpOpen(id){
+  var L = lpFind(id); if(!L) return;
+  var host = document.getElementById('lp-host'); if(!host){ host = document.createElement('div'); host.id = 'lp-host'; document.body.appendChild(host); }
+  var labels = LP_STEPS[L.t];
+  var steps = L.st.map(function(x, i){ return '<li class="' + x[0] + '"><i></i><span style="flex:1;min-width:0"><b>' + csEsc(labels[i]) + (x[1] ? ' · ' + csEsc(x[1]) : '') + '</b><span>' + csEsc(x[2] || (x[0] === 'todo' ? 'Not reached yet.' : '')) + '</span>' + (x[3] ? '<span>Source: ' + csEsc(x[3]) + '</span>' : '') + '</span></li>'; }).join('');
+  var code = (L.why.match(/\b(\d{3}(?:\.\d{1,2})?)\s*$/) || [])[1];
+  var meta = '<dl class="lp-meta"><dt>Why</dt><dd>' + csEsc(L.why.replace(/\s*·\s*\d{3}(\.\d{1,2})?\s*$/, '') || '—') + '</dd>' +
+    (code ? '<dt>Diagnostic code</dt><dd>' + code + ' · on the order since it was placed</dd>' : '') +
+    (L.fac ? '<dt>Sent to</dt><dd>' + csEsc(L.fac) + '</dd>' : '') + (L.quote ? '<dt>Asked for</dt><dd>' + csEsc(L.quote) + '</dd>' : '') + (L.cedar ? '<dt>Cedar</dt><dd>' + csEsc(L.cedar) + '</dd>' : '') + '</dl>';
+  var st = lpState(L), acts = st !== 'done' && L.acts ? '<div class="lp-acts" style="margin-top:4px">' + L.acts.map(function(a){ var d = LP_ACT[a]; return '<button type="button" class="sv-button" hidden></button>' + SC.html('Button', {variant:d[0], size:'medium', title:d[2], 'data-lp':a}, d[1]); }).join('') + '</div>' : '';
+  host.innerHTML = SC.html('Drawer', {id:'lp-drw', title:L.n, description:LP_STEPS[L.t].join(' → ') + ' · ' + (st === 'you' ? 'needs you' : st === 'wait' ? 'waiting on ' + (L.fac || 'others') : 'closed'), secondaryAction:{label:'Close', id:'lp-close'}},
+    SC.raw(meta + '<ol class="lp-v">' + steps + '</ol>' + acts.replace(/<button type="button" class="sv-button" hidden><\/button>/g, '')));
+  var d = document.getElementById('lp-drw');
+  d.addEventListener('click', function(e){
+    if(e.target === d) return d.close();
+    var b = e.target.closest('[data-lp]'); if(b){ lpAct(id, b.getAttribute('data-lp')); return; }
+    var c = e.target.closest('button'); if(c && (c.id === 'lp-close' || c.getAttribute('aria-label') === 'Close')) d.close();
+  });
+  d.showModal();
+}
+/* keyboard: an order row opens with Enter or Space like a button */
+document.addEventListener('keydown', function(e){ var r = e.target.closest && e.target.closest('#sm-list .lp'); if(r && (e.key === 'Enter' || e.key === ' ') && e.target === r){ e.preventDefault(); r.click(); } });
 function smPendFill(){
   var name = PC_CURRENT, mt = document.getElementById('sm-orders'); if(!name || !mt) return;
   var pend = v2Rows(name)['Pending'], G = {over:[], neu:[], wait:[], sched:[]};
@@ -20976,6 +21134,7 @@ function v2RenderSide(name){
       'data-goi':smGo('csOpenFull(\'documents\',this)')}]] : []), !!(slv && !slv.hidden) && list.length > 0);
   var el = v2El('v2-key');
   if(el) v2RenderKey(el, name, by);
+  if(typeof lpRender === 'function') lpRender(name);
 }
 
 /* physician pass A4: the Patient summary's Medications from Prescribe's model (rxRecModel): Due for renewal, PharmaNet differs, Other Simple Care
