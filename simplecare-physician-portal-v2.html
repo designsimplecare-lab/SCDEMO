@@ -7805,6 +7805,60 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   .lp-st.done,.lp-st.wait,.lp-st.you{color:var(--ink);}
   .lp-now{display:block;font-size:14px;line-height:20px;color:var(--ink);}
   .lp-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  /* Timeline (Daniel's brief, pages 4 and 5; Ani, 20 Nov: "I liked that timeline view Daniel had") */
+  #tl2 .tl-hd{display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px 20px;margin-bottom:16px;}
+  #tl2 .tl-hd h4{margin:0;font-size:18px;line-height:26px;font-weight:700;color:var(--ink);}
+  #tl2 .tl-sum{margin:2px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #tl2 .tl-sum b{color:var(--color-red-700);font-weight:700;}
+  #tl2 .tl-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-xs);}
+  #tl2 .tl-row{display:grid;grid-template-columns:minmax(0,240px) 130px minmax(0,1fr) 190px;gap:16px;align-items:center;padding:14px 16px;border-top:1px solid var(--line);}
+  #tl2 .tl-row:first-child{border-top:0;}
+  #tl2 .tl-row.dx{grid-template-columns:minmax(0,240px) minmax(0,1fr) minmax(0,260px);}
+  #tl2 .tl-k{display:block;font-size:14px;color:var(--ink-soft);}
+  #tl2 .tl-n{display:block;padding:0;border:0;background:none;text-align:left;font:inherit;font-size:15px;line-height:22px;font-weight:700;color:var(--ink);cursor:pointer;}
+  #tl2 .tl-n:hover{text-decoration:underline;text-underline-offset:3px;}
+  #tl2 .tl-n code{font-family:inherit;font-weight:400;color:var(--ink-soft);margin-left:6px;}
+  #tl2 .tl-i{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #tl2 .tl-i b{font-weight:500;color:var(--ink);}
+  #tl2 .tl-age{font-size:14px;line-height:20px;color:var(--ink);}
+  #tl2 .tl-age span{display:block;color:var(--ink-soft);}
+  #tl2 .strip{position:relative;height:52px;border-radius:var(--radius-2xs);background:var(--wash);overflow:hidden;}
+  #tl2 .strip .m{position:absolute;top:0;bottom:0;border-left:1px solid var(--line);}
+  #tl2 .strip .m span{position:absolute;left:4px;bottom:3px;font-size:14px;line-height:16px;color:var(--ink-faint);white-space:nowrap;}
+  #tl2 .strip .bar{position:absolute;top:16px;height:8px;border-radius:var(--radius-round);}
+  #tl2 .strip .bar.done{background:var(--color-navy-200);}
+  #tl2 .strip .bar.wait{background:var(--color-yellow-300);}
+  #tl2 .strip .bar.you{background:var(--color-red-300);}
+  #tl2 .strip .pt{position:absolute;top:13px;width:14px;height:14px;margin-left:-7px;border-radius:var(--radius-round);background:var(--color-navy-800);border:2px solid var(--panel);}
+  #tl2 .strip .pt.miss{background:var(--panel);border:2px solid var(--color-red-600);}
+  #tl2 .strip .pt.crit{background:var(--color-red-600);}
+  #tl2 .strip .lbl{position:absolute;top:0;transform:translateX(-50%);font-size:14px;line-height:14px;color:var(--ink);white-space:nowrap;}
+  #tl2 .strip .lbl.r{transform:translateX(-100%);padding-right:10px;}
+  #tl2 .strip .lbl.crit,#tl2 .strip .lbl.miss{color:var(--color-red-700);font-weight:700;}
+  #tl2 .strip .today{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--color-red-600);}
+  #tl2 .tl-steps{list-style:none;margin:0;padding:0;display:grid;gap:2px;}
+  #tl2 .tl-steps li{display:flex;align-items:baseline;gap:6px;font-size:14px;line-height:20px;color:var(--ink-faint);}
+  #tl2 .tl-steps li i{flex:none;width:8px;height:8px;border-radius:var(--radius-round);border:1.5px solid var(--line-strong);transform:translateY(-1px);}
+  #tl2 .tl-steps li.done{color:var(--ink);} #tl2 .tl-steps li.done i{background:var(--color-navy-800);border-color:var(--color-navy-800);}
+  #tl2 .tl-steps li.wait{color:var(--ink);} #tl2 .tl-steps li.wait i{background:var(--color-yellow-400);border-color:var(--color-yellow-600);}
+  #tl2 .tl-steps li.you{color:var(--ink);} #tl2 .tl-steps li.you i{background:var(--color-red-600);border-color:var(--color-red-600);}
+  #tl2 .tl-steps li b{font-weight:700;}
+  #tl2 .tl-chips{display:flex;flex-wrap:wrap;gap:6px;}
+  #tl2 .sv-tag,#tl2 .sv-tag .truncate{font-size:14px;}
+  #tl2 .tl-tagbtn{padding:0;border:0;background:none;cursor:pointer;border-radius:var(--radius-2xs);}
+  #tl2 .tl-tagbtn:hover .sv-tag{filter:brightness(.96);text-decoration:underline;text-underline-offset:2px;}
+  #tl2 .tl-tagbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  #tl2 .strip.dxs{height:72px;}
+  #tl2 .strip.dxs .bar{top:22px;}
+  #tl2 .tl-legend{display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:12px 16px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-soft);}
+  #tl2 .tl-legend i{display:inline-block;width:20px;height:8px;margin-right:6px;border-radius:var(--radius-round);vertical-align:1px;}
+  #tl2 .tl-legend .sp{flex:1;}
+  #tl2 .tl-sugg{margin-top:16px;background:linear-gradient(180deg, color-mix(in srgb, var(--color-brand-ai-start) 45%, var(--panel)), var(--panel) 120px);}
+  #tl2 .tl-sugg .tl-row{grid-template-columns:minmax(0,260px) minmax(0,1fr) auto;}
+  #tl2 .tl-fact{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;font-size:14px;line-height:20px;}
+  #tl2 .tl-fact dt{color:var(--ink-soft);} #tl2 .tl-fact dd{margin:0;color:var(--ink);}
+  #tl2 .tl-acts{display:flex;gap:6px;}
+  #tl-all[hidden]{display:none !important;}
   /* the drill-down */
   #lp-drw .lp-v{list-style:none;margin:16px 0 0;padding:0;}
   #lp-drw .lp-v li{position:relative;display:flex;gap:12px;padding:0 0 18px;}
@@ -8769,7 +8823,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
             </div>
             <div class="cs-dstabs" id="cs-tabs" onclick="var t=event.target.closest('[role=tab][data-cst]'); if(t) csTab(t.getAttribute('data-cst'));"></div>
             <div class="cs-pane" id="csp-history" role="tabpanel" aria-labelledby="cst-history" tabindex="-1" hidden><div id="hx-page" class="hx-page"></div></div>
-            <div class="cs-pane" id="csp-timeline" role="tabpanel" aria-labelledby="cst-timeline" tabindex="-1" hidden><div class="care-tl-mount"></div></div>
+            <div class="cs-pane" id="csp-timeline" role="tabpanel" aria-labelledby="cst-timeline" tabindex="-1" hidden><div id="tl2"></div><div class="care-tl-mount" id="tl-all"></div></div>
             <div class="cs-pane" id="csp-results" role="tabpanel" aria-labelledby="cst-results" tabindex="-1" hidden>
               <!-- Daniel, 26 Sep: "it is madness that I am opening up raw pdf's". Tests with values and a trend. -->
               <!-- 21 Oct (Daniel, video 2: "this goes into the lab results section of the chart"): lab orders and where each stands, above the results -->
@@ -18774,6 +18828,7 @@ function csTab(tab, noFocus, keepQ){
   CS_TABS.forEach(function(t){ var p = document.getElementById('csp-' + t[0]); if(p) p.hidden = srch || t[0] !== tab; });
   var sp = document.getElementById('csp-search'); if(sp) sp.hidden = !srch;
   if(tab === 'history') hxRender();
+  if(tab === 'timeline' && typeof tlRender === 'function') tlRender(PC_CURRENT);
   if(tab === 'consults') csRenderConsults(PC_CURRENT);
   if(tab === 'documents') csRenderDocs(PC_CURRENT);
   if(tab === 'messages') csRenderMsgs(PC_CURRENT);
@@ -20962,16 +21017,24 @@ var LOOPS = {
     {id:'mammo', t:'prev', n:'Mammogram', why:'Every 2 years, age 50 to 74', st:[['done', 'Oct 2025', 'Done October 2025, normal; next due November 2027.', 'BC Cancer screening report'], ['done', 'Normal', 'Reviewed by Dr. Pannozzo, 3 November 2025.', 'Inbox']]},
     {id:'card', t:'lab', n:'Cardiac markers · 3 tests', why:'Chest pressure today · rule out acute coronary syndrome · 786.5', inbox:16,
       st:[['done', 'Today', 'Requisition sent to LifeLabs 7:05 a.m., delivered.', 'Requisition'], ['done', '7:20', 'Collected at LifeLabs, Yates Street, 7:20 a.m.', 'LifeLabs'], ['done', '7:50', 'Troponin I 0.42 µg/L, critical; creatine kinase 165 units/L; electrolytes normal. Received 7:50 a.m.', 'Provincial Laboratory Information Solution'], ['you', 'Not yet', 'Waiting for your review.', '']], acts:['review']},
-    {id:'lipid', t:'lab', n:'Lipid panel and hemoglobin A1c', why:'Type 2 diabetes · monitoring · 250.00', cedar:'Last A1c 12 March 2026; Diabetes Canada: about every 3 months. Based on results in Simple.',
+    {id:'lipid', t:'lab', n:'Lipid panel and hemoglobin A1c', why:'Type 2 diabetes · monitoring · 250.00', cedar:'Last A1c 12 March 2026; Diabetes Canada: about every 3 months. Based on results in Simple.', fact:'Last hemoglobin A1c 13 March 2026 · nothing since', rule:'Diabetes Canada · A1c about every 3 months',
       st:[['you', 'Not yet', 'Not ordered; due 20 August 2026.', 'Cedar, from the chart'], ['todo', '', '', ''], ['todo', '', '', ''], ['todo', '', '', '']], acts:['order', 'elsewhere', 'dismiss']},
-    {id:'tsh', t:'lab', n:'Thyroid-stimulating hormone', why:'Thyroid nodule · follow-up', quote:'"Kindly check a TSH before follow-up." Endocrine surgery report, 8 January 2026, page 2',
+    {id:'tsh', t:'lab', n:'Thyroid-stimulating hormone', why:'Thyroid nodule · follow-up', fact:'Endocrine surgery report, 8 January 2026, page 2', rule:'Asked of you by the specialist', quote:'"Kindly check a TSH before follow-up." Endocrine surgery report, 8 January 2026, page 2',
       st:[['you', 'Not yet', 'Specialist request, not ordered.', 'Endocrine surgery report'], ['todo', '', '', ''], ['todo', '', '', ''], ['todo', '', '', '']], acts:['order', 'dismiss']},
-    {id:'us', t:'img', n:'Thyroid ultrasound, repeat in 6 months', why:'Thyroid nodule · interval check', quote:'"Please arrange a repeat ultrasound in six months." Endocrine surgery report, 8 January 2026, page 2',
+    {id:'us', t:'img', n:'Thyroid ultrasound, repeat in 6 months', why:'Thyroid nodule · interval check', fact:'Endocrine surgery report, 8 January 2026, page 2 · repeat in 6 months', rule:'Asked of you by the specialist', quote:'"Please arrange a repeat ultrasound in six months." Endocrine surgery report, 8 January 2026, page 2',
       st:[['you', 'Not yet', 'Specialist request, not ordered; due July 2026.', 'Endocrine surgery report'], ['todo', '', '', ''], ['todo', '', '', ''], ['todo', '', '', '']], acts:['order', 'dismiss']},
     {id:'stress', t:'proc', n:'Exercise stress test', why:'Exertional chest pressure · assess for ischemia · 786.5', fac:'Island Heart Diagnostics',
       st:[['done', '25 Jun', 'Faxed 25 June 2026, 3:12 p.m., to Island Heart Diagnostics (250-555-0142); delivered 3:13 p.m.', 'Fax confirmation'], ['done', '12 Sep', 'Booking acknowledged by fax 2 July: 12 September 2026. Done that day.', 'Facility acknowledgement'], ['wait', 'Not back', 'Report not back, 69 days after the test.', ''], ['todo', '', '', '']], acts:['remind']},
     {id:'holter', t:'proc', n:'48-hour Holter', why:'Exertional chest pressure · rule out arrhythmia · 786.5', fac:'Island Heart Diagnostics',
       st:[['done', '25 Jun', 'Faxed 25 June 2026, 3:14 p.m., to Island Heart Diagnostics (250-555-0142); delivered 3:15 p.m.', 'Fax confirmation'], ['you', 'Never', 'No booking acknowledged in 148 days.', ''], ['todo', '', '', ''], ['todo', '', '', '']], acts:['remind', 'reorder', 'cancel']},
+    {id:'abd', t:'img', n:'Abdominal ultrasound', why:'Raised liver enzymes in type 2 diabetes · rule out fatty liver · 790.4', fac:'Island Imaging',
+      st:[['done', '14 Mar', 'Requisition faxed 14 March 2026 to Island Imaging (250-555-0119); delivered.', 'Fax confirmation'], ['you', 'Never', 'No booking acknowledged in 251 days.', ''], ['todo', '', '', ''], ['todo', '', '', '']], acts:['remind', 'reorder', 'cancel']},
+    {id:'a1cmar', t:'lab', n:'Hemoglobin A1c', why:'Type 2 diabetes · monitoring · 250.00',
+      st:[['done', '10 Mar', 'Requisition sent to LifeLabs 10 March 2026, delivered.', 'Requisition'], ['done', '12 Mar', 'Collected 12 March 2026.', 'LifeLabs'], ['done', '13 Mar', 'Hemoglobin A1c 8.6%. Received 13 March 2026.', 'Provincial Laboratory Information Solution'], ['done', '14 Mar', 'Reviewed in the inbox by Dr. Pannozzo, 14 March 2026; discussed at the visit.', 'Inbox']]},
+    {id:'kidney', t:'lab', n:'Creatinine, eGFR and urine albumin-to-creatinine ratio', why:'Type 2 diabetes · kidney screening · 250.00', fact:'No kidney function on file; on metformin and denosumab', rule:'Diabetes Canada · kidney check at least yearly',
+      st:[['you', 'Not yet', 'Not ordered.', 'Cedar, from the chart'], ['todo', '', '', ''], ['todo', '', '', ''], ['todo', '', '', '']], acts:['order', 'elsewhere', 'dismiss']},
+    {id:'calcium', t:'lab', n:'Calcium', why:'Osteoporosis on denosumab · before each dose · 733.00', fact:'Denosumab last 19 May, due 17 November · no calcium on file', rule:'Health Canada · calcium before each dose',
+      st:[['you', 'Not yet', 'Not ordered.', 'Cedar, from the chart'], ['todo', '', '', ''], ['todo', '', '', ''], ['todo', '', '', '']], acts:['order', 'dismiss']},
     {id:'cardio', t:'ref', n:'Cardiology', why:'Exertional chest pressure · possible stable angina · 786.5', fac:'Dr. M. Ferreira, cardiology',
       st:[['done', '25 Jun', 'Referral faxed 25 June 2026 to Dr. M. Ferreira, cardiology (250-555-0187); delivered.', 'Fax confirmation'], ['wait', 'Not yet', 'Receipt acknowledged 27 June; cardiology books the appointment, none booked yet.', 'Office acknowledgement'], ['todo', '', '', ''], ['todo', '', '', '']], acts:['remind']}
   ]
@@ -21042,6 +21105,7 @@ function lpAct(id, a){
   else if(a === 'remind' || a === 'reorder'){ var w = L.st.filter(function(x){ return x[0] !== 'done'; })[0]; if(w){ w[0] = 'wait'; w[2] = w[2].replace(/\s*Asked again.*$/, '') + ' Asked again by fax today, ' + hm + '.'; } }
   toast(L.n + ': ' + LP_DONE[a].charAt(0).toLowerCase() + LP_DONE[a].slice(1) + '.');
   lpRender(PC_CURRENT);
+  if(typeof tlRender === 'function' && CS.fcTab === 'timeline') tlRender(PC_CURRENT);   /* one record, one status: the timeline follows */
   var d = document.getElementById('lp-drw'); if(d && d.open){ d.close(); lpOpen(id); }
 }
 function lpOpen(id){
@@ -21064,6 +21128,106 @@ function lpOpen(id){
   });
   d.showModal();
 }
+/* ============================================================================
+   Timeline (Daniel's brief, pages 4 and 5): Orders, every order with its indication, age and steps, a 12-month strip from the order to
+   today coloured by who it waits on, oldest open first and closed loops at the bottom, then Cedar's not-yet-ordered suggestions with the
+   chart fact and the rule behind each; By diagnosis, one card per diagnosis with its medication, a 12-month strip of what happened and
+   what is open. Both read the same records as the left summary (one record, one status). Everything opens the same drill-down.
+   ========================================================================= */
+var TL_D = {'Gloria Mcdonald, 74F': {stress:['2026-06-25', '2026-09-12'], holter:['2026-06-25'], cardio:['2026-06-25'], abd:['2026-03-14'], a1cmar:['2026-03-10', '2026-03-12', '2026-03-13', '2026-03-14'], card:['today', 'today', 'today']}};
+var TL_DX = {'Gloria Mcdonald, 74F': [
+  {n:'Chest pain', code:'786.5', since:'Under workup since 25 June 2026', ev:[['2026-06-25', 'Visit'], ['2026-09-12', 'Stress test done'], ['today', 'Troponin critical', 'crit']], bars:[['2026-06-25', '2026-09-12', 'done'], ['2026-09-12', 'today', 'wait']],
+    open:[['Review troponin', 'you', 'card'], ['Stress test report', 'wait', 'stress'], ['Holter result', 'you', 'holter'], ['Cardiology appointment', 'wait', 'cardio']]},
+  {n:'Atrial fibrillation', code:'427.31', since:'New today · to confirm', ev:[['today', 'Electrocardiogram', 'crit']], open:[['Confirm diagnosis', 'you'], ['Decide on anticoagulation', 'you']]},
+  {n:'Type 2 diabetes mellitus', code:'250.00', since:'Since 2014', med:'Metformin 500 mg twice daily', ev:[['2026-03-13', 'A1c done'], ['2026-08-20', 'A1c missed', 'miss']],
+    open:[['Order A1c and lipids', 'you', 'lipid'], ['Kidney check', 'you', 'kidney'], ['Metformin stopped?', 'you', '@meds'], ['Eye examination due', 'you', 'eye']]},
+  {n:'Thyroid nodule', code:'', since:'Since 2025', ev:[['2026-01-08', 'Specialist report']], open:[['Review specialist report', 'you', '@consults'], ['Ultrasound asked for', 'you', 'us'], ['TSH asked for', 'you', 'tsh'], ['Add code 241.0', 'you', '@history']]},
+  {n:'Osteoporosis', code:'733.00', since:'Since 2023', med:'Denosumab 60 mg every 6 months', ev:[['2026-05-19', 'Dose given'], ['2026-11-17', 'Dose due', 'miss']], open:[['Denosumab due', 'you', '@meds'], ['Calcium before the dose', 'you', 'calcium']]},
+  {n:'Essential hypertension', code:'401.9', since:'Since 2011', med:'Amlodipine 5 mg daily (PharmaNet: 10 mg)', ev:[], open:[['Chart says 5 mg, PharmaNet 10 mg', 'you', '@history']]}
+]};
+var TL = {view:'orders'};
+function tlDay(s){ if(s === 'today'){ var t = new Date(); t.setHours(0, 0, 0, 0); return t; } var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+function tlRange(){ var end = tlDay('today'), start = new Date(end.getFullYear(), end.getMonth() - 11, 1); return {start:start, end:new Date(end.getTime() + 864e5 * 4)}; }
+function tlX(d, R){ return Math.max(0, Math.min(100, (d - R.start) / (R.end - R.start) * 100)); }
+function tlMonths(R){
+  var h = '', MN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  for(var i = 0; i < 12; i++){ var d = new Date(R.start.getFullYear(), R.start.getMonth() + i, 1); h += '<span class="m" style="left:' + tlX(d, R).toFixed(2) + '%"><span>' + MN[d.getMonth()] + '</span></span>'; }
+  return h + '<span class="today" style="left:' + tlX(tlDay('today'), R).toFixed(2) + '%" title="Today"></span>';
+}
+function tlLong(d){ return d.getDate() + ' ' + ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][d.getMonth()]; }   /* "20 November" (Daniel) */
+function tlAge(d){ var n = Math.round((tlDay('today') - d) / 864e5); return n <= 0 ? 'today' : n === 1 ? 'yesterday' : n + ' days ago'; }
+function tlOrderRow(L, D, R){
+  var labels = LP_STEPS[L.t], st = lpState(L), d0 = D && D[0] ? tlDay(D[0]) : null;
+  var strip = '';
+  if(d0){
+    var pts = (D || []).map(tlDay), last = pts[pts.length - 1];
+    for(var i = 0; i < pts.length - 1; i++) strip += '<span class="bar done" style="left:' + tlX(pts[i], R) + '%;width:' + Math.max(0.6, tlX(pts[i + 1], R) - tlX(pts[i], R)) + '%"></span>';
+    if(st !== 'done') strip += '<span class="bar ' + (st === 'todo' ? 'wait' : st) + '" style="left:' + tlX(last, R) + '%;width:' + Math.max(0.6, tlX(tlDay('today'), R) - tlX(last, R)) + '%"></span>';
+    strip += pts.map(function(p){ return '<span class="pt" style="left:' + tlX(p, R) + '%"></span>'; }).join('');
+  }
+  var steps = labels.map(function(lb, i){ var x = L.st[i] || ['todo', '', '', '']; var dt = D && D[i] ? (D[i] === 'today' ? 'today' : tlLong(tlDay(D[i]))) : x[0] === 'done' ? x[1] : x[0] === 'todo' ? '—' : x[1];
+    return '<li class="' + x[0] + '"><i></i><b>' + csEsc(lb) + '</b> ' + csEsc(dt || '—') + '</li>'; }).join('');
+  var why = L.why.replace(/\s*·\s*\d{3}(\.\d{1,2})?\s*$/, '');
+  return '<div class="tl-row"><div><span class="tl-k">' + {lab:'Labs', img:'Imaging', proc:'Procedures', ref:'Referrals', prev:'Prevention'}[L.t] + '</span>' +
+    '<button type="button" class="tl-n" data-tl="' + L.id + '" title="See every step of ' + csEsc(L.n) + '">' + csEsc(L.n) + '</button>' + (why ? '<span class="tl-i">Indication: <b>' + csEsc(why) + '</b></span>' : '') + '</div>' +
+    '<div class="tl-age">' + (d0 ? (L.t === 'ref' ? 'Referred ' : 'Ordered ') + tlLong(d0) + '<span>' + tlAge(d0) + '</span>' : '<span>Date not recorded</span>') + '</div>' +
+    '<div class="strip" aria-hidden="true">' + tlMonths(R) + strip + '</div><ul class="tl-steps" aria-label="Steps">' + steps + '</ul></div>';
+}
+function tlOrders(name){
+  var all = lpList(name).filter(function(L){ return L.t !== 'prev'; }), D = TL_D[name] || {}, R = tlRange();
+  var notYet = all.filter(function(L){ return L.st[0][0] === 'you'; }), loops = all.filter(function(L){ return L.st[0][0] !== 'you'; });
+  var openD = function(L){ return D[L.id] && D[L.id][0] ? tlDay(D[L.id][0]) : tlDay('today'); };
+  loops.sort(function(a, b){ var ca = lpState(a) === 'done', cb = lpState(b) === 'done'; return ca !== cb ? (ca ? 1 : -1) : openD(a) - openD(b); });
+  var never = loops.filter(function(L){ return L.st[1] && L.st[1][0] === 'you'; }).length, wait = loops.filter(function(L){ return lpState(L) === 'wait'; }).length,
+    unrev = loops.filter(function(L){ return lpState(L) === 'you' && L.st[1] && L.st[1][0] === 'done'; }).length;
+  var sum = [never ? '<b>' + never + ' order' + (never > 1 ? 's' : '') + ' never done</b>' : '', wait ? wait + ' waiting on results or appointments' : '', unrev ? unrev + ' received, not reviewed' : '', 'closed loops at the bottom'].filter(Boolean).join(' · ');
+  var sugg = notYet.map(function(L){
+    return '<div class="tl-row"><div><span class="tl-k">' + {lab:'Labs', img:'Imaging', proc:'Procedures', ref:'Referrals'}[L.t] + '</span><button type="button" class="tl-n" data-tl="' + L.id + '" title="See the details of ' + csEsc(L.n) + '">' + csEsc(L.n) + '</button>' +
+      '<span class="tl-i">Indication: <b>' + csEsc(L.why.replace(/\s*·\s*\d{3}(\.\d{1,2})?\s*$/, '')) + '</b></span></div>' +
+      '<dl class="tl-fact"><dt>Chart</dt><dd>' + csEsc(L.fact || '') + '</dd><dt>' + (/specialist/i.test(L.rule || '') ? 'Request' : 'Guideline') + '</dt><dd>' + csEsc(L.rule || '') + '</dd></dl>' +
+      '<div class="tl-acts">' + SC.html('Button', {variant:'primary', size:'medium', 'data-tlact':L.id + ':order', title:'Order ' + L.n + '; the requisition goes out and the loop starts'}, 'Order') +
+      SC.html('Button', {variant:'tertiary-main', size:'medium', 'data-tlact':L.id + ':dismiss', title:'Dismiss this suggestion, with a reason'}, 'Dismiss') + '</div></div>'; }).join('');
+  return '<div class="tl-hd"><div style="flex:1;min-width:0"><h4>' + csEsc(name.split(',')[0].split(' ')[0]) + '\'s orders · open loops <span style="font-weight:400;font-size:15px;color:var(--ink-soft)">· last 12 months</span></h4><p class="tl-sum">' + sum + '</p></div><span id="tl-tog"></span></div>' +
+    '<div class="tl-card">' + (loops.length ? loops.map(function(L){ return tlOrderRow(L, D[L.id], R); }).join('') : '<div class="tl-row"><span class="tl-i">No orders yet.</span></div>') +
+    '<div class="tl-legend"><span><i style="background:var(--color-red-300)"></i>Needs you</span><span><i style="background:var(--color-yellow-300)"></i>Waiting on others</span><span><i style="background:var(--color-navy-200)"></i>Done</span><span class="sp"></span><span>Red line: today · click an order to see every step</span></div></div>' +
+    (notYet.length ? '<div class="tl-card tl-sugg"><div class="tl-row" style="grid-template-columns:1fr"><span style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--ink)">' + (SC.icon ? SC.icon('ai', {size:20}) : '') + 'Cedar suggests · not yet ordered <span style="font-weight:400;color:var(--ink-soft)">' + notYet.length + ' · from guidelines and specialist requests, based on results in Simple</span></span></div>' + sugg + '</div>' : '');
+}
+function tlDiag(name){
+  var X = TL_DX[name], R = tlRange();
+  if(!X) return '<div class="tl-hd"><div style="flex:1"><h4>Timeline by diagnosis</h4><p class="tl-sum">Drawn from coded conditions; in this demo it is filled in for Gloria McDonald.</p></div><span id="tl-tog"></span></div>';
+  var you = 0, wait = 0; X.forEach(function(d){ d.open.forEach(function(o){ if(o[1] === 'you') you++; else wait++; }); });
+  var rows = X.map(function(d){
+    var strip = (d.bars || []).map(function(b){ return '<span class="bar ' + b[2] + '" style="left:' + tlX(tlDay(b[0]), R) + '%;width:' + Math.max(0.6, tlX(tlDay(b[1]), R) - tlX(tlDay(b[0]), R)) + '%"></span>'; }).join('') +
+      d.ev.map(function(e, i){ var x = tlX(tlDay(e[0]), R), cls = e[2] || ''; return '<span class="pt ' + cls + '" style="left:' + x + '%;top:19px"></span><span class="lbl ' + cls + (x > 75 ? ' r' : '') + '" style="left:' + x + '%;top:' + (i % 2 ? 36 : 1) + 'px">' + csEsc(e[1]) + '</span>'; }).join('');   /* labels alternate above and below, so close events don't collide */
+    /* open items as the design system's Tag, red needs you and amber waiting on others (Daniel's colours), each a button that opens it */
+    var chips = d.open.map(function(o){ return '<button type="button" class="tl-tagbtn" data-tlgo="' + (o[2] || '') + '" title="' + csEsc(o[2] ? 'Open: ' + o[0] : o[0] + ' (decide in the visit)') + '">' + SC.html('Tag', {color:o[1] === 'you' ? 'error' : 'warning'}, o[0]) + '</button>'; }).join('');
+    return '<div class="tl-row dx"><div><span class="tl-n" style="cursor:default">' + csEsc(d.n) + (d.code ? '<code>' + d.code + '</code>' : '<code>no code yet</code>') + '</span><span class="tl-i">' + csEsc(d.since) + '</span>' + (d.med ? '<span class="tl-i"><b>' + csEsc(d.med) + '</b></span>' : '') + '</div>' +
+      '<div class="strip dxs" aria-hidden="true">' + tlMonths(R) + strip + '</div><div class="tl-chips">' + chips + '</div></div>';
+  }).join('');
+  return '<div class="tl-hd"><div style="flex:1;min-width:0"><h4>' + csEsc(name.split(',')[0].split(' ')[0]) + '\'s timeline · last 12 months</h4><p class="tl-sum"><b>' + you + ' things need you</b> · ' + wait + ' waiting on others · most urgent first</p></div><span id="tl-tog"></span></div>' +
+    '<div class="tl-card">' + rows + '<div class="tl-legend"><span>Each card: the diagnosis, its code and medication, what happened in 12 months and what is open</span><span class="sp"></span><span>Red line: today · click anything open to see it</span></div></div>';
+}
+function tlRender(name){
+  var el = document.getElementById('tl2'), all = document.getElementById('tl-all'); if(!el || !name) return;
+  el.hidden = TL.view === 'all'; if(all) all.hidden = TL.view !== 'all';
+  el.innerHTML = TL.view === 'dx' ? tlDiag(name) : TL.view === 'orders' ? tlOrders(name) : '';
+  var host = TL.view === 'all' ? null : document.getElementById('tl-tog');
+  if(!host){ host = document.getElementById('tl-tog-all'); if(!host && all){ host = document.createElement('div'); host.id = 'tl-tog-all'; host.style.cssText = 'display:flex;justify-content:flex-end;margin-bottom:12px'; all.parentNode.insertBefore(host, all); } }
+  var ta = document.getElementById('tl-tog-all'); if(ta) ta.hidden = TL.view !== 'all';
+  if(host){
+    host.innerHTML = '<sc-toggle variant="inverse" label="Timeline view" items=\'[{"value":"orders","label":"Orders"},{"value":"dx","label":"By diagnosis"},{"value":"all","label":"Everything"}]\'></sc-toggle>';
+    host.firstElementChild.setAttribute('value', TL.view);
+    host.firstElementChild.addEventListener('change', function(e){ TL.view = e.currentTarget.value; tlRender(PC_CURRENT); });
+  }
+}
+document.addEventListener('click', function(e){
+  var t = e.target.closest && e.target.closest('#tl2 [data-tl], #tl2 [data-tlact], #tl2 [data-tlgo]'); if(!t) return;
+  var id = t.getAttribute('data-tl'), act = t.getAttribute('data-tlact'), go = t.getAttribute('data-tlgo');
+  if(id) lpOpen(id);
+  else if(act){ var p = act.split(':'); lpAct(p[0], p[1]); tlRender(PC_CURRENT); }
+  else if(go){ if(go.charAt(0) === '@') csTab(go === '@meds' ? 'medications' : go.slice(1)); else if(go === 'card' && typeof openReview === 'function'){ lpOpen('card'); } else lpOpen(go); }
+  else toast('Decided in the visit, from the assessment and plan.');
+});
 /* keyboard: an order row opens with Enter or Space like a button */
 document.addEventListener('keydown', function(e){ var r = e.target.closest && e.target.closest('#sm-list .lp'); if(r && (e.key === 'Enter' || e.key === ' ') && e.target === r){ e.preventDefault(); r.click(); } });
 function smPendFill(){
