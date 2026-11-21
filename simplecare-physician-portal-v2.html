@@ -13513,17 +13513,19 @@ function aiSend(preset){
 var CA = {n:0, cards:{}, lastPt:undefined};
 var CA_GROUPS = [['Before the visit', 'calendar', ['summary', 'overdue', 'preventive']], ['Medications', 'medication', ['recon', 'ddi', 'sick']], ['Results', 'chart-1', ['abnormal', 'graph', 'risk']],
   ['Orders and follow-up', 'checklist', ['req', 'recalls']], ['Notes and billing', 'note', ['note', 'billing']], ['For the patient', 'user', ['explain']]];
-var CA_Q = {summary:'Give me a pre-visit summary', overdue:'What\'s overdue?', preventive:'Preventive care status', recon:'Reconcile medications with PharmaNet', ddi:'Any drug interactions?',
+var CA_Q = {meds:'What meds is she on?', labs:'Bring up her labs', allergies:'Any allergies?', problems:'What are her conditions?', about:'Tell me about her', summary:'Give me a pre-visit summary', overdue:'What\'s overdue?', preventive:'Preventive care status', recon:'Reconcile medications with PharmaNet', ddi:'Any drug interactions?',
   sick:'Sick-day guidance for these medicines', abnormal:'Any abnormal results I haven\'t reviewed?', graph:'Graph the A1c over time', risk:'Calculate cardiovascular risk', req:'Add A1c to the requisition',
   recalls:'Set up follow-up recalls', note:'Draft today\'s visit note', billing:'Suggest the billing code', explain:'Explain today\'s results to the patient'};
-var CA_READ = {summary:'the chart, PharmaNet and lab results', overdue:'open orders and screening', preventive:'screening and immunizations', recon:'the Simple medication list and PharmaNet', ddi:'the medication list and PharmaNet',
+var CA_READ = {meds:'the Simple medication list and PharmaNet', labs:'lab results and the electrocardiogram', allergies:'the chart and PharmaNet', problems:'the problem list and History', about:'the chart, intake and results', summary:'the chart, PharmaNet and lab results', overdue:'open orders and screening', preventive:'screening and immunizations', recon:'the Simple medication list and PharmaNet', ddi:'the medication list and PharmaNet',
   sick:'the medication list', abnormal:'results not yet reviewed', graph:'lab results', risk:'the problem list and lab results', req:'open orders and Cedar\'s suggestions', recalls:'open orders', note:'the booking, the last note and results',
   billing:'the booking and today\'s problems', explain:'today\'s results'};
-var CA_KEYS = [['summary', /summar|pre-?visit|catch me up|overview of (her|him|the patient)/], ['risk', /risk|framingham|cardiovascular/], ['recon', /reconcil|pharmanet|med(ication)? list/], ['ddi', /interact/],
+var CA_KEYS = [['summary', /summar|pre-?visit|catch me up|overview of (her|him|the patient)/], ['risk', /risk|framingham|cardiovascular/], ['recon', /reconcil|pharmanet/], ['ddi', /interact/],
   ['abnormal', /abnormal|unreviewed|haven.?t reviewed|not reviewed/], ['overdue', /overdue|missed/], ['preventive', /prevent|screening|vaccin|immuni/], ['graph', /graph|trend|over time/],
-  ['req', /requisition|order (labs|tests)|add .* to the req/], ['note', /visit note|soap|draft (the|today)/], ['sick', /sick/], ['recalls', /recall|follow.?up/], ['explain', /explain|plain language|to the patient/], ['billing', /bill|diagnostic code|claim code|icd/]];
+  ['req', /requisition|order (labs|tests)|add .* to the req/], ['note', /visit note|soap|draft (the|today)/], ['sick', /sick/], ['recalls', /recall|follow.?up/], ['explain', /explain|plain language|to the patient/], ['billing', /bill|diagnostic code|claim code|icd/],
+  ['meds', /\bmeds?\b|medication|medicine|prescri|what (is|'?s) (she|he) on|what are (they|she|he) (on|taking)|taking/], ['labs', /\blabs?\b|\blegs\b|blood ?work|results?|tests?\b|troponin|a1c/],
+  ['allergies', /allerg/], ['problems', /condition|problem|diagnos|history|what.?s wrong/], ['about', /tell me about|who is (she|he)|about (her|him)|pull up|bring up (her|his) (chart|file)/]];
 var GLORIA = 'Gloria Mcdonald, 74F';
-function caPt(){ return typeof csOnChart === 'function' && csOnChart() && PC_CURRENT ? PC_CURRENT : null; }
+function caPt(){ return typeof csOnChart === 'function' && csOnChart() && PC_CURRENT ? PC_CURRENT : (CA.ctx || null); }   /* Daniel, 20 Nov video: after "who is next?", "she" means that patient */
 function caFirst(n){ var r = (typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : []).filter(function(x){ return x.name === n; })[0]; return (r && r.pref) || n.split(' ')[0]; }
 function caFull(n){ var r = (typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : []).filter(function(x){ return x.name === n; })[0]; return (r && r.legal) || n.split(',')[0]; }
 function caIc(n, s){ return SC.icon(n, {size:s || 16}); }
@@ -13542,6 +13544,43 @@ CA_F.summary = function(n){
   return {h:'<p class="ca-lead">' + csEsc(caFirst(n)) + ' is here for ' + csEsc(smText((V.why || {}).main || 'today\'s visit')).replace(/^./, function(c){ return c.toLowerCase(); }) + '.' + (open ? ' ' + open + ' open item' + (open > 1 ? 's need' : ' needs') + ' you.' : '') + '</p><div class="ca-card">' + rows + '</div>' +
     '<div class="ca-acts">' + caBtn('secondary-main', 'Show full preview', 'cdrFull()', 'Open the full Visit preview, every line with its source', 'file') + (open ? caBtn('tertiary-main', 'What needs me?', 'aiSend(\'What\\\'s overdue?\')', 'Ask Cedar what is open and needs you') : '') + '</div>',
     src:rel.map(function(x){ return [cdrSrcTag(x.src)[2], smText(x.main), smText(x.src || ''), x.sub ? smText(x.sub) : '']; })};
+};
+CA_F.about = function(n){ return CA_F.summary(n); };
+CA_F.meds = function(n){
+  var H = hxFor(n), L = H.meds;
+  if(!L.length) return {h:'<p class="ca-lead">No medications on file for ' + csEsc(caFirst(n)) + '.</p>', src:[]};
+  var tagFor = function(m){ var st = hxMedState(m), rec = hxRec(n, m.id); return rec ? caTag('success', 'Reconciled') : st === 'match' ? caTag('success', 'Matches PharmaNet') : st === 'differs' ? caTag('warning', 'Dose differs') : st === 'notchart' ? caTag('warning', 'Not on chart') : st === 'nodisp' ? caTag('neutral', 'Not dispensed') : caTag('neutral', 'Not checked'); };
+  var open = L.filter(function(m){ var st = hxMedState(m); return !hxRec(n, m.id) && (st === 'differs' || st === 'notchart' || st === 'nodisp'); }).length;
+  var rows = L.map(function(m){ var rec = hxRec(n, m.id), dose = rec && rec.chart != null ? rec.chart : (m.chart || (m.pn ? m.pn.dose : ''));
+    return caRow(csEsc(m.name) + (dose ? ' <span style="font-weight:400">' + csEsc(dose) + '</span>' : ''), m.pn ? csEsc(m.pn.by) + (m.pn.spec ? ' (' + csEsc(m.pn.spec) + ')' : '') + ' · filled ' + csEsc(m.pn.filled) + (hxMedState(m) === 'differs' && !rec ? ' · PharmaNet ' + csEsc(m.pn.dose) : '') : 'Not in PharmaNet', tagFor(m)); }).join('');
+  return {h:'<p class="ca-lead">' + csEsc(caFirst(n)) + ' is on ' + L.length + ' medications' + (open ? '; ' + open + ' differ from PharmaNet.' : ', all matching PharmaNet.') + '</p><div class="ca-card">' + rows + '</div>' +
+    '<div class="ca-acts">' + (open ? caBtn('primary', 'Reconcile with PharmaNet', 'aiSend(\'Reconcile medications with PharmaNet\')', 'Go through the ' + open + ' differences, one choice each', 'medication') : '') + caBtn('secondary-main', 'Any interactions?', 'aiSend(\'Any drug interactions?\')', 'Ask Cedar to check these medications against each other') + '</div>',
+    src:[['Simple chart', 'Medication list', 'Today', L.filter(function(m){ return m.chart; }).map(function(m){ return m.name + ' ' + m.chart; }).join(' · ')]].concat(L.filter(function(m){ return m.pn; }).map(function(m){ return ['PharmaNet', m.name + ' ' + m.pn.dose, 'Filled ' + m.pn.filled, m.pn.by + (m.pn.spec ? ' (' + m.pn.spec + ')' : '')]; }))};
+};
+CA_F.labs = function(n){
+  if(n === GLORIA){
+    var T = [['Troponin I', '0.42 µg/L', 'Reference under 0.04 · today 7:50 a.m.', caTag('error', 'Critical')], ['Creatine kinase', '165 units/L', 'Normal · today 7:50 a.m.', caTag('success', 'Normal')], ['Electrolytes', 'Normal', 'Today 7:50 a.m.', caTag('success', 'Normal')],
+      ['Electrocardiogram', 'Atrial fibrillation', 'Left anterior divisional block · today 7:55 a.m.', caTag('error', 'Critical')], ['Hemoglobin A1c', '8.6%', 'Target 7.0% or lower · 13 March 2026', caTag('warning', 'High')]];
+    return {h:'<p class="ca-lead">Today\'s cardiac markers came back at 7:50 a.m. The troponin is critical, and the electrocardiogram shows new atrial fibrillation. Neither is reviewed yet.</p><div class="ca-card">' +
+        T.map(function(x){ return caRow(csEsc(x[0]) + ' <span style="font-weight:700">' + csEsc(x[1]) + '</span>', csEsc(x[2]), x[3]); }).join('') + '</div>' +
+      '<div class="ca-acts">' + caBtn('primary', 'Review in the chart', 'if(!(typeof csOnChart===\'function\'&&csOnChart()))openChart(GLORIA);setTimeout(function(){v2Tab(\'review\')},300)', 'Open Needs attention to review and clear these results', 'eye-on') + caBtn('secondary-main', 'A1c over time', 'aiSend(\'Graph the A1c over time\')', 'See the A1c results since February 2025') + '</div>',
+      src:[['Lab results', 'Cardiac markers, 3 tests', 'Collected today 7:20 a.m., LifeLabs', 'Troponin I 0.42 µg/L (critical) · creatine kinase 165 units/L · electrolytes normal.'], ['Electrocardiogram', '12-lead electrocardiogram', 'Today 7:55 a.m.', 'Atrial fibrillation, left anterior divisional block, nonspecific repolarization abnormality.'], ['Lab results', 'Hemoglobin A1c 8.6%', '13 March 2026', 'Reviewed 14 March by Dr. Pannozzo.']]};
+  }
+  var V = (cdrLines(n, true).C.rel || []).filter(function(x){ return /lab|result|ECG|electrocard/i.test(smText(x.src || '')); });
+  return {h:'<p class="ca-lead">' + (V.length ? 'Recent results for ' + csEsc(caFirst(n)) + ':' : 'No recent lab results on file for ' + csEsc(caFirst(n)) + '.') + '</p>' + (V.length ? '<div class="ca-card">' + V.map(function(x){ return caRow(csEsc(smText(x.main)), x.sub ? csEsc(v2Cap(smText(x.sub))) : '', caTag('neutral', 'Lab')); }).join('') + '</div>' : ''),
+    src:V.map(function(x){ return ['Lab results', smText(x.main), smText(x.src || ''), x.sub ? smText(x.sub) : '']; })};
+};
+CA_F.allergies = function(n){
+  var A = hxFor(n).allergies || [];
+  return {h:'<p class="ca-lead">' + (A.length ? csEsc(caFirst(n)) + ' has ' + A.length + ' recorded allerg' + (A.length > 1 ? 'ies' : 'y') + '.' : 'No known allergies. The patient and PharmaNet agree.') + '</p>' + (A.length ? '<div class="ca-card">' + A.map(function(a){ return caRow(csEsc(a.name || a.what || String(a)), csEsc(a.reaction || a.note || ''), ''); }).join('') + '</div>' : ''),
+    src:[['Simple chart', 'Allergies', 'Reviewed 25 June 2026', ''], ['PharmaNet', 'Allergy record', 'Checked today', '']]};
+};
+CA_F.problems = function(n){
+  var C = hxFor(n).conditions || [];
+  return {h:'<p class="ca-lead">' + C.length + ' condition' + (C.length === 1 ? '' : 's') + ' on file' + (C.filter(function(c){ return !c.code; }).length ? '; ' + C.filter(function(c){ return !c.code; }).length + ' without a diagnostic code.' : '.') + '</p><div class="ca-card">' +
+      C.map(function(c){ return caRow(csEsc(c.name), c.since ? 'Since ' + csEsc(c.since) : '', c.code ? '<span style="font-variant-numeric:tabular-nums;color:var(--ink-soft)">' + csEsc(c.code) + '</span>' : caTag('warning', 'No code')); }).join('') + '</div>' +
+    '<div class="ca-acts">' + caBtn('secondary-main', 'Open History', 'if(!(typeof csOnChart===\'function\'&&csOnChart()))openChart(\'' + n.replace(/'/g, "\\'") + '\');setTimeout(function(){csOpenFull(\'history\')},350)', 'Open the full History with codes and who reviewed it', 'file') + '</div>',
+    src:[['Simple chart', 'Problem list and History', 'Reviewed 25 June 2026', C.map(function(c){ return c.name + (c.code ? ' ' + c.code : ''); }).join(' · ')]]};
 };
 CA_F.risk = function(n){
   if(n === GLORIA) return {h:'<p class="ca-lead">A risk score isn\'t useful for Gloria today.</p><div class="ca-box"><p style="margin:0;font-size:14px;line-height:21px;color:var(--ink)">Risk scores like Framingham estimate the chance of a first heart attack or stroke in people without known heart disease. Gloria has a critical troponin and a new atrial fibrillation today, so she is already treated as high risk.</p></div>' +
@@ -13750,7 +13789,10 @@ function caSources(id){
   var dayReply = aiReply;
   /* a question about the open patient goes to Cedar's flows; about anyone else, a plain refusal; the day questions answer as before */
   aiReply = function(text){
-    var n = caPt(), t = String(text).toLowerCase(), k = null;
+    var t = String(text).toLowerCase(), k = null;
+    if(/who.?s next|who is next|next patient|who.?s up|call next|next up/.test(t)){ caNext(); return; }
+    var named = caNamed(t); if(named && named !== caPt() && !(typeof csOnChart === 'function' && csOnChart())){ CA.ctx = named; caCtx(); }
+    var n = caPt();
     CA_KEYS.some(function(p){ if(p[1].test(t)){ k = p[0]; return true; } });
     if(k && n){ caAnswer(k, n); return; }
     if(k && !n){ aiAppend('Open a patient\'s chart first; Cedar answers about one record at a time.', 'bot'); caHelloPick(); return; }
@@ -13758,6 +13800,34 @@ function caSources(id){
     dayReply(text);
   };
 })();
+function caNamed(t){
+  var Q = typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : [], hit = null;
+  Q.some(function(r){ var parts = [(r.pref || ''), r.name.split(',')[0]].join(' ').toLowerCase().split(/\s+/).filter(function(w){ return w.length > 3; });
+    if(parts.some(function(w){ return new RegExp('\\b' + w + '\\b').test(t); })){ hit = r.name; return true; } });
+  return hit;
+}
+/* "Who is next?" (Daniel's first question in the video): the next patient as a card; from then on "she" means her */
+function caNext(){
+  var r = typeof qNext === 'function' ? qNext() : null, body = document.getElementById('ai-body'), id = 'ca' + (++CA.n);
+  if(!r){ aiAppend('Your queue is clear; no one is waiting right now.', 'bot'); return; }
+  if(!(typeof csOnChart === 'function' && csOnChart())) CA.ctx = r.name;
+  var w = document.createElement('div'); w.className = 'ca-a'; w.id = id; body.appendChild(w);
+  var crit = r.name === GLORIA, fem = /^f/i.test(String(r.sex || '')) || /F$/.test(r.name), she = fem ? 'her' : 'his';
+  var steps = ['Reading today\'s day sheet', 'Checking intake and new results', 'Writing the answer'], i = 0;
+  var paint = function(){ w.innerHTML = '<span class="ca-mark" aria-hidden="true">' + caIc('ai', 15) + '</span><div class="ca-bd"><ul class="ca-think">' + steps.map(function(s, j){ return '<li>' + (j < i ? '<span class="ok">' + caIc('check-circle', 14) + '</span>' : '<span class="dot"' + (j > i ? ' style="animation:none;border-top-color:var(--line)"' : '') + '></span>') + csEsc(s) + '</li>'; }).join('') + '</ul></div>'; };
+  paint(); aiScroll();
+  var tm = setInterval(function(){ i++; if(i < 3){ paint(); return; } clearInterval(tm);
+    CA.cards[id] = {q:'Who is next?', src:[['Simple chart', 'Today\'s day sheet', 'Call window ' + (r.win || ''), firstLast(r.name) + ' is first in the queue']].concat(crit ? [['Lab results', 'Troponin I 0.42 µg/L, critical', 'Today 7:50 a.m.', ''], ['Intake', 'Chest pressure on exertion for 3 days, eased by rest', 'This morning', '']] : [['Intake', smText(r.concern || ''), 'This morning', '']])};
+    var nm = csEsc(r.legal || firstLast(r.name)), age = [String(r.age || '').replace(/Y$/, ''), fem ? 'Female' : /^m/i.test(String(r.sex || '')) || /M$/.test(r.name) ? 'Male' : ''].filter(Boolean).join(' · ');
+    w.innerHTML = '<span class="ca-mark" aria-hidden="true">' + caIc('ai', 15) + '</span><div class="ca-bd"><p class="ca-lead"><b>' + nm + '</b> is next' + (r.win ? ', from the ' + csEsc(String(r.win).replace('-', '–')) + ' call window' : '') + '.</p>' +
+      '<div class="ca-card">' + caRow('<span style="display:flex;align-items:center;gap:8px">' + SC.html('AvatarCircle', {name:r.legal || firstLast(r.name), size:'medium', decorative:true}) + '<span>' + nm + '<span class="s" style="font-weight:400">' + csEsc(age) + '</span></span></span>', '', '') +
+        caRow('Here for', csEsc(smText((typeof concernLine === 'function' ? concernLine(r) : '') || r.concern || '')), '') +
+        (crit ? caRow('Needs attention', 'Troponin I 0.42 µg/L, critical, and new atrial fibrillation on today\'s electrocardiogram. Not reviewed yet.', caTag('error', 'Critical')) : '') + '</div>' +
+      '<div class="ca-acts">' + caBtn('primary', 'Open ' + she + ' chart', 'openChart(\'' + r.name.replace(/'/g, "\\'") + '\')', 'Open ' + firstLast(r.name) + '\'s chart', 'file') + caBtn('secondary-main', 'What meds is ' + (she === 'her' ? 'she' : 'he') + ' on?', 'aiSend(\'What meds is ' + (she === 'her' ? 'she' : 'he') + ' on?\')', 'Ask Cedar about ' + she + ' medications') + caBtn('secondary-main', 'Bring up ' + she + ' labs', 'aiSend(\'Bring up ' + she + ' labs\')', 'Ask Cedar for ' + she + ' latest results') + '</div>' +
+      '<div class="ca-foot"><button type="button" class="ca-lk" onclick="caSources(\'' + id + '\')" title="See what Cedar read">' + caIc('eye-on', 15) + 'Read ' + CA.cards[id].src.length + ' entries</button></div></div>';
+    caCtx(); aiScroll();
+  }, 380);
+}
 function caHelloPick(){
   var next = (typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : []).filter(function(r){ return r.status === 'next' || r.status === 'waiting'; }).slice(0, 3);
   next.forEach(function(r){ aiActionBtn('&#128100;', 'Open ' + firstLast(r.name), smText(r.concern || ''), function(){ openChart(r.name); setTimeout(caSync, 400); }); });
