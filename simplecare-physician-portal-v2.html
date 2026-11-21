@@ -13523,7 +13523,7 @@ var CA_KEYS = [['summary', /summar|pre-?visit|catch me up|overview of (her|him|t
   ['abnormal', /abnormal|unreviewed|haven.?t reviewed|not reviewed/], ['overdue', /overdue|missed/], ['preventive', /prevent|screening|vaccin|immuni/], ['graph', /graph|trend|over time/],
   ['req', /requisition|order (labs|tests)|add .* to the req/], ['note', /visit note|soap|draft (the|today)/], ['sick', /sick/], ['recalls', /recall|follow.?up/], ['explain', /explain|plain language|to the patient/], ['billing', /bill|diagnostic code|claim code|icd/],
   ['meds', /\bmeds?\b|medication|medicine|prescri|what (is|'?s) (she|he) on|what are (they|she|he) (on|taking)|taking/], ['labs', /\blabs?\b|\blegs\b|blood ?work|results?|tests?\b|troponin|a1c/],
-  ['allergies', /allerg/], ['problems', /condition|problem|diagnos|history|what.?s wrong/], ['about', /tell me about|who is (she|he)|about (her|him)|pull up|bring up (her|his) (chart|file)/]];
+  ['allergies', /allerg/], ['problems', /condition|problem|diagnos|history|what.?s wrong/], ['about', /tell me about (her|him|the patient)|who is (she|he)\b|pull up (her|his) (chart|file)|bring up (her|his) (chart|file)/]];
 var GLORIA = 'Gloria Mcdonald, 74F';
 function caPt(){ return typeof csOnChart === 'function' && csOnChart() && PC_CURRENT ? PC_CURRENT : (CA.ctx || null); }   /* Daniel, 20 Nov video: after "who is next?", "she" means that patient */
 function caFirst(n){ var r = (typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : []).filter(function(x){ return x.name === n; })[0]; return (r && r.pref) || n.split(' ')[0]; }
@@ -13794,9 +13794,12 @@ function caSources(id){
     var named = caNamed(t); if(named && named !== caPt() && !(typeof csOnChart === 'function' && csOnChart())){ CA.ctx = named; caCtx(); }
     var n = caPt();
     CA_KEYS.some(function(p){ if(p[1].test(t)){ k = p[0]; return true; } });
+    if(n && caSmart(text, n) !== null) return;   /* caSmart answers itself when it recognises the question */
     if(k && n){ caAnswer(k, n); return; }
     if(k && !n){ aiAppend('Open a patient\'s chart first; Cedar answers about one record at a time.', 'bot'); caHelloPick(); return; }
     if(n && /\b(other patient|someone else|my wife|her husband|his wife)\b/.test(t)){ aiAppend('This conversation is about ' + csEsc(caFull(n)) + ' only, so Cedar won\'t look at anyone else\'s record here. Open their chart to ask about them.', 'bot'); return; }
+    /* with a patient in the conversation, an unrecognised question is searched in their record rather than answered generically */
+    if(n && !/^(hi|hello|hey|thanks|thank you)\b/.test(t) && !/(my day|claims?|schedule|calendar|earn|income|tomorrow|queue)/.test(t)){ caSearch(text, n); return; }
     dayReply(text);
   };
 })();
@@ -13827,6 +13830,128 @@ function caNext(){
       '<div class="ca-foot"><button type="button" class="ca-lk" onclick="caSources(\'' + id + '\')" title="See what Cedar read">' + caIc('eye-on', 15) + 'Read ' + CA.cards[id].src.length + ' entries</button></div></div>';
     caCtx(); aiScroll();
   }, 380);
+}
+/* ============================================================================
+   Cedar, smarter (Ani, 20 Nov: "it needs to be very intelligent"). Before the fixed flows, Cedar reads the question for what it
+   is about in this record: a medicine she takes, a test, her age or pharmacy, why she is here, red flags, the last visit, her blood
+   pressure, an order or referral, sending her to emergency. Anything else is searched across her record (medications, conditions,
+   allergies, orders, the visit preview, the last note), so an answer always comes from the record, with its sources. Typos are forgiven.
+   ========================================================================= */
+var CA_FIX = [[/\blegs\b/g, 'labs'], [/\blabz\b/g, 'labs'], [/\bmedz\b|\bmedecine?s?\b|\bmedicins?\b/g, 'medications'], [/\balerg(y|ies)\b|\balergic\b/g, 'allergies'], [/\bhistroy\b|\bhistory\b/g, 'history'],
+  [/\bbp\b/g, 'blood pressure'], [/\becg\b|\bekg\b/g, 'electrocardiogram'], [/\bdx\b/g, 'diagnosis'], [/\brx\b/g, 'prescription'], [/\ber\b|\bed\b(?= )|\bemerg\b/g, 'emergency'], [/high blood pressure|\bhbp\b/g, 'hypertension'], [/\bsugar\b(?! level)/g, 'sugar'], [/\bafib\b|\ba-fib\b|irregular heart/g, 'atrial fibrillation'], [/\baspirin\b|\basa\b/g, 'acetylsalicylic acid'], [/\bnorvasc\b/g, 'amlodipine'], [/\bglucophage\b/g, 'metformin'], [/\bprolia\b/g, 'denosumab'], [/\badvil\b|\bmotrin\b/g, 'ibuprofen'], [/\bimovane\b/g, 'zopiclone'], [/\bamoxil\b/g, 'amoxicillin'], [/[?!.,]/g, ' ']];   /* brand names and common words for her medicines */
+var CA_STOP = 'about what when where which with have does that this from your there they them their into over show tell give need want could would should please able bring pull find look check is are was the and her his she him for any can you me my on of to a an in it do'.split(' ');
+function caNorm(t){ t = ' ' + String(t).toLowerCase() + ' '; CA_FIX.forEach(function(f){ t = t.replace(f[0], f[1]); }); return t.replace(/\s+/g, ' ').trim(); }
+function caAnswerX(n, q, fn){
+  var body = document.getElementById('ai-body'), id = 'ca' + (++CA.n), R = fn();
+  var w = document.createElement('div'); w.className = 'ca-a'; w.id = id; w.setAttribute('data-k', 'x'); w.setAttribute('data-n', n); body.appendChild(w);
+  CA.cards[id] = CA.cards[id] || {}; CA.cards[id].fn = fn; CA.cards[id].q = q;
+  var steps = ['Checking you\'re in ' + caFirst(n) + '\'s circle of care', 'Reading ' + (R.read || 'her record'), 'Writing the answer, with sources'], i = 0;
+  var paint = function(){ w.innerHTML = '<span class="ca-mark" aria-hidden="true">' + caIc('ai', 15) + '</span><div class="ca-bd"><ul class="ca-think">' + steps.map(function(s, j){ return '<li>' + (j < i ? '<span class="ok">' + caIc('check-circle', 14) + '</span>' : '<span class="dot"' + (j > i ? ' style="animation:none;border-top-color:var(--line)"' : '') + '></span>') + csEsc(s) + '</li>'; }).join('') + '</ul></div>'; };
+  paint(); aiScroll();
+  var tm = setInterval(function(){ i++; if(i < 3){ paint(); return; } clearInterval(tm); caRedraw(id); aiScroll(); }, 380);
+}
+CA_F.x = function(n, id){ var c = CA.cards[id] || {}; return c.fn ? c.fn() : {h:'', src:[]}; };
+function caRowS(L){ return L.join(''); }
+function caSmart(raw, n){
+  var t = caNorm(raw), f = caFirst(n), r = (typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : []).filter(function(x){ return x.name === n; })[0] || {}, H = hxFor(n), PC = typeof ptChart === 'function' ? ptChart(n) : {}, L0 = typeof PT_LAST !== 'undefined' ? PT_LAST[n] : null;
+  var she = /^f/i.test(String(r.sex || '')) ? 'she' : 'he', her = she === 'she' ? 'her' : 'his';
+  /* a medicine by name: is she on it, who prescribed it, what dose */
+  var med = H.meds.filter(function(m){ return t.indexOf(m.name.toLowerCase()) > -1 || t.indexOf(m.name.toLowerCase().split(' ')[0]) > -1; })[0];
+  var askedMed = (t.match(/\b(on|taking|prescribe\w*|dose of|about)\s+([a-z]{5,})/) || [])[2];
+  if(med) return caAnswerX(n, raw, function(){
+    var st = hxMedState(med), rec = hxRec(n, med.id), dose = rec && rec.chart != null ? rec.chart : med.chart;
+    var who = /who (prescribed|started|gave)|prescriber|which doctor/.test(t);
+    var line = who && med.pn ? med.pn.by + (med.pn.spec ? ' (' + med.pn.spec + ')' : '') + ' prescribed ' + med.name + ' ' + med.pn.dose + '; filled ' + med.pn.filled + '.' + (dose && dose !== med.pn.dose ? ' Your chart says ' + dose + '.' : '')
+      : (dose ? 'Yes. ' + f + ' is on ' + med.name + ' ' + dose + ' in the chart' : f + ' has ' + med.name + ' in PharmaNet but not in the chart') +
+      (med.pn ? '. PharmaNet: ' + med.pn.dose + ', prescribed by ' + med.pn.by + (med.pn.spec ? ' (' + med.pn.spec + ')' : '') + ', filled ' + med.pn.filled + '.' : '. Not dispensed by a pharmacy (bought without a prescription).');
+    var acts = '';
+    if(!rec && st === 'differs') acts = caBtn('primary', 'Use ' + med.pn.diff, 'caRecon(\'' + med.id + '\',\'pn\')', 'Change the chart to ' + med.pn.dose) + caBtn('tertiary-main', 'Keep ' + med.chart.split(' ').slice(0, 2).join(' '), 'caRecon(\'' + med.id + '\',\'keep\')', 'Keep the chart as it is');
+    if(!rec && st === 'notchart') acts = caBtn('primary', 'Add to chart', 'caRecon(\'' + med.id + '\',\'add\')', 'Add it to the chart') + caBtn('tertiary-main', 'Not taking', 'caRecon(\'' + med.id + '\',\'not\')', 'The patient isn\'t taking it');
+    return {read:'the medication list and PharmaNet', h:'<p class="ca-lead">' + csEsc(line) + '</p>' + (rec ? caDone(csEsc(rec.label) + ' · ' + csEsc(rec.by) + ', ' + csEsc(rec.at)) : st === 'differs' ? '<p class="ca-fine">The chart and PharmaNet differ.</p>' : '') + (acts ? '<div class="ca-acts">' + acts + '</div>' : ''),
+      src:[['Simple chart', med.name + (med.chart ? ' ' + med.chart : ''), 'Medication list', '']].concat(med.pn ? [['PharmaNet', med.name + ' ' + med.pn.dose, 'Filled ' + med.pn.filled, med.pn.by + (med.pn.spec ? ' (' + med.pn.spec + ')' : '')]] : [])};
+  });
+  if(askedMed && /\b(is|are|does)\b.*\b(on|taking)\b/.test(t) && CA_STOP.indexOf(askedMed) < 0 && !/medication|labs?|meds/.test(askedMed)) return caAnswerX(n, raw, function(){
+    return {read:'the medication list and PharmaNet', h:'<p class="ca-lead">No. ' + csEsc(f) + ' isn\'t on ' + csEsc(askedMed) + ' in the chart, and PharmaNet has no fill for it in the last 14 months.</p>', src:[['Simple chart', 'Medication list', 'Today', ''], ['PharmaNet', 'Fills, last 14 months', 'Checked today', '']]};
+  });
+  /* a condition by name, with forgiving word forms ("is she diabetic?") */
+  var cond = (H.conditions || []).filter(function(c){ return c.name.toLowerCase().split(/[^a-z]+/).some(function(w){ return w.length > 4 && t.indexOf(w.slice(0, 6)) > -1; }); })[0];
+  if(cond && !/\b(order|refer)\b/.test(t)) return caAnswerX(n, raw, function(){
+    return {read:'the problem list and History', h:'<p class="ca-lead">Yes. ' + csEsc(f) + ' has ' + csEsc(cond.name.toLowerCase()) + (cond.since ? ', since ' + csEsc(cond.since) : '') + '.' + (cond.code ? ' Diagnostic code ' + csEsc(cond.code) + '.' : ' No diagnostic code yet.') + '</p>' +
+      '<div class="ca-acts">' + caBtn('secondary-main', 'All ' + her + ' conditions', 'aiSend(\'What are her conditions?\')', 'List every condition with its code') + '</div>', src:[['Simple chart', cond.name + (cond.code ? ' · ' + cond.code : ''), 'Problem list', cond.since ? 'Since ' + cond.since : '']]};
+  });
+  /* a test by name: the latest value, with its trend */
+  if(n === GLORIA && /\ba1c\b|hemoglobin a1c|sugar|glucose/.test(t)) return caAnswerX(n, raw, function(){
+    return {read:'lab results', h:'<p class="ca-lead">Last hemoglobin A1c: <b>8.6%</b> on 13 March 2026, above the 7.0% target and up from 7.6% in August 2025. The August 2026 test was missed.</p><div class="ca-acts">' +
+      caBtn('secondary-main', 'See the graph', 'caGraph()', 'Open the A1c graph, full size') + caBtn('primary', 'Order the next A1c', 'aiSend(\'Add A1c to the requisition\')', 'Put the next A1c on a requisition', 'checklist') + '</div>', src:[['Lab results', 'Hemoglobin A1c 8.6%', '13 March 2026', 'Reviewed 14 March by Dr. Pannozzo']]};
+  });
+  if(n === GLORIA && /troponin|cardiac marker|heart (enzyme|test)/.test(t)) return caAnswerX(n, raw, function(){
+    return {read:'lab results', h:'<p class="ca-lead">Troponin I is <b>0.42 µg/L</b> today at 7:50 a.m., critical (reference under 0.04). None on file before. Creatine kinase 165 units/L, electrolytes normal. Not reviewed yet.</p><div class="ca-acts">' +
+      caBtn('primary', 'Review in the chart', 'caGoChart(\'' + n + '\',\'review\')', 'Open Needs attention to review it', 'eye-on') + '</div>', src:[['Lab results', 'Cardiac markers, 3 tests', 'Collected today 7:20 a.m., LifeLabs', 'Troponin I 0.42 µg/L (critical)']]};
+  });
+  /* age, sex, health card, pharmacy */
+  if(/how old|\bage\b|date of birth|born|\bphn\b|health card|personal health|pharmacy|which pharmacy/.test(t)) return caAnswerX(n, raw, function(){
+    return {read:'the demographics', h:'<p class="ca-lead">' + csEsc(r.legal || caFull(n)) + ', ' + csEsc(String(r.age || '').replace(/Y$/, '')) + ', ' + csEsc(String(r.sex || '').toLowerCase()) + '.</p><div class="ca-card">' +
+      caRow('Personal Health Number', csEsc(PC.phn || '—'), r.card === 'verified' ? caTag('success', 'Verified') : caTag('neutral', 'Not yet checked')) + caRow('Pharmacy', csEsc(PC.pharm || '—'), '') + caRow('Plan', csEsc(r.plan === 'MSP' ? 'Medical Services Plan' : (r.plan || '—')), '') + '</div>',
+      src:[['Simple chart', 'Demographics', '', ''], ['Provincial registry', 'Health card check', 'Today', '']]};
+  });
+  /* why is she here */
+  if(/why (is|was) (she|he|her|him)|reason for|here (for|today)|concern|complain|presenting/.test(t)) return caAnswerX(n, raw, function(){
+    var c = (typeof concernLine === 'function' ? concernLine(r) : '') || r.concern, I = typeof csIntakeSummary === 'function' ? csIntakeSummary(n) : '';
+    return {read:'the intake and the booking', h:'<p class="ca-lead">' + csEsc(smText(c || 'Today\'s visit')) + '</p>' + (I ? '<div class="ca-card">' + caRow('From ' + her + ' intake', csEsc(smText(I)), caTag('neutral', 'Intake')) + '</div>' : '') +
+      '<div class="ca-acts">' + caBtn('secondary-main', 'Pre-visit summary', 'aiSend(\'Give me a pre-visit summary\')', 'Everything relevant to today, with sources') + '</div>', src:[['Intake', smText(I || c || ''), 'This morning', ''], ['Simple chart', 'Booking', 'Today', '']]};
+  });
+  /* red flags, anything urgent */
+  if(/red flag|urgent|critical|worried|danger|anything (bad|serious|wrong)|alarm/.test(t)) return caAnswerX(n, raw, function(){
+    var C = csNAItems(n).filter(function(x){ return x.tier === 'crit' || /^Not /.test(x.stage || ''); }), nm = function(x){ return smText(x.label || (x.it && (x.it.panel || x.it.test)) || x.test || 'Result'); };
+    return {read:'results, intake flags and Needs attention', h:'<p class="ca-lead">' + (C.length ? 'Yes. ' + C.length + ' item' + (C.length > 1 ? 's need' : ' needs') + ' you now.' : 'No red flags in ' + her + ' record today.') + '</p>' + (C.length ? '<div class="ca-card">' + C.map(function(x){ return caRow(csEsc(nm(x)), csEsc(x.stage || ''), caTag(x.tier === 'crit' ? 'error' : 'warning', x.tier === 'crit' ? 'Critical' : 'To review')); }).join('') + '</div>' : '') +
+      (n === GLORIA ? '<div class="ca-acts">' + caBtn('primary', 'Direct to Emergency', 'caGoChart(\'' + n + '\',\'review\')', 'Open the Emergency pathway in her chart; one step does all of it', 'warning') + '</div>' : ''), src:C.map(function(x){ return ['Lab results', nm(x), x.today ? 'Today' : '', x.stage || '']; })};
+  });
+  /* send her to emergency */
+  if(/emergency|hospital|9-?1-?1|ambulance/.test(t)) return caAnswerX(n, raw, function(){
+    return {read:'the Emergency pathway', h:'<p class="ca-lead">One step does it all: ' + her + ' portal status, the advice read out and sent (call 9-1-1, don\'t drive, bring medications), a transfer note Cedar drafts for the Emergency Department, a plan line and a follow-up task.</p>' +
+      '<div class="ca-acts">' + caBtn('primary', 'Open the Emergency pathway', 'caGoChart(\'' + n + '\',\'review\')', 'Go to the Emergency pathway in the chart; you press Direct to Emergency now', 'warning') + '</div><p class="ca-fine">Cedar prepares it; you send it.</p>', src:[['Lab results', 'Troponin I 0.42 µg/L, critical', 'Today', '']]};
+  });
+  /* last visit */
+  if(/last (visit|seen|time|appointment|note)|when (was|did) (she|he) (last|see)|previous visit/.test(t) && L0) return caAnswerX(n, raw, function(){
+    return {read:'the last visit note', h:'<p class="ca-lead">Last seen ' + csEsc(caDate(L0.date)) + ' by you, for ' + csEsc(String(L0.why).toLowerCase()) + '.</p><div class="ca-card">' + (L0.note ? caRow('Assessment', csEsc(L0.note.A || ''), '') + caRow('Plan', csEsc(L0.note.P || ''), '') : '') + '</div>',
+      src:[['Visit note', 'Dr. Pannozzo', L0.date, L0.note ? L0.note.S : '']]};
+  });
+  /* blood pressure */
+  if(/blood pressure|\bpressure reading|vitals|heart rate/.test(t)) return caAnswerX(n, raw, function(){
+    var bp = L0 && L0.note && /BP [^.]+/.exec(L0.note.O || '');
+    return {read:'vitals and the last note', h:'<p class="ca-lead">' + (bp ? 'Last blood pressure: ' + csEsc(bp[0].replace(/^BP /, '')) + ', on ' + csEsc(caDate(L0.date)) + '.' : 'No blood pressure on file for ' + csEsc(f) + '.') + '</p>' + (L0 && L0.note ? '<p class="ca-fine">' + csEsc(L0.note.O) + '</p>' : ''), src:L0 ? [['Visit note', 'Examination', L0.date, L0.note ? L0.note.O : '']] : []};
+  });
+  /* order or refer something */
+  var ord = /\b(order|refer|book|arrange|request)\b\s+(an?\s+|the\s+|her\s+|him\s+)?(to\s+)?([a-z][a-z ]{2,40})/.exec(t);
+  if(ord){
+    var what = ord[4].replace(/\b(for her|for him|today|please|now)\b/g, '').trim(), loops = lpList(n), hit = loops.filter(function(x){ var nm = x.n.toLowerCase(); return what.split(' ').some(function(w){ return w.length > 3 && nm.indexOf(w) > -1; }); })[0];
+    return caAnswerX(n, raw, function(){
+      if(hit){ var stt = lpState(hit), first = hit.st[0][0] === 'you';
+        return {read:'open orders', h:'<p class="ca-lead">' + (first ? csEsc(hit.n) + ' isn\'t ordered yet.' : csEsc(hit.n) + ' is already ' + (hit.t === 'ref' ? 'referred' : 'ordered') + ': ' + csEsc(lpNow(hit).replace(/\.$/, '').replace(/^./, function(c){ return c.toLowerCase(); })) + '.') + '</p>' +
+          '<div class="ca-acts">' + (first ? caBtn('primary', 'Order it', 'lpAct(\'' + hit.id + '\',\'order\');caRefresh()', 'Send the order; its loop starts', 'check') : (hit.acts || []).filter(function(a){ return a === 'remind'; }).map(function(a){ return caBtn('secondary-main', LP_ACT[a][1], 'lpAct(\'' + hit.id + '\',\'' + a + '\');caRefresh()', LP_ACT[a][2]); }).join('')) + caBtn('tertiary-main', 'See every step', 'lpOpen(\'' + hit.id + '\')', 'Open the order\'s steps') + '</div>',
+          src:[[hit.st[0][3] || 'Simple chart', hit.n, hit.why || '', lpNow(hit)]]}; }
+      return {read:'the order catalogue', h:'<p class="ca-lead">Cedar drafted ' + (/refer/.test(ord[1]) ? 'a referral' : 'an order') + ' for <b>' + csEsc(what) + '</b>' + ', with the reason from today\'s concern. You review and sign it.</p><div class="ca-acts">' + caBtn('primary', 'Review and sign', 'toast(\'Draft ready to sign: ' + what.replace(/'/g, '') + '\')', 'Open the draft to check and sign', 'signature') + '</div>', src:[['Simple chart', 'Today\'s concern', 'Intake', '']]};
+    });
+  }
+  return null;
+}
+function caDate(s){ var M = {Jan:'January', Feb:'February', Mar:'March', Apr:'April', May:'May', Jun:'June', Jul:'July', Aug:'August', Sep:'September', Oct:'October', Nov:'November', Dec:'December'}, m = /^([A-Z][a-z]{2}) (\d{1,2}), (\d{4})$/.exec(String(s || '')); return m ? m[2] + ' ' + M[m[1]] + ' ' + m[3] : s; }
+function caGoChart(n, tab){ if(!(typeof csOnChart === 'function' && csOnChart() && PC_CURRENT === n)) openChart(n); setTimeout(function(){ v2Tab(tab); }, 350); }
+/* nothing matched: search the whole record for the question's words */
+function caSearch(raw, n){
+  var t = caNorm(raw), words = t.split(' ').filter(function(w){ return w.length > 3 && CA_STOP.indexOf(w) < 0; }), f = caFirst(n), H = hxFor(n), hits = [];
+  var add = function(sys, title, sub){ var hay = (title + ' ' + (sub || '')).toLowerCase(); if(words.some(function(w){ return hay.indexOf(w) > -1 || (w.length > 5 && hay.indexOf(w.slice(0, -1)) > -1); })) hits.push([sys, title, sub || '']); };
+  H.meds.forEach(function(m){ add('Medication', m.name + ' ' + (m.chart || (m.pn ? m.pn.dose : '')), m.pn ? m.pn.by : ''); });
+  (H.conditions || []).forEach(function(c){ add('Condition', c.name + (c.code ? ' · ' + c.code : ''), c.since ? 'Since ' + c.since : ''); });
+  (H.allergies || []).forEach(function(a){ add('Allergy', a.name || String(a), ''); });
+  lpList(n).forEach(function(x){ add('Order', x.n, lpNow(x)); });
+  (cdrLines(n, true).C.rel || []).concat(cdrLines(n, true).C.other || []).forEach(function(x){ add(cdrSrcTag(x.src)[2], smText(x.main), x.sub ? smText(x.sub) : ''); });
+  var L0 = typeof PT_LAST !== 'undefined' ? PT_LAST[n] : null; if(L0 && L0.note) ['S', 'O', 'A', 'P'].forEach(function(k){ add('Last visit note', {S:'Subjective', O:'Objective', A:'Assessment', P:'Plan'}[k], L0.note[k]); });
+  caAnswerX(n, raw, function(){
+    return {read:'everything in ' + f + '\'s record', h:hits.length ? '<p class="ca-lead">Here\'s what ' + csEsc(f) + '\'s record says about that:</p><div class="ca-card">' + hits.slice(0, 6).map(function(x){ return caRow(csEsc(x[1]), csEsc(x[2]), caTag('neutral', x[0])); }).join('') + '</div>'
+      : '<p class="ca-lead">I couldn\'t find that in ' + csEsc(f) + '\'s record. I can answer about ' + 'her' + ' medications, labs, allergies, conditions, orders, the last visit, or draft something for you.</p><div class="ca-chips">' + ['What meds is she on?', 'Bring up her labs', 'Any red flags?', 'When was she last seen?'].map(function(q){ return SC.html('Chip', {title:'Ask: ' + q}, q).replace('<button ', '<button onclick="aiSend(\'' + q.replace(/'/g, '\\\'') + '\')" '); }).join('') + '</div>',
+      src:hits.slice(0, 6)};
+  });
 }
 function caHelloPick(){
   var next = (typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : []).filter(function(r){ return r.status === 'next' || r.status === 'waiting'; }).slice(0, 3);
