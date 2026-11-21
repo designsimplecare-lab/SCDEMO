@@ -7855,10 +7855,13 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .vc-nm{white-space:nowrap;overflow:visible;text-overflow:clip;max-width:none;flex:none;}
   body.pt-top .topbar-right #ps-tb{width:260px !important;}   /* a shorter search leaves the patient's line room */
   body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2.hx3{grid-template-rows:0 auto minmax(0,1fr) !important;grid-template-areas:"hd hd hd" ". nav calls" "side main hx" !important;}
+  body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2:not(.hx3){grid-template-rows:0 auto minmax(0,1fr) !important;grid-template-areas:"hd hd" ". nav" "side main" !important;}
+  body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-nav > .vc-acts{display:flex;align-items:center;gap:8px;flex:none;margin-left:12px;}
   body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #cv2-calls{grid-area:calls;display:flex;align-items:center;justify-content:flex-end;min-width:0;}
   body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #cv2-calls .vc-acts{display:flex;align-items:center;gap:8px;}
   body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cs-nmrow #cs-winclock{display:inline-flex;flex-direction:row;align-items:center;gap:8px;margin-left:14px;padding-left:14px;border-left:1px solid var(--line);}
   body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cs-nmrow{display:flex;align-items:center;flex-wrap:nowrap;min-width:0;}
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-main > #v2p-review:has(> #v2-na[hidden]):has(> #v2-er[hidden]){display:none;}   /* Ani, 20 Nov ("align properly"): with nothing to review the empty step took the grid's 8px gap and the note sat lower than the side columns */
   /* Ani, 20 Nov ("remove note title"): the SOAP note card needs no "Note" heading above it (kept for screen readers) */
   #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2h-note{position:absolute;width:1px;height:1px;margin:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
   /* the signed Sign off card (Ani, 20 Nov) */
@@ -7914,7 +7917,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #sm-list .sv-list__sublabel{font-size:14px;color:var(--ink-soft);padding-top:12px;}
   #sm-list .sv-list__item .sv-list__label{font-size:15px;line-height:22px;color:var(--ink);}
   /* section icons, like Claude's panel: 20px, grey, before the title */
-  .smh-ic{display:inline-flex;flex:none;width:20px;height:20px;margin-right:10px;color:var(--ink-soft);vertical-align:middle;}
+  .smh-ic{display:inline-flex;flex:none;width:20px;height:20px;margin-right:6px;color:var(--ink-soft);vertical-align:middle;}
   .smh-ic svg{width:20px;height:20px;}
   #sm-list .sv-list__head > span:first-child{display:inline-flex;align-items:center;}
   .hx-compact .hxc-t .smh-ic{margin-right:6px;}
@@ -25720,9 +25723,15 @@ function cv2TopSync(){
   var on = typeof cv2On === 'function' && cv2On() && sc.classList.contains('active') && window.innerWidth >= 1150;
   document.body.classList.toggle('pt-top', on);
   /* the call window joins the name line; Call and Chart move to the tabs line, above the History column (grid area "calls") */
+  var v2w = v2El('v2'); if(v2w && v2w.offsetParent) v2w.classList.toggle('hx3', v2w.getBoundingClientRect().width >= 1150);   /* the History column's own test, run again: the chart may have been measured while hidden */
   var v2 = v2El('v2'), snap = document.querySelector('#cv2-hd .cs-snap'), row = snap && snap.querySelector('.cs-nmrow'), clk = v2El('cs-winclock'),
     acts = document.querySelector('#pcv-c .vc-acts'), calls = v2El('cv2-calls');
-  if(on && v2 && acts){
+  if(on && v2 && acts && !v2.classList.contains('hx3')){
+    /* no History column: Call and Chart close the tabs line itself */
+    if(calls && calls.parentNode) calls.parentNode.removeChild(calls);
+    var nav = v2El('cv2-nav'); if(nav && acts.parentNode !== nav) nav.appendChild(acts);
+    if(clk && row && clk.parentNode !== row) row.appendChild(clk);
+  } else if(on && v2 && acts){
     if(!calls){ calls = document.createElement('div'); calls.id = 'cv2-calls'; calls.className = 'cv2-calls'; }
     if(calls.parentNode !== v2) v2.appendChild(calls);
     if(acts.parentNode !== calls) calls.appendChild(acts);
@@ -25738,6 +25747,8 @@ function cv2TopSync(){
 (function(){
   if(typeof baWrap === 'function'){ baWrap('showScreen', function(){ cv2TopSync(); }); baWrap('openChart', function(){ setTimeout(cv2TopSync, 0); }); }
   window.addEventListener('resize', function(){ cv2TopSync(); });
+  /* the History column comes and goes (#v2.hx3): Call and Chart follow it */
+  var v2 = document.getElementById('v2'); if(v2 && window.MutationObserver) new MutationObserver(function(){ if(document.body.classList.contains('pt-top')) cv2TopSync(); }).observe(v2, {attributes:true, attributeFilter:['class']});
   var tb = document.querySelector('.topbar'); if(tb && window.ResizeObserver) new ResizeObserver(function(){ if(document.body.classList.contains('pt-top')) cv2TopSync(); }).observe(tb);
 })();
 function cv2CallsHome(){
