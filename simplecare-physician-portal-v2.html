@@ -8236,6 +8236,97 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
    /* tabs sit on the page, above the list */
 #screen-claims .t23-quiet{margin:0 0 4px;}
 #screen-claims #t23-seg{margin:0 0 16px;}
+
+/* ===== Cedar in the top-bar chat (Ani, 20 Nov: "build this in our demo, use the top Cedar, all this functionality inside that chat;
+   keep its chat size"). The panel keeps its size and place; it reads like the standalone Cedar: the open patient and what Cedar
+   can read on top, grouped suggestions, answers as cards with a Sources view, every action left to the doctor. ===== */
+#ai-panel.open{z-index:206;}   /* above Dolly's chat button, which covered the input */
+#ai-panel .ai-head{background:var(--panel);color:var(--ink);border-bottom:1px solid var(--line);padding:10px 8px 10px 14px;gap:10px;}
+#ai-panel .ai-head .spark{display:none;}
+#ai-panel .ai-head .ca-mark{display:inline-flex;align-items:center;justify-content:center;flex:none;width:32px;height:32px;border-radius:var(--radius-xs);background:var(--gradient-ai);color:var(--color-navy-900);}
+#ai-panel .ai-head .ca-mark svg{width:18px;height:18px;}
+#ai-panel .ai-head b{font-size:16px;line-height:20px;color:var(--ink);}
+#ai-panel .ai-head .subh{display:block;font-size:14px;line-height:18px;color:var(--ink-soft);}
+#ai-panel .ai-head .pd-grip,#ai-panel .ai-head .close{color:var(--ink-soft);}
+#ai-panel .ai-head .pd-grip:hover,#ai-panel .ai-head .close:hover{background:var(--wash);color:var(--ink);}
+#ai-panel .ai-head .pd-grip:focus-visible{outline-color:var(--accent);}
+#ai-panel .ca-ctx{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--panel);border-bottom:1px solid var(--line);font-size:14px;line-height:20px;color:var(--ink-soft);}
+#ai-panel .ca-ctx b{color:var(--ink);font-weight:600;}
+#ai-panel .ca-ctx .sp{flex:1;}
+#ai-panel .ca-ctx .ca-src{flex:none;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;padding:2px 6px;border:0;border-radius:var(--radius-xs);background:none;font:inherit;font-size:14px;color:var(--ink-soft);cursor:pointer;}
+#ai-panel .ca-ctx .ca-src:hover{background:var(--wash);color:var(--ink);}
+#ai-panel .ca-ctx .ca-src svg{width:16px;height:16px;color:var(--color-green-700);}
+#ai-panel .ai-body{position:relative;padding:14px;gap:12px;}
+#ai-panel .ai-msg{font-size:15px;line-height:22px;}
+#ai-panel .ai-msg.user{background:var(--color-navy-900);color:var(--color-grey-0);border-radius:var(--radius-sm);}
+#ai-panel .ai-msg.bot{border-radius:var(--radius-sm);}
+#ai-panel .ca-hi h3{margin:4px 0 2px;font-size:17px;line-height:24px;color:var(--ink);}
+#ai-panel .ca-hi p{margin:0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+#ai-panel .ca-grp{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 10px 4px;}
+#ai-panel .ca-grp h4{display:flex;align-items:center;gap:6px;margin:0 0 2px;font-size:14px;font-weight:700;color:var(--ink);}
+#ai-panel .ca-grp h4 svg{width:16px;height:16px;color:var(--color-navy-700);}
+#ai-panel .ca-s{display:flex;align-items:center;gap:8px;width:100%;padding:7px 6px;margin:0 -6px;border:0;border-radius:var(--radius-xs);background:none;text-align:left;font:inherit;font-size:14px;line-height:20px;color:var(--body, var(--ink));cursor:pointer;}
+#ai-panel .ca-s:hover{background:var(--wash);color:var(--ink);}
+#ai-panel .ca-s svg{width:14px;height:14px;margin-left:auto;color:var(--ink-faint);flex:none;}
+#ai-panel .ca-a{display:flex;gap:8px;align-items:flex-start;align-self:stretch;}
+#ai-panel .ca-a > .ca-mark{display:inline-flex;align-items:center;justify-content:center;flex:none;width:26px;height:26px;border-radius:var(--radius-xs);background:var(--gradient-ai);color:var(--color-navy-900);}
+#ai-panel .ca-a > .ca-mark svg{width:15px;height:15px;}
+#ai-panel .ca-bd{flex:1;min-width:0;}
+#ai-panel .ca-lead{margin:2px 0 8px;font-size:15px;line-height:22px;color:var(--ink);}
+#ai-panel .ca-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-xs);padding:4px 12px;}
+#ai-panel .ca-row{display:flex;gap:8px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line);}
+#ai-panel .ca-row:first-child{border-top:0;}
+#ai-panel .ca-row .m{flex:1;min-width:0;}
+#ai-panel .ca-row .l{display:block;font-size:14px;line-height:20px;font-weight:500;color:var(--ink);}
+#ai-panel .ca-row .s{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+#ai-panel .ca-row .sv-tag{flex:none;}
+#ai-panel .ca-row-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+#ai-panel .ca-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+#ai-panel .ca-done{display:flex;gap:8px;align-items:flex-start;margin-top:10px;padding:8px 10px;border-radius:var(--radius-xs);background:var(--color-green-25);font-size:14px;line-height:20px;color:var(--ink);}
+#ai-panel .ca-done svg{width:18px;height:18px;flex:none;color:var(--color-green-700);}
+#ai-panel .ca-fine{margin:8px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+#ai-panel .ca-foot{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-top:8px;font-size:14px;color:var(--ink-soft);}
+#ai-panel .ca-foot .sp{flex:1;}
+#ai-panel .ca-lk{display:inline-flex;align-items:center;gap:4px;padding:3px 6px;border:0;border-radius:var(--radius-xs);background:none;font:inherit;font-size:14px;color:var(--ink-soft);cursor:pointer;}
+#ai-panel .ca-lk:hover{background:var(--wash);color:var(--ink);}
+#ai-panel .ca-lk[aria-pressed="true"]{background:var(--brand-wash, var(--accent-wash));color:var(--color-navy-900);}
+#ai-panel .ca-lk svg{width:15px;height:15px;}
+#ai-panel .ca-big{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px;margin:2px 0;font-size:22px;line-height:30px;font-weight:700;color:var(--ink);}
+#ai-panel .ca-box{padding:12px;border-radius:var(--radius-xs);background:linear-gradient(180deg, color-mix(in srgb, var(--color-brand-ai-start) 50%, var(--panel)), var(--panel) 95%);border:1px solid var(--line);}
+#ai-panel .ca-msg{padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius-xs);background:var(--panel);font-size:14px;line-height:21px;color:var(--ink);white-space:pre-wrap;outline:none;}
+#ai-panel .ca-msg[contenteditable="true"]:focus{box-shadow:inset 0 0 0 2px var(--accent);}
+#ai-panel .ca-chips{display:flex;flex-wrap:wrap;gap:6px;}
+#ai-panel .ca-chips .sv-chip{max-width:100%;height:auto;min-height:36px;white-space:normal;text-align:left;}
+#ai-panel .ca-chips .sv-chip .truncate{white-space:normal;overflow:visible;}
+#ai-panel .ca-chart{overflow:hidden;}
+#ai-panel .ai-body{overflow-x:hidden;}
+#ai-panel .ca-chart svg text{font-size:14px;}
+#ai-panel .ca-chart svg text{font-size:14px;}
+#ai-panel .ca-think{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:4px;}
+#ai-panel .ca-think li{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-soft);}
+#ai-panel .ca-think .dot{width:14px;height:14px;border-radius:var(--radius-round);border:2px solid var(--line);border-top-color:var(--color-navy-900);animation:caspin .8s linear infinite;}
+#ai-panel .ca-think .ok svg{width:14px;height:14px;color:var(--color-green-700);}
+@keyframes caspin{to{transform:rotate(360deg);}}
+#ai-panel .ca-div{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-soft);}
+#ai-panel .ca-div::before,#ai-panel .ca-div::after{content:"";flex:1;height:1px;background:var(--line);}
+#ai-panel .sv-tag,#ai-panel .sv-tag .truncate{font-size:14px;}
+/* the Sources view slides over the conversation, inside the panel */
+#ai-panel{position:fixed;}
+#ai-panel .ca-srcv{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;background:var(--paper);}
+#ai-panel .ca-srcv[hidden]{display:none;}
+#ai-panel .ca-srcv .hd{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--panel);border-bottom:1px solid var(--line);}
+#ai-panel .ca-srcv .hd b{font-size:15px;color:var(--ink);}
+#ai-panel .ca-srcv .for{padding:10px 14px 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+#ai-panel .ca-srcv .ls{flex:1;overflow-y:auto;padding:10px 14px 14px;display:grid;gap:8px;align-content:start;}
+#ai-panel .ca-si{padding:10px;border:1px solid var(--line);border-radius:var(--radius-xs);background:var(--panel);}
+#ai-panel .ca-si .t{display:flex;align-items:center;gap:6px;}
+#ai-panel .ca-si .n{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;border-radius:var(--radius-2xs);background:var(--brand-wash, var(--accent-wash));color:var(--color-navy-900);font-size:14px;font-weight:700;}
+#ai-panel .ca-si b{display:block;margin-top:6px;font-size:14px;font-weight:600;color:var(--ink);}
+#ai-panel .ca-si span.d{display:block;font-size:14px;color:var(--ink-soft);}
+#ai-panel .ca-si q{display:block;margin-top:6px;padding:6px 8px;border-left:3px solid var(--line);background:var(--wash);font-size:14px;line-height:20px;color:var(--ink);quotes:none;}
+#ai-panel .ai-foot{display:block;padding:10px 12px 8px;}
+#ai-panel .ai-foot .ca-note{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:6px;font-size:14px;line-height:18px;color:var(--ink-soft);text-align:center;}
+#ai-panel .ai-foot .ca-note svg{width:14px;height:14px;flex:none;}
 </style>
 <!-- SimpleCare design system: tokens + Lato, then the bridge that maps this page onto them (assets/design-system/). Keep these two links last in <head>. -->
 <link rel="stylesheet" href="assets/design-system/simplecare-tokens.css?v=2026-11-14j">
@@ -13413,6 +13504,273 @@ function aiSend(preset){
   aiReply(text);
 }
 
+/* ============================================================================
+   Cedar in the top-bar chat (Ani, 20 Nov). The standalone Cedar's flows, inside the panel next to the profile, at its size.
+   With a chart open, Cedar answers about that patient from the portal's own records (the same ones the chart shows): the
+   closed loops (LOOPS), History's medications and reconciliation (HX_REC), Needs attention, the Visit preview. Every action
+   goes through the same functions as the chart, so the chart updates too. With no chart open, the day questions answer as before.
+   ========================================================================= */
+var CA = {n:0, cards:{}, lastPt:undefined};
+var CA_GROUPS = [['Before the visit', 'calendar', ['summary', 'overdue', 'preventive']], ['Medications', 'medication', ['recon', 'ddi', 'sick']], ['Results', 'chart-1', ['abnormal', 'graph', 'risk']],
+  ['Orders and follow-up', 'checklist', ['req', 'recalls']], ['Notes and billing', 'note', ['note', 'billing']], ['For the patient', 'user', ['explain']]];
+var CA_Q = {summary:'Give me a pre-visit summary', overdue:'What\'s overdue?', preventive:'Preventive care status', recon:'Reconcile medications with PharmaNet', ddi:'Any drug interactions?',
+  sick:'Sick-day guidance for these medicines', abnormal:'Any abnormal results I haven\'t reviewed?', graph:'Graph the A1c over time', risk:'Calculate cardiovascular risk', req:'Add A1c to the requisition',
+  recalls:'Set up follow-up recalls', note:'Draft today\'s visit note', billing:'Suggest the billing code', explain:'Explain today\'s results to the patient'};
+var CA_READ = {summary:'the chart, PharmaNet and lab results', overdue:'open orders and screening', preventive:'screening and immunizations', recon:'the Simple medication list and PharmaNet', ddi:'the medication list and PharmaNet',
+  sick:'the medication list', abnormal:'results not yet reviewed', graph:'lab results', risk:'the problem list and lab results', req:'open orders and Cedar\'s suggestions', recalls:'open orders', note:'the booking, the last note and results',
+  billing:'the booking and today\'s problems', explain:'today\'s results'};
+var CA_KEYS = [['summary', /summar|pre-?visit|catch me up|overview of (her|him|the patient)/], ['risk', /risk|framingham|cardiovascular/], ['recon', /reconcil|pharmanet|med(ication)? list/], ['ddi', /interact/],
+  ['abnormal', /abnormal|unreviewed|haven.?t reviewed|not reviewed/], ['overdue', /overdue|missed/], ['preventive', /prevent|screening|vaccin|immuni/], ['graph', /graph|trend|over time/],
+  ['req', /requisition|order (labs|tests)|add .* to the req/], ['note', /visit note|soap|draft (the|today)/], ['sick', /sick/], ['recalls', /recall|follow.?up/], ['explain', /explain|plain language|to the patient/], ['billing', /bill|diagnostic code|claim code|icd/]];
+var GLORIA = 'Gloria Mcdonald, 74F';
+function caPt(){ return typeof csOnChart === 'function' && csOnChart() && PC_CURRENT ? PC_CURRENT : null; }
+function caFirst(n){ var r = (typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : []).filter(function(x){ return x.name === n; })[0]; return (r && r.pref) || n.split(' ')[0]; }
+function caFull(n){ var r = (typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : []).filter(function(x){ return x.name === n; })[0]; return (r && r.legal) || n.split(',')[0]; }
+function caIc(n, s){ return SC.icon(n, {size:s || 16}); }
+function caBtn(v, label, js, title, icon){ var p = {variant:v, size:'medium', title:title}; if(icon) p.startIcon = icon; return SC.html('Button', p, label).replace('<button ', '<button onclick="' + js.replace(/"/g, '&quot;') + '" '); }
+function caTag(c, t, title){ return SC.html('Tag', title ? {color:c, title:title} : {color:c}, t); }
+function caRow(l, s, right, acts){ return '<div class="ca-row"><span class="m"><span class="l">' + l + '</span>' + (s ? '<span class="s">' + s + '</span>' : '') + (acts ? '<span class="ca-row-acts">' + acts + '</span>' : '') + '</span>' + (right || '') + '</div>'; }
+function caDone(t){ return '<div class="ca-done">' + caIc('check-circle', 18) + '<span>' + t + '</span></div>'; }
+function caNow(){ return new Date().toLocaleTimeString('en-CA', {hour:'numeric', minute:'2-digit'}).toLowerCase(); }
+function caState(id){ return (CA.cards[id] = CA.cards[id] || {}); }
+
+/* ---- answers: each returns {h, src:[[system, title, date, quote]]} ---- */
+var CA_F = {};
+CA_F.summary = function(n){
+  var V = cdrLines(n, true).C, rel = (V.rel || []).slice(0, 5), open = lpList(n).filter(function(L){ return lpState(L) === 'you'; }).length;
+  var rows = rel.map(function(x){ return caRow(csEsc(smText(x.main)), x.sub ? csEsc(v2Cap(smText(x.sub))) : '', caTag('neutral', cdrSrcTag(x.src)[2], 'Source: ' + smText(x.src || ''))); }).join('');
+  return {h:'<p class="ca-lead">' + csEsc(caFirst(n)) + ' is here for ' + csEsc(smText((V.why || {}).main || 'today\'s visit')).replace(/^./, function(c){ return c.toLowerCase(); }) + '.' + (open ? ' ' + open + ' open item' + (open > 1 ? 's need' : ' needs') + ' you.' : '') + '</p><div class="ca-card">' + rows + '</div>' +
+    '<div class="ca-acts">' + caBtn('secondary-main', 'Show full preview', 'cdrFull()', 'Open the full Visit preview, every line with its source', 'file') + (open ? caBtn('tertiary-main', 'What needs me?', 'aiSend(\'What\\\'s overdue?\')', 'Ask Cedar what is open and needs you') : '') + '</div>',
+    src:rel.map(function(x){ return [cdrSrcTag(x.src)[2], smText(x.main), smText(x.src || ''), x.sub ? smText(x.sub) : '']; })};
+};
+CA_F.risk = function(n){
+  if(n === GLORIA) return {h:'<p class="ca-lead">A risk score isn\'t useful for Gloria today.</p><div class="ca-box"><p style="margin:0;font-size:14px;line-height:21px;color:var(--ink)">Risk scores like Framingham estimate the chance of a first heart attack or stroke in people without known heart disease. Gloria has a critical troponin and a new atrial fibrillation today, so she is already treated as high risk.</p></div>' +
+    '<div class="ca-acts">' + caBtn('primary', 'See Needs attention', 'v2Tab(\'review\')', 'Go to the critical results in the chart', 'warning') + '</div><p class="ca-fine">Cedar won\'t produce a number that doesn\'t apply.</p>',
+    src:[['Lab results', 'Troponin I 0.42 µg/L, critical', 'Today, 7:50 a.m.', 'Reference under 0.04.'], ['Electrocardiogram', 'Atrial fibrillation, new', 'Today, 7:55 a.m.', 'Left anterior divisional block, nonspecific repolarization abnormality.']]};
+  return {h:'<p class="ca-lead">Cedar needs a cholesterol panel and a blood pressure from the last year to calculate ' + csEsc(caFirst(n)) + '\'s risk.</p><p class="ca-fine">In this demo, the full calculation is written for Gloria McDonald.</p>', src:[]};
+};
+CA_F.recon = function(n){
+  var H = hxFor(n), L = H.meds.map(function(m){ return [m, hxMedState(m), hxRec(n, m.id)]; });
+  var diff = L.filter(function(x){ return x[1] !== 'match' && x[1] !== 'unchecked'; }), open = diff.filter(function(x){ return !x[2]; }), same = L.filter(function(x){ return x[1] === 'match'; });
+  var rows = diff.map(function(x){
+    var m = x[0], st = x[1], rec = x[2], acts = '';
+    var what = st === 'differs' ? 'Chart ' + csEsc(m.chart) + ' · PharmaNet ' + csEsc(m.pn.dose) + ', ' + csEsc(m.pn.by) + ' (' + csEsc(m.pn.spec) + ')' : st === 'notchart' ? 'Not on chart · PharmaNet ' + csEsc(m.pn.dose) + ', ' + csEsc(m.pn.by) + ', filled ' + csEsc(m.pn.filled) : 'On chart ' + csEsc(m.chart) + ' · not dispensed (bought without a prescription?)';
+    if(!rec){
+      if(st === 'differs') acts = caBtn('secondary-main', 'Use ' + m.pn.diff, 'caRecon(\'' + m.id + '\',\'pn\')', 'Change the chart to ' + m.pn.dose + ', as PharmaNet shows') + caBtn('tertiary-main', 'Keep ' + m.chart.split(' ').slice(0, 2).join(' '), 'caRecon(\'' + m.id + '\',\'keep\')', 'The chart is right: keep ' + m.chart);
+      else if(st === 'notchart') acts = m.pn.course ? caBtn('secondary-main', 'Course finished', 'caRecon(\'' + m.id + '\',\'done\')', 'A short course that ended: note it, don\'t add it') + caBtn('tertiary-main', 'Add to chart', 'caRecon(\'' + m.id + '\',\'add\')', 'Add it to the chart')
+        : caBtn('secondary-main', 'Add to chart', 'caRecon(\'' + m.id + '\',\'add\')', 'Add ' + m.name + ' to the chart') + caBtn('tertiary-main', 'Not taking', 'caRecon(\'' + m.id + '\',\'not\')', 'The patient isn\'t taking it');
+      else acts = caBtn('secondary-main', 'Confirmed', 'caRecon(\'' + m.id + '\',\'otc\')', 'The patient takes it without a prescription; it stays') + caBtn('tertiary-main', 'Remove', 'caRecon(\'' + m.id + '\',\'remove\')', 'Take it off the chart');
+    }
+    return caRow(csEsc(m.name), rec ? csEsc(rec.label) + ' · ' + csEsc(rec.by) + ', ' + csEsc(rec.at) : what, rec ? caTag('success', 'Done') : caTag('warning', st === 'differs' ? 'Differs' : st === 'notchart' ? 'Not on chart' : 'Not dispensed'), acts);
+  }).join('') + (same.length ? caRow('<span style="font-weight:400;color:var(--ink-soft)">' + same.map(function(x){ return csEsc(x[0].name); }).join(', ') + '</span>', 'Same in the chart and PharmaNet', caTag('success', same.length + ' match')) : '');
+  return {h:'<p class="ca-lead">' + (open.length ? open.length + ' of ' + L.length + ' medications differ from PharmaNet. Nothing changes until you choose.' : 'All ' + L.length + ' medications are reconciled.') + '</p><div class="ca-card">' + rows + '</div><p class="ca-fine">The same record as History and the prescription pad.</p>',
+    src:[['Simple chart', 'Medication list', 'Today', H.meds.filter(function(m){ return m.chart; }).map(function(m){ return m.name + ' ' + m.chart; }).join(' · ')]].concat(H.meds.filter(function(m){ return m.pn; }).map(function(m){ return ['PharmaNet', m.name + ' ' + m.pn.dose, 'Filled ' + m.pn.filled, m.pn.by + ' (' + m.pn.spec + ')']; }))};
+};
+CA_F.ddi = function(n){
+  var st = caState('ddi:' + n); st.x = st.x || {};
+  if(n !== GLORIA) return {h:'<p class="ca-lead">No interactions to flag among ' + csEsc(caFirst(n)) + '\'s ' + hxFor(n).meds.length + ' medications.</p>', src:[['Simple chart', 'Medication list', 'Today', ''], ['Reference', 'Drug interaction reference', 'Checked today', '']]};
+  var L = [['a', 'Ibuprofen with today\'s chest pressure', 'Major', 'Anti-inflammatories raise the risk of heart attack; troponin is critical today. Dr. S. Gill prescribed it on 1 October.'],
+    ['b', 'Ibuprofen with acetylsalicylic acid', 'Moderate', 'Ibuprofen can block aspirin\'s protection of the heart, and together they raise the risk of bleeding.'],
+    ['c', 'Ibuprofen with amlodipine', 'Moderate', 'Anti-inflammatories can raise blood pressure.'],
+    ['d', 'Zopiclone at 74', 'Monitor', 'Falls and next-day drowsiness in older adults.']];
+  return {h:'<p class="ca-lead">4 to look at, from all 7 medications in the chart and PharmaNet.</p><div class="ca-card">' + L.map(function(x){ var d = st.x[x[0]];
+      return caRow(csEsc(x[1]), csEsc(x[3]) + (d ? '<br><b style="color:var(--ink);font-weight:500">' + (d === 'note' ? 'Added to today\'s note by you' : 'Dismissed by you') + '</b>' : ''), caTag(x[2] === 'Major' ? 'error' : 'warning', x[2]),
+        d ? '' : caBtn('secondary-main', 'Add to note', 'caSet(\'ddi:' + n + '\',\'' + x[0] + '\',\'note\')', 'Add this interaction to today\'s note') + caBtn('tertiary-main', 'Dismiss', 'caSet(\'ddi:' + n + '\',\'' + x[0] + '\',\'dis\')', 'Dismiss it for this visit')); }).join('') + '</div><p class="ca-fine">Cedar flags; it doesn\'t change a medication.</p>',
+    src:[['PharmaNet', 'Ibuprofen 400 mg as needed', 'Filled 1 October 2026', 'Dr. S. Gill (Family Medicine)'], ['Simple chart', 'Acetylsalicylic acid 81 mg daily', 'Patient reports', 'Not dispensed'], ['PharmaNet', 'Amlodipine 10 mg daily', 'Filled 17 September 2026', 'Dr. M. Ferreira (Cardiology)'], ['PharmaNet', 'Zopiclone 5 mg at bedtime', 'Filled 17 October 2026', 'Dr. S. Gill'], ['Lab results', 'Troponin I 0.42 µg/L, critical', 'Today', ''], ['Reference', 'Drug interaction reference', 'Checked today', '']]};
+};
+CA_F.abnormal = function(n){
+  var L = csNAItems(n).filter(function(x){ return /^Not /.test(x.stage || ''); });
+  var nm = function(x){ return smText(x.label || (x.it && (x.it.panel || x.it.test || x.it.title)) || x.test || 'Result'); };
+  return {h:'<p class="ca-lead">' + (L.length ? L.length + ' result' + (L.length > 1 ? 's are' : ' is') + ' waiting for your review.' : 'Nothing abnormal is waiting for your review.') + '</p>' + (L.length ? '<div class="ca-card">' + L.map(function(x){
+      return caRow(csEsc(nm(x)), csEsc(x.stage || ''), caTag(x.tier === 'crit' ? 'error' : 'warning', x.tier === 'crit' ? 'Critical' : 'To review')); }).join('') + '</div><div class="ca-acts">' + caBtn('primary', 'Review in the chart', 'v2Tab(\'review\')', 'Go to Needs attention, where you review and clear each result', 'eye-on') + '</div>' : ''),
+    src:L.map(function(x){ return ['Lab results', nm(x), x.today ? 'Today' : '', x.stage || '']; })};
+};
+CA_F.overdue = function(n){
+  var L = lpList(n).filter(function(x){ return lpState(x) === 'you'; });
+  return {h:'<p class="ca-lead">' + (L.length ? L.length + ' things need you.' : 'Nothing is overdue.') + '</p>' + (L.length ? '<div class="ca-card">' + L.map(function(x){ var a = (x.acts || [])[0], d = a && LP_ACT[a];
+      return caRow(csEsc(x.n), csEsc(lpNow(x)), '', d ? caBtn(d[0] === 'primary' ? 'secondary-main' : d[0], d[1], 'lpAct(\'' + x.id + '\',\'' + a + '\');caRefresh()', d[2]) + caBtn('tertiary-main', 'Details', 'lpOpen(\'' + x.id + '\')', 'See every step of ' + x.n) : ''); }).join('') + '</div>' : '') +
+    '<p class="ca-fine">The same items as the Patient summary; doing one here updates it there.</p>',
+    src:L.map(function(x){ var s = x.st.filter(function(y){ return y[3]; })[0]; return [s ? s[3] : 'Simple chart', x.n, x.why || '', lpNow(x)]; })};
+};
+CA_F.preventive = function(n){
+  var L = lpList(n).filter(function(x){ return x.t === 'prev'; });
+  return {h:'<p class="ca-lead">' + (L.length ? L.filter(function(x){ return lpState(x) !== 'done'; }).length + ' due or overdue, ' + L.filter(function(x){ return lpState(x) === 'done'; }).length + ' up to date.' : 'No screening is due.') + '</p>' + (L.length ? '<div class="ca-card">' + L.map(function(x){ var s = lpState(x);
+      return caRow(csEsc(x.n), csEsc(lpNow(x)), caTag(s === 'done' ? 'success' : s === 'you' ? 'warning' : 'neutral', s === 'done' ? 'Up to date' : s === 'you' ? 'Due' : 'Waiting')); }).join('') + '</div><div class="ca-acts">' + caBtn('secondary-main', 'Set up recalls', 'aiSend(\'Set up follow-up recalls\')', 'Ask Cedar to set up recalls for what is due', 'clock-time-add') + '</div>' : ''),
+    src:L.map(function(x){ return [x.st[0][3] || 'Simple chart', x.n, x.why || '', lpNow(x)]; })};
+};
+CA_F.graph = function(n){
+  if(n !== GLORIA) return {h:'<p class="ca-lead">No hemoglobin A1c results on file for ' + csEsc(caFirst(n)) + '.</p>', src:[]};
+  var V = [['13 March 2026', '8.6%', 'warning'], ['November 2025', '8.2%', 'warning'], ['August 2025', '7.6%', 'warning'], ['May 2025', '7.8%', 'warning'], ['February 2025', '8.1%', 'warning']];
+  return {h:'<p class="ca-lead">A1c has risen since August 2025, to 8.6% on 13 March 2026. The August 2026 test was missed, and metformin hasn\'t been filled since July.</p><div class="ca-card">' +
+      V.map(function(x, i){ return caRow(x[0], i ? '' : 'Latest · target 7.0% or lower', '<span style="font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums">' + x[1] + '</span>'); }).join('') + '</div>' +
+    '<div class="ca-acts">' + caBtn('secondary-main', 'See the graph', 'caGraph()', 'Open the A1c graph, full size, with the 7.0% target', 'chart-1') + caBtn('primary', 'Add A1c to the requisition', 'aiSend(\'Add A1c to the requisition\')', 'Put the next A1c on a lab requisition', 'checklist') + '</div>',
+    src:[['Lab results', 'Hemoglobin A1c, 5 results', 'February 2025 to March 2026', '8.1, 7.8, 7.6, 8.2, 8.6 (%)'], ['PharmaNet', 'Metformin 500 mg twice daily', 'Last filled 6 July 2026', 'None left since 4 October']]};
+};
+CA_F.req = function(n, id){
+  var st = caState(id), L = lpList(n).filter(function(x){ return (x.t === 'lab' || x.t === 'img') && x.st[0][0] === 'you'; });
+  if(!st.t){ st.t = {}; L.forEach(function(x){ st.t[x.id] = x.t === 'lab'; }); }
+  var k = L.filter(function(x){ return st.t[x.id]; }).length;
+  if(!L.length && !st.sent) return {h:'<p class="ca-lead">Nothing is waiting to be ordered for ' + csEsc(caFirst(n)) + '.</p>', src:[]};
+  return {h:'<p class="ca-lead">' + (st.sent ? 'Ordered.' : 'A1c and the other tests waiting to be ordered. Choose what goes on the requisition.') + '</p><div class="ca-card">' + (st.sent ? st.sent.map(function(x){ return caRow(csEsc(x), 'Requisition sent; its loop has started', caTag('success', 'Ordered')); }).join('') :
+      L.map(function(x){ return caRow(csEsc(x.n), csEsc(x.fact || x.why || ''), SC.html('Chip', {selected:!!st.t[x.id], title:(st.t[x.id] ? 'Take it off' : 'Put it on') + ' the requisition', 'data-x':'1'}, st.t[x.id] ? 'On' : 'Add').replace('<button ', '<button onclick="caTog(\'' + id + '\',\'' + x.id + '\')" ')); }).join('')) + '</div>' +
+    (st.sent ? caDone('Signed by you, ' + st.at + '. Each test now shows in the Patient summary and the timeline as ordered.') : '<div class="ca-acts">' + caBtn('primary', 'Sign the requisition (' + k + ')', 'caReq(\'' + id + '\')', 'Sign and send the requisition; each test starts its loop', 'signature') + '</div>'),
+    src:st.sent && st.srcSent ? st.srcSent : L.map(function(x){ return [x.rule && /specialist/i.test(x.rule) ? 'Specialist request' : 'Cedar, from the chart', x.n, x.rule || '', x.fact || x.quote || '']; })};
+};
+CA_F.recalls = function(n, id){
+  var st = caState(id), L = lpList(n).filter(function(x){ var s = lpState(x); return s === 'wait' || (s === 'you' && x.st[0][0] === 'done'); }).concat(lpList(n).filter(function(x){ return x.t === 'prev' && lpState(x) === 'you'; }).slice(0, 2));
+  if(!st.r){ st.r = {}; L.forEach(function(x){ st.r[x.id] = true; }); }
+  var k = L.filter(function(x){ return st.r[x.id]; }).length;
+  return {h:'<p class="ca-lead">' + k + ' recall' + (k === 1 ? '' : 's') + ' proposed, for what is waiting or open.</p><div class="ca-card">' + L.map(function(x){
+      return caRow(csEsc(x.n), csEsc(lpNow(x)), st.made ? (st.r[x.id] ? caTag('success', 'Recall set') : caTag('neutral', 'Skipped')) : SC.html('Chip', {selected:!!st.r[x.id], title:(st.r[x.id] ? 'Skip' : 'Keep') + ' this recall'}, st.r[x.id] ? 'On' : 'Off').replace('<button ', '<button onclick="caTogR(\'' + id + '\',\'' + x.id + '\')" ')); }).join('') + '</div>' +
+    (st.made ? caDone(k + ' recall' + (k === 1 ? '' : 's') + ' created by you, ' + st.made + '. Reminders go to ' + csEsc(caFirst(n)) + '\'s portal.') : '<div class="ca-acts">' + caBtn('primary', 'Create ' + k + ' recall' + (k === 1 ? '' : 's'), 'caState(\'' + id + '\').made=caNow();caRedraw(\'' + id + '\')', 'Create these recalls and patient reminders', 'clock-time-add') + '</div>'),
+    src:L.map(function(x){ return ['Simple chart', x.n, '', lpNow(x)]; })};
+};
+CA_F.note = function(n){
+  return {h:'<p class="ca-lead">Cedar drafts the note in your template from the booking, the last note, PharmaNet and results; during the call it adds what is said. Assessment and plan stay yours.</p>' +
+    '<div class="ca-acts">' + caBtn('primary', 'Open the note', 'v2Tab(\'note\')', 'Go to the note step, where the draft is', 'edit') + '</div><p class="ca-fine">Nothing reaches the chart until you sign.</p>',
+    src:[['Simple chart', 'Booking for today', 'Today', ''], ['Simple chart', 'Last visit note', '', ''], ['PharmaNet', 'Medications', 'Checked today', ''], ['Lab results', 'Results since the last visit', '', '']]};
+};
+CA_F.sick = function(n, id){
+  var st = caState(id), H = hxFor(n), hold = H.meds.filter(function(m){ return /metformin|ibuprofen|naproxen|diclofenac|pril\b|sartan|hydrochlorothiazide|furosemide|gliclazide|glyburide|gliflozin/i.test(m.name); }).map(function(m){ return m.name; });
+  var keep = H.meds.filter(function(m){ return hold.indexOf(m.name) < 0 && !(m.pn && m.pn.course); }).map(function(m){ return m.name; });
+  return {h:'<p class="ca-lead">' + (hold.length ? hold.length + ' of ' + csEsc(caFirst(n)) + '\'s medicines are on the sick-day list. A handout in plain language:' : 'None of ' + csEsc(caFirst(n)) + '\'s medicines are on the sick-day list.') + '</p>' + (hold.length ? '<div class="ca-msg">If you are vomiting, have diarrhea, or can\'t eat or drink normally, stop these medicines until you have been eating and drinking for 24 to 48 hours:\n• ' + hold.join('\n• ') +
+      (keep.length ? '\n\nKeep taking: ' + keep.join(', ') + '.' : '') + '\n\nCall the clinic if you are sick for more than 2 days. Call 9-1-1 if you are confused, very drowsy or can\'t keep fluids down.</div>' +
+      (st.sent ? caDone('Sent to ' + csEsc(caFirst(n)) + '\'s portal by you, ' + st.sent + '. Test mode: nothing is sent.') : '<div class="ca-acts">' + caBtn('primary', 'Review and send', 'caState(\'' + id + '\').sent=caNow();caRedraw(\'' + id + '\')', 'Send this handout to the patient\'s portal after you read it', 'send') + '</div>') : ''),
+    src:[['Simple chart', 'Medication list', 'Today', H.meds.map(function(m){ return m.name; }).join(', ')], ['Reference', 'Diabetes Canada, sick-day medicine list', '', 'Hold: sulfonylureas, ACE inhibitors and ARBs, diuretics, metformin, anti-inflammatories, SGLT2 inhibitors.']]};
+};
+CA_F.explain = function(n, id){
+  var st = caState(id), f = caFirst(n);
+  var txt = st.txt || (n === GLORIA ? 'Hi Gloria,\n\nYour blood test this morning shows strain on your heart, and your heart tracing shows an irregular rhythm called atrial fibrillation. These need to be checked in hospital today.\n\nPlease go to the nearest Emergency Department now. Don\'t drive yourself. Bring your medications.\n\n— Dr. Pannozzo'
+    : 'Hi ' + f + ',\n\nYour recent results are in. We will go over them together at your visit today.\n\n— Dr. Pannozzo');
+  return {h:'<p class="ca-lead">A message for ' + csEsc(f) + ' in plain words. Edit it before it goes.</p><div class="ca-msg" id="ca-msg-' + id + '" contenteditable="' + (st.sent ? 'false' : 'true') + '" role="textbox" aria-multiline="true" aria-label="Message to ' + csEsc(f) + '">' + csEsc(txt) + '</div>' +
+    (st.sent ? caDone('Sent to ' + csEsc(f) + '\'s portal by you, ' + st.sent + '. Test mode: nothing is sent.') : '<div class="ca-acts">' + caBtn('primary', 'Send to ' + f, 'var m=document.getElementById(\'ca-msg-' + id + '\');caState(\'' + id + '\').txt=m?m.innerText:\'\';caState(\'' + id + '\').sent=caNow();caRedraw(\'' + id + '\')', 'Send this message to the patient\'s portal', 'send') + caTag('neutral', 'Grade 6 reading level') + '</div>') +
+    '<p class="ca-fine">Cedar explains the results; it doesn\'t add new advice.</p>',
+    src:n === GLORIA ? [['Lab results', 'Troponin I 0.42 µg/L, critical', 'Today, 7:50 a.m.', ''], ['Electrocardiogram', 'Atrial fibrillation', 'Today, 7:55 a.m.', '']] : []};
+};
+CA_F.billing = function(n, id){
+  var st = caState(id), C = n === GLORIA ? [['786.5', 'Chest pain', 'Today\'s concern, under workup'], ['427.31', 'Atrial fibrillation', 'New on today\'s electrocardiogram']] : [];
+  if(!C.length){ var d = typeof nsDxSuggest === 'function' ? nsDxSuggest(csRow()) : null; if(d) C = [[d, t23DxName(d), 'From the booking reason']]; }
+  if(!C.length) return {h:'<p class="ca-lead">Cedar needs the assessment to suggest a code. Write it in the note, then ask again.</p>', src:[]};
+  return {h:'<p class="ca-lead">From today\'s problems, most specific first:</p><div class="ca-card">' + C.map(function(x){ return caRow('<span style="font-variant-numeric:tabular-nums">' + x[0] + '</span> ' + csEsc(x[1]), csEsc(x[2]), ''); }).join('') + '</div>' +
+    (st.used ? caDone(st.used + ' on the claim, chosen by you. You can change it at sign-off.') : '<div class="ca-acts">' + caBtn('primary', 'Use ' + C[0][0], 'nsDxUse(\'' + C[0][0] + '\');caState(\'' + id + '\').used=\'' + C[0][0] + '\';caRedraw(\'' + id + '\')', 'Put ' + C[0][0] + ' ' + C[0][1] + ' on the claim', 'check') + '</div>'),
+    src:[['Simple chart', 'Booking reason', 'Today', ''], ['Reference', 'Medical Services Plan diagnostic codes (ICD-9)', 'BC', '']]};
+};
+
+/* ---- the panel ---- */
+function caHead(){
+  var h = document.querySelector('#ai-panel .ai-head'); if(!h || h.getAttribute('data-ca')) return;
+  h.setAttribute('data-ca', '1');
+  var sp = h.querySelector('.spark'); if(sp) sp.insertAdjacentHTML('afterend', '<span class="ca-mark" aria-hidden="true">' + caIc('ai', 18) + '</span>');
+  var t = h.querySelector('.subh'); if(t) t.textContent = 'Simple\'s clinical assistant';
+  var ctx = document.createElement('div'); ctx.className = 'ca-ctx'; ctx.id = 'ca-ctx'; h.parentNode.insertBefore(ctx, h.nextSibling);
+  var pnl = document.getElementById('ai-panel'); if(pnl){ var v = document.createElement('div'); v.className = 'ca-srcv'; v.id = 'ca-srcv'; v.hidden = true; pnl.appendChild(v); }   /* over the whole panel, so the conversation keeps its place */
+  var foot = document.querySelector('#ai-panel .ai-foot');
+  if(foot){
+    foot.innerHTML = SC.html('MessageInput', {placeholder:'Ask Cedar…', label:'Ask Cedar', id:'ai-input'}) + '<p class="ca-note">' + caIc('eye-on', 14) + '<span>Each question is logged where the patient can see it.</span></p>';
+    var box = document.getElementById('ai-input'), root = box && box.closest('.sv-message-input');
+    if(box){ box.addEventListener('keydown', function(e){ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); aiSend(); } }); }
+    if(root) root.querySelectorAll('button').forEach(function(b){ var lab = b.getAttribute('aria-label') || ''; if(/attach/i.test(lab)) b.remove(); else if(/send/i.test(lab)){ b.title = 'Ask Cedar'; b.addEventListener('click', function(e){ e.preventDefault(); aiSend(); }); box.addEventListener('input', function(){ b.disabled = !box.value.trim(); }); } });
+  }
+}
+function caCtx(){
+  var el = document.getElementById('ca-ctx'); if(!el) return;
+  var n = caPt();
+  el.innerHTML = n ? '<span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="Cedar answers from this record only"><b>' + csEsc(caFull(n)) + '</b> · this record only</span><span class="sp"></span><button type="button" class="ca-src" onclick="caSources(null)" title="What Cedar can read: Simple chart, PharmaNet, lab results, Clinical Data Exchange, faxed and uploaded reports">' + caIc('check-circle', 16) + '5 sources</button>'
+    : '<span>No chart open · your day, claims and schedule</span>';
+}
+function caHello(){
+  var n = caPt(), body = document.getElementById('ai-body'); if(!body) return;
+  [].slice.call(body.children).forEach(function(c){ if(c.id !== 'ca-srcv') c.remove(); });
+  if(n){
+    body.insertAdjacentHTML('beforeend', '<div class="ca-hi"><h3>What would you like to know about ' + csEsc(caFirst(n)) + '?</h3><p>Cedar shows where every answer comes from and never decides for you.</p></div>' +
+      CA_GROUPS.map(function(g){ return '<section class="ca-grp"><h4>' + caIc(g[1], 16) + csEsc(g[0] === 'For the patient' ? 'For ' + caFirst(n) : g[0]) + '</h4>' + g[2].map(function(k){ return '<button type="button" class="ca-s" onclick="aiSend(CA_Q[\'' + k + '\'])" title="Ask Cedar: ' + csEsc(CA_Q[k]) + '">' + csEsc(CA_Q[k]) + caIc('arrow-direction-right', 14) + '</button>'; }).join('') + '</section>'; }).join(''));
+  } else {
+    var next = (typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : []).filter(function(r){ return r.status === 'next' || r.status === 'waiting'; }).slice(0, 3);
+    body.insertAdjacentHTML('beforeend', '<div class="ca-hi"><h3>Good afternoon, Dr. Pannozzo</h3><p>Ask about your day here, or open a patient to ask about their record.</p></div>' +
+      '<section class="ca-grp"><h4>' + caIc('calendar', 16) + 'Your day</h4>' + [['Who is next?', 'Who\'s next?'], ['How is my day looking?', 'How\'s my day?'], ['Any unsubmitted claims?', 'Unsubmitted claims'], ['How much did I make this month?', 'Earnings this month']].map(function(q){ return '<button type="button" class="ca-s" onclick="aiSend(\'' + q[0].replace(/'/g, '\\\'') + '\')" title="Ask Cedar: ' + q[1] + '">' + q[1] + caIc('arrow-direction-right', 14) + '</button>'; }).join('') + '</section>' +
+      (next.length ? '<section class="ca-grp"><h4>' + caIc('user', 16) + 'Open a patient</h4>' + next.map(function(r){ return '<button type="button" class="ca-s" onclick="openChart(\'' + r.name.replace(/'/g, '\\\'') + '\');setTimeout(caSync,400)" title="Open ' + csEsc(firstLast(r.name)) + '\'s chart and ask Cedar about it">' + csEsc(firstLast(r.name)) + ' <span style="color:var(--ink-soft)">· ' + csEsc(smText(r.concern || '')).slice(0, 36) + '</span>' + caIc('arrow-direction-right', 14) + '</button>'; }).join('') + '</section>' : ''));
+  }
+}
+/* the patient changes: a line in the conversation, or a fresh welcome when nothing was asked yet */
+function caSync(){
+  caHead(); caCtx();
+  var n = caPt(), body = document.getElementById('ai-body'); if(!body) return;
+  var asked = body.querySelector('.ai-msg.user, .ca-a');
+  if(!asked) caHello();
+  else if(CA.lastPt !== n){ var d = document.createElement('div'); d.className = 'ca-div'; d.textContent = n ? 'Now: ' + caFull(n) : 'No chart open'; body.appendChild(d); }
+  CA.lastPt = n;
+}
+function caAnswer(k, n){
+  var body = document.getElementById('ai-body'), id = 'ca' + (++CA.n);
+  var w = document.createElement('div'); w.className = 'ca-a'; w.id = id; w.setAttribute('data-k', k); w.setAttribute('data-n', n);
+  var steps = ['Checking you\'re in ' + caFirst(n) + '\'s circle of care', 'Reading ' + CA_READ[k], 'Writing the answer, with sources'];
+  var paint = function(i){ w.innerHTML = '<span class="ca-mark" aria-hidden="true">' + caIc('ai', 15) + '</span><div class="ca-bd"><ul class="ca-think">' + steps.map(function(s, j){ return '<li>' + (j < i ? '<span class="ok">' + caIc('check-circle', 14) + '</span>' : '<span class="dot"' + (j > i ? ' style="animation:none;border-top-color:var(--line)"' : '') + '></span>') + csEsc(s) + '</li>'; }).join('') + '</ul></div>'; };
+  paint(0); body.appendChild(w); aiScroll();   /* after the question (the Sources view is positioned, so its place in the list doesn't matter) */
+  var i = 0, t = setInterval(function(){ i++; if(i < 3){ paint(i); return; } clearInterval(t); caRedraw(id); aiScroll(); }, 420);
+}
+function caRedraw(id){
+  var w = document.getElementById(id); if(!w) return;
+  var k = w.getAttribute('data-k'), n = w.getAttribute('data-n'), R = CA_F[k](n, id), st = caState(id), N = R.src.length; CA.cards[id].src = R.src; CA.cards[id].q = CA_Q[k];
+  w.innerHTML = '<span class="ca-mark" aria-hidden="true">' + caIc('ai', 15) + '</span><div class="ca-bd">' + R.h +
+    '<div class="ca-foot">' + (N ? '<button type="button" class="ca-lk" onclick="caSources(\'' + id + '\')" title="See the ' + N + ' entries Cedar read for this answer">' + caIc('eye-on', 15) + 'Read ' + N + ' entr' + (N > 1 ? 'ies' : 'y') + '</button>' : '') + '<span class="sp"></span>' +
+    '<button type="button" class="ca-lk" aria-pressed="' + (st.fb === 'up') + '" onclick="caFb(\'' + id + '\',\'up\')" title="Helpful; saved as a good example for your own Cedar model">' + caIc('check', 15) + 'Helpful</button>' +
+    '<button type="button" class="ca-lk" aria-pressed="' + (st.fb === 'down') + '" onclick="caFb(\'' + id + '\',\'down\')" title="Not right; tell Cedar what was wrong">' + caIc('warning', 15) + 'Not right</button></div>' +
+    (st.fb === 'down' ? '<p class="ca-fine">Thanks. Your correction is saved with this answer to improve your own Cedar model.</p>' : st.fb === 'up' ? '<p class="ca-fine">Thanks. Saved as a good example for your own Cedar model.</p>' : '') + '</div>';
+}
+/* the A1c graph at its full size (the design system's chart draws 480px wide, wider than the chat) */
+function caGraph(){
+  var host = document.getElementById('ca-ghost'); if(!host){ host = document.createElement('div'); host.id = 'ca-ghost'; document.body.appendChild(host); }
+  var ch = SC.html('LineChart', {label:'Hemoglobin A1c', categories:['Feb 2025', 'May 2025', 'Aug 2025', 'Nov 2025', 'Mar 2026'], series:[{label:'A1c (%)', data:[8.1, 7.8, 7.6, 8.2, 8.6]}], height:240, max:10, references:[{value:7, label:'Target 7.0%'}], formatValue:function(v){ return v.toFixed(1) + '%'; }});
+  host.innerHTML = SC.html('Drawer', {id:'ca-gdrw', title:'Hemoglobin A1c · Gloria Anne McDonald', description:'5 results, February 2025 to March 2026 · LifeLabs · target 7.0% or lower', secondaryAction:{label:'Close', id:'ca-gclose'}},
+    SC.raw('<div style="padding:8px 0">' + ch + '</div><p style="font-size:14px;line-height:20px;color:var(--ink-soft)">Rising since August 2025. The August 2026 test was missed; metformin not filled since July.</p>'));
+  var d = document.getElementById('ca-gdrw');
+  d.addEventListener('click', function(e){ if(e.target === d) return d.close(); var b = e.target.closest('button'); if(b && (b.id === 'ca-gclose' || b.getAttribute('aria-label') === 'Close')) d.close(); });
+  d.showModal();
+}
+function caRefresh(){ document.querySelectorAll('#ai-body .ca-a[data-k]').forEach(function(w){ if(!w.querySelector('.ca-think')) caRedraw(w.id); }); }
+function caFb(id, v){ var st = caState(id); st.fb = st.fb === v ? null : v; caRedraw(id); }
+function caSet(key, k, v){ var st = caState(key); st.x = st.x || {}; st.x[k] = v; caRefresh(); }
+function caRecon(mid, to){ hxRecon(mid, to); caRefresh(); }
+function caTog(id, lid){ var st = caState(id); st.t[lid] = !st.t[lid]; caRedraw(id); }
+function caTogR(id, lid){ var st = caState(id); st.r[lid] = !st.r[lid]; caRedraw(id); }
+function caReq(id){
+  var st = caState(id), w = document.getElementById(id), n = w.getAttribute('data-n'), L = lpList(n).filter(function(x){ return st.t[x.id]; }); if(!L.length) return;
+  st.sent = L.map(function(x){ return x.n; }); st.at = caNow(); st.srcSent = (CA.cards[id] || {}).src; L.forEach(function(x){ lpAct(x.id, 'order'); }); caRedraw(id);
+}
+function caSources(id){
+  var v = document.getElementById('ca-srcv'); if(!v) return;
+  var S = id ? (CA.cards[id] || {}).src || [] : [['Simple chart', 'The chart', 'Live', 'Notes, problems, orders and the closed loops'], ['PharmaNet', 'Every prescription filled in BC', 'Checked today', 'The last 14 months'], ['Lab results', 'Provincial Laboratory Information Solution', 'Updated this morning', ''], ['Clinical Data Exchange', 'Hospital reports', 'Updated yesterday', ''], ['Faxed and uploaded reports', 'Consult letters and outside results', '', '']];
+  v.innerHTML = '<div class="hd">' + SC.html('Button', {variant:'tertiary-main', size:'medium', startIcon:'arrow-direction-left', title:'Back to the conversation', 'aria-label':'Back to the conversation'}, '').replace('<button ', '<button onclick="document.getElementById(\'ca-srcv\').hidden=true" ') + '<b>' + (id ? 'Sources' : 'What Cedar can read') + '</b></div>' +
+    (id ? '<p class="for">What Cedar read for <b style="color:var(--ink);font-weight:500">' + csEsc((CA.cards[id] || {}).q || '') + '</b></p>' : '<p class="for">Cedar reads only these, and only for the patient whose chart is open. It never uses CareConnect.</p>') +
+    '<div class="ls">' + S.map(function(x, i){ return '<div class="ca-si"><div class="t"><span class="n">' + (i + 1) + '</span>' + caTag('neutral', x[0]) + '</div><b>' + csEsc(x[1]) + '</b>' + (x[2] ? '<span class="d">' + csEsc(x[2]) + '</span>' : '') + (x[3] ? '<q>' + csEsc(x[3]) + '</q>' : '') + '</div>'; }).join('') + '</div>';
+  v.hidden = false; var bk = v.querySelector('button'); if(bk) bk.focus();
+}
+(function(){
+  if(typeof aiReply !== 'function') return;
+  var dayReply = aiReply;
+  /* a question about the open patient goes to Cedar's flows; about anyone else, a plain refusal; the day questions answer as before */
+  aiReply = function(text){
+    var n = caPt(), t = String(text).toLowerCase(), k = null;
+    CA_KEYS.some(function(p){ if(p[1].test(t)){ k = p[0]; return true; } });
+    if(k && n){ caAnswer(k, n); return; }
+    if(k && !n){ aiAppend('Open a patient\'s chart first; Cedar answers about one record at a time.', 'bot'); caHelloPick(); return; }
+    if(n && /\b(other patient|someone else|my wife|her husband|his wife)\b/.test(t)){ aiAppend('This conversation is about ' + csEsc(caFull(n)) + ' only, so Cedar won\'t look at anyone else\'s record here. Open their chart to ask about them.', 'bot'); return; }
+    dayReply(text);
+  };
+})();
+function caHelloPick(){
+  var next = (typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : []).filter(function(r){ return r.status === 'next' || r.status === 'waiting'; }).slice(0, 3);
+  next.forEach(function(r){ aiActionBtn('&#128100;', 'Open ' + firstLast(r.name), smText(r.concern || ''), function(){ openChart(r.name); setTimeout(caSync, 400); }); });
+}
+(function(){
+  if(typeof openAI === 'function'){ var o = openAI; openAI = function(){ o.apply(this, arguments); caSync(); }; }
+  /* openChart and showScreen are redefined further down the page, so the hooks go on once everything has loaded */
+  window.addEventListener('load', function(){
+    if(typeof baWrap !== 'function') return;
+    baWrap('openChart', function(){ setTimeout(function(){ var p = document.getElementById('ai-panel'); if(p && p.classList.contains('open')) caSync(); }, 300); });
+    baWrap('showScreen', function(){ var p = document.getElementById('ai-panel'); if(p && p.classList.contains('open')) caSync(); });
+  });
+})();
 /* ===== Streamline line-icons: swap glyphs for SVGs ===== */
 var ICONS = {
 "chevl": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ic\" aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" d=\"m15.583 4l-6.587 6.587a2.013 2.013 0 0 0 0 2.826L15.583 20\"/></svg>",
