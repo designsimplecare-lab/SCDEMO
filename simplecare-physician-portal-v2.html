@@ -7844,6 +7844,39 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #tl2 .tl-steps li.you{color:var(--ink);} #tl2 .tl-steps li.you i{background:var(--color-red-600);border-color:var(--color-red-600);}
   #tl2 .tl-steps li b{font-weight:700;}
   #tl2 .tl-chips{display:flex;flex-wrap:wrap;gap:6px;}
+  /* Ani, 20 Nov ("make this top alignment like this"): on wide screens the patient's name and details sit in the top bar beside the
+     search; the tabs line carries Save draft, the call window, Call and Chart, spanning to the History column; the columns start under it */
+  body.pt-top .topbar .tb-left > *{visibility:hidden;}
+  body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd{position:fixed;top:12px;left:var(--tb-l,254px);right:var(--tb-r,660px);height:54px;z-index:61;padding:0;margin:0;display:flex;align-items:center;gap:8px;background:none;}
+  body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cs-snap{min-width:0;flex:1;}
+  body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cs-who{min-width:0;}
+  body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .vc-sub{display:block !important;white-space:nowrap !important;overflow:hidden;text-overflow:ellipsis;}
+  body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .vc-sub *{display:inline !important;white-space:nowrap !important;}
+  body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .vc-nm{white-space:nowrap;overflow:visible;text-overflow:clip;max-width:none;flex:none;}
+  body.pt-top .topbar-right #ps-tb{width:260px !important;}   /* a shorter search leaves the patient's line room */
+  body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2.hx3{grid-template-rows:0 auto minmax(0,1fr) !important;grid-template-areas:"hd hd hd" ". nav calls" "side main hx" !important;}
+  body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #cv2-calls{grid-area:calls;display:flex;align-items:center;justify-content:flex-end;min-width:0;}
+  body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2 > #cv2-calls .vc-acts{display:flex;align-items:center;gap:8px;}
+  body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cs-nmrow #cs-winclock{display:inline-flex;flex-direction:row;align-items:center;gap:8px;margin-left:14px;padding-left:14px;border-left:1px solid var(--line);}
+  body.pt-top #screen-patientchart #pcv-c.cs-v2.chart-v2 #cv2-hd .cs-nmrow{display:flex;align-items:center;flex-wrap:nowrap;min-width:0;}
+  /* Ani, 20 Nov ("remove note title"): the SOAP note card needs no "Note" heading above it (kept for screen readers) */
+  #screen-patientchart #pcv-c.cs-v2.chart-v2 #v2h-note{position:absolute;width:1px;height:1px;margin:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  /* the signed Sign off card (Ani, 20 Nov) */
+  #t23-billrow.so-done{display:block !important;padding:0;}
+  #t23-billrow.so-done .so-hd{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--line);}
+  #t23-billrow.so-done .so-ic{display:inline-flex;flex:none;width:24px;height:24px;color:var(--color-green-700);}
+  #t23-billrow.so-done .so-ic svg{width:24px;height:24px;}
+  #t23-billrow.so-done .so-t{flex:1;min-width:0;}
+  #t23-billrow.so-done .so-t b{display:block;font-size:16px;line-height:22px;color:var(--ink);}
+  #t23-billrow.so-done .so-t span{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #t23-billrow.so-done .so-sum{margin:14px 0 0;}
+  #t23-billrow.so-done .so-sum dd{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  #t23-billrow.so-done .sv-tag,#t23-billrow.so-done .sv-tag .truncate{font-size:14px;}
+  #t23-billrow.so-done .so-w{font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #t23-billrow.so-done .so-acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:16px;}
+  /* Ani, 20 Nov ("scroll should not move tabs up"): in the Chart drawer the search line and the tabs stay at the top while the section scrolls */
+  #screen-patientchart #pcv-c.cs-v2.v2-chart-open #v2p-chart .cs-fc-hd{position:sticky;top:-16px;z-index:6;margin-top:-16px;padding-top:16px;background:var(--paper);box-shadow:0 12px 0 var(--paper);}
+  #screen-patientchart #pcv-c.cs-v2.v2-chart-open #v2p-chart #cs-tabs{position:sticky;top:56px;z-index:6;background:var(--paper);box-shadow:0 8px 0 var(--paper);}
   #tl2 .sv-tag,#tl2 .sv-tag .truncate{font-size:14px;}
   #tl2 .tl-tagbtn{padding:0;border:0;background:none;cursor:pointer;border-radius:var(--radius-2xs);}
   #tl2 .tl-tagbtn:hover .sv-tag{filter:brightness(.96);text-decoration:underline;text-underline-offset:2px;}
@@ -20437,11 +20470,30 @@ function t23RenderBillRow(){
   /* Ani, 5 Nov: sign-off button definitions: in Version 2 the claim is its own action, so the fields stay until it exists */
   if(typeof cv2On === 'function' && cv2On() ? !!r.claimId : r.signed){
     var c = t23RowClaim(r);
+    /* Ani, 20 Nov ("I do not like the UI of this section"): the signed state reads like the rest of the chart. A header (Note signed,
+       who and when, Add addendum on the right), the claim as labelled facts (status tag, fee code, diagnosis), and one row of design
+       system buttons: Submit claim the one primary, Open in Claims, and the edit history as a quiet link. */
+    if(typeof cv2On === 'function' && cv2On()){
+      var ds = function(v, label, on, title, icon){ var p = {variant:v, size:'medium', title:title}; if(icon) p.startIcon = icon; return SC.html('Button', p, label).replace('<button ', '<button onclick="' + on + '" '); };
+      var L = c ? t23Label(c) : null, tone = L ? ({ok:'success', warn:'warning', info:'information'}[L.tone] || 'neutral') : 'neutral', ne = c ? t23EditCount(c.hist) : 0;
+      var where = !c ? '' : /^Needs info/.test(L.label) ? (L.why || '') : c.st === 'submit' ? 'Waiting in Claims; not sent to MSP yet' : c.st === 'submitted' ? 'Sent to MSP; it processes claims at 7 PM' : c.payer === 'private' ? 'Private pay' : (L.why || '');
+      h = '<div class="so-hd"><span class="so-ic">' + SC.icon('check-circle', {size:24}) + '</span><span class="so-t"><b>Note signed</b><span>Dr. Pannozzo · today ' + csEsc((r.signed && r.signed.at) || '') + '</span></span>' +
+          ds('secondary-main', 'Add addendum', 'cv2AddOpen()', 'Add a dated addendum under the signed note; the note itself stays as signed', 'add') + '</div>' +
+        (c ? '<dl class="t23-sum so-sum"><div><dt>Claim</dt><dd>' + SC.html('Tag', {color:tone, title:L.why || L.label}, L.label) + '<span class="so-w">' + csEsc(where) + '</span></dd></div>' +
+          (c.payer === 'private' ? '' : '<div><dt>Fee code</dt><dd>' + csEsc(t23FeeTxt(c.fee)) + '</dd></div><div><dt>Diagnosis</dt><dd>' + csEsc(c.dx ? c.dx + ' · ' + t23DxName(c.dx) : 'Not set') + '</dd></div>') + '</dl>' +
+          '<div class="so-acts">' + (c.st === 'submit' ? ds('primary', 'Submit claim', 't23SubmitOne(\'' + c.id + '\')', 'Send this claim to MSP now, after the code check', 'upload') : '') +
+            ds(c.st === 'submit' ? 'secondary-main' : 'secondary-main', 'Open in Claims', 't23Open(\'' + c.id + '\')', 'Open this claim in Claims to see or change it', 'file') +
+            (ne ? ds('tertiary-main', 'Edited · ' + ne + (ne === 1 ? ' change' : ' changes'), 't23Open(\'' + c.id + '\',\'hist\')', 'See what was changed on this claim, by whom and when', 'clock-time') : '') + '</div>' : '<p class="so-w">Recorded.</p>');
+      el.innerHTML = h; el.hidden = false; el.classList.add('so-done'); if(help) help.hidden = true; t23SyncFin();
+      var ad = v2El('cv2-addm'); if(ad) ad.hidden = true;
+      return;
+    }
     h += c ? '<span>' + t23Label(c).label + '</span>' + sep + '<span>' + (c.st === 'submit' ? 'in Claims' : c.st === 'submitted' ? 'MSP processes it at 7 PM' : 'recorded') + '</span>' +
       (c.st === 'submit' ? '<button type="button" class="btn xs" onclick="t23SubmitOne(\'' + c.id + '\')">' + t23Ic('arrowup') + 'Submit claim</button>' : '') +
       '<button type="button" class="btn xs" onclick="t23Open(\'' + c.id + '\')">Details</button>' + t23EditedBtn(t23EditCount(c.hist), 't23Open(\'' + c.id + '\',\'hist\')') : '<span>Recorded</span>';
     el.innerHTML = h; el.hidden = false; if(help) help.hidden = true; paintPd(el); t23SyncFin(); return;
   }
+  el.classList.remove('so-done');
   /* Daniel 5 Oct (step 4): the row is fee code · diagnosis · time; Change opens "Your coding" (no disposition) */
   var v = t23VisitCode(r.name), btn = 'Change', focus = 'dx';
   if(v.disp === 'private') h += '<span>Private pay</span>' + sep + '<span>Private visit fee</span>' + T23_DEMO;
@@ -25662,7 +25714,40 @@ function cv2Mount(){
   var clk = snap && snap.querySelector(':scope > #cs-winclock');
   if(snap) snap.insertBefore(CV2.meta, clk || acts || null);
 }
+/* the patient's name and details ride in the top bar, beside the search, on wide screens (the chart's own header row goes) */
+function cv2TopSync(){
+  var tb = document.querySelector('.topbar'), sc = document.getElementById('screen-patientchart'); if(!tb || !sc) return;
+  var on = typeof cv2On === 'function' && cv2On() && sc.classList.contains('active') && window.innerWidth >= 1150;
+  document.body.classList.toggle('pt-top', on);
+  /* the call window joins the name line; Call and Chart move to the tabs line, above the History column (grid area "calls") */
+  var v2 = v2El('v2'), snap = document.querySelector('#cv2-hd .cs-snap'), row = snap && snap.querySelector('.cs-nmrow'), clk = v2El('cs-winclock'),
+    acts = document.querySelector('#pcv-c .vc-acts'), calls = v2El('cv2-calls');
+  if(on && v2 && acts){
+    if(!calls){ calls = document.createElement('div'); calls.id = 'cv2-calls'; calls.className = 'cv2-calls'; }
+    if(calls.parentNode !== v2) v2.appendChild(calls);
+    if(acts.parentNode !== calls) calls.appendChild(acts);
+    if(clk && row && clk.parentNode !== row) row.appendChild(clk);
+  } else cv2CallsHome();
+  if(on){
+    var tl = tb.querySelector('.tb-left'), rt = tb.querySelector('.topbar-right'), r = tb.getBoundingClientRect(), st = document.documentElement.style;
+    st.setProperty('--tb-l', Math.round((tl || tb).getBoundingClientRect().left) + 'px');
+    st.setProperty('--tb-r', Math.round(window.innerWidth - (rt ? rt.getBoundingClientRect().left : r.right) + 24) + 'px');
+  }
+  if(typeof v2Fit === 'function') v2Fit();
+}
+(function(){
+  if(typeof baWrap === 'function'){ baWrap('showScreen', function(){ cv2TopSync(); }); baWrap('openChart', function(){ setTimeout(cv2TopSync, 0); }); }
+  window.addEventListener('resize', function(){ cv2TopSync(); });
+  var tb = document.querySelector('.topbar'); if(tb && window.ResizeObserver) new ResizeObserver(function(){ if(document.body.classList.contains('pt-top')) cv2TopSync(); }).observe(tb);
+})();
+function cv2CallsHome(){
+  var snap = document.querySelector('#cv2-hd .cs-snap'), clk = v2El('cs-winclock'), acts = document.querySelector('#pcv-c .vc-acts'), calls = v2El('cv2-calls');
+  if(snap && clk && clk.parentNode !== snap) snap.insertBefore(clk, acts && acts.parentNode === snap ? acts : null);
+  if(snap && acts && acts.parentNode !== snap) snap.appendChild(acts);
+  if(calls && calls.parentNode) calls.parentNode.removeChild(calls);
+}
 function cv2Unmount(){
+  cv2CallsHome(); document.body.classList.remove('pt-top');
   if(CV2.meta && CV2.meta.parentNode) CV2.meta.parentNode.removeChild(CV2.meta);
   var ck = v2El('cv2-chk'); if(ck) ck.remove();   /* physician pass B2: the checklist is Version 2's */
   cv2Drawer(false, true);
@@ -25988,7 +26073,7 @@ function cv2FinSync(){
   done.title = r && r.signed ? 'Close the visit' : 'Sign the note and close the visit; the claim waits in Claims, Unsubmitted';
   if(dt && dt.nodeType === 3 && dt.textContent !== dl) dt.textContent = dl;
   done.hidden = !r || r.status === 'done' || (!r.signed && !cv2CanClaim(r));
-  add.hidden = !r || !r.signed;
+  add.hidden = !r || !r.signed || (on && !!r.claimId);   /* Ani, 20 Nov: with a claim, Add addendum sits in the signed card's header */
   var nx = v2El('vc-nextpt'); if(nx && r && r.status !== 'done') nx.hidden = true;
   if(b.getAttribute('data-t0') === null) b.setAttribute('data-t0', b.title || '');
   b.title = on ? (cv2CanClaim(r) ? 'Sign the note, send the claim to MSP and close the visit' : 'Sign the note and close the visit') : b.getAttribute('data-t0');
