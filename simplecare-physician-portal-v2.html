@@ -8240,6 +8240,25 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 /* ===== Cedar in the top-bar chat (Ani, 20 Nov: "build this in our demo, use the top Cedar, all this functionality inside that chat;
    keep its chat size"). The panel keeps its size and place; it reads like the standalone Cedar: the open patient and what Cedar
    can read on top, grouped suggestions, answers as cards with a Sources view, every action left to the doctor. ===== */
+/* Ani, 21 Nov: "never use borders on cards, background just white fill is ok" and "never have sharp corners anywhere in the system".
+   Cards are white on the grey page with no outline (hairlines inside them stay); every white block, table and panel is rounded,
+   and a scrolling table area clips its rows to its corners. */
+.box,
+#screen-patientchart .v2-card,
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > :is(#cdr-card, #cv2-ctxbar, #v2-sum, #cv2-rail, #cdr-mini),
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2.hx3 > #hx-compact,
+#ai-panel :is(.ca-card, .ca-grp, .ca-box, .ca-si, .ca-msg),
+#tl2 .tl-card{border:0 !important;}
+#screen-patientchart #pcv-c.cs-v2.chart-v2 #v2-side > #cv2-ctxbar{border-radius:var(--radius-xs) var(--radius-xs) 0 0 !important;}
+.sv-scroll.sv-scroll-area,
+#nd, .nd,
+#hx-page .sv-table, #hx-page .hx-t,
+#screen-patientchart .v2-card, .box, #tl2 .tl-card, #tl2 .strip{border-radius:var(--radius-xs);}
+#hx-page .sv-scroll.sv-scroll-area{background:var(--panel);}
+#nd.nd{border-radius:var(--radius-xs) !important;}
+/* the design system's Dropdown, full width of its form; the keyboard's current option shows like hover */
+.sc-dd .sv-dropdown{width:100%;}
+.sc-dd .sv-menu-item__target.sc-dd-hi{background:var(--color-surface-tertiary-main-hovered, var(--wash));}
 #ai-panel.open{z-index:206;}   /* above Dolly's chat button, which covered the input */
 #ai-panel .ai-head{background:var(--panel);color:var(--ink);border-bottom:1px solid var(--line);padding:10px 8px 10px 14px;gap:10px;}
 #ai-panel .ai-head .spark{display:none;}
@@ -9605,8 +9624,9 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
     <p class="tm-title" id="tm-ttl">New task</p>
     <p class="tm-sub">Pressing Task is what makes something a task. Nothing arrives here on its own.</p>
     <div class="tm-field">
-      <label for="tm-patient">Patient</label>
-      <select id="tm-patient"><option value="">Not patient-specific</option></select>
+      <!-- Ani, 21 Nov ("why is this dropdown not from the design system?"): the design system's Dropdown; the hidden input keeps the value the task code reads -->
+      <input type="hidden" id="tm-patient" value="">
+      <div class="sc-dd" id="tm-patient-dd"></div>
     </div>
     <div class="tm-field">
       <label>Task type</label>
@@ -11451,16 +11471,63 @@ function toggleNotes(){
 /* Today's patients fill the picker, so tasking from a row lands on that
    row's patient with nothing to select. */
 function tmFillPatients(){
-  var sel = document.getElementById('tm-patient'); if(!sel) return;
-  var seen = {};
-  var opts = ['<option value="">Not patient-specific</option>'];
+  var seen = {}, opts = [{value:'', label:'Not patient-specific'}];
   QUEUE_DATA.forEach(function(r){
-    var label = r.legal || r.name.split(',')[0].trim();
-    if(seen[r.name]) return; seen[r.name]=1;
-    opts.push('<option value="'+r.name+'">'+label+'</option>');
+    if(seen[r.name]) return; seen[r.name] = 1;
+    opts.push({value:r.name, label:r.legal || r.name.split(',')[0].trim()});
   });
-  sel.innerHTML = opts.join('');
+  scDropdown('tm-patient-dd', {label:'Patient', options:opts, input:'tm-patient'});
 }
+/* ---------- the design system's Dropdown, wired (SC.html draws it; the page opens it, picks, and handles the keyboard) ----------
+   scDropdown(hostId, {label, options:[{value,label}], input: id of a hidden input that holds the value, onChange}).
+   Setting the hidden input's value from code and calling scDropdownPaint(hostId) shows it. */
+var SC_DD = {};
+function scDropdown(id, o){ SC_DD[id] = Object.assign(SC_DD[id] || {open:false, hi:-1}, o); scDropdownPaint(id); }
+function scDropdownPaint(id){
+  var d = SC_DD[id], host = document.getElementById(id); if(!d || !host || !(window.SC && SC.html)) return;
+  var inp = d.input ? document.getElementById(d.input) : null, val = inp ? inp.value : (d.value || '');
+  var cur = d.options.filter(function(x){ return x.value === val; })[0] || d.options[0];
+  host.innerHTML = SC.html('Dropdown', {label:d.label, options:d.options, value:cur ? cur.value : '', open:!!d.open});
+  var cb = host.querySelector('[role=combobox]'), field = host.querySelector('.sv-dropdown__field');
+  if(cb){ cb.textContent = cur ? cur.label : ''; cb.setAttribute('aria-expanded', String(!!d.open)); }
+  var clr = host.querySelector('.sv-dropdown__clear'); if(clr) clr.remove();   /* one value is always chosen */
+  if(field){ field.title = 'Choose the ' + String(d.label).toLowerCase(); field.onclick = function(e){ if(e.target.closest('[role=option]')) return; d.open = !d.open; d.hi = Math.max(0, d.options.indexOf(cur)); scDropdownPaint(id); var c = host.querySelector('[role=combobox]'); if(c) c.focus(); }; }
+  host.querySelectorAll('[role=option]').forEach(function(op, i){
+    op.classList.toggle('sc-dd-hi', i === d.hi);
+    op.onclick = function(e){ e.stopPropagation(); scDropdownPick(id, i); };
+  });
+  if(cb) cb.onkeydown = function(e){
+    var n = d.options.length;
+    if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){ e.preventDefault(); if(!d.open){ d.open = true; d.hi = Math.max(0, d.options.indexOf(cur)); } else d.hi = (d.hi + (e.key === 'ArrowDown' ? 1 : n - 1)) % n; scDropdownPaint(id); host.querySelector('[role=combobox]').focus(); }
+    else if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); if(d.open && d.hi > -1) scDropdownPick(id, d.hi); else { d.open = true; d.hi = Math.max(0, d.options.indexOf(cur)); scDropdownPaint(id); host.querySelector('[role=combobox]').focus(); } }
+    else if(e.key === 'Escape' && d.open){ e.preventDefault(); e.stopPropagation(); d.open = false; scDropdownPaint(id); host.querySelector('[role=combobox]').focus(); }
+  };
+  if(d.open && d.hi > -1){ var hiEl = host.querySelectorAll('[role=option]')[d.hi]; if(hiEl && cb){ cb.setAttribute('aria-activedescendant', hiEl.id); hiEl.scrollIntoView({block:'nearest'}); } }
+}
+/* markup for a design system Dropdown inside HTML a render function builds; it wires itself once it is in the page (scDdAuto).
+   onchangeJs runs with v = the chosen value; inputId names the hidden input that holds it (code that reads .value keeps working). */
+function scDdHtml(id, label, options, value, onchangeJs, inputId){
+  var inp = inputId || (id + '-v'), cfg = {label:label, options:options, onchange:onchangeJs || '', input:inp};
+  return '<input type="hidden" id="' + inp + '" value="' + csEsc(value == null ? '' : value) + '"><div class="sc-dd" id="' + id + '" data-dd="' + csEsc(JSON.stringify(cfg)) + '"></div>';
+}
+function scDdAuto(root){
+  (root || document).querySelectorAll('.sc-dd[data-dd]:not([data-ddi])').forEach(function(h){
+    h.setAttribute('data-ddi', '1');
+    var c; try { c = JSON.parse(h.getAttribute('data-dd')); } catch(e){ return; }
+    SC_DD[h.id] = {open:false, hi:-1};   /* a fresh render starts closed */
+    scDropdown(h.id, {label:c.label, input:c.input, options:c.options.map(function(x){ return typeof x === 'string' ? {value:x, label:x.charAt(0).toUpperCase() + x.slice(1)} : x; }),
+      onChange:c.onchange ? new Function('v', c.onchange) : null});
+  });
+}
+if(window.MutationObserver) new MutationObserver(function(){ if(document.querySelector('.sc-dd[data-dd]:not([data-ddi])')) scDdAuto(); }).observe(document.documentElement, {childList:true, subtree:true});
+function scDropdownPick(id, i){
+  var d = SC_DD[id], o = d.options[i]; if(!o) return;
+  var inp = d.input ? document.getElementById(d.input) : null; if(inp) inp.value = o.value; else d.value = o.value;
+  d.open = false; scDropdownPaint(id);
+  var cb = document.querySelector('#' + id + ' [role=combobox]'); if(cb) cb.focus();
+  if(d.onChange) d.onChange(o.value);
+}
+document.addEventListener('click', function(e){ Object.keys(SC_DD).forEach(function(id){ var d = SC_DD[id], h = document.getElementById(id); if(d.open && h && (e.composedPath ? e.composedPath().indexOf(h) < 0 : !h.contains(e.target))){ d.open = false; scDropdownPaint(id); }   /* the path, not contains(): the clicked node is redrawn and detached */ }); });
 function openTaskMoa(prefillPatient){
   tmFillPatients();
   document.getElementById('tm-overlay').classList.add('show');
@@ -11480,6 +11547,7 @@ function openTaskMoa(prefillPatient){
   document.querySelectorAll('#tm-chips .tm-chip').forEach(function(c,i){ c.classList.toggle('active', i===0); });
   if(prefillPatient){ document.getElementById('tm-patient').value = prefillPatient; }
   else{ document.getElementById('tm-patient').value = ''; }
+  scDropdownPaint('tm-patient-dd');
 }
 function tmRoute(){
   var el=document.getElementById('tm-route'); if(!el) return;
@@ -16678,14 +16746,14 @@ function rxMoreHtml(st, o, part){
   var h = '<button type="button" class="btn" data-fk="more' + o.id + '" aria-expanded="' + open + '" aria-controls="rx-more-' + o.id + '" onclick="rxAct(\'more\',\'' + o.id + '\')">' + rxIc(open ? 'chevdown' : 'chevr') + 'More options</button>';
   if(part === 'btn' || !open) return part === 'panel' ? '' : h;
   h = '<div class="rp-more" id="rx-more-' + o.id + '">' +
-    '<label class="rp-f"><span>Route</span><select oninput="rxOrdSet(\'' + o.id + '\',\'more.route\',this.value)">' + ['by mouth', 'under the tongue', 'on the skin', 'by injection'].map(function(x){ return '<option' + (m.route === x ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select></label>' +
+    '<div class="rp-f">' + scDdHtml('rp-route-' + o.id, 'Route', ['by mouth', 'under the tongue', 'on the skin', 'by injection'], m.route || 'by mouth', 'rxOrdSet(\'' + o.id + '\',\'more.route\',v)') + '</div>' +
     '<label class="rp-f"><span>Indication</span><input type="text" value="' + csEsc(m.ind || '') + '" placeholder="From the problem above" oninput="rxOrdSet(\'' + o.id + '\',\'more.ind\',this.value)"></label>' +
     '<p class="rp-note">The PharmaNet indication code is added when PharmaNet is connected. It needs the PharmaNet terminology list.</p>' +
     '<label class="rp-f rp-fw"><span>Instructions for the patient</span><textarea rows="2" oninput="rxOrdSet(\'' + o.id + '\',\'more.instr\',this.value)">' + csEsc(o.instrEdited ? m.instr : rxInstr(o)) + '</textarea></label>' +
     '<label class="rp-ck"><input type="checkbox"' + (m.nosub ? ' checked' : '') + ' onchange="rxOrdSet(\'' + o.id + '\',\'more.nosub\',this.checked);rxRender()"><span>Do not substitute</span></label>' +
     '<label class="rp-ck"><input type="checkbox"' + (m.cp ? ' checked' : '') + ' onchange="rxOrdSet(\'' + o.id + '\',\'more.cp\',this.checked);rxRender()"><span>Compliance packaging</span></label>' +
     '<label class="rp-f rp-fw"><span>Note to the pharmacist</span><textarea rows="2" oninput="rxOrdSet(\'' + o.id + '\',\'more.notes\',this.value)">' + csEsc(m.notes || '') + '</textarea></label>' +
-    (lib && lib.s1a ? '<label class="rp-f"><span>Dispense interval</span><select oninput="rxOrdSet(\'' + o.id + '\',\'more.interval\',this.value)">' + ['Not set', 'Every 7 days', 'Every 14 days', 'Every 28 days'].map(function(x){ return '<option' + (m.interval === x ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select></label>' : '') +
+    (lib && lib.s1a ? '<div class="rp-f">' + scDdHtml('rp-int-' + o.id, 'Dispense interval', ['Not set', 'Every 7 days', 'Every 14 days', 'Every 28 days'], m.interval || 'Not set', 'rxOrdSet(\'' + o.id + '\',\'more.interval\',v)') + '</div>' : '') +
     '</div>';
   return h;
 }
@@ -17819,8 +17887,8 @@ function renderMedRail(name){
         ? '<div class="mx-form"><p class="mx-k">A medication started elsewhere</p>' +
             '<label class="mx-f"><span>Medication</span><input id="mx-drug" type="text" autocomplete="off" placeholder="e.g. Aspirin"></label>' +
             '<label class="mx-f"><span>Dose</span><input id="mx-dose" type="text" autocomplete="off" placeholder="e.g. 81 mg"></label>' +
-            '<label class="mx-f"><span>Directions</span><select id="mx-freq">' + RX_FREQ.map(function(f){ return '<option>' + f[0] + '</option>'; }).join('') + '</select></label>' +
-            '<label class="mx-f"><span>Started</span><select id="mx-where"><option>in hospital</option><option>by a specialist</option><option>by another doctor or clinic</option></select></label>' +
+            '<div class="mx-f">' + scDdHtml('mx-freq-dd', 'Directions', RX_FREQ.map(function(f){ return f[0]; }), RX_FREQ[0][0], '', 'mx-freq') + '</div>' +
+            '<div class="mx-f">' + scDdHtml('mx-where-dd', 'Started', ['in hospital', 'by a specialist', 'by another doctor or clinic'], 'in hospital', '', 'mx-where') + '</div>' +
             '<label class="mx-f"><span>When</span><input id="mx-when" type="text" autocomplete="off" placeholder="e.g. Aug 2026"></label>' +
             '<div class="mx-acts">' + cpBtn('primary', 'Add', 'mxSave()', 'Add this medication to the list, marked as started elsewhere and patient-reported', 'check-circle') +
             cpBtn('tertiary-main', 'Cancel', 'MX_FORM=false;renderMedRail(PC_CURRENT)', 'Close this form without adding anything') + '</div></div>'
