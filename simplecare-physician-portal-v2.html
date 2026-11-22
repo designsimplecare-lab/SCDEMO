@@ -7955,6 +7955,19 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
   #v2-er .er-go{display:flex;justify-content:flex-end;margin-top:12px;}
   #er-drw .er-ai{display:flex;align-items:center;gap:8px;margin:0;font-size:14px;color:var(--ink-soft);}
   #er-drw .er-ns h4{margin:0 0 4px;font-size:15px;font-weight:600;color:var(--ink);}
+  #er-drw .er-pt{display:flex;align-items:center;gap:12px;margin:16px 0 4px;padding:12px 14px;border-radius:var(--radius-xs);background:var(--wash);}
+  #er-drw .er-pt .er-pt-t{display:block;min-width:0;}
+  #er-drw .er-pt .er-pt-t > b{display:block;font-size:16px;line-height:22px;color:var(--ink);}
+  #er-drw .er-pt .er-pt-t > span{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+  #er-drw .er-pt .er-phn{display:inline;font-weight:700;color:var(--ink);}
+  #er-drw .sv-list__section{border-top:1px solid var(--line);}
+  #er-drw .sv-list__section:first-child{border-top:0;}
+  #er-drw .sv-list__head{min-height:48px;font-size:15px;line-height:22px;font-weight:500;color:var(--ink);}
+  #er-drw .sv-list__head > span:first-child{display:inline-flex;align-items:center;}
+  #er-drw .sv-list__head .sv-list__count{font-size:14px;color:var(--ink-soft);}
+  #er-drw .sv-list__item .sv-list__label{font-size:15px;line-height:22px;color:var(--ink);}
+  #er-drw :is(.sv-list__secondary,.sv-list__meta){font-size:14px;line-height:20px;}
+  #er-drw .sv-tag,#er-drw .sv-tag .truncate{font-size:14px;}
   #er-drw .er-ns p,#er-drw .er-ns li{margin:0;font-size:15px;line-height:22px;color:var(--ink);}
   #er-drw .er-ns ul{margin:0;padding-left:20px;}
   #er-drw .sv-drawer__content{padding-bottom:calc(84px + var(--spacing-lg));}
@@ -8256,6 +8269,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #screen-patientchart .v2-card, .box, #tl2 .tl-card, #tl2 .strip{border-radius:var(--radius-xs);}
 #hx-page .sv-scroll.sv-scroll-area{background:var(--panel);}
 #nd.nd{border-radius:var(--radius-xs) !important;}
+#hx-page .hx-meta b{font-weight:700;color:var(--ink);}
 /* the design system's Dropdown, full width of its form; the keyboard's current option shows like hover */
 .sc-dd .sv-dropdown{width:100%;}
 .sc-dd .sv-menu-item__target.sc-dd-hi{background:var(--color-surface-tertiary-main-hovered, var(--wash));}
@@ -14928,8 +14942,9 @@ function hxRender(){
   var el = document.getElementById('hx-page'); if(!el || !PC_CURRENT || !(window.SC && SC.html)) return;
   var name = PC_CURRENT, H = hxFor(name), r = (typeof rxRow === 'function' ? rxRow(name) : null) || {}, ch = typeof ptChart === 'function' ? ptChart(name) : {};
   var counts = {allergies:H.allergies.length || '', conditions:H.conditions.length, medications:H.meds.length, surgical:H.surgeries.length, family:H.family.length, social:''};
-  var who = [r.age ? parseInt(r.age, 10) : '', r.sex || '', ch.phn && ch.phn !== '—' ? 'Personal Health Number ' + ch.phn : ''].filter(Boolean).join(' · ');
-  var h = '<div class="hx-top"><div><h3 class="hx-title">History</h3><p class="hx-meta">' + csEsc(r.legal || name.split(',')[0]) + (who ? ' · ' + csEsc(who) : '') + '</p>' +
+  /* Ani, 21 Nov ("this text is longer, why is it different from the others"): the same line as the chart's header: age · sex · PHN with the number in bold */
+  var who = [r.age ? parseInt(r.age, 10) : '', r.sex || ''].filter(Boolean).map(csEsc).concat(ch.phn && ch.phn !== '—' ? ['PHN <b>' + csEsc(ch.phn) + '</b>'] : []).join(' · ');
+  var h = '<div class="hx-top"><div><h3 class="hx-title">History</h3><p class="hx-meta">' + csEsc(r.legal || name.split(',')[0]) + (who ? ' · ' + who : '') + '</p>' +
     '<p class="hx-meta">' + (H.reviewed ? 'Last reviewed ' + H.reviewed.on + ' by ' + H.reviewed.by : 'Not reviewed yet') + '</p></div>' +
     hxB('secondary-main', 'Mark as reviewed', 'hxReviewed()', 'Record that you reviewed this history today; another doctor will see who reviewed it and when', 'check-circle') + '</div>';
   /* Ani, 17 Nov ("remove this tab"): no section tabs inside History (it is already a tab of the Chart drawer); every section shows,
@@ -15018,11 +15033,16 @@ function erNote(name){
     .filter(function(t){ return !crit0.some(function(x){ return t.toLowerCase().indexOf(x.test.n.toLowerCase()) === 0; }); });
   return {
     to:'Emergency Department, nearest to the patient',
-    who:(r.legal || name.split(',')[0]) + ' · ' + (r.age ? parseInt(r.age, 10) : '') + ' · ' + (r.sex || '') + (ch.phn && ch.phn !== '—' ? ' · Personal Health Number ' + ch.phn : ''),
+    who:(r.legal || name.split(',')[0]) + ' · ' + (r.age ? parseInt(r.age, 10) : '') + ' · ' + (r.sex || '') + (ch.phn && ch.phn !== '—' ? ' · PHN ' + ch.phn : ''),
     concern:smText((C && C.why && C.why.main) || r.concern || ''),
     crit:crit0.map(function(x){ return x.test.n + ' ' + x.test.v + ' ' + (x.test.u || '') + ' (critical)'; }).concat(today),
     meds:meds, allergies:H && H.allergies.length ? H.allergies.map(function(a){ return a.what; }).join(', ') : 'No known allergies',
-    from:'Dr. D. Pannozzo, family physician, Simple Care', when:hxDate() };
+    from:'Dr. D. Pannozzo, family physician, Simple Care', when:hxDate(),
+    /* the same facts, structured, for the drawer's rows (Ani, 21 Nov) */
+    pt:{name:r.legal || name.split(',')[0], line:[r.age ? parseInt(r.age, 10) : '', r.sex || ''].filter(Boolean).join(' · '), phn:ch.phn && ch.phn !== '—' ? ch.phn : ''},
+    critX:crit0.map(function(x){ return {l:x.test.n + ' ' + x.test.v + ' ' + (x.test.u || ''), crit:true}; }).concat(today.map(function(t){ return {l:t, crit:/fibrillation|critical/i.test(t)}; })),
+    medsX:H ? H.meds.filter(function(m){ return !(m.pn && m.pn.course); }).map(function(m){ var rec = hxRec(name, m.id);
+      return {l:m.name + ' ' + ((rec && rec.chart) || (m.pn ? m.pn.dose : m.chart)), s:m.pn ? 'Filled ' + m.pn.filled + ' · ' + m.pn.by : m.grp === 'otc' ? 'Bought without a prescription' : '', src:m.pn ? 'PharmaNet' : m.grp === 'otc' ? 'Non-prescription' : 'Simple chart'}; }) : [] };
 }
 function erRender(){
   var el = document.getElementById('v2-er'); if(!el) return;
@@ -15073,14 +15093,24 @@ function erPreview(){
   var name = PC_CURRENT; if(!name) return;
   var n = (ER[name] && ER[name].note) || erNote(name), host = document.getElementById('er-host');
   if(!host){ host = document.createElement('div'); host.id = 'er-host'; document.body.appendChild(host); }
-  var sec = function(t, body){ return '<section class="er-ns"><h4>' + t + '</h4>' + body + '</section>'; };
-  var ul = function(L){ return L.length ? '<ul>' + L.map(function(x){ return '<li>' + csEsc(x) + '</li>'; }).join('') + '</ul>' : '<p>None on file.</p>'; };
+  /* Ani, 21 Nov ("I do not like how you organized information in these drawers"): the Visit preview's pattern. The patient on one line
+     with the avatar, then titled sections with an icon and a count, a hairline between them; each fact a row, its detail in grey,
+     its source or status as a tag on the right */
+  var sec = function(ic, t, items, count){ return ['ListSection', {title:SC.raw('<span class="smh-ic" aria-hidden="true">' + SC.icon(ic, {size:20}) + '</span>' + csEsc(t)), count:count}].concat(items); };
+  var it = function(l, s2, tagC, tagT){ var p = {label:l}; if(s2) p.secondary = s2; if(tagT) p.trailing = ['Tag', {color:tagC}, tagT]; return ['ListItem', p]; };
+  var pt = n.pt || {name:n.who, line:'', phn:''};
+  var list = SC.html.apply(SC, ['List', {'aria-label':'Transfer note'}].concat([
+    sec('clipboard', 'Reason for transfer', [it(n.concern)]),
+    sec('warning', 'Critical results', (n.critX || []).map(function(x){ return it(x.l, '', x.crit ? 'error' : 'neutral', x.crit ? 'Critical' : 'Today'); }), (n.critX || []).length),
+    sec('medication', 'Medications', (n.medsX || []).map(function(x){ return it(x.l, x.s, 'neutral', x.src); }), (n.medsX || []).length),
+    sec('allergy', 'Allergies', [it(n.allergies)]),
+    sec('chat-message', 'Advice given', [it(ER_ADVICE)]),
+    sec('doctor', 'From', [it(n.from)])
+  ]));
   host.innerHTML = SC.html('Drawer', {id:'er-drw', title:'Transfer note', description:'For the ' + n.to.toLowerCase() + ' · ' + n.when,
       primaryAction:{label:'Copy the note', id:'er-copy'}, secondaryAction:{label:'Close', id:'er-close'}},
     SC.raw('<p class="er-ai"><span class="ai-chip">' + AI_SPARKLE_FILL + 'AI draft</span> Cedar drafted this from the chart. Check it before it goes.</p>' +
-      sec('Patient', '<p>' + csEsc(n.who) + '</p>') + sec('Reason for transfer', '<p>' + csEsc(n.concern) + '</p>') +
-      sec('Critical results', ul(n.crit)) + sec('Medications', ul(n.meds)) + sec('Allergies', '<p>' + csEsc(n.allergies) + '</p>') +
-      sec('Advice given', '<p>' + csEsc(ER_ADVICE) + '</p>') + sec('From', '<p>' + csEsc(n.from) + '</p>')));
+      '<div class="er-pt">' + SC.html('AvatarCircle', {name:pt.name, size:'large', decorative:true}) + '<span class="er-pt-t"><b>' + csEsc(pt.name) + '</b><span>' + csEsc(pt.line) + (pt.phn ? ' · PHN <b class="er-phn">' + csEsc(pt.phn) + '</b>' : '') + '</span></span></div>' + list));
   var d = document.getElementById('er-drw');
   d.addEventListener('click', function(e){
     if(e.target === d) return d.close();

@@ -262,6 +262,14 @@
   .sv-table :is(.text-body-3,.text-caption){font-size:14px !important;}
   .sv-tag,.sv-tag .truncate{font-size:14px;}
 
+  /* Ani, 21 Nov: no borders on cards (white fill is enough) and no sharp corners anywhere */
+  .card,.notice li,.win,.alert-doc,.er,.sugg,.qa-a .body{border:0 !important;}   /* hairlines between rows stay */
+  .alert-doc{background:var(--crit-wash);}
+  .qa-a .body{background:var(--wash);}
+  .qa-a.refuse .body{background:var(--color-grey-100);}
+  .card .card,.win .card{background:var(--panel);}
+  .sv-scroll.sv-scroll-area,.tbl-wrap,.sv-table{border-radius:var(--radius-xs);}
+  .tbl-wrap .sv-scroll.sv-scroll-area{border:0 !important;}   /* the table's own frame is a card outline too */
   @media (max-width:1200px){
     .split{grid-template-columns:minmax(0,1fr);}
     .journey{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:20px;}
