@@ -8323,7 +8323,24 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #lfp-root .lfp-done svg{width:18px;height:18px;flex:none;color:var(--color-green-700);}
 #lfp-root .lfp-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
 #lfp-root .sv-tag,#lfp-root .sv-tag .truncate,#lfp-root .sv-stat__label{font-size:14px;}
-#lfp-root .sv-progress{width:100% !important;}   /* the design system's bar is 480px wide by default; here it fills its card */
+#lfp-root .sv-progress{width:100% !important;}
+/* LFP time claims (Ani, 21 Nov) */
+#cl-list .lfpc{display:grid;gap:16px;}
+#cl-list .lfpc-card{background:var(--panel);border-radius:var(--radius-sm);padding:16px 18px;}
+#cl-list .lfpc-hd{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-bottom:10px;}
+#cl-list .lfpc-hd h2{margin:0;font-size:17px;line-height:24px;font-weight:700;color:var(--ink);}
+#cl-list .lfpc-hd .sp{flex:1;}
+#cl-list .lfpc-q{margin:0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+#cl-list .lfpc-pt{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:12px 14px;border-radius:var(--radius-xs);background:var(--wash);font-size:14px;line-height:20px;color:var(--ink);}
+#cl-list .lfpc-pt b{font-weight:700;}
+#cl-list .lfpc-pt span{color:var(--ink-soft);}
+#cl-list .lfpc-rr{display:grid;}
+#cl-list .lfpc-rr > div{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:12px 0;border-top:1px solid var(--line);}
+#cl-list .lfpc-rr > div:first-child{border-top:0;}
+#cl-list .lfpc-rr .m{flex:1;min-width:240px;}
+#cl-list .lfpc-rr .m b{display:block;font-size:15px;line-height:22px;font-weight:500;color:var(--ink);}
+#cl-list .lfpc-rr .m span{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+#cl-list .lfpc .sv-tag,#cl-list .lfpc .sv-tag .truncate{font-size:14px;}   /* the design system's bar is 480px wide by default; here it fills its card */
 #lfp-root .lfp-cols > div{min-width:0;}
 @media (max-width:1180px){ #lfp-root .lfp-cols{grid-template-columns:minmax(0,1fr);} }
 #ai-panel.open{z-index:206;}   /* above Dolly's chat button, which covered the input */
@@ -14173,9 +14190,70 @@ function lfpRender(){
     '<section class="lfp-card"><div class="lfp-hd"><h2>' + csEsc(D.d) + '</h2>' + SC.html('Tag', {color:D.appr ? 'success' : 'warning', startIcon:D.appr ? 'check' : 'clock-time'}, D.appr ? 'Approved' : 'To approve') + '<span class="sp"></span>' + days + '</div>' + bar + key + '</section>' +
     '<div class="lfp-cols"><section class="lfp-card"><div class="lfp-hd"><h2>What you did</h2><span class="lfp-sub">' + D.e.filter(function(x, i){ return lfpType(di, i) !== 'none'; }).length + ' blocks · your own time only</span></div><div class="lfp-rows">' + rows + '</div></section>' +
     '<div style="display:grid;gap:16px"><section class="lfp-card"><div class="lfp-hd"><h2>The day</h2><span class="sp"></span><span class="lfp-sub">' + lfpHM(S.mins) + '</span></div>' + sum +
-      (D.appr ? '<div class="lfp-done">' + SC.icon('check-circle', {size:18}) + '<span>Approved by you. Time claims prepared under LFP Time · L23; ' + D.visits + ' visit claims under each patient.</span></div>'
+      (D.appr ? '<div class="lfp-done">' + SC.icon('check-circle', {size:18}) + '<span>Approved by you. Time claims prepared under LFP Time · L23; ' + D.visits + ' visit claims under each patient.</span></div><div class="lfp-acts">' + SC.html('Button', {variant:'secondary-main', size:'medium', startIcon:'nav-claims', title:'Open the LFP time claims in Claims'}, 'Open time claims').replace('<button ', '<button onclick="T23.view=\'lfp\';showScreen(\'claims\');renderClaims()" ') + '</div>'
         : '<div class="lfp-acts">' + SC.html('Button', {variant:'primary', size:'medium', startIcon:'check', title:'Approve this day: its time becomes claims under LFP Time (L23) for your MOA to submit'}, 'Approve ' + D.s).replace('<button ', '<button onclick="LFP_DAYS[' + di + '].appr=true;lfpRender();toast(\'' + D.d + ' approved · time claims prepared under LFP Time\')" ') + '</div>') + '</section>' +
     '<section class="lfp-card"><div class="lfp-hd"><h2>Limits</h2></div>' + lim + '<p class="lfp-sub" style="margin:12px 0 0">Travel counts up to 1 hour a day. Claims must be submitted within 90 days.</p></section></div></div>';
+}
+/* ============================================================================
+   LFP time claims (Daniel's LFP guide; Ani, 21 Nov "build the LFP claims next"). Every approved block of the doctor's time is a
+   claim under the placeholder patient LFP Time (PHN 9646 191 917, born 1 January 2005) with diagnostic code L23, its fee code by type
+   and its start and end times; visits stay under each patient in MSP. Refused time claims come back on MSP's nightly report, not
+   the payment statement, so the MOA checks it every morning. A claim must reach MSP within 90 days of the service date.
+   ========================================================================= */
+var LFPC = {st:{}, fix:{}};
+var LFPC_PAST = [   /* the week before: submitted, paid, and the two the nightly report refused */
+  {id:'p1', d:'2026-11-09', day:'Monday 9 November', t:'direct', a:'8:00', b:'12:00', st:'paid'}, {id:'p2', d:'2026-11-09', day:'Monday 9 November', t:'indirect', a:'17:00', b:'17:45', st:'paid'},
+  {id:'p3', d:'2026-11-10', day:'Tuesday 10 November', t:'direct', a:'8:00', b:'16:30', st:'paid'}, {id:'p4', d:'2026-11-11', day:'Wednesday 11 November', t:'direct', a:'8:00', b:'12:30', st:'submitted'},
+  {id:'p5', d:'2026-11-12', day:'Thursday 12 November', t:'direct', a:'13:30', b:'15:00', st:'submitted'},
+  {id:'p6', d:'2026-11-12', day:'Thursday 12 November', t:'direct', a:'14:00', b:'15:30', st:'refused', why:'Overlaps another time claim that day (13:30–15:00)', fix:['Change to 15:00–15:30', 'a', '15:00']},
+  {id:'p7', d:'2026-11-13', day:'Friday 13 November', t:'travel', a:'12:00', b:'13:30', st:'refused', why:'Travel is paid up to 1 hour a day', fix:['Change to 1 hour (12:00–13:00)', 'b', '13:00']}
+];
+var LFPC_DATE = {0:'2026-11-16', 1:'2026-11-17', 2:'2026-11-18', 3:'2026-11-19', 4:'2026-11-20'};
+function lfpcAll(){
+  var out = [];
+  LFP_DAYS.forEach(function(D, di){ if(!D.appr) return;
+    D.e.forEach(function(x, i){ var t = lfpType(di, i); if(t === 'none') return; var id = 'w' + di + '-' + i;
+      out.push({id:id, d:LFPC_DATE[di], day:D.d, t:t, a:x[0], b:x[1], what:x[3], st:LFPC.st[id] || 'prep'}); }); });
+  return LFPC_PAST.map(function(c){ var o = Object.assign({}, c); if(LFPC.st[c.id]) o.st = LFPC.st[c.id]; if(LFPC.fix[c.id]){ o[c.fix[1]] = c.fix[2]; } return o; }).concat(out);
+}
+function lfpcUnits(c){ return Math.floor((lfpMin(c.b) - lfpMin(c.a)) / 15); }
+function lfpcLeft(c){ var p = c.d.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]); d.setDate(d.getDate() + 90); var t = new Date(); t.setHours(0, 0, 0, 0); return Math.round((d - t) / 864e5); }
+var LFPC_TAG = {prep:['warning', 'To submit'], submitted:['information', 'Submitted'], paid:['success', 'Paid'], refused:['error', 'Refused']};
+function lfpcStats(){
+  var A = lfpcAll(), sum = function(L){ return L.reduce(function(t, c){ return t + lfpcUnits(c) * LFP_RATE; }, 0); };
+  var g = function(s){ return A.filter(function(c){ return c.st === s; }); };
+  var st = function(k, L, tone){ var p = {label:k, value:String(L.length), detail:lfpMoney(sum(L))}; if(tone && L.length) p.tone = tone; return ['Stat', p]; };
+  return SC.html('StatGroup', {}, st('Refused', g('refused'), 'critical'), st('To submit', g('prep'), 'warning'), st('Submitted', g('submitted')), st('Paid', g('paid')));
+}
+function lfpcHtml(){
+  var A = lfpcAll(), ref = A.filter(function(c){ return c.st === 'refused'; }), prep = A.filter(function(c){ return c.st === 'prep'; });
+  var oldest = prep.length ? Math.min.apply(null, prep.map(lfpcLeft)) : null;
+  var report = '<section class="lfpc-card"><div class="lfpc-hd"><h2>Nightly refusal report</h2>' + SC.html('Tag', {color:ref.length ? 'error' : 'success', startIcon:ref.length ? 'warning' : 'check'}, ref.length ? ref.length + ' refused' : 'Nothing refused') + '<span class="sp"></span><span class="lfpc-q">Checked this morning, 6:02 a.m., by Dolly</span></div>' +
+    '<p class="lfpc-q" style="margin-bottom:6px">Refused time claims come back on MSP\'s nightly report, not the payment statement.</p>' +
+    (ref.length ? '<div class="lfpc-rr">' + ref.map(function(c){ return '<div><span class="m"><b>' + csEsc(c.day) + ' · ' + LFP_T[c.t][1] + ' ' + LFP_T[c.t][0].toLowerCase() + ' · ' + c.a + '–' + c.b + '</b><span>' + csEsc(c.why) + ' · ' + lfpcLeft(c) + ' days left to resubmit</span></span>' +
+      t23DsBtn('primary', c.fix[0], 'LFPC.fix[\'' + c.id + '\']=1;LFPC.st[\'' + c.id + '\']=\'submitted\';renderClaims();toast(\'Corrected and resubmitted to MSP\')', 'check') + t23DsBtn('tertiary-main', 'Withdraw', 'LFPC.st[\'' + c.id + '\']=\'withdrawn\';renderClaims();toast(\'Time claim withdrawn\')') + '</div>'; }).join('') + '</div>' : '') + '</section>';
+  /* one table, a group per day, newest first */
+  var days = []; A.forEach(function(c){ if(days.indexOf(c.day) < 0) days.push(c.day); });
+  days.sort(function(x, y){ var a = A.filter(function(c){ return c.day === x; })[0].d, b = A.filter(function(c){ return c.day === y; })[0].d; return a < b ? 1 : -1; });
+  var rows = [];
+  days.forEach(function(dy){
+    var L = A.filter(function(c){ return c.day === dy && c.st !== 'withdrawn'; }).sort(function(a, b){ return lfpMin(a.a) - lfpMin(b.a); }); if(!L.length) return;
+    rows.push(['TableGroupRow', {colSpan:6, label:dy, meta:L.length + ' claim' + (L.length > 1 ? 's' : '') + ' · ' + lfpMoney(L.reduce(function(t, c){ return t + lfpcUnits(c) * LFP_RATE; }, 0))}]);
+    L.forEach(function(c){ var tg = LFPC_TAG[c.st] || ['neutral', c.st], left = lfpcLeft(c);
+      rows.push(['TableRow', {}, ['TableCell', {}, ['TableCellContent', {label:c.a + '–' + c.b, secondary:lfpcUnits(c) + ' units'}]],
+        ['TableCell', {}, ['TableCellContent', {label:LFP_T[c.t][1] + ' · ' + LFP_T[c.t][0], secondary:c.what || ''}]],
+        ['TableCell', {}, ['TableCellContent', {label:'LFP Time', secondary:'L23'}]],
+        ['TableCell', {}, ['TableCellContent', {type:'number', label:lfpMoney(lfpcUnits(c) * LFP_RATE)}]],
+        ['TableCell', {}, SC.raw(SC.html('Tag', {color:tg[0], title:c.why || ''}, tg[1]) + (c.st === 'prep' ? '<span class="lfpc-q" style="display:block;margin-top:2px">' + left + ' days left</span>' : ''))],
+        ['TableCell', {}, SC.raw(c.st === 'prep' ? t23DsBtn('secondary-main', 'Submit', 'LFPC.st[\'' + c.id + '\']=\'submitted\';renderClaims();toast(\'Time claim sent to MSP\')', 'upload') : '')]]); });
+  });
+  var table = SC.html.apply(SC, ['Table', {'aria-label':'LFP time claims'}, t23Head(['Time', 'Fee code', 'Patient and diagnosis', 'Amount', 'Status', '']), ['TableBody', {}].concat(rows)]);
+  return '<div class="lfpc">' + report +
+    '<section class="lfpc-card"><div class="lfpc-hd"><h2>Time claims</h2><span class="lfpc-q">From the days you approved in Time' + (oldest != null ? ' · oldest unsubmitted: ' + oldest + ' days left of 90' : '') + '</span><span class="sp"></span>' +
+      (prep.length ? t23DsBtn('primary', 'Submit ' + prep.length + ' to MSP', 'lfpcAll().forEach(function(c){if(c.st===\'prep\')LFPC.st[c.id]=\'submitted\'});renderClaims();toast(\'' + prep.length + ' time claims sent to MSP\')', 'upload') : '') +
+      t23DsBtn('secondary-main', 'Open Time', 'showScreen(\'time\');lfpRender()', 'clock-time') + '</div>' +
+      '<div class="lfpc-pt"><span>Billed under</span><b>LFP Time</b><span>· PHN 9646 191 917 · born 1 January 2005 · diagnostic code</span><b>L23</b><span>· visits are claimed under each patient in MSP</span></div>' +
+      '<div style="margin-top:12px">' + table + '</div></section></div>';
 }
 /* ===== Streamline line-icons: swap glyphs for SVGs ===== */
 var ICONS = {
@@ -20419,7 +20497,7 @@ function clTabOf(c){
   for(var i = 0; i < 4; i++){ var k = CL_TABS[i][0]; if(clRows(k).indexOf(c) > -1) return k; }
   return 'all';
 }
-function t23View(v){ T23.view = v === 'private' ? 'private' : 'msp'; renderClaims(); }
+function t23View(v){ T23.view = v === 'private' ? 'private' : v === 'lfp' ? 'lfp' : 'msp'; renderClaims(); }
 function t23Sort(a, b){ var x = t23DaysLeft(a), y = t23DaysLeft(b); x = x == null ? 9999 : x; y = y == null ? 9999 : y; return (x - y) || (t23D(a.date) - t23D(b.date)); }
 function t23Msp(){ return CLAIMS.filter(function(c){ return c.payer !== 'private'; }); }
 function t23NeedsSub(){ return t23Msp().filter(function(c){ return c.st === 'submit'; }).sort(t23Sort); }
@@ -20437,7 +20515,7 @@ function t23Seg(){
   var w = document.getElementById('t23-seg'); if(!w) return;
   /* Daniel 5 Oct: MSP and private pay, never mixed. The design system's toggle (sc-toggle fires change) */
   if(!w.firstElementChild){
-    w.innerHTML = '<sc-toggle variant="inverse" label="Claims: MSP or private pay" items=\'[{"value":"msp","label":"MSP"},{"value":"private","label":"Private pay"}]\'></sc-toggle>';
+    w.innerHTML = '<sc-toggle variant="inverse" label="Claims: MSP, LFP time or private pay" items=\'[{"value":"msp","label":"MSP"},{"value":"lfp","label":"LFP time"},{"value":"private","label":"Private pay"}]\'></sc-toggle>';   /* LFP time (Ani, 21 Nov) */
     w.firstElementChild.addEventListener('change', function(e){ t23View(e.currentTarget.value); });
   }
   w.firstElementChild.setAttribute('value', T23.view);
@@ -20448,6 +20526,7 @@ function t23Stats(){
   var sum = function(a){ return a.reduce(function(t, c){ return t + t23Amt(c); }, 0); };
   /* Ani, 6 Oct: one slim summary strip; 6 Nov: the design system's StatGroup (label, the count, its amount) */
   var st = function(k, v, d, tone){ var p = {label:k, value:String(v), detail:d}; if(tone && v) p.tone = tone; return ['Stat', p]; };
+  if(T23.view === 'lfp'){ sw.innerHTML = lfpcStats(); return; }
   if(T23.view === 'private'){
     var due = CLAIMS.filter(function(c){ return c.st === 'pri-due'; }), pd = CLAIMS.filter(function(c){ return c.st === 'pri-paid'; });
     sw.innerHTML = SC.html('StatGroup', {'aria-label':'Private pay summary'}, st('Outstanding', due.length, t23Money(sum(due)) + ' outstanding', 'warning'), st('Paid', pd.length, t23Money(sum(pd)) + ' paid'));
@@ -20603,7 +20682,8 @@ function renderClaims(){
   t23Seg(); t23Stats();
   fw.innerHTML = ''; fw.hidden = true;
   var h = '', cols = ['Patient', 'Fee and diagnosis', 'Amount', 'Status', ''];
-  if(T23.view === 'private'){
+  if(T23.view === 'lfp') h = lfpcHtml();
+  else if(T23.view === 'private'){
     var pv = t23Priv();
     h = pv.length ? t23Table('Private pay', ['Patient', 'Item', 'Amount', 'Status', ''], pv.map(t23PrivRow)) : '<p class="pc-empty">No private-pay visits.</p>';
   } else {
