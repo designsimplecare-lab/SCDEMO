@@ -8370,6 +8370,14 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #ri-root .ri-ord .ri-g b{color:var(--ink);}
 #ri-root .ri-foot{margin:0;}
 #ri-root :is(.sv-tag,.sv-tag .truncate){font-size:14px;}
+#ri-root .ri-bk{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;}
+#ri-root .ri-sa{display:inline-flex;align-items:center;gap:8px;}
+#ri-root .ri-feed{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:var(--radius-sm);background:var(--panel);font-size:14px;line-height:20px;color:var(--ink);}
+#ri-root .ri-feed > svg{flex:none;color:var(--color-yellow-600);}
+#ri-root .ri-feed > span{flex:1;}
+#ri-root .ri-empty{padding:56px 16px;border-radius:var(--radius-sm);background:var(--panel);}
+#ri-drw .ri-dbk{margin-top:16px;}
+#ri-drw .ri-dbk .ri-bk{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;}
 dialog#ri-drw{width:min(900px,94vw);max-width:none;}
 #ri-drw .ri-dl{display:grid;grid-template-columns:170px minmax(0,1fr);gap:8px 16px;margin:16px 0 0;font-size:14px;line-height:20px;}
 #ri-drw .ri-dl dt{color:var(--ink-soft);}
@@ -14328,8 +14336,12 @@ var RI_ROWS = [
     bat:[{n:'Chemistry', r:[['Ferritin', '22', 'µg/L', 'L', '30–400'], ['Vitamin B12', '310', 'pmol/L', '', '>150']]}]}
 ];
 /* rows that start in Waiting on lab and Signed off */
-var RI = {tab:'review', type:'', st:{r28:'waiting', r29:'signed'}, opened:{}, done:{}, signs:{}, unmask:{}, fix:{}, drw:null};
+var RI = {tab:'review', type:'', st:{r28:'waiting', r29:'signed'}, opened:{}, done:{}, signs:{}, unmask:{}, fix:{}, drw:null, book:{}, err:{}, failNext:false, last:'22 November, 9:14 AM',
+  demo:(function(){ try { return new URLSearchParams(location.search).get('inbox') === 'states'; } catch(e){ return false; } })()};
+if(RI.demo) RI.failNext = true;
 RI_ROWS.push(
+  {id:'r30', pt:null, type:'Unreadable fax', via:'Fax', from:'Fax from 604 555 0199', pages:'1–3 of 3', rec:'22 November, 8:47 AM', ex:{k:'unread', fax:'604 555 0199'},
+    text:'3 pages received, none could be read: no patient, sender or report found.'},
   {id:'r28', pt:'douglas', type:'Urine', lab:'LifeLabs', via:'Clinical Data Exchange', by:'you', acc:'L-26-447303', col:'21 November, 7:45 AM', rec:'22 November, 6:30 AM', partial:true,
     bat:[{n:'Urinalysis', r:[['Protein', 'Negative', '', '', 'Negative'], ['Glucose', 'Negative', '', '', 'Negative']]}, {n:'Urine culture', r:[], pend:['Culture']}],
     signs:[{at:'22 November, 8:10 AM', cov:'Urinalysis (2 results); urine culture pending'}]},
@@ -14381,10 +14393,11 @@ var RI_ACT = {
   notforme:['secondary-main', 'Return to sender', '', 'Fax it back to the sender with the standard note; it is never filed in a chart'],
   nolab:['secondary-main', 'Confirm lab', 'check', 'Add this sender to the lab directory and file the report'],
   noacc:['secondary-main', 'Keep as new', 'check', 'File it as its own report'],
+  unread:['secondary-main', 'Ask to resend', '', 'Fax the sender asking them to send it again'],
   access:['secondary-main', 'Enter access word', '', 'Show this patient\'s report; every unmasking is logged with a reason']
 };
 function riB(v, label, js, title, icon){ return caBtn(v, label, js, title, icon); }
-function riArrow(f){ return f === 'H' || f === 'HH' ? ' ↑' : f === 'L' || f === 'LL' ? ' ↓' : ''; }
+function riArrow(f, v){ if(v != null && !/^[<>]?\s*-?\d/.test(String(v))) return ''; return f === 'H' || f === 'HH' ? ' ↑' : f === 'L' || f === 'LL' ? ' ↓' : ''; }
 function riVal(x){ return x[1] + (x[2] ? ' ' + x[2] : ''); }
 /* one line per battery; abnormal first in grey tags, critical in red tags with the word, normal values after in grey */
 function riLines(r){
@@ -14396,7 +14409,9 @@ function riLines(r){
   var out = B.filter(function(b){ return collapse.indexOf(b) < 0; }).map(function(b){
     var ab = b.r.filter(function(x){ return x[3]; }), ok = b.r.filter(function(x){ return !x[3]; });
     var tags = ab.map(function(x){ var crit = x[3] === 'HH' || x[3] === 'LL';
-      return SC.html('Tag', {color:crit ? 'error' : 'neutral', title:x[0] + ' ' + riVal(x) + (x[4] ? ' · reference ' + x[4] : '')}, x[0] + ' ' + riVal(x) + riArrow(x[3]) + (crit ? ' · critical' : '')); }).join('');
+      var tg = SC.html('Tag', {color:crit ? 'error' : 'neutral', title:x[0] + ' ' + riVal(x) + (x[4] ? ' · reference ' + x[4] : '')}, x[0] + ' ' + riVal(x) + riArrow(x[3], x[1]) + (crit ? ' · critical' : ''));
+      /* 7: a corrected abnormal value shows the old value struck through and CORRECTED, like a normal one */
+      return x[5] ? '<span class="ri-corr">' + tg + ' <s>' + csEsc(x[5]) + '</s> ' + SC.html('Tag', {color:'information'}, 'CORRECTED') + '</span>' : tg; }).join('');
     var plain = ok.map(function(x){ return x[5] ? '<span class="ri-corr">' + csEsc(x[0]) + ' <s>' + csEsc(x[5]) + '</s> ' + csEsc(riVal(x)) + ' ' + SC.html('Tag', {color:'information'}, 'CORRECTED') + '</span>' : csEsc(x[0]) + ' ' + csEsc(riVal(x)); });
     var text = plain.filter(function(p){ return p.indexOf('ri-corr') < 0; }), corr = plain.filter(function(p){ return p.indexOf('ri-corr') > -1; });
     return '<div class="ri-l' + (b.seen ? ' ri-seen' : '') + '"><span class="ri-bn">' + csEsc(b.n) + '</span>' + (b.isNew ? SC.html('Tag', {color:'information'}, 'NEW') : '') + tags + corr.join('') +
@@ -14410,22 +14425,24 @@ function riLines(r){
 }
 function riPtCell(r, first, rows){
   if(!first) return '';
+  if(r.ex && r.ex.k === 'unread') return '<div class="ri-pt"><span class="ri-unm"><i></i>Could not be read</span><b class="ri-nm">No patient found</b><span class="ri-id">' + csEsc(r.from) + '</span></div>';
   if(r.ex && r.ex.k === 'unmatched' && !RI.fix[r.id]){
     var E = r.ex, S = RI_PT[E.sug];
     return '<div class="ri-pt"><span class="ri-unm"><i></i>Unmatched</span><div class="ri-who">' + SC.html('AvatarCircle', {name:E.name, size:'small'}).replace('sv-avatar-circle', 'sv-avatar-circle ri-dash') + '<b>' + csEsc(E.name) + '</b></div>' +
-      '<span class="ri-id">As written: ' + csEsc(E.dob) + ' · PHN ' + csEsc(E.phn) + '</span><span class="ri-id">Suggested: ' + csEsc(S.n) + ', ' + csEsc(S.dob) + ' · PHN ' + csEsc(S.phn) + ' · same name and date of birth</span>' +
+      '<span class="ri-id">As written: ' + csEsc(E.dob) + ' · PHN ' + csEsc(E.phn) + '</span><span class="ri-id">Suggested: ' + csEsc(S.n) + ', ' + csEsc(S.dob) + ' · PHN ' + csEsc(S.phn) + '</span>' +
+      '<span class="ri-id">' + [E.dob === S.dob ? 'Date of birth matches' : '<b>Date of birth differs</b>', E.name.toLowerCase() === S.n.toLowerCase() ? 'name matches' : '<b>name differs</b>: ' + csEsc(E.name.split(' ').pop()) + ' on the report', 'PHN unreadable'].join(' · ') + '</span>' +
       '<div class="ri-pa">' + riB('link', 'Choose another', 'riChoose(\'' + r.id + '\')', 'Search for the right patient', '') + riB('link', 'Not my patient', 'riDone(\'' + r.id + '\',\'Returned as misdirected\')', 'Send it back to the lab as misdirected', '') + '</div></div>';
   }
   if(!r.pt) return '<div class="ri-pt"><span class="ri-unm"><i></i>Not for me</span><b class="ri-nm">Addressed to ' + csEsc(r.ex.to) + '</b><span class="ri-id">' + csEsc(r.from) + '</span></div>';
   var P = RI_PT[r.pt];
   if(P.protected && !RI.unmask[r.pt]) return '<div class="ri-pt"><div class="ri-who">' + SC.html('AvatarCircle', {name:'Protected', size:'small'}) + '<b>Protected patient</b></div><span class="ri-id">This patient has a protective access word</span></div>';
-  var anyCrit = rows.some(function(x){ return riFlag(x) === 'critical'; });
-  var acts = [anyCrit || P.urgent ? riB('link', 'Book urgent visit', 'riBook(\'' + r.pt + '\',1)', 'Ask Dolly to book ' + P.n.split(' ')[0] + ' today', '') : riB('link', 'Book visit', 'riBook(\'' + r.pt + '\',0)', 'Ask Dolly to book a visit with ' + P.n.split(' ')[0], '')];
+  var acts = [riBookHtml(r.pt, rows)];
   if(P.rerefer) acts.push(riB('link', 'Re-refer', 'riRerefer(\'' + r.pt + '\')', 'Start a new ' + P.rerefer.toLowerCase() + ' referral to another specialist', ''));
   var signable = rows.filter(function(x){ return riAct(x) === 'signoff'; });
-  if(rows.length > 1 && signable.length > 1){
-    var all = rows.every(function(x){ return RI.opened[x.id]; });
-    acts.push(SC.html('Button', {variant:'link', size:'medium', disabled:!all || undefined, title:all ? 'Sign off every report for ' + P.n.split(' ')[0] : 'Opens once you have opened each report'}, 'Sign off all').replace('<button ', '<button onclick="riSignAll(\'' + r.pt + '\')" '));
+  if(signable.length > 1){
+    var op = signable.filter(function(x){ return RI.opened[x.id]; }).length, all = op === signable.length;
+    acts.push('<span class="ri-sa">' + SC.html('Button', {variant:'link', size:'medium', disabled:!all || undefined, title:all ? 'Sign off the ' + signable.length + ' lab reports for ' + P.n.split(' ')[0] + '; documents keep their own action' : 'Open each lab report first'}, 'Sign off ' + signable.length + ' reports').replace('<button ', '<button onclick="riSignAll(\'' + r.pt + '\')" ') +
+      (all ? '' : '<span class="ri-g">' + op + ' of ' + signable.length + ' opened</span>') + '</span>');
   }
   var nm = P.chart ? '<button type="button" class="ri-nmb" onclick="openChart(\'' + P.chart.replace(/'/g, '\\\'') + '\')" title="Open ' + csEsc(P.n.split(' ')[0]) + '\'s chart">' + csEsc(P.n) + '</button>' : '<b class="ri-nm">' + csEsc(P.n) + '</b>';
   return '<div class="ri-pt"><div class="ri-who">' + SC.html('AvatarCircle', {name:P.n, size:'small'}) + nm + '</div><span class="ri-id"><span class="ri-nw">' + csEsc(P.dob) + '</span> · ' + P.sex.charAt(0) + ' · <span class="ri-nw">PHN <b>' + csEsc(P.phn) + '</b></span></span>' +
@@ -14446,6 +14463,7 @@ function riActCell(r){
   if(st === 'signed') return '<div class="ri-acts">' + SC.html('Tag', {color:'success', startIcon:'check'}, (RI.signs[r.id] ? 'Signed off ' + RI.signs[r.id] : 'Signed off')) + riB('link', 'Full report', 'riOpen(\'' + r.id + '\')', 'Open the full report and its source pages', '') + '</div>';
   if(st === 'waiting') return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'clock-time'}, 'Waiting on the lab') + riB('link', 'Full report', 'riOpen(\'' + r.id + '\')', 'Open the full report and its source pages', '') + '</div>';
   var P = r.pt && RI_PT[r.pt], k = P && P.protected && !RI.unmask[r.pt] ? 'access' : riAct(r), A = RI_ACT[k];
+  if(RI.err[r.id]) return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'warning'}, 'Sign-off not saved') + riB('secondary-main', 'Try again', 'riDo(\'' + r.id + '\',\'signoff\')', 'Sign off this report again', 'check') + '</div>';
   var main = riB(A[0], A[1], 'riDo(\'' + r.id + '\',\'' + k + '\')', A[3], A[2]);
   if(k === 'approve') main += riB('tertiary-main', 'Decline', 'riDo(\'' + r.id + '\',\'decline\')', 'Decline the renewal; a signed fax with your reason goes back to the pharmacy', 'x');
   if(k === 'noacc') main = riB('secondary-main', 'Merge', 'riDo(\'' + r.id + '\',\'merge\')', 'Add these results to an existing report for this patient', '') + main;
@@ -14461,7 +14479,7 @@ function riRender(){
   var counts = {}; ['review', 'waiting', 'signed'].forEach(function(t){ counts[t] = RI_ROWS.filter(function(r){ return t === 'signed' ? (riSt(r) === 'signed' || RI.done[r.id]) : (riSt(r) === t && !RI.done[r.id]); }).length; });
   var fl = document.getElementById('inbox-nav-flag'); if(fl){ fl.style.display = counts.review ? '' : 'none'; fl.textContent = counts.review; }
   var byType = {}; inTab.forEach(function(r){ byType[r.type] = (byType[r.type] || 0) + 1; });
-  var rows = RI.type ? inTab.filter(function(r){ return r.type === RI.type; }) : inTab;
+  var rows = RI.type ? inTab.filter(function(r){ return r.type === RI.type || riSec(r) === 'critical'; }) : inTab;
   var tab = function(v, label, ic){ return ['Tab', {value:v, startIcon:ic}, label + ' ' + counts[v]]; };
   var tabs = '<div class="ri-tabs" onclick="riTabClick(event)">' + SC.html('Tabs', {defaultValue:RI.tab}, ['TabList', {'aria-label':'Results inbox'}, tab('review', 'Needs review', 'eye-on'), tab('waiting', 'Waiting on lab', 'clock-time'), tab('signed', 'Signed off', 'check-circle')]) + '</div>';
   var chips = '<div class="ri-types" role="group" aria-label="Type">' + SC.html('Chip', {selected:!RI.type, title:'Show every type'}, 'All ' + inTab.length).replace('<button ', '<button onclick="RI.type=\'\';riRender()" ') +
@@ -14469,14 +14487,21 @@ function riRender(){
   /* group by patient (unmatched and not-for-me rows stand alone); a patient sits in the section of their worst item */
   var groups = {}, order = [];
   rows.forEach(function(r){ var k = r.ex && !RI.fix[r.id] && r.ex.k !== 'nolab' && r.ex.k !== 'noacc' ? 'x' + r.id : r.pt; if(!groups[k]){ groups[k] = []; order.push(k); } groups[k].push(r); });
+  if(RI.tab === 'review' && !RI.type) Object.keys(RI_PT).forEach(function(pt){ if(riNeedsVisit(pt) && !groups[pt]){ groups[pt] = []; order.push(pt); } });
+  var gRank = function(k){ return groups[k].length ? Math.min.apply(null, groups[k].map(function(r){ return riRank(riSec(r)); })) : 0; };
   var body = '';
   RI_SEC.forEach(function(S){
-    var G = order.filter(function(k){ return Math.min.apply(null, groups[k].map(function(r){ return riRank(riSec(r)); })) === riRank(S[0]); });
+    var G = order.filter(function(k){ return gRank(k) === riRank(S[0]); });
     if(!G.length) return;
     var n = G.reduce(function(a, k){ return a + groups[k].length; }, 0);
-    body += SC.html('TableGroupRow', {colSpan:7, label:S[1], count:n, expanded:true});
+    body += SC.html('TableGroupRow', {colSpan:7, label:S[1] + (RI.type && S[0] === 'critical' ? ' · always shown' : ''), count:n, expanded:true});
     G.forEach(function(k){
       var L = groups[k].slice().sort(function(a, b){ return riRank(riSec(a)) - riRank(riSec(b)); });
+      if(!L.length){   /* every report signed off, the urgent visit not yet arranged */
+        body += SC.html('TableRow', {className:'ri-row'}, ['TableCell', {}, SC.raw(riPtCell({pt:k}, true, []))], ['TableCell', {}, ''],
+          ['TableCell', {}, SC.raw('<div class="ri-l"><span class="ri-g" style="color:var(--ink)">Reports signed off · urgent visit not yet arranged</span></div>')], ['TableCell', {}, ''], ['TableCell', {}, ''], ['TableCell', {}, ''], ['TableCell', {}, '']);
+        return;
+      }
       L.forEach(function(r, i){
         var sec = riSec(r), f = sec === 'protected' ? '' : riFlag(r), prot = sec === 'protected';
         body += SC.html('TableRow', {className:'ri-row' + (i ? ' ri-cont' : '') + (RI.opened[r.id] ? ' ri-opened' : ''), 'data-ri':r.id},
@@ -14497,9 +14522,16 @@ function riRender(){
       });
     });
   });
-  if(!body) body = SC.html('TableRow', {}, ['TableCell', {colSpan:7}, ['TableCellContent', {label:RI.tab === 'review' ? 'Nothing to review. New results appear here as they arrive.' : RI.tab === 'waiting' ? 'Nothing is waiting on the lab.' : 'Nothing signed off yet.'}]]);
+  var feed = RI.demo && !RI.feedOk ? '<div class="ri-feed">' + SC.icon('warning', {size:20}) + '<span><b>No results from Clinical Data Exchange since 22 Nov, 6:10 AM.</b> Results may be waiting at the lab.</span>' +
+    riB('secondary-main', 'Check again', 'RI.feedOk=1;riRender();toast(\'Clinical Data Exchange is back · 3 results received\')', 'Ask the feed for new results now', '') + '</div>' : '';
+  if(!body){
+    var E = RI.tab === 'review' ? {icon:'check-circle', title:'All caught up', description:'Nothing to review. Last result received ' + RI.last + '.'}
+      : RI.tab === 'waiting' ? {icon:'clock-time', title:'Nothing waiting on the lab', description:'Reports you sign off before every result is back wait here.'}
+      : {icon:'check-circle', title:'Nothing signed off yet', description:'Reports you sign off today appear here.'};
+    root.innerHTML = riDates(tabs + feed + '<div class="ri-empty">' + SC.html('Empty', E) + '</div>'); return;
+  }
   var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Patient'], ['TableHead', {}, 'Type\u00a0and status'], ['TableHead', {}, 'Report'], ['TableHead', {}, 'Flag'], ['TableHead', {}, 'Source'], ['TableHead', {}, 'Collected\u00a0→ Received'], ['TableHead', {}, 'Action']]];
-  root.innerHTML = riDates(tabs + chips + '<div class="ri-wrap">' + SC.html('Table', {'aria-label':'Results inbox', framed:false}, head, ['TableBody', {}, SC.raw(body)]) + '</div>');
+  root.innerHTML = riDates(tabs + feed + chips + '<div class="ri-wrap">' + SC.html('Table', {'aria-label':'Results inbox', framed:false}, head, ['TableBody', {}, SC.raw(body)]) + '</div>');
 }
 function riTabClick(e){ var t = e.target.closest('[role=tab]'); if(!t) return; var v = t.id.split('-tab-').pop(); if(v && v !== RI.tab){ RI.tab = v; RI.type = ''; riRender(); } }
 function riNow(){ return '22 Nov, ' + csNow(); }
@@ -14512,23 +14544,25 @@ function riDo(id, k){
   var P = r.pt && RI_PT[r.pt], first = P ? P.n.split(' ')[0] : '';
   if(k === 'access') return riAccess(r.pt);
   if(k === 'signoff'){
-    RI.signs[id] = riNow(); (r.signs = r.signs || []).push({at:riNow(), cov:(r.bat || []).map(function(b){ return b.n + ' (' + b.r.length + (b.r.length === 1 ? ' result)' : ' results)'); }).join('; ') + (riPending(r) ? '; pending results to follow' : '')});
+    if(RI.failNext){ RI.failNext = false; RI.err[id] = 1; riRender(); toast('Sign-off not saved: the connection dropped. Nothing was signed; try again.'); var d0 = document.getElementById('ri-drw'); if(d0 && d0.open) d0.close(); return; }
+    delete RI.err[id]; RI.signs[id] = riNow(); riSignRec(r);
     RI.st[id] = riPending(r) ? 'waiting' : 'signed'; riSync(r);
     toast(riPending(r) ? first + '\'s report signed off as it is now · it waits on the lab and comes back when the rest arrives' : first + '\'s report signed off · cleared');
     riRender(); var d = document.getElementById('ri-drw'); if(d && d.open) d.close(); return;
   }
   var L = {ack:'Acknowledged ' + riNow(), approve:'Approved · signed fax sent to the pharmacy', decline:'Declined · signed fax sent to the pharmacy', referral:'Referral started for colonoscopy',
-    summary:'Summary sent to Royal Jubilee', notforme:'Returned to sender with the standard note', merge:'Merged with ' + first + '\'s report of 21 November'}[k];
+    summary:'Summary sent to Royal Jubilee', notforme:'Returned to sender with the standard note', unread:'Resend requested from 604 555 0199', merge:'Merged with ' + first + '\'s report of 21 November'}[k];
   if(L) return riDone(id, L);
   if(k === 'unmatched'){ RI.fix[id] = 1; r.pt = r.ex.sug; r.nameAs = r.ex.name; toast('Filed to ' + RI_PT[r.pt].n + ' · the lab is told the personal health number was unreadable'); riRender(); return; }
   if(k === 'nolab'){ RI.fix[id] = 1; r.lab = r.ex.letter; toast(r.ex.letter + ' added to the lab directory (fax ' + r.ex.fax + ') · report filed'); riRender(); return; }
   if(k === 'noacc'){ RI.fix[id] = 1; r.acc = 'No report number · kept as its own report'; r.col = '21 November (time not found)'; toast('Kept as a new report for ' + first); riRender(); return; }
 }
+function riSignRec(r){ (r.signs = r.signs || []).push({at:riNow(), cov:(r.bat || []).map(function(b){ return b.n + ' (' + b.r.length + (b.r.length === 1 ? ' result)' : ' results)'); }).join('; ') + (riPending(r) ? '; pending results to follow' : '')}); }
 function riSignAll(pt){
   var L = RI_ROWS.filter(function(r){ return r.pt === pt && riSt(r) === 'review' && !RI.done[r.id] && riAct(r) === 'signoff'; });
   if(L.some(function(r){ return !RI.opened[r.id]; })){ toast('Open each report first'); return; }
-  L.forEach(function(r){ RI.signs[r.id] = riNow(); RI.st[r.id] = riPending(r) ? 'waiting' : 'signed'; riSync(r); });
-  toast(L.length + ' reports signed off for ' + RI_PT[pt].n.split(' ')[0]); riRender();
+  L.forEach(function(r){ RI.signs[r.id] = riNow(); riSignRec(r); RI.st[r.id] = riPending(r) ? 'waiting' : 'signed'; riSync(r); });
+  toast(L.length + ' reports signed off for ' + RI_PT[pt].n.split(' ')[0] + ' · each sign-off recorded'); riRender();
 }
 function riTask(pt, title, prio, note){
   if(typeof DOC_TASKS === 'undefined') return;
@@ -14536,7 +14570,26 @@ function riTask(pt, title, prio, note){
   DOC_TASKS.unshift({id:'ri' + pt + Date.now(), title:title, type:'Patient Notes', prio:prio, age:0, to:typeof MOA_ROSTER !== 'undefined' ? MOA_ROSTER.primary : 'Dolly', role:'MOA', patient:P.n, preferred:P.n.split(' ')[0], verified:true, status:'open', carried:0, due:'Today', note:note});
   if(typeof renderTasks === 'function') renderTasks();
 }
-function riBook(pt, urgent){ var P = RI_PT[pt]; riTask(pt, (urgent ? 'Book an urgent visit today for ' : 'Book a visit for ') + P.n, urgent ? 'urgent' : 'routine', 'From the results inbox.'); toast('Task sent to Dolly: ' + (urgent ? 'urgent visit today for ' : 'book a visit for ') + P.n.split(' ')[0]); }
+function riBook(pt, urgent){
+  var P = RI_PT[pt];
+  if(urgent === 'none'){ RI.book[pt] = {none:true, at:riNow()}; riRender(); toast('No visit needed for ' + P.n.split(' ')[0] + ' · recorded'); return; }
+  riTask(pt, (urgent ? 'Book an urgent visit today for ' : 'Book a visit for ') + P.n, urgent ? 'urgent' : 'routine', 'From the results inbox.');
+  RI.book[pt] = {urgent:!!urgent, at:riNow()}; riRender();
+  toast('Task sent to Dolly: ' + (urgent ? 'urgent visit today for ' : 'book a visit for ') + P.n.split(' ')[0]);
+}
+function riUnbook(pt){ delete RI.book[pt]; riRender(); }
+/* RS-7: the visit belongs to the patient, survives sign-off, and shows once it is asked for; an urgent patient stays in Needs review
+   until the visit is booked or you record that none is needed */
+function riNeedsVisit(pt){ var P = RI_PT[pt]; return !!(P && P.urgent && !RI.book[pt]); }
+function riBookHtml(pt, rows){
+  var P = RI_PT[pt], f = P.n.split(' ')[0], B = RI.book[pt];
+  if(B) return '<span class="ri-bk">' + SC.html('Tag', {color:'neutral', startIcon:B.none ? 'check' : 'calendar'}, B.none ? 'No visit needed · ' + B.at : (B.urgent ? 'Urgent visit' : 'Visit') + ' requested · Dolly · ' + B.at) +
+    riB('link', 'Undo', 'riUnbook(\'' + pt + '\')', 'Take this back', '') + '</span>';
+  var urgent = P.urgent || (rows || []).some(function(x){ return riFlag(x) === 'critical'; });
+  if(urgent) return '<span class="ri-bk">' + riB('secondary-main', 'Book urgent visit', 'riBook(\'' + pt + '\',1)', 'Ask Dolly to book ' + f + ' today', 'calendar') +
+    riB('link', 'No visit needed', 'riBook(\'' + pt + '\',\'none\')', 'Record that ' + f + ' does not need a visit for these results', '') + '</span>';
+  return riB('link', 'Book visit', 'riBook(\'' + pt + '\',0)', 'Ask Dolly to book a visit with ' + f, '');
+}
 function riRerefer(pt){ var P = RI_PT[pt]; riTask(pt, 'Re-refer ' + P.n + ' to another dermatologist', 'routine', 'Dr. R. Ahmed has retired. Same referral letter; choose another dermatologist.'); toast('Re-referral started · Dolly will send it to another dermatologist'); }
 function riRemind(pt, oi, task){ var P = RI_PT[pt], o = P.orders[oi]; if(task) riTask(pt, 'Call ' + P.n + ' about the ' + o.n.toLowerCase() + ' not yet collected', 'routine', 'Ordered ' + o.d + '; not collected after ' + o.overdue + ' days.');
   RI.done[pt + 'o' + oi] = task ? 'Dolly will call' : 'Reminder sent'; riRender(); toast(task ? 'Task sent to Dolly' : 'Reminder sent to ' + P.n.split(' ')[0] + ' in the patient portal'); }
@@ -14558,7 +14611,9 @@ function riAccess(pt){
 }
 /* the full report: every battery and result, references, comments, accession number, version history, sign-offs and the source pages */
 function riOpen(id){
-  var r = riRow(id); if(!r) return; RI.opened[id] = 1;
+  var r = riRow(id); if(!r) return;
+  if(r.pt && RI_PT[r.pt].protected && !RI.unmask[r.pt]) return riAccess(r.pt);   /* EX-7: nothing of a protected record without the access word */
+  RI.opened[id] = 1;
   var P = r.pt && RI_PT[r.pt], st = riSt(r), k = riAct(r), A = RI_ACT[k];
   var who = P ? P.n : (r.ex && r.ex.name) || 'Not for me';
   var facts = [['Patient', P ? P.n + ' · ' + P.dob + ' · PHN ' + P.phn : (r.ex && r.ex.k === 'unmatched' ? r.ex.name + ' · ' + r.ex.dob + ' · PHN unreadable' : '—')],
@@ -14571,7 +14626,7 @@ function riOpen(id){
     var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Test'], ['TableHead', {}, 'Result'], ['TableHead', {}, 'Flag'], ['TableHead', {}, 'Reference']]];
     var body = b.r.map(function(x){ var crit = x[3] === 'HH' || x[3] === 'LL';
       return SC.html('TableRow', {}, ['TableCell', {}, ['TableCellContent', {label:x[0]}]], ['TableCell', {}, SC.raw(r.withdrawn ? '<s>' + csEsc(riVal(x)) + '</s>' : (x[5] ? '<s>' + csEsc(x[5]) + '</s> ' : '') + '<b>' + csEsc(riVal(x)) + '</b>')],
-        ['TableCell', {}, SC.raw(crit ? SC.html('Tag', {color:'error'}, 'Critical' + riArrow(x[3])) : x[3] ? 'Abnormal' + riArrow(x[3]) : '')], ['TableCell', {}, ['TableCellContent', {label:x[4] || '—'}]]); }).join('') +
+        ['TableCell', {}, SC.raw(crit ? SC.html('Tag', {color:'error'}, 'Critical' + riArrow(x[3], x[1])) : x[3] ? 'Abnormal' + riArrow(x[3], x[1]) : '')], ['TableCell', {}, ['TableCellContent', {label:x[4] || '—'}]]); }).join('') +
       (b.pend || []).map(function(p){ return SC.html('TableRow', {}, ['TableCell', {}, ['TableCellContent', {label:p}]], ['TableCell', {colSpan:3}, ['TableCellContent', {label:'Pending'}]]); }).join('') +
       (b.canc || []).map(function(c){ return SC.html('TableRow', {}, ['TableCell', {}, ['TableCellContent', {label:c[0]}]], ['TableCell', {colSpan:3}, ['TableCellContent', {label:'Cancelled · ' + c[1]}]]); }).join('');
     return '<h3 class="ri-bh">' + csEsc(b.n) + (b.isNew ? ' · new' : '') + (b.seen ? ' · reviewed by you ' + csEsc(b.seen) : '') + '</h3><div class="ri-tw">' + SC.html('Table', {'aria-label':b.n, framed:false}, head, ['TableBody', {}, SC.raw(body)]) + '</div>' + (b.com ? '<p class="ri-cm">' + csEsc(b.com) + '</p>' : '');
@@ -14589,7 +14644,8 @@ function riOpen(id){
   var canAct = st === 'review' && !RI.done[id] && !(P && P.protected && !RI.unmask[r.pt]);
   var opts = {id:'ri-drw', title:(r.bat ? r.bat.map(function(b){ return b.n; }).filter(function(v, i, a){ return a.indexOf(v) === i; }).join(', ') : r.type), description:who + ' · ' + r.type + (riStatus(r) ? ' · ' + riStatus(r) : ''), secondaryAction:{label:'Close', id:'ri-close'}};
   if(canAct) opts.primaryAction = {label:k === 'unmatched' ? 'Match to ' + RI_PT[r.ex.sug].n.split(' ')[0] : A[1], id:'ri-go'};
-  host.innerHTML = riDates(SC.html('Drawer', opts, SC.raw('<div class="ri-dbody">' + dl + bats + hist + src + '</div>')));
+  var bk = P && P.urgent ? '<div class="ri-dbk">' + riBookHtml(r.pt, [r]).replace(/onclick="(riBook|riUnbook)\(/g, 'onclick="document.getElementById(\'ri-drw\').close();$1(') + '</div>' : '';
+  host.innerHTML = riDates(SC.html('Drawer', opts, SC.raw('<div class="ri-dbody">' + bk + dl + bats + hist + src + '</div>')));
   var d = document.getElementById('ri-drw');
   d.addEventListener('click', function(e){
     if(e.target === d) return d.close();
