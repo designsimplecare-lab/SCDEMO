@@ -8275,56 +8275,77 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 .sc-dd .sv-dropdown{width:100%;}
 .sc-dd .sv-menu-item__target.sc-dd-hi{background:var(--color-surface-tertiary-main-hovered, var(--wash));}
 /* ===== LFP time (Ani, 21 Nov) ===== */
-#lfp-root{display:grid;gap:16px;}
-#lfp-root .lfp-intro{margin:-6px 0 0;max-width:80ch;font-size:15px;line-height:22px;color:var(--ink-soft);}
-#lfp-root .lfp-card{background:var(--panel);border-radius:var(--radius-sm);padding:18px 20px;}
-#lfp-root .lfp-hd{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-bottom:14px;}
-#lfp-root .lfp-hd h2{margin:0;font-size:17px;line-height:24px;font-weight:700;color:var(--ink);}
-#lfp-root .lfp-hd .sp{flex:1;}
-#lfp-root .lfp-sub{font-size:14px;line-height:20px;color:var(--ink-soft);}
-#lfp-root .lfp-days{display:flex;flex-wrap:wrap;gap:8px;}
-#lfp-root .lfp-days .sv-chip{height:auto;min-height:52px;flex-direction:column;align-items:flex-start;gap:0;padding:6px 14px;}
-#lfp-root .lfp-days .sv-chip .truncate{white-space:normal;overflow:visible;}
-#lfp-root .lfp-days small{display:block;font-size:14px;font-weight:400;color:var(--ink-soft);}
-#lfp-root .lfp-cols{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start;}
-#lfp-root .lfp-bar{position:relative;height:40px;margin:6px 0 24px;border-radius:var(--radius-xs);background:var(--wash);}
-#lfp-root .lfp-bar i{position:absolute;top:8px;bottom:8px;border-radius:var(--radius-2xs);}
-#lfp-root .lfp-bar .day{position:absolute;top:2px;bottom:2px;border:2px dashed var(--color-navy-300);border-radius:var(--radius-xs);background:none;pointer-events:none;}
-#lfp-root .lfp-bar .tick{position:absolute;top:100%;margin-top:4px;transform:translateX(-50%);font-size:14px;color:var(--ink-faint);}
-#lfp-root .t-direct{background:var(--color-navy-700);}
-#lfp-root .t-indirect{background:var(--color-teal-500);}
-#lfp-root .t-admin{background:var(--color-purple-500);}
-#lfp-root .t-travel{background:var(--color-yellow-500);}
-#lfp-root .t-none{background:repeating-linear-gradient(45deg, var(--color-grey-300) 0 4px, var(--color-grey-200) 4px 8px);}
-#lfp-root .lfp-key{display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--ink-soft);}
-#lfp-root .lfp-key span{display:inline-flex;align-items:center;gap:6px;}
-#lfp-root .lfp-key i{width:12px;height:12px;border-radius:var(--radius-2xs);}
-#lfp-root .lfp-rows{display:grid;}
-#lfp-root .lfp-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);}
-#lfp-root .lfp-row:first-child{border-top:0;}
-#lfp-root .lfp-row .when{width:112px;flex:none;font-size:14px;font-variant-numeric:tabular-nums;color:var(--ink);}
-#lfp-root .lfp-row .sw{width:4px;align-self:stretch;flex:none;border-radius:var(--radius-2xs);}
-#lfp-root .lfp-row .m{flex:1;min-width:0;}
-#lfp-root .lfp-row .m b{display:block;font-size:15px;line-height:22px;font-weight:500;color:var(--ink);}
-#lfp-root .lfp-row .m span{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
-#lfp-root .lfp-row .u{width:86px;flex:none;text-align:right;font-size:14px;color:var(--ink-soft);font-variant-numeric:tabular-nums;}
-#lfp-root .lfp-row .dd{width:210px;flex:none;}
-#lfp-root .lfp-row.off .m b{color:var(--ink-soft);}
-#lfp-root .lfp-sum{display:grid;}
-#lfp-root .lfp-sum div{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:15px;color:var(--ink);}
-#lfp-root .lfp-sum div:first-child{border-top:0;}
-#lfp-root .lfp-sum i{width:12px;height:12px;border-radius:var(--radius-2xs);flex:none;}
-#lfp-root .lfp-sum .v{margin-left:auto;font-variant-numeric:tabular-nums;text-align:right;}
-#lfp-root .lfp-sum .v small{display:block;font-size:14px;color:var(--ink-soft);}
-#lfp-root .lfp-sum .tot{font-weight:700;}
-#lfp-root .lfp-lim{display:grid;gap:14px;}
-#lfp-root .lfp-lim .l{display:flex;justify-content:space-between;gap:8px;font-size:14px;line-height:20px;color:var(--ink);margin-bottom:4px;}
-#lfp-root .lfp-lim .l span{color:var(--ink-soft);}
-#lfp-root .lfp-done{display:flex;gap:8px;align-items:flex-start;margin-top:14px;padding:10px 12px;border-radius:var(--radius-xs);background:var(--color-green-25);font-size:14px;line-height:20px;color:var(--ink);}
-#lfp-root .lfp-done svg{width:18px;height:18px;flex:none;color:var(--color-green-700);}
-#lfp-root .lfp-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
-#lfp-root .sv-tag,#lfp-root .sv-tag .truncate,#lfp-root .sv-stat__label{font-size:14px;}
-#lfp-root .sv-progress{width:100% !important;}
+:is(#lfp-root,#pnl-root){display:grid;gap:16px;}
+:is(#lfp-root,#pnl-root) .lfp-intro{margin:-6px 0 0;max-width:80ch;font-size:15px;line-height:22px;color:var(--ink-soft);}
+:is(#lfp-root,#pnl-root) .lfp-card{background:var(--panel);border-radius:var(--radius-sm);padding:18px 20px;}
+:is(#lfp-root,#pnl-root) .lfp-hd{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-bottom:14px;}
+:is(#lfp-root,#pnl-root) .lfp-hd h2{margin:0;font-size:17px;line-height:24px;font-weight:700;color:var(--ink);}
+:is(#lfp-root,#pnl-root) .lfp-hd .sp{flex:1;}
+:is(#lfp-root,#pnl-root) .lfp-sub{font-size:14px;line-height:20px;color:var(--ink-soft);}
+:is(#lfp-root,#pnl-root) .lfp-days{display:flex;flex-wrap:wrap;gap:8px;}
+:is(#lfp-root,#pnl-root) .lfp-days .sv-chip{height:auto;min-height:52px;flex-direction:column;align-items:flex-start;gap:0;padding:6px 14px;}
+:is(#lfp-root,#pnl-root) .lfp-days .sv-chip .truncate{white-space:normal;overflow:visible;}
+:is(#lfp-root,#pnl-root) .lfp-days small{display:block;font-size:14px;font-weight:400;color:var(--ink-soft);}
+:is(#lfp-root,#pnl-root) .lfp-cols{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start;}
+:is(#lfp-root,#pnl-root) .lfp-bar{position:relative;height:40px;margin:6px 0 24px;border-radius:var(--radius-xs);background:var(--wash);}
+:is(#lfp-root,#pnl-root) .lfp-bar i{position:absolute;top:8px;bottom:8px;border-radius:var(--radius-2xs);}
+:is(#lfp-root,#pnl-root) .lfp-bar .day{position:absolute;top:2px;bottom:2px;border:2px dashed var(--color-navy-300);border-radius:var(--radius-xs);background:none;pointer-events:none;}
+:is(#lfp-root,#pnl-root) .lfp-bar .tick{position:absolute;top:100%;margin-top:4px;transform:translateX(-50%);font-size:14px;color:var(--ink-faint);}
+:is(#lfp-root,#pnl-root) .t-direct{background:var(--color-navy-700);}
+:is(#lfp-root,#pnl-root) .t-indirect{background:var(--color-teal-500);}
+:is(#lfp-root,#pnl-root) .t-admin{background:var(--color-purple-500);}
+:is(#lfp-root,#pnl-root) .t-travel{background:var(--color-yellow-500);}
+:is(#lfp-root,#pnl-root) .t-none{background:repeating-linear-gradient(45deg, var(--color-grey-300) 0 4px, var(--color-grey-200) 4px 8px);}
+:is(#lfp-root,#pnl-root) .lfp-key{display:flex;flex-wrap:wrap;gap:14px;font-size:14px;color:var(--ink-soft);}
+:is(#lfp-root,#pnl-root) .lfp-key span{display:inline-flex;align-items:center;gap:6px;}
+:is(#lfp-root,#pnl-root) .lfp-key i{width:12px;height:12px;border-radius:var(--radius-2xs);}
+:is(#lfp-root,#pnl-root) .lfp-rows{display:grid;}
+:is(#lfp-root,#pnl-root) .lfp-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);}
+:is(#lfp-root,#pnl-root) .lfp-row:first-child{border-top:0;}
+:is(#lfp-root,#pnl-root) .lfp-row .when{width:112px;flex:none;font-size:14px;font-variant-numeric:tabular-nums;color:var(--ink);}
+:is(#lfp-root,#pnl-root) .lfp-row .sw{width:4px;align-self:stretch;flex:none;border-radius:var(--radius-2xs);}
+:is(#lfp-root,#pnl-root) .lfp-row .m{flex:1;min-width:0;}
+:is(#lfp-root,#pnl-root) .lfp-row .m b{display:block;font-size:15px;line-height:22px;font-weight:500;color:var(--ink);}
+:is(#lfp-root,#pnl-root) .lfp-row .m span{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+:is(#lfp-root,#pnl-root) .lfp-row .u{width:86px;flex:none;text-align:right;font-size:14px;color:var(--ink-soft);font-variant-numeric:tabular-nums;}
+:is(#lfp-root,#pnl-root) .lfp-row .dd{width:210px;flex:none;}
+:is(#lfp-root,#pnl-root) .lfp-row.off .m b{color:var(--ink-soft);}
+:is(#lfp-root,#pnl-root) .lfp-sum{display:grid;}
+:is(#lfp-root,#pnl-root) .lfp-sum div{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:15px;color:var(--ink);}
+:is(#lfp-root,#pnl-root) .lfp-sum div:first-child{border-top:0;}
+:is(#lfp-root,#pnl-root) .lfp-sum i{width:12px;height:12px;border-radius:var(--radius-2xs);flex:none;}
+:is(#lfp-root,#pnl-root) .lfp-sum .v{margin-left:auto;font-variant-numeric:tabular-nums;text-align:right;}
+:is(#lfp-root,#pnl-root) .lfp-sum .v small{display:block;font-size:14px;color:var(--ink-soft);}
+:is(#lfp-root,#pnl-root) .lfp-sum .tot{font-weight:700;}
+:is(#lfp-root,#pnl-root) .lfp-lim{display:grid;gap:14px;}
+:is(#lfp-root,#pnl-root) .lfp-lim .l{display:flex;justify-content:space-between;gap:8px;font-size:14px;line-height:20px;color:var(--ink);margin-bottom:4px;}
+:is(#lfp-root,#pnl-root) .lfp-lim .l span{color:var(--ink-soft);}
+:is(#lfp-root,#pnl-root) .lfp-done{display:flex;gap:8px;align-items:flex-start;margin-top:14px;padding:10px 12px;border-radius:var(--radius-xs);background:var(--color-green-25);font-size:14px;line-height:20px;color:var(--ink);}
+:is(#lfp-root,#pnl-root) .lfp-done svg{width:18px;height:18px;flex:none;color:var(--color-green-700);}
+:is(#lfp-root,#pnl-root) .lfp-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+:is(#lfp-root,#pnl-root) .sv-tag,:is(#lfp-root,#pnl-root) .sv-tag .truncate,:is(#lfp-root,#pnl-root) .sv-stat__label,:is(#lfp-root,#pnl-root) .sv-stat__detail{font-size:14px;}
+:is(#lfp-root,#pnl-root) .sv-progress{width:100% !important;}
+/* the line above each bar says "7.6 of 10 %"; the bar's own percentage of the limit would contradict it (Ani, 22 Nov) */
+:is(#lfp-root,#pnl-root) .sv-progress > span[aria-hidden="true"]{display:none;}
+/* LFP Panel (Ani, 22 Nov; Daniel's LFP guide: the Provincial Attachment System, the 30% limit, the review every three months) */
+#pnl-root .pnl-grp{margin:18px 0 2px;font-size:15px;line-height:22px;font-weight:700;color:var(--ink);}
+#pnl-root .pnl-grp:first-of-type{margin-top:0;}
+#pnl-root .pnl-grp small{margin-left:6px;font-size:14px;font-weight:400;color:var(--ink-soft);}
+#pnl-root .pnl-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;padding:12px 0;border-top:1px solid var(--line);}
+#pnl-root .pnl-grp + .pnl-row{border-top:0;}
+#pnl-root .pnl-row .m{flex:1 1 260px;min-width:0;}
+#pnl-root .pnl-row .m b{display:block;font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
+#pnl-root .pnl-row .m .nm{padding:0;border:0;background:none;font:inherit;font-weight:600;color:var(--ink);cursor:pointer;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px;}
+#pnl-root .pnl-row .m .nm:hover{text-decoration-color:currentColor;}
+#pnl-root .pnl-row .m span{display:block;font-size:14px;line-height:20px;color:var(--ink-soft);}
+#pnl-root .pnl-row .a{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px;}
+#pnl-root .pnl-row.done .m b,#pnl-root .pnl-row.done .m .nm{color:var(--ink-soft);}
+#pnl-root .pnl-kv{display:grid;}
+#pnl-root .pnl-kv div{display:flex;align-items:baseline;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:15px;line-height:22px;color:var(--ink);}
+#pnl-root .pnl-kv div:first-child{border-top:0;}
+#pnl-root .pnl-kv .v{margin-left:auto;font-variant-numeric:tabular-nums;text-align:right;}
+#pnl-root .pnl-kv .v small{display:block;font-size:14px;color:var(--ink-soft);}
+#pnl-root .pnl-note{margin:12px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
 /* LFP time claims (Ani, 21 Nov) */
 #cl-list .lfpc{display:grid;gap:16px;}
 #cl-list .lfpc-card{background:var(--panel);border-radius:var(--radius-sm);padding:16px 18px;}
@@ -8464,6 +8485,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
       <button class="nav-btn" data-screen="earnings" onclick="showScreen('earnings')"><span class="nav-icon"></span><span class="nav-label">Earnings</span></button>
       <!-- LFP time (Daniel's LFP guide, 13 Nov; chart brief, 17 Nov: "Simple classes it automatically; the doctor reviews it in Admin") -->
       <button class="nav-btn" data-screen="time" onclick="showScreen('time');lfpRender()" title="Your LFP time: sorted by type, checked against the limits, approved by you"><span class="nav-icon"></span><span class="nav-label">Time<span class="nav-flag" id="lfp-nav-flag" style="display:none;"></span></span></button>
+      <!-- LFP panel (Ani, 22 Nov: "build the LFP Panel Overview next"; Daniel's LFP guide) -->
+      <button class="nav-btn" data-screen="panel" onclick="showScreen('panel');pnlRender()" title="Your panel: the patients attached to you, the 30% limit, and the review every three months"><span class="nav-icon"></span><span class="nav-label">Panel<span class="nav-flag" id="pnl-nav-flag" style="display:none;"></span></span></button>
       <button class="nav-btn nav-tasks" data-screen="tasks" onclick="showScreen('tasks')"><span class="nav-icon">&#10003;</span><span class="nav-label">Tasks<span class="nav-flag" id="task-nav-flag" style="display:none;"></span></span></button>
       <!-- Ani, 29 Sep: chat as a primary left-nav item. It opens and closes the movable chat panel
            (Daniel, 29 Sep: "I'd like the messenger function movable"). Not a screen, so no data-screen.
@@ -9629,6 +9652,11 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
     <div class="screen" id="screen-time">
       <h1>Time</h1>
       <div id="lfp-root"></div>
+    </div>
+    <!-- LFP panel (Ani, 22 Nov) -->
+    <div class="screen" id="screen-panel">
+      <h1>Panel</h1>
+      <div id="pnl-root"></div>
     </div>
     <div class="screen" id="screen-feesettings">
       <h1>Fee Settings</h1>
@@ -14194,6 +14222,121 @@ function lfpRender(){
     '<section class="lfp-card"><div class="lfp-hd"><h2>Limits</h2></div>' + lim + '<p class="lfp-sub" style="margin:12px 0 0">Travel counts up to 1 hour a day. Claims must be submitted within 90 days.</p></section></div></div>';
 }
 /* ============================================================================
+   LFP panel (Daniel's LFP guide for MOAs; chart brief, 17 Nov "Panel Overview"; Ani, 22 Nov "build the LFP Panel Overview next").
+   The panel is the doctor's long-term patients as recorded in the Provincial Attachment System; a patient is on only one doctor's
+   panel and confirms through the patient portal or 8-1-1 when two doctors claim them. Review at least every three months: remove
+   patients who moved, died or have not been seen for years; add regulars who are missing. No more than 30% of a year's visits may be
+   with patients not on the panel. Deciding who belongs and who to recall is the doctor's judgment (clinical administration, 98012);
+   contacting patients and booking recalls is the MOA's work and never the doctor's time.
+   ========================================================================= */
+var PNL_BASE = {n:1184, visits:3412, off:785, last:'Monday 24 August 2026', due:'Tuesday 24 November 2026'};
+var PNL_K = {
+  add:['Regulars not on your panel', 'They see you often but are not attached to you. Adding them lowers your off-panel visits.'],
+  moved:['May have moved', 'Ask Dolly to check before you remove them.'],
+  dead:['Deceased', ''],
+  unseen:['Not seen in over three years', 'Keep them if they still count on you.'],
+  conflict:['On another doctor\'s panel', 'A patient can be on only one panel; they choose through the patient portal or 8-1-1.']
+};
+var PNL_REV = [
+  {id:'a1', k:'add', n:'Carol-Anne Feldman, 44F', d:'7 visits this year, all with you · last seen 20 November 2026', v:7},
+  {id:'a2', k:'add', n:'Andrey Abushakhmanov, 24M', d:'5 visits this year, all with you · last seen 20 November 2026', v:5},
+  {id:'a3', k:'add', n:'Behdis Maleki, 35F', d:'4 visits this year · ongoing kidney follow-up with you', v:4},
+  {id:'m1', k:'moved', n:'Harjit Sandhu, 52M', d:'Address changed to Calgary, Alberta · Ministry update, 2 October 2026'},
+  {id:'m2', k:'moved', n:'Olivia Tremblay, 29F', d:'Mail returned · phone number not in service'},
+  {id:'d1', k:'dead', n:'Walter Brennan, 88M', d:'Vital Statistics notice, 30 October 2026'},
+  {id:'u1', k:'unseen', n:'Priya Raman, 39F', d:'Last visit 14 March 2023 · no messages since'},
+  {id:'u2', k:'unseen', n:'Tom Lindqvist, 61M', d:'Last visit 2 June 2023 · 2 recall messages unanswered'},
+  {id:'c1', k:'conflict', n:'Mei Chen, 47F', d:'Also attached to Dr. A. Singh in Kelowna since 3 November 2026'}
+];
+var PNL_GAP = [
+  {id:'fit', n:'Colorectal screening (FIT)', d:'Age 50 to 74, no FIT in 2 years', c:142},
+  {id:'flu', n:'Influenza vaccine', d:'Age 65 and over, not recorded this season', c:119},
+  {id:'mam', n:'Mammogram', d:'Age 50 to 74, none in 2 years', c:88},
+  {id:'cx', n:'Cervical screening', d:'Age 25 to 69, none in 3 years', c:61},
+  {id:'a1c', n:'Diabetes: A1c', d:'No A1c in 6 months', c:34},
+  {id:'bp', n:'High blood pressure: blood pressure check', d:'None recorded in 12 months', c:27}
+];
+var PNL_OUT = {added:['success', 'Added · waiting for the patient to confirm'], later:['neutral', 'Not now'], removed:['neutral', 'Removed from your panel'],
+  contact:['information', 'Dolly will contact them'], kept:['success', 'Kept on your panel'], asked:['information', 'Asked to confirm · patient portal']};
+var PNL = {st:{}, gap:{}, task:{}, reviewed:false};
+function pnlNow(){
+  var add = 0, rem = 0, offFix = 0;
+  PNL_REV.forEach(function(r){ var s = PNL.st[r.id]; if(s === 'added'){ add++; offFix += r.v || 0; } if(s === 'removed') rem++; });
+  var n = PNL_BASE.n + add - rem, off = PNL_BASE.off - offFix;
+  return {n:n, add:add, rem:rem, off:off, pct:Math.round(off / PNL_BASE.visits * 1000) / 10, left:PNL_REV.filter(function(r){ return !PNL.st[r.id]; }).length};
+}
+function pnlAct(id, a){
+  var r = PNL_REV.filter(function(x){ return x.id === id; })[0]; if(!r) return;
+  var who = r.n.split(',')[0], first = who.split(' ')[0];
+  if(a === 'undo'){
+    if(PNL.task[id] && typeof DOC_TASKS !== 'undefined'){ for(var i = DOC_TASKS.length - 1; i >= 0; i--) if(DOC_TASKS[i].id === PNL.task[id]) DOC_TASKS.splice(i, 1); delete PNL.task[id]; if(typeof renderTasks === 'function') renderTasks(); }
+    delete PNL.st[id]; PNL.reviewed = false; pnlRender(); return;
+  }
+  PNL.st[id] = a;
+  if(a === 'contact' && typeof DOC_TASKS !== 'undefined'){
+    var tid = 'pnl' + id + Date.now(); PNL.task[id] = tid;
+    DOC_TASKS.unshift({id:tid, title:'Contact ' + who + ' about staying on Dr. Pannozzo\'s panel', type:'Patient Notes', prio:'routine', age:0,
+      to:typeof MOA_ROSTER !== 'undefined' ? MOA_ROSTER.primary : 'Dolly', role:'MOA', patient:who, preferred:first, verified:true, status:'open', carried:0, due:'This week',
+      note:'Panel review: ' + r.d + '. Confirm where they live and whether they still want care here; update the Provincial Attachment System.'});
+    if(typeof renderTasks === 'function') renderTasks();
+  }
+  pnlRender();
+  toast({added:who + ' added · the Attachment System asks them to confirm in the patient portal', later:who + ' left for the next review', removed:who + ' removed from your panel · Attachment System updated',
+    contact:'Task sent to Dolly: contact ' + first, kept:who + ' kept on your panel', asked:first + ' asked to confirm their family doctor in the patient portal'}[a] || 'Done');
+}
+function pnlGap(id, on){ PNL.gap[id] = on ? 1 : 0; pnlRender(); if(on){ var g = PNL_GAP.filter(function(x){ return x.id === id; })[0]; toast('Recall list sent to Dolly: ' + g.c + ' patients · ' + g.n); } }
+function pnlFinish(){
+  var N = pnlNow(); if(N.left){ toast(N.left + (N.left === 1 ? ' patient' : ' patients') + ' still to decide'); return; }
+  PNL.reviewed = true; pnlRender(); toast('Panel review done · next one by Monday 22 February 2027');
+}
+function pnlBtn(v, label, js, title, icon){ return caBtn(v, label, js, title, icon); }
+function pnlRender(){
+  var root = document.getElementById('pnl-root'); if(!root || !(window.SC && SC.html)) return;
+  var N = pnlNow(), fmt = function(x){ return x.toLocaleString('en-CA'); };
+  var fl = document.getElementById('pnl-nav-flag'); if(fl){ fl.style.display = N.left ? '' : 'none'; fl.textContent = N.left; }
+  var stats = SC.html('StatGroup', {}, ['Stat', {label:'On your panel', value:fmt(N.n), detail:'Provincial Attachment System · synced 6:00 a.m.'}],
+    ['Stat', {label:'Visits off your panel this year', value:N.pct + '%', detail:'Limit 30% · ' + fmt(N.off) + ' of ' + fmt(PNL_BASE.visits) + ' visits', tone:N.pct >= 25 ? 'warning' : undefined}],
+    ['Stat', PNL.reviewed ? {label:'Panel review', value:'Done today', detail:'Next one by 22 February 2027'} : {label:'Panel review', value:'Due 24 November', detail:'Every three months · last 24 August', tone:'warning'}],
+    ['Stat', {label:'To decide', value:String(N.left), detail:N.left ? 'Patients in this review' : 'All decided', tone:N.left ? 'warning' : undefined}]);
+  var known = function(n){ return typeof QUEUE_DATA !== 'undefined' && QUEUE_DATA.some(function(q){ return q.name === n; }); };
+  var acts = function(r){
+    var j = function(a){ return 'pnlAct(\'' + r.id + '\',\'' + a + '\')'; }, first = r.n.split(' ')[0];
+    if(r.k === 'add') return pnlBtn('primary', 'Add to panel', j('added'), 'Attach ' + first + ' to your panel; they confirm in the patient portal', 'user-add') + pnlBtn('tertiary-main', 'Not now', j('later'), 'Leave ' + first + ' off your panel until the next review');
+    if(r.k === 'dead') return pnlBtn('primary', 'Remove from panel', j('removed'), 'Remove ' + first + ' from your panel in the Attachment System', 'minus');
+    if(r.k === 'conflict') return pnlBtn('secondary-main', 'Ask to confirm', j('asked'), 'Ask ' + first + ' to choose their family doctor in the patient portal', 'send') + pnlBtn('tertiary-main', 'Remove', j('removed'), 'Remove ' + first + ' from your panel; they stay with the other doctor', 'minus');
+    return pnlBtn('secondary-main', 'Ask Dolly to contact', j('contact'), 'Send Dolly a task to call ' + first + ' and update the Attachment System', 'phone') +
+      pnlBtn('tertiary-main', 'Remove', j('removed'), 'Remove ' + first + ' from your panel in the Attachment System', 'minus') + pnlBtn('tertiary-main', 'Keep', j('kept'), 'Keep ' + first + ' on your panel', 'check');
+  };
+  var rows = ['add', 'moved', 'dead', 'unseen', 'conflict'].map(function(k){
+    var L = PNL_REV.filter(function(r){ return r.k === k; }); if(!L.length) return '';
+    var open = L.filter(function(r){ return !PNL.st[r.id]; }).length;
+    return '<p class="pnl-grp">' + PNL_K[k][0] + '<small>' + (open ? open + ' to decide' : 'all decided') + (PNL_K[k][1] ? ' · ' + PNL_K[k][1] : '') + '</small></p>' + L.map(function(r){
+      var s = PNL.st[r.id], o = s && PNL_OUT[s];
+      var nm = known(r.n) ? '<button type="button" class="nm" onclick="openChart(\'' + r.n.replace(/'/g, '\\\'') + '\')" title="Open ' + csEsc(r.n.split(',')[0]) + '\'s chart">' + csEsc(r.n) + '</button>' : csEsc(r.n);
+      return '<div class="pnl-row' + (s ? ' done' : '') + '"><span class="m"><b>' + nm + '</b><span>' + csEsc(r.d) + '</span></span><span class="a">' +
+        (o ? SC.html('Tag', {color:o[0], startIcon:o[0] === 'success' ? 'check' : undefined}, o[1]) + pnlBtn('tertiary-main', 'Undo', 'pnlAct(\'' + r.id + '\',\'undo\')', 'Undo this decision') : acts(r)) + '</span></div>';
+    }).join('');
+  }).join('');
+  var review = '<section class="lfp-card"><div class="lfp-hd"><h2>Panel review</h2>' + SC.html('Tag', {color:PNL.reviewed ? 'success' : 'warning', startIcon:PNL.reviewed ? 'check' : 'clock-time'}, PNL.reviewed ? 'Done today' : 'Due Tuesday 24 November') +
+    '<span class="sp"></span><span class="lfp-sub">Every three months · last done ' + PNL_BASE.last + '</span></div>' + rows +
+    (PNL.reviewed ? '<div class="lfp-done">' + SC.icon('check-circle', {size:18}) + '<span>Review done today. ' + N.add + ' added, ' + N.rem + ' removed; the Attachment System is updated. Next review by Monday 22 February 2027.</span></div>'
+      : '<div class="lfp-acts">' + pnlBtn('primary', 'Finish review', 'pnlFinish()', N.left ? 'Decide on every patient first' : 'Record today\'s panel review; the next one is due in three months', 'check') + (N.left ? '<span class="lfp-sub" style="align-self:center">' + N.left + ' still to decide</span>' : '') + '</div>') + '</section>';
+  var limit = '<section class="lfp-card"><div class="lfp-hd"><h2>Visits off your panel</h2></div><div class="lfp-lim"><div><p class="l">This year<span>' + N.pct + '% of 30%</span></p>' + SC.html('Progress', {value:Math.round(Math.min(100, N.pct / 30 * 100)), label:'Visits off your panel'}) + '</div></div>' +
+    '<div class="pnl-kv" style="margin-top:12px"><div>All visits<span class="v">' + fmt(PNL_BASE.visits) + '</span></div><div>With patients on your panel<span class="v">' + fmt(PNL_BASE.visits - N.off) + '</span></div><div>With patients not on your panel<span class="v">' + fmt(N.off) + '</span></div></div>' +
+    '<p class="pnl-note">No more than 30% of your visits in a year may be with patients not on your panel. Walk-in visits count here; adding your regulars brings it down.</p></section>';
+  var mix = '<section class="lfp-card"><div class="lfp-hd"><h2>Panel payment</h2></div><div class="pnl-kv"><div>Lower complexity<span class="v">512</span></div><div>Moderate complexity<span class="v">448</span></div><div>Higher complexity<span class="v">224</span></div>' +
+    ((N.add || N.rem) ? '<div>Changes in this review<span class="v">' + (N.add ? '+' + N.add : '') + (N.add && N.rem ? ' · ' : '') + (N.rem ? '−' + N.rem : '') + '</span></div>' : '') + '</div>' +
+    '<p class="pnl-note">Paid every three months for the patients on your panel, weighted by complexity. Next payment January 2027, set from the Attachment System on 31 December.</p></section>';
+  var gaps = '<section class="lfp-card"><div class="lfp-hd"><h2>Due across your panel</h2><span class="sp"></span><span class="lfp-sub">Choosing who to recall is clinical administration (98012), counted in Time. Dolly books the recalls; her time is never yours.</span></div>' +
+    PNL_GAP.map(function(g){ var sent = PNL.gap[g.id];
+      return '<div class="pnl-row' + (sent ? ' done' : '') + '"><span class="m"><b>' + csEsc(g.n) + '</b><span>' + g.c + ' patients · ' + csEsc(g.d) + '</span></span><span class="a">' +
+        (sent ? SC.html('Tag', {color:'information', startIcon:'send'}, 'Sent to Dolly today') + pnlBtn('tertiary-main', 'Undo', 'pnlGap(\'' + g.id + '\',0)', 'Take the recall list back')
+          : pnlBtn('secondary-main', 'Send recall list to Dolly', 'pnlGap(\'' + g.id + '\',1)', 'Send Dolly the ' + g.c + ' patients due for ' + g.n.toLowerCase() + ' to contact and book', 'send')) + '</span></div>'; }).join('') + '</section>';
+  root.innerHTML = '<p class="lfp-intro">The patients you give ongoing care, as recorded in the Provincial Attachment System. A patient is on only one doctor\'s panel. Review it at least every three months: remove patients who moved, died or have not been seen in years, and add regulars who are missing.</p>' + stats +
+    '<div class="lfp-cols">' + review + '<div style="display:grid;gap:16px">' + limit + mix + '</div></div>' + gaps;
+}
+document.addEventListener('DOMContentLoaded', function(){ setTimeout(function(){ var fl = document.getElementById('pnl-nav-flag'); if(fl){ var n = pnlNow().left; fl.style.display = n ? '' : 'none'; fl.textContent = n; } }, 0); });
+/* ============================================================================
    LFP time claims (Daniel's LFP guide; Ani, 21 Nov "build the LFP claims next"). Every approved block of the doctor's time is a
    claim under the placeholder patient LFP Time (PHN 9646 191 917, born 1 January 2005) with diagnostic code L23, its fee code by type
    and its start and end times; visits stay under each patient in MSP. Refused time claims come back on MSP's nightly report, not
@@ -16120,7 +16263,7 @@ function updateCpFlag(){
 
 
 /* Ani, 9 Nov: the sidebar uses the design system's nav icons (Phosphor Light: simple glyphs, thin line) */
-var NAV_DS_ICON = {time:'clock-time', today:'nav-home', inbox:'nav-inbox', claims:'nav-claims', earnings:'nav-earnings', tasks:'nav-tasks', support:'nav-help'};
+var NAV_DS_ICON = {time:'clock-time', panel:'user-group', today:'nav-home', inbox:'nav-inbox', claims:'nav-claims', earnings:'nav-earnings', tasks:'nav-tasks', support:'nav-help'};
 function navDsIcon(b){
   var n = b.classList.contains('nav-btn') && NAV_DS_ICON[b.dataset.screen];
   return n && window.SC && SC.icon ? SC.icon(n, {size:22, className:'ic'}) : '';
