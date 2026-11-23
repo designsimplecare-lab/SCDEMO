@@ -8331,27 +8331,31 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #ri-root{display:grid;gap:12px;}
 #ri-root .ri-types{display:flex;flex-wrap:wrap;gap:8px;}
 #ri-root .ri-wrap{background:var(--panel);border-radius:var(--radius-sm);overflow:auto;}
-#ri-root .ri-wrap table{min-width:1240px;}
-#ri-root .ri-wrap :is(td,th){padding-left:12px;padding-right:12px;}
+#ri-root .ri-wrap table{min-width:1100px;}
+#ri-root .ri-wrap :is(td,th){padding-left:10px;padding-right:10px;}
+#ri-root .ri-wrap thead th,#ri-root .ri-wrap thead th *{white-space:normal;}
 #ri-root tr.ri-row > td{vertical-align:top;padding-top:14px;padding-bottom:14px;}
 #ri-root tr.ri-row[data-ri]{cursor:pointer;}
 #ri-root tr.ri-row[data-ri]:hover > td{background:var(--wash);}
 #ri-root tr.ri-cont > td{padding-top:8px;}
-#ri-root .ri-pt{display:grid;gap:2px;width:210px;}
+#ri-root .ri-pt{display:grid;gap:2px;width:232px;}
 #ri-root .ri-who{display:flex;align-items:center;gap:8px;}
 #ri-root .ri-who b,#ri-root .ri-nm,#ri-root .ri-nmb{font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
 #ri-root .ri-nmb{padding:0;border:0;background:none;font-family:inherit;cursor:pointer;text-align:left;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px;}
 #ri-root .ri-nmb:hover{text-decoration-color:currentColor;}
 #ri-root .ri-id{font-size:14px;line-height:20px;color:var(--ink-soft);}
 #ri-root .ri-id b{font-weight:600;color:var(--ink);}
+#ri-root .ri-nw{white-space:nowrap;}
 #ri-root .ri-pa{display:flex;flex-wrap:wrap;gap:2px 14px;margin-top:4px;}
 #ri-root .ri-unm{display:inline-flex;align-items:center;gap:6px;font-size:14px;line-height:20px;color:var(--ink-soft);}
 #ri-root .ri-unm i{width:8px;height:8px;border-radius:var(--radius-round);background:var(--color-yellow-500);}
 #ri-root .ri-dash{outline:1.5px dashed var(--ink-soft);outline-offset:2px;border-radius:var(--radius-round);}
-#ri-root .ri-ty{display:grid;gap:2px;width:104px;}
+#ri-root .ri-ty{display:grid;gap:2px;width:92px;}
 #ri-root .ri-ty b{font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
 #ri-root .ri-ty span,#ri-root .ri-src span,#ri-root .ri-g,#ri-root .ri-sub,#ri-root .ri-foot{font-size:14px;line-height:20px;color:var(--ink-soft);}
-#ri-root .ri-l{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:3px 0;min-width:300px;}
+#ri-root .ri-l{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:3px 0;min-width:200px;}
+#ri-root .ri-l .sv-tag{height:auto;min-height:28px;max-width:100%;white-space:normal;}
+#ri-root .ri-l .sv-tag .truncate{white-space:normal;overflow:visible;text-overflow:clip;}
 #ri-root .ri-bn{font-size:14px;line-height:20px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);}
 #ri-root .ri-seen{opacity:.55;}
 #ri-root .ri-sub{padding:1px 0 1px 12px;}
@@ -8359,10 +8363,10 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #ri-root .ri-corr{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink);}
 #ri-root .ri-corr s{color:var(--ink-faint);}
 #ri-root .ri-ab{font-size:14px;font-weight:600;color:var(--ink);}
-#ri-root .ri-src{display:grid;gap:1px;width:160px;}
+#ri-root .ri-src{display:grid;gap:1px;width:132px;}
 #ri-root .ri-src b{font-size:14px;line-height:20px;font-weight:600;color:var(--ink);}
-#ri-root .ri-when{display:grid;gap:1px;width:128px;font-size:14px;line-height:20px;color:var(--ink);}
-#ri-root .ri-acts{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:150px;}
+#ri-root .ri-when{display:grid;gap:1px;width:104px;font-size:14px;line-height:20px;color:var(--ink);}
+#ri-root .ri-acts{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:126px;}
 #ri-root .ri-ord .ri-g b{color:var(--ink);}
 #ri-root .ri-foot{margin:0;}
 #ri-root :is(.sv-tag,.sv-tag .truncate){font-size:14px;}
@@ -14333,6 +14337,8 @@ RI_ROWS.push(
     bat:[{n:'Coagulation', r:[['International normalised ratio', '2.6', '', '', '2.0–3.0']]}], signs:[{at:'15 November, 1:05 PM', cov:'Coagulation (1 result)'}]}
 );
 function riRow(id){ return RI_ROWS.filter(function(r){ return r.id === id; })[0]; }
+/* Ani, 22 Nov ("date format usually how doctors are used to"): day, short month, year, as on lab reports and in EMRs: 28 Oct 1951, 22 Nov, 6:40 AM */
+function riDates(h){ return h.replace(/\b(\d{1,2}) (January|February|March|April|May|June|July|August|September|October|November|December)\b/g, function(m, d, mo){ return d + ' ' + mo.slice(0, 3); }); }
 function riIx(r){
   if(!r.ix || typeof INBOX_ITEMS === 'undefined') return -1;
   var last = RI_PT[r.pt].n.split(' ').pop().toLowerCase();
@@ -14371,11 +14377,11 @@ var RI_ACT = {
   approve:['secondary-main', 'Approve', 'check', 'Approve the renewal; a signed fax goes back to the pharmacy'],
   referral:['secondary-main', 'Make referral', 'send', 'Start the referral this result calls for'],
   summary:['secondary-main', 'Send summary', 'send', 'Send the hospital a summary of this patient\'s care'],
-  unmatched:['secondary-main', 'Match', 'user-check', 'File this report to the suggested patient'],
-  notforme:['secondary-main', 'Return to sender', 'send', 'Fax it back to the sender with the standard note; it is never filed in a chart'],
+  unmatched:['secondary-main', 'Match', '', 'File this report to the suggested patient'],
+  notforme:['secondary-main', 'Return to sender', '', 'Fax it back to the sender with the standard note; it is never filed in a chart'],
   nolab:['secondary-main', 'Confirm lab', 'check', 'Add this sender to the lab directory and file the report'],
   noacc:['secondary-main', 'Keep as new', 'check', 'File it as its own report'],
-  access:['secondary-main', 'Enter access word', 'eye-on', 'Show this patient\'s report; every unmasking is logged with a reason']
+  access:['secondary-main', 'Enter access word', '', 'Show this patient\'s report; every unmasking is logged with a reason']
 };
 function riB(v, label, js, title, icon){ return caBtn(v, label, js, title, icon); }
 function riArrow(f){ return f === 'H' || f === 'HH' ? ' ↑' : f === 'L' || f === 'LL' ? ' ↓' : ''; }
@@ -14422,7 +14428,7 @@ function riPtCell(r, first, rows){
     acts.push(SC.html('Button', {variant:'link', size:'medium', disabled:!all || undefined, title:all ? 'Sign off every report for ' + P.n.split(' ')[0] : 'Opens once you have opened each report'}, 'Sign off all').replace('<button ', '<button onclick="riSignAll(\'' + r.pt + '\')" '));
   }
   var nm = P.chart ? '<button type="button" class="ri-nmb" onclick="openChart(\'' + P.chart.replace(/'/g, '\\\'') + '\')" title="Open ' + csEsc(P.n.split(' ')[0]) + '\'s chart">' + csEsc(P.n) + '</button>' : '<b class="ri-nm">' + csEsc(P.n) + '</b>';
-  return '<div class="ri-pt"><div class="ri-who">' + SC.html('AvatarCircle', {name:P.n, size:'small'}) + nm + '</div><span class="ri-id">' + csEsc(P.dob) + ' · ' + P.sex + ' · PHN <b>' + csEsc(P.phn) + '</b></span>' +
+  return '<div class="ri-pt"><div class="ri-who">' + SC.html('AvatarCircle', {name:P.n, size:'small'}) + nm + '</div><span class="ri-id"><span class="ri-nw">' + csEsc(P.dob) + '</span> · ' + P.sex.charAt(0) + ' · <span class="ri-nw">PHN <b>' + csEsc(P.phn) + '</b></span></span>' +
     (r.nameAs ? '<span class="ri-id">Name on the report: ' + csEsc(r.nameAs) + ' · filed by PHN and date of birth</span>' : '') + '<div class="ri-pa">' + acts.join('') + '</div></div>';
 }
 function riSrc(r){
@@ -14440,9 +14446,9 @@ function riActCell(r){
   if(st === 'signed') return '<div class="ri-acts">' + SC.html('Tag', {color:'success', startIcon:'check'}, (RI.signs[r.id] ? 'Signed off ' + RI.signs[r.id] : 'Signed off')) + riB('link', 'Full report', 'riOpen(\'' + r.id + '\')', 'Open the full report and its source pages', '') + '</div>';
   if(st === 'waiting') return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'clock-time'}, 'Waiting on the lab') + riB('link', 'Full report', 'riOpen(\'' + r.id + '\')', 'Open the full report and its source pages', '') + '</div>';
   var P = r.pt && RI_PT[r.pt], k = P && P.protected && !RI.unmask[r.pt] ? 'access' : riAct(r), A = RI_ACT[k];
-  var main = riB(A[0], k === 'unmatched' ? 'Match to ' + RI_PT[r.ex.sug].n.split(' ')[0] : A[1], 'riDo(\'' + r.id + '\',\'' + k + '\')', A[3], A[2]);
+  var main = riB(A[0], A[1], 'riDo(\'' + r.id + '\',\'' + k + '\')', A[3], A[2]);
   if(k === 'approve') main += riB('tertiary-main', 'Decline', 'riDo(\'' + r.id + '\',\'decline\')', 'Decline the renewal; a signed fax with your reason goes back to the pharmacy', 'x');
-  if(k === 'noacc') main = riB('secondary-main', 'Merge with a report', 'riDo(\'' + r.id + '\',\'merge\')', 'Add these results to an existing report for this patient', '') + main;
+  if(k === 'noacc') main = riB('secondary-main', 'Merge', 'riDo(\'' + r.id + '\',\'merge\')', 'Add these results to an existing report for this patient', '') + main;
   return '<div class="ri-acts">' + main + (k === 'access' ? '' : riB('link', 'Full report', 'riOpen(\'' + r.id + '\')', 'Open the full report and its source pages', '')) + '</div>';
 }
 function riTypeCell(r){
@@ -14487,16 +14493,16 @@ function riRender(){
           ['TableCell', {}, SC.raw('<div class="ri-l"><span class="ri-bn">Not yet collected</span><span class="ri-g">' + csEsc(o.n) + ' · ordered ' + csEsc(o.d) + (o.by && o.by !== 'you' ? ' by ' + csEsc(o.by) : '') + (o.overdue ? ' · <b>' + o.overdue + ' days</b>' : '') + '</span></div>')],
           ['TableCell', {}, ''], ['TableCell', {}, ''], ['TableCell', {}, ''],
           ['TableCell', {}, SC.raw(o.overdue ? '<div class="ri-acts">' + (RI.done[k + 'o' + oi] ? SC.html('Tag', {color:'success', startIcon:'check'}, RI.done[k + 'o' + oi]) :
-            riB('secondary-main', 'Remind patient', 'riRemind(\'' + k + '\',' + oi + ',0)', 'Send ' + P.n.split(' ')[0] + ' a reminder in the patient portal', 'send') + riB('link', 'Task Dolly', 'riRemind(\'' + k + '\',' + oi + ',1)', 'Ask Dolly to call ' + P.n.split(' ')[0], '')) + '</div>' : '')]);
+            riB('secondary-main', 'Remind patient', 'riRemind(\'' + k + '\',' + oi + ',0)', 'Send ' + P.n.split(' ')[0] + ' a reminder in the patient portal', '') + riB('link', 'Task Dolly', 'riRemind(\'' + k + '\',' + oi + ',1)', 'Ask Dolly to call ' + P.n.split(' ')[0], '')) + '</div>' : '')]);
       });
     });
   });
   if(!body) body = SC.html('TableRow', {}, ['TableCell', {colSpan:7}, ['TableCellContent', {label:RI.tab === 'review' ? 'Nothing to review. New results appear here as they arrive.' : RI.tab === 'waiting' ? 'Nothing is waiting on the lab.' : 'Nothing signed off yet.'}]]);
-  var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Patient'], ['TableHead', {}, 'Type and status'], ['TableHead', {}, 'Report'], ['TableHead', {}, 'Flag'], ['TableHead', {}, 'Source'], ['TableHead', {}, 'Collected → Received'], ['TableHead', {}, 'Action']]];
-  root.innerHTML = tabs + chips + '<div class="ri-wrap">' + SC.html('Table', {'aria-label':'Results inbox', framed:false}, head, ['TableBody', {}, SC.raw(body)]) + '</div>' ;
+  var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Patient'], ['TableHead', {}, 'Type\u00a0and status'], ['TableHead', {}, 'Report'], ['TableHead', {}, 'Flag'], ['TableHead', {}, 'Source'], ['TableHead', {}, 'Collected\u00a0→ Received'], ['TableHead', {}, 'Action']]];
+  root.innerHTML = riDates(tabs + chips + '<div class="ri-wrap">' + SC.html('Table', {'aria-label':'Results inbox', framed:false}, head, ['TableBody', {}, SC.raw(body)]) + '</div>');
 }
 function riTabClick(e){ var t = e.target.closest('[role=tab]'); if(!t) return; var v = t.id.split('-tab-').pop(); if(v && v !== RI.tab){ RI.tab = v; RI.type = ''; riRender(); } }
-function riNow(){ return '22 November, ' + csNow(); }
+function riNow(){ return '22 Nov, ' + csNow(); }
 function riSync(r){
   var i = riIx(r); if(i > -1 && INBOX_ITEMS[i].status === 'received' && typeof naMarkRev === 'function'){ try { naMarkRev(i); } catch(e){} }
 }
@@ -14583,7 +14589,7 @@ function riOpen(id){
   var canAct = st === 'review' && !RI.done[id] && !(P && P.protected && !RI.unmask[r.pt]);
   var opts = {id:'ri-drw', title:(r.bat ? r.bat.map(function(b){ return b.n; }).filter(function(v, i, a){ return a.indexOf(v) === i; }).join(', ') : r.type), description:who + ' · ' + r.type + (riStatus(r) ? ' · ' + riStatus(r) : ''), secondaryAction:{label:'Close', id:'ri-close'}};
   if(canAct) opts.primaryAction = {label:k === 'unmatched' ? 'Match to ' + RI_PT[r.ex.sug].n.split(' ')[0] : A[1], id:'ri-go'};
-  host.innerHTML = SC.html('Drawer', opts, SC.raw('<div class="ri-dbody">' + dl + bats + hist + src + '</div>'));
+  host.innerHTML = riDates(SC.html('Drawer', opts, SC.raw('<div class="ri-dbody">' + dl + bats + hist + src + '</div>')));
   var d = document.getElementById('ri-drw');
   d.addEventListener('click', function(e){
     if(e.target === d) return d.close();
@@ -27354,6 +27360,7 @@ function scInfoDress(root){
 }
 var CV2_TIP = {t:0};
 function cv2Tip(btn){
+  if(!(window.SC && typeof SC.html === 'function')) return;   /* a hover before the design system has loaded */
   var t = document.getElementById('cv2-tip');
   if(!t){
     var d = document.createElement('div');
