@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SimpleCare Physician Portal — v2</title>
+<title>SimpleCare Physician Portal</title>
 <script>
 /* Ani, 6 Oct: the portal opens through the splash and sign-in, like a real product.
    Signing in on simplecare-login.html marks this tab; ?nologin=1 skips it for testing. */
@@ -8709,10 +8709,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
       <span class="cs-winclock" id="cs-winclock" data-qclock="chart" role="timer" aria-live="off"></span>
       <!-- Ani, 5 Oct ("Chart layout v2"): v2 lives in this one file as a switchable layout. Default stays Current;
            ?chart=v2 or this control turns it on, and the choice is remembered in this browser. -->
-      <!-- Ani, 6 Oct: we work in v2 from now on. The switch is hidden; ?chart=current still opens the old layout for comparison. -->
-      <span class="cs-layout" role="group" aria-label="Chart layout" hidden><span class="cs-layout-k" aria-hidden="true">Layout</span>
-        <button type="button" id="cs-lay-current" aria-pressed="true" onclick="csLayout('current')">Current</button>
-        <button type="button" id="cs-lay-v2" aria-pressed="false" onclick="csLayout('v2')">v2</button></span></div>
+      <!-- Ani, 22 Nov: one chart. The Current/Version 2 switch and ?chart=current are gone; Version 2 is the chart. -->
+      </div>
       <h1 data-f="name" class="cs-h1">Patient</h1>
 
 
@@ -18843,15 +18841,15 @@ function naDrwOpen(i){
     '<div class="rv-results">' + rvResultsHTML(it) + '</div>' +
     '<div class="rv-ai">' + rvAiHTML(it) + '</div>' +
     '<div class="rv-srchd"><h3 class="rv-doclbl">Source document — as received</h3>' +
-      '<button type="button" class="btn" id="na-d-srcbtn" aria-expanded="true" aria-controls="na-d-doc" onclick="naDrwSrc()"><span class="ic" data-pdic="eyeoff"></span><span>Hide source document</span></button></div>' +
+      naSrcBtn(true) + '</div>' +
     '<div class="rv-doc" id="na-d-doc">' + rvDocHTML(it) + '</div>';
   /* Daniel, 4 Nov call 00:12:29: "I clear it, which means I'm looking at the results, and review means I've reviewed with the patient." Two
      separate acts, each stamped: Clear, then Reviewed with patient (which also clears). */
   var cleared = it.reviewedAt || it.status === 'reviewed';
   var rev = (cleared ? '<p class="cv2-stamp" id="na-d-st" tabindex="-1">' + csIc('complete') + 'Cleared' + (it.reviewedAt ? ' ' + csEsc(it.reviewedAt) + ' · ' + csEsc(it.reviewedBy || 'Dr. Pannozzo') : '') + '</p>' : '') +
     (it.ptReviewedAt ? '<p class="cv2-stamp" id="na-d-pt" tabindex="-1">' + csIc('complete') + 'Reviewed with patient ' + csEsc(it.ptReviewedAt) + '</p>'
-      : '<button type="button" class="btn' + (cleared ? ' dark' : '') + '" onclick="naPtRev(' + i + ')"><span class="ic" data-pdic="phone"></span>Reviewed with patient</button>') +
-    (cleared ? '' : '<button type="button" class="btn dark" onclick="naMarkRev(' + i + ')"><span class="ic" data-pdic="complete"></span>Clear</button>');
+      : caBtn(cleared ? 'primary' : 'secondary-main', 'Reviewed with patient', 'naPtRev(' + i + ')', 'Stamp that you went over these results with the patient; this also clears them', 'phone')) +
+    (cleared ? '' : caBtn('primary', 'Clear', 'naMarkRev(' + i + ')', 'Stamp that you have looked at these results; the patient review stays to do', 'check'));
   b = b.replace('<div class="rv-ai">', naTrack(it) + '<div class="rv-ai">');
   card.innerHTML = eb + '<p class="tm-title" id="na-drw-ttl">' + csEsc(it.panel) + '</p>' +
     '<div class="na-d-bd">' + b + '</div>' +
@@ -18891,9 +18889,12 @@ function naPtRev(i){
 function naDrwSrc(){
   var d = document.getElementById('na-d-doc'), bt = document.getElementById('na-d-srcbtn'); if(!d || !bt) return;
   var open = !d.hidden; d.hidden = open;
-  bt.setAttribute('aria-expanded', String(!open));
-  bt.innerHTML = '<span class="ic" data-pdic="' + (open ? 'eye' : 'eyeoff') + '"></span><span>' + (open ? 'Show' : 'Hide') + ' source document</span>';
-  paintPd(bt);
+  bt.outerHTML = naSrcBtn(!open);
+}
+/* Ani, 22 Nov: the design system Button, so the icon sits at its size with its gap */
+function naSrcBtn(shown){
+  return caBtn('secondary-main', (shown ? 'Hide' : 'Show') + ' source document', 'naDrwSrc()', shown ? 'Hide the lab report as it was received' : 'Show the lab report as it was received', shown ? 'eye-off' : 'eye-on')
+    .replace('<button ', '<button id="na-d-srcbtn" aria-controls="na-d-doc" aria-expanded="' + shown + '" ');
 }
 function naDrwClose(){ var o = document.getElementById('na-drw'); if(o) o.classList.remove('show'); CS.naDrw = null; }
 function naMarkRev(i){
@@ -21598,7 +21599,7 @@ function v2Mount(){
 
 /* ---------- the switch: "Layout: Current | v2", ?chart=v2, remembered in this browser ---------- */
 function csLayout(mode){
-  mode = mode === 'v2' ? 'v2' : 'current';
+  mode = 'v2';   /* Ani, 22 Nov: one chart; the old Current layout no longer opens */
   var was = CS.layout, root = v2El('pcv-c'), shell = v2El('v2'); if(!root || !shell) return;
   try { localStorage.setItem(V2_KEY, mode); } catch(e){}
   v2Fin(false, true);
@@ -22738,12 +22739,8 @@ function v2RxFocus(){}
   };
 })();
 
-/* ---------- start: v2 is the chart (Ani, 6 Oct). Only ?chart=current opens the old layout ---------- */
-(function(){
-  var m = 'v2';
-  try { if(new URLSearchParams(location.search).get('chart') === 'current') m = 'current'; } catch(e){}
-  csLayout(m);
-})();
+/* ---------- start: Version 2 is the one chart (Ani, 6 Oct; 22 Nov: ?chart=current removed) ---------- */
+csLayout('v2');
 
 /* ============================================================
    FLOATING CALL WIDGET (Ani, 6 Oct): "the call state should NOT live inside the patient card".
@@ -27976,6 +27973,6 @@ function psGateClose(g){ var isRx = g.parentNode.id === 'rx-sheet'; g.removeAttr
   if(scr) new MutationObserver(function(){ if(raf) return; raf = requestAnimationFrame(function(){ raf = 0; if(scr.classList.contains('active')) psMarkTiles(); }); }).observe(scr, {childList:true, subtree:true});
 })();
 </script>
-  <div class="build-stamp">v2 · build 2026-11-16 21:50</div>
+  <div class="build-stamp">Build 22 November 2026</div>
 </body>
 </html>
