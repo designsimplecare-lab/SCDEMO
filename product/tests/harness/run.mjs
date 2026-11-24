@@ -1,4 +1,4 @@
-// QA baseline runner for simplecare-physician-portal-v2.html.
+// QA baseline runner for physician.html.
 // Usage: node product/tests/harness/run.mjs <outDir>   (serve the repo on :8765 first)
 // Runs: JS parse check, deep links, design-rule scan, and the automated steps of each UC script
 // in product/tests/. Writes <outDir>/results.json and screenshots under <outDir>/shots/.
@@ -10,7 +10,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('../../../', import.meta.url)).replace(/\/$/, '');
-const FILE = 'simplecare-physician-portal-v2.html';
+const FILE = 'physician.html';
 const PORT = process.env.PORT || 8765;
 const BASE = `http://localhost:${PORT}/${FILE}?nologin=1`;
 const OUT = process.argv[2]; mkdirSync(OUT + '/shots', { recursive: true });

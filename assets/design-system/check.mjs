@@ -3,7 +3,7 @@
 // taking from the design system. Copied next to the exported design system
 // (check.mjs) by `npm run export:html`. No dependencies.
 //
-//   node assets/design-system/check.mjs simplecare-physician-portal-v2.html
+//   node assets/design-system/check.mjs physician.html
 //   node assets/design-system/check.mjs page.html --screen inbox     one screen only
 //   node assets/design-system/check.mjs page.html --all              every finding, not the top 15
 //   node assets/design-system/check.mjs page.html --json             machine-readable

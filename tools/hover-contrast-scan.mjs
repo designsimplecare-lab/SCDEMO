@@ -1,11 +1,11 @@
-// Hover contrast scan (WCAG AA 4.5:1) for simplecare-physician-portal-v2.html.
+// Hover contrast scan (WCAG AA 4.5:1) for physician.html.
 // Usage:
 //   1. python3 -m http.server 8765   (from the repo root)
 //   2. Chrome --headless=new --remote-debugging-port=9340 --user-data-dir=<tmp> about:blank
 //   3. [DARK=1] node tools/hover-contrast-scan.mjs "#today" "#inbox" "#chart:0"
 // It forces :hover on every visible button and prints the ones below 4.5:1.
 // Force :hover on every visible button/link and measure text-vs-background contrast (WCAG).
-const port=9340, base='http://localhost:8765/simplecare-physician-portal-v2.html';
+const port=9340, base='http://localhost:8765/physician.html';
 const routes=process.argv.slice(2);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function ws(url){const w=new WebSocket(url);await new Promise(r=>w.onopen=r);let id=0;const pend={};w.onmessage=e=>{const m=JSON.parse(e.data);if(m.id&&pend[m.id]){pend[m.id](m);delete pend[m.id];}};return {send:(method,params={})=>new Promise(r=>{const i=++id;pend[i]=r;w.send(JSON.stringify({id:i,method,params}));}),close:()=>w.close()};}
