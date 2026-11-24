@@ -7786,7 +7786,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
      its colour), plain rows with grey values, statuses as grey text with a coloured icon, a hairline between sections */
   #sm-list .sv-list__section{border-top:1px solid var(--line);}
   /* the closed loop (Daniel, 20 Nov: "ordered to date arranged to report"; sent with delivery, booking acknowledged, report, reviewed) */
-  #sm-list .lp{display:block;width:100%;padding:12px 0;border:0;border-top:1px solid var(--line);background:none;text-align:left;cursor:pointer;font:inherit;}
+  #sm-list .lp{display:block;width:100%;padding:14px 12px;border:0;border-top:1px solid var(--line);background:none;text-align:left;cursor:pointer;font:inherit;box-sizing:border-box;}   /* Ani, 24 Nov: the same 12px inset as the section header, never touching the card's edges */
   #sm-list .lp:first-child{border-top:0;}
   #sm-list .lp:hover .lp-t{text-decoration:underline;text-underline-offset:3px;}
   #sm-list .lp:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:var(--radius-xs);}
@@ -8415,7 +8415,10 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 
 #ri-root .ri-sort{display:flex;gap:8px;flex:none;}
 #ri-root .ri-lab{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:0 0 4px;font-size:14px;line-height:20px;color:var(--ink-soft);}
-#ri-root .ri-wrap{background:var(--panel);border-radius:var(--radius-sm);overflow:auto;}
+#ri-root .ri-wrap{background:var(--panel);border-radius:var(--radius-sm);overflow:clip;}
+#ri-root .ri-wrap :is(.sv-table-container,.sv-scroll-area){overflow:visible !important;}
+#ri-root .ri-head{position:sticky;top:var(--ri-tb, 78px);z-index:30;display:grid;gap:12px;margin:-12px 0 0;padding:12px 0;background:var(--paper);}
+#ri-root .ri-wrap thead th{position:sticky;top:calc(var(--ri-tb, 78px) + var(--ri-hh, 120px));z-index:20;background:var(--panel);}
 #ri-root .ri-wrap table{min-width:1100px;}
 #ri-root .ri-wrap :is(td,th){padding-left:10px;padding-right:10px;}
 #ri-root .ri-wrap thead th,#ri-root .ri-wrap thead th *{white-space:normal;}
@@ -8423,7 +8426,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #ri-root tr.ri-row[data-ri]{cursor:pointer;}
 #ri-root tr.ri-row[data-ri]:hover > td{background:var(--wash);}
 #ri-root tr.ri-cont > td{padding-top:8px;}
-#ri-root .ri-pt{display:grid;gap:2px;width:232px;}
+#ri-root .ri-pt{display:grid;gap:2px;width:250px;}
 #ri-root .ri-who{display:flex;align-items:center;gap:8px;}
 #ri-root .ri-who b,#ri-root .ri-nm,#ri-root .ri-nmb{font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
 #ri-root .ri-nmb{padding:0;border:0;background:none;font-family:inherit;cursor:pointer;text-align:left;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px;}
@@ -8435,7 +8438,7 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #ri-root .ri-unm{display:inline-flex;align-items:center;gap:6px;font-size:14px;line-height:20px;color:var(--ink-soft);}
 #ri-root .ri-unm i{width:8px;height:8px;border-radius:var(--radius-round);background:var(--color-yellow-500);}
 #ri-root .ri-dash{outline:1.5px dashed var(--ink-soft);outline-offset:2px;border-radius:var(--radius-round);}
-#ri-root .ri-ty{display:grid;gap:2px;width:92px;}
+#ri-root .ri-ty{display:grid;gap:2px;width:108px;}
 #ri-root .ri-ty b{font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
 #ri-root .ri-ty span,#ri-root .ri-src span,#ri-root .ri-g,#ri-root .ri-sub,#ri-root .ri-foot{font-size:14px;line-height:20px;color:var(--ink-soft);}
 #ri-root .ri-l{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:3px 0;min-width:200px;}
@@ -8450,11 +8453,24 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #ri-root .ri-ab{font-size:14px;font-weight:600;color:var(--ink);}
 #ri-root .ri-src{display:grid;gap:1px;width:132px;}
 #ri-root .ri-src b{font-size:14px;line-height:20px;font-weight:600;color:var(--ink);}
-#ri-root .ri-when{display:grid;gap:1px;width:104px;font-size:14px;line-height:20px;color:var(--ink);}
+#ri-root .ri-when{display:grid;gap:1px;width:132px;font-size:14px;line-height:20px;color:var(--ink);}
 #ri-root .ri-acts{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:126px;}
 #ri-root .ri-ord .ri-g b{color:var(--ink);}
 #ri-root .ri-foot{margin:0;}
 #ri-root :is(.sv-tag,.sv-tag .truncate){font-size:14px;}
+/* Ani, 24 Nov ("actions on hover; less crowded, symmetric"): actions show on the row you point at or tab into; statuses always show */
+@media (hover:hover){
+  #ri-root tr.ri-row .ri-hv{visibility:hidden;}
+  #ri-root tr.ri-row:is(:hover,:focus-within) .ri-hv{visibility:visible;}
+}
+#ri-root .ri-hv{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+#ri-root .ri-acts{align-items:flex-end;}
+#ri-root tr.ri-row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+#ri-root .ri-ty b{display:block;}
+#ri-root .ri-ty b .sc-info{display:inline-flex;vertical-align:-3px;margin-left:4px;}
+#ri-root .ri-when span{white-space:nowrap;}
+#ri-root .ri-bkst{margin-top:4px;}
+#ri-root tr.ri-row > td{padding-top:16px;padding-bottom:16px;}
 #ri-root .ri-bk{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;}
 #ri-root .ri-sa{display:inline-flex;align-items:center;gap:8px;}
 #ri-root .ri-feed{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:var(--radius-sm);background:var(--panel);font-size:14px;line-height:20px;color:var(--ink);}
@@ -14601,50 +14617,48 @@ function riPtCell(r, first, rows){
     return '<div class="ri-pt"><span class="ri-unm"><i></i>Unmatched</span><div class="ri-who">' + SC.html('AvatarCircle', {name:E.name, size:'small'}).replace('sv-avatar-circle', 'sv-avatar-circle ri-dash') + '<b>' + csEsc(E.name) + '</b></div>' +
       '<span class="ri-id">As written: ' + csEsc(E.dob) + ' · PHN ' + csEsc(E.phn) + '</span><span class="ri-id">Suggested: ' + csEsc(S.n) + ', ' + csEsc(S.dob) + ' · PHN ' + csEsc(S.phn) + '</span>' +
       '<span class="ri-id">' + [E.dob === S.dob ? 'Date of birth matches' : '<b>Date of birth differs</b>', E.name.toLowerCase() === S.n.toLowerCase() ? 'name matches' : '<b>name differs</b>: ' + csEsc(E.name.split(' ').pop()) + ' on the report', 'PHN unreadable'].join(' · ') + '</span>' +
-      '<div class="ri-pa">' + riB('link', 'Choose another', 'riChoose(\'' + r.id + '\')', 'Search for the right patient', '') + riB('link', 'Not my patient', 'riDone(\'' + r.id + '\',\'Returned as misdirected\')', 'Send it back to the lab as misdirected', '') + '</div></div>';
+      '</div>';
   }
   if(!r.pt) return '<div class="ri-pt"><span class="ri-unm"><i></i>Not for me</span><b class="ri-nm">Addressed to ' + csEsc(r.ex.to) + '</b><span class="ri-id">' + csEsc(r.from) + '</span></div>';
   var P = RI_PT[r.pt];
   if(P.protected && !RI.unmask[r.pt]) return '<div class="ri-pt"><div class="ri-who">' + SC.html('AvatarCircle', {name:'Protected', size:'small'}) + '<b>Protected patient</b></div><span class="ri-id">This patient has a protective access word</span></div>';
-  var acts = [riBookHtml(r.pt, rows)];
-  if(P.rerefer) acts.push(riB('link', 'Re-refer', 'riRerefer(\'' + r.pt + '\')', 'Start a new ' + P.rerefer.toLowerCase() + ' referral to another specialist', ''));
-  var signable = rows.filter(function(x){ return riAct(x) === 'signoff'; });
-  if(signable.length > 1){
-    var op = signable.filter(function(x){ return RI.opened[x.id]; }).length, all = op === signable.length;
-    acts.push('<span class="ri-sa">' + SC.html('Button', {variant:'link', size:'medium', disabled:!all || undefined, title:all ? 'Sign off the ' + signable.length + ' lab reports for ' + P.n.split(' ')[0] + '; documents keep their own action' : 'Open each lab report first'}, 'Sign off ' + signable.length + ' reports').replace('<button ', '<button onclick="riSignAll(\'' + r.pt + '\')" ') +
-      (all ? '' : '<span class="ri-g">' + op + ' of ' + signable.length + ' opened</span>') + '</span>');
-  }
   var nm = P.chart ? '<button type="button" class="ri-nmb" onclick="openChart(\'' + P.chart.replace(/'/g, '\\\'') + '\')" title="Open ' + csEsc(P.n.split(' ')[0]) + '\'s chart">' + csEsc(P.n) + '</button>' : '<b class="ri-nm">' + csEsc(P.n) + '</b>';
   return '<div class="ri-pt"><div class="ri-who">' + SC.html('AvatarCircle', {name:P.n, size:'small'}) + nm + '</div><span class="ri-id"><span class="ri-nw">' + csEsc(P.dob) + '</span> · ' + P.sex.charAt(0) + ' · <span class="ri-nw">PHN <b>' + csEsc(P.phn) + '</b></span></span>' +
-    (r.nameAs ? '<span class="ri-id">Name on the report: ' + csEsc(r.nameAs) + ' · filed by PHN and date of birth</span>' : '') + '<div class="ri-pa">' + acts.join('') + '</div></div>';
+    (r.nameAs ? '<span class="ri-id">Name on the report: ' + csEsc(r.nameAs) + ' · filed by PHN and date of birth</span>' : '') + (RI.book[r.pt] ? '<span class="ri-bkst">' + riBookTag(r.pt) + '</span>' : '') + '</div>';
 }
 function riSrc(r){
   var lab = r.ex && r.ex.k === 'nolab' && !RI.fix[r.id] ? '<b>Lab not recognised</b><span>Sent from fax ' + csEsc(r.ex.fax) + ' · letterhead "' + csEsc(r.ex.letter) + '"</span>' : '<b>' + csEsc(r.lab && r.lab !== 'unknown' ? r.lab : r.from || (r.ex && r.ex.letter) || '') + '</b>';
   return '<div class="ri-src">' + lab + '<span>' + r.via + (r.pages ? ' · page' + (/–/.test(r.pages) ? 's ' : ' ') + r.pages : '') + '</span>' +
-    (r.by ? '<span>' + (r.copy ? 'Copy · ordered by ' + csEsc(r.by) : r.by === 'you' ? 'Ordered by you' : 'Ordered by ' + csEsc(r.by)) + '</span>' : '') +
-    (r.req ? '<span>' + csEsc(r.req) + '</span>' : '') + (r.dup ? '<span>Also received by fax · duplicate not stored</span>' : '') + '</div>';
+    (r.by && r.by !== 'you' ? '<span>' + (r.copy ? 'Copy · ordered by ' : 'Ordered by ') + csEsc(r.by.split(',')[0]) + '</span>' : '') + (r.dup ? '<span>Also received by fax</span>' : '') + '</div>';
 }
 function riWhen(r){
   return '<div class="ri-when"><span>' + (r.col ? csEsc(r.col) : r.bat ? '<b>Collection time not found</b>' : '—') + '</span><span class="ri-g">→ ' + csEsc(r.rec) + '</span></div>';
 }
-function riActCell(r){
+function riActCell(r, first, rows){
+  var pa = first && r.pt ? riPtActs(r.pt, rows || [r]) : '';
+  var out = riActCell0(r);
+  return pa ? out.replace(/<\/div>$/, '') + '<div class="ri-hv">' + pa + '</div></div>' : out;
+}
+function riActCell0(r){
   var st = riSt(r);
   if(RI.tab === 'review' && RI.recent[r.id]) return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'check'}, RI.done[r.id] || ('Signed off ' + (RI.signs[r.id] || '') + (st === 'waiting' ? ' · awaiting results' : ''))) +
     riB('link', 'Undo', 'riUndo(\'' + r.id + '\')', 'Take this back; the report returns to To review', '') + '</div>';
   if(RI.done[r.id]) return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'check'}, RI.done[r.id]) + '</div>';
-  if(st === 'signed') return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'check'}, (RI.signs[r.id] ? 'Signed off ' + RI.signs[r.id] : 'Signed off')) + riB('link', 'Full report', 'riOpen(\'' + r.id + '\')', 'Open the full report and its source pages', '') + '</div>';
-  if(st === 'waiting') return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'clock-time'}, 'Awaiting results') + '<span class="ri-g">' + csEsc((r.bat || []).reduce(function(a, b){ return a.concat(b.pend || []); }, []).join(', ')) + ' pending since ' + csEsc((r.col || '').split(',')[0]) + '</span>' + riB('link', 'Full report', 'riOpen(\'' + r.id + '\')', 'Open the full report and its source pages', '') + '</div>';
+  if(st === 'signed') return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'check'}, (RI.signs[r.id] ? 'Signed off ' + RI.signs[r.id] : 'Signed off')) + '</div>';
+  if(st === 'waiting') return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'clock-time'}, 'Awaiting results') + '<span class="ri-g">' + csEsc((r.bat || []).reduce(function(a, b){ return a.concat(b.pend || []); }, []).join(', ')) + ' pending since ' + csEsc((r.col || '').split(',')[0]) + '</span>' + '</div>';
   var P = r.pt && RI_PT[r.pt], k = P && P.protected && !RI.unmask[r.pt] ? 'access' : riAct(r), A = RI_ACT[k];
   if(RI.err[r.id]) return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'warning'}, 'Sign-off not saved') + riB('secondary-main', 'Try again', 'riDo(\'' + r.id + '\',\'signoff\')', 'Sign off this report again', 'check') + '</div>';
   var main = riB(A[0], A[1], (RI_PREV[k] ? 'riPreview' : 'riDo') + '(\'' + r.id + '\',\'' + k + '\')', A[3], A[2]);
   if(k === 'referral') main += riB('secondary-main', 'Sign off', 'riDo(\'' + r.id + '\',\'signoff\')', RI_ACT.signoff[3], 'check');
   if(k === 'approve') main += riB('tertiary-main', 'Decline', 'riPreview(\'' + r.id + '\',\'decline\')', 'Decline the renewal; you see the signed fax before it goes', 'x');
   if(k === 'noacc' && riMergeTargets(r).length) main = riB('secondary-main', 'Merge', 'riMergePick(\'' + r.id + '\')', 'Add these results to an existing report for this patient', '') + main;
-  return '<div class="ri-acts">' + main + (k === 'access' ? '' : riB('link', 'Full report', 'riOpen(\'' + r.id + '\')', 'Open the full report and its source pages', '')) + (RI.opened[r.id] && k !== 'access' ? '<span class="ri-g">Opened</span>' : '') + '</div>';
+  if(k === 'unmatched') main += riB('link', 'Choose another', 'riChoose(\'' + r.id + '\')', 'Search for the right patient', '') + riB('link', 'Not my patient', 'riDone(\'' + r.id + '\',\'Returned as misdirected\')', 'Send it back to the lab as misdirected', '');
+  return '<div class="ri-acts"><div class="ri-hv">' + main + '</div></div>';
 }
 function riTypeCell(r){
   var s = riStatus(r);
-  return '<div class="ri-ty"><b>' + r.type + '</b>' + (s ? '<span>' + s + '</span>' : '') + (r.withdrawn ? '<span>' + SC.html('Tag', {color:'neutral'}, 'WITHDRAWN') + '</span>' : '') + (r.ver > 1 ? '<span>Version ' + r.ver + '</span>' : '') + '</div>';
+  var L = r.pt && RI_PT[r.pt] && RI_PT[r.pt].protected && !RI.unmask[r.pt] ? null : riLabel(r);
+  return '<div class="ri-ty"><b>' + r.type + (L ? scInfoHtml('Document label: ' + L.text + (L.flag ? '. ' + L.flag + ', flagged for directory review.' : '')) : '') + '</b>' + (s ? '<span>' + s + '</span>' : '') + (r.withdrawn ? '<span>' + SC.html('Tag', {color:'neutral'}, 'WITHDRAWN') + '</span>' : '') + (r.ver > 1 ? '<span>Version ' + r.ver + '</span>' : '') + '</div>';
 }
 function riRender(){
   var root = document.getElementById('ri-root'); if(!root || !(window.SC && SC.html)) return;
@@ -14683,19 +14697,19 @@ function riRender(){
       var L = groups[k].slice().sort(function(a, b){ return ((riSec(b) === 'critical') - (riSec(a) === 'critical')) || riTime(a.rec) - riTime(b.rec); });
       if(!L.length){   /* every report signed off, the urgent visit not yet arranged */
         body += SC.html('TableRow', {className:'ri-row'}, ['TableCell', {}, SC.raw(riPtCell({pt:k}, true, []))], ['TableCell', {}, ''],
-          ['TableCell', {}, SC.raw('<div class="ri-l"><span class="ri-g" style="color:var(--ink)">Reports signed off · urgent visit not yet arranged</span></div>')], ['TableCell', {}, ''], ['TableCell', {}, ''], ['TableCell', {}, ''], ['TableCell', {}, '']);
+          ['TableCell', {}, SC.raw('<div class="ri-l"><span class="ri-g" style="color:var(--ink)">Reports signed off · urgent visit not yet arranged</span></div>')], ['TableCell', {}, ''], ['TableCell', {}, ''], ['TableCell', {}, ''], ['TableCell', {}, SC.raw('<div class="ri-acts"><div class="ri-hv">' + riPtActs(k, []) + '</div></div>')]);
         return;
       }
       L.forEach(function(r, i){
         var sec = riSec(r), f = sec === 'protected' ? '' : riFlag(r), prot = sec === 'protected';
-        body += SC.html('TableRow', {className:'ri-row' + (i ? ' ri-cont' : '') + (RI.opened[r.id] ? ' ri-opened' : ''), 'data-ri':r.id},
+        body += SC.html('TableRow', {className:'ri-row' + (i ? ' ri-cont' : '') + (RI.opened[r.id] ? ' ri-opened' : ''), 'data-ri':r.id, tabindex:'0', 'aria-label':'Open the full report'},
           ['TableCell', {}, SC.raw(riPtCell(r, !i, L))],
           ['TableCell', {}, SC.raw(riTypeCell(r))],
-          ['TableCell', {}, SC.raw(prot ? '<div class="ri-l"><span class="ri-g" style="color:var(--ink)">' + csEsc(r.lab) + ' · collected ' + csEsc(r.col) + '</span></div>' : riLabelHtml(r) + riLines(r))],
+          ['TableCell', {}, SC.raw(prot ? '<div class="ri-l"><span class="ri-g" style="color:var(--ink)">' + csEsc(r.lab) + ' · collected ' + csEsc(r.col) + '</span></div>' : riLines(r))],
           ['TableCell', {}, SC.raw(f === 'critical' ? SC.html('Tag', {color:'error'}, 'Critical') : f === 'abnormal' ? '<span class="ri-ab">Abnormal</span>' : '')],
           ['TableCell', {}, SC.raw(prot ? '<div class="ri-src"><b>' + csEsc(r.lab) + '</b></div>' : riSrc(r))],
           ['TableCell', {}, SC.raw(prot ? '<div class="ri-when"><span>' + csEsc(r.col) + '</span></div>' : riWhen(r))],
-          ['TableCell', {}, SC.raw(riActCell(r))]);
+          ['TableCell', {}, SC.raw(riActCell(r, !i, L))]);
       });
       var P = RI_PT[k]; if(P && P.orders && RI.tab === 'review') P.orders.forEach(function(o, oi){
         body += SC.html('TableRow', {className:'ri-row ri-cont ri-ord'}, ['TableCell', {}, ''], ['TableCell', {}, SC.raw('<div class="ri-ty"><span>Ordered</span></div>')],
@@ -14716,7 +14730,8 @@ function riRender(){
   }
   var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Patient'], ['TableHead', {}, 'Type\u00a0and status'], ['TableHead', {}, 'Report'], ['TableHead', {}, 'Flag'], ['TableHead', {}, 'Source'], ['TableHead', {}, 'Collected\u00a0→ Received'], ['TableHead', {}, 'Action']]];
   if(typeof riReqRender === 'function') try { riReqRender(); } catch(e){}
-  root.innerHTML = riDates(tabs + feed + '<div class="ri-bar">' + chips + '<span class="ad-sp"></span>' + sortCtl + '</div><div class="ri-wrap">' + SC.html('Table', {'aria-label':'Results inbox', framed:false}, head, ['TableBody', {}, SC.raw(body)]) + '</div>');
+  root.innerHTML = riDates('<div class="ri-head">' + tabs + feed + '<div class="ri-bar">' + chips + '<span class="ad-sp"></span>' + sortCtl + '</div></div><div class="ri-wrap">' + SC.html('Table', {'aria-label':'Results inbox', framed:false}, head, ['TableBody', {}, SC.raw(body)]) + '</div>');
+  riStick();
 }
 document.addEventListener('click', function(e){
   var root = document.getElementById('ri-root'); if(!root || !e.target.closest) return;
@@ -14728,6 +14743,12 @@ document.addEventListener('click', function(e){
 });
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && RI.menu){ RI.menu = null; riRender(); } });
 function riSetOrder(o){ RI.order = o; try { localStorage.setItem('sc.ri.order', o); } catch(e){} riRender(); }
+/* Ani, 24 Nov: tabs, filters and column headers stay pinned under the top bar while the reports scroll */
+function riStick(){
+  var root = document.getElementById('ri-root'), tb = document.querySelector('.topbar'), hd = root && root.querySelector('.ri-head'); if(!root || !hd) return;
+  root.style.setProperty('--ri-tb', (tb ? tb.offsetHeight : 0) + 'px'); root.style.setProperty('--ri-hh', hd.offsetHeight + 'px');
+}
+window.addEventListener('resize', function(){ if(typeof riStick === 'function') riStick(); });
 function riTabClick(e){ var t = e.target.closest('[role=tab]'); if(!t) return; var v = t.id.split('-tab-').pop(); if(v && v !== RI.tab){ RI.tab = v; RI.type = ''; RI.recent = {}; riRender(); } }
 function riNow(){ return '22 November, ' + csNow(); }
 function riSync(r){
@@ -14824,6 +14845,20 @@ function riBook(pt, urgent){
   RI.book[pt] = {urgent:!!urgent, at:riNow()}; riRender();
   toast('Task sent to Dolly: ' + (urgent ? 'urgent visit today for ' : 'book a visit for ') + P.n.split(' ')[0]);
 }
+/* the patient's actions (visit, re-refer, sign off all), shown with the row actions on the patient's first row */
+function riBookTag(pt){ var B = RI.book[pt]; return B ? SC.html('Tag', {color:'neutral', startIcon:B.none ? 'check' : 'calendar'}, B.none ? 'No visit needed' : (B.urgent ? 'Urgent visit' : 'Visit') + ' requested · Dolly · ' + B.at) : ''; }
+function riPtActs(pt, rows){
+  var P = RI_PT[pt]; if(!P || (P.protected && !RI.unmask[pt])) return '';
+  var f = P.n.split(' ')[0], out = '';
+  if(RI.book[pt]) out += riB('link', 'Undo visit', 'riUnbook(\'' + pt + '\')', 'Take back the visit request', '');
+  else if(P.urgent || rows.some(function(x){ return riFlag(x) === 'critical'; })) out += riB('secondary-main', 'Book urgent visit', 'riBook(\'' + pt + '\',1)', 'Ask Dolly to book ' + f + ' today', 'calendar') + riB('link', 'No visit needed', 'riBook(\'' + pt + '\',\'none\')', 'Record that ' + f + ' does not need a visit for these results', '');
+  else out += riB('link', 'Book visit', 'riBook(\'' + pt + '\',0)', 'Ask Dolly to book a visit with ' + f, '');
+  if(P.rerefer) out += riB('link', 'Re-refer', 'riRerefer(\'' + pt + '\')', 'Start a new ' + P.rerefer.toLowerCase() + ' referral to another specialist', '');
+  var signable = rows.filter(function(x){ return riAct(x) === 'signoff' && riSt(x) === 'review'; });
+  if(signable.length > 1){ var op = signable.filter(function(x){ return RI.opened[x.id]; }).length, all = op === signable.length;
+    out += SC.html('Button', {variant:'link', size:'medium', disabled:!all || undefined, title:all ? 'Sign off the ' + signable.length + ' lab reports for ' + f : 'Open each lab report first: ' + op + ' of ' + signable.length + ' opened'}, 'Sign off ' + signable.length + ' reports').replace('<button ', '<button onclick="riSignAll(\'' + pt + '\')" '); }
+  return out;
+}
 function riUnbook(pt){ delete RI.book[pt]; riRender(); }
 /* RS-7: the visit belongs to the patient, survives sign-off, and shows once it is asked for; an urgent patient stays in Needs review
    until the visit is booked or you record that none is needed */
@@ -14907,7 +14942,8 @@ function riOpen(id){
   d.addEventListener('close', function(){ riRender(); });
   d.showModal();
 }
-/* a click anywhere on a row (not on its buttons) opens the full report */
+/* a click anywhere on a row (not on its buttons), or Enter on a focused row, opens the full report */
+document.addEventListener('keydown', function(e){ if(e.key !== 'Enter' || !e.target.matches || !e.target.matches('#ri-root tr[data-ri]')) return; e.preventDefault(); riOpen(e.target.getAttribute('data-ri')); });
 document.addEventListener('click', function(e){
   var tr = e.target.closest && e.target.closest('#ri-root tr[data-ri]'); if(!tr || e.target.closest('button, a, input')) return;
   riOpen(tr.getAttribute('data-ri'));
