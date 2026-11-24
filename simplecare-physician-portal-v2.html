@@ -8402,7 +8402,17 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 /* Results inbox (Daniel's requirements, 22 Nov 2026) */
 #ri-root{display:grid;gap:12px;}
 #ri-root .ri-types{display:flex;flex-wrap:wrap;gap:8px;flex:1;min-width:0;}
-#ri-root .ri-bar{display:flex;align-items:flex-start;gap:16px;}
+#ri-root .ri-bar{display:flex;align-items:center;gap:16px;}
+#ri-root .ri-fwrap{position:relative;display:inline-flex;}
+#ri-root .ri-fwrap .sv-filter__bar{background:var(--panel);}
+#ri-root .ri-menu{position:absolute;top:calc(100% + 6px);left:0;z-index:40;}
+#ri-root .ri-menu-order{left:auto;right:0;}
+#ri-root .ri-menu .sv-menu{width:auto;min-width:240px;background:var(--panel);}
+#ri-root .ri-menu .sv-menu-item__target:not(:has(.sv-menu-item__start)){padding-left:44px;}
+#ri-root .ri-menu .sv-menu-item__label{font-size:15px;}
+#ri-root .ri-menu .sv-menu-item__target > span:last-child{flex-direction:row;align-items:center;gap:16px;}
+#ri-root .ri-cnt{margin-left:auto;color:var(--ink-soft);font-variant-numeric:tabular-nums;}
+
 #ri-root .ri-sort{display:flex;gap:8px;flex:none;}
 #ri-root .ri-lab{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:0 0 4px;font-size:14px;line-height:20px;color:var(--ink-soft);}
 #ri-root .ri-wrap{background:var(--panel);border-radius:var(--radius-sm);overflow:auto;}
@@ -14645,9 +14655,17 @@ function riRender(){
   var rows = RI.type ? inTab.filter(function(r){ return r.type === RI.type || riSec(r) === 'critical'; }) : inTab;
   var tab = function(v, label, ic){ return ['Tab', {value:v, startIcon:ic}, label + ' ' + counts[v]]; };
   var tabs = '<div class="ri-tabs" onclick="riTabClick(event)">' + SC.html('Tabs', {defaultValue:RI.tab}, ['TabList', {'aria-label':'Results inbox'}, tab('review', 'To review', 'eye-on'), tab('waiting', 'Awaiting results', 'clock-time'), tab('signed', 'Signed off', 'check-circle')]) + '</div>';
-  var sortCtl = '<span class="ri-sort" role="group" aria-label="Order">' + [['old', 'Oldest first'], ['new', 'Newest first']].map(function(o){ return SC.html('Chip', {selected:RI.order === o[0], title:'Show reports ' + o[1].toLowerCase()}, o[1]).replace('<button ', '<button onclick="riSetOrder(\'' + o[0] + '\')" '); }).join('') + '</span>';
-  var chips = '<div class="ri-types" role="group" aria-label="Type">' + SC.html('Chip', {selected:!RI.type, title:'Show every type'}, 'All ' + inTab.length).replace('<button ', '<button onclick="RI.type=\'\';riRender()" ') +
-    RI_TYPES.filter(function(t){ return byType[t]; }).map(function(t){ return SC.html('Chip', {selected:RI.type === t, title:'Show only ' + t.toLowerCase()}, t + ' ' + byType[t]).replace('<button ', '<button onclick="RI.type=\'' + t + '\';riRender()" '); }).join('') + '</div>';
+  /* Ani, 24 Nov ("I like how Slack does it"): Type and Order as design system filter buttons, each opening a menu with a tick on the current choice */
+  var menu = function(kind, label, items){
+    return '<div class="ri-menu ri-menu-' + kind + '">' + SC.html('MenuList', {'aria-label':label}, SC.raw(items.map(function(it){
+      return SC.html('MenuItem', it.on ? {startIcon:'check'} : {}, it.label).replace('role="menuitem"', 'role="menuitem" data-ri-' + kind + '="' + it.v + '"' + (it.on ? ' aria-checked="true"' : ''))
+        .replace(/(class="sv-menu-item__label">[^<]*<\/span>)/, '$1' + (it.n != null ? '<span class="ri-cnt">' + it.n + '</span>' : ''));
+    }).join(''))) + '</div>';
+  };
+  var typeItems = [{v:'', label:'All types', n:inTab.length, on:!RI.type}].concat(RI_TYPES.filter(function(t){ return byType[t]; }).map(function(t){ return {v:t, label:t, n:byType[t], on:RI.type === t}; }));
+  var orderItems = [{v:'old', label:'Oldest first', on:RI.order !== 'new'}, {v:'new', label:'Newest first', on:RI.order === 'new'}];
+  var chips = '<span class="ri-fwrap" data-ri-f="type">' + SC.html('Filter', {}, ['FilterButton', {label:'Type', selection:RI.type ? RI.type + ' · ' + (byType[RI.type] || 0) : 'All · ' + inTab.length, title:'Show one type of report'}]) + (RI.menu === 'type' ? menu('type', 'Type', typeItems) : '') + '</span>';
+  var sortCtl = '<span class="ri-fwrap" data-ri-f="order">' + SC.html('Filter', {}, ['FilterButton', {label:'Order', selection:RI.order === 'new' ? 'Newest first' : 'Oldest first', title:'Change the order of reports after the critical ones'}]) + (RI.menu === 'order' ? menu('order', 'Order', orderItems) : '') + '</span>';
   /* group by patient (unmatched and not-for-me rows stand alone); a patient sits in the section of their worst item */
   var groups = {}, order = [];
   rows.forEach(function(r){ var k = r.ex && !RI.fix[r.id] && r.ex.k !== 'nolab' && r.ex.k !== 'noacc' ? 'x' + r.id : r.pt; if(!groups[k]){ groups[k] = []; order.push(k); } groups[k].push(r); });
@@ -14698,8 +14716,17 @@ function riRender(){
   }
   var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Patient'], ['TableHead', {}, 'Type\u00a0and status'], ['TableHead', {}, 'Report'], ['TableHead', {}, 'Flag'], ['TableHead', {}, 'Source'], ['TableHead', {}, 'Collected\u00a0→ Received'], ['TableHead', {}, 'Action']]];
   if(typeof riReqRender === 'function') try { riReqRender(); } catch(e){}
-  root.innerHTML = riDates(tabs + feed + '<div class="ri-bar">' + chips + sortCtl + '</div><div class="ri-wrap">' + SC.html('Table', {'aria-label':'Results inbox', framed:false}, head, ['TableBody', {}, SC.raw(body)]) + '</div>');
+  root.innerHTML = riDates(tabs + feed + '<div class="ri-bar">' + chips + '<span class="ad-sp"></span>' + sortCtl + '</div><div class="ri-wrap">' + SC.html('Table', {'aria-label':'Results inbox', framed:false}, head, ['TableBody', {}, SC.raw(body)]) + '</div>');
 }
+document.addEventListener('click', function(e){
+  var root = document.getElementById('ri-root'); if(!root || !e.target.closest) return;
+  var it = e.target.closest('[data-ri-type],[data-ri-order]');
+  if(it && root.contains(it)){ if(it.hasAttribute('data-ri-type')){ RI.type = it.getAttribute('data-ri-type'); } else { RI.order = it.getAttribute('data-ri-order'); try { localStorage.setItem('sc.ri.order', RI.order); } catch(x){} } RI.menu = null; riRender(); return; }
+  var fb = e.target.closest('.ri-fwrap .sv-filter-button');
+  if(fb && root.contains(fb)){ var k = fb.closest('.ri-fwrap').getAttribute('data-ri-f'); RI.menu = RI.menu === k ? null : k; riRender(); return; }
+  if(RI.menu && !e.target.closest('.ri-menu')){ RI.menu = null; riRender(); }
+});
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && RI.menu){ RI.menu = null; riRender(); } });
 function riSetOrder(o){ RI.order = o; try { localStorage.setItem('sc.ri.order', o); } catch(e){} riRender(); }
 function riTabClick(e){ var t = e.target.closest('[role=tab]'); if(!t) return; var v = t.id.split('-tab-').pop(); if(v && v !== RI.tab){ RI.tab = v; RI.type = ''; RI.recent = {}; riRender(); } }
 function riNow(){ return '22 November, ' + csNow(); }
