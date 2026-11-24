@@ -8357,7 +8357,6 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #ri-root .ri-l .sv-tag{height:auto;min-height:28px;max-width:100%;white-space:normal;}
 #ri-root .ri-l .sv-tag .truncate{white-space:normal;overflow:visible;text-overflow:clip;}
 #ri-root .ri-bn{font-size:14px;line-height:20px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);}
-#ri-root .ri-seen{opacity:.55;}
 #ri-root .ri-sub{padding:1px 0 1px 12px;}
 #ri-root .ri-cm{margin:2px 0 4px;font-size:14px;line-height:20px;font-style:italic;color:var(--ink-soft);}
 #ri-root .ri-corr{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink);}
@@ -8376,6 +8375,16 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 #ri-root .ri-feed > svg{flex:none;color:var(--color-yellow-600);}
 #ri-root .ri-feed > span{flex:1;}
 #ri-root .ri-empty{padding:56px 16px;border-radius:var(--radius-sm);background:var(--panel);}
+#ri-root .ri-seen{opacity:1;}
+#ri-root .ri-seen .ri-bn,#ri-root .ri-seen .ri-g{color:var(--ink-soft);}
+#ri-root .ri-seen .sv-tag{background:transparent;color:var(--ink-soft);padding-left:0;}
+#ri-pdrw .ri-prev{display:grid;gap:10px;margin-top:16px;padding:16px;border-radius:var(--radius-xs);background:var(--wash);font-size:15px;line-height:22px;color:var(--ink);}
+#ri-pdrw .ri-prev p{margin:0;}
+#ri-mdrw .ri-mlist{display:grid;margin-top:12px;}
+#ri-mdrw .ri-mrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);}
+#ri-mdrw .ri-mrow:first-child{border-top:0;}
+#ri-mdrw .ri-mrow > span{flex:1;display:grid;gap:2px;font-size:15px;line-height:22px;color:var(--ink);}
+#ri-mdrw .ri-g{font-size:14px;line-height:20px;color:var(--ink-soft);}
 #ri-drw .ri-dbk{margin-top:16px;}
 #ri-drw .ri-dbk .ri-bk{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;}
 dialog#ri-drw{width:min(900px,94vw);max-width:none;}
@@ -14293,7 +14302,7 @@ var RI_ROWS = [
       {n:'Iron studies', r:[['Ferritin', '6', 'µg/L', 'L', '15–200'], ['Transferrin saturation', '8', '%', 'L', '20–50']], isNew:true}],
     signs:[{at:'21 November, 4:12 PM', cov:'Complete blood count (2 results); iron studies pending'}]},
   {id:'r13', pt:'wei', type:'Microbiology', lab:'LifeLabs', via:'Clinical Data Exchange', by:'you', acc:'L-26-445711', col:'19 November, 10:20 AM', rec:'22 November, 6:10 AM', upd:'new', ver:2,
-    bat:[{n:'Urine culture', r:[['Culture', 'Mixed growth, identification to follow', '', '', '']], seen:'20 November, 5:30 PM'},
+    bat:[{n:'Urine culture', r:[['Culture', 'Mixed growth, identification to follow', '', '', '']], seen:'20 November, 5:30 PM', prelim:true},
       {n:'Urine culture', r:[['Organism', 'Escherichia coli, more than 100 million per litre', '', '', ''], ['Nitrofurantoin', 'Susceptible', '', '', ''], ['Ciprofloxacin', 'Resistant', '', '', '']], isNew:true}],
     signs:[{at:'20 November, 5:30 PM', cov:'Preliminary culture (1 result)'}]},
   /* RS-4: a correction after sign-off */
@@ -14314,7 +14323,7 @@ var RI_ROWS = [
     text:'Renewal request: amlodipine 5 mg daily, 90 days, for Harold Reyes. Addressed to Dr. L. Moreau.'},
   {id:'r19', pt:'peter', type:'Microbiology', lab:'unknown', via:'Fax', fax:true, pages:'1 of 2', by:'you', acc:'CD-20871', col:'20 November, 2:00 PM', rec:'22 November, 7:40 AM', ex:{k:'nolab', fax:'250 555 0147', letter:'Coastal Diagnostics'},
     bat:[{n:'Throat swab culture', r:[['Group A streptococcus', 'Not isolated', '', '', '']]}]},
-  {id:'r20', pt:'hannah', type:'Bloodwork', lab:'Island Health laboratory', via:'Fax', fax:true, pages:'1 of 1', by:'you', acc:null, col:null, rec:'22 November, 8:20 AM', ex:{k:'noacc'},
+  {id:'r20', pt:'hannah', type:'Bloodwork', lab:'Island Health laboratory', via:'Fax', fax:true, pages:'2 of 2', by:'you', acc:null, col:null, rec:'22 November, 8:20 AM', ex:{k:'noacc'},
     bat:[{n:'Iron studies', r:[['Ferritin', '24', 'µg/L', 'L', '30–400']]}]},
   /* Not flagged */
   {id:'r21', pt:'anita', type:'Pathology', lab:'LifeLabs pathology', via:'Fax', fax:true, pages:'9–11 of 11', by:'you', acc:'LP-26-09931', col:'12 November, 10:00 AM', rec:'22 November, 6:48 AM',
@@ -14336,10 +14345,14 @@ var RI_ROWS = [
     bat:[{n:'Chemistry', r:[['Ferritin', '22', 'µg/L', 'L', '30–400'], ['Vitamin B12', '310', 'pmol/L', '', '>150']]}]}
 ];
 /* rows that start in Waiting on lab and Signed off */
-var RI = {tab:'review', type:'', st:{r28:'waiting', r29:'signed'}, opened:{}, done:{}, signs:{}, unmask:{}, fix:{}, drw:null, book:{}, err:{}, failNext:false, last:'22 November, 9:14 AM',
+var RI = {tab:'review', type:'', st:{r28:'waiting', r29:'signed'}, opened:{}, done:{}, signs:{}, unmask:{}, fix:{}, drw:null, book:{}, err:{}, failNext:false, recent:{}, showW:{}, last:'22 November, 9:14 AM',
   demo:(function(){ try { return new URLSearchParams(location.search).get('inbox') === 'states'; } catch(e){ return false; } })()};
 if(RI.demo) RI.failNext = true;
 RI_ROWS.push(
+  {id:'r31', pt:'hannah', type:'Bloodwork', lab:'Island Health laboratory', via:'Fax', fax:true, pages:'1 of 2', by:'you', acc:'IH-LAB-30215', col:'21 November, 8:05 AM', rec:'22 November, 7:30 AM',
+    bat:[{n:'Complete blood count', r:[['Haemoglobin', '118', 'g/L', 'L', '120–160'], ['Mean cell volume', '79', 'fL', 'L', '80–100']]}, {n:'Iron studies', r:[], pend:['Ferritin']}]},
+  {id:'r32', pt:'anita', type:'Microbiology', lab:'LifeLabs', via:'Clinical Data Exchange', by:'you', acc:'L-26-446990', col:'19 November, 9:15 AM', rec:'21 November, 8:40 AM',
+    bat:[{n:'Urine culture', r:[['Culture', 'No growth', '', '', '']]}]},
   {id:'r30', pt:null, type:'Unreadable fax', via:'Fax', from:'Fax from 604 555 0199', pages:'1–3 of 3', rec:'22 November, 8:47 AM', ex:{k:'unread', fax:'604 555 0199'},
     text:'3 pages received, none could be read: no patient, sender or report found.'},
   {id:'r28', pt:'douglas', type:'Urine', lab:'LifeLabs', via:'Clinical Data Exchange', by:'you', acc:'L-26-447303', col:'21 November, 7:45 AM', rec:'22 November, 6:30 AM', partial:true,
@@ -14362,7 +14375,7 @@ function riSt(r){
   return RI.st[r.id] || 'review';
 }
 function riPending(r){ return (r.bat || []).some(function(b){ return (b.pend || []).length; }); }
-function riStatus(r){ return !r.bat || r.withdrawn ? '' : riPending(r) ? 'Partial' : 'Final'; }
+function riStatus(r){ return r.withdrawn ? 'Withdrawn' : !r.bat ? '' : riPending(r) ? 'Partial' : 'Final'; }
 function riFlag(r){
   if(r.withdrawn || !r.bat) return '';
   var f = []; r.bat.forEach(function(b){ b.r.forEach(function(x){ f.push(x[3]); }); });
@@ -14404,6 +14417,7 @@ function riLines(r){
   if(r.withdrawn) return '<div class="ri-l"><span class="ri-bn">' + csEsc(r.bat[0].n) + '</span>' + SC.html('Tag', {color:'neutral'}, 'WITHDRAWN') + '<span class="ri-g">Values hidden · ' + csEsc(r.withdrawn.why) + '</span></div>' +
     '<p class="ri-cm">You signed off the first version on ' + csEsc(r.withdrawn.prev) + '.</p>';
   if(!r.bat) return '<div class="ri-l ri-doc"><span class="ri-g" style="color:var(--ink)">' + csEsc(r.text) + '</span></div>';
+  var nf = r.ex && r.ex.k === 'noacc' && !RI.fix[r.id] ? '<div class="ri-l"><span class="ri-unm"><i></i>' + (r.col ? 'Report number not found' : 'Report number and collection time not found') + '</span></div>' : '';
   var B = r.bat, normal = function(b){ return b.r.length && b.r.every(function(x){ return !x[3]; }) && !(b.pend || []).length && !(b.canc || []).length && !b.com && !b.isNew; };
   var collapse = B.length > 5 && riFlag(r) !== 'critical' ? B.filter(normal) : [];
   var out = B.filter(function(b){ return collapse.indexOf(b) < 0; }).map(function(b){
@@ -14411,15 +14425,16 @@ function riLines(r){
     var tags = ab.map(function(x){ var crit = x[3] === 'HH' || x[3] === 'LL';
       var tg = SC.html('Tag', {color:crit ? 'error' : 'neutral', title:x[0] + ' ' + riVal(x) + (x[4] ? ' · reference ' + x[4] : '')}, x[0] + ' ' + riVal(x) + riArrow(x[3], x[1]) + (crit ? ' · critical' : ''));
       /* 7: a corrected abnormal value shows the old value struck through and CORRECTED, like a normal one */
-      return x[5] ? '<span class="ri-corr">' + tg + ' <s>' + csEsc(x[5]) + '</s> ' + SC.html('Tag', {color:'information'}, 'CORRECTED') + '</span>' : tg; }).join('');
-    var plain = ok.map(function(x){ return x[5] ? '<span class="ri-corr">' + csEsc(x[0]) + ' <s>' + csEsc(x[5]) + '</s> ' + csEsc(riVal(x)) + ' ' + SC.html('Tag', {color:'information'}, 'CORRECTED') + '</span>' : csEsc(x[0]) + ' ' + csEsc(riVal(x)); });
+      return x[5] ? '<span class="ri-corr">' + tg + ' <s>' + csEsc(x[5]) + '</s> ' + SC.html('Tag', {color:'neutral'}, 'CORRECTED') + '</span>' : tg; }).join('');
+    var plain = ok.map(function(x){ return x[5] ? '<span class="ri-corr">' + csEsc(x[0]) + ' <s>' + csEsc(x[5]) + '</s> ' + csEsc(riVal(x)) + ' ' + SC.html('Tag', {color:'neutral'}, 'CORRECTED') + '</span>' : csEsc(x[0]) + ' ' + csEsc(riVal(x)); });
     var text = plain.filter(function(p){ return p.indexOf('ri-corr') < 0; }), corr = plain.filter(function(p){ return p.indexOf('ri-corr') > -1; });
-    return '<div class="ri-l' + (b.seen ? ' ri-seen' : '') + '"><span class="ri-bn">' + csEsc(b.n) + '</span>' + (b.isNew ? SC.html('Tag', {color:'information'}, 'NEW') : '') + tags + corr.join('') +
-        (text.length ? '<span class="ri-g">' + text.join(' · ') + '</span>' : '') + (b.seen ? '<span class="ri-g">Reviewed by you · ' + csEsc(b.seen) + '</span>' : '') + '</div>' +
+    return '<div class="ri-l' + (b.seen ? ' ri-seen' : '') + '"><span class="ri-bn">' + csEsc(b.n) + (b.prelim ? ' · preliminary' : '') + '</span>' + (b.isNew ? SC.html('Tag', {color:'neutral'}, 'NEW') : '') + tags + corr.join('') +
+        (text.length ? '<span class="ri-g">' + text.join(' · ') + '</span>' : '') + (b.seen ? '<span class="ri-g">Reviewed by you · ' + csEsc(b.seen) + (b.prelim ? ' · replaced by the final result' : '') + '</span>' : '') + '</div>' +
       (b.pend || []).map(function(p){ return '<div class="ri-sub">Pending · ' + csEsc(p) + '</div>'; }).join('') +
       (b.canc || []).map(function(c){ return '<div class="ri-sub">Cancelled · ' + csEsc(c[0]) + ' · ' + csEsc(c[1]) + '</div>'; }).join('') +
       (b.com ? '<p class="ri-cm">' + csEsc(b.com) + '</p>' : '');
   });
+  if(nf) out.unshift(nf);
   if(collapse.length) out.push('<div class="ri-l"><span class="ri-bn">Normal</span><span class="ri-g">' + collapse.map(function(b){ return csEsc(b.n); }).join(' · ') + '</span></div>');
   return out.join('');
 }
@@ -14459,15 +14474,17 @@ function riWhen(r){
 }
 function riActCell(r){
   var st = riSt(r);
-  if(RI.done[r.id]) return '<div class="ri-acts">' + SC.html('Tag', {color:'success', startIcon:'check'}, RI.done[r.id]) + '</div>';
-  if(st === 'signed') return '<div class="ri-acts">' + SC.html('Tag', {color:'success', startIcon:'check'}, (RI.signs[r.id] ? 'Signed off ' + RI.signs[r.id] : 'Signed off')) + riB('link', 'Full report', 'riOpen(\'' + r.id + '\')', 'Open the full report and its source pages', '') + '</div>';
-  if(st === 'waiting') return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'clock-time'}, 'Waiting on the lab') + riB('link', 'Full report', 'riOpen(\'' + r.id + '\')', 'Open the full report and its source pages', '') + '</div>';
+  if(RI.tab === 'review' && RI.recent[r.id]) return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'check'}, RI.done[r.id] || ('Signed off ' + (RI.signs[r.id] || '') + (st === 'waiting' ? ' · waiting on lab' : ''))) +
+    riB('link', 'Undo', 'riUndo(\'' + r.id + '\')', 'Take this back; the report returns to Needs review', '') + '</div>';
+  if(RI.done[r.id]) return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'check'}, RI.done[r.id]) + '</div>';
+  if(st === 'signed') return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'check'}, (RI.signs[r.id] ? 'Signed off ' + RI.signs[r.id] : 'Signed off')) + riB('link', 'Full report', 'riOpen(\'' + r.id + '\')', 'Open the full report and its source pages', '') + '</div>';
+  if(st === 'waiting') return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'clock-time'}, 'Waiting on lab') + '<span class="ri-g">' + csEsc((r.bat || []).reduce(function(a, b){ return a.concat(b.pend || []); }, []).join(', ')) + ' pending since ' + csEsc((r.col || '').split(',')[0]) + '</span>' + riB('link', 'Full report', 'riOpen(\'' + r.id + '\')', 'Open the full report and its source pages', '') + '</div>';
   var P = r.pt && RI_PT[r.pt], k = P && P.protected && !RI.unmask[r.pt] ? 'access' : riAct(r), A = RI_ACT[k];
   if(RI.err[r.id]) return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'warning'}, 'Sign-off not saved') + riB('secondary-main', 'Try again', 'riDo(\'' + r.id + '\',\'signoff\')', 'Sign off this report again', 'check') + '</div>';
-  var main = riB(A[0], A[1], 'riDo(\'' + r.id + '\',\'' + k + '\')', A[3], A[2]);
-  if(k === 'approve') main += riB('tertiary-main', 'Decline', 'riDo(\'' + r.id + '\',\'decline\')', 'Decline the renewal; a signed fax with your reason goes back to the pharmacy', 'x');
-  if(k === 'noacc') main = riB('secondary-main', 'Merge', 'riDo(\'' + r.id + '\',\'merge\')', 'Add these results to an existing report for this patient', '') + main;
-  return '<div class="ri-acts">' + main + (k === 'access' ? '' : riB('link', 'Full report', 'riOpen(\'' + r.id + '\')', 'Open the full report and its source pages', '')) + '</div>';
+  var main = riB(A[0], A[1], (RI_PREV[k] ? 'riPreview' : 'riDo') + '(\'' + r.id + '\',\'' + k + '\')', A[3], A[2]);
+  if(k === 'approve') main += riB('tertiary-main', 'Decline', 'riPreview(\'' + r.id + '\',\'decline\')', 'Decline the renewal; you see the signed fax before it goes', 'x');
+  if(k === 'noacc' && riMergeTargets(r).length) main = riB('secondary-main', 'Merge', 'riMergePick(\'' + r.id + '\')', 'Add these results to an existing report for this patient', '') + main;
+  return '<div class="ri-acts">' + main + (k === 'access' ? '' : riB('link', 'Full report', 'riOpen(\'' + r.id + '\')', 'Open the full report and its source pages', '')) + (RI.opened[r.id] && k !== 'access' ? '<span class="ri-g">Opened</span>' : '') + '</div>';
 }
 function riTypeCell(r){
   var s = riStatus(r);
@@ -14475,7 +14492,7 @@ function riTypeCell(r){
 }
 function riRender(){
   var root = document.getElementById('ri-root'); if(!root || !(window.SC && SC.html)) return;
-  var inTab = RI_ROWS.filter(function(r){ return riSt(r) === RI.tab || (RI.tab === 'signed' && RI.done[r.id]); }).filter(function(r){ return RI.tab === 'signed' || !RI.done[r.id]; });
+  var inTab = RI_ROWS.filter(function(r){ return riSt(r) === RI.tab || (RI.tab === 'signed' && RI.done[r.id]) || (RI.tab === 'review' && RI.recent[r.id]); }).filter(function(r){ return RI.tab === 'signed' || !RI.done[r.id] || (RI.tab === 'review' && RI.recent[r.id]); });
   var counts = {}; ['review', 'waiting', 'signed'].forEach(function(t){ counts[t] = RI_ROWS.filter(function(r){ return t === 'signed' ? (riSt(r) === 'signed' || RI.done[r.id]) : (riSt(r) === t && !RI.done[r.id]); }).length; });
   var fl = document.getElementById('inbox-nav-flag'); if(fl){ fl.style.display = counts.review ? '' : 'none'; fl.textContent = counts.review; }
   var byType = {}; inTab.forEach(function(r){ byType[r.type] = (byType[r.type] || 0) + 1; });
@@ -14517,7 +14534,7 @@ function riRender(){
         body += SC.html('TableRow', {className:'ri-row ri-cont ri-ord'}, ['TableCell', {}, ''], ['TableCell', {}, SC.raw('<div class="ri-ty"><span>Ordered</span></div>')],
           ['TableCell', {}, SC.raw('<div class="ri-l"><span class="ri-bn">Not yet collected</span><span class="ri-g">' + csEsc(o.n) + ' · ordered ' + csEsc(o.d) + (o.by && o.by !== 'you' ? ' by ' + csEsc(o.by) : '') + (o.overdue ? ' · <b>' + o.overdue + ' days</b>' : '') + '</span></div>')],
           ['TableCell', {}, ''], ['TableCell', {}, ''], ['TableCell', {}, ''],
-          ['TableCell', {}, SC.raw(o.overdue ? '<div class="ri-acts">' + (RI.done[k + 'o' + oi] ? SC.html('Tag', {color:'success', startIcon:'check'}, RI.done[k + 'o' + oi]) :
+          ['TableCell', {}, SC.raw(o.overdue ? '<div class="ri-acts">' + (RI.done[k + 'o' + oi] ? SC.html('Tag', {color:'neutral', startIcon:'check'}, RI.done[k + 'o' + oi]) :
             riB('secondary-main', 'Remind patient', 'riRemind(\'' + k + '\',' + oi + ',0)', 'Send ' + P.n.split(' ')[0] + ' a reminder in the patient portal', '') + riB('link', 'Task Dolly', 'riRemind(\'' + k + '\',' + oi + ',1)', 'Ask Dolly to call ' + P.n.split(' ')[0], '')) + '</div>' : '')]);
       });
     });
@@ -14533,12 +14550,12 @@ function riRender(){
   var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Patient'], ['TableHead', {}, 'Type\u00a0and status'], ['TableHead', {}, 'Report'], ['TableHead', {}, 'Flag'], ['TableHead', {}, 'Source'], ['TableHead', {}, 'Collected\u00a0→ Received'], ['TableHead', {}, 'Action']]];
   root.innerHTML = riDates(tabs + feed + chips + '<div class="ri-wrap">' + SC.html('Table', {'aria-label':'Results inbox', framed:false}, head, ['TableBody', {}, SC.raw(body)]) + '</div>');
 }
-function riTabClick(e){ var t = e.target.closest('[role=tab]'); if(!t) return; var v = t.id.split('-tab-').pop(); if(v && v !== RI.tab){ RI.tab = v; RI.type = ''; riRender(); } }
+function riTabClick(e){ var t = e.target.closest('[role=tab]'); if(!t) return; var v = t.id.split('-tab-').pop(); if(v && v !== RI.tab){ RI.tab = v; RI.type = ''; RI.recent = {}; riRender(); } }
 function riNow(){ return '22 Nov, ' + csNow(); }
 function riSync(r){
   var i = riIx(r); if(i > -1 && INBOX_ITEMS[i].status === 'received' && typeof naMarkRev === 'function'){ try { naMarkRev(i); } catch(e){} }
 }
-function riDone(id, label){ RI.done[id] = label; riRender(); var d = document.getElementById('ri-drw'); if(d && d.open) d.close(); toast(label); }
+function riDone(id, label){ RI.done[id] = label; RI.recent[id] = 1; riRender(); var d = document.getElementById('ri-drw'); if(d && d.open) d.close(); toast(label); }
 function riDo(id, k){
   var r = riRow(id); if(!r) return;
   var P = r.pt && RI_PT[r.pt], first = P ? P.n.split(' ')[0] : '';
@@ -14546,22 +14563,74 @@ function riDo(id, k){
   if(k === 'signoff'){
     if(RI.failNext){ RI.failNext = false; RI.err[id] = 1; riRender(); toast('Sign-off not saved: the connection dropped. Nothing was signed; try again.'); var d0 = document.getElementById('ri-drw'); if(d0 && d0.open) d0.close(); return; }
     delete RI.err[id]; RI.signs[id] = riNow(); riSignRec(r);
-    RI.st[id] = riPending(r) ? 'waiting' : 'signed'; riSync(r);
+    RI.st[id] = riPending(r) ? 'waiting' : 'signed'; RI.recent[id] = 1; riSync(r);
     toast(riPending(r) ? first + '\'s report signed off as it is now · it waits on the lab and comes back when the rest arrives' : first + '\'s report signed off · cleared');
     riRender(); var d = document.getElementById('ri-drw'); if(d && d.open) d.close(); return;
   }
   var L = {ack:'Acknowledged ' + riNow(), approve:'Approved · signed fax sent to the pharmacy', decline:'Declined · signed fax sent to the pharmacy', referral:'Referral started for colonoscopy',
-    summary:'Summary sent to Royal Jubilee', notforme:'Returned to sender with the standard note', unread:'Resend requested from 604 555 0199', merge:'Merged with ' + first + '\'s report of 21 November'}[k];
+    summary:'Summary sent to Royal Jubilee', notforme:'Returned to sender with the standard note', unread:'Resend requested from 604 555 0199'}[k];
   if(L) return riDone(id, L);
   if(k === 'unmatched'){ RI.fix[id] = 1; r.pt = r.ex.sug; r.nameAs = r.ex.name; toast('Filed to ' + RI_PT[r.pt].n + ' · the lab is told the personal health number was unreadable'); riRender(); return; }
   if(k === 'nolab'){ RI.fix[id] = 1; r.lab = r.ex.letter; toast(r.ex.letter + ' added to the lab directory (fax ' + r.ex.fax + ') · report filed'); riRender(); return; }
   if(k === 'noacc'){ RI.fix[id] = 1; r.acc = 'No report number · kept as its own report'; r.col = '21 November (time not found)'; toast('Kept as a new report for ' + first); riRender(); return; }
 }
+function riUndo(id){
+  var r = riRow(id); if(!r) return;
+  if(RI.signs[id] && r.signs && r.signs.length) r.signs.pop();
+  delete RI.st[id]; delete RI.signs[id]; delete RI.done[id]; delete RI.recent[id];
+  var i = riIx(r); if(i > -1){ var it = INBOX_ITEMS[i]; it.status = 'received'; delete it.reviewedAt; delete it.reviewedBy; delete it.disposition;
+    ['renderInboxList', 'renderInboxToday', 'renderCriticals', 'renderAttnTasks', 'updateWorkCounts'].forEach(function(f){ if(typeof window[f] === 'function') try { window[f](); } catch(e){} }); if(typeof csRefresh === 'function') try { csRefresh(); } catch(e){} }
+  riRender(); toast('Undone · back in Needs review');
+}
+/* RS-8: anything that leaves the practice is shown before it goes */
+var RI_PREV = {approve:1, decline:1, summary:1, referral:1};
+function riPreview(id, k){
+  var r = riRow(id), P = RI_PT[r.pt], who = P.n + ' (' + riDates(P.dob) + ', PHN ' + P.phn + ')', today = '22 Nov 2026';
+  var V = {
+    approve:{t:'Approve the renewal', to:r.from + ' · by fax', go:'Send approval', body:'<p><b>Renewal approved</b> for ' + csEsc(who) + '.</p><p>Escitalopram 10 mg, 1 tablet daily, 90 days, 1 refill.</p><p>Dr. D. Pannozzo · signed ' + today + '</p>'},
+    decline:{t:'Decline the renewal', to:r.from + ' · by fax', go:'Send decline', body:'<p><b>Renewal declined</b> for ' + csEsc(who) + ': escitalopram 10 mg daily.</p>' + SC.html('Input', {label:'Reason, sent to the pharmacy', id:'ri-why', placeholder:'For example: needs a visit before renewal'}) + '<p>Dr. D. Pannozzo · signed ' + today + '</p>'},
+    summary:{t:'Send a summary of care', to:'Royal Jubilee Hospital, internal medicine ward · by fax', go:'Send summary', body:'<p><b>Summary of care</b> for ' + csEsc(who) + ', admitted 21 Nov with pneumonia.</p><p><b>Conditions:</b> chronic obstructive pulmonary disease; type 2 diabetes; high blood pressure.</p><p><b>Medications:</b> tiotropium 18 mcg inhaled daily; metformin 500 mg twice daily; amlodipine 5 mg daily.</p><p><b>Allergies:</b> penicillin (rash).</p><p><b>Last visit:</b> 2 Nov 2026, stable; flu vaccine given.</p><p>Dr. D. Pannozzo · ' + today + '</p>'},
+    referral:{t:'Refer for colonoscopy', to:'Gastroenterology central intake, Royal Jubilee · by fax', go:'Send referral', body:'<p><b>Referral for colonoscopy</b> for ' + csEsc(who) + '.</p><p><b>Reason:</b> positive faecal immunochemical test, collected 14 Nov 2026 (LifeLabs, L-26-440882). Requested within 8 weeks.</p><p><b>Relevant:</b> type 2 diabetes, A1c 7.9% on 20 Nov 2026. No anticoagulants.</p><p>Dr. D. Pannozzo · ' + today + '</p>'}
+  }[k];
+  var host = document.getElementById('ri-host'); if(!host){ host = document.createElement('div'); host.id = 'ri-host'; document.body.appendChild(host); }
+  host.innerHTML = SC.html('Drawer', {id:'ri-pdrw', title:V.t, description:'To: ' + V.to, primaryAction:{label:V.go, id:'ri-pgo'}, secondaryAction:{label:'Cancel', id:'ri-px'}}, SC.raw('<div class="ri-prev">' + V.body + '</div>'));
+  var d = document.getElementById('ri-pdrw');
+  d.addEventListener('click', function(e){
+    if(e.target === d) return d.close();
+    var b = e.target.closest('button'); if(!b) return;
+    if(b.id === 'ri-pgo'){
+      if(k === 'decline'){ var w = document.getElementById('ri-why'); if(!w || !w.value.trim()){ toast('Add a reason for the pharmacy'); if(w) w.focus(); return; } }
+      d.close(); var dr = document.getElementById('ri-drw'); if(dr && dr.open) dr.close(); riDo(id, k); return; }
+    if(b.id === 'ri-px' || b.getAttribute('aria-label') === 'Close') d.close();
+  });
+  d.showModal();
+}
+/* EX-4: a report without a readable number is merged into one the patient already has, chosen by the doctor, or kept as new */
+function riMergeTargets(r){ return RI_ROWS.filter(function(x){ return x.id !== r.id && x.pt === r.pt && x.bat && !x.withdrawn && x.lab === r.lab && !RI.done[x.id]; }); }
+function riMergePick(id){
+  var r = riRow(id), T = riMergeTargets(r);
+  var host = document.getElementById('ri-host'); if(!host){ host = document.createElement('div'); host.id = 'ri-host'; document.body.appendChild(host); }
+  host.innerHTML = SC.html('Drawer', {id:'ri-mdrw', title:'Merge into a report', description:'Reports for ' + RI_PT[r.pt].n + ' from ' + r.lab, secondaryAction:{label:'Cancel', id:'ri-mx'}},
+    SC.raw('<div class="ri-mlist">' + T.map(function(x){ var pend = x.bat.reduce(function(a, b){ return a.concat(b.pend || []); }, []);
+      return '<div class="ri-mrow"><span><b>' + csEsc(x.bat.map(function(b){ return b.n; }).join(', ')) + '</b><span class="ri-g">' + csEsc(riDates(x.col || '')) + ' · ' + csEsc(x.acc) + (pend.length ? ' · ' + csEsc(pend.join(', ')) + ' pending' : '') + '</span></span>' +
+        riB('secondary-main', 'Merge here', 'riMerge(\'' + id + '\',\'' + x.id + '\')', 'Add these results to this report as a new version', '') + '</div>'; }).join('') + '</div>'));
+  var d = document.getElementById('ri-mdrw');
+  d.addEventListener('click', function(e){ if(e.target === d) return d.close(); var b = e.target.closest('button'); if(b && (b.id === 'ri-mx' || b.getAttribute('aria-label') === 'Close')) d.close(); });
+  d.showModal();
+}
+function riMerge(id, into){
+  var r = riRow(id), t = riRow(into);
+  r.bat.forEach(function(b){ var tb = t.bat.filter(function(x){ return x.n === b.n; })[0];
+    if(tb){ b.r.forEach(function(res){ tb.pend = (tb.pend || []).filter(function(p){ return p !== res[0]; }); tb.r.push(res); }); tb.isNew = true; } else t.bat.push(Object.assign({}, b, {isNew:true})); });
+  t.ver = (t.ver || 1) + 1;
+  var d = document.getElementById('ri-mdrw'); if(d && d.open) d.close();
+  riDone(id, 'Merged into ' + t.acc);
+}
 function riSignRec(r){ (r.signs = r.signs || []).push({at:riNow(), cov:(r.bat || []).map(function(b){ return b.n + ' (' + b.r.length + (b.r.length === 1 ? ' result)' : ' results)'); }).join('; ') + (riPending(r) ? '; pending results to follow' : '')}); }
 function riSignAll(pt){
   var L = RI_ROWS.filter(function(r){ return r.pt === pt && riSt(r) === 'review' && !RI.done[r.id] && riAct(r) === 'signoff'; });
   if(L.some(function(r){ return !RI.opened[r.id]; })){ toast('Open each report first'); return; }
-  L.forEach(function(r){ RI.signs[r.id] = riNow(); riSignRec(r); RI.st[r.id] = riPending(r) ? 'waiting' : 'signed'; riSync(r); });
+  L.forEach(function(r){ RI.signs[r.id] = riNow(); riSignRec(r); RI.st[r.id] = riPending(r) ? 'waiting' : 'signed'; RI.recent[r.id] = 1; riSync(r); });
   toast(L.length + ' reports signed off for ' + RI_PT[pt].n.split(' ')[0] + ' · each sign-off recorded'); riRender();
 }
 function riTask(pt, title, prio, note){
@@ -14622,7 +14691,9 @@ function riOpen(id){
     ['Collected', r.col || (r.bat ? 'Not found on the report' : '—')], ['Received', r.rec + ' · ' + r.via + (r.dup ? ' · also received by fax, duplicate not stored' : '')],
     ['Status', (riStatus(r) || r.type) + (r.withdrawn ? ' · withdrawn by the lab: ' + r.withdrawn.why : '')], r.req ? ['Requisition', r.req + ' · blood and urine reports linked'] : null, ['Version', String(r.ver || 1)]].filter(Boolean);
   var dl = '<dl class="ri-dl">' + facts.map(function(f){ return '<dt>' + f[0] + '</dt><dd>' + csEsc(f[1]) + '</dd>'; }).join('') + '</dl>';
-  var bats = r.bat ? r.bat.map(function(b){
+  var hideW = r.withdrawn && !RI.showW[id];
+  var bats = hideW ? '<h3 class="ri-bh">' + csEsc(r.bat[0].n) + '</h3><p class="ri-txt">Values hidden · withdrawn by the lab: ' + csEsc(r.withdrawn.why) + '. You signed off the first version on ' + csEsc(r.withdrawn.prev) + '.</p><div class="ri-dbk">' +
+      riB('link', 'Show withdrawn values', 'RI.showW[\'' + id + '\']=1;riOpen(\'' + id + '\')', 'Show the values the lab withdrew, struck through', '') + '</div>' : r.bat ? r.bat.map(function(b){
     var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Test'], ['TableHead', {}, 'Result'], ['TableHead', {}, 'Flag'], ['TableHead', {}, 'Reference']]];
     var body = b.r.map(function(x){ var crit = x[3] === 'HH' || x[3] === 'LL';
       return SC.html('TableRow', {}, ['TableCell', {}, ['TableCellContent', {label:x[0]}]], ['TableCell', {}, SC.raw(r.withdrawn ? '<s>' + csEsc(riVal(x)) + '</s>' : (x[5] ? '<s>' + csEsc(x[5]) + '</s> ' : '') + '<b>' + csEsc(riVal(x)) + '</b>')],
@@ -14635,7 +14706,7 @@ function riOpen(id){
     '<h3 class="ri-bh">Sign-offs</h3><ul class="ri-hist">' + ((r.signs || []).length ? r.signs.map(function(s){ return '<li><b>Dr. Pannozzo · ' + csEsc(s.at) + '</b> · covered ' + csEsc(s.cov) + '</li>'; }).join('') : '<li>None yet</li>') + '</ul>';
   var pages = r.pages ? r.pages.replace(/ of .*/, '').split('–') : ['1'], tot = r.pages ? r.pages.replace(/.* of /, '') : '1', pg = [];
   for(var p = +pages[0]; p <= +(pages[1] || pages[0]); p++) pg.push(p);
-  var src = '<h3 class="ri-bh">Source page' + (pg.length > 1 ? 's' : '') + ' · ' + (r.via === 'Fax' ? 'fax, as received' : 'as received from ' + r.via) + '</h3>' + pg.map(function(p, i){
+  var src = hideW ? '' : '<h3 class="ri-bh">Source page' + (pg.length > 1 ? 's' : '') + ' · ' + (r.via === 'Fax' ? 'fax, as received' : 'as received from ' + r.via) + '</h3>' + pg.map(function(p, i){
     var tests = !i && r.bat ? '<table class="doc-tbl"><thead><tr><th>Test</th><th>Result</th><th>Units</th><th>Flag</th><th>Reference</th></tr></thead><tbody>' + r.bat.map(function(b){ return '<tr><td colspan="5"><b>' + csEsc(b.n.toUpperCase()) + '</b></td></tr>' + b.r.map(function(x){ return '<tr><td>' + csEsc(x[0]) + '</td><td class="num">' + csEsc(x[5] || x[1]) + '</td><td>' + csEsc(x[2]) + '</td><td class="fl">' + (x[3] === 'HH' ? 'H**' : x[3] === 'LL' ? 'L**' : x[3] ? x[3] + '*' : '') + '</td><td>' + csEsc(x[4]) + '</td></tr>'; }).join('') + (b.pend || []).map(function(q){ return '<tr><td>' + csEsc(q) + '</td><td>PENDING</td><td></td><td></td><td></td></tr>'; }).join('') + (b.canc || []).map(function(c){ return '<tr><td>' + csEsc(c[0]) + '</td><td>CANCELLED</td><td colspan="3">' + csEsc(c[1]) + '</td></tr>'; }).join(''); }).join('') + '</tbody></table>' : '<p class="doc-narr">' + csEsc(r.text || 'Continued from the previous page.') + '</p>';
     return '<div class="doc-sheet lab ri-page"><div class="doc-head"><div class="doc-brand">' + csEsc(r.lab && r.lab !== 'unknown' ? r.lab : r.from || r.ex.letter) + '</div><div class="doc-hid">' + csEsc(r.acc || 'No accession number') + '</div></div>' +
       '<div class="doc-pt"><b>' + csEsc(r.nameAs || (r.ex && r.ex.name) || (P ? P.n : '')) + '</b><span>' + (P ? 'DOB ' + csEsc(P.dob) + ' &nbsp; PHN ' + (r.ex && r.ex.k === 'unmatched' && !RI.fix[r.id] ? '96▒▒ ▒▒▒ ▒▒2' : csEsc(P.phn)) : '') + '</span></div>' + tests +
@@ -14644,13 +14715,15 @@ function riOpen(id){
   var canAct = st === 'review' && !RI.done[id] && !(P && P.protected && !RI.unmask[r.pt]);
   var opts = {id:'ri-drw', title:(r.bat ? r.bat.map(function(b){ return b.n; }).filter(function(v, i, a){ return a.indexOf(v) === i; }).join(', ') : r.type), description:who + ' · ' + r.type + (riStatus(r) ? ' · ' + riStatus(r) : ''), secondaryAction:{label:'Close', id:'ri-close'}};
   if(canAct) opts.primaryAction = {label:k === 'unmatched' ? 'Match to ' + RI_PT[r.ex.sug].n.split(' ')[0] : A[1], id:'ri-go'};
-  var bk = P && P.urgent ? '<div class="ri-dbk">' + riBookHtml(r.pt, [r]).replace(/onclick="(riBook|riUnbook)\(/g, 'onclick="document.getElementById(\'ri-drw\').close();$1(') + '</div>' : '';
+  var xa = k === 'approve' && st === 'review' && !RI.done[id] ? riB('tertiary-main', 'Decline', 'riPreview(\'' + id + '\',\'decline\')', 'Decline the renewal; you see the signed fax before it goes', 'x')
+    : k === 'noacc' && !RI.fix[id] && riMergeTargets(r).length ? riB('secondary-main', 'Merge into a report', 'riMergePick(\'' + id + '\')', 'Add these results to an existing report for this patient', '') : '';
+  var bk = (xa ? '<div class="ri-dbk">' + xa + '</div>' : '') + (P && P.urgent ? '<div class="ri-dbk">' + riBookHtml(r.pt, [r]).replace(/onclick="(riBook|riUnbook)\(/g, 'onclick="document.getElementById(\'ri-drw\').close();$1(') + '</div>' : '');
   host.innerHTML = riDates(SC.html('Drawer', opts, SC.raw('<div class="ri-dbody">' + bk + dl + bats + hist + src + '</div>')));
   var d = document.getElementById('ri-drw');
   d.addEventListener('click', function(e){
     if(e.target === d) return d.close();
     var b = e.target.closest('button'); if(!b) return;
-    if(b.id === 'ri-go'){ riDo(id, k); if(d.open) d.close(); return; }
+    if(b.id === 'ri-go'){ if(RI_PREV[k]) return riPreview(id, k); if(k === 'noacc' && riMergeTargets(r).length){ riDo(id, k); if(d.open) d.close(); return; } riDo(id, k); if(d.open) d.close(); return; }
     if(b.id === 'ri-close' || b.getAttribute('aria-label') === 'Close') d.close();
   });
   d.addEventListener('close', function(){ riRender(); });
