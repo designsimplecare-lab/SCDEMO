@@ -8291,6 +8291,8 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 :is(#lfp-root,#pnl-root) .lfp-bar i{position:absolute;top:8px;bottom:8px;border-radius:var(--radius-2xs);}
 :is(#lfp-root,#pnl-root) .lfp-bar .day{position:absolute;top:2px;bottom:2px;border:2px dashed var(--color-navy-300);border-radius:var(--radius-xs);background:none;pointer-events:none;}
 :is(#lfp-root,#pnl-root) .lfp-bar .tick{position:absolute;top:100%;margin-top:4px;transform:translateX(-50%);font-size:14px;color:var(--ink-faint);}
+:is(#lfp-root,#pnl-root) .t-break{background:repeating-linear-gradient(45deg, var(--color-grey-300) 0 4px, var(--color-grey-200) 4px 8px);}
+:is(#lfp-root,#pnl-root) .t-decide{background:var(--panel);box-shadow:inset 0 0 0 2px var(--ink-soft);}
 :is(#lfp-root,#pnl-root) .t-direct{background:var(--color-navy-700);}
 :is(#lfp-root,#pnl-root) .t-indirect{background:var(--color-teal-500);}
 :is(#lfp-root,#pnl-root) .t-admin{background:var(--color-purple-500);}
@@ -8327,6 +8329,60 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 :is(#lfp-root,#pnl-root) .sv-progress{width:100% !important;}
 /* the line above each bar says "7.6 of 10 %"; the bar's own percentage of the limit would contradict it (Ani, 22 Nov) */
 :is(#lfp-root,#pnl-root) .sv-progress > span[aria-hidden="true"]{display:none;}
+/* Admin and breaks (Daniel's v4, rebuilt with the design system, 24 Nov) */
+#ad-root{display:grid;gap:16px;}
+#ad-root .ad-bar2{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;}
+#ad-root .ad-subs,#ad-root .ad-chips,.ad-chips{display:flex;flex-wrap:wrap;gap:8px;}
+#ad-root .ad-sp,.ad-sp{flex:1;}
+#ad-root .ad-timer{display:inline-flex;align-items:center;gap:12px;}
+#ad-root .ad-pane{display:grid;gap:16px;}
+#ad-root .ad-pane > #lfp-root,#ad-root .ad-pane > #pnl-root{margin:0;}
+.ad-hd{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin-bottom:12px;}
+.ad-hd .ad-h{margin:0;}
+.ad-tw{border-radius:var(--radius-xs);overflow:hidden;}
+.ad-c{font-size:14px;line-height:20px;color:var(--ink);display:grid;gap:2px;justify-items:start;}
+.ad-c .sv-tag,.ad-c .sv-tag .truncate,#ad-root .sv-tag,#ad-root .sv-tag .truncate,#ad-root .sv-stat__label,#ad-root .sv-stat__detail{font-size:14px;}
+.ad-t{font-size:15px;line-height:22px;font-weight:600;color:var(--ink);}
+.ad-t2{color:var(--ink);}
+.ad-s{font-size:14px;line-height:20px;color:var(--ink-soft);}
+.ad-day{display:flex;align-items:center;gap:10px;margin:0;font-size:17px;line-height:24px;font-weight:700;color:var(--ink);}
+.ad-cols{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;align-items:start;}
+.ad-cols-2{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+.ad-stack{display:grid;gap:16px;}
+.ad-note{display:flex;align-items:center;flex-wrap:wrap;gap:4px 16px;margin-top:12px;padding:12px 14px;border-radius:var(--radius-xs);background:var(--wash);}
+.ad-note .ad-s{margin-left:8px;}
+.ad-done{display:flex;gap:8px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-xs);background:var(--wash);font-size:14px;line-height:20px;color:var(--ink);}
+.ad-done svg{flex:none;width:18px;height:18px;}
+.ad-bar{margin:0 0 12px;}
+.ad-bar .l{display:flex;justify-content:space-between;gap:8px;margin:0 0 4px;font-size:14px;line-height:20px;color:var(--ink);}
+.ad-bar .l span{color:var(--ink-soft);}
+.ad-bar .sv-progress{width:100% !important;}
+.ad-bar .sv-progress > span[aria-hidden="true"]{display:none;}
+.ad-big{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin:0 0 10px;}
+.ad-big b{font-size:32px;line-height:40px;color:var(--ink);}
+.ad-form{display:grid;grid-template-columns:minmax(0,1.3fr) 140px 140px minmax(0,1.6fr);gap:12px;align-items:end;}
+.ad-checks{display:flex;flex-wrap:wrap;gap:12px 24px;margin-top:14px;}
+.ad-item{display:flex;align-items:flex-start;gap:16px;padding:14px 0;border-top:1px solid var(--line);}
+.ad-item:first-of-type{border-top:0;padding-top:0;}
+.ad-item-m{flex:1;min-width:0;display:grid;gap:4px;}
+.ad-seg{display:flex;height:28px;gap:2px;margin:0 0 14px;border-radius:var(--radius-xs);overflow:hidden;}
+.ad-seg .t-admin{background:var(--color-purple-500);}.ad-seg .t-indirect{background:var(--color-teal-500);}.ad-seg .t-direct{background:var(--color-navy-700);}
+.ad-empty{padding:48px 16px;}
+.ad-dr{display:grid;gap:8px;margin-top:8px;}
+.ad-dr .ad-h3{display:flex;align-items:center;gap:6px;}
+@media (max-width:1100px){ .ad-cols,.ad-cols-2{grid-template-columns:1fr;} .ad-form{grid-template-columns:1fr 1fr;} }
+
+.ad-card{background:var(--panel);border-radius:var(--radius-sm);padding:18px 20px;}
+#screen-calendar #brk-card{margin-bottom:16px;}
+.ad-h{display:flex;align-items:center;gap:6px;margin:0 0 12px;font-size:17px;line-height:24px;font-weight:700;color:var(--ink);}
+.ad-h3{margin:18px 0 8px;font-size:15px;line-height:22px;font-weight:700;color:var(--ink);}
+.ad-sub,.ad-p{margin:0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+.ad-p{color:var(--ink);font-size:15px;line-height:22px;margin-top:16px;}
+.ad-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.ad-list{margin:0;padding-left:18px;font-size:14px;line-height:22px;color:var(--ink);}
+.brk-rows{display:grid;gap:10px;}
+.brk-row{display:grid;grid-template-columns:minmax(0,1.4fr) 150px 150px auto;gap:12px;align-items:end;}
+#brk-slot{display:inline-flex;align-items:center;}
 /* Labs by requisition (Daniel's overview, 22 Nov) */
 .cs-req-card #cs-req{display:grid;gap:14px;margin-top:8px;}
 .cs-req{border-radius:var(--radius-xs);background:var(--wash);padding:12px 14px;}
@@ -8343,7 +8399,10 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 .cs-req-none{margin:8px 0 0;font-size:14px;color:var(--ink-soft);}
 /* Results inbox (Daniel's requirements, 22 Nov 2026) */
 #ri-root{display:grid;gap:12px;}
-#ri-root .ri-types{display:flex;flex-wrap:wrap;gap:8px;}
+#ri-root .ri-types{display:flex;flex-wrap:wrap;gap:8px;flex:1;min-width:0;}
+#ri-root .ri-bar{display:flex;align-items:flex-start;gap:16px;}
+#ri-root .ri-sort{display:flex;gap:8px;flex:none;}
+#ri-root .ri-lab{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:0 0 4px;font-size:14px;line-height:20px;color:var(--ink-soft);}
 #ri-root .ri-wrap{background:var(--panel);border-radius:var(--radius-sm);overflow:auto;}
 #ri-root .ri-wrap table{min-width:1100px;}
 #ri-root .ri-wrap :is(td,th){padding-left:10px;padding-right:10px;}
@@ -8570,10 +8629,8 @@ dialog#ri-drw{width:min(900px,94vw);max-width:none;}
       <button class="nav-btn" data-screen="claims" onclick="showScreen('claims')"><span class="nav-icon">$</span><span class="nav-label">Claims<span class="nav-flag mut" id="wt-claims-count" style="display:none;"></span></span></button>
       <!-- Earnings (Ani approved 6 Oct; Daniel, call 5 Oct): right after Claims -->
       <button class="nav-btn" data-screen="earnings" onclick="showScreen('earnings')"><span class="nav-icon"></span><span class="nav-label">Earnings</span></button>
-      <!-- LFP time (Daniel's LFP guide, 13 Nov; chart brief, 17 Nov: "Simple classes it automatically; the doctor reviews it in Admin") -->
-      <button class="nav-btn" data-screen="time" onclick="showScreen('time');lfpRender()" title="Your LFP time: sorted by type, checked against the limits, approved by you"><span class="nav-icon"></span><span class="nav-label">Time<span class="nav-flag" id="lfp-nav-flag" style="display:none;"></span></span></button>
-      <!-- LFP panel (Ani, 22 Nov: "build the LFP Panel Overview next"; Daniel's LFP guide) -->
-      <button class="nav-btn" data-screen="panel" onclick="showScreen('panel');pnlRender()" title="Your panel: the patients attached to you, the 30% limit, and the review every three months"><span class="nav-icon"></span><span class="nav-label">Panel<span class="nav-flag" id="pnl-nav-flag" style="display:none;"></span></span></button>
+      <!-- Admin (Daniel's v4, 23 Nov; rebuilt with the design system, 24 Nov): Time and Panel live inside it as "This week" and "Panel" -->
+      <button class="nav-btn" data-screen="admin" onclick="showScreen('admin')" title="Admin: your time, clinical administration, panel and attachment, model claims and payments, set-up"><span class="nav-icon"></span><span class="nav-label">Admin<span class="nav-flag" id="ad-nav-flag" style="display:none;"></span></span></button>
       <button class="nav-btn nav-tasks" data-screen="tasks" onclick="showScreen('tasks')"><span class="nav-icon">&#10003;</span><span class="nav-label">Tasks<span class="nav-flag" id="task-nav-flag" style="display:none;"></span></span></button>
       <!-- Ani, 29 Sep: chat as a primary left-nav item. It opens and closes the movable chat panel
            (Daniel, 29 Sep: "I'd like the messenger function movable"). Not a screen, so no data-screen.
@@ -8602,6 +8659,8 @@ dialog#ri-drw{width:min(900px,94vw);max-width:none;}
            toggle beside it ("Provide a prominent manual toggle"). Safe mode shows its label only while it is on (display by exception). -->
       <!-- Ani, 6 Nov ("have search open, with the text: search by name, PHN, what we had initially"): an open search field, the design system's;
            typing (or a click) opens the patient search with the text in it; Ctrl/⌘K still opens it -->
+      <!-- Breaks (Daniel v4, 23 Nov; brought in 24 Nov): Take a break, never counted as paid time -->
+      <span id="brk-slot"></span>
       <sc-search id="ps-tb" start-icon="search" placeholder="Search by name, PHN or date of birth" aria-keyshortcuts="Control+K Meta+K"></sc-search>
       <button type="button" class="ps-tbb ps-safe-tb" id="ps-safe-tb" onclick="psSafe()" aria-pressed="false" title="Safe mode for screen sharing" aria-label="Safe mode for screen sharing"><span class="ic" data-pdic="eyeoff"></span><span class="ps-safe-l">Safe mode</span></button>
       <button class="chat-fab theme-btn" id="theme-btn" onclick="toggleTheme()" title="Switch to dark" aria-label="Switch to dark"><span class="ic" id="theme-icon"></span></button>
@@ -9640,6 +9699,7 @@ dialog#ri-drw{width:min(900px,94vw);max-width:none;}
       <h1>Calendar</h1>
       <p class="sub">Your call windows, and when you are on service.</p>
       <div class="ia-note">IA change: previously two separate destinations with two different day-pickers for the same underlying data. Now one screen, one picker, two modes.</div>
+      <section class="ad-card" id="brk-card" aria-labelledby="brk-h"></section>
       <div class="box svc-box" id="svc-box">
         <div class="svc-top">
           <div>
@@ -9745,6 +9805,12 @@ dialog#ri-drw{width:min(900px,94vw);max-width:none;}
     <div class="screen" id="screen-time">
       <h1 data-info="Longitudinal Family Physician payment. Simple sorts your own time by type as you work; check each day, change a type if needed, and approve. Approved time becomes claims under LFP Time (diagnostic code L23); visits are claimed under each patient.">Time</h1>
       <div id="lfp-root"></div>
+    </div>
+    <!-- Admin (Daniel's v4; rebuilt 24 Nov) -->
+    <div class="screen" id="screen-admin">
+      <h1 data-info="Everything for the Longitudinal Family Physician payment model in one place: your time, clinical administration, your panel and attachment, model claims, payments and set-up. Fee-for-service doctors see only Panel and attachment, and set-up. Example data.">Admin</h1>
+      <div id="ad-root"></div>
+      <div id="ad-hold" hidden></div>
     </div>
     <!-- LFP panel (Ani, 22 Nov) -->
     <div class="screen" id="screen-panel">
@@ -14362,7 +14428,7 @@ var RI_ROWS = [
     bat:[{n:'Chemistry', r:[['Ferritin', '22', 'µg/L', 'L', '30–400'], ['Vitamin B12', '310', 'pmol/L', '', '>150']]}]}
 ];
 /* rows that start in Waiting on lab and Signed off */
-var RI = {tab:'review', type:'', st:{r28:'waiting', r29:'signed'}, opened:{}, done:{}, signs:{}, unmask:{}, fix:{}, drw:null, book:{}, err:{}, failNext:false, recent:{}, showW:{}, last:'22 November, 9:14 AM',
+var RI = {order:(function(){ try { return localStorage.getItem('sc.ri.order') || 'old'; } catch(e){ return 'old'; } })(), tab:'review', type:'', st:{r28:'waiting', r29:'signed'}, opened:{}, done:{}, signs:{}, unmask:{}, fix:{}, drw:null, book:{}, err:{}, failNext:false, recent:{}, showW:{}, last:'22 November, 9:14 AM',
   demo:(function(){ try { return new URLSearchParams(location.search).get('inbox') === 'states'; } catch(e){ return false; } })()};
 if(RI.demo) RI.failNext = true;
 RI_ROWS.push(
@@ -14379,6 +14445,50 @@ RI_ROWS.push(
     bat:[{n:'Coagulation', r:[['International normalised ratio', '2.6', '', '', '2.0–3.0']]}], signs:[{at:'15 November, 1:05 PM', st:'Final', cov:'Coagulation (1 result)'}]}
 );
 function riRow(id){ return RI_ROWS.filter(function(r){ return r.id === id; })[0]; }
+/* ============================================================================
+   Document labels (Simple Care Labelling Standard SC-LAB-001 v1.9, 12 Nov 2026; brought in from Daniel's v4, 24 Nov).
+   Label: Document Type — Description / Panel Name — Source — Date — Remaining (when verified) — source-identified amendment.
+   Built from approved fields only; the original document is never changed. No patient names, health numbers, birth dates,
+   results, diagnoses, internal identifiers or medication names in a label. Fields that are not available are left out, never guessed.
+   ========================================================================= */
+var RI_DIR = {
+  'LifeLabs':{name:'LifeLabs', short:'LifeLabs'}, 'LifeLabs pathology':{name:'LifeLabs Pathology'}, 'Eagle Ridge Hospital laboratory':{name:'Eagle Ridge Hospital Laboratory'},
+  'Island Health laboratory':{name:'Island Health Laboratory'}, 'Island Health imaging':{name:'Island Health Medical Imaging'},
+  'Royal Jubilee cardiology':{name:'Royal Jubilee Hospital Cardiology', short:'RJH Cardiology'}, 'Royal Jubilee Hospital':{name:'Royal Jubilee Hospital', short:'RJH'},
+  'Valley Medical Laboratories':{name:'Valley Medical Laboratories'}, 'Coastal Diagnostics':{name:'Coastal Diagnostics'},
+  'London Drugs, Fort Street':{name:'London Drugs, Fort Street', short:'London Drugs Fort St'}, 'Shoppers Drug Mart, Douglas Street':{name:'Shoppers Drug Mart, Douglas Street', short:'Shoppers Douglas St'},
+  'Cardiology, Dr. S. Rao':{doc:'Dr. S. Rao', college:'CPSBC', reg:'31207', spec:'Cardiology'}, 'Nephrology, Dr. P. Wong':{doc:'Dr. P. Wong', college:'CPSBC', reg:'28841', spec:'Nephrology'},
+  'Dermatology, Dr. R. Ahmed':{doc:'Dr. R. Ahmed', college:'CPSBC', reg:'19563', spec:'Dermatology'}
+};
+var RI_DOCTYPE = {Bloodwork:'Lab Report', Urine:'Lab Report', Microbiology:'Microbiology Report', Pathology:'Pathology Report', Imaging:'Imaging Report', ECG:'Diagnostic Report',
+  Screening:'Screening Result', Consult:'Consult Report', 'Hospital document':'Hospital Notice', 'Appointment notice':'Booking Confirmation', 'Pharmacy request':'Pharmacy Request', 'Referral response':'Requisition Returned'};
+var RI_MON = {January:1, February:2, March:3, April:4, May:5, June:6, July:7, August:8, September:9, October:10, November:11, December:12};
+function riYMD(t){ var m = /(\d{1,2}) ([A-Z][a-z]+)/.exec(t || ''); if(!m || !RI_MON[m[2]]) return ''; var mo = RI_MON[m[2]], d = +m[1]; return '2026.' + (mo < 10 ? '0' : '') + mo + '.' + (d < 10 ? '0' : '') + d; }
+function riUpTo3(L){ return L.length > 3 ? L.slice(0, 3).join(', ') + ' +' + (L.length - 3) + ' more' : L.join(', '); }
+function riTitleCase(t){ return String(t).replace(/,/g, '').replace(/\b([a-z])/g, function(m){ return m.toUpperCase(); }); }
+function riLabel(r){
+  var parts = [RI_DOCTYPE[r.type] || 'Unlabelled Clinical Document'], flag = '';
+  var lab = r.ex && r.ex.k === 'nolab' ? (RI.fix[r.id] ? r.ex.letter : null) : (r.lab || r.from), D = lab && RI_DIR[lab];
+  var verified = r.by === 'you' && !(r.ex && (r.ex.k === 'noacc' || r.ex.k === 'unmatched') && !RI.fix[r.id]);
+  if(r.bat){
+    var names = r.bat.map(function(b){ return b.n; }).filter(function(v, i, a){ return a.indexOf(v) === i; });
+    if(r.type === 'Pathology' || r.type === 'Imaging' || r.type === 'ECG') parts.push(riTitleCase(names[0]).replace('Electrocardiogram', 'ECG 12 Lead'));
+    else parts.push(r.ix && verified ? r.ix : riUpTo3(names));
+  } else if(D && D.spec) parts.push(D.spec + (r.type === 'Referral response' ? ' Referral' : ''));
+  else if(r.type === 'Hospital document' && /^Admission/.test(r.text || '')) parts.push('Admission');
+  else if(r.type === 'Pharmacy request' && /^Renewal/.test(r.text || '')) parts.push('Renewal');
+  if(D) parts.push(D.doc ? D.doc + ' (' + D.college + ' ' + D.reg + ')' : (D.short || D.name));
+  else if(lab || (r.ex && r.ex.k === 'nolab')) flag = 'Source not in the facility directory';
+  var ev = r.bat ? riYMD(r.col) : '';
+  parts.push(ev || 'Received ' + riYMD(r.rec));
+  var pend = []; (r.bat || []).forEach(function(b){ (b.pend || []).forEach(function(p){ pend.push(p); }); });
+  if(pend.length && verified) parts.push('Remaining: ' + riUpTo3(pend));
+  if(r.amend) parts.push(r.amend);
+  return {text:parts.join(' — '), flag:flag};
+}
+function riLabelHtml(r){ var L = riLabel(r);
+  return '<span class="ri-lab">' + csEsc(L.text) + (L.flag ? ' · ' + csEsc(L.flag) + scInfoHtml('This sender is not in the facility directory yet, so the label leaves the source out. It is flagged for directory review.') : '') + scInfoHtml('Document label (Simple Care Labelling Standard SC-LAB-001): type, what it is, source and date, built from approved fields only.') + '</span>'; }
+
 /* Ani, 22 Nov ("date format usually how doctors are used to"): day, short month, year, as on lab reports and in EMRs: 28 Oct 1951, 22 Nov, 6:40 AM */
 function riDates(h){
   return h.replace(/\b(\d{1,2}) (January|February|March|April|May|June|July|August|September|October|November|December)\b( \d{4})?(,?)/g, function(m, d, mo, y, c){
@@ -14533,6 +14643,7 @@ function riRender(){
   var rows = RI.type ? inTab.filter(function(r){ return r.type === RI.type || riSec(r) === 'critical'; }) : inTab;
   var tab = function(v, label, ic){ return ['Tab', {value:v, startIcon:ic}, label + ' ' + counts[v]]; };
   var tabs = '<div class="ri-tabs" onclick="riTabClick(event)">' + SC.html('Tabs', {defaultValue:RI.tab}, ['TabList', {'aria-label':'Results inbox'}, tab('review', 'To review', 'eye-on'), tab('waiting', 'Awaiting results', 'clock-time'), tab('signed', 'Signed off', 'check-circle')]) + '</div>';
+  var sortCtl = '<span class="ri-sort" role="group" aria-label="Order">' + [['old', 'Oldest first'], ['new', 'Newest first']].map(function(o){ return SC.html('Chip', {selected:RI.order === o[0], title:'Show reports ' + o[1].toLowerCase()}, o[1]).replace('<button ', '<button onclick="riSetOrder(\'' + o[0] + '\')" '); }).join('') + '</span>';
   var chips = '<div class="ri-types" role="group" aria-label="Type">' + SC.html('Chip', {selected:!RI.type, title:'Show every type'}, 'All ' + inTab.length).replace('<button ', '<button onclick="RI.type=\'\';riRender()" ') +
     RI_TYPES.filter(function(t){ return byType[t]; }).map(function(t){ return SC.html('Chip', {selected:RI.type === t, title:'Show only ' + t.toLowerCase()}, t + ' ' + byType[t]).replace('<button ', '<button onclick="RI.type=\'' + t + '\';riRender()" '); }).join('') + '</div>';
   /* group by patient (unmatched and not-for-me rows stand alone); a patient sits in the section of their worst item */
@@ -14540,10 +14651,11 @@ function riRender(){
   rows.forEach(function(r){ var k = r.ex && !RI.fix[r.id] && r.ex.k !== 'nolab' && r.ex.k !== 'noacc' ? 'x' + r.id : r.pt; if(!groups[k]){ groups[k] = []; order.push(k); } groups[k].push(r); });
   if(RI.tab === 'review' && !RI.type) Object.keys(RI_PT).forEach(function(pt){ if(riNeedsVisit(pt) && !groups[pt]){ groups[pt] = []; order.push(pt); } });
   var isCrit = function(k){ return !groups[k].length || groups[k].some(function(r){ return riSec(r) === 'critical'; }); };
+  var gKind = function(k){ return isCrit(k) ? 'critical' : groups[k].some(function(r){ return riSec(r) === 'protected'; }) ? 'protected' : groups[k].some(function(r){ return riSec(r) === 'filing'; }) ? 'filing' : 'rest'; };
   var first = function(k){ return groups[k].length ? Math.min.apply(null, groups[k].map(function(r){ return riTime(r.rec); })) : 0; };
   var body = '';
-  [['critical', 'Critical'], ['rest', 'All other reports, in the order received']].forEach(function(S){
-    var G = order.filter(function(k){ return (S[0] === 'critical') === isCrit(k); }).sort(function(x, y){ return first(x) - first(y); });
+  [['critical', 'Critical'], ['rest', RI.order === 'new' ? 'All other reports, newest first' : 'All other reports, in the order received'], ['filing', 'Needs filing'], ['protected', 'Protected']].forEach(function(S){
+    var G = order.filter(function(k){ return gKind(k) === S[0]; }).sort(function(x, y){ return (RI.order === 'new' ? -1 : 1) * (first(x) - first(y)); });
     if(!G.length) return;
     var n = G.reduce(function(a, k){ return a + groups[k].length; }, 0);
     body += SC.html('TableGroupRow', {colSpan:7, label:S[1] + (RI.type && S[0] === 'critical' ? ' · always shown' : ''), count:n, expanded:true});
@@ -14559,7 +14671,7 @@ function riRender(){
         body += SC.html('TableRow', {className:'ri-row' + (i ? ' ri-cont' : '') + (RI.opened[r.id] ? ' ri-opened' : ''), 'data-ri':r.id},
           ['TableCell', {}, SC.raw(riPtCell(r, !i, L))],
           ['TableCell', {}, SC.raw(riTypeCell(r))],
-          ['TableCell', {}, SC.raw(prot ? '<div class="ri-l"><span class="ri-g" style="color:var(--ink)">' + csEsc(r.lab) + ' · collected ' + csEsc(r.col) + '</span></div>' : riLines(r))],
+          ['TableCell', {}, SC.raw(prot ? '<div class="ri-l"><span class="ri-g" style="color:var(--ink)">' + csEsc(r.lab) + ' · collected ' + csEsc(r.col) + '</span></div>' : riLabelHtml(r) + riLines(r))],
           ['TableCell', {}, SC.raw(f === 'critical' ? SC.html('Tag', {color:'error'}, 'Critical') : f === 'abnormal' ? '<span class="ri-ab">Abnormal</span>' : '')],
           ['TableCell', {}, SC.raw(prot ? '<div class="ri-src"><b>' + csEsc(r.lab) + '</b></div>' : riSrc(r))],
           ['TableCell', {}, SC.raw(prot ? '<div class="ri-when"><span>' + csEsc(r.col) + '</span></div>' : riWhen(r))],
@@ -14584,8 +14696,9 @@ function riRender(){
   }
   var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'Patient'], ['TableHead', {}, 'Type\u00a0and status'], ['TableHead', {}, 'Report'], ['TableHead', {}, 'Flag'], ['TableHead', {}, 'Source'], ['TableHead', {}, 'Collected\u00a0→ Received'], ['TableHead', {}, 'Action']]];
   if(typeof riReqRender === 'function') try { riReqRender(); } catch(e){}
-  root.innerHTML = riDates(tabs + feed + chips + '<div class="ri-wrap">' + SC.html('Table', {'aria-label':'Results inbox', framed:false}, head, ['TableBody', {}, SC.raw(body)]) + '</div>');
+  root.innerHTML = riDates(tabs + feed + '<div class="ri-bar">' + chips + sortCtl + '</div><div class="ri-wrap">' + SC.html('Table', {'aria-label':'Results inbox', framed:false}, head, ['TableBody', {}, SC.raw(body)]) + '</div>');
 }
+function riSetOrder(o){ RI.order = o; try { localStorage.setItem('sc.ri.order', o); } catch(e){} riRender(); }
 function riTabClick(e){ var t = e.target.closest('[role=tab]'); if(!t) return; var v = t.id.split('-tab-').pop(); if(v && v !== RI.tab){ RI.tab = v; RI.type = ''; RI.recent = {}; riRender(); } }
 function riNow(){ return '22 November, ' + csNow(); }
 function riSync(r){
@@ -14721,7 +14834,7 @@ function riOpen(id){
   RI.opened[id] = 1;
   var P = r.pt && RI_PT[r.pt], st = riSt(r), k = riAct(r), A = RI_ACT[k];
   var who = P ? P.n : (r.ex && r.ex.name) || 'Not for me';
-  var facts = [['Patient', P ? P.n + ' · ' + P.dob + ' · PHN ' + P.phn : (r.ex && r.ex.k === 'unmatched' ? r.ex.name + ' · ' + r.ex.dob + ' · PHN unreadable' : '—')],
+  var facts = [['Label', riLabel(r).text], ['Patient', P ? P.n + ' · ' + P.dob + ' · PHN ' + P.phn : (r.ex && r.ex.k === 'unmatched' ? r.ex.name + ' · ' + r.ex.dob + ' · PHN unreadable' : '—')],
     ['Lab', r.lab && r.lab !== 'unknown' ? r.lab : r.from || (r.ex && r.ex.letter) || '—'], ['Accession number', r.acc || 'Not found on the report'],
     ['Ordered by', r.by ? (r.by === 'you' ? 'You' : r.by) : '—'], r.copy ? ['Copy to', 'You · the ordering doctor is responsible for follow-up'] : null,
     ['Collected', r.col || (r.bat ? 'Not found on the report' : '—')], ['Received', r.rec + ' · ' + r.via + (r.dup ? ' · also received by fax, duplicate not stored' : '')],
@@ -14822,6 +14935,481 @@ function riReqRender(){
     D.unlinked.map(function(u){ return '<div class="cs-req-rep"><span class="m"><b>' + csEsc(u.n) + '</b><span>' + csEsc(u.lab) + ' · ' + csEsc(u.via) + ' · ' + csEsc(u.d) + ' · ' + csEsc(u.note) + '</span></span><span class="t">' + tag('Final') + tag('Signed off') + '</span></div>'; }).join('') + '</div>' : '';
   m.innerHTML = riDates(reqs + un);
 }
+
+/* ============================================================================
+   Breaks (Daniel's v4, 23 Nov: "ensure that we account for all of this"; payment schedule, section 29: "time is not payable for breaks";
+   rebuilt with the design system, 24 Nov). Simple cannot know for certain when the doctor is on break, so it combines signals and the
+   doctor decides: the break schedule (never counted unless Simple sees work during it), activity in Simple, idle gaps of 5 minutes or
+   more (held out and asked about), and the Take a break button. Simple sees only activity inside Simple.
+   ========================================================================= */
+var BRK = {on:null, taken:[], sched:[{label:'Lunch', a:'12:00', b:'12:45'}]};
+try { var brkSv = JSON.parse(localStorage.getItem('sc.brk.sched') || 'null'); if(brkSv && brkSv.length) BRK.sched = brkSv; } catch(e){}
+function brkHM(d){ var h = d.getHours(), m = d.getMinutes(); return ((h % 12) || 12) + ':' + (m < 10 ? '0' : '') + m + ' ' + (h < 12 ? 'AM' : 'PM'); }
+function brkT12(t){ var p = String(t).split(':'), h = +p[0]; return ((h % 12) || 12) + ':' + p[1] + ' ' + (h < 12 ? 'AM' : 'PM'); }
+function brkSave(){ try { localStorage.setItem('sc.brk.sched', JSON.stringify(BRK.sched)); } catch(e){} }
+function brkPaint(){
+  var slot = document.getElementById('brk-slot');
+  if(slot && window.SC && SC.html) slot.innerHTML = BRK.on
+    ? caBtn('primary', 'End break', 'brkToggle()', 'On break since ' + brkHM(BRK.on) + '. End it; the break is recorded as not counted.', 'play')
+    : caBtn('secondary-main', 'Take a break', 'brkToggle()', 'Start a break. Breaks are never counted as paid time.', 'pause');
+  brkCard();
+}
+function brkToggle(){
+  if(!BRK.on){ BRK.on = new Date(); brkPaint(); toast('Break started at ' + brkHM(BRK.on) + '. Nothing is counted until you end it.'); return; }
+  var a = BRK.on, b = new Date(), mins = Math.max(1, Math.round((b - a) / 60000)); BRK.on = null;
+  BRK.taken.unshift(brkHM(a) + ' to ' + brkHM(b) + ' · ' + mins + (mins === 1 ? ' minute' : ' minutes')); brkPaint();
+  toast('Break recorded: ' + BRK.taken[0] + ', not counted.');
+}
+function brkCard(){
+  var c = document.getElementById('brk-card'); if(!c || !(window.SC && SC.html)) return;
+  var rows = BRK.sched.map(function(x, i){
+    return '<div class="brk-row">' + SC.html('Input', {label:'Break', id:'brk-n' + i, value:x.label}) + SC.html('Input', {label:'From', id:'brk-a' + i, type:'time', value:x.a}) + SC.html('Input', {label:'To', id:'brk-b' + i, type:'time', value:x.b}) +
+      caBtn('tertiary-main', 'Remove', 'brkDel(' + i + ')', 'Remove this break from your schedule', 'x') + '</div>'; }).join('');
+  c.innerHTML = '<h2 class="ad-h" id="brk-h">Breaks' + scInfoHtml('Breaks are never paid time under the Longitudinal Family Physician payment model. A scheduled break is left out of your time automatically. If you work during it, for example signing a result or calling a patient, that work is counted and flagged for you to confirm.') + '</h2>' +
+    '<div class="brk-rows">' + rows + '</div><div class="ad-acts">' + caBtn('secondary-main', 'Add break', 'brkAdd()', 'Add another break to your weekday schedule', 'add') + '</div>' +
+    '<h3 class="ad-h3">Taken today with the button</h3>' + (BRK.taken.length ? '<ul class="ad-list">' + BRK.taken.map(function(t){ return '<li>' + csEsc(t) + ' · not counted</li>'; }).join('') + '</ul>' : '<p class="ad-sub">None yet.</p>');
+  c.querySelectorAll('input').forEach(function(inp){ inp.addEventListener('change', function(){
+    var m = /^brk-([nab])(\d+)$/.exec(inp.id); if(!m) return; var x = BRK.sched[+m[2]]; x[{n:'label', a:'a', b:'b'}[m[1]]] = inp.value; brkSave();
+    toast('Break saved: ' + x.label + ', ' + brkT12(x.a) + ' to ' + brkT12(x.b) + ', Monday to Friday'); }); });
+}
+function brkAdd(){ BRK.sched.push({label:'Break', a:'15:00', b:'15:15'}); brkSave(); brkCard(); }
+function brkDel(i){ var x = BRK.sched.splice(i, 1)[0]; brkSave(); brkCard(); toast(x.label + ' removed from your schedule'); }
+/* work while on break is real work, so ask once */
+document.addEventListener('click', function(e){
+  if(!BRK.on) return;
+  var t = e.target.closest && e.target.closest('button'); if(!t || t.closest('#brk-slot') || t.closest('#brk-drw')) return;
+  if(!/^(Sign off|Acknowledge|Approve|Send|Make referral|Call|Order labs|Sign and)/.test((t.textContent || '').trim())) return;
+  var host = document.getElementById('brk-host'); if(!host){ host = document.createElement('div'); host.id = 'brk-host'; document.body.appendChild(host); }
+  host.innerHTML = SC.html('Drawer', {id:'brk-drw', title:'You are on break', description:'On break since ' + brkHM(BRK.on), primaryAction:{label:'End break', id:'brk-end'}, secondaryAction:{label:'Stay on break', id:'brk-stay'}},
+    SC.raw('<p class="ad-p">This is work, so it can be paid. End your break now, or stay on break and decide when you confirm the day.</p>'));
+  var d = document.getElementById('brk-drw');
+  d.addEventListener('click', function(ev){ var b = ev.target.closest('button'); if(ev.target === d) return d.close(); if(!b) return;
+    if(b.id === 'brk-end'){ d.close(); brkToggle(); } else if(b.id === 'brk-stay' || b.getAttribute('aria-label') === 'Close'){ d.close(); toast('Still on break. That action is recorded with its time; you can count it when you confirm the day.'); } });
+  d.showModal();
+}, true);
+window.addEventListener('load', brkPaint);
+
+/* ============================================================================
+   Admin (Daniel's v4, 23 Nov: "Clinical admin"; rebuilt with the design system, 24 Nov, Ani: "make it with our components and design UI").
+   One home for the Longitudinal Family Physician payment model: Today, Clinical administration, Panel and attachment, Claims and payments,
+   Set-up. The Time and Panel screens (Ani, 21 and 22 Nov) live here as "This week" and "Panel". Fee-for-service doctors see only Panel and
+   attachment and Set-up. Clinical administration pages that hold decisions run a timer: a decision counts toward the sitting, views do not,
+   and 5 minutes with no activity are held out and asked about. Example data throughout.
+   ========================================================================= */
+var AD = {k:'today', model:'lfp', roles:{md:true, po:true}, dec:{}, conf:false, t0:0, sit:0, idle:false, st:'first', focus:{'Colon screening':1, 'Diabetes: A1c in 6 months':1, 'Heart risk score':1}};
+try { var adSv = JSON.parse(localStorage.getItem('sc.ad') || 'null'); if(adSv){ if(adSv.model) AD.model = adSv.model; if(adSv.roles) AD.roles = adSv.roles; } } catch(e){}
+var AD_GROUPS = [['today', 'Today'], ['ca', 'Clinical administration'], ['panel', 'Panel and attachment'], ['money', 'Claims and payments'], ['setup', 'Set-up']];
+var AD_TABS = [
+  {k:'today', g:'today', label:'Today\'s time'}, {k:'week', g:'today', label:'This week', host:'lfp-root'},
+  {k:'overview', g:'ca', label:'Overview'}, {k:'review', g:'ca', label:'Panel review', timed:'1 · Panel review'}, {k:'quality', g:'ca', label:'Quality report', timed:'1 · Panel review'},
+  {k:'record', g:'ca', label:'Record management', timed:'2 · Record management'}, {k:'md', g:'ca', label:'Medical director', timed:'4 · Medical director', role:'md'},
+  {k:'po', g:'ca', label:'Privacy officer', timed:'5 · Privacy officer', role:'po'}, {k:'how', g:'ca', label:'How time is classed'},
+  {k:'pnl', g:'panel', label:'Panel', host:'pnl-root', always:true}, {k:'attach', g:'panel', label:'Attachment', always:true}, {k:'limits', g:'panel', label:'Panel and limits'}, {k:'month', g:'panel', label:'Monthly summary'},
+  {k:'claims', g:'money', label:'Claims'}, {k:'pay', g:'money', label:'Payments'},
+  {k:'setup', g:'setup', label:'Payment model and roles', always:true}, {k:'states', g:'setup', label:'Other situations'}
+];
+function adSave(){ try { localStorage.setItem('sc.ad', JSON.stringify({model:AD.model, roles:AD.roles})); } catch(e){} }
+function adShown(t){ return (AD.model === 'lfp' || t.always) && (!t.role || AD.roles[t.role]); }
+function adTab(k){ return AD_TABS.filter(function(t){ return t.k === k; })[0]; }
+/* small builders, all design system */
+function adB(v, label, js, title, icon){ return caBtn(v, label, js, title, icon || ''); }
+function adTag(t, icon){ var p = {color:'neutral'}; if(icon) p.startIcon = icon; return SC.html('Tag', p, t); }
+function adCard(title, info, inner, right){ return '<section class="ad-card"><div class="ad-hd"><h2 class="ad-h">' + title + (info ? scInfoHtml(info) : '') + '</h2>' + (right ? '<span class="ad-sp"></span>' + right : '') + '</div>' + inner + '</section>'; }
+function adTable(label, heads, rows){
+  var head = ['TableHeader', {}, ['TableHeaderRow', {}].concat(heads.map(function(h){ return ['TableHead', h ? {} : {type:'empty', 'aria-label':'Actions'}, h]; }))];
+  var body = rows.map(function(r){ if(r.group) return SC.html('TableGroupRow', {colSpan:heads.length, label:r.group, count:r.count, expanded:true});
+    return SC.html.apply(SC, ['TableRow', {}].concat(r.map(function(c){ return ['TableCell', {}, SC.raw('<div class="ad-c">' + c + '</div>')]; }))); }).join('');
+  return '<div class="ad-tw">' + SC.html('Table', {'aria-label':label, framed:false}, head, ['TableBody', {}, SC.raw(body)]) + '</div>';
+}
+function adStats(L){ return SC.html.apply(SC, ['StatGroup', {}].concat(L.map(function(x){ var p = {label:x[0], value:x[1]}; if(x[2]) p.detail = x[2]; if(x[3]) p.tone = x[3]; return ['Stat', p]; }))); }
+function adBar(label, right, pct){ return '<div class="ad-bar"><p class="l">' + label + '<span>' + right + '</span></p>' + SC.html('Progress', {value:Math.max(0, Math.min(100, Math.round(pct))), label:label}) + '</div>'; }
+function adM(t, s){ return '<b class="ad-t">' + t + '</b>' + (s ? '<span class="ad-s">' + s + '</span>' : ''); }
+function adSay(m){ toast(m); }
+/* a decision on a timed page counts toward the sitting */
+function adDec(key, val, msg){ AD.dec[key] = val; var t = adTab(AD.k); if(t && t.timed) AD.sit++; adPaint(); if(msg) adSay(msg); }
+
+/* ---------- the screen ---------- */
+function adOpen(k){
+  var t = adTab(k) || adTab('today');
+  if(!adShown(t)) t = AD_TABS.filter(function(x){ return x.g === t.g && adShown(x); })[0] || adTab('setup');
+  if(AD.k !== t.k){ AD.sit = 0; AD.t0 = t.timed ? Date.now() : 0; AD.idle = false; }
+  if(t.timed && !AD.t0) AD.t0 = Date.now();
+  AD.k = t.k;
+  var scr = document.getElementById('screen-admin'); if(scr && !scr.classList.contains('active')) showScreen('admin');
+  adPaint();
+}
+function adGroup(g){ var t = AD_TABS.filter(function(x){ return x.g === g && adShown(x); })[0]; if(t) adOpen(t.k); }
+function adPaint(){
+  var root = document.getElementById('ad-root'); if(!root || !(window.SC && SC.html)) return;
+  var cur = adTab(AD.k), hold = document.getElementById('ad-hold');
+  ['lfp-root', 'pnl-root'].forEach(function(id){ var n = document.getElementById(id); if(n && hold && n.parentNode !== hold) hold.appendChild(n); });
+  var groups = AD_GROUPS.filter(function(g){ return AD_TABS.some(function(t){ return t.g === g[0] && adShown(t); }); });
+  var tabs = '<div class="ad-tabs" onclick="var t=event.target.closest(\'[role=tab]\'); if(t) adGroup(t.id.split(\'-tab-\').pop())">' + SC.html('Tabs', {defaultValue:cur.g}, ['TabList', {'aria-label':'Admin sections'}].concat(groups.map(function(g){ return ['Tab', {value:g[0], title:'Show ' + g[1].toLowerCase()}, g[1]]; }))) + '</div>';
+  var subs = AD_TABS.filter(function(t){ return t.g === cur.g && adShown(t); });
+  var chips = subs.length > 1 ? '<div class="ad-subs" role="group" aria-label="Pages">' + subs.map(function(t){ return SC.html('Chip', {selected:t.k === cur.k, title:'Open ' + t.label.toLowerCase()}, t.label).replace('<button ', '<button onclick="adOpen(\'' + t.k + '\')" '); }).join('') + '</div>' : '';
+  var timer = cur.timed ? '<span class="ad-timer" id="ad-timer">' + adTag('Timer · ' + cur.timed + ' · ' + adClock(), 'clock-time') + adB('link', 'Show the idle question', 'adIdle()', 'See what Simple asks after 5 minutes with no activity', '') + '</span>' : '';
+  var body = (AD_RENDER[cur.k] || function(){ return ''; })();
+  root.innerHTML = tabs + '<div class="ad-bar2">' + chips + '<span class="ad-sp"></span>' + timer + '</div><div class="ad-pane" id="ad-pane">' + body + '</div>';
+  if(cur.host){ var n = document.getElementById(cur.host); if(n) document.getElementById('ad-pane').appendChild(n); if(cur.host === 'lfp-root' && typeof lfpRender === 'function') lfpRender(); if(cur.host === 'pnl-root' && typeof pnlRender === 'function') pnlRender(); }
+  adFlag();
+}
+function adClock(){ if(!AD.t0) return '0 min'; var s = Math.floor((Date.now() - AD.t0) / 1000); return Math.floor(s / 60) + ' min ' + (s % 60 < 10 ? '0' : '') + (s % 60) + ' s'; }
+setInterval(function(){ var t = document.getElementById('ad-timer'); if(t && adTab(AD.k).timed){ var tg = t.querySelector('.sv-tag'); if(tg){ var x = tg.querySelector('.truncate') || tg.lastChild; if(x) x.textContent = 'Timer · ' + adTab(AD.k).timed + ' · ' + adClock(); } } }, 1000);
+function adFlag(){
+  var n = (typeof LFP_DAYS !== 'undefined' ? LFP_DAYS.filter(function(x){ return !x.appr; }).length : 0) + (typeof pnlNow === 'function' ? pnlNow().left : 0);
+  var f = document.getElementById('ad-nav-flag'); if(f){ f.style.display = n ? '' : 'none'; f.textContent = n; }
+}
+function adIdle(){
+  var host = document.getElementById('ad-host'); if(!host){ host = document.createElement('div'); host.id = 'ad-host'; document.body.appendChild(host); }
+  host.innerHTML = SC.html('Drawer', {id:'ad-idle', title:'Welcome back', description:'6 minutes with no activity · 5:47 to 5:53 PM', primaryAction:{label:'Count it', id:'ad-ic'}, secondaryAction:{label:'Do not count', id:'ad-in'}},
+    SC.raw('<p class="ad-p">Were you working on ' + csEsc(adTab(AD.k).label.toLowerCase()) + ' during this time? Only time you spent on clinical administration can be counted.</p>'));
+  var d = document.getElementById('ad-idle');
+  d.addEventListener('click', function(e){ var b = e.target.closest('button'); if(e.target === d) return d.close(); if(!b) return;
+    if(b.id === 'ad-ic'){ d.close(); adSay('Counted: 6 minutes added to this sitting'); } else if(b.id === 'ad-in' || b.getAttribute('aria-label') === 'Close'){ d.close(); adSay('Not counted: 6 minutes held out of this sitting'); } });
+  d.showModal();
+}
+function adSaveClose(what){ var n = AD.sit; adSay(n ? 'Saved as clinical administration: ' + what + ' · ' + adClock() + ' · ' + n + (n === 1 ? ' decision' : ' decisions') : 'Not saved: a sitting needs at least one decision. Nothing is claimed.'); if(n){ AD.sit = 0; AD.t0 = Date.now(); adPaint(); } }
+
+/* ---------- Today's time ---------- */
+var AD_DAY = [
+  {id:'b1', a:'8:00 AM', b:'8:30 AM', kind:'admin', sub:'1 · Panel review', what:'Cervical screening list', ev:'18 reviewed · 6 recalls for Dolly to book', min:30},
+  {id:'b2', a:'8:30 AM', b:'12:00 PM', kind:'direct', sub:'Clinic session', what:'11 visits, charting between visits', ev:'Call log: 168 minutes on the line · 42 minutes between visits', min:210},
+  {id:'b3', a:'12:00 PM', b:'12:45 PM', kind:'break', what:'Lunch', ev:'In your schedule · no activity in Simple', min:0},
+  {id:'b4', a:'12:45 PM', b:'3:00 PM', kind:'direct', sub:'Clinic session', what:'8 visits, charting between visits', ev:'Call log: 104 minutes on the line · 31 minutes between visits', min:135},
+  {id:'b5', a:'3:05 PM', b:'3:17 PM', kind:'decide', what:'Call from your phone, not matched to a patient', ev:'Phone log · 12 minutes', min:12, ask:'call'},
+  {id:'b6', a:'5:40 PM', b:'6:04 PM', kind:'admin', sub:'5 · Privacy officer', what:'1 flagged access cleared, 1 record request decided', ev:'Gap 5:47 to 5:53 PM held out; you chose not to count it', min:18},
+  {id:'b7', a:'6:05 PM', b:'6:17 PM', kind:'admin', sub:'2 · Record management', what:'2 proposals accepted, 1 edited', ev:'Review queue decisions', min:12},
+  {id:'b8', a:'7:00 PM', b:'7:45 PM', kind:'indirect', sub:'After the last patient', what:'Results inbox and refill queue', ev:'14 results signed off · 4 refills · 2 referral letters', min:45},
+  {id:'b9', a:'8:10 PM', b:'8:28 PM', kind:'indirect', sub:'Chart review, no changes made', what:'Gloria McDonald\'s chart: indirect care if it was for her care', ev:'Opened the cardiology letter and troponin result', min:18, ask:'chart'}
+];
+var AD_KIND = {direct:'Direct care', indirect:'Indirect care', admin:'Clinical administration', travel:'Travel', break:'Break', decide:'Needs a decision'};
+function adDayTotals(){
+  var by = {direct:0, indirect:0, admin:0, travel:0};
+  AD_DAY.forEach(function(r){ var d = AD.dec[r.id], m = r.min, k = r.kind;
+    if(r.ask === 'call'){ if(d === 'assign') k = 'direct'; else return; }
+    if(r.ask === 'chart'){ if(d === 'remove' || !d) return; if(d === 'shorten') m = 10; }
+    if(by[k] != null) by[k] += m; });
+  var u = {direct:Math.floor(by.direct / 15), indirect:Math.floor(by.indirect / 15), admin:2};
+  return {by:by, u:u, held:2, sent:u.direct + u.indirect + u.admin, open:AD_DAY.filter(function(r){ return r.ask && !AD.dec[r.id]; }).length};
+}
+function adHM(m){ var h = Math.floor(m / 60), r = m % 60; return h + ' h ' + r + ' m'; }
+function adToday(){
+  if(AD.model !== 'lfp') return adCard('Today\'s time', '', '<p class="ad-sub">Fee-for-service: no time is recorded. Switch the payment model in Set-up.</p>');
+  var T = adDayTotals();
+  var stats = adStats([['Direct care', adHM(T.by.direct), T.u.direct + ' units · patient present'], ['Indirect care', adHM(T.by.indirect), T.u.indirect + ' units' + (AD.dec.b9 ? '' : ' · 1 block to decide'), AD.dec.b9 ? '' : 'warning'],
+    ['Clinical administration', adHM(T.by.admin), '2 units sent · 2 held'], ['Travel', '0 m', 'No travel between care sites']]);
+  var brk = (typeof BRK !== 'undefined' ? BRK.taken : []).map(function(t){ return ['—', adTag('Break'), adM('Take a break', ''), '<span class="ad-s">' + csEsc(t) + '</span>', '0', adTag('Not counted')]; });
+  var rows = AD_DAY.map(function(r){
+    var d = AD.dec[r.id], dec;
+    if(r.ask === 'call') dec = d ? adTag(d === 'assign' ? 'Assigned · Carol-Anne Feldman' : 'Not work') + adB('link', 'Undo', 'adDec(\'' + r.id + '\',null)', 'Decide again', '') :
+      adB('secondary-main', 'Assign patient', 'adDec(\'b5\',\'assign\',\'Call matched to Carol-Anne Feldman (callback at 3:05 PM) · direct care\')', 'Match this call to a patient; it counts as direct care', 'user-check') + adB('link', 'Not work', 'adDec(\'b5\',\'not\',\'Call left out: not work\')', 'Leave this call out; it is not counted', '');
+    else if(r.ask === 'chart') dec = d ? adTag({keep:'Kept', shorten:'Shortened to 10 minutes', remove:'Removed'}[d]) + adB('link', 'Undo', 'adDec(\'' + r.id + '\',null)', 'Decide again', '') :
+      adB('secondary-main', 'Keep', 'adDec(\'b9\',\'keep\',\'Kept as indirect care for Gloria McDonald\')', 'Keep the 18 minutes as indirect care', 'check') + adB('link', 'Shorten', 'adDec(\'b9\',\'shorten\',\'Shortened to 10 minutes\')', 'Count fewer minutes; you can shorten a block, never lengthen it', '') + adB('link', 'Remove', 'adDec(\'b9\',\'remove\',\'Removed from today\\\'s time\')', 'Leave this block out', '');
+    else dec = adTag(r.kind === 'break' ? 'Not counted' : 'Keep');
+    return [r.a + ' to ' + r.b, adTag(AD_KIND[r.kind]) + (r.sub ? '<span class="ad-s">' + csEsc(r.sub) + '</span>' : ''), adM(csEsc(r.what), ''), '<span class="ad-s">' + csEsc(r.ev) + '</span>', String(r.min), dec];
+  }).concat(brk);
+  var blocks = adCard('Blocks', 'Units are counted per kind of time per day, in full 15 minutes. Breaks are never counted. You can shorten any block, never lengthen it.',
+    adTable('Today\'s blocks', ['Start to end', 'Kind', 'What', 'Evidence', 'Minutes', 'Your decision'], rows) +
+    '<div class="ad-note">' + adM('Suggested, not yet added', 'Clinic meeting 3:20 to 4:00 PM, from your calendar (medical director)') + adB('link', 'Review on Overview', 'adOpen(\'overview\')', 'Add or dismiss it on the clinical administration overview', '') + '</div>');
+  var how = adCard('How Simple built this day', 'Unknown time is never counted. You sign that the time was spent providing care, so every block carries its evidence. Simple never sees your computer, phone or location; work done outside Simple is added by you with a reason.',
+    '<ul class="ad-list">' + ['<b>Calls:</b> the call log gives the exact minutes a patient was on the line (272 minutes today).', '<b>Chart work:</b> every chart action, signed result, note and refill has its time; work between patients inside the clinic day is direct care.',
+      '<b>Scheduled breaks:</b> lunch, 12:00 to 12:45 PM, had no activity, so it is not counted.', '<b>Idle gaps:</b> 5 minutes or more with no activity is held out and you are asked (one today, 5:47 to 5:53 PM, not counted).',
+      '<b>Take a break:</b> ' + (typeof BRK !== 'undefined' && BRK.taken.length ? BRK.taken.length + ' taken with the button, not counted.' : 'none taken with the button today.')].map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>');
+  var lim = adCard('Limits today', 'Hours billed through other systems are added when their payment statement arrives.',
+    adBar('Clinic time today', '7 h 48 m of 14 h', 56) + adBar('Last 14 days', '71 h 30 m of 120 h', 60) + adBar('Visits today', '19 of 50', 38) + adBar('Travel today', '0 of 60 minutes', 0));
+  var conf = AD.conf ? '<div class="ad-done">' + SC.icon('check-circle', {size:18}) + '<span>Confirmed. ' + T.sent + ' units sent as time claims under LFP Time; 2 clinical administration units held until the Medical Services Plan says how to place stretches shorter than 15 minutes.</span></div>'
+    : '<p class="ad-p" style="margin-top:0">' + (T.open ? T.open + (T.open === 1 ? ' block needs' : ' blocks need') + ' your decision first. ' : '') + 'When you confirm, Simple sends ' + T.sent + ' units (direct care ' + T.u.direct + ', indirect care ' + T.u.indirect + ', clinical administration ' + T.u.admin + '). Visit claims already went when you signed each note.</p>' +
+      '<p class="ad-sub" style="margin-top:10px">I confirm the time above was spent by me providing the services described, with the start and end times shown.</p>' +
+      '<div class="ad-acts">' + SC.html('Button', {variant:'primary', size:'medium', startIcon:'check', disabled:T.open ? true : undefined, title:T.open ? 'Decide the open blocks first' : 'Send today\'s time claims'}, 'Confirm and send time claims').replace('<button ', '<button onclick="adConfirm()" ') + '</div>';
+  return '<p class="ad-day">Thursday 19 November ' + adTag(AD.conf ? 'Confirmed' : 'To confirm', AD.conf ? 'check' : 'clock-time') + '</p>' + stats + blocks + '<div class="ad-cols">' + how + '<div class="ad-stack">' + lim + adCard('Confirm today', '', conf) + '</div></div>';
+}
+function adConfirm(){ if(adDayTotals().open) return; AD.conf = true; if(typeof LFP_DAYS !== 'undefined'){ var th = LFP_DAYS.filter(function(x){ return /^Thursday/.test(x.d); })[0]; if(th) th.appr = true; } adPaint(); adSay('Today\'s time confirmed · ' + adDayTotals().sent + ' units sent as time claims'); }
+
+/* ---------- Clinical administration: Overview ---------- */
+var AD_FOUND = [{id:'f1', at:'3:20 to 4:00 PM', what:'Calendar: "Clinic meeting, referral delays"', sub:'You are the medical director', sug:'Suggested: 4 · Medical director', min:40},
+  {id:'f2', at:'4:30 to 5:00 PM', what:'Calendar: "Front desk schedule"', sub:'From your connected calendar', sug:'Not clinical administration: staff scheduling', min:30, no:true}];
+function adOverview(){
+  var year = adCard('This year: clinic-based services', 'Each service setting you are registered for has its own bar. About 67 hours of room: 10% of 1,348 hours paid, minus what is paid, submitted and today. Time over 10% is not paid. At 8% Simple warns; at 10% new entries are held.',
+    '<div class="ad-big"><b>4.6%</b><span class="ad-s">62 h 30 m of clinical administration paid · 1,348 h of time paid since 1 January</span></div>' + adBar('Clinical administration share', '4.6% · 5% expected · 8% warning · 10% limit', 46) +
+    adTable('By type this year', ['Type', 'Hours'], [['1 · Panel review', '30 h'], ['2 · Record management', '9 h 15 m'], ['4 · Medical director', '12 h 45 m'], ['5 · Privacy officer', '9 h 30 m'], ['Other clinical administration', '1 h'], ['Submitted, not yet paid', '0.3%'], ['Today', '1 h']]));
+  var never = adCard('Never clinical administration', 'Clinical administration must pass three tests: across many patients, not one; needs a physician\'s judgment; for the panel\'s care, not the business.',
+    adTable('Never clinical administration', ['Work', 'How it is handled'], [['Staff, pay, finance, supplies, leases, insurance, software', 'Not billed'], ['Health authority-funded leadership roles', 'Not billed'], ['Medical director or privacy officer work at a health authority-operated clinic', 'Not billed'],
+      ['Teaching students and residents', 'Teaching rules'], ['Continuing medical education', 'Not billed'], ['A conference about one patient', 'Patient care'], ['Travel between care sites', 'Travel time'], ['Work by anyone other than you', 'Not billed']]));
+  var five = adCard('The five schedule examples, and other work', '', adTable('Schedule examples', ['Type', 'What it covers', 'This year', ''], [
+    [adM('1 · Panel review', ''), 'Lists across your panel, panel cleanup, the monthly quality report', '30 h', adB('link', 'Open', 'adOpen(\'review\')', 'Open panel review', '')],
+    [adM('2 · Record management', ''), 'Your rules for Cedar and Cedar\'s proposals: visit rules, recalls, result routing, coding', '9 h 15 m', adB('link', 'Open', 'adOpen(\'record\')', 'Open record management', '')],
+    [adM('3 · Quality review', ''), 'Facilities only (hospital, care home); in clinics, quality work is under the medical director', '0 h', adB('link', 'Add facility time', 'adSay(\'Add facility time: choose the facility and the time below\')', 'Add time spent on quality review at a facility', '')],
+    [adM('4 · Medical director', ''), 'College standards, clinic-wide rules, incidents, audits, College contact', '12 h 45 m', AD.roles.md ? adB('link', 'Open', 'adOpen(\'md\')', 'Open medical director', '') : ''],
+    [adM('5 · Privacy officer', ''), 'Flagged chart access, record requests, disclosures, breaches, the privacy program', '9 h 30 m', AD.roles.po ? adB('link', 'Open', 'adOpen(\'po\')', 'Open privacy officer', '') : ''],
+    [adM('Other clinical administration', ''), 'Work not listed above that passes the three tests, such as medical directives or care pathways', '1 h', adB('link', 'Add', 'document.getElementById(\'ad-what\').focus()', 'Add other clinical administration below', '')]]));
+  var found = adCard('Found today, waiting for your decision', 'From your calendar and screens used outside a timed sitting. Nothing is claimed until you add it.', adTable('Found today', ['Time', 'What', 'Suggested', 'Minutes', ''], AD_FOUND.map(function(f){
+    var d = AD.dec[f.id];
+    return [f.at, adM(csEsc(f.what), csEsc(f.sub)), '<span class="ad-s">' + csEsc(f.sug) + '</span>', String(f.min), d ? adTag(d === 'add' ? 'Added' : 'Dismissed') : (f.no ? '' : adB('secondary-main', 'Add', 'adDec(\'' + f.id + '\',\'add\',\'Added: 40 minutes of medical director time\')', 'Add this as clinical administration', 'add')) + adB('link', 'Dismiss', 'adDec(\'' + f.id + '\',\'dismiss\',\'Dismissed\')', 'Leave it out', '')]; })));
+  var sit = adCard('Today\'s sittings', 'All clinical administration for the day is added once. Each full 15 minutes counts once, and no claim line carries more time than its own stretch. Stretches shorter than 15 minutes are held, not lost, until the Medical Services Plan confirms how to place them.',
+    adTable('Today\'s sittings', ['Start to end', 'Type', 'What you decided', 'Minutes', 'Units'], [['8:00 to 8:30 AM', '1 · Panel review', 'Cervical screening list: 18 reviewed, 6 recalls', '30', '2'], ['5:40 to 6:04 PM', '5 · Privacy officer', '1 flagged access cleared, 1 record request decided', '18', 'Held'], ['6:05 to 6:17 PM', '2 · Record management', '2 proposals accepted, 1 edited', '12', 'Held']].concat(AD.dec.f1 === 'add' ? [['3:20 to 4:00 PM', '4 · Medical director', 'Clinic meeting, referral delays', '40', '2']] : []).concat([['<b>Today</b>', '', '', '<b>' + (60 + (AD.dec.f1 === 'add' ? 40 : 0)) + '</b>', '<b>' + (AD.dec.f1 === 'add' ? '6: 4 sent, 2 held' : '4: 2 sent, 2 held') + '</b>']])));
+  var add = adCard('Add time by hand', 'The three tests: across many patients, not one; needs a physician\'s judgment; for the panel\'s care, not the business.',
+    '<div class="ad-form">' + scDdHtml('ad-type', 'Type', [{value:'other', label:'Other clinical administration'}, {value:'qr', label:'Quality review in a facility'}, {value:'md', label:'4 · Medical director (meeting)'}, {value:'po', label:'5 · Privacy officer (urgent breach)'}], 'other', '') +
+    SC.html('Input', {label:'Start', id:'ad-s', type:'time', value:'16:10'}) + SC.html('Input', {label:'End', id:'ad-e', type:'time', value:'16:30'}) + SC.html('Input', {label:'What you did', id:'ad-what', placeholder:'Required'}) + '</div>' +
+    '<div class="ad-checks">' + ['Across many patients, not one', 'Needs a physician\'s judgment', 'For the panel\'s care, not the business'].map(function(t, i){ return SC.html('Checkbox', {label:t, id:'ad-t' + i}); }).join('') + '</div>' +
+    '<div class="ad-acts">' + adB('primary', 'Add entry', 'adAddEntry()', 'Add this time as clinical administration; it passes only if all three tests are ticked', 'add') + '</div>');
+  return '<div class="ad-cols ad-cols-2">' + year + never + '</div>' + five + found + sit + add;
+}
+function adAddEntry(){
+  var w = document.getElementById('ad-what'), ok = [0, 1, 2].every(function(i){ var c = document.getElementById('ad-t' + i); return c && c.checked; });
+  if(!w || !w.value.trim()){ adSay('Say what you did'); if(w) w.focus(); return; }
+  if(!ok){ adSay('Not added: it must pass all three tests to be clinical administration'); return; }
+  adSay('Added: ' + w.value.trim() + ' · counted on Today\'s time'); w.value = '';
+}
+
+/* ---------- Panel review ---------- */
+var AD_PR = [
+  {id:'h1', n:'Harold Lindqvist', a:'71 years, M', risk:'High risk', why:'No reading in 4 years · smoker · diabetes', due:'Colon screening, A1c, flu vaccine', hint:'One visit covers all 4'},
+  {id:'h2', n:'Peter Vasquez-Hale', a:'62 years, M', risk:'Moderate', why:'No reading in 2 years 7 months · cardiologist follows', due:'Heart risk score', hint:'Reason: done elsewhere'},
+  {id:'h3', n:'Dorothy Achebe', a:'88 years, F', risk:'Palliative', why:'No reading in 2 years', due:'Advance care plan', hint:'Reason: not appropriate'},
+  {id:'h4', n:'Marisol Ochoa', a:'48 years, F', risk:'Low', why:'No reading in 3 years', due:'Cervical screening'},
+  {id:'h5', n:'Aiko Brennan', a:'36 years, F', risk:'Low', why:'No reading in 2 years 2 months', due:''}];
+var AD_PR_OPT = [{value:'recall', label:'Recall for visit'}, {value:'test', label:'Order test'}, {value:'msg', label:'Message'}, {value:'none', label:'No action'}, {value:'remove', label:'Remove'}];
+function adReview(){
+  var ses = adCard('This week\'s session', 'Suggested about 45 minutes. Picked by the provincial prevention ranking, patients at highest risk, and what changed since your last review.', adTable('This week', ['', 'List', 'Why now', ''], [
+    ['1', adM('Blood pressure: no reading in 2 years', ''), '<span class="ad-s">Provincial prevention ranking 1 · 18 high risk of 61 · 11 new</span>', adTag('Open below')],
+    ['2', adM('Diabetes: A1c over target', ''), '<span class="ad-s">Chronic disease · 9 patients · 4 new</span>', adB('link', 'Open', 'adSay(\'Example only: this list is not built in the demo\')', 'Open this list', '')],
+    ['3', adM('Opioid with a benzodiazepine', ''), '<span class="ad-s">Medication safety · 4 patients · review every month</span>', adB('link', 'Open', 'adSay(\'Example only: this list is not built in the demo\')', 'Open this list', '')]]),
+    adB('secondary-main', 'Save and close', 'adSaveClose(\'Panel review, blood pressure list\')', 'Save this sitting as clinical administration; at least one decision is needed', 'check'));
+  var all = adCard('All lists, by purpose', 'Each list keeps its BC source and schedule section in the saved record, for audits.', adTable('All lists', ['Purpose', 'Lists', 'Patients'], [['Prevention', '9', '874'], ['Chronic disease', '6', '167'], ['Medication safety', '2', '13'], ['Care planning', '1', '17'], ['Panel cleanup', '2', '63']]), adB('link', 'Quality report', 'adOpen(\'quality\')', 'Open the monthly panel quality report', ''));
+  var done = AD_PR.filter(function(p){ return AD.dec[p.id]; }).length;
+  var list = adCard('Blood pressure: no reading in 2 years', 'Rule: adults 18 and over, blood pressure at least every 2 years. Source: Lifetime Prevention Schedule; provincial prevention ranking 1. Ordering a test or opening a chart switches the timer to indirect care for that patient. Bulk decisions are recorded patient by patient.',
+    '<p class="ad-sub" style="margin:-6px 0 10px">This week · 1 of 3 · Prevention · highest risk first, then longest overdue · ' + done + ' of ' + AD_PR.length + ' decided</p>' +
+    adTable('Patients on this list', ['Patient', 'Why on this list · also due', 'Your decision'], AD_PR.map(function(p){
+      return [adM(csEsc(p.n), csEsc(p.a)) + adTag(p.risk), '<span class="ad-t2">' + csEsc(p.why) + '</span><span class="ad-s">' + (p.due ? 'Also due: ' + csEsc(p.due) : 'Nothing else due') + (p.hint ? ' · ' + csEsc(p.hint) : '') + '</span>',
+        scDdHtml('ad-pr-' + p.id, 'Decision', AD_PR_OPT, AD.dec[p.id] || '', 'adDec(\'' + p.id + '\',v,\'' + p.n.split(' ')[0] + ': \'+({recall:\'recall for visit\',test:\'order test\',msg:\'message\',none:\'no action\',remove:\'remove from list\'}[v]))')]; })));
+  return ses + list + all;
+}
+
+/* ---------- Quality report ---------- */
+function adQuality(){
+  var M = function(n, a, b, t, g, w){ return [n, a, b, t, g, w ? adB('link', 'Work this list', 'adOpen(\'review\')', 'Open this list in panel review', '') : '']; };
+  var rows = [{group:'Panel', count:4}, M('Panel size (1,175 confirmed)', '1,212', '1,204', '–', '+8'), M('Not yet confirmed in the Provincial Attachment System', '37', '41', '0', '37', 1), M('Not seen in 3 years', '26', '31', '0', '26', 1), M('Non-panel visits, share of clinic visits (limit 30%)', '18%', '19%', 'Under 30%', 'Within limit'),
+    {group:'Prevention', count:6}, M('Blood pressure in last 2 years (adults)', '81%', '80%', '90%', '9 points', 1), M('Heart risk score, ages 40 to 74', '54%', '52%', '70%', '16 points', 1), M('Colon screening up to date, ages 50 to 74', '58%', '57%', '70%', '12 points', 1),
+    M('Cervical screening up to date, ages 25 to 69', '63%', '64%', '70%', '7 points', 1), M('Breast screening up to date, ages 50 to 74', '61%', '60%', '70%', '9 points', 1), M('Flu vaccine, ages 65 and over (season to date)', '38%', '21%', '70%', 'Season under way', 1),
+    {group:'Chronic disease', count:4}, M('Diabetes: A1c in last 6 months', '72%', '70%', '85%', '13 points', 1), M('Diabetes: A1c at target', '61%', '60%', '70%', '9 points', 1), M('High blood pressure at target', '66%', '65%', '70%', '4 points', 1), M('Kidney disease monitoring up to date', '77%', '75%', '85%', '8 points', 1),
+    {group:'Medication safety', count:2}, M('Opioid with a benzodiazepine', '4', '5', '0', 'Down 1', 1), M('Drug monitoring overdue', '9', '12', '0', 'Down 3', 1),
+    {group:'Outreach', count:1}, M('Recalls sent last month that led to a visit within 60 days', '59% (24 of 41)', '52%', '75%', '16 points')];
+  var rep = adCard('Panel quality report · October 2026', 'Targets are set by the practice; provincial targets are shown where one exists. Example data.', adTable('Panel quality report', ['Measure', 'This month', 'Last month', 'Target', 'Gap to target', ''], rows),
+    adB('secondary-main', 'Save and close', 'adSaveClose(\'Monthly panel quality report\')', 'Save this review as clinical administration; at least one decision is needed', 'check'));
+  var dq = adCard('Data quality', 'Measures are only as good as the coding.', '<ul class="ad-list"><li>14 patients on diabetes medication without diabetes coded</li><li>9 patients on blood pressure medication without high blood pressure coded</li></ul><div class="ad-acts">' + adB('secondary-main', 'Review coding', 'adOpen(\'record\')', 'Review Cedar\'s coding proposal in record management', '') + '</div>');
+  var foc = ['Colon screening', 'Diabetes: A1c in 6 months', 'Heart risk score', 'Cervical screening', 'Flu vaccine'];
+  var dec = adCard('Your decisions this month', 'At least one decision is needed to save this review. The focus lists move to the top of This week in November.',
+    '<h3 class="ad-h3" style="margin-top:0">Focus lists for November (up to 3)</h3><div class="ad-chips">' + foc.map(function(f){ return SC.html('Chip', {selected:!!AD.focus[f], title:(AD.focus[f] ? 'Remove ' : 'Add ') + f.toLowerCase() + ' as a focus list'}, f).replace('<button ', '<button onclick="adFocus(\'' + f.replace(/'/g, '\\\'') + '\')" '); }).join('') + '</div>' +
+    '<div class="ad-form" style="grid-template-columns:1fr">' + SC.html('Input', {label:'Outreach', id:'ad-out', value:'Colon screening list: change from message to phone call'}) + SC.html('Input', {label:'Note to the team', id:'ad-note', value:'Recall response is low; start phone outreach for colon screening.'}) + '</div>');
+  return rep + '<div class="ad-cols ad-cols-2">' + dq + dec + '</div>';
+}
+function adFocus(f){ if(AD.focus[f]) delete AD.focus[f]; else { if(Object.keys(AD.focus).length >= 3){ adSay('Up to 3 focus lists: remove one first'); return; } AD.focus[f] = 1; } AD.sit++; adPaint(); }
+
+/* ---------- Record management ---------- */
+var AD_CED = [
+  {id:'c1', k:'Note content · Diabetes follow-up', d:'3 Nov', t:'Add urine albumin to every diabetes follow-up note', why:'41 of 118 diabetic patients have no urine albumin in the last 12 months. BC Guidelines: yearly screening for kidney disease in diabetes.'},
+  {id:'c2', k:'Result routing · Thyroid', d:'4 Nov', t:'Group thyroid-stimulating hormone results with no flag into one batch you sign off with one click, except for patients on levothyroxine with a dose change in the last 8 weeks', why:'You signed off 27 such results last month and took no action. Cedar never files a result without your sign-off. 3 were after a dose change and you acted on them.'},
+  {id:'c3', k:'Coding · Diabetes', d:'5 Nov', t:'Code type 2 diabetes for 14 patients on diabetes medication with no diabetes coded', why:'Found in the panel quality report. 2 are on metformin for polycystic ovary syndrome; Cedar has left those out.', acc:'Accept for 12'}];
+function adRecord(){
+  var q = adCard('Changes Cedar proposes', 'Nothing changes until you accept it. Each decision is timed as clinical administration.', AD_CED.map(function(c){
+    var d = AD.dec[c.id];
+    return '<div class="ad-item"><div class="ad-item-m">' + adM(csEsc(c.t), csEsc(c.k) + ' · proposed ' + c.d) + '<span class="ad-s">Why: ' + csEsc(c.why) + '</span></div><div class="ad-acts" style="margin:0">' +
+      (d ? adTag({acc:'Accepted', edit:'Edited and accepted', rej:'Rejected'}[d], d === 'rej' ? '' : 'check') + adB('link', 'Undo', 'adDec(\'' + c.id + '\',null)', 'Decide again', '') :
+        adB('secondary-main', c.acc || 'Accept', 'adDec(\'' + c.id + '\',\'acc\',\'Accepted: ' + c.k.split(' · ')[0] + '\')', 'Accept this change', 'check') + adB('tertiary-main', 'Edit', 'adDec(\'' + c.id + '\',\'edit\',\'Edited and accepted\')', 'Change the proposal before accepting it', 'edit') + adB('tertiary-main', 'Reject', 'adDec(\'' + c.id + '\',\'rej\',\'Rejected\')', 'Reject this change', 'x')) + '</div></div>'; }).join(''),
+    adB('secondary-main', 'Save and close', 'adSaveClose(\'Record management\')', 'Save this sitting as clinical administration', 'check'));
+  var rules = adCard('Your rules for Cedar', 'Rules you have set. Cedar follows them for every patient. Not timed here: Cedar writing notes, filing results or sending reminders under your rules; scheduler settings; changing one patient\'s chart, which is indirect care timed on the patient.', adTable('Rules for Cedar', ['Area', 'Rule', ''], [
+    ['Visit parameters', 'Diabetes follow-up: foot check, urine albumin. Chest pain is never a phone visit', adB('link', 'Edit', 'adSay(\'Edit the rule, then save\')', 'Edit this rule', '')],
+    ['Recalls', 'A1c every 3 months if above 8%, otherwise every 6', adB('link', 'Edit', 'adSay(\'Edit the rule, then save\')', 'Edit this rule', '')],
+    ['Result routing and flags', 'Potassium above 5.5 comes to you within the hour', adB('link', 'Edit', 'adSay(\'Edit the rule, then save\')', 'Edit this rule', '')],
+    ['Coding', 'Do not code prediabetes as diabetes', adB('link', 'Edit', 'adSay(\'Edit the rule, then save\')', 'Edit this rule', '')],
+    ['Safety locks', 'Critical and abnormal results always come to you', adTag('Locked')]]), adB('link', 'Add a rule', 'adSay(\'Add a rule: choose the area, then write it\')', 'Add a rule for Cedar', ''));
+  return q + rules;
+}
+
+/* ---------- Medical director ---------- */
+function adMd(){
+  var R = function(a, b, c, d, act){ return [adM(a, b), '<span class="ad-t2">' + c + '</span>', d, adB('link', act, 'adDec(\'md' + a.length + '\',1,\'' + act + ': ' + a.replace(/'/g, '') + '\')', act + ' this standard', '')]; };
+  var std = adCard('Clinic standards of care · Lakeview Family Practice', 'From the College\'s practice standard "Primary Care Provision in Walk-in, Urgent Care and Multi-licensee Clinics". Medical director: Dr. Pannozzo · alternate: Dr. Lee · 6 doctors. Not timed here: staff schedules, hiring, pay, supplies, leases, insurance and software; calling one patient about a missed result is care for that patient.',
+    adTable('Clinic standards', ['College requirement', 'Clinic procedure (set by you)', 'This month', ''], [
+      R('Test results are followed up', 'Every result has a named doctor responsible', 'Results go to the ordering doctor; if away, to the alternate within 1 business day', adTag('4 waiting over 7 days'), 'Review'),
+      R('Critical results are acted on', 'Any doctor aware must ensure action', 'Critical results phone the on-call doctor; logged until acted on', 'All 6 acted on', 'Open'),
+      R('Visit summary to the usual provider', 'Unless the patient says otherwise', 'Sent automatically at sign-off when another provider is named', adTag('96% sent · 11 missing'), 'Review'),
+      R('Usual provider recorded', 'Every patient record', 'Asked at intake; required before first visit', '99%', 'Open'),
+      R('Longitudinal care offered', 'Patients with no family doctor', 'Offer attachment after the second visit with no provider named', adTag('23 not yet offered'), 'Review'),
+      R('Cumulative patient profile kept current', 'Problems, medications, allergies', 'Cedar updates at sign-off; doctor confirms changes', 'Up to date', 'Open'),
+      R('PharmaNet reviewed before opioids or psychoactive drugs', 'Patients not in your longitudinal care', 'Prescription blocked until PharmaNet review is documented', '100%', 'Open'),
+      R('Referrals follow the College guideline', 'Including for transient patients', 'Referral template with required fields; tracked until booked', adTag('5 not booked in 30 days'), 'Review'),
+      R('After-hours coverage', 'For every doctor\'s patients', 'Coverage schedule published monthly; message shown when the clinic is closed', 'December set', 'Open')]),
+    adB('secondary-main', 'Save and close', 'adSaveClose(\'Medical director\')', 'Save this sitting as clinical administration', 'check'));
+  var rev = adCard('Reviews waiting', '', adTable('Reviews waiting', ['Kind', 'What', ''], [
+    [adTag('Incident'), adM('Abnormal potassium filed without action', 'Reported 3 Nov. Decide the cause and any change to the clinic procedure.'), AD.dec.r1 ? adTag('Reviewed') : adB('secondary-main', 'Review', 'adDec(\'r1\',1,\'Incident reviewed\')', 'Review the incident', '')],
+    [adTag('Chart audit'), adM('10 random charts, opioid prescribing', 'Quarterly. Checks PharmaNet review and treatment agreement.'), AD.dec.r2 ? adTag('Started') : adB('secondary-main', 'Start', 'adDec(\'r2\',1,\'Chart audit started\')', 'Start the chart audit', '')],
+    [adTag('Peer review'), adM('Clinic meeting today, 3:20 to 4:00 PM', 'Agenda: referral delays. Minutes saved here.'), adB('link', 'Open', 'adSay(\'Meeting minutes open here\')', 'Open the meeting', '')]]));
+  return std + rev;
+}
+
+/* ---------- Privacy officer ---------- */
+function adPo(){
+  var R = function(id, type, a, b, due, act){ var d = AD.dec[id]; return [adTag(type), adM(a, b), due, d ? adTag('Decided') : adB('secondary-main', act, 'adDec(\'' + id + '\',1,\'' + type + ': decided\')', act + ' this item', '')]; };
+  var todo = adCard('To decide · Lakeview Family Practice', 'Privacy officer: Dr. Pannozzo, under the Personal Information Protection Act. Simple finds and prepares each item; the privacy officer decides. Not timed here: copying and sending records, booking training, passwords, devices, network and software set-up.',
+    adTable('To decide', ['Type', 'What needs a decision', 'Due', ''], [{group:'Unusual chart access', count:2},
+      R('p1', 'Access', 'Staff member opened a chart with no appointment, task or message', 'Same surname as the staff member · 9:14 PM Tuesday', 'Review this week', 'Review'),
+      R('p2', 'Access', 'Doctor opened 41 charts in 10 minutes', 'Likely list work; confirm or investigate', 'Review this week', 'Review'),
+      {group:'Patient requests', count:2}, R('p3', 'Access', 'Patient asks for a copy of their full record', 'Received 28 Oct · 30 business days to reply · decide anything to withhold', 'Reply by Dec 10', 'Decide'),
+      R('p4', 'Correction', 'Patient asks to remove a diagnosis from their record', 'Correct, or note the request on the record', 'Reply promptly', 'Decide'),
+      {group:'Disclosures', count:1}, R('p5', 'Disclosure', 'Lawyer requests records for a patient', 'Patient consent on file? Scope of what to send', 'No legal deadline', 'Decide'),
+      {group:'Incidents', count:1}, R('p6', 'Incident', 'Referral letter faxed to the wrong clinic', 'Contain, assess harm, decide whether to notify the patient and the Information and Privacy Commissioner', adTag('Act today'), 'Open')]),
+    adB('secondary-main', 'Save and close', 'adSaveClose(\'Privacy officer\')', 'Save this sitting as clinical administration', 'check'));
+  var prog = adCard('Program status', '', adTable('Privacy program', ['Item', 'Status'], [['Privacy policy reviewed', 'March 2026'], ['Yearly self-assessment', 'Due January'], ['Who can see what, reviewed', 'Due this quarter'], ['Staff confidentiality agreements', '12 of 12'], ['Staff privacy training this year', '10 of 12'], ['Agreements with outside services', '7 current']]));
+  return todo + prog;
+}
+
+/* ---------- How time is classed ---------- */
+function adHow(){
+  var codes = adCard('How the doctor\'s time moves between codes', 'The line is the action, not the clock: deciding who needs care is clinical administration; providing one patient\'s care is indirect care, or direct care when the patient is on the line.',
+    adTable('Time codes', ['Kind', 'Code', 'When'], [[adM('Clinical administration', ''), '98012', 'Deciding who needs care: opening panel review, picking a list, triage decisions (recall, message, no action, remove), closing the list'],
+      [adM('Indirect care', ''), '98011', 'One patient, not present: opening the full chart, reviewing results and history, ordering a test, changing a medication, a referral, a refill or a note'],
+      [adM('Direct care', ''), '98010', 'Patient on the line: calling from the row or the chart, time taken from the call log; signing the note adds the phone or video visit'],
+      [adM('Not counted', ''), '—', 'Gaps of 5 minutes or more (held out and asked about), Simple not in front, screen locked; Simple and staff booking recalls, sending messages and requisitions; business work']]) +
+    '<p class="ad-sub" style="margin-top:12px">Between the first and last patient of the day, chart work is paid as direct care. Before or after: indirect care. Triage always stays clinical administration.</p>');
+  var seg = [['8:00', 14, 'admin', '9 triage decisions'], ['8:14', 8, 'indirect', 'Harold\'s chart'], ['8:22', 1, 'indirect', 'Test ordered'], ['8:23', 7, 'admin', 'List'], ['8:30', 6, 'direct', 'Call'], ['8:36', 9, 'admin', 'List']];
+  var ex = adCard('Example: one 45-minute sitting, 8:00 to 8:45 AM', '', '<div class="ad-seg">' + seg.map(function(x){ return '<span class="t-' + x[2] + '" style="flex:' + x[1] + '" title="' + x[0] + ' AM · ' + x[1] + ' min · ' + AD_KIND[x[2]] + ' · ' + x[3] + '"></span>'; }).join('') + '</div>' +
+    adTable('Example sitting', ['Start', 'Minutes', 'Kind', 'What'], seg.map(function(x){ return [x[0] + ' AM', String(x[1]), adTag(AD_KIND[x[2]]), x[3]]; })) +
+    '<p class="ad-sub" style="margin-top:12px">Clinical administration 30 minutes in three stretches (14, 7 and 9), added to the day\'s total. Indirect care 9 minutes and direct care 6 minutes are added to the rest of the day\'s time for that code before units are counted.</p>');
+  return codes + ex;
+}
+
+/* ---------- Attachment ---------- */
+var AD_ATT = [{id:'a1', n:'Patient A (example), 54 years', d:'Nov 2', step:'Review the list', act:'Invite to intake'}, {id:'a2', n:'Patient B (example), 31 years', d:'Nov 2', step:'Intake booked, Nov 12', act:''}, {id:'a3', n:'Patient C (example), 67 years', d:'Oct 26', step:'Met; both agree', act:'Mark attached'}];
+function adAttach(){
+  var stats = adStats([['Panel in the registry', '1,212', '1,175 confirmed · 37 not yet confirmed'], ['New patients a month', '8', 'Your setting · updated Oct 14'], ['Total panel you want', '1,300', '88 places left'], ['Next registry cut-off', 'Dec 31', 'End of the quarter (expected)']]);
+  var cmp = adCard('Registry and record, compared', 'Matched by personal health number every night. Only Confirmed patients will count for the panel payment. 98990 is a $0 claim: diagnostic code 780, location code L, the clinic\'s facility number; only patients with active Medical Services Plan coverage. Simple fills these in and checks the facility number first.',
+    adTable('Registry and record', ['Difference', 'Patients', ''], [['In your record, not in the registry', '14', adB('link', 'Prepare 98990', 'adSay(\'14 attachment claims prepared for you to approve\')', 'Prepare the claims that add these patients to the registry', '')],
+      ['In the registry, not in your record', '6', adB('link', 'Review', 'adSay(\'Example only: this list is not built in the demo\')', 'Review these patients', '')],
+      ['Matched, but not Confirmed (Pending or Not the most responsible physician)', '37', adB('link', 'Review', 'adOpen(\'pnl\')', 'Review on Panel', '')],
+      ['Patients without a clinic (usually a wrong facility number on 98990)', '2', adB('link', 'Fix', 'adSay(\'Facility number corrected on 2 claims\')', 'Correct the facility number', '')]]));
+  var av = adCard('Your availability', 'Keeping this current is a requirement for every family doctor. Nobody can make you grow your panel or take new patients.',
+    '<div class="ad-form" style="grid-template-columns:1fr 1fr auto">' + SC.html('Input', {label:'New patients I can take each month', id:'ad-new', type:'number', value:'8'}) + SC.html('Input', {label:'Total panel size I want', id:'ad-tot', type:'number', value:'1300'}) +
+    adB('secondary-main', 'Update in the registry', 'adSay(\'Availability updated in the Provincial Attachment System\')', 'Send your availability to the registry', 'send') + '</div>');
+  var nw = adCard('New patients from the attachment coordinator', 'Lists come from your Division of Family Practice\'s attachment coordinator, from the Health Connect Registry. You may also accept patients who are not on it. Steps: you invite to intake, the clinic books a meeting, you and the patient decide, then Simple marks the patient Attached in the registry and adds them to your panel in one step.',
+    adTable('New patients', ['Patient', 'Sent', 'Step', ''], AD_ATT.map(function(a){ var d = AD.dec[a.id]; return [adM(a.n, ''), a.d, a.step, d ? adTag(d) : a.act ? adB('secondary-main', a.act, 'adDec(\'' + a.id + '\',\'' + (a.act === 'Mark attached' ? 'Attached' : 'Invited') + '\',\'' + a.act + ': done\')', a.act, a.act === 'Mark attached' ? 'user-check' : 'send') : '']; })));
+  var who = adCard('Who can do this work', 'A medical office assistant or clinic manager needs your endorsement before using the registry, and can be made Panel Manager for your panel. Registry data entry is staff work; your clinical decisions about the panel are timed on Panel review.',
+    '<p class="ad-p" style="margin:0">Endorsed: Dolly (medical office assistant), Panel Manager since Mar 3.</p>');
+  return stats + cmp + '<div class="ad-cols ad-cols-2">' + av + who + '</div>' + nw;
+}
+
+/* ---------- Panel and limits ---------- */
+function adLimits(){
+  var stats = adStats([['Panel', '1,212', '1,175 confirmed in the Provincial Attachment System'], ['Non-panel visits', '18%', '412 of 2,288 clinic interactions · limit 30%'], ['Coding for complexity', '2.1', 'Diagnostic codes per claim · most specific on 88%']]);
+  var notes = adCard('Panel and visits', '', '<ul class="ad-list"><li>37 not confirmed: only confirmed patients will count for the new panel payment. ' + adB('link', 'Panel cleanup', 'adOpen(\'pnl\')', 'Open Panel', '') + '</li>' +
+    '<li>Not counted toward 30%: 96 pregnancy, newborn and contraception visits. 14 non-panel patients seen 3 or more times. ' + adB('link', 'Offer attachment', 'adOpen(\'attach\')', 'Open Attachment', '') + '</li>' +
+    '<li>23 claims this month used a vague code where the note supports a specific one. All codes on claims feed the complexity measure. ' + adB('link', 'Review', 'adSay(\'Example only: this list is not built in the demo\')', 'Review these claims', '') + '</li></ul>');
+  var lim = adCard('Limits · 2026 to date', 'Hours above typical peer patterns are more likely to be reviewed. Hours billed through other systems are added when their payment statement arrives.', adTable('Limits', ['Limit', 'Setting', 'Now', 'Status'], [
+    ['14 hours of time today', 'Clinic', '7 h 48 m', 'Within'], ['120 hours in any 14 days', 'Clinic', '71 h 30 m', 'Within'], ['14 hours today · 120 hours in 14 days', 'Long-term care', '0 m · 9 h', 'Within'], ['50 interactions today', 'Clinic', '19', 'Within'],
+    ['Travel 60 minutes today', 'All', '0 m', 'Within'], ['Clinical administration 10% this year', 'Clinic', '4.6% paid · 4.9% with submitted', 'Within'], ['Clinic services at least one day a week', 'Clinic', '4.2 days a week', 'Met'], ['Claims older than 75 days, not paid', 'All', '2', adTag('Act before day 90')]]));
+  var pay = adCard('Panel payment', 'Simple does not estimate the payment amount: the method is changing and no formula is published.', adTable('Panel payment', ['Item', 'Status', ''], [['Claim form for 2026', 'Filed · paid four times a year', ''], ['Method', 'Interim · moving to confirmed Provincial Attachment System patients and the national complexity grouping; start date not announced', ''],
+    ['Changes this year needing a form', '1 · leave in August: Practice Change Declaration not yet filed', adB('link', 'Prepare', 'adSay(\'Practice Change Declaration prepared for you to sign\')', 'Prepare the form', '')]]));
+  return stats + notes + lim + pay;
+}
+
+/* ---------- Monthly summary ---------- */
+function adMonth(){
+  var stats = adStats([['Clinical administration in October', '6 h 45 m', '27 units · 19 sittings'], ['Share of clinic-based time this month', '4.9%', '5% expected · 10% limit'], ['Share this year, paid', '4.6%', 'plus 0.3% submitted, not yet paid'], ['Needs your attention', '3', '1 refusal · 1 renewal reminder · open items', 'warning']]);
+  var by = adCard('By type · October 2026', 'Sent on Nov 1. Not counted this month: 3 sittings discarded with no decision; 4 idle gaps (38 minutes) you chose not to count.', adTable('By type', ['Type', 'Hours', 'Sittings', 'Compared with last month'], [['1 · Panel review', '3 h 15 m', '8', 'Similar'], ['2 · Record management', '45 m', '5', 'Lower (fewer Cedar proposals)'], ['4 · Medical director', '1 h 45 m', '3', 'Higher (quarterly chart audit)'], ['5 · Privacy officer', '45 m', '2', 'Similar'], ['Other clinical administration', '15 m', '1', 'New: standing order for flu vaccines']]));
+  var att = adCard('Needs your attention', 'Hours billed through other systems appear once their payment statement arrives.', adTable('Needs your attention', ['Kind', 'What', ''], [[adTag('Refused'), 'Oct 14 sitting: facility number missing. Fixed claim ready to resend (day 18 of 90).', adB('link', 'Review', 'adOpen(\'claims\')', 'Open model claims', '')],
+    [adTag('Renewal'), 'Yearly re-enrolment and setting registration due Jan 1 to Mar 31.', adB('link', 'Prepare', 'adOpen(\'setup\')', 'Open set-up', '')], [adTag('Open items'), 'Medical director: 1 incident open. Privacy officer: 1 record request, reply by Dec 10.', adB('link', 'Open', 'adOpen(\'md\')', 'Open medical director', '')]]));
+  return stats + by + att;
+}
+
+/* ---------- Claims and payments ---------- */
+function adClaims(){
+  return adCard('Model claims today', 'Visit claims send when you sign each note. Time claims send when you confirm the day on Today\'s time. Time-claim refusals come back on the nightly edit report the next business day; visit and other claim refusals, holds and reductions come on the twice-monthly payment statement. Simple reads both.',
+    adTable('Model claims today', ['Claim', 'Patient', 'Status', ''], [
+      [adM('Second visit today · phone', ''), 'Maria Chen', adTag('Needs a reason'), adB('secondary-main', 'Sign off', 'adSignOff()', 'Check the record and the second-visit rule, then approve the claim', 'check')],
+      [adM('Time claims: direct care, indirect care, clinical administration', ''), 'LFP Time placeholder patient', AD.conf ? adTag('Sent', 'check') : adTag('Waiting for you to confirm the day'), AD.conf ? '' : adB('link', 'Go to Today\'s time', 'adOpen(\'today\')', 'Confirm the day', '')],
+      [adM('Clinical administration, Oct 14', ''), 'LFP Time placeholder patient', adTag('Refused: facility number missing'), AD.dec.cl1 ? adTag('Resent') : adB('secondary-main', 'Fix and resend', 'adDec(\'cl1\',1,\'Facility number added · claim resent\')', 'Add the facility number and resend', 'send')],
+      [adM('Indirect care, Oct 2 (paid, wrong end time)', ''), 'LFP Time placeholder patient', adTag('Correction by fax'), adB('link', 'Prepare fax', 'adSay(\'Correction fax to 250 405-3593 prepared for you to approve\')', 'Time-claim corrections cannot be sent electronically since Feb 4, 2026', '')],
+      [adM('WorkSafeBC visit, same day as model visits', ''), 'Example', adTag('Start and end times added'), '']]),
+    adB('link', 'Open all model time claims', 'T23.view=\'lfp\';showScreen(\'claims\');renderClaims()', 'Open the model time view in Claims', ''));
+}
+function adSignOff(){
+  var host = document.getElementById('ad-host'); if(!host){ host = document.createElement('div'); host.id = 'ad-host'; document.body.appendChild(host); }
+  var recRows = [['(a, b) Date, location, patient, physician', 'Present'], ['(c) Presenting concern and history', 'Present'], ['(d) Pertinent past and family history', 'Present'], ['(e) Review of systems', 'Present'], ['(f) Extent of examination', 'Warning: say what was assessed by phone'], ['(g) Results during the visit', 'None'], ['(h) Problem summary and plan', 'Present']];
+  host.innerHTML = SC.html('Drawer', {id:'ad-so', title:'Sign off · Maria Chen · phone visit', description:'Today 10:20 to 10:34 AM · clinic-based services · second visit today', primaryAction:{label:'Approve claim', id:'ad-so-ok'}, secondaryAction:{label:'Hold', id:'ad-so-hold'}},
+    SC.raw('<div class="ad-dr">' + '<h3 class="ad-h3">1 · Record check' + scInfoHtml('The eight elements (a to h) the schedule requires for an adequate medical record. A missing element blocks approval; a warning does not.') + '</h3>' + adTable('Record check', ['Element', 'Status'], recRows) +
+      '<h3 class="ad-h3">Panel status</h3><p class="ad-p" style="margin:0">On your panel, confirmed in the Provincial Attachment System. Does not count toward the 30% non-panel limit.</p>' +
+      '<h3 class="ad-h3">2 · Interaction' + scInfoHtml('A second interaction the same day is payable only for a new condition, a new setting or a significant change.') + '</h3><p class="ad-p" style="margin:0">You already approved a phone visit for Maria at 9:10 AM today (sore throat).</p>' +
+      '<div class="ad-chips" style="margin-top:10px">' + ['New condition', 'New setting', 'Significant change', 'None of these'].map(function(c, i){ return SC.html('Chip', {selected:i === 0, title:c}, c); }).join('') + '</div>' +
+      adTable('Claim', ['Claim', 'Code', 'Diagnostic code', 'Extra'], [['Phone visit', '98032', '8450 sprain of ankle', 'Visit 10:20 to 10:34 AM · note: "new condition: ankle injury" · second claim today']]) +
+      '<p class="ad-sub" style="margin-top:10px">No time code is created here: the 14 minutes are already in today\'s direct care. Fee-for-service codes cannot be added to a model visit.</p>' +
+      '<h3 class="ad-h3">Routing checks</h3>' + adTable('Routing checks', ['Check', 'This visit'], [['Health card province', 'British Columbia'], ['WorkSafeBC or ICBC claim on the encounter', 'None'], ['Procedure on the schedule\'s list', 'No procedure'], ['Patient is a family or household member', 'No'], ['Pregnancy, newborn or contraception care for a non-panel patient', 'Not applicable']]) + '</div>'));
+  var d = document.getElementById('ad-so');
+  d.addEventListener('click', function(e){ var b = e.target.closest('button'); if(e.target === d) return d.close(); if(!b) return;
+    if(b.id === 'ad-so-ok'){ d.close(); adSay('Claim approved · it goes with tonight\'s batch'); } else if(b.id === 'ad-so-hold'){ d.close(); adSay('Claim held · it stays in Claims until you approve it'); } else if(b.getAttribute('aria-label') === 'Close') d.close();
+    var c = e.target.closest('.sv-chip, [class*=chip]'); if(c && c.closest('.ad-chips')){ c.parentNode.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', x === c ? 'true' : 'false'); x.classList.toggle('is-selected', x === c); }); } });
+  d.showModal();
+}
+function adPay(){
+  var stats = adStats([['Time', '$180,039', '5,392 units of 15 minutes'], ['Visits and other interactions', '$61,328', '2,384 claims'], ['Panel payment', '3 of 4 paid', 'Next Nov 30 · amount set by the Ministry'], ['On hold', 'None', 'Payments stop if re-enrolment is missed by Mar 31']]);
+  return '<p class="ad-day">Longitudinal Family Physician payments, this year to date' + scInfoHtml('The schedule prints $32.50 per 15 minutes. The agreement adds 2.75% from April 1, 2025 and 1.0% from April 1, 2026; Simple shows $33.39 (worked out, not published) and applies the 1.0% and its back pay when the Medical Services Plan does. The 2.75% back pay was paid on the Nov 13, 2026 remittance; panel payment back pay is still to come. Example data.') + '</p>' + stats;
+}
+
+/* ---------- Set-up ---------- */
+function adSetup(){
+  var model = adCard('Payment model', 'How you bill the Medical Services Plan in this clinic. Fee-for-service doctors see only Panel and attachment, and this set-up page.',
+    '<sc-toggle id="ad-model" label="Payment model" value="' + AD.model + '" items=\'[{"value":"ffs","label":"Fee-for-service"},{"value":"lfp","label":"Longitudinal Family Physician"}]\'></sc-toggle>' +
+    '<h3 class="ad-h3">Your roles in this clinic' + scInfoHtml('Roles add pages to Clinical administration. Every clinic needs a privacy officer; a clinic with several doctors also needs a medical director and an alternate.') + '</h3><div class="ad-checks">' +
+    SC.html('Checkbox', {label:'Doctor', id:'ad-r-doc', checked:true, disabled:true}) + SC.html('Checkbox', {label:'Medical director', id:'ad-r-md', checked:!!AD.roles.md}) + SC.html('Checkbox', {label:'Privacy officer', id:'ad-r-po', checked:!!AD.roles.po}) + '</div>');
+  if(AD.model !== 'lfp') return model;
+  var enr = adCard('Longitudinal Family Physician set-up and yearly tasks', 'Dr. Pannozzo · Lakeview Family Practice (example clinic).', adStats([['Enrolment (98000)', 'Active for 2026', 'Submitted Jan 12 · effective Jan 13'], ['Renewal for 2027', 'Opens Jan 1', 'Due by Mar 31, with each setting registration'], ['Facility number', '00K12', 'On every claim'], ['Panel payment claim form', 'Filed 2026', 'Next: instructions from January']]));
+  var set = adCard('Service settings you bill under the model', 'Registration claims go on the registration placeholder patient. Once you bill under the model at a location you stay on it there until you withdraw. Hospital work billed fee-for-service is routed there automatically and never timed here.',
+    adTable('Service settings', ['Setting', 'Code', 'Status', 'Effective', 'Where', ''], [['Clinic-based services', '98002', 'Registered', 'Jan 13, 2026', 'Lakeview Family Practice', ''], ['Long-term care and palliative', '98003', 'Registered', 'Feb 2, 2026', 'All facilities', ''],
+      ['Hospital inpatient', '98004', 'Fee-for-service', '–', 'Kootenay Lake Hospital', adB('link', 'Register', 'adSay(\'Registration claim prepared for you to approve\')', 'Register this setting under the model', '')], ['Pregnancy and newborn', '98006', 'Not providing', '–', '–', adB('link', 'Register', 'adSay(\'Registration claim prepared for you to approve\')', 'Register this setting under the model', '')]]));
+  var req = adCard('Required services', 'Eligibility you confirmed on Jan 12, 2026: provide all required services; contribute to clinic rent and operating costs; not withdrawn in the past 12 months; not deemed ineligible. Asked again at renewal.',
+    adTable('Required services', ['Requirement', 'Status', 'Detail'], [['Empanelled patient list within 3 months of enrolling', 'Done', 'Submitted Mar 3, 2026'], ['At least 250 empanelled patients within 4 months', 'Met · 1,212', '37 not yet confirmed in the Provincial Attachment System'],
+      ['Clinic-based services at least one day a week', '4.2 days a week', 'Leave periods excluded: 2 weeks in August'], ['Non-panel visits no more than 30% of clinic visits this year', '18%', 'Pregnancy, newborn and contraception codes excluded'], ['Offer both in-person and virtual visits', '41% in person', 'Unless College guidance on virtual care says otherwise'],
+      ['Encourage the provincial patient experience survey', 'Off', adB('link', 'Turn on survey message', 'adSay(\'Survey message turned on\')', 'Show patients the survey message', '')]]));
+  var chg = adCard('If something changes', 'Each opens a checklist with the forms it needs: Practice Change Declaration, Panel Transfer Declaration, Withdrawal Form 2981, facility number changes.',
+    '<p class="ad-p" style="margin:0 0 10px">1 form pending: Practice Change Declaration for August leave.</p><div class="ad-chips">' + ['Going on leave', 'Moving clinics', 'New payee number', 'Taking over a panel', 'Leaving the model'].map(function(c){ return SC.html('Chip', {title:'Open the checklist for ' + c.toLowerCase()}, c).replace('<button ', '<button onclick="adSay(\'Checklist: ' + c + '\')" '); }).join('') + '</div>');
+  return model + enr + set + req + chg;
+}
+var AD_STATES = [['first', 'First set-up'], ['w8', '8% warning'], ['w10', '10% reached'], ['hold', 'Payments on hold'], ['ref', 'Refused claims'], ['locum', 'Locum'], ['moa', 'Assistant\'s tasks'], ['empty', 'Nothing yet']];
+function adStates(){
+  var S = {
+    first:adCard('Set up the payment model', 'The one-time steps before Simple can claim any time for you. No time is claimed for a date before your enrolment takes effect, so the timers turn on only once step 1 is done.', adTable('First set-up', ['Step', 'What Simple does', 'Who', 'Status'], [
+      ['1 · Enrol (98000; locums 98005)', 'Builds the claim on the registration placeholder patient and sends it; records the date sent', 'You approve', adTag('Ready to send')], ['2 · Register each service setting (98002, 98003, 98004, 98006)', 'One claim per setting; each setting gets its own 10% bar', 'You approve', 'After step 1'],
+      ['2a · Fee-for-service portal code 14070 (locums 14071)', 'Lets you bill fee-for-service incentive fees for services the model excludes; resent each year from Jan 1', 'You approve', 'Not sent'], ['3 · Your roles', 'Medical director and privacy officer pages appear only if you hold the role', 'You', 'Not set'],
+      ['4 · Provincial Attachment System', 'Links your panel so confirmations and new patients come into Simple', 'You or assistant', 'Not linked'], ['5 · Timers on', 'From the day the enrolment and registration claims are sent', 'Simple', 'Off']]), adB('secondary-main', 'Review enrolment claim', 'adSay(\'Enrolment claim open for review\')', 'Review the enrolment claim', '')),
+    w8:adCard('Clinical administration is at 8.2% this year', 'The schedule expects about 5% and pays nothing above 10%. Simple shows this on Today\'s time and here until the share falls below 8%. Example from later in a year.', adBar('Clinical administration share', 'Paid 7.6% · submitted 0.6% · 10% limit', 82) + '<p class="ad-p" style="margin-top:12px">About 24 hours of room are left this year. Nothing is held yet.</p>'),
+    w10:adCard('10% reached: new entries are held', 'New sittings are still recorded and confirmed, but held, not sent, because time over 10% is not paid. Held entries are sent automatically if more clinic time later in the year brings the share back under 10%; anything still held on Dec 31 is reported in the January summary and not claimed. Example from later in a year.',
+      adTable('Held entries', ['When', 'Kind', 'Minutes', 'Status'], [['Nov 18, 8:00 to 8:30 AM', '1 · Panel review', '30', adTag('Held')], ['Nov 19, 5:40 to 6:00 PM', '5 · Privacy officer', '20', adTag('Held')]])),
+    hold:adCard('Payments on hold: yearly re-enrolment not sent', 'Each year, between Jan 1 and Mar 31, you send the enrolment code again with each service setting registration. Payments under the model stop until it is sent; you are not withdrawn. Simple keeps recording your time and keeps the claims ready, each with its own 90-day limit.',
+      '<p class="ad-p" style="margin:0 0 10px">4 claims waiting · oldest from Apr 2, day 41 of 90 (example as of May 13).</p>' + adB('secondary-main', 'Review re-enrolment claims', 'adSay(\'Re-enrolment claims open for review\')', 'Review the re-enrolment claims', '')),
+    ref:adCard('Refused claims', 'Time claims are refused on the nightly edit report; visit and other claims on the twice-monthly payment statement. Simple reads both and puts each refusal here with a fix.', adTable('Refused claims', ['Claim', 'Code', 'What it means', 'What Simple does'], [
+      ['Oct 14 · clinical administration · 2 units', 'Facility number missing', 'The claim lacked the clinic\'s facility number', 'Rebuilt with the facility number; ready to resend, day 22 of 90'], ['Oct 2 · indirect care · correction', 'D2', 'Time claims cannot be reduced electronically', 'Drafts the correction for you to fax to the Medical Services Plan'],
+      ['Oct 28 · direct care · 3 units', 'Overlap', 'The same minutes were already claimed under another code', 'Shows both claims side by side; you keep one']])),
+    locum:adCard('Locum view', 'A doctor covering for a doctor on the model. Locums enrol with 98005 and bill the locum versions of the time codes. Every time claim carries the host doctor\'s billing number in "Referred by"; Simple fills it from the locum assignment, so the locum never types it.', adTable('Locum assignment', ['Clinic', 'Host', 'Dates', 'Settings'], [['Lakeview Family Practice', 'Dr. Pannozzo', 'Nov 16 to 27, 2026', 'Clinic']])),
+    moa:adCard('Medical office assistant: model tasks', 'Staff work is never timed or billed. These tasks keep the doctor\'s claims paid.', adTable('Assistant tasks', ['Task', 'Due', 'Why it matters'], [['Add 6 new patients to the Provincial Attachment System panel', 'This week', 'Panel payment counts confirmed patients'], ['Book 9 recalls from Monday\'s panel review', 'Friday', 'The doctor decided; booking is staff work'],
+      ['Prepare yearly re-enrolment for Dr. Pannozzo', 'Jan 1 to Mar 31', 'Payments stop if it is not sent'], ['Send fax correction for Oct 2 indirect care claim', 'Today', 'Time claims cannot be reduced electronically'], ['Log 1 record request received at the front desk', 'Today', 'The 30-business-day clock starts on receipt']])),
+    empty:'<div class="ad-card ad-empty">' + SC.html('Empty', {icon:'clock-time', title:'Nothing recorded yet today', description:'Time starts when you open a patient or a clinical administration page. The 10% bar appears after your first clinic time claim; panel review lists after your panel is linked to the registry; the first monthly summary on the 1st of the month after your first sitting.'}) + '</div>'
+  };
+  return '<div class="ad-chips" role="group" aria-label="Situation" style="margin-bottom:16px">' + AD_STATES.map(function(x){ return SC.html('Chip', {selected:AD.st === x[0], title:'Show ' + x[1].toLowerCase()}, x[1]).replace('<button ', '<button onclick="AD.st=\'' + x[0] + '\';adPaint()" '); }).join('') + '</div>' + S[AD.st];
+}
+var AD_RENDER = {today:adToday, overview:adOverview, review:adReview, quality:adQuality, record:adRecord, md:adMd, po:adPo, how:adHow, attach:adAttach, limits:adLimits, month:adMonth, claims:adClaims, pay:adPay, setup:adSetup, states:adStates};
+/* the payment model switch and the roles */
+document.addEventListener('change', function(e){
+  var t = e.target;
+  if(t.id === 'ad-model' || (t.closest && t.closest('#ad-model'))){ var v = (document.getElementById('ad-model') || {}).value; if(v && v !== AD.model){ AD.model = v; document.body.classList.toggle('ad-ffs', v === 'ffs'); adSave(); adPaint(); adSay(v === 'lfp' ? 'Longitudinal Family Physician: time, clinical administration and claims are on' : 'Fee-for-service: Admin shows Panel and attachment, and set-up'); } }
+  if(t.id === 'ad-r-md' || t.id === 'ad-r-po'){ AD.roles[t.id === 'ad-r-md' ? 'md' : 'po'] = t.checked; adSave(); adSay((t.id === 'ad-r-md' ? 'Medical director' : 'Privacy officer') + (t.checked ? ' page added' : ' page removed')); }
+});
+/* the old Time and Panel entry points open their Admin pages */
+window.addEventListener('load', function(){
+  document.body.classList.toggle('ad-ffs', AD.model === 'ffs');
+  if(typeof baWrap === 'function') baWrap('showScreen', function(r, name){ if(name === 'admin') adPaint(); });
+  var _ss = window.showScreen;
+  window.showScreen = function(name){ if(name === 'time') return adOpen('week'); if(name === 'panel') return adOpen('pnl'); return _ss.apply(this, arguments); };
+  adFlag();
+});
 /* ============================================================================
    LFP time (Daniel's guide for MOAs, 13 Nov; chart brief, 17 Nov; Ani, 21 Nov "time tracking first").
    Simple sorts the doctor's own time into the four LFP types: direct care (98010; patient present, and chart work between patients
@@ -14838,7 +15426,7 @@ var LFP_DAYS = [
   {d:'Monday 16 November', s:'Mon 16', visits:17, appr:true, e:[['7:30', '8:00', 'indirect', 'Results and messages', 'Before the first patient · 6 results, 4 messages'], ['8:00', '12:00', 'direct', 'Clinic: 9 video visits', 'First patient 8:00'], ['12:00', '12:30', 'direct', 'Charting between patients', 'Inside the clinic day, so direct care'], ['13:00', '17:00', 'direct', 'Clinic: 8 video visits', 'Last patient 16:50'], ['17:00', '17:45', 'indirect', 'Charting and refills after clinic', '5 notes, 3 refills'], ['10:00', '11:00', 'none', 'Dolly: requisitions and faxes', 'MOA work, not your time']]},
   {d:'Tuesday 17 November', s:'Tue 17', visits:18, appr:true, e:[['8:00', '12:00', 'direct', 'Clinic: 10 video visits', 'First patient 8:00'], ['13:00', '17:00', 'direct', 'Clinic: 8 video visits', 'Last patient 16:45'], ['17:00', '18:00', 'indirect', 'Referral letters and forms', '2 referrals, 1 insurance form'], ['18:00', '18:30', 'admin', 'Screening recall list', 'Colorectal and mammogram recalls for the panel']]},
   {d:'Wednesday 18 November', s:'Wed 18', visits:14, appr:true, e:[['7:45', '8:15', 'indirect', 'Results before clinic', '5 results reviewed'], ['8:15', '12:00', 'direct', 'Clinic: 8 video visits', 'First patient 8:15'], ['12:00', '12:30', 'travel', 'Travel to the long-term care home', 'Between care sites'], ['12:30', '14:30', 'direct', 'Long-term care rounds: 6 residents', 'In person'], ['14:30', '15:00', 'travel', 'Travel back to the clinic', 'Between care sites'], ['15:00', '16:30', 'direct', 'Clinic: 4 video visits', 'Last patient 16:20']]},
-  {d:'Thursday 19 November', s:'Thu 19', visits:19, appr:false, e:[['7:30', '8:00', 'indirect', 'Results and messages', 'Before the first patient · 8 results'], ['8:00', '12:00', 'direct', 'Clinic: 10 video visits', 'First patient 8:00'], ['12:00', '12:45', 'direct', 'Charting between patients', 'Inside the clinic day, so direct care'], ['13:00', '17:15', 'direct', 'Clinic: 9 video visits', 'Last patient 17:05'], ['17:15', '18:15', 'indirect', 'Charting after clinic', '6 notes'], ['18:15', '19:00', 'admin', 'Updating diabetes templates and reminders', 'Panel-wide'], ['14:00', '15:30', 'none', 'Japneet: refill requests', 'Physician assistant work, not your time']]},
+  {d:'Thursday 19 November', s:'Thu 19', visits:19, appr:false, e:[['8:00', '8:30', 'admin', 'Panel review: cervical screening list', '18 reviewed · 6 recalls for Dolly to book'], ['8:30', '12:00', 'direct', 'Clinic: 11 video visits', 'First patient 8:30'], ['12:00', '12:45', 'break', 'Lunch', 'In your schedule · not counted'], ['12:45', '15:00', 'direct', 'Clinic: 8 video visits', 'Last patient 2:55 PM'], ['15:05', '15:17', 'decide', 'Call from your phone, not matched to a patient', 'Decide on Today\'s time'], ['17:40', '18:04', 'admin', 'Privacy officer: access review and a record request', 'Gap 5:47 to 5:53 PM held out', 18], ['18:05', '18:17', 'admin', 'Record management: Cedar proposals', '2 accepted, 1 edited'], ['19:00', '19:45', 'indirect', 'Results inbox and refill queue', '14 results · 4 refills · 2 referral letters'], ['20:10', '20:28', 'decide', 'Chart review, no changes made', 'Gloria McDonald · decide on Today\'s time'], ['14:00', '15:30', 'none', 'Japneet: refill requests', 'Physician assistant work, not your time']]},
   {d:'Friday 20 November', s:'Fri 20', visits:16, appr:false, e:[['8:00', '12:00', 'direct', 'Clinic: 9 video visits', 'First patient 8:00 · Gloria McDonald directed to emergency'], ['12:00', '12:30', 'direct', 'Transfer note and call to the emergency department', 'For Gloria McDonald · between patients, so direct care'], ['13:00', '17:00', 'direct', 'Clinic: 7 video visits', 'Last patient 16:55'], ['17:00', '17:30', 'indirect', 'Results and refills after clinic', '4 results, 2 refills'], ['9:00', '10:00', 'none', 'Dolly: booking and reminders', 'MOA work, not your time']]}
 ];
 var LFP = {sel:4, ch:{}};
@@ -14846,7 +15434,7 @@ function lfpMin(t){ var p = t.split(':'); return +p[0] * 60 + +p[1]; }
 function lfpType(di, ei){ var k = di + ':' + ei; return LFP.ch[k] || LFP_DAYS[di].e[ei][2]; }
 function lfpDay(di){
   var D = LFP_DAYS[di], by = {direct:0, indirect:0, admin:0, travel:0};
-  D.e.forEach(function(x, i){ var t = lfpType(di, i); if(by[t] != null) by[t] += lfpMin(x[1]) - lfpMin(x[0]); });
+  D.e.forEach(function(x, i){ var t = lfpType(di, i); if(by[t] != null) by[t] += (x[5] != null ? x[5] : lfpMin(x[1]) - lfpMin(x[0])); });   /* x[5]: minutes counted when a gap was held out */
   var mins = by.direct + by.indirect + by.admin + by.travel;
   return {by:by, mins:mins, units:Math.floor(mins / 15), pay:Math.floor(mins / 15) * LFP_RATE, visitsPay:D.visits * LFP_VISIT};
 }
@@ -14873,7 +15461,10 @@ function lfpRender(){
   var key = '<div class="lfp-key">' + ['direct', 'indirect', 'admin', 'travel'].map(function(k){ return '<span><i class="t-' + k + '"></i>' + LFP_T[k][0] + '</span>'; }).join('') + '<span><i class="t-none"></i>Not your time</span><span><i style="border:2px dashed var(--color-navy-300);background:none"></i>Clinic day</span></div>';
   var opts = ['direct', 'indirect', 'admin', 'travel'].map(function(k){ return {value:k, label:LFP_T[k][0] + ' · ' + LFP_T[k][1]}; });
   var rows = D.e.map(function(x, i){ return [x, i]; }).sort(function(a, b){ return lfpMin(a[0][0]) - lfpMin(b[0][0]); }).map(function(p){
-    var x = p[0], i = p[1], t = lfpType(di, i), m = lfpMin(x[1]) - lfpMin(x[0]), changed = LFP.ch[di + ':' + i];
+    var x = p[0], i = p[1], t = lfpType(di, i), m = x[5] != null ? x[5] : lfpMin(x[1]) - lfpMin(x[0]), changed = LFP.ch[di + ':' + i];
+    /* Daniel's v4: a break is never counted; a block that needs a decision is decided on Today's time */
+    if(t === 'break') return '<div class="lfp-row off"><span class="when">' + x[0] + '–' + x[1] + '</span><span class="sw t-none"></span><span class="m"><b>' + csEsc(x[3]) + '</b><span>' + csEsc(x[4]) + '</span></span><span class="u">—</span><span class="dd">' + SC.html('Tag', {color:'neutral'}, 'Break · not counted') + '</span></div>';
+    if(t === 'decide') return '<div class="lfp-row"><span class="when">' + x[0] + '–' + x[1] + '</span><span class="sw t-decide"></span><span class="m"><b>' + csEsc(x[3]) + '</b><span>' + csEsc(x[4]) + '</span></span><span class="u">' + lfpHM(m) + '</span><span class="dd">' + caBtn('secondary-main', 'Decide', 'adOpen(\'today\')', 'Decide this block on Today\'s time', '') + '</span></div>';
     if(t === 'none') return '<div class="lfp-row off"><span class="when">' + x[0] + '–' + x[1] + '</span><span class="sw t-none"></span><span class="m"><b>' + csEsc(x[3]) + '</b><span>' + csEsc(x[4]) + '</span></span><span class="u">—</span><span class="dd">' + SC.html('Tag', {color:'neutral', title:'Only your own time counts; this is never billed as yours'}, 'Not billed') + '</span></div>';
     return '<div class="lfp-row"><span class="when">' + x[0] + '–' + x[1] + '</span><span class="sw t-' + t + '"></span><span class="m"><b>' + csEsc(x[3]) + '</b><span>' + csEsc(x[4]) + (changed ? ' · changed by you' : '') + '</span></span><span class="u">' + lfpHM(m) + '<br>' + Math.floor(m / 15) + ' units</span>' +
       '<span class="dd">' + (D.appr ? SC.html('Tag', {color:'neutral'}, LFP_T[t][0]) : scDdHtml('lfp-dd-' + di + '-' + i, 'Type', opts, t, 'LFP.ch[\'' + di + ':' + i + '\']=v;lfpRender()')) + '</span></div>';
@@ -15024,7 +15615,7 @@ var LFPC_DATE = {0:'2026-11-16', 1:'2026-11-17', 2:'2026-11-18', 3:'2026-11-19',
 function lfpcAll(){
   var out = [];
   LFP_DAYS.forEach(function(D, di){ if(!D.appr) return;
-    D.e.forEach(function(x, i){ var t = lfpType(di, i); if(t === 'none') return; var id = 'w' + di + '-' + i;
+    D.e.forEach(function(x, i){ var t = lfpType(di, i); if(!LFP_T[t]) return; var id = 'w' + di + '-' + i;
       out.push({id:id, d:LFPC_DATE[di], day:D.d, t:t, a:x[0], b:x[1], what:x[3], st:LFPC.st[id] || 'prep'}); }); });
   return LFPC_PAST.map(function(c){ var o = Object.assign({}, c); if(LFPC.st[c.id]) o.st = LFPC.st[c.id]; if(LFPC.fix[c.id]){ o[c.fix[1]] = c.fix[2]; } return o; }).concat(out);
 }
@@ -15783,10 +16374,10 @@ function buildCareEvents(r){
   if(r.redflag) ev.push({when:'Today, 7:48 AM', kind:'warn', title:'Intake · ' + r.concern, desc:'', pill:'Flagged', pcls:'urgent'});
   ev.push({when:'Today, 8:02 AM', kind:'note', title:'In queue · ' + (WIN_TEXT[r.win]||r.win), desc:'', pill:'Visit', pcls:'note'});
   ev.push({when:'Jun 25, 2026', kind:'lab', title:'Ferritin', desc:'18 \u00b5g/L', pill:'Low', pcls:'low'});
-  ev.push({when:'Jun 25, 2026', kind:'lab', title:'CBC + differential', desc:'', pill:'Normal', pcls:'normal'});
+  ev.push({when:'Jun 25, 2026', kind:'lab', title:'CBC + differential', desc:'No results flagged', pill:'', pcls:''});
   var L = (typeof PT_LAST !== 'undefined') ? PT_LAST[r.name] : null;
   if(L) ev.push({when:L.date, kind:'note', title:'Visit note \u00b7 ' + L.why, desc:L.note.P, pill:'Note', pcls:'note'});
-  ev.push({when:'Jun 25, 2026', kind:'vitals', title:'Vitals recorded', desc:'BP 122/78 mmHg \u00b7 HR 72 bpm \u00b7 Temp 36.8 \u00b0C', pill:'Normal', pcls:'normal'});
+  ev.push({when:'Jun 25, 2026', kind:'vitals', title:'Vitals recorded', desc:'BP 122/78 mmHg \u00b7 HR 72 bpm \u00b7 Temp 36.8 \u00b0C', pill:'', pcls:''});
   ev.push({when:'Ongoing', kind:'med', title:'Metformin 500 mg', desc:'Twice daily with meals', pill:'Ongoing', pcls:'ongoing'});
   ev.push({when:'Ongoing', kind:'med', title:'Amlodipine 5 mg', desc:'Once daily', pill:'Ongoing', pcls:'ongoing'});
   return ev;
@@ -15800,7 +16391,7 @@ function renderCareTimeline(){
     return SC.html('TableRow', {className:'cs-row'},   /* one chart-search result per row (csHitUnit) */
       ['TableCell', {}, ['TableCellContent', {label:smText(String(e.when).replace(/, 2026$/,''))}]],
       ['TableCell', {}, ['TableCellContent', {label:smText(e.title), secondary:e.desc ? smText(e.desc) : undefined, strong:true, wrap:true}]],
-      ['TableCell', {}, ['TableCellContent', {type:'tags'}, ['Tag', tp, smText(e.pill)]]]);
+      ['TableCell', {}, e.pill ? ['TableCellContent', {type:'tags'}, ['Tag', tp, smText(e.pill)]] : '']);
   }).join('');
   var head = ['TableHeader', {}, ['TableHeaderRow', {}, ['TableHead', {}, 'When'], ['TableHead', {}, 'What happened'], ['TableHead', {}, '']]];
   var html = SC.html('Table', {'aria-label':'Timeline', framed:false, className:'ctl-dst'}, head, ['TableBody', {}, SC.raw(body)]);
@@ -16933,7 +17524,7 @@ function updateCpFlag(){
 
 
 /* Ani, 9 Nov: the sidebar uses the design system's nav icons (Phosphor Light: simple glyphs, thin line) */
-var NAV_DS_ICON = {time:'clock-time', panel:'user-group', today:'nav-home', inbox:'nav-inbox', claims:'nav-claims', earnings:'nav-earnings', tasks:'nav-tasks', support:'nav-help'};
+var NAV_DS_ICON = {time:'clock-time', panel:'user-group', admin:'checklist', today:'nav-home', inbox:'nav-inbox', claims:'nav-claims', earnings:'nav-earnings', tasks:'nav-tasks', support:'nav-help'};
 function navDsIcon(b){
   var n = b.classList.contains('nav-btn') && NAV_DS_ICON[b.dataset.screen];
   return n && window.SC && SC.icon ? SC.icon(n, {size:22, className:'ic'}) : '';
@@ -21331,7 +21922,7 @@ function t23Seg(){
   var w = document.getElementById('t23-seg'); if(!w) return;
   /* Daniel 5 Oct: MSP and private pay, never mixed. The design system's toggle (sc-toggle fires change) */
   if(!w.firstElementChild){
-    w.innerHTML = '<sc-toggle variant="inverse" label="Claims: MSP, LFP time or private pay" items=\'[{"value":"msp","label":"MSP"},{"value":"lfp","label":"LFP time"},{"value":"private","label":"Private pay"}]\'></sc-toggle>';   /* LFP time (Ani, 21 Nov) */
+    w.innerHTML = '<sc-toggle variant="inverse" label="Claims: MSP, model time or private pay" items=\'[{"value":"msp","label":"MSP"},{"value":"lfp","label":"Model time"},{"value":"private","label":"Private pay"}]\'></sc-toggle>';   /* LFP time (Ani, 21 Nov) */
     w.firstElementChild.addEventListener('change', function(e){ t23View(e.currentTarget.value); });
   }
   w.firstElementChild.setAttribute('value', T23.view);
@@ -23214,7 +23805,7 @@ function lrInvHtml(name){
   var out = [], inr = [], crit = false;
   list.forEach(function(t){
     var p = rsLast(t), fl = lrFlag(p[2], p[1]), pr = lrTwo(t.pts.slice(0, -1)), ref = lrRef(t);
-    var tag = fl.crit ? smTag(fl.word, 'crit', 'crit') : fl.out ? smTag((fl.up ? '↑ ' : '↓ ') + fl.word, 'att') : smTag('Normal', 'ok');
+    var tag = fl.crit ? smTag(fl.word, 'crit', 'crit') : fl.out ? smTag((fl.up ? '↑ ' : '↓ ') + fl.word, 'att') : '';   /* Daniel v4: no flag shows no flag, never "Normal" */
     if(fl.crit) crit = true;
     (fl.out ? out : inr).push(smRow({t:t.n, aside:'<b>' + p[1] + '</b> ' + t.u, tag:tag, s:[ref ? 'Ref ' + ref : '', p[0], pr.length ? 'prev ' + pr[0].v : ''].filter(Boolean).join(' · '),
       go:'csOpenFull(\'results\',this)'}));
