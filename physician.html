@@ -9205,6 +9205,8 @@ dialog#ri-drw{width:min(900px,94vw);max-width:none;}
               <span class="pc-split pc-split-card" data-act="start"><button type="button" class="btn dark pc-split-main" onclick="pcSplitGo(this)"><span class="ic pc-split-ic" data-pdic="patientview"></span><span class="pc-calltxt">Call</span></button><button type="button" class="btn pc-split-caret" aria-haspopup="menu" aria-expanded="false" aria-label="Choose how to call" onclick="pcSplitOpen(this)" onkeydown="pcSplitCaretKey(event,this)"><span class="ic" data-pdic="chevdown"></span></button></span>
               <!-- Daniel, 8 Oct: the chart is reference, not a step of the visit: it opens as a wide drawer -->
               <button class="btn" id="v2t-chart" aria-controls="v2p-chart" aria-expanded="false" onclick="v2Tab('chart')"><span class="ic" data-pdic="file"></span> Chart</button>
+              <!-- Daniel, 25 Nov (group chat): CareConnect Rapid Access, one click from our system into the patient's provincial record -->
+              <button class="btn" id="v2t-cc" onclick="ccOpen()" title="Open this patient's full provincial record in CareConnect, in one click (Rapid Access). Every opening is logged."><span class="ic" data-pdic="link"></span> CareConnect</button>
               <span class="pc-callstrip" id="pc-callstrip-c"><span class="dot"></span> Connected &middot; <span class="pc-route-t">phone</span> &middot; <span id="pc-timer-c">00:00</span> <button class="hang" onclick="pcEndCall()">End</button></span>
               <!-- shadowing 3: "the timer restarts from 0:00, so the screen no longer shows how long he has been with the patient" -->
               <span class="pc-callsum" id="pc-callsum" hidden></span>
@@ -15425,7 +15427,8 @@ function adSetup(){
     '<sc-toggle id="ad-model" label="Payment model" value="' + AD.model + '" items=\'[{"value":"ffs","label":"Fee-for-service"},{"value":"lfp","label":"Longitudinal Family Physician"}]\'></sc-toggle>' +
     '<h3 class="ad-h3">Your roles in this clinic' + scInfoHtml('Roles add pages to Clinical administration. Every clinic needs a privacy officer; a clinic with several doctors also needs a medical director and an alternate.') + '</h3><div class="ad-checks">' +
     SC.html('Checkbox', {label:'Doctor', id:'ad-r-doc', checked:true, disabled:true}) + SC.html('Checkbox', {label:'Medical director', id:'ad-r-md', checked:!!AD.roles.md}) + SC.html('Checkbox', {label:'Privacy officer', id:'ad-r-po', checked:!!AD.roles.po}) + '</div>');
-  if(AD.model !== 'lfp') return model;
+  var res = adResults();
+  if(AD.model !== 'lfp') return model + res;
   var enr = adCard('Longitudinal Family Physician set-up and yearly tasks', 'Dr. Pannozzo · Lakeview Family Practice (example clinic).', adStats([['Enrolment (98000)', 'Active for 2026', 'Submitted Jan 12 · effective Jan 13'], ['Renewal for 2027', 'Opens Jan 1', 'Due by Mar 31, with each setting registration'], ['Facility number', '00K12', 'On every claim'], ['Panel payment claim form', 'Filed 2026', 'Next: instructions from January']]));
   var set = adCard('Service settings you bill under the model', 'Registration claims go on the registration placeholder patient. Once you bill under the model at a location you stay on it there until you withdraw. Hospital work billed fee-for-service is routed there automatically and never timed here.',
     adTable('Service settings', ['Setting', 'Code', 'Status', 'Effective', 'Where', ''], [['Clinic-based services', '98002', 'Registered', 'Jan 13, 2026', 'Lakeview Family Practice', ''], ['Long-term care and palliative', '98003', 'Registered', 'Feb 2, 2026', 'All facilities', ''],
@@ -15436,7 +15439,7 @@ function adSetup(){
       ['Encourage the provincial patient experience survey', 'Off', adB('link', 'Turn on survey message', 'adSay(\'Survey message turned on\')', 'Show patients the survey message', '')]]));
   var chg = adCard('If something changes', 'Each opens a checklist with the forms it needs: Practice Change Declaration, Panel Transfer Declaration, Withdrawal Form 2981, facility number changes.',
     '<p class="ad-p" style="margin:0 0 10px">1 form pending: Practice Change Declaration for August leave.</p><div class="ad-chips">' + ['Going on leave', 'Moving clinics', 'New payee number', 'Taking over a panel', 'Leaving the model'].map(function(c){ return SC.html('Chip', {title:'Open the checklist for ' + c.toLowerCase()}, c).replace('<button ', '<button onclick="adSay(\'Checklist: ' + c + '\')" '); }).join('') + '</div>');
-  return model + enr + set + req + chg;
+  return model + res + enr + set + req + chg;
 }
 var AD_STATES = [['first', 'First set-up'], ['w8', '8% warning'], ['w10', '10% reached'], ['hold', 'Payments on hold'], ['ref', 'Refused claims'], ['locum', 'Locum'], ['moa', 'Assistant\'s tasks'], ['empty', 'Nothing yet']];
 function adStates(){
@@ -15465,6 +15468,9 @@ var AD_RENDER = {today:adToday, overview:adOverview, review:adReview, quality:ad
 document.addEventListener('change', function(e){
   var t = e.target;
   if(t.id === 'ad-model' || (t.closest && t.closest('#ad-model'))){ var v = (document.getElementById('ad-model') || {}).value; if(v && v !== AD.model){ AD.model = v; document.body.classList.toggle('ad-ffs', v === 'ffs'); adSave(); adPaint(); adSay(v === 'lfp' ? 'Longitudinal Family Physician: time, clinical administration and claims are on' : 'Fee-for-service: Admin shows Panel and attachment, and set-up'); } }
+  var ch = t.closest && t.closest('sc-toggle[id^="ad-ch-"]');
+  if(ch){ var site = ch.id.slice(6), v = ch.value; if(v && v !== AD_CH[site]){ AD_CH[site] = v; try { localStorage.setItem('sc.ad.ch', JSON.stringify(AD_CH)); } catch(x){} adPaint();
+    adSay(v === 'fax' ? 'LifeLabs results by fax for this site' : v === 'launchpad' ? 'LaunchPad requested for this site · fax stops once Excelleris confirms' : 'Excelleris API requested for this site · fax stops once onboarding is done'); } }
   if(t.id === 'ad-r-md' || t.id === 'ad-r-po'){ AD.roles[t.id === 'ad-r-md' ? 'md' : 'po'] = t.checked; adSave(); adSay((t.id === 'ad-r-md' ? 'Medical director' : 'Privacy officer') + (t.checked ? ' page added' : ' page removed')); }
 });
 /* the old Time and Panel entry points open their Admin pages */
@@ -15475,6 +15481,55 @@ window.addEventListener('load', function(){
   window.showScreen = function(name){ if(name === 'time') return adOpen('week'); if(name === 'panel') return adOpen('pnl'); return _ss.apply(this, arguments); };
   adFlag();
 });
+
+/* ============================================================================
+   CareConnect Rapid Access (Daniel, 25 Nov, group chat): one click from SimpleCare into the patient's CareConnect record, which holds
+   all provincial data (hospital encounters, labs from every lab, imaging, PharmaNet). No API: it is the doctor's own CareConnect view,
+   opened for this patient. Nobody has seen it yet, so this shows what it holds, as an example. Every opening is logged.
+   ========================================================================= */
+var CC_DATA = {
+  gloria:{enc:[['Nov 3, 2026', 'Royal Jubilee Hospital · Emergency', 'Chest pressure; troponin normal; discharged home'], ['Mar 18, 2025', 'Royal Jubilee Hospital · Day surgery', 'Cataract surgery, left eye']],
+    labs:[['Nov 22, 2026', 'Eagle Ridge Hospital Laboratory', 'Troponin I 0.42 µg/L (critical) · creatine kinase 210 U/L'], ['Nov 3, 2026', 'Royal Jubilee Hospital Laboratory', 'Troponin I 0.03 µg/L · electrolytes, kidney function'], ['Mar 10, 2026', 'LifeLabs', 'Lipid panel · haemoglobin A1c 7.4%']],
+    img:[['Nov 3, 2026', 'Royal Jubilee Hospital', 'Chest X-ray: no acute findings'], ['Aug 14, 2025', 'Island Health Medical Imaging', 'Bone density: osteoporosis, lumbar spine']],
+    rx:[['Nov 1, 2026', 'Amlodipine 5 mg daily', 'Shoppers Drug Mart, Douglas Street · 90 days'], ['Oct 20, 2026', 'Metformin 500 mg twice daily', 'Shoppers Drug Mart, Douglas Street · 90 days'], ['Aug 2, 2026', 'Denosumab 60 mg every 6 months', 'London Drugs, Fort Street']]}
+};
+function ccPt(){
+  var n = typeof PC_CURRENT !== 'undefined' ? PC_CURRENT : '', q = (typeof QUEUE_DATA !== 'undefined' ? QUEUE_DATA : []).filter(function(r){ return r.name === n; })[0] || {};
+  var k = null; for(var x in RI_PT) if(RI_PT[x].chart === n) k = x;
+  return {k:k, name:q.legal || (k ? RI_PT[k].n : n.split(',')[0]), phn:k ? RI_PT[k].phn : (q.phn || '')};
+}
+function ccOpen(){
+  var P = ccPt(), D = CC_DATA[P.k] || {enc:[['—', 'No hospital encounters in the last 2 years', '']], labs:[['—', 'Lab results from every lab appear here', '']], img:[['—', 'No imaging in the last 2 years', '']], rx:[['—', 'Dispensed medications from PharmaNet appear here', '']]};
+  var tbl = function(label, heads, rows){ return adTable(label, heads, rows.map(function(r){ return [csEsc(r[0]), adM(csEsc(r[1]), ''), '<span class="ad-s">' + csEsc(r[2]) + '</span>']; })); };
+  var host = document.getElementById('cc-host'); if(!host){ host = document.createElement('div'); host.id = 'cc-host'; document.body.appendChild(host); }
+  host.innerHTML = SC.html('Drawer', {id:'cc-drw', title:'CareConnect · ' + P.name, description:'Rapid Access from SimpleCare' + (P.phn ? ' · PHN ' + P.phn : '') + ' · opened ' + csNow() + ', logged', primaryAction:{label:'Open in CareConnect', id:'cc-go'}, secondaryAction:{label:'Close', id:'cc-x'}},
+    SC.raw('<div class="ad-dr">' +
+      '<h3 class="ad-h3">What CareConnect holds for this patient' + scInfoHtml('CareConnect is the provincial record: hospital encounters, results from every lab, imaging and reports, and dispensed medications from PharmaNet. Rapid Access opens it for this patient in one click, without signing in again or searching. It has no API, so nothing is copied into the chart; you read it there. Example data.') + '</h3>' +
+      '<h3 class="ad-h3">Hospital encounters</h3>' + tbl('Hospital encounters', ['Date', 'Where', 'What'], D.enc) +
+      '<h3 class="ad-h3">Results from every lab</h3>' + tbl('Lab results', ['Collected', 'Lab', 'Results'], D.labs) +
+      '<h3 class="ad-h3">Imaging and reports</h3>' + tbl('Imaging', ['Date', 'Where', 'Report'], D.img) +
+      '<h3 class="ad-h3">Dispensed medications (PharmaNet)</h3>' + tbl('Dispensed medications', ['Dispensed', 'Medication', 'Pharmacy'], D.rx) + '</div>'));
+  var d = document.getElementById('cc-drw');
+  d.addEventListener('click', function(e){ var b = e.target.closest('button'); if(e.target === d) return d.close(); if(!b) return;
+    if(b.id === 'cc-go'){ toast('Example only: CareConnect opens in a new window for ' + P.name + ', through Rapid Access'); return; }
+    if(b.id === 'cc-x' || b.getAttribute('aria-label') === 'Close') d.close(); });
+  d.showModal();
+}
+/* How results reach you (Daniel, 25 Nov): for LifeLabs each site uses one channel, never more: fax, Excelleris LaunchPad or the Excelleris
+   API (Rover). Other sources: hospital and outpatient reports by fax, CareConnect by Rapid Access, PharmaNet coming, PLIS not yet. */
+var AD_CH = {clinic:'fax', virtual:'fax'};
+try { var chSv = JSON.parse(localStorage.getItem('sc.ad.ch') || 'null'); if(chSv) AD_CH = chSv; } catch(e){}
+var AD_CH_ST = {fax:'Active · fax line 604 555 0182', launchpad:'Access pending · Excelleris', api:'Waiting for Excelleris onboarding'};
+function adResults(){
+  var site = function(id, n){ return [adM(n, ''), '<sc-toggle id="ad-ch-' + id + '" label="LifeLabs results for ' + n + '" value="' + AD_CH[id] + '" items=\'[{"value":"fax","label":"Fax"},{"value":"launchpad","label":"LaunchPad"},{"value":"api","label":"Excelleris API"}]\'></sc-toggle>', adTag(AD_CH_ST[AD_CH[id]])]; };
+  return adCard('How results reach you', 'For LifeLabs, each site uses one channel, never more than one: fax, Excelleris LaunchPad (an inbox you import from) or the Excelleris API (results arrive on their own). Fax is what most clinics use because it is cheap. Changing the channel takes effect when LifeLabs confirms; until then results keep coming the current way.',
+    adTable('LifeLabs channel by site', ['Site', 'LifeLabs results', 'Status'], [site('clinic', 'Lakeview Family Practice'), site('virtual', 'SimpleCare virtual clinic')]) +
+    '<h3 class="ad-h3">Other sources</h3>' + adTable('Other sources', ['Source', 'How', 'Status'], [
+      [adM('Hospital and outpatient reports', ''), 'Fax, read and filed by Simple', adTag('Active')],
+      [adM('CareConnect', ''), 'Rapid Access: one click from the chart, read only', adTag('Active')],
+      [adM('PharmaNet', ''), 'Dispensed medications in the chart', adTag('Coming · months')],
+      [adM('Provincial Laboratory Information Solution', ''), 'Every lab, hospital and imaging report, free from the Ministry', adTag('Not available yet')]]));
+}
 /* ============================================================================
    LFP time (Daniel's guide for MOAs, 13 Nov; chart brief, 17 Nov; Ani, 21 Nov "time tracking first").
    Simple sorts the doctor's own time into the four LFP types: direct care (98010; patient present, and chart work between patients
