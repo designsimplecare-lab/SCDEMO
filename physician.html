@@ -9,7 +9,9 @@
 (function(){
   try{
     var q = new URLSearchParams(location.search);
-    if(q.get('nologin') === '1') return;
+    /* Ani, 26 Nov ("just have a simple url"): the plain link opens the portal; the splash and sign-in show only with ?login=1
+       (or from simplecare-login.html). Old ?nologin=1 links keep working. */
+    if(q.get('login') !== '1') return;
     /* Ani, 6 Oct: every refresh starts from the splash and sign-in, so the sign-in is used once */
     if(sessionStorage.getItem('sc.signedIn') === '1'){ sessionStorage.removeItem('sc.signedIn'); return; }
     var here = location.pathname.split('/').pop() + location.search;
