@@ -8385,6 +8385,32 @@ body:has(#screen-patientchart.active #pcv-c.chart-v2) .main-inner{padding-top:0;
 .brk-rows{display:grid;gap:10px;}
 .brk-row{display:grid;grid-template-columns:minmax(0,1.4fr) 150px 150px auto;gap:12px;align-items:end;}
 #brk-slot{display:inline-flex;align-items:center;}
+/* Results inbox fixes (Daniel, 26 Nov) */
+#ri-root .ri-seen,#ri-root .ri-seen .ri-bn,#ri-root .ri-seen .ri-g,#ri-root .ri-seen .sv-tag{opacity:1;}
+#ri-root .ri-tabs{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+#ri-root .ri-tabs [role=tablist]{align-items:center;}
+#ri-root .ri-tdiv{width:1px;height:24px;margin:0 8px;background:var(--line-strong);flex:none;}
+#ri-root [role=tab]:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:var(--radius-xs);}
+#ri-root tr.ri-flash > td{background:var(--wash);transition:background .6s;}
+#ri-cedar{position:fixed;z-index:3000;max-width:340px;padding:12px 14px;border-radius:var(--radius-xs);background:var(--panel);box-shadow:var(--shadow-elevation-2);font-size:14px;line-height:20px;color:var(--ink);pointer-events:none;}
+#ri-cedar p{margin:0;}
+#ri-cedar .ri-ced-h{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+#ri-cedar .ri-ced-mark{color:var(--accent);}
+#ri-cedar .ri-ced-n{margin-top:6px;color:var(--ink-soft);}
+#ri-root .ri-wl{display:grid;gap:16px;}
+#ri-root .ri-wlp{background:var(--panel);border-radius:var(--radius-sm);padding:18px 20px;}
+#ri-root .ri-wlh{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+#ri-root .ri-wlh > div:first-child{flex:1;min-width:0;display:grid;gap:2px;}
+#ri-root .ri-wla{display:flex;flex-wrap:wrap;gap:8px;}
+#ri-root .ri-wldue{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin-top:12px;padding:10px 14px;border-radius:var(--radius-xs);background:var(--wash);font-size:14px;color:var(--ink);}
+#ri-root .ri-wldue > span{flex:1;}
+#ri-root .ri-wll{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px;line-height:22px;}
+#ri-root .ri-wlpend{margin:8px 0 0;font-size:14px;line-height:20px;color:var(--ink-soft);}
+#ri-root .ri-wlf{padding:10px 0;border-top:1px solid var(--line);}
+#ri-root .ri-wlf:first-of-type{border-top:0;}
+#ri-root .ri-wlfh{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;font-size:15px;color:var(--ink);}
+#ri-root .ri-wlf .lp-st small{display:block;font-size:14px;color:var(--ink-soft);}
+#sm-list .lp-hist{display:grid;gap:2px;margin-top:8px;font-size:14px;line-height:20px;color:var(--ink-soft);}
 /* Labs by requisition (Daniel's overview, 22 Nov) */
 .cs-req-card #cs-req{display:grid;gap:14px;margin-top:8px;}
 .cs-req{border-radius:var(--radius-xs);background:var(--wash);padding:12px 14px;}
@@ -9206,6 +9232,7 @@ dialog#ri-drw{width:min(900px,94vw);max-width:none;}
               <!-- Daniel, 8 Oct: the chart is reference, not a step of the visit: it opens as a wide drawer -->
               <button class="btn" id="v2t-chart" aria-controls="v2p-chart" aria-expanded="false" onclick="v2Tab('chart')"><span class="ic" data-pdic="file"></span> Chart</button>
               <!-- Daniel, 25 Nov (group chat): CareConnect Rapid Access, one click from our system into the patient's provincial record -->
+              <button class="btn" id="v2t-watch" onclick="riWatchChart()" aria-pressed="false" title="Watch this patient: add them to a watch list in the inbox"><span class="ic" data-pdic="eye"></span> <span class="wl-t">Watch</span></button>
               <button class="btn" id="v2t-cc" onclick="ccOpen()" title="Open this patient's full provincial record in CareConnect, in one click (Rapid Access). Every opening is logged."><span class="ic" data-pdic="link"></span> CareConnect</button>
               <span class="pc-callstrip" id="pc-callstrip-c"><span class="dot"></span> Connected &middot; <span class="pc-route-t">phone</span> &middot; <span id="pc-timer-c">00:00</span> <button class="hang" onclick="pcEndCall()">End</button></span>
               <!-- shadowing 3: "the timer restarts from 0:00, so the screen no longer shows how long he has been with the patient" -->
@@ -14366,7 +14393,7 @@ var RI_PT = {
   kathleen:{n:'Kathleen O\'Brien', dob:'5 May 1977', sex:'Female', phn:'9652 330 961'},
   wei:{n:'Wei Zhang', dob:'30 September 1990', sex:'Male', phn:'9653 048 227'},
   lorraine:{n:'Lorraine Dubois', dob:'14 December 1953', sex:'Female', phn:'9651 260 774'},
-  marcus:{n:'Marcus Bell', dob:'3 March 1981', sex:'Male', phn:'9652 905 416', orders:[{n:'Prostate-specific antigen, recollection', d:'21 November 2026', by:'the lab, after withdrawing the first report'}]},
+  marcus:{n:'Marcus Bell', dob:'3 March 1981', sex:'Male', phn:'9652 905 416'},
   jennifer:{n:'Jennifer Patterson', dob:'3 April 1980', sex:'Female', phn:'9651 087 552'},
   hannah:{n:'Hannah Lee', dob:'19 November 1994', sex:'Female', phn:'9653 611 470', orders:[{n:'Lipid panel', d:'30 October 2026', by:'you', overdue:23}]},
   anita:{n:'Anita Sharma', dob:'8 February 1972', sex:'Female', phn:'9652 774 093'},
@@ -14374,19 +14401,20 @@ var RI_PT = {
   sandra:{n:'Sandra Mitchell', dob:'16 April 1960', sex:'Female', phn:'9652 019 335', rerefer:'Dermatology'},
   edward:{n:'Edward Kim', dob:'1 October 1945', sex:'Male', phn:'9650 846 112'},
   carol:{n:'Carol-Anne Feldman', dob:'12 June 1982', sex:'Female', phn:'9650 912 407', chart:'Carol-Anne Feldman, 44F'},
+  gary:{n:'Gary Thompson', dob:'4 March 1956', sex:'Male', phn:'9653 880 214'},
   prot:{n:'Simone Arcand', dob:'27 January 1988', sex:'Female', phn:'9653 702 158', protected:true}
 };
 /* results: [test, value, unit, flag (H, L, HH, LL or empty), reference]; HH and LL are critical */
 var RI_ROWS = [
   {id:'r1', pt:'gloria', type:'Bloodwork', lab:'Eagle Ridge Hospital laboratory', via:'Electronic feed', by:'you', acc:'ER-26-118402', col:'22 November, 6:40 AM', rec:'22 November, 7:50 AM', ix:'Cardiac markers',
-    bat:[{n:'Cardiac markers', r:[['Troponin I', '0.42', 'µg/L', 'HH', '<0.04'], ['Creatine kinase', '210', 'U/L', 'H', '30–200']], com:'Critical value telephoned to Dr. Pannozzo at 7:52 AM.'}]},
-  {id:'r2', pt:'gloria', type:'Appointment notice', via:'Fax', from:'Cardiology, Dr. S. Rao', pages:'1 of 1', rec:'21 November, 3:10 PM', act:'ack',
+    bat:[{n:'Cardiac markers', r:[['Troponin I', '0.42', 'µg/L', 'HH', '<0.04'], ['Creatine kinase', '210', 'U/L', 'H', '30–200']]}]},
+  {id:'r2', pt:'gloria', type:'Appointment notice', via:'Fax', from:'Cardiology, Dr. S. Rao', pages:'1 of 1', rec:'21 November, 3:10 PM', act:'notice',
     text:'Appointment booked: Tuesday 3 December 2026, 10:30 AM, Cardiology clinic, Royal Jubilee. Referral of 20 November.'},
   {id:'r3', pt:'fenwick', type:'Bloodwork', lab:'LifeLabs', via:'Fax', fax:true, pages:'4–5 of 11', by:'Dr. M. Osei, Emergency, Royal Jubilee', copy:true, acc:'L-26-448120', col:'21 November, 11:05 PM', rec:'22 November, 6:48 AM', act:'ack',
-    bat:[{n:'Cardiac markers', r:[['Troponin I', '0.31', 'µg/L', 'HH', '<0.04']], com:'Critical value telephoned to Dr. M. Osei at 11:48 PM.'}]},
+    bat:[{n:'Cardiac markers', r:[['Troponin I', '0.31', 'µg/L', 'HH', '<0.04']]}]},
   {id:'r4', pt:'behdis', type:'Bloodwork', lab:'LifeLabs', via:'Clinical Data Exchange', by:'you', acc:'L-26-447991', col:'22 November, 6:15 AM', rec:'22 November, 7:22 AM', ix:'Renal function panel',
     bat:[{n:'Chemistry', r:[['Potassium', '6.3', 'mmol/L', 'HH', '3.5–5.1'], ['Creatinine', '104', 'µmol/L', 'H', '45–90'], ['Estimated glomerular filtration rate', '54', 'mL/min', 'L', '>60'], ['Urea', '9.1', 'mmol/L', 'H', '2.5–7.1'], ['Sodium', '139', 'mmol/L', '', '135–145']],
-      canc:[['Magnesium', 'Insufficient sample']], com:'Sample haemolysed; potassium may be falsely raised. Critical value telephoned at 7:24 AM.'}]},
+      canc:[['Magnesium', 'Insufficient sample']], com:'Sample haemolysed; potassium may be falsely raised.'}]},
   {id:'r5', pt:'manjit', type:'Bloodwork', lab:'LifeLabs', via:'Clinical Data Exchange', by:'you', acc:'L-26-447650', col:'21 November, 4:20 PM', rec:'22 November, 6:05 AM', ix:'Complete blood count',
     bat:[{n:'Haematology', r:[['Haemoglobin', '71', 'g/L', 'LL', '130–175'], ['Mean cell volume', '72', 'fL', 'L', '80–100'], ['Platelets', '244', '×10⁹/L', '', '150–400'], ['White cells', '6.1', '×10⁹/L', '', '4.0–11.0']]}]},
   {id:'r6', pt:'teresa', type:'Bloodwork', lab:'LifeLabs', via:'Clinical Data Exchange', by:'you', acc:'L-26-446120', req:'Requisition of 18 November 2026', col:'20 November, 8:10 AM', rec:'21 November, 2:30 PM', dup:true,
@@ -14394,7 +14422,7 @@ var RI_ROWS = [
   {id:'r7', pt:'teresa', type:'Urine', lab:'LifeLabs', via:'Clinical Data Exchange', by:'you', acc:'L-26-446121', req:'Requisition of 18 November 2026', col:'20 November, 8:10 AM', rec:'21 November, 3:05 PM',
     bat:[{n:'Urinalysis', r:[['Protein', 'Trace', '', 'H', 'Negative'], ['Glucose', 'Negative', '', '', 'Negative'], ['Blood', 'Negative', '', '', 'Negative']]}, {n:'Urine albumin to creatinine ratio', r:[['Albumin to creatinine ratio', '4.1', 'mg/mmol', 'H', '<2.0']]}]},
   {id:'r8', pt:'teresa', type:'Screening', lab:'LifeLabs', via:'Clinical Data Exchange', by:'you', acc:'L-26-440882', col:'14 November, 9:00 AM', rec:'20 November, 11:12 AM', act:'referral',
-    bat:[{n:'Faecal immunochemical test', r:[['Faecal immunochemical test', 'Positive', '', 'H', 'Negative']], com:'Positive result: colonoscopy referral recommended within 8 weeks.'}]},
+    bat:[{n:'Faecal immunochemical test', r:[['Faecal immunochemical test', 'Positive', '', 'H', 'Negative']]}]},
   {id:'r9', pt:'douglas', type:'Bloodwork', lab:'LifeLabs', via:'Fax', fax:true, pages:'6–8 of 11', by:'you', acc:'L-26-447302', col:'21 November, 7:45 AM', rec:'22 November, 6:48 AM',
     bat:[{n:'Complete blood count', r:[['Haemoglobin', '128', 'g/L', 'L', '130–175'], ['White cells', '6.8', '×10⁹/L', '', '4.0–11.0'], ['Platelets', '310', '×10⁹/L', '', '150–400']]},
       {n:'Electrolytes', r:[['Sodium', '140', 'mmol/L', '', '135–145'], ['Potassium', '4.4', 'mmol/L', '', '3.5–5.1'], ['Chloride', '103', 'mmol/L', '', '98–107']]},
@@ -14412,7 +14440,7 @@ var RI_ROWS = [
   /* RS-3: back from the lab with new results; earlier lines greyed with "Reviewed by you" */
   {id:'r12', pt:'kathleen', type:'Bloodwork', lab:'LifeLabs', via:'Clinical Data Exchange', by:'you', acc:'L-26-445930', col:'20 November, 8:30 AM', rec:'22 November, 5:40 AM', upd:'new', ver:2,
     bat:[{n:'Complete blood count', r:[['Haemoglobin', '112', 'g/L', 'L', '120–160'], ['Mean cell volume', '76', 'fL', 'L', '80–100']], seen:'21 November, 4:12 PM'},
-      {n:'Iron studies', r:[['Ferritin', '6', 'µg/L', 'L', '15–200'], ['Transferrin saturation', '8', '%', 'L', '20–50']], isNew:true}],
+      {n:'Iron studies', r:[['Ferritin', '6', 'µg/L', 'L', '15–200'], ['Transferrin saturation', '8', '%', 'L', '20–50']], pend:['Iron', 'Total iron-binding capacity'], isNew:true}],
     signs:[{at:'21 November, 4:12 PM', st:'Partial', cov:'Complete blood count (2 results); iron studies pending'}]},
   {id:'r13', pt:'wei', type:'Microbiology', lab:'LifeLabs', via:'Clinical Data Exchange', by:'you', acc:'L-26-445711', col:'19 November, 10:20 AM', rec:'22 November, 6:10 AM', upd:'new', ver:2,
     bat:[{n:'Urine culture', r:[['Culture', 'Mixed growth, identification to follow', '', '', '']], seen:'20 November, 5:30 PM', prelim:true},
@@ -14426,7 +14454,7 @@ var RI_ROWS = [
     text:'Consult letter: stable chronic kidney disease, stage 3a. Continue ramipril; repeat renal function in 3 months. No further follow-up booked.'},
   /* EX-6: withdrawn after sign-off */
   {id:'r16', pt:'marcus', type:'Bloodwork', lab:'LifeLabs', via:'Clinical Data Exchange', by:'you', acc:'L-26-443015', col:'17 November, 8:45 AM', rec:'21 November, 9:30 PM', upd:'withdrawn', act:'ack', ver:2,
-    withdrawn:{why:'Sample mislabelled at collection', prev:'18 November, 9:05 AM'},
+    withdrawn:{why:'Sample mislabelled at collection', prev:'18 November, 9:05 AM'}, recoll:'r33',
     bat:[{n:'Prostate-specific antigen', r:[['Prostate-specific antigen', '5.8', 'µg/L', 'H', '<4.0']]}]},
   /* Needs filing */
   {id:'r17', pt:'jennifer', type:'Bloodwork', lab:'Valley Medical Laboratories', via:'Fax', fax:true, pages:'2 of 3', by:'you', acc:'VM-55120', col:'21 November, 9:20 AM', rec:'22 November, 7:15 AM',
@@ -14458,10 +14486,16 @@ var RI_ROWS = [
     bat:[{n:'Chemistry', r:[['Ferritin', '22', 'µg/L', 'L', '30–400'], ['Vitamin B12', '310', 'pmol/L', '', '>150']]}]}
 ];
 /* rows that start in Waiting on lab and Signed off */
-var RI = {order:(function(){ try { return localStorage.getItem('sc.ri.order') || 'old'; } catch(e){ return 'old'; } })(), tab:'review', type:'', st:{r28:'waiting', r29:'signed'}, opened:{}, done:{}, signs:{}, unmask:{}, fix:{}, drw:null, book:{}, err:{}, failNext:false, recent:{}, showW:{}, last:'22 November, 9:14 AM',
+var RI = {order:(function(){ try { return localStorage.getItem('sc.ri.order') || 'old'; } catch(e){ return 'old'; } })(), tab:'review', type:'', st:{r28:'waiting', r29:'signed', r33:'waiting'}, opened:{}, done:{}, signs:{}, unmask:{}, fix:{}, drw:null, book:{}, err:{}, failNext:false, recent:{}, showW:{}, last:'22 November, 9:14 AM',
   demo:(function(){ try { return new URLSearchParams(location.search).get('inbox') === 'states'; } catch(e){ return false; } })()};
 if(RI.demo) RI.failNext = true;
 RI_ROWS.push(
+  /* 6. the recollection is its own order, in Awaiting results, linked to the withdrawn report */
+  {id:'r33', pt:'marcus', type:'Bloodwork', order:true, lab:'LifeLabs', via:'Order', by:'you', col:null, rec:'21 November, 9:30 PM', recollOf:'r16',
+    bat:[{n:'Prostate-specific antigen', r:[], pend:['Prostate-specific antigen']}]},
+  /* 8. Gary, on the watch list */
+  {id:'r34', pt:'gary', type:'Bloodwork', lab:'LifeLabs', via:'Clinical Data Exchange', by:'you', acc:'L-26-446511', col:'20 November, 8:20 AM', rec:'21 November, 7:40 PM',
+    bat:[{n:'Prostate-specific antigen', r:[['Prostate-specific antigen', '48', 'µg/L', 'H', '<4.0']]}]},
   {id:'r31', pt:'hannah', type:'Bloodwork', lab:'Island Health laboratory', via:'Fax', fax:true, pages:'1 of 2', by:'you', acc:'IH-LAB-30215', col:'21 November, 8:05 AM', rec:'22 November, 7:30 AM',
     bat:[{n:'Complete blood count', r:[['Haemoglobin', '118', 'g/L', 'L', '120–160'], ['Mean cell volume', '79', 'fL', 'L', '80–100']]}, {n:'Iron studies', r:[], pend:['Ferritin']}]},
   {id:'r32', pt:'anita', type:'Microbiology', lab:'LifeLabs', via:'Clinical Data Exchange', by:'you', acc:'L-26-446990', col:'19 November, 9:15 AM', rec:'21 November, 8:40 AM',
@@ -14557,6 +14591,7 @@ function riSec(r){
 }
 function riRank(k){ for(var i = 0; i < RI_SEC.length; i++) if(RI_SEC[i][0] === k) return i; return 9; }
 function riAct(r){
+  if(r.order) return 'order';
   if(r.ex && !RI.fix[r.id]) return r.ex.k;
   if(r.act) return r.act;
   if(r.copy) return 'ack';
@@ -14580,36 +14615,37 @@ function riArrow(f, v){ if(v != null && !/^[<>]?\s*-?\d/.test(String(v))) return
 function riVal(x){ return x[1] + (x[2] ? ' ' + x[2] : ''); }
 /* one line per battery; abnormal first in grey tags, critical in red tags with the word, normal values after in grey */
 function riLines(r){
-  if(r.withdrawn) return '<div class="ri-l"><span class="ri-bn">' + csEsc(r.bat[0].n) + '</span>' + SC.html('Tag', {color:'neutral'}, 'WITHDRAWN') + '<span class="ri-g">by the reporting laboratory · values hidden · ' + csEsc(r.withdrawn.why) + '</span></div>' +
-    '<p class="ri-cm">You signed off the first version on ' + csEsc(r.withdrawn.prev) + '.</p>';
+  if(r.order){ var o = riRow(r.recollOf);
+    return '<div class="ri-l"><span class="ri-bn">' + csEsc(r.bat[0].n) + '</span><span class="ri-g">Not yet collected</span></div>' +
+      '<div class="ri-sub">Recollection of withdrawn result from ' + csEsc((o && o.col || '').split(',')[0]) + ' · recollection requested by LifeLabs; ordered under Dr. Pannozzo</div>' +
+      (o ? '<div class="ri-sub">' + riB('link', 'Withdrawn report', 'riGoTo(\'' + o.id + '\',\'review\')', 'Go to the withdrawn report this recollection replaces', '') + '</div>' : ''); }
+  if(r.withdrawn){ var rc = riRow(r.recoll);
+    return '<div class="ri-l"><span class="ri-bn">' + csEsc(r.bat[0].n) + '</span>' + SC.html('Tag', {color:'neutral'}, 'WITHDRAWN') + '<span class="ri-g">by the reporting laboratory · values hidden · ' + csEsc(r.withdrawn.why) + '</span></div>' +
+      '<div class="ri-sub">Signed off by you ' + csEsc(r.withdrawn.prev) + ' (first version)</div>' +
+      (rc ? '<div class="ri-sub">' + riB('link', 'Replaced by recollection, ordered ' + (rc.rec || '').split(',')[0], 'riGoTo(\'' + rc.id + '\',\'' + riSt(rc) + '\')', 'Go to the recollection order', '') + '</div>' : ''); }
   if(!r.bat) return '<div class="ri-l ri-doc"><span class="ri-g" style="color:var(--ink)">' + csEsc(r.text) + '</span></div>';
   var nf = r.ex && r.ex.k === 'noacc' && !RI.fix[r.id] ? '<div class="ri-l"><span class="ri-unm"><i></i>' + (r.col ? 'Report number not found' : 'Report number and collection time not found') + '</span></div>' : '';
-  /* Daniel's overview, 22 Nov: batteries with abnormal results first, then the others, then Pending and Cancelled */
+  /* batteries with abnormal results first; each battery's observations read together */
   var rank = function(b){ return b.r.some(function(x){ return x[3] === 'HH' || x[3] === 'LL'; }) ? 0 : b.r.some(function(x){ return x[3]; }) ? 1 : b.r.length ? 2 : 3; };
   var B = r.bat.map(function(b, i){ return [b, i]; }).sort(function(x, y){ return rank(x[0]) - rank(y[0]) || x[1] - y[1]; }).map(function(x){ return x[0]; });
-  var inRange = function(b){ return b.r.length && b.r.every(function(x){ return !x[3] && !x[5]; }) && !b.com && !b.isNew && !b.seen; };
-  var miss = [];
-  B.forEach(function(b){
-    (b.pend || []).forEach(function(p){ miss.push('<div class="ri-l ri-miss"><span class="ri-bn">' + csEsc(!b.r.length && b.pend.length === 1 ? b.n : p) + '</span><span class="ri-g">Pending' + (!b.r.length && b.pend.length === 1 && b.n.toLowerCase().indexOf(p.toLowerCase()) < 0 ? ' · ' + csEsc(p) : '') + '</span></div>'); });
-    (b.canc || []).forEach(function(c){ miss.push('<div class="ri-l ri-miss"><span class="ri-bn">' + csEsc(c[0]) + '</span><span class="ri-g">Cancelled — ' + csEsc(c[1]) + '</span></div>'); });
-  });
-  var withRes = B.filter(function(b){ return b.r.length; });
-  var collapse = withRes.length + miss.length > 5 && riFlag(r) !== 'critical' ? withRes.filter(inRange) : [];
-  var out = withRes.filter(function(b){ return collapse.indexOf(b) < 0; }).map(function(b){
+  var inRange = function(b){ return b.r.length && b.r.every(function(x){ return !x[3] && !x[5]; }) && !b.isNew && !b.seen && !(b.pend || []).length && !(b.canc || []).length; };
+  var collapse = B.length > 5 && riFlag(r) !== 'critical' ? B.filter(inRange) : [];
+  var out = B.filter(function(b){ return collapse.indexOf(b) < 0; }).map(function(b){
     var ab = b.r.filter(function(x){ return x[3]; }), ok = b.r.filter(function(x){ return !x[3]; });
     var tags = ab.map(function(x){ var crit = x[3] === 'HH' || x[3] === 'LL';
       var tg = SC.html('Tag', {color:crit ? 'error' : 'neutral', title:x[0] + ' ' + riVal(x) + (x[4] ? ' · reference ' + x[4] : '')}, x[0] + ' ' + riVal(x) + riArrow(x[3], x[1]) + (crit ? ' · critical' : ''));
-      /* a corrected value: the old value struck through, CORRECTED, then the new one */
       return x[5] ? '<span class="ri-corr">' + csEsc(x[0]) + ' <s>' + csEsc(x[5]) + '</s> ' + SC.html('Tag', {color:'neutral'}, 'CORRECTED') + ' ' + tg + '</span>' : tg; }).join('');
     var plain = ok.map(function(x){ return x[5] ? '<span class="ri-corr">' + csEsc(x[0]) + ' <s>' + csEsc(x[5]) + '</s> ' + SC.html('Tag', {color:'neutral'}, 'CORRECTED') + ' ' + csEsc(riVal(x)) + '</span>' : csEsc(x[0]) + ' ' + csEsc(riVal(x)); });
     var text = plain.filter(function(p){ return p.indexOf('ri-corr') < 0; }), corr = plain.filter(function(p){ return p.indexOf('ri-corr') > -1; });
-    return '<div class="ri-l' + (b.seen ? ' ri-seen' : '') + '"><span class="ri-bn">' + csEsc(b.n) + (b.prelim ? ' · preliminary' : '') + '</span>' + (b.isNew ? SC.html('Tag', {color:'neutral'}, 'NEW') : '') + tags + corr.join('') +
-        (text.length ? '<span class="ri-g">' + text.join(' · ') + '</span>' : '') + (b.seen ? '<span class="ri-g">Reviewed by you · ' + csEsc(b.seen) + (b.prelim ? ' · replaced by the final result' : '') + '</span>' : '') + '</div>' +
-      (b.com ? '<p class="ri-cm">' + csEsc(b.com) + '</p>' : '');
+    /* one label per battery, on its name: New (blue) if it has observations not yet signed off, or "Signed off by you [when]" in plain grey */
+    var label = b.isNew ? SC.html('Tag', {color:'information'}, 'New') : b.seen ? '<span class="ri-g">Signed off by you ' + csEsc(b.seen) + (b.prelim ? ' · replaced by the final result' : '') + '</span>' : '';
+    return '<div class="ri-l"><span class="ri-bn">' + csEsc(b.n) + (b.prelim ? ' · preliminary' : '') + '</span>' + label + tags + corr.join('') + (text.length ? '<span class="ri-g">' + text.join(' · ') + '</span>' : '') + '</div>' +
+      ((b.pend || []).length ? '<div class="ri-sub">Pending: ' + csEsc(b.pend.join(', ')) + '</div>' : '') +
+      (b.canc || []).map(function(c){ return '<div class="ri-sub">Cancelled: ' + csEsc(c[0]) + ' — ' + csEsc(c[1]) + '</div>'; }).join('');
   });
   if(nf) out.unshift(nf);
   if(collapse.length) out.push('<div class="ri-l"><span class="ri-bn">Within range</span><span class="ri-g">' + collapse.map(function(b){ return csEsc(b.n); }).join(' · ') + '</span></div>');
-  return out.concat(miss).join('');
+  return out.join('');
 }
 function riPtCell(r, first, rows){
   if(!first) return '';
@@ -14626,18 +14662,21 @@ function riPtCell(r, first, rows){
   if(P.protected && !RI.unmask[r.pt]) return '<div class="ri-pt"><div class="ri-who">' + SC.html('AvatarCircle', {name:'Protected', size:'small'}) + '<b>Protected patient</b></div><span class="ri-id">This patient has a protective access word</span></div>';
   var nm = P.chart ? '<button type="button" class="ri-nmb" onclick="openChart(\'' + P.chart.replace(/'/g, '\\\'') + '\')" title="Open ' + csEsc(P.n.split(' ')[0]) + '\'s chart">' + csEsc(P.n) + '</button>' : '<b class="ri-nm">' + csEsc(P.n) + '</b>';
   return '<div class="ri-pt"><div class="ri-who">' + SC.html('AvatarCircle', {name:P.n, size:'small'}) + nm + '</div><span class="ri-id"><span class="ri-nw">' + csEsc(P.dob) + '</span> · ' + P.sex.charAt(0) + ' · <span class="ri-nw">PHN <b>' + csEsc(P.phn) + '</b></span></span>' +
-    (r.nameAs ? '<span class="ri-id">Name on the report: ' + csEsc(r.nameAs) + ' · filed by PHN and date of birth</span>' : '') + (RI.book[r.pt] ? '<span class="ri-bkst">' + riBookTag(r.pt) + '</span>' : '') + '</div>';
+    (r.nameAs ? '<span class="ri-id">Name on the report: ' + csEsc(r.nameAs) + ' · filed by PHN and date of birth</span>' : '') + (RI.book[r.pt] ? '<span class="ri-bkst">' + riBookTag(r.pt) + '</span>' : '') +
+    (riWatchedBy(r.pt).length ? '<span class="ri-bkst">' + SC.html('Tag', {color:'neutral', startIcon:'eye-on', title:'In your watch list ' + riWatchedBy(r.pt)[0].name}, 'Watching') + '</span>' : '') + '</div>';
 }
 function riSrc(r){
+  if(r.order) return '<div class="ri-src"><b>' + csEsc(r.lab) + '</b><span>Recollection</span></div>';
   var lab = r.ex && r.ex.k === 'nolab' && !RI.fix[r.id] ? '<b>Lab not recognised</b><span>Sent from fax ' + csEsc(r.ex.fax) + ' · letterhead "' + csEsc(r.ex.letter) + '"</span>' : '<b>' + csEsc(r.lab && r.lab !== 'unknown' ? r.lab : r.from || (r.ex && r.ex.letter) || '') + '</b>';
   return '<div class="ri-src">' + lab + '<span>' + r.via + (r.pages ? ' · page' + (/–/.test(r.pages) ? 's ' : ' ') + r.pages : '') + '</span>' +
     (r.by && r.by !== 'you' ? '<span>' + (r.copy ? 'Copy · ordered by ' : 'Ordered by ') + csEsc(r.by.split(',')[0]) + '</span>' : '') + (r.dup ? '<span>Also received by fax</span>' : '') + '</div>';
 }
 function riWhen(r){
+  if(r.order) return '<div class="ri-when"><span>Ordered ' + csEsc((r.rec || '').split(',')[0]) + '</span></div>';
   return '<div class="ri-when"><span>' + (r.col ? csEsc(r.col) : r.bat ? '<b>Collection time not found</b>' : '—') + '</span><span class="ri-g">→ ' + csEsc(r.rec) + '</span></div>';
 }
 function riActCell(r, first, rows){
-  var pa = first && r.pt ? riPtActs(r.pt, rows || [r]) : '';
+  var pa = first && r.pt && r.type !== 'Appointment notice' ? riPtActs(r.pt, rows || [r]) : '';
   var out = riActCell0(r);
   return pa ? out.replace(/<\/div>$/, '') + '<div class="ri-hv">' + pa + '</div></div>' : out;
 }
@@ -14647,10 +14686,14 @@ function riActCell0(r){
     riB('link', 'Undo', 'riUndo(\'' + r.id + '\')', 'Take this back; the report returns to To review', '') + '</div>';
   if(RI.done[r.id]) return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'check'}, RI.done[r.id]) + '</div>';
   if(st === 'signed') return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'check'}, (RI.signs[r.id] ? 'Signed off ' + RI.signs[r.id] : 'Signed off')) + '</div>';
+  if(r.order) return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'clock-time'}, 'Awaiting results') + '<span class="ri-g">Not yet collected</span></div>';
   if(st === 'waiting') return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'clock-time'}, 'Awaiting results') + '<span class="ri-g">' + csEsc((r.bat || []).reduce(function(a, b){ return a.concat(b.pend || []); }, []).join(', ')) + ' pending since ' + csEsc((r.col || '').split(',')[0]) + '</span>' + '</div>';
   var P = r.pt && RI_PT[r.pt], k = P && P.protected && !RI.unmask[r.pt] ? 'access' : riAct(r), A = RI_ACT[k];
   if(RI.err[r.id]) return '<div class="ri-acts">' + SC.html('Tag', {color:'neutral', startIcon:'warning'}, 'Sign-off not saved') + riB('secondary-main', 'Try again', 'riDo(\'' + r.id + '\',\'signoff\')', 'Sign off this report again', 'check') + '</div>';
-  var main = riB(A[0], A[1], (RI_PREV[k] ? 'riPreview' : 'riDo') + '(\'' + r.id + '\',\'' + k + '\')', A[3], A[2]);
+  if(k === 'notice') return '<div class="ri-acts"><div class="ri-hv">' + riNoticeBtns(r) + '</div></div>';
+  /* 7. one word for one action: when part of the report is already signed off, the button signs off only the new groups */
+  var part = k === 'signoff' && (r.bat || []).some(function(b){ return b.seen; });
+  var main = part ? riB('secondary-main', 'Sign off new', 'riDo(\'' + r.id + '\',\'signoff\')', 'Sign off the new groups only; the rest is already signed off', 'check') : riB(A[0], A[1], (RI_PREV[k] ? 'riPreview' : 'riDo') + '(\'' + r.id + '\',\'' + k + '\')', A[3], A[2]);
   if(k === 'referral') main += riB('secondary-main', 'Sign off', 'riDo(\'' + r.id + '\',\'signoff\')', RI_ACT.signoff[3], 'check');
   if(k === 'approve') main += riB('tertiary-main', 'Decline', 'riPreview(\'' + r.id + '\',\'decline\')', 'Decline the renewal; you see the signed fax before it goes', 'x');
   if(k === 'noacc' && riMergeTargets(r).length) main = riB('secondary-main', 'Merge', 'riMergePick(\'' + r.id + '\')', 'Add these results to an existing report for this patient', '') + main;
@@ -14658,6 +14701,7 @@ function riActCell0(r){
   return '<div class="ri-acts"><div class="ri-hv">' + main + '</div></div>';
 }
 function riTypeCell(r){
+  if(r.order) return '<div class="ri-ty"><b>Ordered</b><span>Recollection</span></div>';
   var s = riStatus(r);
   var L = r.pt && RI_PT[r.pt] && RI_PT[r.pt].protected && !RI.unmask[r.pt] ? null : riLabel(r);
   return '<div class="ri-ty"><b>' + r.type + (L ? scInfoHtml('Document label: ' + L.text + (L.flag ? '. ' + L.flag + ', flagged for directory review.' : '')) : '') + '</b>' + (s ? '<span>' + s + '</span>' : '') + (r.withdrawn ? '<span>' + SC.html('Tag', {color:'neutral'}, 'WITHDRAWN') + '</span>' : '') + (r.ver > 1 ? '<span>Version ' + r.ver + '</span>' : '') + '</div>';
@@ -14670,7 +14714,12 @@ function riRender(){
   var byType = {}; inTab.forEach(function(r){ byType[r.type] = (byType[r.type] || 0) + 1; });
   var rows = RI.type ? inTab.filter(function(r){ return r.type === RI.type || riSec(r) === 'critical'; }) : inTab;
   var tab = function(v, label, ic){ return ['Tab', {value:v, startIcon:ic}, label + ' ' + counts[v]]; };
-  var tabs = '<div class="ri-tabs" onclick="riTabClick(event)">' + SC.html('Tabs', {defaultValue:RI.tab}, ['TabList', {'aria-label':'Results inbox'}, tab('review', 'To review', 'eye-on'), tab('waiting', 'Awaiting results', 'clock-time'), tab('signed', 'Signed off', 'check-circle')]) + '</div>';
+  /* 8. watch lists sit after the core tabs, behind a divider */
+  var wtabs = (RI.wl || []).map(function(w){ var n = riWlNew(w); return ['Tab', {value:'wl-' + w.id, startIcon:'eye-on'}, w.name + (n ? ' ' + n : '')]; });
+  var tabs = '<div class="ri-tabs" onclick="riTabClick(event)">' + SC.html('Tabs', {defaultValue:RI.tab}, ['TabList', {'aria-label':'Results inbox'}, tab('review', 'To review', 'eye-on'), tab('waiting', 'Awaiting results', 'clock-time'), tab('signed', 'Signed off', 'check-circle')].concat(wtabs))
+    .replace(/(<button[^>]*id="[^"]*-tab-wl-)/, '<span class="ri-tdiv" aria-hidden="true"></span>$1') + riB('link', 'New watch list', 'riWlNew2()', 'Make a tab of your own for patients to keep a close eye on', 'add') + '</div>';
+  if(/^wl-/.test(RI.tab)){ var W = RI.wl.filter(function(x){ return 'wl-' + x.id === RI.tab; })[0];
+    if(W){ root.innerHTML = riDates('<div class="ri-head">' + tabs + '</div>' + riWlView(W)); riStick(); return; } RI.tab = 'review'; }
   /* Ani, 24 Nov ("I like how Slack does it"): Type and Order as design system filter buttons, each opening a menu with a tick on the current choice */
   var menu = function(kind, label, items){
     return '<div class="ri-menu ri-menu-' + kind + '">' + SC.html('MenuList', {'aria-label':label}, SC.raw(items.map(function(it){
@@ -14684,13 +14733,13 @@ function riRender(){
   var sortCtl = '<span class="ri-fwrap" data-ri-f="order">' + SC.html('Filter', {}, ['FilterButton', {label:'Order', selection:RI.order === 'new' ? 'Newest first' : 'Oldest first', title:'Change the order of reports after the critical ones'}]) + (RI.menu === 'order' ? menu('order', 'Order', orderItems) : '') + '</span>';
   /* group by patient (unmatched and not-for-me rows stand alone); a patient sits in the section of their worst item */
   var groups = {}, order = [];
-  rows.forEach(function(r){ var k = r.ex && !RI.fix[r.id] && r.ex.k !== 'nolab' && r.ex.k !== 'noacc' ? 'x' + r.id : r.pt; if(!groups[k]){ groups[k] = []; order.push(k); } groups[k].push(r); });
+  rows.forEach(function(r){ var k = r.type === 'Appointment notice' ? 'n' + r.id : r.ex && !RI.fix[r.id] && r.ex.k !== 'nolab' && r.ex.k !== 'noacc' ? 'x' + r.id : r.pt; if(!groups[k]){ groups[k] = []; order.push(k); } groups[k].push(r); });
   if(RI.tab === 'review' && !RI.type) Object.keys(RI_PT).forEach(function(pt){ if(riNeedsVisit(pt) && !groups[pt]){ groups[pt] = []; order.push(pt); } });
-  var isCrit = function(k){ return !groups[k].length || groups[k].some(function(r){ return riSec(r) === 'critical'; }); };
-  var gKind = function(k){ return isCrit(k) ? 'critical' : groups[k].some(function(r){ return riSec(r) === 'protected'; }) ? 'protected' : groups[k].some(function(r){ return riSec(r) === 'filing'; }) ? 'filing' : 'rest'; };
+  var isCrit = function(k){ return k.charAt(0) !== 'n' && (!groups[k].length || groups[k].some(function(r){ return riSec(r) === 'critical'; })); };
+  var gKind = function(k){ return k.charAt(0) === 'n' && groups[k].length && groups[k][0].type === 'Appointment notice' ? 'notices' : isCrit(k) ? 'critical' : groups[k].some(function(r){ return riSec(r) === 'protected'; }) ? 'protected' : groups[k].some(function(r){ return riSec(r) === 'filing'; }) ? 'filing' : 'rest'; };
   var first = function(k){ return groups[k].length ? Math.min.apply(null, groups[k].map(function(r){ return riTime(r.rec); })) : 0; };
   var body = '';
-  [['critical', 'Critical'], ['rest', RI.order === 'new' ? 'All other reports, newest first' : 'All other reports, in the order received'], ['filing', 'Needs filing'], ['protected', 'Protected']].forEach(function(S){
+  [['critical', 'Critical'], ['rest', RI.order === 'new' ? 'All other reports, newest first' : 'All other reports, in the order received'], ['filing', 'Needs filing'], ['protected', 'Protected'], ['notices', 'Notices']].forEach(function(S){
     var G = order.filter(function(k){ return gKind(k) === S[0]; }).sort(function(x, y){ return (RI.order === 'new' ? -1 : 1) * (first(x) - first(y)); });
     if(!G.length) return;
     var n = G.reduce(function(a, k){ return a + groups[k].length; }, 0);
@@ -14827,7 +14876,7 @@ function riMerge(id, into){
   var d = document.getElementById('ri-mdrw'); if(d && d.open) d.close();
   riDone(id, 'Merged into ' + t.acc);
 }
-function riSignRec(r){ (r.signs = r.signs || []).push({at:riNow(), st:riStatus(r), cov:(r.bat || []).map(function(b){ return b.n + ' (' + b.r.length + (b.r.length === 1 ? ' result)' : ' results)'); }).join('; ') + (riPending(r) ? '; pending results to follow' : '')}); }
+function riSignRec(r){ (r.signs = r.signs || []).push({at:riNow(), st:riStatus(r), cov:(r.bat || []).filter(function(b){ return !b.seen && b.r.length; }).map(function(b){ return b.n + ' (' + b.r.length + (b.r.length === 1 ? ' result)' : ' results)'); }).join('; ') + (riPending(r) ? '; pending results to follow' : '')}); }
 function riSignAll(pt){
   var L = RI_ROWS.filter(function(r){ return r.pt === pt && riSt(r) === 'review' && !RI.done[r.id] && riAct(r) === 'signoff'; });
   if(L.some(function(r){ return !RI.opened[r.id]; })){ toast('Open each report first'); return; }
@@ -14855,6 +14904,7 @@ function riPtActs(pt, rows){
   if(RI.book[pt]) out += riB('link', 'Undo visit', 'riUnbook(\'' + pt + '\')', 'Take back the visit request', '');
   else if(P.urgent || rows.some(function(x){ return riFlag(x) === 'critical'; })) out += riB('secondary-main', 'Book urgent visit', 'riBook(\'' + pt + '\',1)', 'Ask Dolly to book ' + f + ' today', 'calendar') + riB('link', 'No visit needed', 'riBook(\'' + pt + '\',\'none\')', 'Record that ' + f + ' does not need a visit for these results', '');
   else out += riB('link', 'Book visit', 'riBook(\'' + pt + '\',0)', 'Ask Dolly to book a visit with ' + f, '');
+  out += riWatchedBy(pt).length ? riB('link', 'Stop watching', 'riUnwatch(\'' + riWatchedBy(pt)[0].id + '\',\'' + pt + '\')', 'Take ' + f + ' off your watch list', '') : riB('link', 'Watch patient', 'riWatchAsk(\'' + pt + '\')', 'Add ' + f + ' to a watch list: everything about them in one place', '');
   if(P.rerefer) out += riB('link', 'Re-refer', 'riRerefer(\'' + pt + '\')', 'Start a new ' + P.rerefer.toLowerCase() + ' referral to another specialist', '');
   var signable = rows.filter(function(x){ return riAct(x) === 'signoff' && riSt(x) === 'review'; });
   if(signable.length > 1){ var op = signable.filter(function(x){ return RI.opened[x.id]; }).length, all = op === signable.length;
@@ -14896,6 +14946,7 @@ function riAccess(pt){
 /* the full report: every battery and result, references, comments, accession number, version history, sign-offs and the source pages */
 function riOpen(id){
   var r = riRow(id); if(!r) return;
+  if(r.order && r.recollOf) return riOpen(r.recollOf);   /* the recollection opens the report it replaces */
   if(r.pt && RI_PT[r.pt].protected && !RI.unmask[r.pt]) return riAccess(r.pt);   /* EX-7: nothing of a protected record without the access word */
   RI.opened[id] = 1;
   var P = r.pt && RI_PT[r.pt], st = riSt(r), k = riAct(r), A = RI_ACT[k];
@@ -15530,6 +15581,214 @@ function adResults(){
       [adM('PharmaNet', ''), 'Dispensed medications in the chart', adTag('Coming · months')],
       [adM('Provincial Laboratory Information Solution', ''), 'Every lab, hospital and imaging report, free from the Ministry', adTag('Not available yet')]]));
 }
+
+/* ============================================================================
+   Results inbox: Daniel's design fixes, 26 Nov 2026 ("Results inbox – design fixes", for Ani).
+   ========================================================================= */
+var RI_TODAY = new Date(2026, 10, 22);   /* the demo's today */
+function riDaysTo(y, m, d){ return Math.round((new Date(y, m - 1, d) - RI_TODAY) / 864e5); }
+
+/* 3. Appointment notices are admin, not results: their own "Notices" group at the bottom of To review; no sign-off.
+   Seen files the notice and marks the referral booked; Expedite, Message patient and Cancel / redirect send the office a task.
+   Each records who did what and when. */
+var RI_NOTICE_ACT = {
+  seen:['primary', 'Seen', 'check', 'The date is fine: the notice is filed to the chart and the referral is marked booked'],
+  expedite:['secondary-main', 'Expedite', '', 'The date is too far out: the office calls the specialist for an earlier appointment'],
+  msg:['tertiary-main', 'Message patient', '', 'The office tells the patient something extra, such as bring the medication list'],
+  cancel:['tertiary-main', 'Cancel / redirect', '', 'The appointment is no longer needed, or the patient goes elsewhere: the office cancels and tells the patient']
+};
+function riNoticeBtns(r){
+  return Object.keys(RI_NOTICE_ACT).map(function(k){ var A = RI_NOTICE_ACT[k]; return riB(A[0], A[1], 'riNotice(\'' + r.id + '\',\'' + k + '\')', A[3], A[2]); }).join('');
+}
+function riNotice(id, a){
+  var r = riRow(id); if(!r) return;
+  var P = RI_PT[r.pt], f = P.n.split(' ')[0], at = riNow();
+  var task = {expedite:'Ask Dr. S. Rao\'s office (cardiology, Royal Jubilee) for an earlier appointment for ' + P.n, msg:'Tell ' + P.n + ' about the cardiology appointment Dec 3: bring her medication list and get bloodwork before the visit',
+    cancel:'Cancel the cardiology appointment Dec 3 for ' + P.n + ' and tell her; she was directed to the Emergency Department'}[a];
+  if(task) riTask(r.pt, task, a === 'cancel' ? 'urgent' : 'routine', 'From the appointment notice of Nov 21.');
+  riTask(r.pt, 'Tell ' + P.n + ' her cardiology appointment and file the notice; update the referral', 'routine', 'Appointment notice of Nov 21: Tuesday Dec 3, 10:30 AM, Cardiology clinic, Royal Jubilee.');
+  RI.noticeDone = RI.noticeDone || {}; RI.noticeDone[r.pt] = {a:a, at:at};
+  riDone(id, {seen:'Seen by you', expedite:'Expedite asked', msg:'Message sent to the office', cancel:'Cancel / redirect asked'}[a] + ' · ' + at);
+  riNoticeToLoop(r.pt, a, at);
+}
+/* 4. the notice feeds the referral card in the chart */
+function riNoticeToLoop(pt, a, at){
+  var P = RI_PT[pt]; if(!P || !P.chart || typeof lpList !== 'function') return;
+  at = riDates(at);
+  var L = lpList(P.chart).filter(function(x){ return x.id === 'cardio'; })[0]; if(!L) return;
+  L.hist = L.hist || [];
+  if(a === 'cancel'){
+    L.st[1] = ['done', 'Cancelled', 'Appointment of Dec 3 cancelled by you, ' + at + '; the office cancels it and tells the patient.', 'Appointment notice (fax)'];
+    L.st = L.st.map(function(x, i){ return i > 1 ? ['done', 'Closed', 'Closed: redirected to the Emergency Department.', ''] : x; });
+    L.appt = null; L.acts = [];
+  } else {
+    L.st[1] = ['done', 'Dec 3', 'Booked for Tuesday Dec 3, 10:30 AM, Cardiology clinic, Royal Jubilee.', 'Appointment notice (fax)'];
+    L.st[2] = ['wait', 'Dec 3', 'Appointment Tuesday Dec 3, 10:30 AM.', ''];
+    L.appt = {y:2026, m:12, d:3, t:'Tuesday Dec 3, 10:30 AM'};
+    L.acts = ['expedite', 'msgpt', 'redirect', 'remind'];
+  }
+  L.hist = [['Notice received Nov 21', 'riOpen(\'r2\')', 'Open the appointment notice as received (fax)'], ['Seen by you, ' + at], ['Patient to be told · task sent to Dolly, ' + at]]
+    .concat(a === 'expedite' ? [['Earlier appointment asked · task sent to Dolly, ' + at]] : a === 'msg' ? [['Message for the patient · task sent to Dolly, ' + at]] : a === 'cancel' ? [['Cancelled and redirected by you, ' + at]] : []);
+  if(typeof PC_CURRENT !== 'undefined' && PC_CURRENT === P.chart){ try { lpRender(PC_CURRENT); } catch(e){} if(typeof csRenderDocs === 'function' && document.getElementById('cs-docs')) try { csRenderDocs(PC_CURRENT); } catch(e){} }
+}
+/* the original notice is filed under Documents as Correspondence, linked both ways to the referral */
+function riNoticeDocs(name){
+  var k = null; for(var x in RI_PT) if(RI_PT[x].chart === name) k = x;
+  if(!k || !(RI.noticeDone || {})[k] || typeof csDocRow !== 'function') return '';
+  return csDocRow({title:'Correspondence – Appointment notice', date:'Nov 21', tags:[['neutral', 'link', 'Linked to the cardiology referral']],
+    body:'<dl class="cs-kv"><dt>From</dt><dd>Cardiology, Dr. S. Rao, Royal Jubilee</dd><dt>Appointment</dt><dd>Tuesday Dec 3, 2026, 10:30 AM</dd><dt>Referral</dt><dd>Nov 20, 2026 · Cardiology card in the patient summary</dd></dl>',
+    acts:riB('link', 'Open the fax', 'riOpen(\'r2\')', 'Open the notice as received', '')});
+}
+
+/* 6. a withdrawn result and its recollection are two linked items */
+function riGoTo(id, tab){ RI.tab = tab; RI.type = ''; RI.recent = {}; riRender(); setTimeout(function(){ var tr = document.querySelector('#ri-root tr[data-ri="' + id + '"]'); if(tr){ tr.scrollIntoView({block:'center'}); tr.classList.add('ri-flash'); setTimeout(function(){ tr.classList.remove('ri-flash'); }, 1600); tr.focus({preventScroll:true}); } }, 30); }
+
+/* 5. no clinical advice in the rows: Cedar's advice shows when the doctor points at the patient, as Cedar's, never as part of the lab report */
+var RI_CEDAR = {
+  gloria:'Troponin 0.42 with chest pressure fits an acute coronary syndrome. She was directed to the Emergency Department today; a repeat troponin is due.',
+  fenwick:'A copy of an emergency troponin. Dr. M. Osei ordered it and is responsible for follow-up; a repeat troponin was ordered today.',
+  behdis:'Potassium 6.3 on a sample the lab calls haemolysed: repeat potassium on a fresh sample today before acting on it.',
+  manjit:'Haemoglobin 71 with a low mean cell volume fits iron deficiency; look for bleeding and arrange an urgent assessment.',
+  teresa:'Positive faecal immunochemical test: BC Guidelines recommend a colonoscopy referral within 8 weeks. Her A1c of 7.9% is above target.',
+  kathleen:'Low ferritin with low haemoglobin fits iron deficiency anaemia; consider oral iron and look for a cause.',
+  grace:'INR 3.8 on warfarin: consider holding a dose and repeating the INR in 3 to 5 days.',
+  andrey:'Alanine and aspartate aminotransferase both raised: repeat liver tests in 4 to 6 weeks; ask about alcohol and medicines.',
+  douglas:'Several abnormal batteries: ferritin 19 with haemoglobin 128, LDL 4.2, A1c 6.3. A visit to go over them together would help.',
+  gary:'Prostate-specific antigen 48 with known metastatic disease: the urgent CT and urology referral are not booked yet.'
+};
+(function(){
+  var tip = null, timer = null;
+  document.addEventListener('mouseover', function(e){
+    var cell = e.target.closest && e.target.closest('#ri-root .ri-pt'); if(!cell) return;
+    var tr = cell.closest('tr[data-ri]'), r = tr && riRow(tr.getAttribute('data-ri')), adv = r && RI_CEDAR[r.pt];
+    if(!adv || (RI_PT[r.pt].protected && !RI.unmask[r.pt])) return;
+    clearTimeout(timer);
+    if(!tip){ tip = document.createElement('div'); tip.id = 'ri-cedar'; tip.setAttribute('role', 'tooltip'); document.body.appendChild(tip); }
+    tip.innerHTML = '<p class="ri-ced-h"><span class="ri-ced-mark" aria-hidden="true">✦</span><b>Cedar</b>' + SC.html('Tag', {color:'neutral'}, 'AI-generated') + '</p><p class="ri-ced-t">' + csEsc(adv) + '</p><p class="ri-ced-n">Cedar\'s suggestion, not part of the lab report.</p>';
+    var b = cell.getBoundingClientRect(); tip.style.left = Math.round(b.left) + 'px'; tip.style.top = Math.round(b.bottom + 6) + 'px'; tip.hidden = false;
+  });
+  document.addEventListener('mouseout', function(e){ var cell = e.target.closest && e.target.closest('#ri-root .ri-pt'); if(!cell || !tip) return; if(e.relatedTarget && cell.contains(e.relatedTarget)) return; timer = setTimeout(function(){ tip.hidden = true; }, 80); });
+  window.addEventListener('scroll', function(){ if(tip) tip.hidden = true; }, true);
+})();
+
+/* 2. the keyboard: on the tab row, Tab / Shift+Tab and the arrow keys move between tabs; 1, 2 and 3 jump to a tab from anywhere in the inbox */
+function riTabKeys(){ return ['review', 'waiting', 'signed'].concat((RI.wl || []).map(function(w){ return 'wl-' + w.id; })); }
+function riFocusTab(v){ var b = document.querySelector('#ri-root [role=tab][id$="-tab-' + v + '"]'); if(b) b.focus(); }
+document.addEventListener('keydown', function(e){
+  var scr = document.getElementById('screen-inbox'); if(!scr || !scr.classList.contains('active')) return;
+  if(document.querySelector('dialog[open]')) return;
+  var t = e.target, typing = t && (t.closest('input,textarea,select,[contenteditable="true"],sc-search') || t.isContentEditable);
+  if(!typing && !e.altKey && !e.ctrlKey && !e.metaKey && /^[123]$/.test(e.key)){ var v = ['review', 'waiting', 'signed'][+e.key - 1]; e.preventDefault(); if(RI.tab !== v){ RI.tab = v; RI.type = ''; RI.recent = {}; riRender(); } riFocusTab(v); return; }
+  var tab = t && t.closest && t.closest('#ri-root [role=tab]'); if(!tab) return;
+  var keys = riTabKeys(), i = keys.indexOf(RI.tab), j = -1;
+  if(e.key === 'ArrowRight' || (e.key === 'Tab' && !e.shiftKey)) j = i + 1;
+  if(e.key === 'ArrowLeft' || (e.key === 'Tab' && e.shiftKey)) j = i - 1;
+  if(e.key === 'Home') j = 0; if(e.key === 'End') j = keys.length - 1;
+  if(j < 0 || j >= keys.length || j === i){ return; }   /* past the ends, Tab leaves the tab row as usual */
+  e.preventDefault(); RI.tab = keys[j]; RI.type = ''; RI.recent = {}; riRender(); riFocusTab(keys[j]);
+}, true);
+
+/* 8. Watch lists: doctor-made tabs after the core tabs, behind a divider. A second view, never a move: watched patients' results still
+   count in To review (with a "Watching" marker), and sign-off happens only there. For each watched patient: the reason and a review date,
+   new results (linking to To review), what is pending, every open order and referral stage by stage with stalls flagged, and their
+   open tasks. Send task, Open chart, Stop watching. Every change is recorded. */
+RI.wl = [{id:'w1', name:'Watching', pts:['gloria', 'gary'], meta:{gloria:{reason:'Possible unstable angina', review:'Dec 3, 2026', rv:[2026, 12, 3], since:'Nov 21'}, gary:{reason:'Metastatic prostate cancer · urgent work-up', review:'Nov 22, 2026', rv:[2026, 11, 22], since:'Nov 20'}}}];
+RI.wlog = [];
+var RI_FOLLOW = {
+  gary:[{n:'CT chest, abdomen and pelvis with intravenous contrast', urg:'Urgent', steps:['Ordered', 'Booked', 'Scan done', 'Report', 'Reviewed'], st:['done', 'todo', 'todo', 'todo', 'todo'], d:['Nov 20'], stall:'No booking yet · 2 days'},
+    {n:'Urology referral', urg:'Urgent', steps:['Referred', 'Booked', 'Seen by specialist', 'Consult report', 'Reviewed'], st:['done', 'todo', 'todo', 'todo', 'todo'], d:['Nov 20'], stall:'No booking yet · 2 days'}]
+};
+var RI_PTTASKS = {gary:[['Book the urgent CT chest, abdomen and pelvis', 'Dolly', 'Today'], ['Chase the urgent urology referral', 'Dolly', 'Today']]};
+function riWatchedBy(pt){ return (RI.wl || []).filter(function(w){ return w.pts.indexOf(pt) > -1; }); }
+function riWlNew(w){ return w.pts.reduce(function(a, pt){ return a + RI_ROWS.filter(function(r){ return r.pt === pt && riSt(r) === 'review' && !RI.done[r.id]; }).length; }, 0); }
+function riFollow(pt){
+  if(RI_FOLLOW[pt]) return RI_FOLLOW[pt];
+  var P = RI_PT[pt]; if(!P || !P.chart || typeof lpList !== 'function') return [];
+  return lpList(P.chart).filter(function(L){ return /img|proc|ref/.test(L.t) && lpState(L) !== 'done'; }).map(function(L){
+    return {n:L.n + (L.spec ? ' – ' + L.spec : ''), urg:L.urg || '', steps:LP_STEPS[L.t], st:L.st.map(function(x){ return x[0]; }), d:L.st.map(function(x){ return x[1]; }), stall:lpState(L) === 'you' ? lpNow(L) : '', appt:L.appt}; });
+}
+function riWlTrack(f){ return '<span class="lp-track">' + f.steps.map(function(s, i){ var c = f.st[i] || 'todo'; return '<span class="lp-st ' + c + '" title="' + csEsc(s + (f.d && f.d[i] ? ': ' + f.d[i] : '')) + '"><i></i>' + csEsc(s) + (f.d && f.d[i] && c !== 'todo' ? '<small>' + csEsc(f.d[i]) + '</small>' : '') + '</span>'; }).join('') + '</span>'; }
+function riWlView(w){
+  if(!w.pts.length) return '<div class="ri-empty">' + SC.html('Empty', {icon:'eye-on', title:'No patients in ' + w.name + ' yet', description:'Add a patient with Watch patient on an inbox row, on the chart or on the patient\'s name.'}) + '</div>';
+  return '<div class="ri-wl">' + w.pts.map(function(pt){
+    var P = RI_PT[pt], M = w.meta[pt] || {}, f = P.n.split(' ')[0];
+    var due = M.rv && riDaysTo(M.rv[0], M.rv[1], M.rv[2]) <= 0;
+    var newR = RI_ROWS.filter(function(r){ return r.pt === pt && riSt(r) === 'review' && !RI.done[r.id]; });
+    var pend = []; RI_ROWS.filter(function(r){ return r.pt === pt; }).forEach(function(r){ (r.bat || []).forEach(function(b){ (b.pend || []).forEach(function(p){ if(pend.indexOf(p) < 0) pend.push(p); }); }); });
+    (P.orders || []).forEach(function(o){ pend.push(o.n + ' (not yet collected)'); });
+    if(pt === 'gary') pend.push('Testosterone');
+    var fol = riFollow(pt);
+    var tasks = (typeof DOC_TASKS !== 'undefined' ? DOC_TASKS : []).filter(function(t){ return t.status !== 'done' && t.patient && t.patient.toLowerCase().indexOf(P.n.split(' ').pop().toLowerCase()) > -1; }).map(function(t){ return [t.title, t.to, t.due || '']; }).concat(RI_PTTASKS[pt] || []);
+    return '<section class="ri-wlp">' +
+      '<div class="ri-wlh"><div>' + adM(csEsc(P.n), csEsc(P.dob) + ' · ' + P.sex.charAt(0) + ' · PHN ' + csEsc(P.phn)) + '<span class="ad-s">' + csEsc(M.reason || '') + ' · review by ' + csEsc(M.review || '—') + ' · watching since ' + csEsc(M.since || 'today') + ', by you</span></div>' +
+        '<div class="ri-wla">' + riB('primary', 'Send task', 'riWlTask(\'' + pt + '\')', 'Send a task about ' + f + ' to the office or another team member, without leaving the watch list', 'send') +
+          (P.chart ? riB('secondary-main', 'Open chart', 'openChart(\'' + P.chart.replace(/'/g, '\\\'') + '\')', 'Open ' + f + '\'s chart', '') : SC.html('Button', {variant:'secondary-main', size:'medium', disabled:true, title:'No chart in this demo'}, 'Open chart')) +
+          riB('tertiary-main', 'Stop watching', 'riUnwatch(\'' + w.id + '\',\'' + pt + '\')', 'Remove ' + f + ' from ' + w.name, '') + '</div></div>' +
+      (due ? '<div class="ri-wldue">' + SC.icon('clock-time', {size:18}) + '<span>Review date reached. Keep watching ' + csEsc(f) + '?</span>' + riB('secondary-main', 'Keep 2 more weeks', 'riWlKeep(\'' + w.id + '\',\'' + pt + '\')', 'Keep watching and set the review date 2 weeks from today', '') + riB('link', 'Remove', 'riUnwatch(\'' + w.id + '\',\'' + pt + '\')', 'Stop watching ' + f, '') + '</div>' : '') +
+      '<h3 class="ad-h3">New results' + scInfoHtml('Sign-off happens in To review; a new result here links there.') + '</h3>' + (newR.length ? '<ul class="ri-wll">' + newR.map(function(r){ var fl = riFlag(r);
+        return '<li>' + (fl === 'critical' ? SC.html('Tag', {color:'error'}, 'Critical') : fl === 'abnormal' ? '<b>Abnormal</b>' : '') + ' ' + csEsc(r.bat ? r.bat.map(function(b){ return b.n; }).join(', ') : r.type) + ' <span class="ad-s">· received ' + csEsc(r.rec) + '</span> ' + riB('link', 'Open in To review', 'riGoTo(\'' + r.id + '\',\'review\')', 'Go to this result in To review, where you sign it off', '') + '</li>'; }).join('') + '</ul>' : '<p class="ad-sub">No new results.</p>') +
+      (pend.length ? '<p class="ri-wlpend">Pending: ' + csEsc(pend.join(', ')) + '</p>' : '') +
+      '<h3 class="ad-h3">Following</h3>' + (fol.length ? fol.map(function(x){ return '<div class="ri-wlf"><div class="ri-wlfh"><b>' + csEsc(x.n) + '</b>' + (x.urg ? SC.html('Tag', {color:'neutral'}, x.urg) : '') +
+        (x.appt ? '<span class="ad-s">Appointment ' + csEsc(x.appt.t) + '</span>' : '') + (x.stall ? SC.html('Tag', {color:'neutral', startIcon:'warning'}, x.stall) : '') + '</div>' + riWlTrack(x) + '</div>'; }).join('') : '<p class="ad-sub">No open orders or referrals.</p>') +
+      '<h3 class="ad-h3">Tasks</h3>' + (tasks.length ? adTable('Tasks for ' + P.n, ['Task', 'Who', 'Due'], tasks.map(function(t){ return [csEsc(t[0]), csEsc(t[1]), csEsc(t[2])]; })) : '<p class="ad-sub">No open tasks.</p>') +
+      '</section>'; }).join('') + '</div>';
+}
+function riWlLog(what){ RI.wlog.unshift({at:riNow(), what:what}); }
+function riWatch(pt, listId, reason, review){
+  var w = (RI.wl || []).filter(function(x){ return x.id === listId; })[0] || RI.wl[0]; if(!w) return;
+  if(w.pts.indexOf(pt) < 0) w.pts.push(pt);
+  w.meta[pt] = {reason:reason || 'Added from the inbox', review:review || 'Dec 6, 2026', rv:[2026, 12, 6], since:'today'};
+  riWlLog('Watching ' + RI_PT[pt].n + ' in ' + w.name); riRender(); if(typeof adPaint === 'function') {}
+  toast('Watching ' + RI_PT[pt].n.split(' ')[0] + ' in ' + w.name + ' · recorded');
+  var cb = document.getElementById('v2t-watch'); if(cb) riWatchBtn();
+}
+function riUnwatch(listId, pt){
+  var w = RI.wl.filter(function(x){ return x.id === listId; })[0]; if(!w) return;
+  w.pts = w.pts.filter(function(p){ return p !== pt; }); delete w.meta[pt];
+  riWlLog('Stopped watching ' + RI_PT[pt].n + ' in ' + w.name); riRender(); riWatchBtn();
+  toast('Stopped watching ' + RI_PT[pt].n.split(' ')[0] + ' · recorded');
+}
+function riWlKeep(listId, pt){ var w = RI.wl.filter(function(x){ return x.id === listId; })[0]; if(!w) return; w.meta[pt].review = 'Dec 6, 2026'; w.meta[pt].rv = [2026, 12, 6]; riWlLog('Kept watching ' + RI_PT[pt].n); riRender(); toast('Keeping ' + RI_PT[pt].n.split(' ')[0] + ' · review by Dec 6'); }
+/* Watch patient: a reason, a review date and which list; the same action from the inbox row, the chart and the patient's name */
+function riWatchAsk(pt){
+  var P = RI_PT[pt]; if(!P) return;
+  var host = document.getElementById('ri-host'); if(!host){ host = document.createElement('div'); host.id = 'ri-host'; document.body.appendChild(host); }
+  host.innerHTML = SC.html('Drawer', {id:'ri-wdrw', title:'Watch ' + P.n, description:'Everything about this patient shows together in your watch list', primaryAction:{label:'Watch patient', id:'ri-wgo'}, secondaryAction:{label:'Cancel', id:'ri-wx'}},
+    SC.raw('<div class="ri-aform">' + scDdHtml('ri-wlist', 'Watch list', RI.wl.map(function(w){ return {value:w.id, label:w.name}; }), RI.wl[0] ? RI.wl[0].id : '', '') + SC.html('Input', {label:'Reason', id:'ri-wreason', placeholder:'For example: possible unstable angina'}) + SC.html('Input', {label:'Review by', id:'ri-wdate', value:'Dec 6, 2026'}) + '</div>'));
+  var d = document.getElementById('ri-wdrw');
+  d.addEventListener('click', function(e){ var b = e.target.closest('button'); if(e.target === d) return d.close(); if(!b) return;
+    if(b.id === 'ri-wgo'){ var rs = document.getElementById('ri-wreason').value.trim(); if(!rs){ toast('Add a reason'); document.getElementById('ri-wreason').focus(); return; } var li = (document.getElementById('ri-wlist') || {}).value || (RI.wl[0] || {}).id; d.close(); riWatch(pt, li, rs, document.getElementById('ri-wdate').value.trim()); return; }
+    if(b.id === 'ri-wx' || b.getAttribute('aria-label') === 'Close') d.close(); });
+  d.showModal();
+}
+function riWlNew2(){
+  var host = document.getElementById('ri-host'); if(!host){ host = document.createElement('div'); host.id = 'ri-host'; document.body.appendChild(host); }
+  host.innerHTML = SC.html('Drawer', {id:'ri-ndrw', title:'New watch list', description:'A tab of your own, after Signed off', primaryAction:{label:'Create', id:'ri-ngo'}, secondaryAction:{label:'Cancel', id:'ri-nx'}}, SC.raw('<div class="ri-aform">' + SC.html('Input', {label:'Name', id:'ri-nname', placeholder:'For example: Cancer work-up'}) + '</div>'));
+  var d = document.getElementById('ri-ndrw');
+  d.addEventListener('click', function(e){ var b = e.target.closest('button'); if(e.target === d) return d.close(); if(!b) return;
+    if(b.id === 'ri-ngo'){ var n = document.getElementById('ri-nname').value.trim(); if(!n){ toast('Name the watch list'); return; } var id = 'w' + (RI.wl.length + 1) + Date.now() % 1000; RI.wl.push({id:id, name:n, pts:[], meta:{}}); riWlLog('Created the watch list ' + n); d.close(); RI.tab = 'wl-' + id; riRender(); toast('Watch list created: ' + n); return; }
+    if(b.id === 'ri-nx' || b.getAttribute('aria-label') === 'Close') d.close(); });
+  d.showModal();
+}
+function riWlTask(pt){
+  var P = RI_PT[pt], host = document.getElementById('ri-host'); if(!host){ host = document.createElement('div'); host.id = 'ri-host'; document.body.appendChild(host); }
+  host.innerHTML = SC.html('Drawer', {id:'ri-tdrw', title:'Send a task · ' + P.n, description:'It goes to their task list; you stay on the watch list', primaryAction:{label:'Send task', id:'ri-tgo'}, secondaryAction:{label:'Cancel', id:'ri-tx'}},
+    SC.raw('<div class="ri-aform">' + SC.html('Input', {label:'What needs doing', id:'ri-ttext', placeholder:'For example: chase the CT booking today'}) + scDdHtml('ri-tto', 'To', [{value:'Dolly', label:'Dolly, medical office assistant'}, {value:'Japneet', label:'Japneet, physician assistant'}], 'Dolly', '') + '</div>'));
+  var d = document.getElementById('ri-tdrw');
+  d.addEventListener('click', function(e){ var b = e.target.closest('button'); if(e.target === d) return d.close(); if(!b) return;
+    if(b.id === 'ri-tgo'){ var tx = document.getElementById('ri-ttext').value.trim(); if(!tx){ toast('Say what needs doing'); return; } var to = (document.getElementById('ri-tto') || {}).value || 'Dolly';
+      if(typeof DOC_TASKS !== 'undefined'){ DOC_TASKS.unshift({id:'wl' + Date.now(), title:tx, type:'Patient Notes', prio:'routine', age:0, to:to, role:to === 'Dolly' ? 'MOA' : 'PA', patient:P.n, preferred:P.n.split(' ')[0], verified:true, status:'open', carried:0, due:'Today', note:'From the watch list.'}); if(typeof renderTasks === 'function') renderTasks(); }
+      d.close(); riRender(); toast('Task sent to ' + to + ': ' + tx); return; }
+    if(b.id === 'ri-tx' || b.getAttribute('aria-label') === 'Close') d.close(); });
+  d.showModal();
+}
+/* the chart's Watch button */
+function riChartPt(){ var n = typeof PC_CURRENT !== 'undefined' ? PC_CURRENT : ''; for(var k in RI_PT) if(RI_PT[k].chart === n) return k; return null; }
+function riWatchBtn(){ var b = document.getElementById('v2t-watch'); if(!b) return; var k = riChartPt(), w = k && riWatchedBy(k).length;
+  b.disabled = !k; b.title = !k ? 'Not in this demo' : w ? 'Stop watching this patient' : 'Watch this patient: add them to a watch list in the inbox';
+  var lbl = b.querySelector('.wl-t'); if(lbl) lbl.textContent = w ? 'Watching' : 'Watch'; b.setAttribute('aria-pressed', w ? 'true' : 'false'); }
+function riWatchChart(){ var k = riChartPt(); if(!k) return; var ws = riWatchedBy(k); if(ws.length) riUnwatch(ws[0].id, k); else riWatchAsk(k); }
+window.addEventListener('load', function(){ if(typeof baWrap === 'function') baWrap('openChart', function(){ setTimeout(riWatchBtn, 50); }); });
 /* ============================================================================
    LFP time (Daniel's guide for MOAs, 13 Nov; chart brief, 17 Nov; Ani, 21 Nov "time tracking first").
    Simple sorts the doctor's own time into the four LFP types: direct care (98010; patient present, and chart work between patients
@@ -21351,6 +21610,7 @@ function csRenderDocs(name){
   if(typeof rxDocsHtml === 'function') rows += rxDocsHtml(name);
   if(typeof sdDocsHtml === 'function') rows += sdDocsHtml(name);   /* 26 Oct: orders and referrals signed from their drawers */
   rows += scTxDoc(name);
+  if(typeof riNoticeDocs === 'function') rows += riNoticeDocs(name);   /* 26 Nov: an appointment notice, filed as Correspondence, linked to its referral */
   if(L) rows += csDocRow({id:'cs-doc-last', title:'Visit note', date:csShort(L.date), tags:[['success', 'check-circle', 'Signed']], body:'<dl class="cs-kv">' +
     ['S','O','A','P'].map(function(k){ return '<dt>' + {S:'Subjective',O:'Objective',A:'Assessment',P:'Plan'}[k] + '</dt><dd>' + L.note[k] + '</dd>'; }).join('') + '</dl>'});
   h += csTable('Documents', ['Document', 'Date', 'Status', ''], rows);
@@ -23447,7 +23707,7 @@ function smPaint(){
    steps; a step is done (navy), waiting on others (amber), needs you (red) or not reached yet (grey). Needs you first, closed
    loops last. Click an order to drill down: every step with its date, who and the source.
    ========================================================================= */
-var LP_STEPS = {lab:['Ordered', 'Collected', 'Result', 'Reviewed'], img:['Ordered', 'Arranged', 'Report', 'Reviewed'], proc:['Ordered', 'Arranged', 'Report', 'Reviewed'], ref:['Referred', 'Arranged', 'Report', 'Reviewed'], prev:['Due', 'Done']};
+var LP_STEPS = {lab:['Ordered', 'Collected', 'Result', 'Reviewed'], img:['Ordered', 'Booked', 'Report', 'Reviewed'], proc:['Ordered', 'Booked', 'Report', 'Reviewed'], ref:['Referred', 'Booked', 'Seen by specialist', 'Consult report', 'Reviewed'], prev:['Due', 'Done']};
 var LP_SEC = {prev:'lpPrev', lab:'lpLab', img:'lpImg', proc:'lpProc', ref:'lpRef'};
 /* a step: [state, short date, detail for the drill-down, source] */
 var LOOPS = {
@@ -23477,8 +23737,8 @@ var LOOPS = {
       st:[['you', 'Not yet', 'Not ordered.', 'Cedar, from the chart'], ['todo', '', '', ''], ['todo', '', '', ''], ['todo', '', '', '']], acts:['order', 'elsewhere', 'dismiss']},
     {id:'calcium', t:'lab', n:'Calcium', why:'Osteoporosis on denosumab · before each dose · 733.00', fact:'Denosumab last 19 May, due 17 November · no calcium on file', rule:'Health Canada · calcium before each dose',
       st:[['you', 'Not yet', 'Not ordered.', 'Cedar, from the chart'], ['todo', '', '', ''], ['todo', '', '', ''], ['todo', '', '', '']], acts:['order', 'dismiss']},
-    {id:'cardio', t:'ref', n:'Cardiology', why:'Exertional chest pressure · possible stable angina · 786.5', fac:'Dr. M. Ferreira, cardiology',
-      st:[['done', '25 Jun', 'Referral faxed 25 June 2026 to Dr. M. Ferreira, cardiology (250-555-0187); delivered.', 'Fax confirmation'], ['wait', 'Not yet', 'Receipt acknowledged 27 June; cardiology books the appointment, none booked yet.', 'Office acknowledgement'], ['todo', '', '', ''], ['todo', '', '', '']], acts:['remind']}
+    {id:'cardio', t:'ref', n:'Cardiology', spec:'Dr. S. Rao, Royal Jubilee', urg:'Urgent', why:'Exertional chest pressure · possible unstable angina · 786.5', fac:'Dr. S. Rao, cardiology, Royal Jubilee',
+      st:[['done', 'Nov 20', 'Referral faxed 20 November 2026 to Dr. S. Rao, cardiology, Royal Jubilee; delivered.', 'Fax confirmation'], ['wait', 'Not yet', 'Appointment notice received 21 November; waiting for you in the inbox (Notices).', 'Appointment notice (fax)'], ['todo', '', '', ''], ['todo', '', '', ''], ['todo', '', '', '']], acts:['remind']}
   ]
 };
 var LP_ACT = {
@@ -23490,7 +23750,10 @@ var LP_ACT = {
   reorder:['secondary-main', 'Re-send', 'Send the order again to the same facility'],
   elsewhere:['tertiary-main', 'Done elsewhere', 'Record that it was done at another clinic; you add the date and place'],
   dismiss:['tertiary-main', 'Dismiss', 'Dismiss it, with a reason'],
-  cancel:['tertiary-main', 'Cancel', 'Cancel the order, with a reason']
+  cancel:['tertiary-main', 'Cancel', 'Cancel the order, with a reason'],
+  expedite:['secondary-main', 'Expedite', 'Task to the office: ask the specialist for an earlier appointment'],
+  msgpt:['secondary-main', 'Message patient', 'Task to the office: tell the patient something extra, such as bring the medication list'],
+  redirect:['tertiary-main', 'Cancel / redirect', 'Task to the office: cancel the appointment and tell the patient where to go instead']
 };
 /* a patient without hand-written loops: one loop per pending item and unreviewed result, from the same records */
 function lpGeneric(name){
@@ -23503,6 +23766,7 @@ function lpGeneric(name){
     var st = over ? [['you', 'Not yet', v2Cap(sub) + '.', ''], ['todo', '', '', ''], ['todo', '', '', ''], ['todo', '', '', '']]
       : back ? [['done', '', 'Ordered.', ''], ['done', '', 'Arranged.', ''], ['wait', 'Not back', v2Cap(sub) + '.', ''], ['todo', '', '', '']]
       : [['done', '', 'Ordered.', ''], ['wait', 'Not yet', v2Cap(sub) + '.', ''], ['todo', '', '', ''], ['todo', '', '', '']];
+    if(ty === 'ref') st.splice(2, 0, ['todo', '', '', '']);   /* referrals: Referred, Booked, Seen by specialist, Consult report, Reviewed */
     out.push({id:'g' + i, t:ty, n:t, why:'', st:st, acts:over ? ['order', 'elsewhere'] : ['remind']});
   });
   return out;
@@ -23511,6 +23775,10 @@ function lpList(name){ if(!LOOPS[name]) LOOPS[name] = lpGeneric(name); return LO
 function lpState(L){ var s = L.st.filter(function(x){ return x[0] !== 'done'; })[0]; return s ? s[0] : 'done'; }
 function lpTag(L){
   var s = lpState(L), w = L.st.filter(function(x){ return x[0] === 'wait'; })[0];
+  /* 4. say what it is waiting for; with a real appointment, say when */
+  if(L.appt && s === 'wait'){ var dd = riDaysTo(L.appt.y, L.appt.m, L.appt.d); return ['Tag', {color:'neutral', startIcon:'calendar', title:'Appointment ' + L.appt.t}, 'Appointment ' + L.appt.t + ' (in ' + dd + (dd === 1 ? ' day)' : ' days)')]; }
+  if(s === 'wait'){ var lab = (LP_STEPS[L.t] || [])[L.st.indexOf(w)] || '', what = {Booked:'booking', Collected:'collection', Result:'the result', Report:'the report', 'Consult report':'the consult report', 'Seen by specialist':'the visit', Done:'it to be done'}[lab] || 'others';
+    return ['Tag', {color:'warning', title:'Waiting on ' + (L.fac || 'others')}, 'Waiting for ' + what]; }
   return s === 'you' ? ['Tag', {color:'error', title:'Needs you'}, 'Needs you'] : s === 'wait' ? ['Tag', {color:'warning', title:'Waiting on ' + (L.fac || 'others')}, 'Waiting'] : s === 'done' ? ['Tag', {color:'information', startIcon:'check', title:'Closed loop'}, 'Closed'] : ['Tag', {color:'neutral'}, 'Open'];
 }
 function lpNow(L){ var s = L.st.filter(function(x){ return x[0] !== 'done'; })[0] || L.st[L.st.length - 1]; return s[2]; }
@@ -23519,9 +23787,10 @@ function lpItem(L){
   var labels = LP_STEPS[L.t], track = L.st.map(function(x, i){ return '<span class="lp-st ' + x[0] + '" title="' + csEsc(labels[i] + (x[1] ? ': ' + x[1] : '') + (x[2] ? ' · ' + x[2] : '')) + '"><i></i>' + csEsc(labels[i]) + '</span>'; }).join('');
   var st = lpState(L);
   return '<div class="lp" role="button" tabindex="0" data-goi="' + smGo('lpOpen(\'' + L.id + '\')') + '" title="See every step of ' + csEsc(L.n) + '">' +
-    '<span class="lp-h"><span class="lp-t">' + csEsc(L.n) + '</span>' + SC.html.apply(SC, lpTag(L)) + '</span>' +
+    '<span class="lp-h"><span class="lp-t">' + csEsc(L.n + (L.spec ? ' – ' + L.spec : '')) + '</span>' + SC.html.apply(SC, lpTag(L)) + '</span>' +
     (L.why ? '<span class="lp-why">' + csEsc(L.why) + '</span>' : '') + (L.quote ? '<span class="lp-q">' + csEsc(L.quote) + '</span>' : '') +
     '<span class="lp-track">' + track + '</span><span class="lp-now">' + csEsc(lpNow(L)) + '</span>' +
+    (L.hist ? '<span class="lp-hist">' + L.hist.map(function(h){ return h[1] ? '<span>' + SC.html('Button', {variant:'link', size:'medium', title:h[2] || h[0], 'data-goi':smGo(h[1])}, h[0]) + '</span>' : '<span>' + csEsc(h[0]) + '</span>'; }).join('') + '</span>' : '') +
     (st !== 'done' && L.acts ? '<span class="lp-acts">' + L.acts.map(function(a){ return lpBtn(L, a); }).join('') + '</span>' : '') + '</div>';
 }
 function lpRender(name){
@@ -23544,6 +23813,9 @@ function lpAct(id, a){
   if(a === 'order' || a === 'refer'){ L.st[0] = ['done', 'Today', (a === 'refer' ? 'Referral' : 'Requisition') + ' sent by you today, ' + hm + '; delivery confirmed.', 'Fax confirmation']; if(L.st[1]) L.st[1] = ['wait', 'Not yet', 'Waiting for the facility to arrange it.', '']; if(L.t === 'prev') L.st[1] = ['wait', 'Ordered', 'Ordered today; waiting for the result.', '']; }
   else if(a === 'review'){ L.st[L.st.length - 1] = ['done', 'Today', 'Reviewed and cleared by you, ' + hm + '.', 'Inbox']; }
   else if(a === 'elsewhere' || a === 'dismiss' || a === 'cancel' || a === 'confirm'){ L.st = L.st.map(function(x, i){ return i === 0 ? ['done', a === 'confirm' ? 'Eligible' : 'Closed', LP_DONE[a] + ', ' + hm + '.', ''] : x[0] === 'todo' || x[0] === 'you' || x[0] === 'wait' ? (a === 'confirm' && i === 1 ? ['wait', 'Offered', 'Screening offered; waiting for her decision.', ''] : ['done', '—', 'Closed.', '']) : x; }); }
+  else if(a === 'expedite' || a === 'msgpt' || a === 'redirect'){ var pk = riChartPt(); if(pk) riNoticeToLoop(pk, {expedite:'expedite', msgpt:'msg', redirect:'cancel'}[a], riNow());
+    if(pk) riTask(pk, {expedite:'Ask ' + (L.fac || 'the specialist') + ' for an earlier appointment', msgpt:'Tell the patient about the ' + L.n.toLowerCase() + ' appointment', redirect:'Cancel the ' + L.n.toLowerCase() + ' appointment and tell the patient'}[a], 'routine', 'From the referral card.');
+    toast({expedite:'Task sent to Dolly: ask for an earlier appointment', msgpt:'Task sent to Dolly: message the patient', redirect:'Task sent to Dolly: cancel and redirect'}[a]); lpRender(PC_CURRENT); return; }
   else if(a === 'remind' || a === 'reorder'){ var w = L.st.filter(function(x){ return x[0] !== 'done'; })[0]; if(w){ w[0] = 'wait'; w[2] = w[2].replace(/\s*Asked again.*$/, '') + ' Asked again by fax today, ' + hm + '.'; } }
   toast(L.n + ': ' + LP_DONE[a].charAt(0).toLowerCase() + LP_DONE[a].slice(1) + '.');
   lpRender(PC_CURRENT);
